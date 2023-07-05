@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
 using XSharpModel;
-
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {
@@ -150,7 +150,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "Goto failed");
+                Logger.LogException(ex, "Goto failed");
             }
             finally
             {

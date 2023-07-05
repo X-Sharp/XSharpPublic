@@ -27,7 +27,7 @@ using XSharpModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
 
@@ -679,7 +679,7 @@ namespace XSharp.LanguageService
                 if (member.Kind != Kind.Field)
                 {
                     VSOBDESCRIPTIONSECTION descName = VSOBDESCRIPTIONSECTION.OBDS_MISC;
-                    descText = XSettings.FormatKeyword(member.Kind.DisplayName()) + " ";
+                    descText = XLiterals.FormatKeyword(member.Kind.DisplayName()) + " ";
                     if (member.Kind == Kind.Constructor)
                     {
                         descName = VSOBDESCRIPTIONSECTION.OBDS_NAME;

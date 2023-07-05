@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using XSharp.LanguageService.OptionsPages;
 using XSharpModel;
-
+using XSharp.Settings;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -222,7 +222,7 @@ namespace XSharp.LanguageService
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
-            Logger.InitializeLogger();
+            LsLogger.InitializeLogger();
             ModelScannerEvents.Start();
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
@@ -378,7 +378,7 @@ namespace XSharp.LanguageService
                 {
                     GetIntellisenseSettings(false);
                     var res = ThreadHelper.JoinableTaskFactory.RunAsync(RefreshAllDocumentWindowSettingsAsync);
-                    Logger.ActivateWhenNeeded();
+                    LsLogger.ActivateWhenNeeded();
 
                 }
             }
@@ -468,6 +468,17 @@ namespace XSharp.LanguageService
             return IntPtr.Zero;
         }
         #endregion
+    }
+    internal static class Logger
+    {
+        internal static void LogException(Exception e, string msg)
+        {
+            LsLogger.Instance.Exception(e, msg);
+        }
+        internal static void LogMessage(string msg)
+        {
+            LsLogger.Instance.Information(msg);
+        }
     }
 
 }

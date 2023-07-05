@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService.OptionsPages
 {
 
@@ -51,7 +51,7 @@ namespace XSharp.LanguageService.OptionsPages
         public bool ExcludeMembersFromOtherFiles { get; set; }
         public bool KeywordsInAll { get; set; }
         public bool ShowAfterChar { get; set; }
-        public XSharpModel.KeywordCase KeywordCase { get; set; }
+        public XSharp.Settings.KeywordCase KeywordCase { get; set; }
         public bool IncludeFieldsInNavigationBars { get; set; }
         public bool SortNavigationBars { get; set; }
         public bool ShowMembersOfCurrentTypeOnly { get; set; }

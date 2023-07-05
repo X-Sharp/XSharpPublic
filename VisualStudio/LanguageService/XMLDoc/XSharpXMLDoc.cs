@@ -16,7 +16,7 @@ using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
 using System.Text;
 using System.Xml;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     // No need to do a complicated lookup for the reference assembly names
@@ -299,7 +299,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetSummary");
+                Logger.LogException(e, "Exception in XSharpXMLDocMember.GetSummary");
                 summary = "** Invalid XML comment ** \r"+e.Message;
 
             }
@@ -545,7 +545,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
+                Logger.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
             }
             //
             return summary;
@@ -629,7 +629,7 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception e)
                 {
-                    XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
+                    Logger.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
                     return false;
                 }
                 return true;

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.TextManager.Interop;
-using XSharpModel;
+using XSharp.Settings;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields

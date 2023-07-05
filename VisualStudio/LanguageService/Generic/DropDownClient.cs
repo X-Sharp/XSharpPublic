@@ -14,6 +14,7 @@ using XSharpModel;
 using File = System.IO.File;
 using MVP = Microsoft.VisualStudio.Package;
 using Task = System.Threading.Tasks.Task;
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class DropdownSettings
@@ -197,8 +198,8 @@ namespace XSharp.LanguageService
                 _lastLine = newLine;
             }
 #if XDEBUG
-            XSettings.LogMessage($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
-            XSettings.LogMessage($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
+            Logger.LogMessage($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
+            Logger.LogMessage($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
 #endif
             if (_lastLine != -1)
             {

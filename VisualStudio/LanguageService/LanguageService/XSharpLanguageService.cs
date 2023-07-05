@@ -20,7 +20,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.ComponentModelHost;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
@@ -220,7 +220,7 @@ namespace XSharp.LanguageService
                 {
                     if (!member.Modifiers.HasFlag(Modifiers.Static))
                     {
-                        list.Add(XSettings.FormatKeyword("SELF"));
+                        list.Add(XLiterals.FormatKeyword("SELF"));
                     }
                 }
             

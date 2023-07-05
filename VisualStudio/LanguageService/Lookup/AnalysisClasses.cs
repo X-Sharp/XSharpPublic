@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class XAnalysis
@@ -129,7 +129,7 @@ namespace XSharp.LanguageService
             {
                 var content = new List<ClassifiedTextRun>();
 
-                content.addKeyword(XSettings.FormatKeyword(symbol.KindKeyword) + " ");
+                content.addKeyword(XLiterals.FormatKeyword(symbol.KindKeyword) + " ");
                 //
                 //
                 content.addText(Prototype);
@@ -162,15 +162,15 @@ namespace XSharp.LanguageService
 
                 if (Type.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Type.ModifiersKeyword));
+                    content.addKeyword(XLiterals.FormatKeyword(Type.ModifiersKeyword));
                     content.addWs();
                 }
-                content.addKeyword(XSettings.FormatKeyword(Type.VisibilityKeyword));
+                content.addKeyword(XLiterals.FormatKeyword(Type.VisibilityKeyword));
                 content.addWs();
                 //
                 if (Type.Kind != Kind.Field)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Type.KindKeyword));
+                    content.addKeyword(XLiterals.FormatKeyword(Type.KindKeyword));
                     content.addWs();
                 }
                 //
@@ -207,14 +207,14 @@ namespace XSharp.LanguageService
                 if (!string.IsNullOrWhiteSpace(Type.BaseTypeName))
                 {
                     content.addText("\r\n");
-                    content.addKeyword(XSettings.FormatKeyword("INHERIT"));
+                    content.addKeyword(XLiterals.FormatKeyword("INHERIT"));
                     content.addWs();
                     content.addText(Type.BaseTypeName);
                 }
                 if (Type.Interfaces?.Count > 0)
                 {
                     content.addText("\r\n");
-                    content.addKeyword(XSettings.FormatKeyword("IMPLEMENTS"));
+                    content.addKeyword(XLiterals.FormatKeyword("IMPLEMENTS"));
                     content.addWs();
                     bool first = true;
                     int count = 0;
@@ -294,18 +294,18 @@ namespace XSharp.LanguageService
 
                 if (Member.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Member.ModifiersKeyword) + " ");
+                    content.addKeyword(XLiterals.FormatKeyword(Member.ModifiersKeyword) + " ");
                 }
-                content.addKeyword(XSettings.FormatKeyword(Member.VisibilityKeyword) + " ");
+                content.addKeyword(XLiterals.FormatKeyword(Member.VisibilityKeyword) + " ");
                 //
                 if ((Member.IsStatic) && ((Member.Kind != Kind.Function) && (Member.Kind != Kind.Procedure)))
                 {
-                    content.addKeyword(XSettings.FormatKeyword("STATIC "));
+                    content.addKeyword(XLiterals.FormatKeyword("STATIC "));
                 }
                 //
                 if ((Member.Kind != Kind.Field) && (Member.Kind != Kind.Constructor))
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Member.KindKeyword) + " ");
+                    content.addKeyword(XLiterals.FormatKeyword(Member.KindKeyword) + " ");
                 }
                 //
                 content.AddRange(WPFPrototype);

@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService.OptionsPages
 {
 

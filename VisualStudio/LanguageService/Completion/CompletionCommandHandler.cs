@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using XSharpModel;
+using XSharp.Settings;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
@@ -471,7 +472,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Start Completion failed");
+                Logger.LogException(e, "Start Completion failed");
             }
             return true;
         }
@@ -538,7 +539,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.Completion:" + strMessage);
+                Logger.LogMessage("XSharp.Completion:" + strMessage);
             }
         }
         private char GetTypeChar(IntPtr pvaIn)
@@ -627,7 +628,7 @@ namespace XSharp.LanguageService
         }
         void formatKeyword(Completion completion)
         {
-            completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
+            completion.InsertionText = XLiterals.FormatKeyword(completion.InsertionText);
         }
 
     }

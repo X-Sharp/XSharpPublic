@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Text.Editor;
 using System;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class CommonActionProvider
@@ -46,7 +46,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         {
             if (XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.LightBulb:" + strMessage);
+                Logger.LogMessage("XSharp.LightBulb:" + strMessage);
             }
         }
 

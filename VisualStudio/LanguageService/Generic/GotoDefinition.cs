@@ -8,7 +8,7 @@ using System.IO;
 using XSharpModel;
 using static System.Windows.Forms.AxHost;
 using File = System.IO.File;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
@@ -62,7 +62,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "Goto failed");
+                Logger.LogException(ex, "Goto failed");
             }
             finally
             {
@@ -245,7 +245,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage(strMessage);
+                Logger.LogMessage(strMessage);
             }
         }
     }

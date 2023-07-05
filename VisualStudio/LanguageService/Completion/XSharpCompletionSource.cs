@@ -13,7 +13,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Text.Tagging;
-
+using XSharp.Settings;
 #if ! ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
@@ -52,7 +52,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging  )
             {
-                XSettings.LogMessage(strMessage);
+                Logger.LogMessage(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -415,7 +415,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "AugmentCompletionSessions failed");
+                Logger.LogException(ex, "AugmentCompletionSessions failed");
 
             }
             finally

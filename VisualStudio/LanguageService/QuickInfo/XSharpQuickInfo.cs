@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {
@@ -38,7 +39,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableQuickInfoLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.QuickInfoSource :" + message);
+                Logger.LogMessage("XSharp.QuickInfoSource :" + message);
             }
         }
 
@@ -176,7 +177,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "XSharpQuickInfo.AugmentQuickInfoSession failed : ");
+                Logger.LogException(ex, "XSharpQuickInfo.AugmentQuickInfoSession failed : ");
             }
             finally
             {
@@ -339,18 +340,18 @@ namespace XSharp.LanguageService
                     string text;
                     if (this.typeMember.Modifiers != Modifiers.None)
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
+                        text = XLiterals.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
                         content.addKeyword(text);
                     }
                     if (!this.typeMember.Kind.IsPPSymbol())
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
+                        text = XLiterals.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
                         content.addKeyword(text);
                     }
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.KindKeyword) + " ";
+                        text = XLiterals.FormatKeyword(this.typeMember.KindKeyword) + " ";
                         content.addKeyword(text);
                     }
                     //
@@ -492,7 +493,7 @@ namespace XSharp.LanguageService
                     }
                     if (xVar.Kind == Kind.DbField)
                         kind = "Field";
-                    content.addKeyword(XSettings.FormatKeyword(kind + " "));
+                    content.addKeyword(XLiterals.FormatKeyword(kind + " "));
                     addVarInfo(content, xVar);
                     content.addLocation(xVar.Location);
                     return content.ToArray();
@@ -578,7 +579,7 @@ namespace XSharp.LanguageService
         }
         static internal void addReturnType(this List<ClassifiedTextRun> content, string typeName)
         {
-            content.addPair(" " + XSettings.FormatKeyword("AS "), typeName.GetXSharpTypeName());
+            content.addPair(" " + XLiterals.FormatKeyword("AS "), typeName.GetXSharpTypeName());
         }
 
         static internal int FirstSourceLine(this XSourceSymbol member, XDocument doc)

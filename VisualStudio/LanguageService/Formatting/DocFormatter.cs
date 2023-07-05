@@ -1,12 +1,9 @@
 ﻿using Microsoft.VisualStudio.Text;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     class DocFormatter

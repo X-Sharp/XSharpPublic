@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     class XSharpOutputPane
@@ -23,7 +23,7 @@ namespace XSharp.LanguageService
         }
         internal async static Task DisplayOutputMessageAsync(string message)
         {
-            if (!XSharpModel.XSettings.EnableOutputWindowLogging)
+            if (!XSettings.EnableOutputWindowLogging)
                 return;
             if (! busy && pane == null)
             {

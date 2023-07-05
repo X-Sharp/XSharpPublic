@@ -11,7 +11,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using XSharpModel;
-
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -205,7 +204,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "GetTokens");
+                Logger.LogException(e, "GetTokens");
             }
             return tokens;
         }

@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using XSharpModel;
+using XSharp.Settings;
 
 
 namespace XSharp.LanguageService
@@ -370,7 +371,7 @@ namespace XSharp.LanguageService
 
         private static void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
         {
-            XSharp.LanguageService.Logger.ActivateWhenNeeded();
+            LsLogger.ActivateWhenNeeded();
             Logger.DoubleLine();
             Logger.Information("Opening Solution: " + solutionFileName ?? "");
             Logger.SingleLine();

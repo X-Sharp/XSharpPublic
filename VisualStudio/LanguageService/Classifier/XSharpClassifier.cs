@@ -20,7 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -198,7 +198,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "LexAsync");
+                Logger.LogException(ex, "LexAsync");
             }
             finally
             {
@@ -259,7 +259,7 @@ namespace XSharp.LanguageService
         {
             if (ClassificationChanged != null)
             {
-                XSettings.LogMessage("-->> XSharpClassifier.triggerRepaint()");
+                Logger.LogMessage("-->> XSharpClassifier.triggerRepaint()");
                 if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
                     // tell the editor that we have new info
@@ -269,7 +269,7 @@ namespace XSharp.LanguageService
                                 new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                     }
                 }
-                XSettings.LogMessage("<<-- XSharpClassifier.triggerRepaint()");
+                Logger.LogMessage("<<-- XSharpClassifier.triggerRepaint()");
             }
         }
 
@@ -290,10 +290,10 @@ namespace XSharp.LanguageService
                 return false;
             if (xDocument.SnapShot != snapshot)
             {
-                XSettings.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
+                Logger.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
                 return false;
             }
-            XSettings.LogMessage("-->> XSharpClassifier.ParseAsync()");
+            Logger.LogMessage("-->> XSharpClassifier.ParseAsync()");
             // Note this runs in the background
             if (xDocument.Tokens != null)
             {
@@ -311,7 +311,7 @@ namespace XSharp.LanguageService
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.ParseAsync()");
+            Logger.LogMessage("<<-- XSharpClassifier.ParseAsync()");
             return true;
         }
 #endregion
@@ -358,7 +358,7 @@ namespace XSharp.LanguageService
             {
                 return new List<ClassificationSpan>();
             }
-            XSettings.LogMessage("-->> XSharpClassifier.BuildRegionTags()");
+            Logger.LogMessage("-->> XSharpClassifier.BuildRegionTags()");
             var regions = new List<ClassificationSpan>();
             foreach (var entity in entities)
             {
@@ -411,7 +411,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.BuildRegionTags()");
+            Logger.LogMessage("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;
         }
         private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int startPos, int endPos)
@@ -808,13 +808,13 @@ namespace XSharp.LanguageService
             {
                 newtags = _colorTags;
             }
-            XSettings.LogMessage("-->> XSharpClassifier.BuildColorClassifications()");
+            Logger.LogMessage("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.BuildColorClassifications()");
+            Logger.LogMessage("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             TriggerRepaint(snapshot);
         }
@@ -859,7 +859,7 @@ namespace XSharp.LanguageService
 
         public IList<ClassificationSpan> GetRegionTags()
         {
-            XSettings.LogMessage($"-->> XSharpClassifier.GetRegionTags()");
+            Logger.LogMessage($"-->> XSharpClassifier.GetRegionTags()");
             List<ClassificationSpan> result = new List<ClassificationSpan>();
             lock (gate)
             {
@@ -872,19 +872,19 @@ namespace XSharp.LanguageService
                     result.AddRange(_parserRegions);
                 }
             }
-            XSettings.LogMessage($"<<-- XSharpClassifier.GetRegionTags() {result.Count}");
+            Logger.LogMessage($"<<-- XSharpClassifier.GetRegionTags() {result.Count}");
             return result;
         }
 
         public IList<ClassificationSpan> GetTags()
         {
-            XSettings.LogMessage("-->> XSharpClassifier.GetTags()");
+            Logger.LogMessage("-->> XSharpClassifier.GetTags()");
             IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.GetTags()");
+            Logger.LogMessage("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
 
@@ -952,7 +952,7 @@ namespace XSharp.LanguageService
 
         internal static void Debug(string msg, params object[] o)
         {
-            XSettings.LogMessage(string.Format("XSharpClassifier: " + msg, o));
+            Logger.LogMessage(string.Format("XSharpClassifier: " + msg, o));
         }
     }
 

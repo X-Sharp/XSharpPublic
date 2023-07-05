@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using XSharp.Settings;
 #pragma warning disable VSTHRD012 
 namespace XSharp.LanguageService.OptionsPages
 {

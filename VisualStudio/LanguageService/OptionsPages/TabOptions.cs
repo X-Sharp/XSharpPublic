@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     public class TabOptions : OptionsBase

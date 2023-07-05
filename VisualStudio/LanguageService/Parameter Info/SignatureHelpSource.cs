@@ -7,7 +7,7 @@ using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Diagnostics;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class XSharpSignatureProperties
@@ -218,7 +218,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage(strMessage);
+                Logger.LogMessage(strMessage);
             }
         }
 
@@ -300,7 +300,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed ");
+                Logger.LogException(ex, "XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed ");
             }
             finally
             {

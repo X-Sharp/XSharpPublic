@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel;
 using XSharpModel;
 using XSharp.LanguageService.OptionsPages;
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     public static class LanguagePreferenceExtensions

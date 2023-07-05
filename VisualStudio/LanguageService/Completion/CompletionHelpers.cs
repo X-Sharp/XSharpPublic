@@ -13,7 +13,7 @@ using System.Windows.Media;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class CompletionHelpers

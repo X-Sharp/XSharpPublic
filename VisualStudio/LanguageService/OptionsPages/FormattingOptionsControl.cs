@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class FormattingOptionsControl : XSUserControl

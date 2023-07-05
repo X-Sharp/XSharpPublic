@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]

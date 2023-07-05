@@ -11,7 +11,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Text;
 using System.Linq;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class PropertySuggestedAction : CommonAction, ISuggestedAction

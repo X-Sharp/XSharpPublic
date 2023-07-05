@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Utilities;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
 

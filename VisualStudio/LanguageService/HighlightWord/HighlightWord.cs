@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.Shell;
 using System.Globalization;
 using XSharpModel;
 using Microsoft.VisualStudio.Text.Editor;
-
+using XSharp.Settings;
 // This now uses the HightLightWord code in the Community Toolkit
 
 

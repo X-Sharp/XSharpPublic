@@ -8,13 +8,11 @@
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using XSharpModel;
-using XSharpModel.Formatting;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class LineFormatter
@@ -273,7 +271,7 @@ namespace XSharp.LanguageService
             if (syncKeyword)
             {
                 var keyword = token.Text;
-                var transform = XSettings.FormatKeyword(keyword, Settings.KeywordCase);
+                var transform = XLiterals.FormatKeyword(keyword, Settings.KeywordCase);
                 if (string.Compare(transform, keyword) != 0)
                 {
                     editSession.Replace(token.StartIndex, transform.Length, transform);
@@ -501,7 +499,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "SmartIndent.GetDesiredIndentation failed");
+                Logger.LogException(ex, "SmartIndent.GetDesiredIndentation failed");
             }
             return _lastIndentValue;
         }
@@ -777,7 +775,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.Formatting:" + strMessage);
+                Logger.LogMessage("XSharp.Formatting:" + strMessage);
             }
         }
 

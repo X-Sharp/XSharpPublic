@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup
@@ -138,7 +138,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "FindIdentifier failed");
+                Logger.LogException(ex, "FindIdentifier failed");
             }
             finally
             {
@@ -1009,7 +1009,7 @@ namespace XSharp.LanguageService
             if (result.Count == 0 && (XSharpLexer.IsKeyword(currentToken.Type) ||
                 XSharpLexer.IsPPKeyword(currentToken.Type) ))
             {
-                ((XSharpToken)currentToken).Text = XSettings.FormatKeyword(currentToken.Text);
+                ((XSharpToken)currentToken).Text = XLiterals.FormatKeyword(currentToken.Text);
                 var sym = new XKeywordSymbol(currentToken.Text);
                 result.Add(sym);
             }
@@ -1851,12 +1851,12 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                XSettings.LogMessage(heading + " returns " + results.Count().ToString() + " items");
+                Logger.LogMessage(heading + " returns " + results.Count().ToString() + " items");
                 int i = 0;
                 foreach (var result in results)
                 {
                     ++i;
-                    XSettings.LogMessage($"{i}: {result.Kind} {result.Prototype}");
+                    Logger.LogMessage($"{i}: {result.Kind} {result.Prototype}");
                 }
             }
         }
@@ -1865,7 +1865,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                XSettings.LogMessage("XSharp.Lookup :" + message);
+                Logger.LogMessage("XSharp.Lookup :" + message);
             }
         }
     }

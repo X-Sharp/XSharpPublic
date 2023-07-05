@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService.OptionsPages
 {
 

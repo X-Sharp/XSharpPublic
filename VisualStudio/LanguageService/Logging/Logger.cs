@@ -7,14 +7,14 @@ using System.ComponentModel;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System.Diagnostics;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
-    internal class Logger : XSharpModel.ILogger
+    internal class LsLogger : XSharp.Settings.ILogger
     {
         bool log2debugger = false;
         bool log2file = false;
-        static Logger instance;
+        internal static LsLogger Instance;
         private static string singleline = new string('-', 80);
         private static string doubleline = new string('=', 80);
 
@@ -23,8 +23,8 @@ namespace XSharp.LanguageService
 
         internal static void InitializeLogger()
         {
-            instance = new Logger();
-            XSolution.Logger = instance;
+            Instance = new LsLogger();
+            XSolution.Logger = Instance;
         }
         internal static void ActivateWhenNeeded()
         {
@@ -39,9 +39,9 @@ namespace XSharp.LanguageService
             if (newActive != wasActive)
             {
                 if (newActive)
-                    instance.Start();
+                    Instance.Start();
                 else
-                    instance.Stop();
+                    Instance.Stop();
                 active = newActive;
             }
             

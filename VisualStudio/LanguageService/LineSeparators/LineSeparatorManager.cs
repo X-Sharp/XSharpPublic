@@ -13,7 +13,7 @@ using System;
 using XSharpModel;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     /// <summary>

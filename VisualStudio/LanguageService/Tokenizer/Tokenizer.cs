@@ -11,7 +11,7 @@ using XSharpModel;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Shell;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
 
@@ -619,7 +619,7 @@ namespace XSharp.LanguageService
                         }
                         else if (XSharpLexer.IsKeyword(token.Type) && includeKeywords)   // For code completion we want to include keywords
                         {
-                            token.Text = XSettings.FormatKeyword(token.Text);
+                            token.Text = XLiterals.FormatKeyword(token.Text);
                             result.Add(token);
                         }
                         break;

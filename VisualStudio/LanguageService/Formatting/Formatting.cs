@@ -12,7 +12,7 @@ using System;
 using XSharp.Parser;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     partial class XSharpFormattingCommandHandler

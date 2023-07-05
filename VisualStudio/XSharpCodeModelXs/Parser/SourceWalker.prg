@@ -16,6 +16,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING STATIC XSharp.Parser.VsParser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener

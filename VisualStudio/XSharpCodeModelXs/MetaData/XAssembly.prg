@@ -8,7 +8,7 @@ USING System
 USING System.IO
 USING System.Linq
 USING System.Diagnostics
-
+using XSharp.Settings
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DisplayName,nq}")];
    CLASS XAssembly

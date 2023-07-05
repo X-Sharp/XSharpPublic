@@ -3,7 +3,7 @@ USING System.Linq
 USING System.Collections.Generic
 USING System.IO
 USING Mono.Cecil
-
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 INTERNAL CLASS AssemblyReader

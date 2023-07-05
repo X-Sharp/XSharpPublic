@@ -14,7 +14,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-
+USING XSharp.Settings
 
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel

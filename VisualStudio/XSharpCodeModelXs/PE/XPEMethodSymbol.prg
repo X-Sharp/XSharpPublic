@@ -6,7 +6,7 @@
 USING System.Collections.Generic
 USING System.Diagnostics
 USING Mono.Cecil
-
+using XSharp.Settings
 BEGIN NAMESPACE XSharpModel
 
 CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol

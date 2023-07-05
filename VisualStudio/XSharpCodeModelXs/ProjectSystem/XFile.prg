@@ -11,6 +11,7 @@ USING System.IO
 USING System.Linq
 USING System.Diagnostics
 USING XSharpModel
+using XSharp.Settings
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel

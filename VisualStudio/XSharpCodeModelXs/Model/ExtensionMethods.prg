@@ -9,7 +9,7 @@ USING System.Linq
 USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 
@@ -461,9 +461,51 @@ BEGIN NAMESPACE XSharpModel
                 NEXT
             ENDIF
             RETURN
+ STATIC METHOD ToDisplayString(SELF mods AS Modifiers) AS STRING
+            // remove EXTERNAL since we do not have that in our language
+            mods := _AND(mods, ~Modifiers.External)
+            if (mods == Modifiers.None)
+                return ""
+            endif
+            VAR result := mods:ToString():Replace(","," ")
+            if mods:HasFlag(Modifiers.ProtectedInternal)
+                result := "PROTECTED INTERNAL"
+            elseif mods:HasFlag(Modifiers.Public)
+                switch XSettings.CodeGeneratorPublicStyle
+                    case PublicStyle.Public
+                        result := result.Replace("Export","Public")
+                    case PublicStyle.Export
+                        result := result.Replace("Public","Export")
+                    case PublicStyle.None
+                        result := result.Replace("Public","")
+                        result := result.Replace("Export","")
+                end switch
+
+            ELSEIF mods:HasFlag(Modifiers.Private)
+                switch XSettings.CodeGeneratorPrivateStyle
+                    case PrivateStyle.Private
+                        result := result.Replace("Hidden","Private")
+                    case PrivateStyle.Hidden
+                        result := result.Replace("Private","Hidden")
+                end switch
+            ENDIF
+
+        RETURN XLiterals.Capitalize(result)
+
+        STATIC METHOD ToDisplayString(SELF kind as Kind) AS STRING
+            VAR result := kind:DisplayName()
+            RETURN XLiterals.Capitalize(result)
 
     END CLASS
 END NAMESPACE
 
 
+
+
+INTERNAL FUNCTION RemoveGenericParameters(typeName as STRING) AS STRING
+    var pos := typeName:IndexOf('<')
+    IF pos > 0
+        typeName := typeName:Substring(0, pos)
+    ENDIF
+RETURN typeName
 

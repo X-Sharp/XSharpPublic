@@ -51,16 +51,7 @@ BEGIN NAMESPACE XSharpModel
    END INTERFACE
 
 
-    /// <summary>This interface allows the code model to call back into the VS Shell</summary>
-   INTERFACE IXVsShellLink
-        METHOD OpenDocument(file AS STRING, line AS LONG, column AS LONG, lPreview as LOGIC) AS VOID
-        METHOD IsDocumentOpen(file as STRING) AS LOGIC
-        METHOD SetStatusBarText(cText AS STRING) AS VOID
-        METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
-        METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
-        METHOD ShowMessageBox(message AS STRING) AS INT
-        PROPERTY IsVsBuilding AS LOGIC GET
-   END INTERFACE
+
 
 END NAMESPACE
 

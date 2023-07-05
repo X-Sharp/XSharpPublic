@@ -6,16 +6,13 @@
 namespace Microsoft.VisualStudio.Project
 {
 
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics.CodeAnalysis;
-	using System.IO;
-	using MSBuild = Microsoft.Build.Evaluation;
-	using Microsoft.VisualStudio.Project;
-	using Microsoft.VisualStudio.Shell.Interop;
-	using System.Runtime.InteropServices;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using Microsoft.VisualStudio.Shell.Interop;
+    using System.Runtime.InteropServices;
     using Microsoft.VisualStudio.Shell;
-    using System.Runtime.CompilerServices;
 
 
     /// <summary>
@@ -212,7 +209,8 @@ namespace Microsoft.VisualStudio.Project
                 }
                 else if (fileMap != null &&
                     fileMap.Count > 0 &&
-                    XSharpFileType.IsProjectItemType(buildItem))
+                    project.IsProjectItemType(buildItem)
+                    )
                 {
                     string relativePath = buildItem.EvaluatedInclude;
                     if (Path.IsPathRooted(relativePath)) // if not the relative path, make it relative

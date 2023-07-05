@@ -12,11 +12,10 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Microsoft.VisualStudio.Shell;
-using XSharpModel;
+using Microsoft.Build.Utilities;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -151,7 +150,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSettings.LogException(e, "Open");
+                Logger.LogException(e, "Open");
                 returnValue = e.ErrorCode;
             }
             finally
@@ -292,7 +291,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSettings.LogException(e, "");
+                Logger.LogException(e, "");
                 returnValue = e.ErrorCode;
                 CloseWindowFrame(ref windowFrame);
             }

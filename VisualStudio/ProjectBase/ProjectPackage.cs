@@ -21,6 +21,18 @@ using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
 {
+
+    internal static class Logger
+    {
+        internal static void LogException(Exception e, string msg)
+        {
+            XSharp.Settings.XSettings.LogException(e, msg);
+        }
+        internal static void LogMessage (string msg)
+        {
+            XSharp.Settings.XSettings.LogMessage(msg);
+        }
+    }
     /// <summary>
     /// Defines abstract package.
     /// </summary>

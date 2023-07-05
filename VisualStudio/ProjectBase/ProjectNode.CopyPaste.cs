@@ -26,7 +26,6 @@ using IOleDataObject = Microsoft.VisualStudio.OLE.Interop.IDataObject;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using System.Windows.Forms;
-using XSharpModel;
 using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
@@ -171,7 +170,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(System.IO.FileNotFoundException e)
             {
-                XSettings.LogException(e, "Drop");
+                Logger.LogException(e, "Drop");
 
                 if (!Utilities.IsInAutomationFunction(this.Site))
                 {
@@ -501,7 +500,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSettings.LogException(e, "PackageSelectionData");
+                Logger.LogException(e, "PackageSelectionData");
 
                 dataObject = null;
             }
@@ -816,7 +815,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.LogException(e, "CutToClipboard");
+                Logger.LogException(e, "CutToClipboard");
                 returnValue = e.ErrorCode;
             }
 
@@ -855,12 +854,12 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.LogException(e, "CopyToClipboard");
+                Logger.LogException(e, "CopyToClipboard");
                 returnValue = e.ErrorCode;
             }
             catch(Exception e)
             {
-                XSettings.LogException(e, "CopyToClipboard");
+                Logger.LogException(e, "CopyToClipboard");
                 returnValue = Marshal.GetHRForException(e);
             }
 
@@ -936,7 +935,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(ExternalException e)
                 {
-                    XSettings.LogException(e, "PasteFromClipboard");
+                    Logger.LogException(e, "PasteFromClipboard");
 
                     // If it is a drop from windows and we get any kind of error ignore it. This
                     // prevents bogus messages from the shell from being displayed
@@ -953,7 +952,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.LogException(e, "PasteFromClipboard");
+                Logger.LogException(e, "PasteFromClipboard");
 
                 returnValue = e.ErrorCode;
             }
@@ -992,7 +991,7 @@ namespace Microsoft.VisualStudio.Project
             // We catch External exceptions since it might be that it is not our data on the clipboard.
             catch(ExternalException e)
             {
-                XSettings.LogException(e, "AllowPasteCommand");
+                Logger.LogException(e, "AllowPasteCommand");
                 return false;
             }
         }

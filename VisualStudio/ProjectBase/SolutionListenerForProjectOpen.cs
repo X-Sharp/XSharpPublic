@@ -11,11 +11,8 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Project.Automation;
 using IServiceProvider = System.IServiceProvider;
-using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
@@ -58,10 +55,10 @@ namespace Microsoft.VisualStudio.Project
                             int hr;
                             hr = uiWindow.ExpandItem(uiHierarchy, VSConstants.VSITEMID_ROOT, EXPANDFLAGS.EXPF_ExpandParentsToShowItem);
                             if(ErrorHandler.Failed(hr))
-                                XSettings.LogMessage("Failed to expand project node");
+                                Logger.LogMessage("Failed to expand project node");
                             hr = uiWindow.ExpandItem(uiHierarchy, VSConstants.VSITEMID_ROOT, EXPANDFLAGS.EXPF_SelectItem);
                             if(ErrorHandler.Failed(hr))
-                                XSettings.LogMessage("Failed to select project node");
+                                Logger.LogMessage("Failed to select project node");
 
                             return hr;
                         }

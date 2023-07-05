@@ -7,7 +7,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-using XSharpModel
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor

@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Collections
 USING System.IO
 USING XSharpModel
+using XSharp.Settings
 
 ENUM ViewMode
     MEMBER Auto

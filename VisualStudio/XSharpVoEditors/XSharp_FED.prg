@@ -9,7 +9,7 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 USING XSharpModel
-
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor

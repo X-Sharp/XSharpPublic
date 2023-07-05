@@ -17,7 +17,6 @@ using Microsoft.VisualStudio.Shell.Design.Serialization;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.Windows.Design.Host;
 
 using XSharp.Project;
 using Microsoft.VisualStudio.Project;

@@ -6,7 +6,6 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using Microsoft.Windows.Design.Host;
 using Microsoft.VisualStudio.Project;
 namespace XSharp.Project.WPF
 {

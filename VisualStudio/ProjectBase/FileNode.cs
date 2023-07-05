@@ -23,11 +23,11 @@ using System.Text;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using XSharpModel;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.Build.Utilities;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -601,7 +601,7 @@ namespace Microsoft.VisualStudio.Project
             catch (Exception e)
             {
                 // Just re-throw the exception so we don't get duplicate message boxes.
-                XSettings.LogException(e, "");
+                Logger.LogException(e, "");
                 this.RecoverFromRenameFailure(newName, oldrelPath, oldLinkPath);
                 returnValue = Marshal.GetHRForException(e);
                 throw;
@@ -688,7 +688,7 @@ namespace Microsoft.VisualStudio.Project
                             }
                             catch (Exception e)
                             {
-                                XSettings.LogException(e, "Running Custom Tool failed");
+                                Logger.LogException(e, "Running Custom Tool failed");
                                 throw;
                             }
                         }
@@ -885,7 +885,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "AfterSaveItemAs");
+                Logger.LogException(e, "AfterSaveItemAs");
                 this.RecoverFromRenameFailure(newFilePath, oldrelPath, oldLinkPath);
                 throw;
             }

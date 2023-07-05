@@ -10,13 +10,10 @@
  * ***************************************************************************/
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
-using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
@@ -95,7 +92,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(InvalidCastException e)
             {
-                XSettings.LogMessage("Exception" + e.Message);
+                Logger.LogException(e,"Suspend");
             }
             finally
             {

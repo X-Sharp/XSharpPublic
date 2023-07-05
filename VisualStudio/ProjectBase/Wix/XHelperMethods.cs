@@ -16,16 +16,12 @@ using System.Text;
 using System.Windows.Forms;
 using System.Security;
 using System.Security.Permissions;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
-using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -33,7 +29,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Contains useful helper methods.
     /// </summary>
-public static class XHelperMethods
+    public static class XHelperMethods
    {
       /// <summary>
       /// This is the node filter delegate.

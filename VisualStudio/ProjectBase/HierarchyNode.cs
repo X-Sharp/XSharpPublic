@@ -29,8 +29,8 @@ using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using XSharpModel;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.Build.Utilities;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -1288,7 +1288,7 @@ namespace Microsoft.VisualStudio.Project
             catch (COMException e)
             {
 
-                XSettings.LogException(e, "COM Exception");
+                Logger.LogException(e, "COM Exception");
                 return e.ErrorCode;
             }
 
@@ -1770,7 +1770,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(COMException e)
                 {
-                    XSettings.LogException(e, "InternalExecCommand");
+                    Logger.LogException(e, "InternalExecCommand");
                     returnValue = e.ErrorCode;
                 }
                 if(returnValue != VSConstants.S_OK)
@@ -3117,7 +3117,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.LogException(e, "SaveItem");
+                Logger.LogException(e, "SaveItem");
                 returnCode = e.ErrorCode;
 
             	// Try to recover

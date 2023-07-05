@@ -5,19 +5,13 @@
 //
 
 using System;
-using System.Linq;
-using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using System.Runtime.Versioning;
 using Microsoft.VisualStudio.Shell.Interop;
-using XSharpModel;
 using Community.VisualStudio.Toolkit;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     /// <summary>

@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharpModel
                     result:Add(xtype)
                 NEXT
             CATCH e AS Exception
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
             END TRY
         RETURN result
 
@@ -93,7 +93,7 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 NEXT
             CATCH e AS Exception
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
             END TRY
             //
         RETURN result
@@ -131,7 +131,7 @@ BEGIN NAMESPACE XSharpModel
                     NEXT
                 ENDIF
             CATCH e AS Exception
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
             END TRY
         RETURN result
     END CLASS

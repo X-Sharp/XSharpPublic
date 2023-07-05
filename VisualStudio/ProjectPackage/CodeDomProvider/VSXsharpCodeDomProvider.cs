@@ -376,7 +376,7 @@ namespace XSharp.Project
         }
         void WriteOutputMessage(string msg)
         {
-            XSharpModel.XSolution.WriteOutputMessage("XCodeDom: " + msg);
+            XSettings.Information("XCodeDom: " + msg);
         }
     }
 }

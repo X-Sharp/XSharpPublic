@@ -1192,7 +1192,7 @@ namespace XSharp.Project
 
 
         #region IVsFileChangeEvents Members
-        private ILogger Logger => XSolution.Logger;
+        private ILogger Logger => XSettings.Logger;
         /// <summary>
         /// Notify the editor of the changes made to one or more files
         /// </summary>

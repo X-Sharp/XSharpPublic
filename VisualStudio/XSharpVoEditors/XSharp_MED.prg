@@ -110,7 +110,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
             ENDIF
 
         CATCH e AS Exception
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Logger:Exception(e, __FUNCTION__)
 
             XFuncs.ErrorBox(e:Message )
             lSuccess := FALSE

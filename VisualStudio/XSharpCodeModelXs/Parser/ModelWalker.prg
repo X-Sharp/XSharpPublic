@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharpModel
                        walker:Parse(FALSE)
 
                     CATCH e AS Exception
-                        XSettings.LogException(e, __FUNCTION__)
+                        XSettings.Exception(e, __FUNCTION__)
                         walkFile := FALSE
                     FINALLY
                         IF walker != NULL
@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharpModel
                         _WalkerThread:Start()
                     ENDIF
                 CATCH exception AS System.Exception
-                    XSolution.WriteException(exception,"Cannot start Background walker Thread")
+                    XSettings.Exception(exception,"Cannot start Background walker Thread")
 
                 END TRY
         ENDIF
@@ -202,7 +202,7 @@ BEGIN NAMESPACE XSharpModel
                     TRY
                         Parallel.ForEach(aFiles, parallelOptions, walkOneFile)
                     CATCH e AS Exception
-                        XSettings.LogException(e, __FUNCTION__)
+                        XSettings.Exception(e, __FUNCTION__)
                     END TRY
                     BEGIN LOCK _gate
                         _projectsForTypeResolution:Enqueue(project)
@@ -313,7 +313,7 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 CATCH exception AS System.Exception
                     //
-                    XSolution.WriteException(exception,"Cannot check Background walker Thread")
+                    XSettings.Exception(exception,"Cannot check Background walker Thread")
                 END TRY
                 RETURN FALSE
             END GET
@@ -321,7 +321,7 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
             IF XSettings.EnableParseLog
-                XSolution.WriteOutputMessage("XModel.Walker "+message)
+                XSettings.Information("XModel.Walker "+message)
             ENDIF
 
 

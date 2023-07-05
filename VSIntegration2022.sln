@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugger.Support", "VisualS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugger.UI2022", "VisualStudio\Debugger.UI\Debugger.UI2022.csproj", "{960714E8-FF93-4A42-B9BA-610B0F2014DB}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Settings", "VisualStudio\Settings\Settings.xsproj", "{4D26C389-BFD6-4160-8E9E-DE02C92E5889}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,14 @@ Global
 		{960714E8-FF93-4A42-B9BA-610B0F2014DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{960714E8-FF93-4A42-B9BA-610B0F2014DB}.Release|x86.ActiveCfg = Release|x86
 		{960714E8-FF93-4A42-B9BA-610B0F2014DB}.Release|x86.Build.0 = Release|x86
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -282,6 +292,7 @@ Global
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4} = {9F285506-97D3-486E-B59E-7C30C56B95AE}
 		{BBD309AA-A928-461E-B91C-7C12B1145A06} = {9F285506-97D3-486E-B59E-7C30C56B95AE}
 		{960714E8-FF93-4A42-B9BA-610B0F2014DB} = {0D3C69B5-D236-42B3-B70D-2C9ABC9D434C}
+		{4D26C389-BFD6-4160-8E9E-DE02C92E5889} = {9F285506-97D3-486E-B59E-7C30C56B95AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F61AAF2-9C04-4D27-887F-8A475F079D9C}

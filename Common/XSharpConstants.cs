@@ -77,10 +77,10 @@ namespace XSharp
         // Commented out entries are now handled with an ImageMoniker
         internal const int Project = 0;
         internal const int Source = 1;
-        //public const int Form = 2;
-        //public const int Server = 3;
-        //public const int FieldSpec = 4;
-        //public const int Menu = 5;
+        public const int Form = 2;
+        public const int Server = 3;
+        public const int FieldSpec = 4;
+        public const int Menu = 5;
         internal const int VO = 6;
         //public const int Grid = 7;
         //public const int Test = 8;

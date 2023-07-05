@@ -121,9 +121,9 @@
       <Project>{16272550-75E6-4B9D-91E3-653BD141C755}</Project>
       <Name>Debugger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
-      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>CodeModel</Name>
+    <ProjectReference Include="..\Settings\Settings.xsproj">
+      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
+      <Name>Settings</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

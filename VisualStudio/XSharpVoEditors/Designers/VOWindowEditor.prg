@@ -1867,7 +1867,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             ENDIF
 
         CATCH e AS Exception
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
 
             MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
             lSuccess := FALSE

@@ -24,7 +24,7 @@ namespace XSharp.LanguageService
     /// </summary>
     public class ModelScannerEvents 
     {
-        private static ILogger Logger => XSolution.Logger;
+        private static ILogger Logger => XSettings.Logger;
         static string solutionName = "";
         static bool solutionHasXSharpProjects = false;
         static ModelScannerEvents()
@@ -140,7 +140,7 @@ namespace XSharp.LanguageService
         {
             if (solutionHasXSharpProjects)
             {
-                XSolution.Logger.Information($"BuildEvents_SolutionBuildDone: {result}");
+                Logger.Information($"BuildEvents_SolutionBuildDone: {result}");
                 // Start or Resume the model walker
                 XSharpModel.ModelWalker.Start();
             }
@@ -150,7 +150,7 @@ namespace XSharp.LanguageService
         {
             if (solutionHasXSharpProjects)
             {
-                XSolution.Logger.Information("BuildEvents_SolutionBuildStarted");
+                Logger.Information("BuildEvents_SolutionBuildStarted");
                 if (XSharpModel.ModelWalker.IsRunning)
                 {
                     // Do not walk while building
@@ -180,9 +180,9 @@ namespace XSharp.LanguageService
             if (IsXSharpProject(project?.FullPath))
             {
                 solutionHasXSharpProjects = true;
-                XSolution.Logger.SingleLine();
-                XSolution.Logger.Information("After Opening project: " + project?.FullPath ?? "");
-                XSolution.Logger.SingleLine();
+                Logger.SingleLine();
+                Logger.Information("After Opening project: " + project?.FullPath ?? "");
+                Logger.SingleLine();
             }
         }
 
@@ -225,7 +225,7 @@ namespace XSharp.LanguageService
 
         private static void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
         {
-            XSolution.WriteOutputMessage("SolutionEvents_OnAfterBackgroundSolutionLoadComplete");
+            Logger.Information("SolutionEvents_OnAfterBackgroundSolutionLoadComplete");
             ThreadHelper.ThrowIfNotOnUIThread();
             RestoreDesignerWindows();
         }

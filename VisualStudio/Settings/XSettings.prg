@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharp.Settings
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
-        PUBLIC STATIC PROPERTY Logger                           AS ILogger AUTO
+        PUBLIC STATIC PROPERTY Logger                           AS ILogger AUTO := DummyLogger{}
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
@@ -61,14 +61,25 @@ BEGIN NAMESPACE XSharp.Settings
              EnableTypelookupLog           := TRUE
              RETURN
 
-        PUBLIC STATIC METHOD LogMessage(message AS STRING) AS VOID
+        PUBLIC STATIC METHOD Information(message AS STRING) AS VOID
             IF EnableLogging
                 Logger:Information(message)
             ENDIF
             RETURN
 
-        PUBLIC STATIC METHOD LogException(ex AS Exception, msg as STRING) AS VOID
+        STATIC METHOD Log(cMessage AS STRING) AS VOID
+            IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
+                Logger.Information(cMessage)
+            ENDIF
+            RETURN
+
+
+        PUBLIC STATIC METHOD Exception(ex AS Exception, msg as STRING) AS VOID
             Logger:Exception(ex, msg)
+            RETURN
+
+        PUBLIC STATIC METHOD Debug(msg as STRING) AS VOID
+            Logger:Debug(msg)
             RETURN
 
         PUBLIC STATIC METHOD ShowMessageBox(cMessage as STRING) AS INT
@@ -130,5 +141,36 @@ BEGIN NAMESPACE XSharp.Settings
 
         PROPERTY Active as LOGIC GET
     END INTERFACE
+
+
+    CLASS DummyLogger IMPLEMENTS ILogger
+
+        #region Implement ILogger
+
+        PUBLIC METHOD Information(sMsg AS STRING) AS VOID
+            RETURN
+
+        PUBLIC METHOD Debug(sMsg AS STRING) AS VOID
+            RETURN
+
+        PUBLIC METHOD Start() AS VOID
+            RETURN
+
+        PUBLIC METHOD Stop() AS VOID
+            RETURN
+
+        PUBLIC PROPERTY Active AS LOGIC GET FALSE
+
+
+        PUBLIC METHOD SingleLine() AS VOID
+            RETURN
+
+        PUBLIC METHOD DoubleLine() AS VOID
+            RETURN
+        METHOD Exception (e as Exception, sMsg as STRING) AS VOID
+            RETURN
+        #endregion
+    END CLASS
+
 
 END NAMESPACE

@@ -230,7 +230,7 @@ BEGIN NAMESPACE XSharpModel
 
 
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-         XSolution.WriteOutputMessage("XModel.XAssembly " +message )
+         XSettings.Information("XModel.XAssembly " +message )
 
       METHOD FindExtensionMethodsForType(typeName AS STRING) AS IList<IXMemberSymbol>
          VAR result := List<IXMemberSymbol>{}

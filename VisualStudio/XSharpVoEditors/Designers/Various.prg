@@ -7,7 +7,7 @@ USING System.Windows.Forms
 USING System.Drawing
 USING System.Collections.Generic
 USING System.Collections
-USING XSharpModel
+using XSharp.Settings
 
 
 CLASS DesignerClipboard

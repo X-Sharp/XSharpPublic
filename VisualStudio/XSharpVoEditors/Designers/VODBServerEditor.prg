@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.Drawing
 using System.IO
-using XSharpModel
+using XSharp.Settings
 using File := System.IO.File
 
 PARTIAL CLASS VODBServerEditor INHERIT DesignerBase

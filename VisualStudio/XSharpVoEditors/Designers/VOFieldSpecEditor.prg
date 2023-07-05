@@ -10,7 +10,7 @@ USING System.Collections.Generic
 
 USING System.IO
 using System.Text
-using XSHarpModel
+using XSharp.Settings
 
 PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
     PROTECT cLoadedDir AS STRING

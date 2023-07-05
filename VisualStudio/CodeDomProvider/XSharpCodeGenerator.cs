@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.IO;
 using XSharpModel;
+using XSharp.Settings;
 // XSharpCodeGenerator
 // Used by Designers (WPF and WinForms at least)
 // !!!WARNING !!! XSharp does support "." or ":" as selector...

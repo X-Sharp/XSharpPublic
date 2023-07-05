@@ -71,9 +71,6 @@
     <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Windows.Design.Host">
-      <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -132,6 +129,26 @@
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ExternalAssemblies.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeAttribute.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeClass.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeDelegate.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeElement.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeElements.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeEnum.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeFunction.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeInterface.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeNamespace.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeParameter.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeProperty.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeStruct.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeType.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeTypeRef.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeVariable.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeVariant.cs" />
+    <Compile Include="FileCodeModel\FileCodeModelBase.cs" />
+    <Compile Include="FileCodeModel\NullTextPoint.cs" />
+    <Compile Include="FileCodeModel\SimpleCodeElement.cs" />
+    <Compile Include="FileCodeModel\TextPoint.cs" />
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
@@ -413,6 +430,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
+    <Compile Include="FileCodeModel\XSharpFileCodeModel.cs" />
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
@@ -425,9 +443,6 @@
     </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
-    <Compile Include="WPF\XSharpEventBindingProvider.cs" />
-    <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
-    <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />
     <Compile Include="WPF\XSharpWPFProjectFactory.cs" />
     <Compile Include="Nodes\XSharpAssemblyReferenceNode.cs" />

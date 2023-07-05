@@ -7,7 +7,6 @@
 using System;
 using Microsoft.VisualStudio.Project.Automation;
 using System.Globalization;
-using Microsoft.Windows.Design.Host;
 using XSharp.Project.WPF;
 using XSharp.CodeDom;
 using System.Diagnostics;
@@ -645,23 +644,6 @@ namespace XSharp.Project
         }
 
 
-        private DesignerContext _designerContext;
-        protected internal virtual DesignerContext DesignerContext
-        {
-            get
-            {
-                if (_designerContext == null)
-                {
-                    XSharpFileNode xsFile = Parent.FindChild(this.Url.Replace(".xaml", ".xaml.prg")) as XSharpFileNode;
-                    _designerContext = new DesignerContext();
-                    //Set the EventBindingProvider for this XAML file so the designer will call it
-                    //when event handlers need to be generated
-                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider(xsFile);
-                }
-
-                return _designerContext;
-            }
-        }
 
 
 #endregion
@@ -860,10 +842,6 @@ namespace XSharp.Project
             if (typeof(EnvDTE.ProjectItem) == serviceType)
             {
                 service = GetAutomationObject();
-            }
-            else if (typeof(DesignerContext) == serviceType)
-            {
-                service = this.DesignerContext;
             }
             return service;
         }

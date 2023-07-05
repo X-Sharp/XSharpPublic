@@ -48,15 +48,13 @@ namespace XSharp.Debugger.UI
         DTE2 m_dte;
         internal DTE2 Dte => m_dte;
 
-        // =========================================================================================
-        // Properties
-        // =========================================================================================
-        public static XSharpDebuggerUIPackage XInstance = null;
+       
+        public static XSharpDebuggerUIPackage Instance =>instance;
 
 
         public XSharpDebuggerUIPackage() : base()
         {
-            XInstance = this;
+            instance = this;
         }
 
 
@@ -69,7 +67,6 @@ namespace XSharp.Debugger.UI
         {
 
             this.RegisterToolWindows();
-            instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

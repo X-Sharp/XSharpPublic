@@ -24,7 +24,7 @@ namespace XSharp.Debugger.UI
         internal static bool? IsRtLoaded = null;
         internal static bool IsRunning = false;
         static IList<IDebuggerToolWindow> windows;
-
+        static ILogger Logger => XSolution.Logger;
 
         static Support()
         {
@@ -32,7 +32,7 @@ namespace XSharp.Debugger.UI
             var vend_id = Guid.Parse(Constants.XSharpVendorString);
             var lang_id = Guid.Parse(Constants.XSharpLanguageString);
             language = DkmLanguage.Create(lang_name, new DkmCompilerId(vend_id, lang_id));
-            debugger = XSharpDebuggerUIPackage.XInstance.Dte.Debugger;
+            debugger = XSharpDebuggerUIPackage.Instance.Dte.Debugger;
             windows = new List<IDebuggerToolWindow>();
         }
         internal static string StripResult(string str)
@@ -105,7 +105,7 @@ namespace XSharp.Debugger.UI
             }
             catch (Exception e )
             {
-                XSolution.Logger.Exception(e, "XSharp.Debugger.UI.Support.IsProcessChanged");
+                Logger.Exception(e, "XSharp.Debugger.UI.Support.IsProcessChanged");
             }
             return true;
         }
@@ -119,12 +119,12 @@ namespace XSharp.Debugger.UI
                 currentProcess = proc;
                 if (proc != null)
                 {
-                    XSolution.Logger.Information("Load Debugger Support DLL in process " + proc.Path);
+                    Logger.Information("Load Debugger Support DLL in process " + proc.Path);
                     IsRtLoaded = null;
                     var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
                     var fileName = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
                     var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
-                    XSolution.Logger.Information("Result of loading: " + loaded);
+                    Logger.Information("Result of loading: " + loaded);
                 }
             }
             return proc;
@@ -140,7 +140,7 @@ namespace XSharp.Debugger.UI
             var sf = debugger.CurrentStackFrame;
             if (sf == null)
             {
-                XSolution.Logger.Information("ExecExpressionAsync: No Stack frame");
+                Logger.Information("ExecExpressionAsync: No Stack frame");
                 return "";
             }
             var dkmsf = DkmStackFrame.ExtractFromDTEObject(sf);

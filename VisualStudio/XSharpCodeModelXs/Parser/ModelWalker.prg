@@ -20,7 +20,7 @@ USING System.Collections.Concurrent
 USING XSharp.Parser
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.Text
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
     Internal Enum WalkerthreadState

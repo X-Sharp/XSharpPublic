@@ -19,6 +19,7 @@ USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING XSharp.Parser
 USING LanguageService.CodeAnalysis.Text
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 

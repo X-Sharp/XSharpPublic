@@ -8,7 +8,7 @@
 using System.Linq
 using System.Collections.Generic
 using Mono.Cecil
-
+USING XSharp.Settings
 BEGIN NAMESPACE XSharpModel
 
 DELEGATE XmlDocProvider (entry as IXSymbol) AS STRING

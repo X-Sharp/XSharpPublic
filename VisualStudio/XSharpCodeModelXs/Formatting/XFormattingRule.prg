@@ -17,6 +17,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharp.Parser.VsParser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
+USING XSharp.Settings
 #pragma options("az", on)
 BEGIN NAMESPACE XSharpModel
 

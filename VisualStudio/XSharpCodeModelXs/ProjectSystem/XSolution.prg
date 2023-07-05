@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 USING System
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
     STATIC CLASS XSolution

@@ -6,6 +6,7 @@
 USING System.Collections.Generic
 USING System.Diagnostics
 USING Mono.Cecil
+using XSharp.Settings
 BEGIN NAMESPACE XSharpModel
 
 [DebuggerDisplay("{ToString(),nq}")];

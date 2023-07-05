@@ -9,7 +9,7 @@ USING System.Linq
 USING System
 USING System.IO
 USING System.Reflection
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 	/// <summary>

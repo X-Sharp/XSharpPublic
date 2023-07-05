@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING LanguageService.CodeAnalysis.XSharp
 USING System.Linq
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 

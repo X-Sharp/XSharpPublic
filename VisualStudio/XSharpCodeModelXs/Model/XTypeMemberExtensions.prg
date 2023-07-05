@@ -8,7 +8,7 @@ USING System
 USING System.Text
 USING System.Linq
 USING System.Collections.Generic
-
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 

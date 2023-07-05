@@ -104,16 +104,7 @@
     <Compile Include="PE\XPEPropertySymbol.prg" />
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
-    <Compile Include="ProjectSystem\XDictionary.prg" />
     <Compile Include="ProjectSystem\XInclude.prg" />
-    <Compile Include="Settings\OptionsBase.prg" />
-    <Compile Include="Settings\Strings.prg" />
-    <Compile Include="Settings\XDebuggerSettings.prg" />
-    <Compile Include="Settings\XCustomEditorSettings.prg" />
-    <Compile Include="Settings\XSourceEditorSettings.prg" />
-    <Compile Include="Settings\XEditorSettings.prg" />
-    <Compile Include="Settings\XLiterals.prg" />
-    <Compile Include="Settings\XSettings.prg" />
     <Compile Include="Signatures\XBaseSignature.prg" />
     <Compile Include="Signatures\XMemberSignature.prg" />
     <Compile Include="Signatures\XTypeSignature.prg" />
@@ -126,10 +117,8 @@
     <Compile Include="Source\XSourceParameterSymbol.prg" />
     <Compile Include="Source\XSourceTypeSymbol.prg" />
     <Compile Include="Source\XSourceVariableSymbol.prg" />
-    <Compile Include="Support\KnownTypes.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />
-    <Compile Include="Support\TypeExtensions.prg" />
     <Compile Include="Support\Error.prg" />
     <Compile Include="Support\FileTypeHelpers.prg" />
     <Compile Include="Interfaces.prg" />
@@ -150,6 +139,7 @@
     <Compile Include="Parser\ModelWalker.prg" />
     <Compile Include="Parser\XsParser.prg" />
     <Compile Include="Parser\SourceWalker.prg" />
+    <Compile Include="XLiterals.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
@@ -157,7 +147,6 @@
     <Folder Include="Database" />
     <Folder Include="Formatting" />
     <Folder Include="PE\" />
-    <Folder Include="Settings" />
     <Folder Include="Signatures\" />
     <Folder Include="Source\" />
     <Folder Include="Support" />
@@ -178,6 +167,13 @@
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.117</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Settings\Settings.xsproj">
+      <Name>Settings</Name>
+      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

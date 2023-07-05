@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using XSharpModel;
+using XSharp.Settings;
 
 namespace XSharpDebugger.ExpressionCompiler
 {
@@ -106,7 +106,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             catch (Exception e)
             {
-                XSolution.WriteException(e, "Debugger:CompileExpression");
+                Logger.LogException(e, "Debugger:CompileExpression");
                 OldCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
         }
@@ -226,7 +226,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             catch (Exception e)
             {
-                XSolution.WriteException(e, "Debugger:ClrLocalVariableQuery");
+                Logger.LogException(e, "Debugger:ClrLocalVariableQuery");
                 return OldClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
         }
@@ -274,7 +274,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             catch (Exception e)
             {
-                XSolution.WriteException(e, "Debugger:CompileAssignment");
+                Logger.LogException(e, "Debugger:CompileAssignment");
                 OldCompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }
         }

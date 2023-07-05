@@ -24,7 +24,7 @@ namespace XSharp.LanguageService
         internal static void InitializeLogger()
         {
             Instance = new LsLogger();
-            XSolution.Logger = Instance;
+            XSettings.Logger = Instance;
         }
         internal static void ActivateWhenNeeded()
         {

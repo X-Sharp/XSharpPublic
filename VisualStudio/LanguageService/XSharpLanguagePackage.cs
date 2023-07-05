@@ -282,7 +282,7 @@ namespace XSharp.LanguageService
         {
             try
             {
-                XSolution.Logger.Stop();
+                XSettings.Logger.Stop();
 
                 if (null != _libraryManager)
                 {

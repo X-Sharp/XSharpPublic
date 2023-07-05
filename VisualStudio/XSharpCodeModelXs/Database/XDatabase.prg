@@ -23,6 +23,14 @@ STATIC CLASS XDatabase
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
     PRIVATE CONST CurrentDbVersion := 1.8 AS System.Double
 
+    STATIC METHOD Log(cMessage AS STRING) AS VOID
+        IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
+            XSettings.Logger:Information("XDatabase :"+cMessage)
+        ENDIF
+        RETURN
+
+
+
     STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
         LOCAL lValid := FALSE AS LOGIC
         LOCAL oDiskDb AS SQLiteConnection
@@ -135,7 +143,7 @@ STATIC CLASS XDatabase
                 Log("Starting backup to "+currentFile)
                 SaveToDisk(oConn, currentFile )
             CATCH e AS Exception
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
             FINALLY
                 Log("Completed backup to "+currentFile)
             END TRY
@@ -477,41 +485,41 @@ STATIC CLASS XDatabase
         RETURN result
 
     STATIC METHOD GetOpenDesignerFiles() AS List<STRING>
-      VAR result := List<STRING>{}
-      IF IsDbOpen
-          BEGIN LOCK oConn
-              USING VAR cmd := SQLiteCommand{"SELECT FullName from OpenDesignerFiles", oConn}
-              USING VAR rdr := cmd:ExecuteReader()
-              DO WHILE rdr:Read()
-                  VAR name := rdr:GetString(0)
-                  result:Add(name)
-              ENDDO
-          END LOCK
-      ENDIF
-      Log(i"GetOpenDesignerFiles returned {result.Count} names")
-      RETURN result
+        VAR result := List<STRING>{}
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                USING VAR cmd := SQLiteCommand{"SELECT FullName from OpenDesignerFiles", oConn}
+                USING VAR rdr := cmd:ExecuteReader()
+                DO WHILE rdr:Read()
+                    VAR name := rdr:GetString(0)
+                    result:Add(name)
+                ENDDO
+            END LOCK
+        ENDIF
+        Log(i"GetOpenDesignerFiles returned {result.Count} names")
+        RETURN result
     STATIC METHOD SaveOpenDesignerFiles(files AS List<STRING>) AS LOGIC
-      VAR result := TRUE
-      IF IsDbOpen
-          BEGIN LOCK oConn
-        TRY
-              USING VAR cmd := SQLiteCommand{"DELETE from OpenDesignerFiles", oConn}
-              cmd:ExecuteNonQuery()
-              cmd:CommandText := "Insert into OpenDesignerFiles(FullName) values ($name);"
-              FOREACH VAR file IN files
-                  cmd:Parameters:Clear()
-                  cmd:Parameters:AddWithValue("$name",file)
-                  cmd:ExecuteNonQuery()
-              NEXT
-          CATCH e AS Exception
-                XSettings.LogException(e, __FUNCTION__)
-                result := FALSE
-         END TRY
-         END LOCK
-      ENDIF
-      Log(i"SaveOpenDesignerFiles returned {result}")
-      RETURN result
-;
+        VAR result := TRUE
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    USING VAR cmd := SQLiteCommand{"DELETE from OpenDesignerFiles", oConn}
+                    cmd:ExecuteNonQuery()
+                    cmd:CommandText := "Insert into OpenDesignerFiles(FullName) values ($name);"
+                    FOREACH VAR file IN files
+                        cmd:Parameters:Clear()
+                        cmd:Parameters:AddWithValue("$name",file)
+                        cmd:ExecuteNonQuery()
+                    NEXT
+                CATCH e AS Exception
+                    XSettings.Exception(e, __FUNCTION__)
+                    result := FALSE
+                END TRY
+            END LOCK
+        ENDIF
+        Log(i"SaveOpenDesignerFiles returned {result}")
+        RETURN result
+        ;
 
     STATIC METHOD GetProjectFileNames() AS List<STRING>
         VAR result := List<STRING>{}
@@ -630,9 +638,9 @@ STATIC CLASS XDatabase
                 if rdr:Read()
                     result := rdr:GetString(0)
                 endif
-              CATCH e AS Exception
+            CATCH e AS Exception
                 Log("File   : "+idFile:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
 
             END TRY
         END LOCK
@@ -700,7 +708,7 @@ STATIC CLASS XDatabase
                 ENDIF
             CATCH e AS Exception
                 Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
 
             END TRY
         END LOCK
@@ -731,7 +739,7 @@ STATIC CLASS XDatabase
                 ENDIF
             CATCH e AS Exception
                 Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
             END TRY
         END LOCK
         RETURN
@@ -777,7 +785,7 @@ STATIC CLASS XDatabase
                 if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
                     local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
                     if parameter:ResolvedType == null
-                            parameter:Resolve()
+                        parameter:Resolve()
                     endif
                 endif
             NEXT
@@ -786,10 +794,10 @@ STATIC CLASS XDatabase
         BEGIN LOCK oConn
             TRY
                 /*
-                 CREATE TABLE ExtensionMethods ("
-                  Id integer NOT NULL PRIMARY KEY, idMember integer NOT NULL, FullName text NOT NULL COLLATE NOCASE "
-                  FOREIGN KEY (idMember) REFERENCES Members (Id) ON DELETE CASCADE ON UPDATE CASCADE)
-                 "
+                CREATE TABLE ExtensionMethods ("
+                Id integer NOT NULL PRIMARY KEY, idMember integer NOT NULL, FullName text NOT NULL COLLATE NOCASE "
+                FOREIGN KEY (idMember) REFERENCES Members (Id) ON DELETE CASCADE ON UPDATE CASCADE)
+                "
                 */
                 USING VAR oCmdExtens := SQLiteCommand{"select 1", oConn}
                 oCmdExtens:CommandText := "insert into ExtensionMethods (IdMember, FullName) Values ($idmember,$fullname)"
@@ -850,7 +858,7 @@ STATIC CLASS XDatabase
                         Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
                         Log("Typedef: "+typedef:Name)
                         Log("Kind   : "+typedef:Kind:ToString())
-                        XSettings.LogException(e, __FUNCTION__)
+                        XSettings.Exception(e, __FUNCTION__)
                     END TRY
                 NEXT
                 /*
@@ -919,7 +927,7 @@ STATIC CLASS XDatabase
                             Log("Kind   : "+xmember:Kind:ToString())
                             Log("Line :   "+xmember:Range:StartLine:ToString())
                             Log("Column : "+xmember:Range:StartColumn:ToString())
-                            XSettings.LogException(e, __FUNCTION__)
+                            XSettings.Exception(e, __FUNCTION__)
                         END TRY
                     NEXT
                 NEXT
@@ -949,7 +957,7 @@ STATIC CLASS XDatabase
                         Log("Kind   : "+xmember:Kind:ToString())
                         Log("Line :   "+xmember:Range:StartLine:ToString())
                         Log("Column : "+xmember:Range:StartColumn:ToString())
-                        XSettings.LogException(e, __FUNCTION__)
+                        XSettings.Exception(e, __FUNCTION__)
 
                     END TRY
                 NEXT
@@ -1011,7 +1019,7 @@ STATIC CLASS XDatabase
 
             CATCH e AS Exception
                 Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
 
             END TRY
 
@@ -1064,7 +1072,7 @@ STATIC CLASS XDatabase
                 ENDIF
             CATCH e AS Exception
                 Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
             END TRY
 
         END LOCK
@@ -1083,7 +1091,7 @@ STATIC CLASS XDatabase
                 oCmd:ExecuteNonQuery()
             CATCH e AS Exception
                 Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
 
             END TRY
         END LOCK
@@ -1174,7 +1182,7 @@ STATIC CLASS XDatabase
                 oCmd:ExecuteNonQuery()
             CATCH e AS Exception
                 Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
-                XSettings.LogException(e, __FUNCTION__)
+                XSettings.Exception(e, __FUNCTION__)
 
             END TRY
 
@@ -1217,7 +1225,7 @@ STATIC CLASS XDatabase
                         endif
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
 
                 END TRY
             END LOCK
@@ -1269,7 +1277,7 @@ STATIC CLASS XDatabase
                         endif
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1316,7 +1324,7 @@ STATIC CLASS XDatabase
                         endif
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1349,7 +1357,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateTypeInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1373,7 +1381,7 @@ STATIC CLASS XDatabase
                         endif
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1395,7 +1403,7 @@ STATIC CLASS XDatabase
                     ENDDO
 
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1415,7 +1423,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateRefTypeInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1438,7 +1446,7 @@ STATIC CLASS XDatabase
                         endif
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1463,7 +1471,7 @@ STATIC CLASS XDatabase
                     ENDDO
 
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1483,7 +1491,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateCommentTask(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1503,7 +1511,7 @@ STATIC CLASS XDatabase
                         result:Add(DbToString(rdr[0]))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1525,7 +1533,7 @@ STATIC CLASS XDatabase
                         ENDIF
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1548,7 +1556,7 @@ STATIC CLASS XDatabase
                         ENDIF
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1570,7 +1578,7 @@ STATIC CLASS XDatabase
                         result:Add(rdr:GetString(0))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1602,7 +1610,7 @@ STATIC CLASS XDatabase
                         ENDIF
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1621,7 +1629,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateTypeInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1630,8 +1638,8 @@ STATIC CLASS XDatabase
 
 
     STATIC METHOD GetExtensionMethods (sProjectIds AS STRING, typeName as STRING) AS IList<XDbResult>
-       VAR stmt := "Select * from ProjectExtensionMethods where idProject IN ("+sProjectIds+") AND fullName = '"+typeName+"'"
-       VAR result := List<XDbResult>{}
+        VAR stmt := "Select * from ProjectExtensionMethods where idProject IN ("+sProjectIds+") AND fullName = '"+typeName+"'"
+        VAR result := List<XDbResult>{}
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
@@ -1641,7 +1649,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
 
             END LOCK
@@ -1662,7 +1670,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
 
             END LOCK
@@ -1681,7 +1689,7 @@ STATIC CLASS XDatabase
                     var count := (Int64) oCmd:ExecuteScalar()
                     RETURN count > 0
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1704,7 +1712,7 @@ STATIC CLASS XDatabase
                         endif
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
 
             END LOCK
@@ -1724,7 +1732,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
 
             END LOCK
@@ -1754,7 +1762,7 @@ STATIC CLASS XDatabase
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
-                    XSettings.LogException(e, __FUNCTION__)
+                    XSettings.Exception(e, __FUNCTION__)
                 END TRY
             END LOCK
         ENDIF
@@ -1866,12 +1874,6 @@ STATIC CLASS XDatabase
 
     STATIC PROPERTY IsDbOpen AS LOGIC GET oConn != NULL_OBJECT .AND.  oConn:State == ConnectionState.Open
     STATIC PROPERTY Connection as SQLiteConnection GET oConn
-
-    STATIC METHOD Log(cMessage AS STRING) AS VOID
-        IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
-            XSolution.WriteOutputMessage("XDatabase: "+cMessage)
-        ENDIF
-        RETURN
 
 END CLASS
 

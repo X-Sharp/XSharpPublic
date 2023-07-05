@@ -180,7 +180,6 @@
       <DependentUpon>XStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Wix\XVsConstants.cs" />
-    <Compile Include="XSharpFileType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Wix\Resources\Delete.png" />
@@ -229,11 +228,10 @@
       <Version>7.0.4</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
-      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>CodeModel</Name>
+    <ProjectReference Include="..\Settings\Settings.xsproj">
+      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
+      <Name>Settings</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

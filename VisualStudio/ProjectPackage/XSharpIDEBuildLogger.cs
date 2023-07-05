@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.Shell.TableManager;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     internal class XSharpIDEBuildLogger : IDEBuildLogger
@@ -22,6 +22,7 @@ namespace XSharp.Project
         ErrorListManager errorlistManager;
         XSharpProjectNode node;
         bool mustLog;
+        private XSharp.Settings.ILogger Logger => XSettings.Logger;
         internal XSharpIDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy) : base(output, taskProvider, hierarchy)
         {
 
@@ -63,11 +64,11 @@ namespace XSharp.Project
                 errorlistManager.ClearBuildErrors();
                 errors = warnings = 0;
                 mustRefresh = false;
-                XSolution.Logger.Debug("Build Started");
+                Logger.Debug("Build Started");
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "BuildStartedHandler");
+                Logger.Exception(e, "BuildStartedHandler");
             }
         }
         protected override void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
@@ -87,11 +88,11 @@ namespace XSharp.Project
                         QueueOutputText(MessageImportance.Normal, msg+"\n");
                     }
                     base.BuildFinishedHandler(sender, buildEvent);
-                    XSolution.Logger.Debug("Build Finished : " +msg  );
+                    Logger.Debug("Build Finished : " +msg  );
                 }
                 catch (Exception e)
                 {
-                    XSolution.Logger.Exception(e, "BuildFinishedHandler");
+                    Logger.Exception(e, "BuildFinishedHandler");
                 }
             }
         }
@@ -100,7 +101,7 @@ namespace XSharp.Project
             try
             {
                 base.ProjectStartedHandler(sender, buildEvent);
-                XSolution.Logger.Debug("Project Build Started " + buildEvent.ProjectFile );
+                Logger.Debug("Project Build Started " + buildEvent.ProjectFile );
                 if (this.ProjectNode is XSharpProjectNode xprj)
                 {
                     xprj.BuildStarted();
@@ -109,7 +110,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "ProjectStartedHandler");
+                Logger.Exception(e, "ProjectStartedHandler");
             }
         }
         protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
@@ -117,7 +118,7 @@ namespace XSharp.Project
             try
             {
                 base.ProjectFinishedHandler(sender, buildEvent);
-                XSolution.Logger.Debug("Project Build Finished " + buildEvent.ProjectFile );
+                Logger.Debug("Project Build Finished " + buildEvent.ProjectFile );
                 if (mustRefresh)
                 {
                     errorlistManager.Refresh();
@@ -129,7 +130,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "ProjectFinishedHandler");
+                Logger.Exception(e, "ProjectFinishedHandler");
             }
 
         }
@@ -154,7 +155,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "QueueTaskEvent");
+                Logger.Exception(e, "QueueTaskEvent");
             }
 
         }
@@ -179,7 +180,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "MessageHandler");
+                Logger.Exception(e, "MessageHandler");
             }
         }
         protected void ReportError(BuildErrorEventArgs args)
@@ -189,11 +190,11 @@ namespace XSharp.Project
                 mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
-                XSolution.Logger.Debug("Build Error: "+ msg);
+                Logger.Debug("Build Error: "+ msg);
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "ReportError");
+                Logger.Exception(e, "ReportError");
             }
         }
         protected void ReportWarning(BuildWarningEventArgs args)
@@ -203,11 +204,11 @@ namespace XSharp.Project
                 mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
-                XSolution.Logger.Debug("Build Warning: " + msg);
+                Logger.Debug("Build Warning: " + msg);
             }
             catch (Exception e)
             {
-                XSolution.Logger.Exception(e, "ReportWarning");
+                Logger.Exception(e, "ReportWarning");
             }
         }
     }

@@ -33,6 +33,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.UI2022" Path="|Debugger.UI2022|" AssemblyName="|Debugger.UI2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Debugger.UI2022" Path="|Debugger.UI2022|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.Support" Path="|Debugger.Support|" AssemblyName="|Debugger.Support;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Settings" Path="|Settings|" AssemblyName="|Settings;AssemblyName|" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

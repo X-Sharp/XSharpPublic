@@ -9,7 +9,7 @@ namespace XSharp.Project
 {
     internal class XSharpShellLink : IXVsShellLink
     {
-        static ILogger Logger => XSolution.Logger;
+        static ILogger Logger => XSettings.Logger;
 
         static bool hasEnvironmentvariable = false;
         static XSharpShellLink()

@@ -217,14 +217,14 @@ BEGIN NAMESPACE XSharpModel
                         endif
 
                     CATCH exception AS System.Exception
-                        XSolution.WriteException(exception,__FUNCTION__)
+                        XSettings.Exception(exception,__FUNCTION__)
                     END TRY
                 END USING
                 SELF:WriteOutputMessage("<<-- ParseContents()")
             ENDIF
 
        METHOD WriteOutputMessage(message AS STRING) AS VOID
-            XSolution.WriteOutputMessage("XModel.File "+message)
+            XSettings.Information("XModel.File "+message)
 
       #region Properties
             // Properties

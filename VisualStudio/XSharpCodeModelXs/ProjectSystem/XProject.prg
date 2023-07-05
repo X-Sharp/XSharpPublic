@@ -111,7 +111,7 @@ CLASS XProject
             ENDIF
             RETURN XSharpDialect.Core
         CATCH e AS Exception
-            XSolution.WriteException(e,__FUNCTION__)
+            XSettings.Exception(e,__FUNCTION__)
         END TRY
         RETURN XSharpDialect.Core
 
@@ -520,7 +520,7 @@ CLASS XProject
                 ENDIF
             ENDIF
         CATCH exception AS Exception
-            XSolution.WriteException(exception,__FUNCTION__)
+            XSettings.Exception(exception,__FUNCTION__)
         END TRY
         RETURN outputFile
 
@@ -1529,7 +1529,7 @@ CLASS XProject
 #endregion
 
     PRIVATE METHOD WriteOutputMessage(message AS STRING) AS VOID
-        XSolution.WriteOutputMessage("XModel.Project "+SELF:Name+" "+message)
+        XSettings.Information("XModel.Project "+SELF:Name+" "+message)
 
     CLASS XFileDictionary
         PROTECTED dict AS ConcurrentDictionary<STRING, INT64>

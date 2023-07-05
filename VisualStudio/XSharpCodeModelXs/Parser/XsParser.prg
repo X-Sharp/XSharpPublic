@@ -4076,7 +4076,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
     PRIVATE STATIC METHOD Log(cMessage AS STRING) AS VOID
         IF XSettings.EnableParseLog
-            XSolution.WriteOutputMessage("XParser: "+cMessage)
+            XSettings.Information("XParser: "+cMessage)
         ENDIF
         RETURN
 END CLASS

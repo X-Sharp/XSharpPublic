@@ -86,7 +86,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Lex() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
         END TRY
         WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
         RETURN (BufferedTokenStream) stream
@@ -181,7 +181,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 
         CATCH e AS Exception
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
         END TRY
         WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
 
@@ -210,7 +210,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Parse() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
 
         END TRY
         WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)
@@ -258,7 +258,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         */
     STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
         IF XSettings.EnableParseLog .AND. XSettings.EnableLogging
-            XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
+            XSettings.Information("XModel.SourceWalker "+message)
         ENDIF
 
 #endregion

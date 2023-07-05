@@ -108,6 +108,8 @@
     <Compile Include="LineSeparators\LineSeparatorManager.cs" />
     <Compile Include="LineSeparators\LineSeparatorProvider.cs" />
     <Compile Include="LineSeparators\LineSeparatorTag.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\XSharpOutputPane.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="Generic\EditorCommandHandler.cs" />
@@ -252,6 +254,12 @@
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>12.0.30112</Version>
     </PackageReference>
+    <PackageReference Include="Serilog.Sinks.Debug">
+      <Version>2.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Sinks.File">
+      <Version>5.0.0</Version>
+    </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
@@ -289,6 +297,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Settings\Settings.xsproj">
+      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
+      <Name>Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>

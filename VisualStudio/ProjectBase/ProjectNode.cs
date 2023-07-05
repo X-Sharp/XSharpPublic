@@ -2220,7 +2220,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Logger.LogException(e, "AddProjectReferences");
+                Logger.Exception(e, "AddProjectReferences");
                 return e.ErrorCode;
             }
             finally
@@ -2422,19 +2422,19 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (IOException e)
             {
-                Logger.LogException(e, "AddFileFromTemplate");
+                Logger.Exception(e, "AddFileFromTemplate");
             }
             catch (UnauthorizedAccessException e)
             {
-                Logger.LogException(e, "AddFileFromTemplate");
+                Logger.Exception(e, "AddFileFromTemplate");
             }
             catch (ArgumentException e)
             {
-                Logger.LogException(e, "AddFileFromTemplate");
+                Logger.Exception(e, "AddFileFromTemplate");
             }
             catch (NotSupportedException e)
             {
-                Logger.LogException(e, "AddFileFromTemplate");
+                Logger.Exception(e, "AddFileFromTemplate");
             }
         }
 
@@ -2591,7 +2591,7 @@ namespace Microsoft.VisualStudio.Project
             string cTarget = target;
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
-            Logger.LogMessage("<<-- ProjectNode.Build("+cTarget+")");
+            Logger.Information("<<-- ProjectNode.Build("+cTarget+")");
             BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
@@ -2599,7 +2599,7 @@ namespace Microsoft.VisualStudio.Project
             this.SetBuildConfigurationProperties(configCanonicalName);
             result = this.InvokeMsBuild(target);
             }
-            Logger.LogMessage("-->> ProjectNode.Build()");
+            Logger.Information("-->> ProjectNode.Build()");
             return result;
         }
 
@@ -2714,7 +2714,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                 }
 
@@ -2782,19 +2782,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (ArgumentException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (FormatException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (OverflowException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                 }
 
@@ -2829,19 +2829,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (ArgumentException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (FormatException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (OverflowException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                 }
 
@@ -2876,19 +2876,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (ArgumentException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (FormatException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                     catch (OverflowException e)
                     {
-                        Logger.LogException(e, "GetProjectOptions");
+                        Logger.Exception(e, "GetProjectOptions");
                     }
                 }
 

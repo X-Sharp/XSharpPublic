@@ -106,7 +106,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Debugger:CompileExpression");
+                Logger.Exception(e, "Debugger:CompileExpression");
                 OldCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
         }
@@ -226,7 +226,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Debugger:ClrLocalVariableQuery");
+                Logger.Exception(e, "Debugger:ClrLocalVariableQuery");
                 return OldClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
         }
@@ -274,7 +274,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Debugger:CompileAssignment");
+                Logger.Exception(e, "Debugger:CompileAssignment");
                 OldCompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }
         }

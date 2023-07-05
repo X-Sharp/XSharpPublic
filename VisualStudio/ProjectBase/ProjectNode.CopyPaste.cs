@@ -170,7 +170,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(System.IO.FileNotFoundException e)
             {
-                Logger.LogException(e, "Drop");
+                Logger.Exception(e, "Drop");
 
                 if (!Utilities.IsInAutomationFunction(this.Site))
                 {
@@ -500,7 +500,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Logger.LogException(e, "PackageSelectionData");
+                Logger.Exception(e, "PackageSelectionData");
 
                 dataObject = null;
             }
@@ -815,7 +815,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Logger.LogException(e, "CutToClipboard");
+                Logger.Exception(e, "CutToClipboard");
                 returnValue = e.ErrorCode;
             }
 
@@ -854,12 +854,12 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Logger.LogException(e, "CopyToClipboard");
+                Logger.Exception(e, "CopyToClipboard");
                 returnValue = e.ErrorCode;
             }
             catch(Exception e)
             {
-                Logger.LogException(e, "CopyToClipboard");
+                Logger.Exception(e, "CopyToClipboard");
                 returnValue = Marshal.GetHRForException(e);
             }
 
@@ -935,7 +935,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(ExternalException e)
                 {
-                    Logger.LogException(e, "PasteFromClipboard");
+                    Logger.Exception(e, "PasteFromClipboard");
 
                     // If it is a drop from windows and we get any kind of error ignore it. This
                     // prevents bogus messages from the shell from being displayed
@@ -952,7 +952,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Logger.LogException(e, "PasteFromClipboard");
+                Logger.Exception(e, "PasteFromClipboard");
 
                 returnValue = e.ErrorCode;
             }
@@ -991,7 +991,7 @@ namespace Microsoft.VisualStudio.Project
             // We catch External exceptions since it might be that it is not our data on the clipboard.
             catch(ExternalException e)
             {
-                Logger.LogException(e, "AllowPasteCommand");
+                Logger.Exception(e, "AllowPasteCommand");
                 return false;
             }
         }

@@ -138,7 +138,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "FindIdentifier failed");
+                Logger.Exception(ex, "FindIdentifier failed");
             }
             finally
             {
@@ -1851,12 +1851,12 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                Logger.LogMessage(heading + " returns " + results.Count().ToString() + " items");
+                Logger.Information(heading + " returns " + results.Count().ToString() + " items");
                 int i = 0;
                 foreach (var result in results)
                 {
                     ++i;
-                    Logger.LogMessage($"{i}: {result.Kind} {result.Prototype}");
+                    Logger.Information($"{i}: {result.Kind} {result.Prototype}");
                 }
             }
         }
@@ -1865,7 +1865,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                Logger.LogMessage("XSharp.Lookup :" + message);
+                Logger.Information("XSharp.Lookup :" + message);
             }
         }
     }

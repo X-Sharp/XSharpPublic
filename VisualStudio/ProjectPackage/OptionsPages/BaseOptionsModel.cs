@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
 using XSharpModel;
+using XSharp.Settings;
 using System.ComponentModel;
 
 namespace XSharp.Project.Options

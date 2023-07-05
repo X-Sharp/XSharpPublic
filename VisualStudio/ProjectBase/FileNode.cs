@@ -601,7 +601,7 @@ namespace Microsoft.VisualStudio.Project
             catch (Exception e)
             {
                 // Just re-throw the exception so we don't get duplicate message boxes.
-                Logger.LogException(e, "");
+                Logger.Exception(e, "");
                 this.RecoverFromRenameFailure(newName, oldrelPath, oldLinkPath);
                 returnValue = Marshal.GetHRForException(e);
                 throw;
@@ -688,7 +688,7 @@ namespace Microsoft.VisualStudio.Project
                             }
                             catch (Exception e)
                             {
-                                Logger.LogException(e, "Running Custom Tool failed");
+                                Logger.Exception(e, "Running Custom Tool failed");
                                 throw;
                             }
                         }
@@ -885,7 +885,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "AfterSaveItemAs");
+                Logger.Exception(e, "AfterSaveItemAs");
                 this.RecoverFromRenameFailure(newFilePath, oldrelPath, oldLinkPath);
                 throw;
             }

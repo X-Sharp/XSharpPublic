@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.ComponentModel;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.Project.Options
 {
     public class OtherEditorOptions : BaseOptionModel<OtherEditorOptions>

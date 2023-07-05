@@ -471,13 +471,17 @@ namespace XSharp.LanguageService
     }
     internal static class Logger
     {
-        internal static void LogException(Exception e, string msg)
+        internal static void Exception(Exception e, string msg)
         {
             LsLogger.Instance.Exception(e, msg);
         }
-        internal static void LogMessage(string msg)
+        internal static void Information(string msg)
         {
             LsLogger.Instance.Information(msg);
+        }
+        internal static void Debug(string msg)
+        {
+            LsLogger.Instance.Debug(msg);
         }
     }
 

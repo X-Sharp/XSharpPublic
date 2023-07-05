@@ -52,7 +52,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging  )
             {
-                Logger.LogMessage(strMessage);
+                Logger.Information(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -415,7 +415,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "AugmentCompletionSessions failed");
+                Logger.Exception(ex, "AugmentCompletionSessions failed");
 
             }
             finally

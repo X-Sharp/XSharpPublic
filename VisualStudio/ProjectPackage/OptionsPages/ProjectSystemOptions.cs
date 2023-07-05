@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using XSharp.LanguageService;
 using XSharp.Project.Options;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     public class ProjectSystemOptions : OptionsBase

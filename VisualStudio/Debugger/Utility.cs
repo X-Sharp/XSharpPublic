@@ -11,9 +11,9 @@ namespace XSharpDebugger
 {
     internal static class Logger
     {
-        internal static void LogException(Exception e, string msg)
+        internal static void Exception(Exception e, string msg)
         {
-            XSharp.Settings.XSettings.LogException(e, msg);
+            XSharp.Settings.XSettings.Logger.Exception(e, msg);
         }
     }
 

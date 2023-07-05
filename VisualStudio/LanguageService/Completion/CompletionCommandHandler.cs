@@ -472,7 +472,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Start Completion failed");
+                Logger.Exception(e, "Start Completion failed");
             }
             return true;
         }
@@ -539,7 +539,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                Logger.LogMessage("XSharp.Completion:" + strMessage);
+                Logger.Information("XSharp.Completion:" + strMessage);
             }
         }
         private char GetTypeChar(IntPtr pvaIn)

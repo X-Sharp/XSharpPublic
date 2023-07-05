@@ -939,7 +939,7 @@ namespace Microsoft.VisualStudio.Project
             catch(UriFormatException e)
             {
 
-                Logger.LogException(e, "IsSamePath");
+                Logger.Exception(e, "IsSamePath");
             }
 
             return false;

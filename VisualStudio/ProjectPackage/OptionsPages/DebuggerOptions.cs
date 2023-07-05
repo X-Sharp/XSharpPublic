@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using XSharpModel;
 using XD = LanguageService.CodeAnalysis.XSharp;
+using XSharp.Settings;
 namespace XSharp.Project.Options
 {
     public class DebuggerOptions : BaseOptionModel<DebuggerOptions>

@@ -61,7 +61,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "XSharpResultSource.FindResults failed : ");
+                Logger.Exception(ex, "XSharpResultSource.FindResults failed : ");
             }
         }
 

@@ -74,7 +74,7 @@ namespace XSharp.LanguageService
             defaultNS.displayData.Image = (ushort)IconImageIndex._Namespace;
             defaultNS.displayData.SelectedImage = (ushort)IconImageIndex._Namespace;
             this.AddNode(defaultNS);
-            Logger.LogMessage("Added LibraryProject " + prj.Name);
+            Logger.Information("Added LibraryProject " + prj.Name);
             //
         }
 

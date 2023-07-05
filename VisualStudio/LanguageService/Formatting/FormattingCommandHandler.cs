@@ -266,7 +266,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                Logger.LogMessage("XSharp.Formatting:" + strMessage);
+                Logger.Information("XSharp.Formatting:" + strMessage);
             }
         }
         private void adjustWhiteSpace()

@@ -499,7 +499,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "SmartIndent.GetDesiredIndentation failed");
+                Logger.Exception(ex, "SmartIndent.GetDesiredIndentation failed");
             }
             return _lastIndentValue;
         }
@@ -775,7 +775,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                Logger.LogMessage("XSharp.Formatting:" + strMessage);
+                Logger.Information("XSharp.Formatting:" + strMessage);
             }
         }
 

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Threading;
 using System;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     [Command(PackageIds.idViewInDisassembler)]

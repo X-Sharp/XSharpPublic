@@ -10,7 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using XSharpModel;
 using System.Collections.Concurrent;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
 

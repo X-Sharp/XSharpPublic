@@ -150,7 +150,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "Goto failed");
+                Logger.Exception(ex, "Goto failed");
             }
             finally
             {

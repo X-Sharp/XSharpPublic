@@ -64,7 +64,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (XSettings.EnableLogging)
             {
                 var prefix = this.GetType().FullName;
-                Logger.LogMessage(prefix+":" + strMessage);
+                Logger.Information(prefix+":" + strMessage);
             }
         }
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)

@@ -664,7 +664,7 @@ namespace Microsoft.VisualStudio.Project
         }
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            //Logger.LogMessage("FileChangedOnDisk " + e.FileName);
+            //Logger.Information("FileChangedOnDisk " + e.FileName);
             this.OnFileChanged(e.FileName);
             
         }

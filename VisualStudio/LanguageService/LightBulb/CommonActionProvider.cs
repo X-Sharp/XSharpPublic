@@ -46,7 +46,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         {
             if (XSettings.EnableLogging)
             {
-                Logger.LogMessage("XSharp.LightBulb:" + strMessage);
+                Logger.Information("XSharp.LightBulb:" + strMessage);
             }
         }
 

@@ -1147,7 +1147,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "DebugLaunch");
+                Logger.Exception(e, "DebugLaunch");
                 return Marshal.GetHRForException(e);
             }
 
@@ -1447,7 +1447,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Build");
+                Logger.Exception(e, "Build");
                 this.BuildCoda(new BuildResult(MSBuildResult.Failed, null, null), output, shouldRepaintReferences);
                 throw;
             }

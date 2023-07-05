@@ -204,7 +204,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "GetTokens");
+                Logger.Exception(e, "GetTokens");
             }
             return tokens;
         }

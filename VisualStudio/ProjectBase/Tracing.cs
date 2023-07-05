@@ -27,7 +27,7 @@ namespace Microsoft.VisualStudio.Project
             if(method != null)
             {
                 string name = method.Name + " \tin class " + method.DeclaringType.Name;
-                Logger.LogMessage("Call Trace: \t" + name);
+                Logger.Information("Call Trace: \t" + name);
             }
         }
 
@@ -42,26 +42,26 @@ namespace Microsoft.VisualStudio.Project
         static public void TraceCall(string strParameters)
         {
             CCITracing.InternalTraceCall(2);
-            Logger.LogMessage("\tParameters: \t" + strParameters);
+            Logger.Information("\tParameters: \t" + strParameters);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void Trace(System.Exception e)
         {
             CCITracing.InternalTraceCall(2);
-            Logger.LogException(e,"");
+            Logger.Exception(e,"");
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void Trace(string strOutput)
         {
-            Logger.LogMessage(strOutput);
+            Logger.Information(strOutput);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void TraceData(string strOutput)
         {
-            Logger.LogMessage("Data Trace: \t" + strOutput);
+            Logger.Information("Data Trace: \t" + strOutput);
         }
 
         [ConditionalAttribute("Enable_CCIFileOutput")]

@@ -16,9 +16,8 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using XSharpModel;
 using Community.VisualStudio.Toolkit;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     /// <summary>
@@ -224,7 +223,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "DebugLaunch");
+                Logger.Exception(e, "DebugLaunch");
 
                 return Marshal.GetHRForException(e);
             }

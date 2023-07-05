@@ -18,6 +18,7 @@ using EnvDTE;
 using XSharp.VOEditors;
 using Microsoft.VisualStudio.Project;
 using XSharpModel;
+using XSharp.Settings;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;

@@ -1288,7 +1288,7 @@ namespace Microsoft.VisualStudio.Project
             catch (COMException e)
             {
 
-                Logger.LogException(e, "COM Exception");
+                Logger.Exception(e, "COM Exception");
                 return e.ErrorCode;
             }
 
@@ -1770,7 +1770,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(COMException e)
                 {
-                    Logger.LogException(e, "InternalExecCommand");
+                    Logger.Exception(e, "InternalExecCommand");
                     returnValue = e.ErrorCode;
                 }
                 if(returnValue != VSConstants.S_OK)
@@ -3117,7 +3117,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Logger.LogException(e, "SaveItem");
+                Logger.Exception(e, "SaveItem");
                 returnCode = e.ErrorCode;
 
             	// Try to recover

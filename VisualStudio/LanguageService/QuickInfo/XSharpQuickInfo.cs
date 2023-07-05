@@ -39,7 +39,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableQuickInfoLog && XSettings.EnableLogging)
             {
-                Logger.LogMessage("XSharp.QuickInfoSource :" + message);
+                Logger.Information("XSharp.QuickInfoSource :" + message);
             }
         }
 
@@ -177,7 +177,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "XSharpQuickInfo.AugmentQuickInfoSession failed : ");
+                Logger.Exception(ex, "XSharpQuickInfo.AugmentQuickInfoSession failed : ");
             }
             finally
             {

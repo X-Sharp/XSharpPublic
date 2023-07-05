@@ -92,7 +92,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(InvalidCastException e)
             {
-                Logger.LogException(e,"Suspend");
+                Logger.Exception(e,"Suspend");
             }
             finally
             {

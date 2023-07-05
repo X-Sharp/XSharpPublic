@@ -377,7 +377,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Logger.LogException(e, "ShowObjectBrowser");
+                Logger.Exception(e, "ShowObjectBrowser");
                 returnValue = e.ErrorCode;
             }
             finally

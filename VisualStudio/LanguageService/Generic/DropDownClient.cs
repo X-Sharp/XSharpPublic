@@ -198,8 +198,8 @@ namespace XSharp.LanguageService
                 _lastLine = newLine;
             }
 #if XDEBUG
-            Logger.LogMessage($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
-            Logger.LogMessage($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
+            Logger.Information($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
+            Logger.Information($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
 #endif
             if (_lastLine != -1)
             {

@@ -84,7 +84,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableBraceMatchLog && XSettings.EnableLogging)
             {
-                Logger.LogMessage("Keyword Matching: " + sMessage);
+                Logger.Information("Keyword Matching: " + sMessage);
             }
         }
 
@@ -287,7 +287,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "KeywordMatchingTagger.GetTags failed");
+                Logger.Exception(e, "KeywordMatchingTagger.GetTags failed");
             }
             finally
             {

@@ -131,7 +131,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                Logger.LogException(e, "OnAfterRenameProject");
+                Logger.Exception(e, "OnAfterRenameProject");
                 return e.ErrorCode;
             }
 

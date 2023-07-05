@@ -150,7 +150,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Logger.LogException(e, "Open");
+                Logger.Exception(e, "Open");
                 returnValue = e.ErrorCode;
             }
             finally
@@ -291,7 +291,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                Logger.LogException(e, "");
+                Logger.Exception(e, "");
                 returnValue = e.ErrorCode;
                 CloseWindowFrame(ref windowFrame);
             }

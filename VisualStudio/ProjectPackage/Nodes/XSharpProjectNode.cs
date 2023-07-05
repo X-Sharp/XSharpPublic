@@ -27,6 +27,7 @@ using VSLangProj;
 using XSharp.CodeDom;
 using XSharp.Project.WPF;
 using XSharpModel;
+using XSharp.Settings;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
@@ -53,7 +54,6 @@ namespace XSharp.Project
 
         static IDictionary<string, string> dependencies;
         static IDictionary<string, string> _changedProjectFiles;
-        private ILogger Logger => XSolution.Logger;
 
         static XSharpProjectNode()
         {
@@ -169,7 +169,7 @@ namespace XSharp.Project
 
         protected override void OnFileChanged(string url)
         {
-            //XSettings.LogMessage("FileChangedOnDisk " + e.FileName);
+            //Logger.LogMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(url) || IsCodeFile(url))
             {
                 XFile file = this.ProjectModel.FindXFile(url);
@@ -1127,6 +1127,12 @@ namespace XSharp.Project
 
         #endregion
 
+
+        public override bool IsProjectItemType(MSBuild.ProjectItem item)
+        {
+            return XSharpFileType.IsProjectItemType(item);
+        }
+
         XSharpIncludeContainerNode includeNode = null;
         protected void CreateIncludeFileFolder()
         {
@@ -1744,7 +1750,7 @@ namespace XSharp.Project
             {
                 if (XSharpLexer.IsKeyword(token.Type))
                 {
-                    sb.Append(XSettings.FormatKeyword(token.Text));
+                    sb.Append(XLiterals.FormatKeyword(token.Text));
                 }
                 else
                 {
@@ -2228,7 +2234,7 @@ namespace XSharp.Project
                 }
                 catch (Exception e)
                 {
-                    XSettings.LogException(e, "Retrieving Parse Options");
+                    Logger.Exception(e, "Retrieving Parse Options");
                 }
                 return XSharpParseOptions.Default;
             }

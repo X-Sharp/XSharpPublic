@@ -76,7 +76,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "XSharpPeekItemSource.AugmentPeekSession failed : ");
+                Logger.Exception(ex, "XSharpPeekItemSource.AugmentPeekSession failed : ");
             }
             finally
             {

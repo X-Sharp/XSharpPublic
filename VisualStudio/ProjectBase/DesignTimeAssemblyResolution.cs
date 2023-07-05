@@ -109,7 +109,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex,"");
+                Logger.Exception(ex,"");
             }
             finally
             {

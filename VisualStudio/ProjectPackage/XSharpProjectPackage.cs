@@ -20,6 +20,7 @@ using XSharp.Project.Options;
 using XSharp.Project.WPF;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
+using XSharp.Settings;
 /*
 Substitution strings
 String	Description
@@ -339,6 +340,20 @@ namespace XSharp.Project
             }
         }
     }
-
+    internal static class Logger
+    {
+        internal static void Exception(Exception e, string msg)
+        {
+            XSettings.Logger.Exception(e, msg);
+        }
+        internal static void Information(string msg)
+        {
+            XSettings.Logger.Information(msg);
+        }
+        internal static void Debug(string msg)
+        {
+            XSettings.Logger.Debug(msg);
+        }
+    }
 
 }

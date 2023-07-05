@@ -24,13 +24,17 @@ namespace Microsoft.VisualStudio.Project
 
     internal static class Logger
     {
-        internal static void LogException(Exception e, string msg)
+        internal static void Exception(Exception e, string msg)
         {
-            XSharp.Settings.XSettings.LogException(e, msg);
+            XSharp.Settings.XSettings.Logger.Exception(e, msg);
         }
-        internal static void LogMessage (string msg)
+        internal static void Information(string msg)
         {
-            XSharp.Settings.XSettings.LogMessage(msg);
+            XSharp.Settings.XSettings.Logger.Information(msg);
+        }
+        internal static void Debug(string msg)
+        {
+            XSharp.Settings.XSettings.Logger.Debug(msg);
         }
     }
     /// <summary>

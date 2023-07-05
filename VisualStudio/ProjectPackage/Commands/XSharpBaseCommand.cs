@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
+using XSharp.Settings;
 namespace Community.VisualStudio.Toolkit
 {
     internal static class CVTProjectExtensions

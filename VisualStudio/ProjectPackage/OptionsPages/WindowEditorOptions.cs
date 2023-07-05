@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.Project.Options
 {
     public class WindowEditorOptions : BaseOptionModel<WindowEditorOptions>

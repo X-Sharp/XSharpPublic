@@ -412,6 +412,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
+    <Compile Include="XSharpFileType.cs" />
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
@@ -671,6 +672,10 @@
     <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>CodeDomProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Settings\Settings.xsproj">
+      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
+      <Name>Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>

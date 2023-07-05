@@ -299,7 +299,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Exception in XSharpXMLDocMember.GetSummary");
+                Logger.Exception(e, "Exception in XSharpXMLDocMember.GetSummary");
                 summary = "** Invalid XML comment ** \r"+e.Message;
 
             }
@@ -545,7 +545,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                Logger.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
+                Logger.Exception(e, "Exception in XSharpXMLDocMember.GetDocSummary");
             }
             //
             return summary;
@@ -629,7 +629,7 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception e)
                 {
-                    Logger.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
+                    Logger.Exception(e, "Exception in XSharpXMLDocMember.GetDocSummary");
                     return false;
                 }
                 return true;

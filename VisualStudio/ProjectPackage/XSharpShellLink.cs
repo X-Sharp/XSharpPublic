@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.IO;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.Project
 {
     internal class XSharpShellLink : IXVsShellLink

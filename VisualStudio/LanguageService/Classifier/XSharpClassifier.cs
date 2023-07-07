@@ -686,7 +686,7 @@ namespace XSharp.LanguageService
             XClassificationSpans newtags;
             var lineTokens = new Dictionary<int, IList<IToken>>(snapshot.LineCount);
             var currentLine = new List<IToken>();
-            var ids = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var ids = new ConcurrentDictionary<string, IList<IToken>>(StringComparer.OrdinalIgnoreCase);
             RuleStack = new Stack<XFormattingRule>();
             var regionTags = new List<ClassificationSpan>();
             if (tokens != null)
@@ -705,11 +705,17 @@ namespace XSharp.LanguageService
                 for (var iToken = 0; iToken < tokens.Count; iToken++)
                 {
                     var token = tokens[iToken];
-                    if (token.Type == XSharpLexer.ID && XEditorSettings.IdentifierCase)
+                    if (token.Type == XSharpLexer.ID && (XEditorSettings.IdentifierCase || !XEditorSettings.DisableHighLightWord))
                     {
                         if (!ids.ContainsKey(token.Text))
                         {
-                            ids.TryAdd(token.Text,token.Text);
+                            var xtokens = new List<IToken> { token };
+                            ids.TryAdd(token.Text, xtokens);
+                        }
+                        else
+                        {
+                            var xtokens = ids[token.Text];
+                            xtokens.Add(token);
                         }
                     }
                     // store the tokens per line in a dictionary so we can quickly look them up

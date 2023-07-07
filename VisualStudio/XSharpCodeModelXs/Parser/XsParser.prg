@@ -1065,6 +1065,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt1})
             ENDIF
             SELF:ParseBlockMiddle(xt)
+        ELSEIF xt.Kw1 == XSharpLexer.RETURN
+            if SELF:CurrentEntity != NULL
+                SELF:CurrentEntity:BlockTokens:Add(SELF:Lt1)
+            endif
         ELSEIF XFormattingRule.IsJumpKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                 IF _BlockStack:Count > 0

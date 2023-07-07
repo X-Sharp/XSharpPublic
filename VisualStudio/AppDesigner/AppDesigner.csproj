@@ -223,10 +223,6 @@
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
       <Name>ProjectBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Settings\Settings.xsproj">
-      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
-      <Name>Settings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>
@@ -234,7 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.503</Version>
+      <Version>15.0.507</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>15.9.20</Version>

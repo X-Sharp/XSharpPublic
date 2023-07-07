@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Text.Classification;
-using XSharp.LanguageService.Editors.HighlightWord;
 using XSharp.Settings;
 namespace XSharp.LanguageService
 {
@@ -35,7 +34,7 @@ namespace XSharp.LanguageService
             {
                 foreach (ClassificationSpan item in spans)
                 {
-                    if (HighlightWordTaggerProvider.IsInActiveSpan(item))
+                    if (IdentifierMatchingTagger.IsInActiveSpan(item))
                         return false;
                 }
             }

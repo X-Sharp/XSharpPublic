@@ -42,6 +42,7 @@ namespace XSharp.Debugger.UI
     [ProvideToolWindowVisibility(typeof(WorkareasWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
 #endif
     [Guid(XSharpConstants.guidXSharpDebuggerUIPkgString)]
+    
     public sealed class XSharpDebuggerUIPackage : ToolkitPackage,  IVsDebuggerEvents, IDisposable
     {
         private static XSharpDebuggerUIPackage _instance;

@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\Common2019.props" />
+  <Import Project="..\Common2022.props" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
-    <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}</ProjectGuid>
+    <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharpCodeDomProvider</RootNamespace>
-    <AssemblyName>XSharp.CodeDomProvider</AssemblyName>
+    <AssemblyName>XSharp.CodeDomProvider2022</AssemblyName>
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
     <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +78,11 @@
   <ItemGroup>
     <Content Include="ReadMe-MachineConfig.txt" />
     <Content Include="Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.507</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -56,8 +56,6 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
-    <Compile Include="BraceMatching\KeywordMatching.cs" />
-    <Compile Include="BraceMatching\BraceMatching.cs" />
     <Compile Include="Classifier\ClassificationDefinitions.cs" />
     <Compile Include="Classifier\ColorizerConstants.cs" />
     <Compile Include="Classifier\EditorFormats.cs" />
@@ -119,7 +117,6 @@
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
-    <Compile Include="HighlightWord\HighlightWord.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
@@ -139,6 +136,10 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="MatchingTokens\AbstractMatching.cs" />
+    <Compile Include="MatchingTokens\BraceMatching.cs" />
+    <Compile Include="MatchingTokens\IdentifierMatching.cs" />
+    <Compile Include="MatchingTokens\KeywordMatching.cs" />
     <Compile Include="OptionsPages\CompletionOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -240,7 +241,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.503</Version>
+      <Version>15.0.507</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.14.0</Version>
@@ -297,10 +298,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Settings\Settings.xsproj">
-      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
-      <Name>Settings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>

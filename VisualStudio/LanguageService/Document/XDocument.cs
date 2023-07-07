@@ -29,7 +29,7 @@ namespace XSharp.LanguageService
             _tokensPerLine = new Dictionary<int, IList<IToken>>();
             _lineKeywords = new XSharpLineKeywords();
             _lineState = new XSharpLineState();
-            _identifiers = new ConcurrentDictionary<string,string>(StringComparer.OrdinalIgnoreCase);
+            _identifiers = new ConcurrentDictionary<string, IList<IToken>>(StringComparer.OrdinalIgnoreCase);
             NeedsKeywords = false;
         }
 
@@ -40,7 +40,7 @@ namespace XSharp.LanguageService
         private XSharpLineState _lineState;
         private XSharpLineKeywords _lineKeywords;
         private ITextSnapshot _snapShot;
-        private ConcurrentDictionary<string, string> _identifiers;
+        private ConcurrentDictionary<string, IList<IToken>> _identifiers;
         private ITextBuffer _buffer;
         private IList<XSourceBlock> _blocks;
 
@@ -52,7 +52,7 @@ namespace XSharp.LanguageService
         internal Dictionary<int, IList<IToken>> TokensPerLine => _tokensPerLine;
         internal XSharpLineState LineState => _lineState;
         internal XSharpLineKeywords LineKeywords => _lineKeywords;
-        internal IDictionary<string, string> Identifiers => _identifiers;
+        internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
         internal bool NeedsKeywords { get; set; }
         #endregion
@@ -103,7 +103,7 @@ namespace XSharp.LanguageService
                 _lineKeywords = keywords;
             }
         }
-        internal void SetIdentifiers(ConcurrentDictionary<string, string> ids)
+        internal void SetIdentifiers(ConcurrentDictionary<string, IList<IToken>> ids)
         {
             lock (this)
             {

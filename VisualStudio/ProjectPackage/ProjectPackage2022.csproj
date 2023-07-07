@@ -9,7 +9,7 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Ngen>true</Ngen>
+    <Ngen>false</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -23,7 +23,7 @@
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}</ProjectGuid>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
@@ -647,6 +647,12 @@
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b5}</Project>
       <Name>CodeDomProvider2022</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Project>{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}</Project>
+      <Name>CodeGenerator</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\Debugger.Support\Debugger.Support.csproj">
       <Project>{BBD309AA-A928-461E-B91C-7C12B1145A06}</Project>
       <Name>Debugger.Support</Name>
@@ -727,6 +733,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>1.4.0</Version>
+      <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>All</IncludeAssets>
@@ -765,7 +772,8 @@
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
-  -->
+
   <Target Name="AfterBuild">
   </Target>
+    -->
 </Project>

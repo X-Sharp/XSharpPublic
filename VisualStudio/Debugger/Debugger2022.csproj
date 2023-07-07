@@ -117,11 +117,11 @@
     <Content Include="XSharp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.CodeAnalysis">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.Evaluator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.Evaluator">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
     </Reference>

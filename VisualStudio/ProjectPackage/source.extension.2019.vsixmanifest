@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem" Version="2.16.0.6" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem" Version="2.17.0.0" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp Visual Studio Integration</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
@@ -32,7 +32,6 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="Debugger.UI" Path="|Debugger.UI;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.UI" Path="|Debugger.UI|" AssemblyName="|Debugger.UI;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Debugger.UI" Path="|Debugger.UI|" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Settings" Path="|Settings|" AssemblyName="|Settings;AssemblyName|" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

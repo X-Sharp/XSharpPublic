@@ -30,17 +30,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>165,219,1030,9047,1701,1591</DisabledWarnings>
+    <DisabledWarnings>1591,219,165</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
     <DocumentationFile>XSharp.CodeModel.Xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>162,1030,165,219,1701</DisabledWarnings>
+    <DisabledWarnings>1591,219,165</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>
     </DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

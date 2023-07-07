@@ -643,6 +643,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider2022.csproj">
+      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b5}</Project>
+      <Name>CodeDomProvider2022</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Debugger.Support\Debugger.Support.csproj">
       <Project>{BBD309AA-A928-461E-B91C-7C12B1145A06}</Project>
       <Name>Debugger.Support</Name>
@@ -668,10 +672,6 @@
       <Name>ProjectBase2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
-      <Name>CodeDomProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
@@ -718,7 +718,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.505</Version>
+      <Version>17.0.507</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

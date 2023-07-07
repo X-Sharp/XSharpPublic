@@ -77,11 +77,6 @@
     <Content Include="ReadMe-MachineConfig.txt" />
     <Content Include="Readme.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

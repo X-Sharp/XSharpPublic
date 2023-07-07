@@ -4,20 +4,9 @@
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LanguageService.SyntaxTree.Tree;
 using System.CodeDom;
-using System.Reflection;
-using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
-using System.Diagnostics;
-
-using XSharpModel;
 namespace XSharp.CodeDom
 {
     internal class XSharpFieldsDiscover : XSharpBaseDiscover

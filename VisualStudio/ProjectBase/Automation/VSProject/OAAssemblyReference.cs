@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -44,10 +45,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                var props = this.BaseReferenceNode.NodeProperties as ReferenceNodeProperties;
-                if (props != null)
-                    return props.CopyToLocal;
-                return false;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var props = this.BaseReferenceNode.NodeProperties as ReferenceNodeProperties;
+                    if (props != null)
+                        return props.CopyToLocal;
+                    return false;
+                });
             }
         }
         public override string Culture

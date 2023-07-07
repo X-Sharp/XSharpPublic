@@ -283,7 +283,8 @@ namespace XSharp.LanguageService
                 var transform = id;
                 if (_document.Identifiers.ContainsKey(id))
                 {
-                    transform = _document.Identifiers[id];
+                    var list = _document.Identifiers[id];
+                    transform = list.First().Text;
                 }
                 if (string.Compare(transform, id) != 0)
                 {

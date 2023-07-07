@@ -55,7 +55,9 @@ namespace XSharp.Project.FileCodeModel
 
 		public EditPoint CreateEditPoint()
 		{
-			return parent.CreateEditPoint(this);
+            var res = parent.CreateEditPoint(this);
+
+            return new CodeDomEditPoint(res);
 			//return new CodeDomEditPoint(parent, this);
 		}
 

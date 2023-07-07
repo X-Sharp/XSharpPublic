@@ -145,6 +145,7 @@
     <Compile Include="FileCodeModel\CodeDomCodeTypeRef.cs" />
     <Compile Include="FileCodeModel\CodeDomCodeVariable.cs" />
     <Compile Include="FileCodeModel\CodeDomCodeVariant.cs" />
+    <Compile Include="FileCodeModel\CodeDomEditPoint.cs" />
     <Compile Include="FileCodeModel\FileCodeModelBase.cs" />
     <Compile Include="FileCodeModel\NullTextPoint.cs" />
     <Compile Include="FileCodeModel\SimpleCodeElement.cs" />
@@ -613,6 +614,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
+    <None Include="FileCodeModel\Readme.md" />
     <None Include="source.extension.vsixmanifest">
       <Generator>VsixManifestGenerator</Generator>
       <LastGenOutput>source.extension.cs</LastGenOutput>

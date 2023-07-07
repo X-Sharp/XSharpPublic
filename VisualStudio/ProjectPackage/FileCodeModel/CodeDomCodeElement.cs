@@ -67,9 +67,11 @@ namespace XSharp.Project.FileCodeModel
 
         public override TextPoint GetEndPoint(vsCMPart part)
         {
-            TextPoint point = null;
+            //TextPoint point = null;
             // We don't know the EndPoint (currently)
-            return (point != null) ? point : new NullTextPoint();
+            //return (point != null) ? point : new NullTextPoint();
+            TextPoint start = GetStartPoint( part );
+            return new CodeDomTextPoint(GetTextDocument(), start.LineCharOffset+1, start.Line);
         }
 
         public override TextPoint GetStartPoint(vsCMPart part)

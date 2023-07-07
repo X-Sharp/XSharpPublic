@@ -10,11 +10,6 @@
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <TargetFrameworkProfile />
     <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C696}</ProjectGuid>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

@@ -56,6 +56,10 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
+    <Compile Include="MatchingTokens\AbstractMatching.cs" />
+    <Compile Include="MatchingTokens\IdentifierMatching.cs" />
+    <Compile Include="MatchingTokens\KeywordMatching.cs" />
+    <Compile Include="MatchingTokens\BraceMatching.cs" />
     <Compile Include="Classifier\ClassificationDefinitions.cs" />
     <Compile Include="Classifier\ColorizerConstants.cs" />
     <Compile Include="Classifier\EditorFormats.cs" />
@@ -136,10 +140,6 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
-    <Compile Include="MatchingTokens\AbstractMatching.cs" />
-    <Compile Include="MatchingTokens\BraceMatching.cs" />
-    <Compile Include="MatchingTokens\IdentifierMatching.cs" />
-    <Compile Include="MatchingTokens\KeywordMatching.cs" />
     <Compile Include="OptionsPages\CompletionOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -170,6 +170,7 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\TabOptions.cs" />
     <Compile Include="OptionsPages\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
@@ -195,7 +196,6 @@
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OptionsPages\TabOptions.cs" />
     <Compile Include="OptionsPages\XSDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -316,14 +316,13 @@
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+    <Content Include="C:\XSharp\DevPublic\External\Debug\XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="generatepkgdef.cmd" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Snippets\Snippets\case.snippet">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

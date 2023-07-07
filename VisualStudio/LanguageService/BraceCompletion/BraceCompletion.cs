@@ -34,7 +34,7 @@ namespace XSharp.LanguageService
             {
                 foreach (ClassificationSpan item in spans)
                 {
-                    if (IdentifierMatchingTagger.IsInActiveSpan(item))
+                    if (AbstractMatchingTagger.IsInActiveSpan(item))
                         return false;
                 }
             }

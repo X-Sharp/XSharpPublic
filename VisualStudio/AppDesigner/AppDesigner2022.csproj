@@ -159,10 +159,6 @@
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Settings\Settings.xsproj">
-      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
-      <Name>Settings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>

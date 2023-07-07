@@ -120,9 +120,9 @@
       <Project>{16272550-75e6-4b9d-91e3-653bd141c756}</Project>
       <Name>Debugger2022</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Settings\Settings.xsproj">
-      <Project>{4d26c389-bfd6-4160-8e9e-de02c92e5889}</Project>
-      <Name>Settings</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>CodeModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-07-07T22:42:07.922+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-07-08T12:40:48.522+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -25,9 +25,11 @@
       <li styleclass="Body Text">Fixed VO incompatibility with special handling of INSTANCE fields in methods and properties (#1253)</li>
       <li styleclass="Body Text">Fixed problem with the debugger erratically stepping to incorrect lines (#1254, #1264)</li>
       <li styleclass="Body Text">Fixed problem with showing the wrong error line number in some cases with nested statements (#1268)</li>
-      <li styleclass="Body Text">Fixed problem where a DO CASE statement without CASE lines was producing an internal error in the compiler (#1281)</li>
+      <li styleclass="Body Text">Fixed problem where a DO CASE statement without CASE lines was producing an internal error in the compiler (#1281) <text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed a couple &#160;preprocessor issues (#1284 <text style="font-weight:bold;">UNCONFIRMED</text>, #1289)</li>
+      <li styleclass="Body Text">Fixed missing compiler error on calling with SUPER a method that does not exist, when late binding is enabled (#1285)</li>
+      <li styleclass="Body Text">Fixed a Failed to emit Module error with CONST class field missing value assignment (#1293)</li>
     </list>
-    <para styleclass="Body Text"></para>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added support for &quot;classic&quot; INIT PROCEDURE and EXIT PROCEDURE (#1290)</li>
@@ -36,6 +38,7 @@
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed several problems (incompatibilities with VO) in CToD() (#1275)</li>
+      <li styleclass="Body Text">Added support for 3rd parameter in AAdd() for specifying where to insert the new element (#1287)</li>
       <li styleclass="Body Text">The Default() function now no longer updates usuals that have a value of NULL_OBJECT to be compatible with Visual Objects.(#1119)</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
@@ -72,9 +75,8 @@
       <li styleclass="Body Text">Fixed problem with calling the disassembler when path specified (in option X# Custom Editors\Other Editors\Disassembler) with spaces (#1271)</li>
       <li styleclass="Body Text">Fixed editor coloring completely stopping when using some UDC calls (#1272)</li>
       <li styleclass="Body Text">Fixed problem with hint not showing on CONSTANT locals in FOR statements (#1274)</li>
-      <li styleclass="Body Text">The &quot;XSharp Website&quot; menu option inside VS was broken (#1297</li>
+      <li styleclass="Body Text">The &quot;XSharp Website&quot; menu option inside VS was broken (#1297)</li>
       <li styleclass="Body Text">Fixed problem with the Match Identical Identifiers functionality that could slow down Visual Studio</li>
-      <li styleclass="Body Text"></li>
     </list>
     <para styleclass="Heading1">Changes in 2.16.0.5</para>
     <para styleclass="Heading2">Compiler</para>

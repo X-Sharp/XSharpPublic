@@ -782,9 +782,6 @@
       <file-mod href="__localSpec.xml"/>
       <file-mod href="__NotInCoreVulcan.xml"/>
       <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
-      <file-mod href="Types.xml"/>
-      <file-mod href="Strong-Typing.xml"/>
-      <file-mod href="Runtime-Scripting.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

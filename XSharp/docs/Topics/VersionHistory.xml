@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-07-08T12:40:48.522+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-07-09T12:14:20.761+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -26,7 +26,7 @@
       <li styleclass="Body Text">Fixed problem with the debugger erratically stepping to incorrect lines (#1254, #1264)</li>
       <li styleclass="Body Text">Fixed problem with showing the wrong error line number in some cases with nested statements (#1268)</li>
       <li styleclass="Body Text">Fixed problem where a DO CASE statement without CASE lines was producing an internal error in the compiler (#1281) <text style="font-weight:bold;">UNCONFIRMED</text></li>
-      <li styleclass="Body Text">Fixed a couple &#160;preprocessor issues (#1284 <text style="font-weight:bold;">UNCONFIRMED</text>, #1289)</li>
+      <li styleclass="Body Text">Fixed a couple &#160;preprocessor issues (#1284, #1289)</li>
       <li styleclass="Body Text">Fixed missing compiler error on calling with SUPER a method that does not exist, when late binding is enabled (#1285)</li>
       <li styleclass="Body Text">Fixed a Failed to emit Module error with CONST class field missing value assignment (#1293)</li>
     </list>
@@ -60,21 +60,25 @@
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed member completion issue with Type[,] arrays (#980)</li>
       <li styleclass="Body Text">Fixed missing member completion in class inside namespace when same named class exists without namespace (#1204)</li>
+      <li styleclass="Body Text">Fixed an auto indent problem when an entity has an attribute in the precessing line (#1210)</li>
       <li styleclass="Body Text">Fixed intellisense problems with static members in some cases (#1212)</li>
       <li styleclass="Body Text">Fixed some intellisense issues with code or declarations spanning in multiple lines (#1221, #1260)</li>
       <li styleclass="Body Text">Fixed intellisense problem with nested classes inside a namespace (#1222)</li>
       <li styleclass="Body Text">Fixed incorrect resolving of VAR local type, when using a type cast (#1224)</li>
       <li styleclass="Body Text">Fixed several problems with collapsing/expanding code in the editor (#1233)</li>
       <li styleclass="Body Text">Fixed showing of bogus member completion list with unknown types (#1255)</li>
-      <li styleclass="Body Text">Fixed some problems with auto typing text with Ctrl + Space (complete Word) (#1256) <text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed some problems with auto typing text with Ctrl + Space (complete Word) (#1256)</li>
       <li styleclass="Body Text">Fixed coloring of Text .. EndText statements (#1257) <text style="font-weight:bold;">UNCONFIRMED</text></li>
-      <li styleclass="Body Text">Fixed several issues with tooltip hints with generic types (#1258, #1259, #1273) <text style="font-weight:bold;">1273</text>&#32;<text style="font-weight:bold;">UNCONFIRMED</text></li>
-      <li styleclass="Body Text">Fixed problem with delegate signature not showing in intellisense tooltips (#1265) <text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed several issues with tooltip hints with generic types (#1258, #1259, #1273)</li>
+      <li styleclass="Body Text">Fixed problem with delegate signature not showing in intellisense tooltips (#1265)</li>
       <li styleclass="Body Text">Fixed invalid coloring of code with multiline comments (#1269)</li>
       <li styleclass="Body Text">Fixed invalid entries in member completion after typing &quot;self.&quot; (#1270)</li>
       <li styleclass="Body Text">Fixed problem with calling the disassembler when path specified (in option X# Custom Editors\Other Editors\Disassembler) with spaces (#1271)</li>
       <li styleclass="Body Text">Fixed editor coloring completely stopping when using some UDC calls (#1272)</li>
       <li styleclass="Body Text">Fixed problem with hint not showing on CONSTANT locals in FOR statements (#1274)</li>
+      <li styleclass="Body Text">Fixed auto indent problem when code contains a LOOP or EXIT keyword (#1278)</li>
+      <li styleclass="Body Text">Fixed an exception in the editor when typing a parenthesis under specific circumstances (#1279)</li>
+      <li styleclass="Body Text">Fixed problem with incorrectly trying to open in design mode files with filenames starting with an opening bracket (#1292 )</li>
       <li styleclass="Body Text">The &quot;XSharp Website&quot; menu option inside VS was broken (#1297)</li>
       <li styleclass="Body Text">Fixed problem with the Match Identical Identifiers functionality that could slow down Visual Studio</li>
     </list>

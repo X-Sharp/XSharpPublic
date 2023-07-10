@@ -56,58 +56,58 @@ END CLASS
 ENUM XFormattingFlags
     MEMBER @@None := 0
 
-    /// <summary>
-    /// Namespace block
-    /// </summary>
-    MEMBER @@Namespace := 1 << 0
-    /// <summary>
-    /// Type block.
-    /// </summary>
-    MEMBER @@Type := 1 << 1
-    /// <summary>
-    /// Member Block
-    /// </summary>
-    MEMBER @@Member := 1 << 2
-    /// <summary>
-    /// Statement block
-    /// </summary>
-    MEMBER @@Statement := 1 << 3
-    /// <summary>
-    /// Does the statement have Middle keywords
-    /// </summary>
-    MEMBER @@Middle := 1 << 4
-    /// <summary>
-    /// Does the statement have CASE / OTHERWISE labels and need to follow the indent CASE setting
-    /// </summary>
-    MEMBER @@Case := 1 << 5
-    /// <summary>
-    /// block is a preprocessor block
-    /// </summary>
-    MEMBER @@Preprocessor := 1 << 6
-    /// <summary>
-    /// End keyword is optional
-    /// </summary>
-    MEMBER @@OptionalEnd := 1 << 7
-    /// <summary>
-    /// Single line is also allowed (PROPERTY, EVENT, ADD etc)
-    /// </summary>
-    MEMBER @@SingleLine := 1 << 8
-    /// <summary>
-    /// Does the rule allow to end with single END keyword
-    /// </summary>
-    MEMBER @@End := 1 << 9
-    /// <summary>
-    /// (Combined with type) Can the type be nested
-    /// </summary>
-    MEMBER @@Nested := 1 << 10
-    /// <summary>
-    ///  Token is an accessor
-    /// </summary>
-    MEMBER @@Accessor := 1 << 11
-    /// <summary>
-    ///  Token is an Jump Statement (like EXIT or LOOP)
-    /// </summary>
-    MEMBER @@Jump := 1 << 12
+/// <summary>
+/// Namespace block
+/// </summary>
+MEMBER @@Namespace := 1 << 0
+/// <summary>
+/// Type block.
+/// </summary>
+MEMBER @@Type := 1 << 1
+/// <summary>
+/// Member Block
+/// </summary>
+MEMBER @@Member := 1 << 2
+/// <summary>
+/// Statement block
+/// </summary>
+MEMBER @@Statement := 1 << 3
+/// <summary>
+/// Does the statement have Middle keywords
+/// </summary>
+MEMBER @@Middle := 1 << 4
+/// <summary>
+/// Does the statement have CASE / OTHERWISE labels and need to follow the indent CASE setting
+/// </summary>
+MEMBER @@Case := 1 << 5
+/// <summary>
+/// block is a preprocessor block
+/// </summary>
+MEMBER @@Preprocessor := 1 << 6
+/// <summary>
+/// End keyword is optional
+/// </summary>
+MEMBER @@OptionalEnd := 1 << 7
+/// <summary>
+/// Single line is also allowed (PROPERTY, EVENT, ADD etc)
+/// </summary>
+MEMBER @@SingleLine := 1 << 8
+/// <summary>
+/// Does the rule allow to end with single END keyword
+/// </summary>
+MEMBER @@End := 1 << 9
+/// <summary>
+/// (Combined with type) Can the type be nested
+/// </summary>
+MEMBER @@Nested := 1 << 10
+/// <summary>
+///  Token is an accessor
+/// </summary>
+MEMBER @@Accessor := 1 << 11
+/// <summary>
+///  Token is an Jump Statement (like EXIT or LOOP)
+/// </summary>
+MEMBER @@Jump := 1 << 12
 END ENUM
 
 /// <summary>
@@ -203,8 +203,8 @@ CLASS XFormattingRule
                 IF startrules:Count > 1
                     FOREACH VAR startrule IN startrules
                         IF !startrule:Stop:Equals(key) .AND. ;
-                            ! startrule:Flags:HasFlag(XFormattingFlags.Middle) .and. ;
-                            ! startrule:Flags:HasFlag(XFormattingFlags.Jump)
+                                ! startrule:Flags:HasFlag(XFormattingFlags.Middle) .and. ;
+                                ! startrule:Flags:HasFlag(XFormattingFlags.Jump)
                             IF first
                                 _synonyms:Add(key, List<XKeyword>{})
                                 first := FALSE
@@ -233,8 +233,8 @@ CLASS XFormattingRule
 #endregion
 
 #region public methods
-   PUBLIC STATIC METHOD IsJumpTarget(kw AS XKeyword) AS LOGIC
-       RETURN _jumpTargets:ContainsKey(kw)
+    PUBLIC STATIC METHOD IsJumpTarget(kw AS XKeyword) AS LOGIC
+        RETURN _jumpTargets:ContainsKey(kw)
 
     PUBLIC STATIC METHOD IsSingleKeyword(token AS LONG) AS LOGIC
         RETURN _singleKeywords:Get( token)
@@ -445,8 +445,10 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
     METHOD ReadRules () AS List<XFormattingRule>
         LOCAL stream := NULL AS ITokenStream
         TRY
-            lexer := XSharpLexer.Create(cSource, "rules.txt", XSharpParseOptions.Default)
-            XSharp.Parser.VsParser.Lex(cSource, "rules.txt", XSharpParseOptions.Default, SELF, OUT stream, OUT VAR includeFiles)
+            var options := List<String>{} {"lexonly"}
+            var parseOptions := XSharpParseOptions.FromVsValues(options)
+            lexer := XSharpLexer.Create(cSource, "rules.txt", parseOptions)
+            XSharp.Parser.VsParser.Lex(cSource, "rules.txt", parseOptions, SELF, OUT stream, OUT VAR includeFiles)
             VAR bufferedStream := (BufferedTokenStream) stream
             VAR tokens := bufferedStream:GetTokens()
             VAR line := List<IToken>{}

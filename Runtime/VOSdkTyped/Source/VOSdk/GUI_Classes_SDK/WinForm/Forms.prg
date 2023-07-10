@@ -129,6 +129,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 				DO CASE
 				CASE SELF:Window == NULL_OBJECT
 					// Do nothing
+                    NOP
 				CASE msg:Msg == WM_APPCOMMAND
 					SELF:Window:AppCommand(AppCommandEvent{msg})
 				CASE msg:Msg == WM_GETMINMAXINFO
@@ -140,7 +141,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		CATCH  AS Exception
 			// Swallow errors in here
 			//Debout(SELF:ToString(), __ENTITY__, SELF:IsAttached,e:Message, CRLF)
-
+            NOP
 		END TRY
 		RETURN
 

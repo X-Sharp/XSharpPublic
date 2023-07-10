@@ -51,6 +51,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF SELF:ReadHeader()
                         IF SELF:IsFlex
                             // Deal with indexes of deleted blocks
+                            NOP
                         ENDIF
                     ELSE
                         SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
@@ -73,6 +74,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF SELF:Shared
                     _oStream:Flush()
                     IF ! SELF:_unlock(0,1)
+                        NOP
                     ENDIF
                 ENDIF
                 SELF:_lockCount := 0

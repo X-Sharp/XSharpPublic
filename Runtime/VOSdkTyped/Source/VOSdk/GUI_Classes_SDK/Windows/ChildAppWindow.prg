@@ -46,6 +46,8 @@ CLASS ChildAppWindow INHERIT AppWindow
                 //IF lManaged
                 //SELF:EnableBorder(WindowNonSizingBorder)
                 //ENDIF
+                    NOP
+                
             ENDIF
             //ENDIF
         ENDIF

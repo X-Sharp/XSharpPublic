@@ -5,7 +5,7 @@ CLASS Accelerator INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Accelerator.AddAccelerator/*" />
-METHOD AddAccelerator(oAccelerator) 
+METHOD AddAccelerator(oAccelerator)
 	//SE-060525
    LOCAL hAc     AS PTR
    LOCAL dwI     AS DWORD
@@ -53,7 +53,7 @@ METHOD AddAccelerator(oAccelerator)
 
 
 /// <include file="Gui.xml" path="doc/Accelerator.AddKey/*" />
-METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift) 
+METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift)
 	//SE-060525
    LOCAL fVirt AS LONGINT
    LOCAL wKey  AS LONGINT
@@ -108,7 +108,7 @@ METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift)
 
 
 /// <include file="Gui.xml" path="doc/Accelerator.Create/*" />
-METHOD Create() 
+METHOD Create()
 	//SE-060525
    LOCAL dwI     AS DWORD
    LOCAL dwCount AS DWORD
@@ -136,11 +136,11 @@ METHOD Create()
             IF hAccel == NULL_PTR
                GC.SuppressFinalize(SELF)
             ENDIF
-#else            
+#else
             IF hAccel != NULL_PTR
-               RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition 
+               RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition
             ENDIF
-#endif            
+#endif
          ENDIF
          aAccels := {}
       ENDIF
@@ -192,7 +192,7 @@ METHOD Handle() AS PTR
 
 
 /// <include file="Gui.xml" path="doc/Accelerator.ctor/*" />
-CONSTRUCTOR(xResourceID) 
+CONSTRUCTOR(xResourceID)
 	//SE-060525
 	LOCAL hInst AS PTR
 	LOCAL lpTableName AS PTR
@@ -205,6 +205,7 @@ CONSTRUCTOR(xResourceID)
 		xResourceID := ResourceID{xResourceID}
 	ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
 		// Ok
+        NOP
 	ELSEIF IsNil(xResourceID) .OR. IsInstanceOfUsual(xResourceID, #Accelerator) //SE-060525
 		hAccel  := NULL_PTR
 		aAccels := {}
@@ -227,7 +228,7 @@ CONSTRUCTOR(xResourceID)
 	hAccel := LoadAccelerators(hInst, lpTableName)
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

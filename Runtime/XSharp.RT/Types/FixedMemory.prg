@@ -91,7 +91,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
             RETURN pMemBlockStart:dwGroup
         ENDIF
         RETURN 0
-        
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
     PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
         LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
@@ -167,6 +167,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
                 ENDIF
             ELSE
                 // TODO: Throw an exception or log the result when FixedMemory.Free fails
+                NOP
             ENDIF
         CATCH
             result := FixedMemory.FAILURE

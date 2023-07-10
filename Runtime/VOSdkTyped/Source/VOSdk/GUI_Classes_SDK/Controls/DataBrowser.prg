@@ -297,6 +297,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		DO CASE
 		CASE e:Control .or. e:Alt .or. e:Shift
 			// Do nothing
+            NOP
 		CASE e:KeyCode == Keys.Escape
 			e:IsInputKey := TRUE
 			SELF:__EndEditField(0)
@@ -629,6 +630,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 						ELSE
 							// No rows selected
 							//SELF:__DataGridView:SelectedRows:Clear()
+                            NOP
 
 						ENDIF
 
@@ -3484,6 +3486,7 @@ INTERNAL CLASS DataBrowserScrollBarManager
 				SELF:SyncGrid(nNew)
 			ELSE
 				// Stay on the same row
+                NOP
 			ENDIF
 		CASE se:Type == ScrollEventType.ThumbTrack
 			// This happens when they drag the thumb up and down
@@ -3510,6 +3513,8 @@ INTERNAL CLASS DataBrowserScrollBarManager
 		CASE se:Type == ScrollEventType.EndScroll
 			// Do nothing
 			//SELF:SyncGrid(nNew)
+            NOP
+            
 		ENDCASE
 		RETURN
 
@@ -3542,6 +3547,7 @@ INTERNAL CLASS DataBrowserScrollBarManager
 			_oGridView:TopRowIndex := currentIndex +  nLines
 		ELSEIF _oBrowser:HasBottom
 			// Do nothing. All the data is already there
+            NOP
 
 		ELSE
 			// Load new rows after the last row in the buffer and then position

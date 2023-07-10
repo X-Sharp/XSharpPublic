@@ -158,6 +158,7 @@ CLASS VODataGridView INHERIT SWF.DataGridView IMPLEMENTS IVOControl
 					SUPER:FirstDisplayedScrollingRowIndex := 0
 				ELSE
 					// Do Nothing
+                    NOP
 				ENDIF
 			END SET
 		END PROPERTY

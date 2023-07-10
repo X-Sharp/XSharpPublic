@@ -775,6 +775,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDIF
                     else
                         // Goto 0 moves the record pointer to EOF which is correct
+                    NOP
                     endif
                 endif
             ENDIF

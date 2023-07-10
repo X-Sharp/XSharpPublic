@@ -188,6 +188,7 @@ CLASS VOListBox INHERIT SWF.ListBox
 		// Windows forms does not raise a mouse double click event for the right mouse button
 		IF SELF:Control == NULL_OBJECT
 			// do nothing
+            NOP
 		ELSEIF (msg:Msg == WM_RBUTTONDBLCLK)
 			var me := SWF.MouseEventArgs{SWF.MouseButtons.Right, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
 			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, SWF.Control.ModifierKeys})

@@ -33,9 +33,9 @@ PARTIAL CLASS CMessage
 	PROTECT cMessageID          AS STRING
 	PROTECT cReferences         AS STRING
 	PROTECT nError			 	    AS DWORD
-	PROTECT cCharSet				  AS STRING 	
-	
-	
+	PROTECT cCharSet				  AS STRING
+
+
  /// <exclude />
 METHOD __CheckAttachment(cMail, nPart)
     LOCAL dwPos      AS DWORD
@@ -121,10 +121,14 @@ METHOD __DecodeContent(cValue AS STRING) AS STRING STRICT
       CASE dwType = CODING_TYPE_BASE64
            cValue := B64DecodeString(cValue)
       CASE dwType = CODING_TYPE_UUENCODE
+            NOP
       CASE dwType = CODING_TYPE_PRINTABLE
            cValue := QPDecode(cValue)
       CASE dwType = CODING_TYPE_7BIT
+            NOP
       CASE dwType = CODING_TYPE_UNKNOWN
+            NOP
+
    ENDCASE
    IF SELF:cCharSet == CHARSET_UTF8
    	 cValue := ConvertFromCodePageToCodePage(cValue, CP_UTF8, CP_ACP)
@@ -179,8 +183,8 @@ ASSIGN AttachmentFileList(xNew)
 
 
     RETURN SELF:aFileList
-    
-    
+
+
 /// <include file="Internet.xml" path="doc/CMessage.AttachmentList/*" />
 ACCESS  AttachmentList()
     RETURN SELF:aAttachList
@@ -195,7 +199,7 @@ ASSIGN  AttachmentList(xNew)
     ENDIF
 
 
-    RETURN 
+    RETURN
 
 
 /// <include file="Internet.xml" path="doc/CMessage.Body/*" />
@@ -287,7 +291,7 @@ ASSIGN BodyHtml(cNew)
     ENDIF
 
 
-    RETURN 
+    RETURN
 
 
 /// <include file="Internet.xml" path="doc/CMessage.Cargo/*" />
@@ -336,7 +340,7 @@ METHOD Decode(cMail)
 
     IF (dwPos := At2(TEMP_BOUND, cMail)) > 0
         dwPos += SLen(TEMP_BOUND)
-        IF (dwStop := At3(TEMP_STOP, cMail, dwPos)) > 0 
+        IF (dwStop := At3(TEMP_STOP, cMail, dwPos)) > 0
            cBound := SubStr(cMail, dwPos, dwStop - dwPos)
         ENDIF
     ENDIF
@@ -433,7 +437,7 @@ ASSIGN Error(n)
     ENDIF
 
 
-    RETURN 
+    RETURN
 
 
 
@@ -607,7 +611,7 @@ ASSIGN HEADER(c)
     IF IsString(c)
        SELF:cHeader  := c
     ENDIF
-    RETURN 
+    RETURN
 
 
 
@@ -685,7 +689,7 @@ ASSIGN Priority(nNew)
     ENDIF
 
 
-    RETURN 
+    RETURN
 
 
 /// <include file="Internet.xml" path="doc/CMessage.References/*" />

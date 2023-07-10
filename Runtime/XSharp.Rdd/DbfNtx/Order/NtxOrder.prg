@@ -695,6 +695,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ELSE
                     record := 1
                     DO WHILE SELF:_findItemPos(REF record, FALSE)
+                        NOP
                     ENDDO
                 ENDIF
             ENDIF

@@ -93,6 +93,7 @@ CLASS Menu INHERIT VObject
                 ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
                     // todo Menu Bitmaps
                     //lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_BITMAP, MF_ENABLED), nItemID, xNewItem:Handle())
+                    NOP
                 ENDIF
             ENDIF
         ENDIF
@@ -110,6 +111,7 @@ CLASS Menu INHERIT VObject
                 oItem:Checked := TRUE
             CATCH
                 // Do nothing
+                NOP
             END TRY
         ENDIF
 
@@ -275,6 +277,8 @@ CLASS Menu INHERIT VObject
             oMenu := VOMenu{}
             IF IsNil(xResourceID)
                 // Do nothing
+            NOP
+                
             ELSE
                 IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
                     oResourceID := ResourceID{xResourceID}
@@ -327,6 +331,7 @@ CLASS Menu INHERIT VObject
                     SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
                 ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
                     //retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_BITMAP), MF_ENABLED), nItemID, PSZ(_CAST, xNewItem:Handle()))
+                    NOP
                 ENDIF
             ENDIF
         ENDIF

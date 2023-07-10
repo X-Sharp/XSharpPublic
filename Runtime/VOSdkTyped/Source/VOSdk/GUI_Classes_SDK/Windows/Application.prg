@@ -39,9 +39,11 @@ CLASS App INHERIT VObject
             CASE (wMode == HM_GENERAL)
                 //Todo __SetHelpWind
                 //hHelpAccel := LoadAccelerators(_GetInst(), String2Psz("GeneralHelp"))
+                NOP
             CASE (wMode == HM_MOUSE)
                 //Todo __SetHelpWind
                 //hHelpAccel := LoadAccelerators(_GetInst(), String2Psz("CursorHelp"))
+                NOP
             OTHERWISE
                 hHelpAccel := NULL_PTR
             ENDCASE
@@ -49,6 +51,7 @@ CLASS App INHERIT VObject
             IF (hHelpCursor == NULL) //Load help cursor first time through
                 //Todo __SetHelpWind
                 //hHelpCursor := LoadCursor(_GetInst(), String2Psz("HelpCursor"))
+                NOP
             ENDIF
 
         END LOCK

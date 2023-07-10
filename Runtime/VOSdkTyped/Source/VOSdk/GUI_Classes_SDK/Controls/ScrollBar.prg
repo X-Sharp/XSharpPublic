@@ -81,6 +81,8 @@ ABSTRACT CLASS ScrollBar INHERIT Control
 		__ScrollBar:Value := nPosition
 		IF lNotifyOwner
 			//Todo Notify Owner
+            NOP
+            
 		ENDIF
 		RETURN NIL
 

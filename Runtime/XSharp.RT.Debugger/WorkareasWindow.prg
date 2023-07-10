@@ -292,6 +292,8 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 					SELF:FillFields(oRdd)
 				CATCH /*e*/ AS System.Exception
                 //					MessageBox.Show(e:ToString(), "Some error happened:")
+                NOP
+
 				END TRY
 				SELF:oNavigator:Enabled := TRUE
 			CATCH
@@ -381,6 +383,7 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 			END IF
 		CATCH /*e*/ AS System.Exception
             //			MessageBox.Show(e:ToString(), "Some error happened:")
+            NOP
 		END TRY
 
 	PROTECTED METHOD FillFields(oRdd AS XSharp.RDD.IRdd) AS VOID

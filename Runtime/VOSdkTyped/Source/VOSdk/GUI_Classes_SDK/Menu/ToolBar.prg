@@ -177,6 +177,7 @@ CLASS ToolBar INHERIT Control
 				//sTBAddBitmap:hInst := NULL_PTR
 				//sTBAddBitmap:nID   := DWORD(_CAST,oBitmap:Handle())
 				//SendMessage(hWndTB, TB_ADDBITMAP , DWORD(_CAST,nImageCount), LONGINT(_CAST,@sTBAddBitmap))
+                    NOP
 			ENDIF
 
 		ENDIF
@@ -541,11 +542,15 @@ CLASS ToolBar INHERIT Control
 							//		ELSE
 							//			strucButton:iBitmap := 1l
 							//		ENDIF
+                            NOP
+
 						ELSE
 							//		strucButton:iBitmap := nButtonID - 1
+                            NOP
 						ENDIF
 					ELSE
 						//	strucButton:iBitmap := -1l
+                        NOP
 					ENDIF
 
 					//strucButton:iString := -1l
@@ -556,6 +561,8 @@ CLASS ToolBar INHERIT Control
 							//			strucButton:iString := SendMessage(hwndTB, TB_ADDSTRING, 0, LONGINT(_CAST, pszTitle))
 							//			MemFree(pszTitle)
 							//		ENDIF
+                            NOP
+
 						ELSEIF nButtonID > 0 .AND. nButtonID <= IDT_CUSTOMBITMAP .AND. oBitmap != NULL_OBJECT
 							//		LOCAL cText AS STRING
 							cTitle := __CavoStr( __WCToolBarOffset + nButtonID )
@@ -1051,6 +1058,8 @@ CLASS ToolBar INHERIT Control
 				//		SendMessage(oChild:Handle, TB_ENABLEBUTTON, nMenuItemID, 0)
 				//	ENDIF
 				//NEXT
+                NOP
+
 			ELSE
 				SELF:__TryDeferAction(#DisableItem, nMenuItemID, NULL_SYMBOL)
 			ENDIF
@@ -1101,6 +1110,7 @@ CLASS ToolBar INHERIT Control
 				//		SendMessage(oChild:Handle, TB_ENABLEBUTTON, nMenuItemID,0xFFFFFFFFL)
 				//	ENDIF
 				//NEXT
+                NOP
 			ELSE
 				SELF:__TryDeferAction(#EnableItem, nMenuItemID, NULL_SYMBOL)
 			ENDIF
@@ -1335,6 +1345,7 @@ CLASS ToolBar INHERIT Control
 					oButton:Style := System.Windows.Forms.ToolBarButtonStyle.Separator
 				ELSEIF IsLong(nMenuItemID)
 					// Button
+                    NOP
 
 				ENDIF
 				oTB:Buttons:Insert(nBeforeID, oButton)
@@ -1480,6 +1491,7 @@ CLASS ToolBar INHERIT Control
 
 		IF (oTB != NULL_OBJECT)
 			//SendMessage(hwndTB, TB_SETROWS, MAKEWPARAM(WORD(_CAST, nRows), WORD(_CAST, TRUE)), LONGINT(_CAST, @strucRect))
+            NOP
 		ELSE
 			SELF:__TryDeferAction(#Rows, 0, symToolBar)
 		ENDIF
@@ -1573,6 +1585,7 @@ CLASS ToolBar INHERIT Control
 		IF (oTB != NULL_OBJECT)
 			//LOCAL IMPLIED oButton := oTB:GetButton(nMenuItemID, TRUE)
 			//oButton:State := nState
+            NOP
 		ENDIF
 
 		RETURN NIL

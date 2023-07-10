@@ -1095,6 +1095,7 @@ METHOD __PrePreMenuCommand()
 
     Sleep(200)
     DO WHILE PeekMessage(@msg,SELF:handle(),WM_KEYUP,WM_KEYUP,PM_REMOVE)
+        NOP
     ENDDO
     RETURN SELF
 
@@ -2971,6 +2972,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 
                                     CASE (bByte == 38) // "&"
                                             //Don't copy it
+                                         NOP
 
 
                                     CASE (bByte == 32) // Space

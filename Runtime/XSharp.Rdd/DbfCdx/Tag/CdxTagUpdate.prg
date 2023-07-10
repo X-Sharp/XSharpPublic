@@ -219,6 +219,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDDO
                 ENDIF
             ELSE
+                    NOP
+
             ENDIF
             IF found
                 result := oParent:Delete(nPos)

@@ -7,7 +7,7 @@ CLASS CImap INHERIT CPop
 
 
  /// <exclude />
-METHOD  __FetchExtract  (c)     
+METHOD  __FetchExtract  (c)
     LOCAL nPos      AS DWORD
     LOCAL cEnd      AS STRING
 
@@ -29,7 +29,7 @@ METHOD  __FetchExtract  (c)
 
 
  /// <exclude />
-METHOD  __FetchToken    (cBuffer, cStart, cStop) 
+METHOD  __FetchToken    (cBuffer, cStart, cStop)
     LOCAL nPos      AS DWORD
     LOCAL cRet      AS STRING
 
@@ -48,7 +48,7 @@ METHOD  __FetchToken    (cBuffer, cStart, cStop)
 
 
  /// <exclude />
-METHOD  __GetBody     (nMail) 
+METHOD  __GetBody     (nMail)
     LOCAL cBody     AS STRING
     LOCAL cTemp     AS STRING
 
@@ -69,7 +69,7 @@ METHOD  __GetBody     (nMail)
 
 
  /// <exclude />
-METHOD  __GetHeader   (nMail) 
+METHOD  __GetHeader   (nMail)
     LOCAL cHeader   AS STRING
     LOCAL cTemp     AS STRING
 
@@ -86,7 +86,7 @@ METHOD  __GetHeader   (nMail)
 
 
  /// <exclude />
-METHOD  __GetSize   (nMail) 
+METHOD  __GetSize   (nMail)
     LOCAL nRet      AS INT
     LOCAL cTemp     AS STRING
 
@@ -104,7 +104,7 @@ METHOD  __GetSize   (nMail)
 
 
 /// <include file="Internet.xml" path="doc/CImap.CheckReply/*" />
-METHOD  CheckReply      ()  
+METHOD  CheckReply      ()
     LOCAL c     AS STRING
     LOCAL lRet  AS LOGIC
     LOCAL cLast AS STRING
@@ -128,9 +128,9 @@ METHOD  CheckReply      ()
 
 
     IF SubStr(cLast, 1, 7) == c
-        lRet := .T. 
+        lRet := .T.
     ELSE
-        lRet := .F. 
+        lRet := .F.
     ENDIF
 
 
@@ -140,7 +140,7 @@ METHOD  CheckReply      ()
 
 
 /// <include file="Internet.xml" path="doc/CImap.ClientCommand/*" />
-METHOD  ClientCommand   (cBuffer)    
+METHOD  ClientCommand   (cBuffer)
     LOCAL lRet      AS LOGIC
 
 
@@ -167,7 +167,7 @@ METHOD  ClientCommand   (cBuffer)
 
 
 /// <include file="Internet.xml" path="doc/CImap.DeleteMail/*" />
-METHOD  DeleteMail      (nMail)     
+METHOD  DeleteMail      (nMail)
     LOCAL cTemp     AS STRING
 
 
@@ -186,7 +186,7 @@ METHOD  DeleteMail      (nMail)
 
 
 /// <include file="Internet.xml" path="doc/CImap.Disconnect/*" />
-METHOD  Disconnect      ()                              
+METHOD  Disconnect      ()
     LOCAL cBuffer   AS STRING
 
 
@@ -201,7 +201,7 @@ METHOD  Disconnect      ()
 
 
         IF !SELF:SendRemote(cBuffer)
-            RETURN .F. 
+            RETURN .F.
         ENDIF
 
 
@@ -209,7 +209,7 @@ METHOD  Disconnect      ()
 
 
         IF !SELF:RecvRemote()
-            RETURN .F. 
+            RETURN .F.
         ENDIF
 
 
@@ -220,13 +220,13 @@ METHOD  Disconnect      ()
     ENDIF
 
 
-    RETURN .T. 
+    RETURN .T.
 
 
 
 
 /// <include file="Internet.xml" path="doc/CImap.GetMail/*" />
-METHOD  GetMail         (nMail) 
+METHOD  GetMail         (nMail)
     LOCAL cHeader   AS STRING
     LOCAL cBody     AS STRING
     LOCAL cTemp     AS STRING
@@ -271,7 +271,7 @@ METHOD  GetMail         (nMail)
 
 
 /// <include file="Internet.xml" path="doc/CImap.GetPrefix/*" />
-METHOD  GetPrefix       ()                              
+METHOD  GetPrefix       ()
     SELF:nPrefix := SELF:nPrefix + 1
     RETURN NTrim(SELF:nPrefix) + " "
 
@@ -279,7 +279,7 @@ METHOD  GetPrefix       ()
 
 
 /// <include file="Internet.xml" path="doc/CImap.GetStatus/*" />
-METHOD  GetStatus       ()      
+METHOD  GetStatus       ()
     LOCAL cBuffer   AS STRING
     LOCAL cTemp     AS STRING
     LOCAL i         AS DWORD
@@ -310,7 +310,9 @@ METHOD  GetStatus       ()
 
     IF SELF:RecvRemote()
         IF SELF:CheckReply()
+            NOP
         ELSE
+            NOP
         ENDIF
         cBuffer := SELF:ReplyString
     ELSE
@@ -338,7 +340,7 @@ METHOD  GetStatus       ()
 
 
 /// <include file="Internet.xml" path="doc/CImap.ctor/*" />
-CONSTRUCTOR            (cServer, cUid, cPwd)               
+CONSTRUCTOR            (cServer, cUid, cPwd)
 
 
     SUPER(cServer, cUid, cPwd, IPPORT_IMAP)
@@ -370,13 +372,13 @@ CONSTRUCTOR            (cServer, cUid, cPwd)
     SELF:cMailBox := "inbox"
 
 
-    RETURN 
+    RETURN
 
 
 
 
 /// <include file="Internet.xml" path="doc/CImap.LogOn/*" />
-METHOD  LogOn           (cUID, cPwd)    
+METHOD  LogOn           (cUID, cPwd)
     LOCAL cBuffer AS STRING
 
 
@@ -401,7 +403,7 @@ METHOD  LogOn           (cUID, cPwd)
 
 
     IF !SELF:connect( SELF:cHostAddress )
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -412,18 +414,18 @@ METHOD  LogOn           (cUID, cPwd)
 
 
     IF !SELF:SendRemote(cBuffer)
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF !SELF:RecvRemote()
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF !SELF:CheckReply()
         SELF:nError :=  ERROR_INTERNET_INCORRECT_PASSWORD
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -432,18 +434,18 @@ METHOD  LogOn           (cUID, cPwd)
     ENDIF
 
 
-    RETURN .T. 
+    RETURN .T.
 
 
 
 
 /// <include file="Internet.xml" path="doc/CImap.MailBox/*" />
-ACCESS  MailBox         ()                                  
+ACCESS  MailBox         ()
     RETURN SELF:cMailBox
 
 
 /// <include file="Internet.xml" path="doc/CImap.MailBox/*" />
-ASSIGN  MailBox         (xNew)                              
+ASSIGN  MailBox         (xNew)
     DEFAULT(@xNew, "")
     IF SELF:nCurState > 0
         IF SLen(xNew) > 0
@@ -454,11 +456,11 @@ ASSIGN  MailBox         (xNew)
     ELSE
         SELF:cMailBox := xNew
     ENDIF
-    RETURN 
+    RETURN
 
 
 /// <include file="Internet.xml" path="doc/CImap.SendRemote/*" />
-METHOD  SendRemote      (cData)                         
+METHOD  SendRemote      (cData)
     LOCAL lRet      AS LOGIC
 
 

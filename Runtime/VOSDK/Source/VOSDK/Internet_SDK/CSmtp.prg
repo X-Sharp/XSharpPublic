@@ -16,30 +16,30 @@ CLASS CSmtp INHERIT CMailAbstract
 
 
  /// <exclude />
-METHOD __StartData () 
+METHOD __StartData ()
 
 
 	IF ! SELF:SendRemote("DATA" + CRLF)
-		RETURN .F. 
+		RETURN .F.
 	ENDIF
 
 
 	IF !SELF:RecvRemote()
-		RETURN .F. 
+		RETURN .F.
 	ENDIF
 
 
 	IF !SELF:CheckReply()
 		SELF:nError := 214
-		RETURN .F. 
+		RETURN .F.
 	ENDIF
 
 
-	RETURN .T. 
+	RETURN .T.
 
 
  /// <exclude />
-METHOD __StopSending (lSuccess) 
+METHOD __StopSending (lSuccess)
 
 
 	LOCAL cTemp AS STRING
@@ -71,8 +71,8 @@ METHOD CheckReply()
 
 
 	SELF:nReply := Val(SubStr3(SELF:cReply, 1, 4) )
-	
-	
+
+
 	IF cChar == "4" .OR. cChar == "5"
 		SELF:nError := DWORD(SELF:nReply)
 		RETURN FALSE
@@ -88,7 +88,7 @@ METHOD CheckReply()
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.connect/*" />
-METHOD connect(cIP, nPort) 
+METHOD connect(cIP, nPort)
 	LOCAL cBuffer AS STRING
 	LOCAL wPort   AS WORD
 
@@ -136,7 +136,7 @@ METHOD connect(cIP, nPort)
 	ENDIF
 
 
-	// For multiline 250- responses  
+	// For multiline 250- responses
 	DO WHILE SELF:nReply = 250 .AND. RAt2("250 ", SELF:cReply) = 0
 		IF ! SELF:RecvRemote()
 			RETURN FALSE
@@ -157,7 +157,7 @@ METHOD connect(cIP, nPort)
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.Disconnect/*" />
-METHOD Disconnect () 
+METHOD Disconnect ()
 	LOCAL cBuffer AS STRING
 	LOCAL lRet AS LOGIC
 
@@ -166,14 +166,14 @@ METHOD Disconnect ()
 
 
 	IF SELF:lSocketOpen
-		
-		
+
+
 		cBuffer := DEFAULT_STOPDATA
 		IF (lRet := SELF:SendRemote(cBuffer))
 			lRet := SELF:RecvRemote()
 		ENDIF
-		
-		
+
+
 		IF lRet
 			IF ! (lRet := SELF:CheckReply())
 				SELF:nError := 215
@@ -185,13 +185,13 @@ METHOD Disconnect ()
 		IF lRet
 			lRet := SELF:SendRemote(cBuffer)
 		ENDIF
-		
-		
+
+
 		IF lRet
 			lRet := SELF:RecvRemote()
 		ENDIF
-		
-		
+
+
 		IF lRet
 			IF ! (lRet := SELF:CheckReply())
 				SELF:nError := 216
@@ -207,12 +207,12 @@ METHOD Disconnect ()
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.Email/*" />
-ACCESS Email 
+ACCESS Email
 	RETURN SELF:oEmail
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.Email/*" />
-ASSIGN Email(oMail) 
+ASSIGN Email(oMail)
 
 
 	IF IsInstanceOf(oMail, #CEmail)
@@ -220,19 +220,19 @@ ASSIGN Email(oMail)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.EmailFormat/*" />
-ACCESS EmailFormat 
+ACCESS EmailFormat
 	RETURN SELF:nEmailFormat
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.EmailFormat/*" />
-ASSIGN EmailFormat(nValue) 
+ASSIGN EmailFormat(nValue)
 	DO CASE
 	CASE nValue == EMAIL_FORMAT_MIME
-
+        NOP
 
 	CASE nValue == EMAIL_FORMAT_UUENCODE
 		IF SELF:oEmail != NULL_OBJECT
@@ -251,9 +251,9 @@ ASSIGN EmailFormat(nValue)
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.ctor/*" />
-CONSTRUCTOR(oMail, cServer, nPort) 
-	
-	
+CONSTRUCTOR(oMail, cServer, nPort)
+
+
 	// the class to send an email - the email is expected to be fully formatted
 	// the owner window is used to find and report transmission status
     DEFAULT(@nPort, IPPORT_SMTP)
@@ -267,13 +267,13 @@ CONSTRUCTOR(oMail, cServer, nPort)
 	SELF:nEmailFormat     := EMAIL_FORMAT_MIME		// this is default. Could be UUENCODE but not recommmended
 	SELF:TextEncoding     := CODING_TYPE_PRINTABLE
 	 SELF:cMailApplication := "SMTP Mailer V1.6 - Powered by build "+__VERSION__
-	
-	
-	RETURN 
+
+
+	RETURN
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.Logon/*" />
-METHOD Logon() 
+METHOD Logon()
 	LOCAL cBuffer  AS STRING
 	LOCAL cUserID 	AS STRING
 	LOCAL cPassW 	AS STRING
@@ -282,21 +282,21 @@ METHOD Logon()
 
 	cUserID := B64EncodeString(SELF:UserName)
 	cPassW  := B64EncodeString(SELF:PassWord)
-	
-	
+
+
 	IF ! SELF:SendRemote("AUTH LOGIN " + cUserID + CRLF)
-		RETURN FALSE	
+		RETURN FALSE
 	ENDIF
 
 
 	IF ! SELF:RecvRemote()
-		RETURN FALSE	
+		RETURN FALSE
 	ENDIF
 
 
 	cBuffer := SubStr2(SELF:cReply, 5)
-	
-	
+
+
 	IF (dwPos := At2(CRLF, cBuffer)) > 0
 		cBuffer := Left(cBuffer, dwPos+1)
 		//extract Bass64 coded string and being sure that no other characters
@@ -307,7 +307,7 @@ METHOD Logon()
 			//
 			IF ! SELF:CheckReply()
 				SELF:nError := 213
-				RETURN FALSE	
+				RETURN FALSE
 			ENDIF
 			//
 			IF ! SELF:SendRemote(cPassW + CRLF)
@@ -316,13 +316,13 @@ METHOD Logon()
 
 
 			IF ! SELF:RecvRemote()
-				RETURN FALSE	
+				RETURN FALSE
 			ENDIF
 
 
 			IF ! SELF:CheckReply()
 				SELF:nError := 213
-				RETURN FALSE	
+				RETURN FALSE
 			ENDIF
 		ENDIF
 	ENDIF
@@ -332,17 +332,17 @@ METHOD Logon()
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.MailApplication/*" />
-ACCESS MailApplication 
+ACCESS MailApplication
    RETURN SELF:cMailApplication
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.MailApplication/*" />
-ASSIGN MailApplication(cValue) 
+ASSIGN MailApplication(cValue)
    SELF:cMailApplication := cValue
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.RecvRemote/*" />
-METHOD RecvRemote() 
+METHOD RecvRemote()
 	LOCAL lRet   AS LOGIC
 	LOCAL dwSize AS DWORD
 	LOCAL cRet	 AS STRING
@@ -381,17 +381,17 @@ METHOD RecvRemote()
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.SecureSMTP/*" />
-ACCESS SecureSMTP 
+ACCESS SecureSMTP
 	RETURN lSecureSMTP
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.SecureSMTP/*" />
-ASSIGN SecureSMTP(lValue) 
+ASSIGN SecureSMTP(lValue)
 	SELF:lSecureSMTP := lValue
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.SendHeaderInfo/*" />
-METHOD SendHeaderInfo() 
+METHOD SendHeaderInfo()
 	LOCAL lRet        AS LOGIC
 	LOCAL dwI, dwJ    AS DWORD
 	LOCAL dwCount     AS DWORD
@@ -400,14 +400,14 @@ METHOD SendHeaderInfo()
 	LOCAL aRCPT       AS ARRAY
 	LOCAL cAddress    AS STRING
 	LOCAL cFromAdr    AS STRING
-	LOCAL dwRCPTs     AS DWORD  
+	LOCAL dwRCPTs     AS DWORD
 	LOCAL cFrom			AS STRING
 
 
 	// First we will build an array of potential recipients - this strips out potential duplications
 	// when the same person is in CC's, BCC's or in the TO list
-	
-	
+
+
 	IF IsString(cFrom)
 		cFromAdr := __ParseAddress(SELF:oEmail:From,  OUT NULL)
 	ENDIF
@@ -494,15 +494,15 @@ METHOD SendHeaderInfo()
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.SendMail/*" />
-METHOD SendMail() 
+METHOD SendMail()
     LOCAL lRet   AS LOGIC
     LOCAL cData  AS STRING
-    
-    
+
+
     SELF:nCurState := CONNECTING
     SELF:nError := 0
-    
-    
+
+
     IF ! SELF:connect(SELF:cHostAddress)
         SELF:Close()
         RETURN FALSE
@@ -523,22 +523,22 @@ METHOD SendMail()
     IF __GetMailInfo(SELF:oEmail:Cargo, TEMP_MAILER, FALSE) == NULL_STRING
         SELF:oEmail:Cargo += TEMP_MAILER + " " + __EncodeField(SELF:cMailApplication, SLen(TEMP_MAILER)+1) + CRLF
     ENDIF
-    
-    
+
+
     SmtpTransparency(@cData)
     lRet  := TRUE
     SELF:oEmail:StreamStart()
     DO WHILE lRet
-        cData := oEmail:StreamOut()  
+        cData := oEmail:StreamOut()
         IF cData == NULL_STRING
             EXIT
-        ENDIF   
-        
-        
-        // see RFC-2821 chapter 4.5.2 Transparency 
+        ENDIF
+
+
+        // see RFC-2821 chapter 4.5.2 Transparency
         SmtpTransparency(@cData)
-        
-        
+
+
         lRet  := SELF:oSocket:SendRawText(cData)
     ENDDO
 
@@ -551,20 +551,20 @@ METHOD SendMail()
 
 
     SELF:__StopSending(lRet)
-    
-    
+
+
     cData := NULL_STRING
 
 
     RETURN lRet
 
 
-	
-	
+
+
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.TextEncoding/*" />
-ACCESS TextEncoding 
+ACCESS TextEncoding
 
 
 	IF SELF:oEmail == NULL_OBJECT
@@ -576,11 +576,11 @@ ACCESS TextEncoding
 
 
 /// <include file="Internet.xml" path="doc/CSmtp.TextEncoding/*" />
-ASSIGN TextEncoding(n) 
+ASSIGN TextEncoding(n)
 
 
 	IF SELF:oEmail == NULL_OBJECT
-		RETURN 
+		RETURN
 	ENDIF
 
 
@@ -594,44 +594,44 @@ PRIVATE STATIC METHOD SmtpTransparency(cData REF STRING) AS VOID PASCAL
     Before sending a line of mail text, the SMTP client checks the
     first character of the line. If it is a period, one additional
     period is inserted at the beginning of the line.
-    
-    
+
+
     Optimized for a minimum of String memory usage
-    */   
+    */
     STATIC bLast AS BYTE
     LOCAL  dwLen AS DWORD
-    
-    
+
+
     IF At2(CRLF+".", cData) > 0
         cData := StrTran(cData, CRLF+".", CRLF+"..")
     ENDIF
-    
-    
+
+
     IF bLast = 0x0A
         IF Asc(cData) = 46
             cData := "." + cData
-        ENDIF   
-    ELSEIF bLast = 0x0D       
-        IF cData = _CHR(0x0A)+"." 
+        ENDIF
+    ELSEIF bLast = 0x0D
+        IF cData = _CHR(0x0A)+"."
             cData := Stuff(cData, 2, 0, ".")
-        ENDIF   
+        ENDIF
     ENDIF
-    
-    
+
+
     IF (dwLen := SLen(cData)) > 0
         bLast := cData[dwLen - 1]
         IF bLast = 0x0A
-            IF dwLen > 1 
+            IF dwLen > 1
                IF cData[dwLen - 2] == 0x0D
                     RETURN
-                ENDIF    
-            ENDIF     
+                ENDIF
+            ENDIF
         ELSEIF bLast = 0x0D
             RETURN
-        ENDIF   
+        ENDIF
     ENDIF
-    
-    
+
+
     bLast := 0
     RETURN
 

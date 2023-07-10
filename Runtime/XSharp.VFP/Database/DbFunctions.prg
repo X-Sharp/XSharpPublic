@@ -332,7 +332,8 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
             NEXT
         ENDIF
         aResult := aSource
-    ELSE
+        ELSE
+            NOP
     ENDIF
     RETURN aResult
 

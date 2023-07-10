@@ -68,6 +68,7 @@ CLASS ShellWindow INHERIT AppWindow
             // if (oSavedTB != NULL_OBJECT)
             // SendMessage(oToolBar:Handle(), RB_DELETEBAND, 1, 0)
             //endif
+            NOP
         ENDIF
 
         RETURN oToolBar
@@ -96,6 +97,8 @@ CLASS ShellWindow INHERIT AppWindow
                 // oChildToolBar:__SetParent(oToolBar)
                 // oChildToolBar:Show()
                 // oToolBar:AddBand(#__CHILDTBBAND, oChildToolBar, 1, 50, 25)
+                NOP
+                
             ENDIF
 
         ENDIF

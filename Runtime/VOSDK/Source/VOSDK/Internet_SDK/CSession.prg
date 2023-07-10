@@ -427,6 +427,7 @@ METHOD Open(nFlags, xProxy, aProxyByPass)
             NEXT
             SELF:cProxyBypass := Trim(cTemp)
         ELSE
+            NOP
         ENDIF
 
 
@@ -570,7 +571,7 @@ ASSIGN RemoteHost(cServer)
 METHOD SetResponseStatus()
     LOCAL dwError                   AS DWORD
     LOCAL dwSize                    AS DWORD
-    LOCAL DIM abStatus[STATUS_SIZE] AS BYTE	
+    LOCAL DIM abStatus[STATUS_SIZE] AS BYTE
     LOCAL cStatus                   AS STRING
     LOCAL dwContext                 AS DWORD
 

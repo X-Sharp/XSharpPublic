@@ -183,6 +183,7 @@ CLASS Accelerator INHERIT VObject
             xResourceID := ResourceID{xResourceID}
         ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
             // Ok
+                            NOP
         ELSEIF IsNil(xResourceID) .OR. IsInstanceOfUsual(xResourceID, #Accelerator) //SE-060525
             aKeys := List<AcceleratorKey>{}
             hAccel  := NULL_PTR

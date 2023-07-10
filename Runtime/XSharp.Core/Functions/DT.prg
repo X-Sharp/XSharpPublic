@@ -247,7 +247,8 @@ STATIC FUNCTION _SplitDate(cDate AS STRING) AS INT[]
             END IF
             lAfterDigit := FALSE
         ELSE
-            // second anbd more non digits are ignored
+            // second and more non digits are ignored
+            NOP
 		END IF
 	NEXT
 RETURN aNums
@@ -300,11 +301,11 @@ FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	IF nDayPos == -1 .OR. nMonthPos == -1 .OR. nYearPos == -1
 		RETURN dDate
 	ENDIF
-	
+
 	IF nYearPos == 2
 		RETURN _CToDt_YearAtTheEnd(cDate, nDayPos, nMonthPos, nYearPos)
 	END IF
-	
+
 	TRY
 		// we now know the seperators and the positions in the string
 		// LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
@@ -329,10 +330,10 @@ FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	RETURN dDate
 
 
-// We introduce a special version of the function that handles many of VO's strange behaviors when year is specified 
+// We introduce a special version of the function that handles many of VO's strange behaviors when year is specified
 // last in the date format template. If the year is not specified last, then the behavior is yet again very different
 STATIC FUNCTION _CToDt_YearAtTheEnd(cDate AS STRING, nDayPos AS INT, nMonthPos AS INT, nYearPos AS INT) AS DateTime
-	
+
 	LOCAL FUNCTION Local_SplitDate(cDate AS STRING) AS INT[]
 		LOCAL aNums := INT[]{3} AS INT[]
 		LOCAL nCurChar := 0 AS INT
@@ -359,7 +360,7 @@ STATIC FUNCTION _CToDt_YearAtTheEnd(cDate AS STRING, nDayPos AS INT, nMonthPos A
 				END IF
 			END IF
 		END DO
-		
+
 		LOCAL cYear := cDate:Substring(nCurChar) AS STRING
 		LOCAL nYear := 0 AS INT
 		LOCAL nYearLength := 0 AS INT
@@ -379,7 +380,7 @@ STATIC FUNCTION _CToDt_YearAtTheEnd(cDate AS STRING, nDayPos AS INT, nMonthPos A
 				EXIT
 			END IF
 		ENDDO
-		
+
 		SWITCH nYearLength
 		CASE 1
 		CASE 2

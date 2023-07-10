@@ -3,7 +3,7 @@ CLASS CFtp INHERIT CSession
 
 
 /// <include file="Internet.xml" path="doc/CFtp.Append/*" />
-METHOD Append (cLocalFile, nFlags) 
+METHOD Append (cLocalFile, nFlags)
 
 
     LOCAL lRet          AS LOGIC
@@ -15,7 +15,7 @@ METHOD Append (cLocalFile, nFlags)
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -27,7 +27,7 @@ METHOD Append (cLocalFile, nFlags)
 
 
     IF !File(cLocalFile)
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -49,7 +49,7 @@ METHOD Append (cLocalFile, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.ConnectRemote/*" />
-METHOD ConnectRemote(cIP, cID, cPw, lBypass) 
+METHOD ConnectRemote(cIP, cID, cPw, lBypass)
 
 
 	LOCAL lRet          AS LOGIC
@@ -107,7 +107,9 @@ METHOD ConnectRemote(cIP, cID, cPw, lBypass)
 		IF SELF:nError = 0
 			SELF:nError := ERROR_INTERNET_NAME_NOT_RESOLVED
 		ENDIF
-	ELSE
+    ELSE
+        NOP
+
 	ENDIF
 
 
@@ -115,19 +117,19 @@ METHOD ConnectRemote(cIP, cID, cPw, lBypass)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.CreateDir/*" />
-METHOD CreateDir(cRemoteDir) 
+METHOD CreateDir(cRemoteDir)
 
 
     LOCAL lRet AS LOGIC
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF !IsString(cRemoteDir) .OR. SLen(cRemoteDir) = 0
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -143,19 +145,19 @@ METHOD CreateDir(cRemoteDir)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.DeleteFile/*" />
-METHOD DeleteFile(cRemoteFile) 
+METHOD DeleteFile(cRemoteFile)
 
 
     LOCAL lRet AS LOGIC
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF SLen(cRemoteFile) = 0
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -171,7 +173,7 @@ METHOD DeleteFile(cRemoteFile)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.Directory/*" />
-METHOD Directory (cFile, nFlags) 
+METHOD Directory (cFile, nFlags)
 
 
     LOCAL pData      AS _WINWIN32_FIND_DATA
@@ -232,7 +234,7 @@ METHOD Directory (cFile, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.GetCurDir/*" />
-METHOD GetCurDir() 
+METHOD GetCurDir()
 
 
     LOCAL     lRet              AS LOGIC
@@ -243,7 +245,7 @@ METHOD GetCurDir()
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -256,8 +258,8 @@ METHOD GetCurDir()
 
 
     lRet  := FtpGetCurrentDirectory(SELF:hConnect, @abTemp[1], @nSize)
-      
-      
+
+
     InternetSetStatusCallback( SELF:hConnect, pSave )
 
 
@@ -274,14 +276,14 @@ METHOD GetCurDir()
 
 
 /// <include file="Internet.xml" path="doc/CFtp.GetFile/*" />
-METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags) 
+METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
 
 
     LOCAL lRet AS LOGIC
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -292,7 +294,7 @@ METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
 
 
     IF SLen(cRemoteFile) = 0
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -316,7 +318,7 @@ METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.ctor/*" />
-CONSTRUCTOR (cCaption, n, lStat) 
+CONSTRUCTOR (cCaption, n, lStat)
 
 
     IF !IsString(cCaption) .OR. IsNil(cCaption)
@@ -324,8 +326,7 @@ CONSTRUCTOR (cCaption, n, lStat)
     ENDIF
 
 
-    IF IsNumeric(n)
-    ELSE
+    IF !IsNumeric(n)
         n := INTERNET_DEFAULT_FTP_PORT
     ENDIF
 
@@ -336,11 +337,11 @@ CONSTRUCTOR (cCaption, n, lStat)
     SELF:AccessType := INTERNET_OPEN_TYPE_DIRECT
 
 
-    RETURN 
+    RETURN
 
 
 /// <include file="Internet.xml" path="doc/CFtp.InternetStatus/*" />
-METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength) 
+METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength)
 	//
 	//	This method receives all Low Level FTP notification. Please keep all
 	//	parameters if you want to overwrite it for your own purpose
@@ -370,7 +371,7 @@ METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength)
 
     CASE nStatus == INTERNET_STATUS_SENDING_REQUEST
 //        cMsg := "Sending Request ... "
-
+        NOP
 
     CASE nStatus == INTERNET_STATUS_REQUEST_SENT
         cMsg := "Request sent"
@@ -379,13 +380,14 @@ METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength)
     CASE nStatus == INTERNET_STATUS_RECEIVING_RESPONSE
 //        cMsg := "Receiving response ..."
 
-
+    NOP
     CASE nStatus == INTERNET_STATUS_RESPONSE_RECEIVED
         cMsg := "Response received"
 
 
     CASE nStatus == INTERNET_STATUS_CTL_RESPONSE_RECEIVED
 //        cMsg := "CTL Response received"
+        NOP
 
 
     CASE nStatus == INTERNET_STATUS_PREFETCH
@@ -403,10 +405,12 @@ METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength)
     CASE nStatus == INTERNET_STATUS_HANDLE_CREATED
 //        cMsg := "Handle created"
 
+        NOP
 
     CASE nStatus == INTERNET_STATUS_HANDLE_CLOSING
 //        cMsg := "Closing handle ..."
 
+        NOP
 
     CASE nStatus == INTERNET_STATUS_REQUEST_COMPLETE
         cMsg := "Request complete"
@@ -427,7 +431,7 @@ METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.Open/*" />
-METHOD Open(nFlags, xProxy, aProxyByPass) 
+METHOD Open(nFlags, xProxy, aProxyByPass)
 
 
     LOCAL lRet AS LOGIC
@@ -440,7 +444,7 @@ METHOD Open(nFlags, xProxy, aProxyByPass)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.OpenFile/*" />
-METHOD OpenFile(cRemoteFile, nAccess, nFlags) 
+METHOD OpenFile(cRemoteFile, nAccess, nFlags)
 
 
     LOCAL hRet      AS PTR
@@ -479,7 +483,7 @@ METHOD OpenFile(cRemoteFile, nAccess, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.Proxy/*" />
-ASSIGN Proxy(cNew) 
+ASSIGN Proxy(cNew)
 
 
     IF IsString(cNew)
@@ -498,7 +502,7 @@ ASSIGN Proxy(cNew)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.PutFile/*" />
-METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags) 
+METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
 
 
     LOCAL lRet      AS LOGIC
@@ -510,7 +514,7 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -525,7 +529,7 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
 
 
     IF !File(cLocalFile)
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -548,7 +552,7 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
         IF hFind = NULL_PTR
             SELF:nError := 0
         ELSE
-            lFound := .T. 
+            lFound := .T.
             InternetCloseHandle(hFind)
         ENDIF
         MemFree(pData)
@@ -556,7 +560,7 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
 
 
     IF lFound
-        lRet := .F. 
+        lRet := .F.
         SELF:nError := ERR_FILE_EXISTS
     ELSE
         lRet := FtpPutFile(SELF:hConnect, cLocalFile, cRemoteFile, nFlags, SELF:__GetStatusContext())
@@ -575,19 +579,19 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.RemoveDir/*" />
-METHOD RemoveDir(cRemoteDir) 
+METHOD RemoveDir(cRemoteDir)
 
 
     LOCAL lRet AS LOGIC
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF !IsString(cRemoteDir) .OR. SLen(cRemoteDir) = 0
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -603,19 +607,19 @@ METHOD RemoveDir(cRemoteDir)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.RenameFile/*" />
-METHOD RenameFile(cRemoteFile, cNewName) 
+METHOD RenameFile(cRemoteFile, cNewName)
 
 
     LOCAL lRet AS LOGIC
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF SLen(cRemoteFile) = 0 .OR. SLen(cNewName) = 0
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
@@ -633,19 +637,19 @@ METHOD RenameFile(cRemoteFile, cNewName)
 
 
 /// <include file="Internet.xml" path="doc/CFtp.SetCurDir/*" />
-METHOD SetCurDir(cRemoteDir) 
+METHOD SetCurDir(cRemoteDir)
 
 
     LOCAL lRet     AS LOGIC
 
 
     IF SELF:hConnect = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 
     IF !IsString(cRemoteDir) .OR. SLen(cRemoteDir) = 0
-        RETURN .F. 
+        RETURN .F.
     ENDIF
 
 

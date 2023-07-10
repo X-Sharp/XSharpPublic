@@ -465,6 +465,8 @@ CLASS DataListView INHERIT ListView
 		CASE kNotification == NOTIFYCOMPLETION
 			// self:__NotifyChanges(GBNFY_COMPLETION)
 			// nOldRecordNum := oDataServer:Recno
+            NOP
+            
 		CASE kNotification == NOTIFYINTENTTOMOVE
 			// return self:__NotifyChanges(GBNFY_INTENTTOMOVE)
 			//self:__refreshdata()

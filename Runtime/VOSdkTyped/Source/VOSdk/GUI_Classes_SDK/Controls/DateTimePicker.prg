@@ -57,6 +57,7 @@ CLASS DateTimePicker INHERIT TextControl
             SUPER:__SetText(cNewText)
         CATCH
             // Do nothing
+            NOP
         END TRY
         RETURN cNewText
 
@@ -227,6 +228,7 @@ METHOD PerformValidations() CLIPPER
                 __DateTimePicker:Value			:= sDate
                 __DateTimePicker:CustomFormat	:= cFormat
             catch
+                NOP
             end try
         ELSE
             __DateTimePicker:CustomFormat	:= "''"

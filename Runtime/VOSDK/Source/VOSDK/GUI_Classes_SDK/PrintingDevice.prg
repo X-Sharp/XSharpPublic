@@ -13,10 +13,10 @@ CLASS PrintingDevice INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-METHOD __FillDevMode() AS LOGIC STRICT 
+METHOD __FillDevMode() AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (pDevMode != NULL_PTR)
@@ -50,9 +50,9 @@ METHOD __FillDevMode() AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Copies/*" />
-ACCESS Copies 
-	
-	
+ACCESS Copies
+
+
 
 
 	IF (pDevMode != NULL_PTR)
@@ -62,9 +62,9 @@ ACCESS Copies
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Copies/*" />
-ASSIGN Copies(nCopies) 
-	
-	
+ASSIGN Copies(nCopies)
+
+
 
 
 	IF (pDevMode == NULL_PTR)
@@ -76,13 +76,13 @@ ASSIGN Copies(nCopies)
 	SELF:UpdateDevMode()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (hPrinter != NULL_PTR)
@@ -111,27 +111,27 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Device/*" />
-ACCESS Device 
-	
-	
+ACCESS Device
+
+
 
 
 	RETURN cDevice
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.DeviceCapabilities/*" />
-METHOD DeviceCapabilities(wCapability) 
+METHOD DeviceCapabilities(wCapability)
 	LOCAL pWord				AS WORD PTR
 	LOCAL pDWord			AS DWORD PTR
 	LOCAL pLong				AS LONGINT PTR
-	LOCAL pByte				AS BYTE PTR  
-	LOCAL dwReturn			AS DWORD 
+	LOCAL pByte				AS BYTE PTR
+	LOCAL dwReturn			AS DWORD
 	LOCAL dwTotal			AS DWORD
 	LOCAL aReturn := {}	AS ARRAY
 	LOCAL uReturn 			AS USUAL
-	LOCAL i, dwTrail, dwStart 	AS DWORD 
-	LOCAL nElementSize	AS DWORD 
-	LOCAL bSave				AS BYTE     
+	LOCAL i, dwTrail, dwStart 	AS DWORD
+	LOCAL nElementSize	AS DWORD
+	LOCAL bSave				AS BYTE
 	LOCAL pszData			AS PSZ
 
 
@@ -154,8 +154,8 @@ METHOD DeviceCapabilities(wCapability)
 	   AAdd(aReturn, LoWord(dwReturn))
 	   AAdd(aReturn, HiWord(dwReturn))
 	   uReturn := aReturn
-		
-		
+
+
 	ELSEIF (wCapability == DC_BINS) .OR. (wCapability == DC_PAPERS)
 		// array of words
 		pWord := MemAlloc(dwReturn* _SIZEOF(WORD))
@@ -173,45 +173,44 @@ METHOD DeviceCapabilities(wCapability)
 
 	ELSEIF  wCapability == DC_BINNAMES .OR. wCapability == DC_FILEDEPENDENCIES ;
 		.OR. wCapability == DC_PAPERNAMES .OR. wCapability == DC_MEDIATYPENAMES ;
-		.OR. wCapability == DC_PERSONALITY   
-		// Array of PSZs. 
+		.OR. wCapability == DC_PERSONALITY
+		// Array of PSZs.
 		// Set element size
 		nElementSize := 0
   		IF wCapability == DC_BINNAMES
-  			nElementSize := CCHBINNAME 	// 24  
-  			
-  			
+  			nElementSize := CCHBINNAME 	// 24
+
+
   		ELSEIF  wCapability == DC_FILEDEPENDENCIES ;
   			.OR. wCapability == DC_PAPERNAMES;
   			.OR. wCapability == DC_MEDIATYPENAMES
   			nElementSize := CCHPAPERNAME	// 64
-  			
-  			
+
+
   		ELSEIF wCapability == DC_PERSONALITY
   			nElementSize := 32
- 		
- 		
+
+
   		ELSE
   			// What did I miss ?
-			
-			
-  		ENDIF     
+			NOP
+  		ENDIF
   		IF nElementSize > 0
 			// array of nElementSize byte "c" strings
-			dwTotal := dwReturn * nElementSize 
+			dwTotal := dwReturn * nElementSize
 			pByte := MemAlloc(dwTotal+1)
 			Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pByte, pDevMode)
-	
-	
-			FOR i := 1 TO dwTotal STEP nElementSize   
+
+
+			FOR i := 1 TO dwTotal STEP nElementSize
 				// If the Element = nElementSize characters we have no 0 terminator !
-				// So make sure we set one 
+				// So make sure we set one
 				dwStart := i
 				dwTrail := dwStart + nElementSize
 	         bSave   := pByte[dwTrail]
-				pByte[dwTrail] := 0      
-				pszData := pByte + dwStart -1        
-				AAdd(aReturn, Trim(Psz2String(pszData)))  
+				pByte[dwTrail] := 0
+				pszData := pByte + dwStart -1
+				AAdd(aReturn, Trim(Psz2String(pszData)))
 				pByte[dwTrail] := bSave
 			NEXT
 			MemFree(pByte)
@@ -219,8 +218,8 @@ METHOD DeviceCapabilities(wCapability)
 		uReturn := aReturn
 
 
-	ELSEIF wCapability == DC_ENUMRESOLUTIONS 
-		// array of pairs of long ints  
+	ELSEIF wCapability == DC_ENUMRESOLUTIONS
+		// array of pairs of long ints
 		pLong := MemAlloc(dwReturn * 2 * _SIZEOF(LONGINT))
 		Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pLong, pDevMode)
 
@@ -234,7 +233,7 @@ METHOD DeviceCapabilities(wCapability)
 		MemFree(pLong)
 
 
-	ELSEIF wCapability == DC_MEDIATYPES .OR. wCapability == DC_NUP 
+	ELSEIF wCapability == DC_MEDIATYPES .OR. wCapability == DC_NUP
 		// array of DWORDS
 		pDWord := MemAlloc(dwReturn * _SIZEOF(DWORD))
 		Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pDWord, pDevMode)
@@ -275,39 +274,39 @@ METHOD DeviceCapabilities(wCapability)
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Driver/*" />
-ACCESS Driver 
-	
-	
+ACCESS Driver
+
+
 
 
 	RETURN cDriver
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.GetDevMode/*" />
-METHOD GetDevMode() 
-	
-	
+METHOD GetDevMode()
+
+
 
 
 	RETURN pDevMode
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.ctor/*" />
-CONSTRUCTOR(uName) 
+CONSTRUCTOR(uName)
 	LOCAL cTemp     AS STRING
 
 
 	SUPER()
 
 
-	
-	
+
+
 
 
 	IF IsNil(uName)
         LOCAL oKey AS  RegistryKey
         LOCAL cSKey AS STRING
-        oKey := Registry.CurrentUser:OpenSubKey( "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices") 
+        oKey := Registry.CurrentUser:OpenSubKey( "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices")
         IF okey != NULL_OBJECT
             FOREACH csubKeyName AS STRING IN okey:GetSubKeyNames()
                 cSKey := csubKeyName
@@ -315,7 +314,7 @@ CONSTRUCTOR(uName)
             cTemp  := (STRING) Registry.GetValue("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices\" + cSKey ,"Device","")
         ENDIF
         IF Empty(cTemp)
-            cTemp := (STRING) Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows","Device","") 
+            cTemp := (STRING) Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows","Device","")
         ENDIF
 	ELSE
 		IF !IsString(uName)
@@ -341,22 +340,22 @@ CONSTRUCTOR(uName)
 	SELF:__FillDevMode()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.IsValid/*" />
-METHOD IsValid() 
-	
-	
+METHOD IsValid()
+
+
 
 
 	RETURN lValid
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Orientation/*" />
-ACCESS Orientation 
-	
-	
+ACCESS Orientation
+
+
 
 
 	IF (pDevMode != NULL_PTR)
@@ -366,9 +365,9 @@ ACCESS Orientation
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Orientation/*" />
-ASSIGN Orientation(nOrientation) 
-	
-	
+ASSIGN Orientation(nOrientation)
+
+
 
 
 	IF (pDevMode == NULL_PTR)
@@ -380,15 +379,15 @@ ASSIGN Orientation(nOrientation)
 	SELF:UpdateDevMode()
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.PaperHeight/*" />
-ACCESS PaperHeight 
-	
-	
+ACCESS PaperHeight
+
+
 
 
 	IF (pDevMode != NULL_PTR)
@@ -400,9 +399,9 @@ ACCESS PaperHeight
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.PaperHeight/*" />
-ASSIGN PaperHeight(nHeight) 
-	
-	
+ASSIGN PaperHeight(nHeight)
+
+
 
 
 	IF (pDevMode == NULL_PTR)
@@ -414,15 +413,15 @@ ASSIGN PaperHeight(nHeight)
 	SELF:UpdateDevMode()
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.PaperSize/*" />
-ACCESS PaperSize 
-	
-	
+ACCESS PaperSize
+
+
 
 
 	IF (pDevMode != NULL_PTR)
@@ -432,9 +431,9 @@ ACCESS PaperSize
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.PaperSize/*" />
-ASSIGN PaperSize(nSize) 
-	
-	
+ASSIGN PaperSize(nSize)
+
+
 
 
 	IF (pDevMode == NULL_PTR)
@@ -446,13 +445,13 @@ ASSIGN PaperSize(nSize)
 	SELF:UpdateDevMode()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.PaperWidth/*" />
-ACCESS PaperWidth 
-	
-	
+ACCESS PaperWidth
+
+
 
 
 	IF (pDevMode != NULL_PTR)
@@ -462,9 +461,9 @@ ACCESS PaperWidth
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.PaperWidth/*" />
-ASSIGN PaperWidth(nWidth) 
-	
-	
+ASSIGN PaperWidth(nWidth)
+
+
 
 
 	IF (pDevMode == NULL_PTR)
@@ -476,20 +475,20 @@ ASSIGN PaperWidth(nWidth)
 	SELF:UpdateDevMode()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.Port/*" />
-ACCESS Port 
-	
-	
+ACCESS Port
+
+
 
 
 	RETURN cPort
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.SetUp/*" />
-METHOD SetUp() 
+METHOD SetUp()
 	LOCAL pd 			IS _WinPrintDlg
 	LOCAL struDevN 	AS _windevNames
 	LOCAL lRetVal 		AS LOGIC
@@ -574,12 +573,12 @@ METHOD SetUp()
 
 
 /// <include file="Gui.xml" path="doc/PrintingDevice.UpdateDevMode/*" />
-METHOD UpdateDevMode() 
+METHOD UpdateDevMode()
 	LOCAL iRes AS INT
 
 
-	
-	
+
+
 
 
 	IF (pDevMode == NULL_PTR)

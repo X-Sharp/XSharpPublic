@@ -92,7 +92,8 @@ CLASS ResourceDialog INHERIT ResourceReader
 						SELF:FontPitch   := Convert.ToUInt16(oFont:SizeInPoints)
 						SELF:FontCharSet := oFont:GdiCharSet
 					ENDIF
-				CATCH  AS Exception
+                CATCH  AS Exception
+                    NOP
 				END TRY
 				SELF:Style	 := GuiWin32.GetWindowStyle(hWnd)
 				SELF:ExStyle := GuiWin32.GetWindowExStyle(hWnd)

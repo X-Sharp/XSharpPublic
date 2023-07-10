@@ -363,6 +363,8 @@ FUNCTION @@Default(uVar REF USUAL, uDefault AS USUAL) AS VOID
     IF XSharp.RuntimeState.Dialect:IsVoLike() .and. ;
         uVar:IsObject .and. (OBJECT) uVar == NULL_OBJECT
         // do nothing
+        NOP
+
     ELSEIF uVar:IsNil
         uVar := uDefault
     ENDIF

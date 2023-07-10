@@ -37,6 +37,8 @@ FUNCTION _MSave(cFileName AS STRING, cSkel AS STRING, lLike AS LOGIC) AS VOID
     oMemWriter := MemWriter{cFileName}
     IF ! oMemWriter:Ok
         // Throw an error
+        NOP
+
         ELSE
             LOCAL cVar AS STRING
             cVar := _PublicFirst()

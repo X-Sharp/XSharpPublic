@@ -1476,6 +1476,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         //  Todo Draw
         IF oSurface != NULL_OBJECT
             //oSurface:Draw(oDrawObject)
+            NOP
         ENDIF
 
         RETURN SELF
@@ -1868,6 +1869,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
         IF (oSurface != NULL_OBJECT)
             //oSurface:LineTo(uPoint)
+            NOP
         ENDIF
         RETURN oPoint
 
@@ -1900,6 +1902,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
             IF oParent IS ShellWindow
                 // No need to resize. __DataForm handles this
                 //__DataForm:ResizeParent()
+                NOP
             ENDIF
         end SET
     END PROPERTY
@@ -1920,6 +1923,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
         IF (oSurface != NULL_OBJECT)
             //oSurface:MoveTo(oPoint)
+            NOP
         ENDIF
 
         RETURN oPoint
@@ -2124,6 +2128,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         //Todo	 PaintBoundingBox
         IF oSurface != NULL_OBJECT
             //oSurface:PaintBackground(oBB,kPM)
+            NOP
         ENDIF
         RETURN
 
@@ -2164,6 +2169,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
         SUPER:Pen := value
         IF oSurface != NULL_OBJECT
+            NOP
         ENDIF
         RETURN
         END SET
@@ -2501,6 +2507,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         // Todo	 TextPrint
         IF oSurface != NULL_OBJECT
             //oSurface:TextPrint(cText, oPoint)
+            NOP
         ENDIF
         RETURN
 

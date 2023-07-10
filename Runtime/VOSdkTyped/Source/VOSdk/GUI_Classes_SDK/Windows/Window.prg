@@ -1202,6 +1202,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             SELF:__Surface:BackColor := 	oBackground:Color
         ELSE
             // Need to add a paint handler
+                NOP
         ENDIF
         RETURN
 	END SET
@@ -1955,6 +1956,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
                 dwType := oHRE:HelpType
                 DO CASE
                 CASE dwType == HELPMENU
+                NOP
                 CASE dwType == HELPCONTROL
                     IF ! empty(oHRE:HelpContext)
                         oCurrentHelp:Show(oHRE:HelpContext)
@@ -1970,6 +1972,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
                         oCurrentHelp:Show("HelpIndex")
                     ENDIF
                 CASE dwType == HELPINFO
+                    NOP
                 ENDCASE
             ENDIF
         ENDIF

@@ -907,6 +907,7 @@ CLASS FSEListView INHERIT ListView
                 SELF:Append()
             ENDIF
         CASE e:KeyCode == Keys.Down
+            nop
             /*			IF SELF:SelectedIndices:Count == 1 .and. SELF:SelectedIndices[0] == SELF:Items:Count - 1
             IF SELF:oFSEditor:lLoadedAsXml
             SELF:Append()

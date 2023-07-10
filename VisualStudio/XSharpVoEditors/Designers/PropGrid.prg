@@ -608,6 +608,7 @@ CLASS PropertyPanel INHERIT PictureBox
 		TRY
 			cRibbon := ((VOMenuEditor)SELF:oGrid:oActiveDesigner):MainDesignItem:GetProperty("RibbonFilename"):TextValue
         FINALLY
+            nop
 		END TRY
 		IF String.IsNullOrWhiteSpace(cRibbon)
 			RibbonClass.SetActiveDefault()

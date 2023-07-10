@@ -1191,6 +1191,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
             eType := oDesign:eType
             DO CASE
             CASE eType == DBServerItemType.Field
+                nop
             CASE eType == DBServerItemType.Index
                 oListView := SELF:oIndexList
                 oItem := oDesign:oItem

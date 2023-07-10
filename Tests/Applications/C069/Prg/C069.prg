@@ -3,5 +3,6 @@ FUNCTION Start() AS VOID
 LOCAL lVar AS LOGIC
 lVar := TRUE
 IF !lVar
+    NOP
 END IF
 

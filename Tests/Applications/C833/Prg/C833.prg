@@ -10,6 +10,7 @@ CLASS TestClass
 		IF VARTYPE(aFiles)="O"
 			FOR EACH M.lcFile IN aFiles
 				IF File(M.lcFile)
+				    NOP
 // 					DELETE File (M.lcFile)
 				ENDIF
 			ENDFOR

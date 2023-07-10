@@ -2,5 +2,7 @@
 // used to be compile crash, bug 17
 FUNCTION Start() AS VOID
 FOR LOCAL n := 1 AS INT UPTO 10
+   NOP
+
 NEXT
 

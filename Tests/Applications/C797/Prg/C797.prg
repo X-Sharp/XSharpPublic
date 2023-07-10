@@ -4,5 +4,6 @@ FUNCTION Start( ) AS VOID
   VAR aLen := ALen(Aarray)
   ? aLen
   IF aLen == 0
-  ENDIF 
+      NOP
+  ENDIF
 RETURN

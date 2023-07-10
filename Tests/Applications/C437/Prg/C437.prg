@@ -5,17 +5,17 @@ LOCAL cChar AS Char
 cChar := '\''
 DO CASE
 CASE cChar == '\t'
-//	NOP
+	NOP
 CASE cChar == '\r'
-//	NOP
+	NOP
 CASE cChar == '\n'
-//	NOP
+	NOP
 CASE cChar == '\''
-//	NOP
+	NOP
 CASE cChar == '"'
-//	NOP
+	NOP
 CASE cChar == '\\'
-//	NOP
+	NOP
 END CASE
 
 IF cChar == '\''

@@ -7,6 +7,7 @@ CLASS Foo
 	PROPERTY Alignment AS INT
 		SET
 			IF Alignment.Left == 1
+		       NOP
 			ENDIF
 		END SET
 	END PROPERTY

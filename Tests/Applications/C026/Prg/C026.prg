@@ -3,7 +3,7 @@
 FUNCTION Start() AS VOID
 
 TRY
-// ....
+   NOP
 END TRY
 RETURN
 

@@ -40,7 +40,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 NotInDialect(context, msg);
             }
         }
-
+        void CheckExpressionBodyStatements(XSharpParser.ExpressionContext body, XSharpParser.StatementBlockContext statements)
+        {
+            if (body != null && statements?._Stmts.Count > 0)
+            {
+                _parseErrors.Add(new ParseErrorData(body, ErrorCode.ERR_BlockBodyAndExpressionBody));
+            }
+        }
+        void CheckEmptyBlock(XSharpParserRuleContext context, XSharpParser.StatementBlockContext statements, string blockType)
+        {
+            if (statements != null && statements._Stmts.Count == 0)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyStatement, blockType));
+            }
+        }
         private void checkMissingKeyword(object endToken, ParserRuleContext context, string msg)
         {
             if (endToken == null)
@@ -75,37 +88,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        private void checkMissingToken(IToken l, IToken r, ParserRuleContext context)
-        {
-            if (l != null && r == null)
-            {
-                ErrorCode err = ErrorCode.ERR_SyntaxError;
-                object par = null;
-                switch (l.Type)
-                {
-                    case XSharpLexer.LPAREN:
-                        err = ErrorCode.ERR_CloseParenExpected;
-                        break;
-                    case XSharpLexer.LCURLY:
-                        err = ErrorCode.ERR_RbraceExpected;
-                        break;
-                    case XSharpLexer.LBRKT:
-                        err = ErrorCode.ERR_SyntaxError;
-                        par = ']';
-                        break;
-                }
-                IToken anchor = context.Stop;
-                if (anchor == null)
-                    anchor = l;
-                ParseErrorData errdata;
-                if (par != null)
-                    errdata = new ParseErrorData(anchor, err, par);
-                else
-                    errdata = new ParseErrorData(anchor, err);
-                _parseErrors.Add(errdata);
-            }
-        }
-
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
             if (node.Symbol.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
@@ -136,7 +118,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_AssignmentOperatorExpected));
             }
         }
+        public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
+        {
+            CheckEmptyBlock(context, context.StmtBlk, "[DO] WHILE statement");
+        }
+        public override void ExitWithBlock([NotNull] XSharpParser.WithBlockContext context)
+        {
+            CheckEmptyBlock(context, context.StmtBlk, "WITH block");
+        }
+        public override void ExitRepeatStmt([NotNull] XSharpParser.RepeatStmtContext context)
+        {
+            CheckEmptyBlock(context, context.StmtBlk, "REPEAT statement");
+        }
 
+        public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
+        {
+            CheckEmptyBlock(context, context.StmtBlk, "FOREACH statement");
+        }
 
         public override void ExitDoStmt([NotNull] XSharpParser.DoStmtContext context)
         {
@@ -192,10 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parent = context.Parent as XSharpParser.IMemberWithBodyContext;
                 if (parent != null && parent.Statements != null)
                 {
-                    if (parent.Statements._Stmts.Count > 0)
-                    {
-                        _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                    }
+                    CheckExpressionBodyStatements(context.ExpressionBody, parent.Statements);
                 }
                 // Clipper calling convention is not supported
                 if (context.ParamList?._Params?.Count > 0)
@@ -272,7 +267,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
-            //checkMissingKeyword(context.e, context, "NEXT");
             IToken Op = null;
             if (context.AssignExpr is XSharpParser.BinaryExpressionContext)
             {
@@ -288,22 +282,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_AssignmentOperatorExpected));
             }
+            CheckEmptyBlock(context, context.StmtBlk, "FOR statement");
         }
-        //public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
-        //{
-        //checkMissingKeyword(context.e, context, "NEXT");
-        //}
-        //public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
-        //{
-        //checkMissingKeyword(context.e, context, "END[IF]");
-        //}
+        public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
+        {
+            // empty IF and ELSEIF are handled in the condblock
+            CheckEmptyBlock(context, context.ElseStmtBlk, "ELSE block");
+        }
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
-            if (context._CaseBlocks.Count == 0)
+            // empty CASE blocks are handled in the Exitcondblock method
+            if (context._CaseBlocks.Count == 0 && context.OtherwiseStmtBlk == null)
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyCase));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyStatement, "DO CASE statement"));
             }
-            //checkMissingKeyword(context.e, context, "END[CASE]");
+            CheckEmptyBlock(context, context.OtherwiseStmtBlk, "OTHERWISE block");
         }
         public override void ExitCondBlock([NotNull] XSharpParser.CondBlockContext context)
         {
@@ -311,24 +304,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Then));
             }
+            CheckEmptyBlock(context, context.StmtBlk, context.st.Text + " block");
         }
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
-            //checkMissingKeyword(context.e, context, "END [TRY]");
-            if (context._CatchBlock?.Count == 0 && context.FinBlock == null)
+            if (context._CatchBlock.Count == 0 && context.FinBlock == null)
             {
                 var errdata = new ParseErrorData(context, ErrorCode.WRN_TryWithoutCatch);
                 _parseErrors.Add(errdata);
             }
+            CheckEmptyBlock(context, context.StmtBlk, "TRY block");
+
+            if (context.FinBlock != null )
+            {
+                CheckEmptyBlock(context.FinBlock, context.FinBlock, "FINALLY block");
+            }
         }
-        //public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
-        //{
-        //    checkMissingKeyword(context.e, context, "END [SWITCH]");
-        //}
+        public override void ExitCatchBlock([NotNull] XSharpParser.CatchBlockContext context)
+        {
+            CheckEmptyBlock(context, context.StmtBlk, "CATCH block");
+        }
+        public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
+        {
+            if (context._SwitchBlock.Count == 0)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyStatement, "SWITCH statement"));
+            }
+        }
+        public override void ExitSwitchBlock([NotNull] XSharpParser.SwitchBlockContext context)
+        {
+            // Note that switch blocks MAY be empty!
+        }
         public override void ExitSeqStmt([NotNull] XSharpParser.SeqStmtContext context)
         {
             NotInCore(context, "BEGIN SEQUENCE statement");
-            //checkMissingKeyword(context.e, context, "END SEQUENCE");
+            CheckEmptyBlock(context, context.StmtBlk, "BEGIN SEQUENCE statement");
+            if (context.FinBlock != null)
+            {
+                CheckEmptyBlock(context.FinBlock, context.FinBlock, "FINALLY block");
+            }
         }
 
         public override void ExitBlockStmt([NotNull] XSharpParser.BlockStmtContext context)
@@ -340,6 +354,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.Key2, ErrorCode.ERR_UnexpectedToken, context.Key2.Token.Text));
                 }
             }
+            // some rules have the token in the Key. Others in Key1.
+            var token = context.Key;
+            if (context.Key1 != null)
+            {
+                token = context.Key1.Token;
+            }
+            CheckEmptyBlock(context, context.StmtBlk, token.Text + " block");
         }
 
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
@@ -461,7 +482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Modifiers?.EXTERN().Length > 0)
             {
-                if (context.StmtBlk?._Stmts?.Count > 0)
+                if (context.StmtBlk._Stmts?.Count > 0)
                 {
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Constructor"));
                 }
@@ -470,13 +491,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.c1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
-            if (context.ExpressionBody != null && context.Statements != null)
-            {
-                if (context.Statements._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
+            CheckExpressionBodyStatements(context.ExpressionBody, context.Statements);
         }
         public override void ExitOperator_([NotNull] XSharpParser.Operator_Context context)
         {
@@ -487,14 +502,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Operator"));
                 }
             }
-            if (context.ExpressionBody != null && context.Statements != null)
-            {
-                if (context.Statements._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
-
+            CheckExpressionBodyStatements(context.ExpressionBody, context.Statements);
         }
         public override void ExitClsvars([NotNull] XSharpParser.ClsvarsContext context)
         {
@@ -587,14 +595,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.d1, ErrorCode.ERR_InterfacesCantContainConstructors));
             }
-            if (context.ExpressionBody != null && context.Statements != null)
-            {
-                if (context.Statements._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
-
+            CheckExpressionBodyStatements(context.ExpressionBody, context.Statements);
         }
 
 
@@ -734,13 +735,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 NotInDialect(context, "Xbase++ METHOD Syntax");
             }
-            else if (context.Sig.ExpressionBody != null && context.Statements != null)
-            {
-                if (context.Statements._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.Sig.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
+            CheckExpressionBodyStatements(context.Sig.ExpressionBody, context.Statements);
         }
         public override void ExitXppinlineMethod([NotNull] XSharpParser.XppinlineMethodContext context)
         {
@@ -748,13 +743,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 NotInDialect(context, "Xbase++ METHOD Syntax");
             }
-            else if (context.Sig.ExpressionBody != null && context.Statements != null)
-            {
-                if (context.Statements._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.Sig.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
+            CheckExpressionBodyStatements(context.Sig.ExpressionBody, context.Statements);
         }
 
         public override void ExitXppdeclareMethod([NotNull] XSharpParser.XppdeclareMethodContext context)
@@ -799,6 +788,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitRecoverBlock([NotNull] XSharpParser.RecoverBlockContext context)
         {
             NotInCore(context, "RECOVER USING block");
+            CheckEmptyBlock(context, context.StmtBlock, "RECOVER block");
             return;
         }
 
@@ -1010,13 +1000,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
         {
-            if (context.ExpressionBody != null && context.StmtBlk != null)
-            {
-                if (context.StmtBlk._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
+            CheckExpressionBodyStatements(context.ExpressionBody, context.StmtBlk);
             if (context.Key2 != null && context.Key2.Type != context.Key.Type)
             {
                 _parseErrors.Add(new ParseErrorData(context.Key2, ErrorCode.ERR_UnExpectedExpected, context.Key2.Text, context.Key.Text));
@@ -1025,13 +1009,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitEventAccessor([NotNull] XSharpParser.EventAccessorContext context)
         {
-            if (context.ExpressionBody != null && context.StmtBlk != null)
-            {
-                if (context.StmtBlk._Stmts.Count > 0)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_BlockBodyAndExpressionBody));
-                }
-            }
+            CheckExpressionBodyStatements(context.ExpressionBody, context.StmtBlk);
         }
         public override void ExitJumpStmt([NotNull] XSharpParser.JumpStmtContext context)
         {

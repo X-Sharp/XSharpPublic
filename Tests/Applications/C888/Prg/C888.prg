@@ -11,6 +11,46 @@ at LanguageService.CodeAnalysis.XSharp.Syntax.InternalSyntax.XSharpLanguageParse
 
 */
 FUNCTION Start( ) AS VOID
-DO CASE
 
+// warning XS9076: Empty CASE statement
+DO CASE
+END CASE
+
+// no warnings at all below:
+DO CASE
+CASE FALSE
+CASE TRUE
 ENDCASE
+
+IF TRUE
+ELSEIF FALSE
+ELSE
+ENDIF
+
+DO WHILE FALSE
+ENDDO
+
+TRY
+    CATCH AS Exception
+FINALLY
+END TRY
+
+FOR var i := 1 to 10
+NEXT
+FOREACH VAR x in System.Collections.Generic.List<INT>{}
+NEXT
+
+WITH Exception{}
+END WITH
+BEGIN SCOPE
+END SCOPE
+BEGIN CHECKED
+END CHECKED
+BEGIN UNCHECKED
+END UNCHECKED
+BEGIN LOCK Exception{}
+END LOCK
+local o as object
+o := Exception{}
+BEGIN USING (IDisposable) o
+END USING

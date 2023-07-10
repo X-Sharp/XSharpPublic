@@ -7546,8 +7546,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_MemvarFieldWithSameName" xml:space="preserve">
     <value>A MEMVAR or FIELD with the name '{0}' has already been defined.</value>
   </data>
-  <data name="WRN_EmptyCase" xml:space="preserve">
-    <value>Empty CASE statement</value>
+  <data name="WRN_EmptyStatement" xml:space="preserve">
+    <value>Empty {0}</value>
   </data>
   <data name="Err_TypeParametersAccessAssign" xml:space="preserve">
     <value>Type parameters or constraints are not allowed on ACCESS and ASSIGN methods</value>

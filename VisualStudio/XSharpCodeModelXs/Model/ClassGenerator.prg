@@ -122,6 +122,7 @@ CLASS XClassCreator
 
 		IF oType:Kind == Kind.Delegate
 			//SELF:AddDelegate(oType , nNest)
+            NOP
 		ELSEIF oType:IsPublic .or. oType:IsNested
 			SELF:AddType(oType , nNest)
 		END IF

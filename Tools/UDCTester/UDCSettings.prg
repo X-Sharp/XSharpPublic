@@ -82,7 +82,7 @@ BEGIN NAMESPACE UDCTesterApp
                 subkey:SetValue(name, newvalue)
                 return true
             catch
-                
+                nop
             end try
             return false
 

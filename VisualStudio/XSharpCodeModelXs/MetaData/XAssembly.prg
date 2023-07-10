@@ -197,6 +197,7 @@ BEGIN NAMESPACE XSharpModel
             WriteOutputMessage(e:ToString())
          FINALLY
             //WriteOutputMessage("<-- AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
+                NOP
          END TRY
       // Properties
       PROPERTY DisplayName AS STRING

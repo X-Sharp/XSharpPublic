@@ -38,6 +38,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
         IF (oFile != NULL_OBJECT)
             oXProject := oFile:Project
         ELSE
+            nop
         ENDIF
         IF oXProject == NULL
             XFuncs.ErrorBox("Cannot find project for file "+cFileName)

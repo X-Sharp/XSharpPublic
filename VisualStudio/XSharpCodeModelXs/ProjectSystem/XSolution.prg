@@ -71,6 +71,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN TRUE
         CATCH
             // the file may be in use or so
+            NOP
         END TRY
         RETURN FALSE
 

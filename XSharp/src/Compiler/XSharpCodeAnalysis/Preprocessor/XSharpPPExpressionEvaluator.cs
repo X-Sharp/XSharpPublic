@@ -137,7 +137,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpParser.PrefixExpressionContext:
                         break; // ok
                     default:
-                        _preprocessor.Error((XSharpToken)context.Start, ErrorCode.ERR_PreProcessorError, $"Unexpected expression type '{expr}' ( {expr.SourceText} )" );
+                        XSharpToken token;
+                        if (context.Start is XSharpToken)
+                        {
+                            token = (XSharpToken)context.Start;
+                        }
+                        else
+                        {
+                            token = new XSharpToken(context.Start);
+                        }
+                        _preprocessor.Error(token, ErrorCode.ERR_PreProcessorError, $"Unexpected expression type '{expr}' ( {expr.SourceText} )");
                         break;
                 }
             }

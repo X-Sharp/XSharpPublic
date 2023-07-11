@@ -11,7 +11,6 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -26,6 +25,7 @@ namespace XSharp.Project.FileCodeModel
         where CodeTypeType : CodeObject
     {
         private CodeTypeType codeObj;
+        internal static object pointkey = typeof(System.Drawing.Point);
 
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "0#dte")]
         protected CodeDomCodeElement(DTE dte, string name)
@@ -71,33 +71,27 @@ namespace XSharp.Project.FileCodeModel
             // We don't know the EndPoint (currently)
             //return (point != null) ? point : new NullTextPoint();
             TextPoint start = GetStartPoint( part );
-            return new CodeDomTextPoint(GetTextDocument(), start.LineCharOffset+1, start.Line);
+            return new CodeDomTextPoint(GetTextDocument(), start.LineCharOffset, start.Line);
         }
 
         public override TextPoint GetStartPoint(vsCMPart part)
         {
             TextPoint point = null;
-            //
-            if (CodeObject.UserData.Contains(typeof(System.Drawing.Point)))
+            if (!CodeObject.UserData.Contains(pointkey))
             {
-                var txtpoint = (System.Drawing.Point)CodeObject.UserData[typeof(System.Drawing.Point)];
-                point = new CodeDomTextPoint(GetTextDocument(), txtpoint.X, txtpoint.Y);
-            }
-            else
-            {
-                // Try to get it
                 this.ForceRefresh();
                 this.UpdateStartPoint();
-                if (CodeObject.UserData.Contains(typeof(System.Drawing.Point)))
-                {
-                    var txtpoint = (System.Drawing.Point)CodeObject.UserData[typeof(System.Drawing.Point)];
-                    point = new CodeDomTextPoint(GetTextDocument(), txtpoint.X, txtpoint.Y);
-                }
-
-                // No Point, means that this CodeElement doesn't come from the Parsing
-                //point = new CodeDomTextPoint(GetTextDocument(), 1, 1);
             }
-
+            if (CodeObject.UserData.Contains(pointkey))
+            { 
+                var p = (System.Drawing.Point)CodeObject.UserData[pointkey];
+                if (part == vsCMPart.vsCMPartBody)
+                {
+                    // The XAML editor inserts a CRLF in the middle of a line when we set this to something else...
+                    p.X = 0;
+                }
+                point = new CodeDomTextPoint(GetTextDocument(), p.X, p.Y);
+            }
             return (point != null) ? point : new NullTextPoint();
         }
 

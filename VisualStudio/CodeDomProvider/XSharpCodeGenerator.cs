@@ -927,6 +927,7 @@ namespace XSharp.CodeDom
 
                     if (!base.IsCurrentInterface)
                     {
+                        WriteIndent();
                         if (e.PrivateImplementationType == null)
                         {
                             WriteMemberAccessModifier(e, e.Attributes, true);

@@ -11,7 +11,6 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -327,7 +326,28 @@ namespace XSharp.Project.FileCodeModel
 
         #endregion
 
+        private string GetSignature(string container, CodeMemberMethod method)
+        {
+            var sb = new StringBuilder();
+            sb.Append(container);
+            sb.Append(method.Name);
+            sb.Append('|');
+            foreach (CodeParameterDeclarationExpression p in method.Parameters)
+            {
+                AddParameterToSb(sb, p);
+            }
+            return sb.ToString();
 
+        }
+        private void AddParameterToSb(StringBuilder sb, CodeParameterDeclarationExpression p)
+        {
+            sb.Append(p.Name);
+            sb.Append('|');
+            sb.Append(p.Direction.ToString());
+            sb.Append('|');
+            sb.Append(p.Type.BaseType);
+            sb.Append('|');
+        }
 
         private string GetSignature()
         {
@@ -338,14 +358,9 @@ namespace XSharp.Project.FileCodeModel
                 sb.Append('|');
                 sb.Append(this.Name);
                 sb.Append('|');
-                foreach (CodeParameterDeclarationExpression param in this.CodeObject.Parameters)
+                foreach (CodeParameterDeclarationExpression p in this.CodeObject.Parameters)
                 {
-                    sb.Append(param.Name);
-                    sb.Append('|');
-                    sb.Append(param.Direction.ToString());
-                    sb.Append('|');
-                    sb.Append(param.Type.BaseType);
-                    sb.Append('|');
+                    AddParameterToSb(sb, p);
                 }
             }
             //
@@ -381,7 +396,7 @@ namespace XSharp.Project.FileCodeModel
                     {
                         if (!String.IsNullOrEmpty(ns.Name))
                         {
-                            
+
                             foreach (CodeTypeDeclaration nsType in ns.Types)
                             {
                                 sb.Append(ns.Name);
@@ -395,24 +410,11 @@ namespace XSharp.Project.FileCodeModel
                                 {
                                     if (member is CodeMemberMethod method)
                                     {
-                                        sb.Append(container);
-                                        sb.Append(member.Name);
-                                        sb.Append('|');
-                                        foreach (CodeParameterDeclarationExpression param in method.Parameters)
-                                        {
-                                            sb.Append(param.Name);
-                                            sb.Append('|');
-                                            sb.Append(param.Direction.ToString());
-                                            sb.Append('|');
-                                            sb.Append(param.Type.BaseType);
-                                            sb.Append('|');
-                                        }
+                                        var sig = GetSignature(container, method);
                                         // Is it what we are looking for ???
-                                        string sig = sb.ToString();
-                                        if ( sig == this.GetSignature() )
+                                        if (sig == this.GetSignature())
                                         {
-                                            //
-                                            this.CodeObject.UserData[typeof(System.Drawing.Point)] = method.UserData[typeof(System.Drawing.Point)];
+                                            this.CodeObject.UserData[pointkey] = method.UserData[pointkey];
                                             return;
                                         }
                                         sb.Clear();

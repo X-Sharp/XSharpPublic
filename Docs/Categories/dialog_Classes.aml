@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Present the user with an error message box.
-        </para>
+      Present the user with an error message box.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Present the user with informational message box.
-        </para>
+      Present the user with informational message box.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Create a modeless dialog window (also commonly referred to as a dialog box), which are used to present a collection of controls for user input and output.
-        </para>
+      Create a modeless dialog window (also commonly referred to as a dialog box), which are used to present a collection of controls for user input and output.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Present the user with a standard "file open" dialog box.
-        </para>
+      Present the user with a standard "file open" dialog box.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Present the user with a standard color palette dialog box, allowing the user to define custom colors.
-        </para>
+      Present the user with a standard color palette dialog box, allowing the user to define custom colors.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Provide standard save-file dialog facilities.
-        </para>
+      Provide standard save-file dialog facilities.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Present the user with a standard color palette dialog box.
-        </para>
+      Present the user with a standard color palette dialog box.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# color dialog boxes are subclassed.
-        </para>
+      Provide the base class from which all X# color dialog boxes are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +150,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# standard dialog boxes are subclassed.
-        </para>
+      Provide the base class from which all X# standard dialog boxes are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +165,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# standard file-oriented dialog boxes are subclassed.
-        </para>
+      Provide the base class from which all X# standard file-oriented dialog boxes are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -180,8 +180,8 @@
             </entry>
             <entry>
               <para>
-            Encapsulate a standard folder dialog.
-        </para>
+      Encapsulate a standard folder dialog.
+    </para>
             </entry>
           </row>
           <row>
@@ -195,8 +195,8 @@
             </entry>
             <entry>
               <para>
-            Provide standard font dialog facilities.
-        </para>
+      Provide standard font dialog facilities.
+    </para>
             </entry>
           </row>
           <row>
@@ -210,8 +210,8 @@
             </entry>
             <entry>
               <para>
-            Present the user with a text message box.
-        </para>
+      Present the user with a text message box.
+    </para>
             </entry>
           </row>
           <row>
@@ -225,8 +225,8 @@
             </entry>
             <entry>
               <para>
-            Create a warning message box.
-        </para>
+      Create a warning message box.
+    </para>
             </entry>
           </row>
           <row>

@@ -5974,6 +5974,7 @@
       Draw a line on this data window (using the current pen) from the current pen position to a specified point.
     </summary>
     <param name="uPoint">The position where the line should end, in canvas coordinates, or an array of points, in canvas coordinates, where the line should end, in which case DataWindow:LineTo() acts like a polyline method.</param>
+    <param name="oPoint">The position where the line should end, in canvas coordinates, or an array of points, in canvas coordinates, where the line should end, in which case DataWindow:LineTo() acts like a polyline method.</param>
     <remarks>
       The current pen position is updated to the line's ending position (as specified by <paramref name="oPoint" /> or <paramref name="aoPoint" /> ).
     </remarks>
@@ -25892,6 +25893,7 @@
       <include file="Gui.xml" path="doc/Callback/*" />
     </remarks>
     <param name="_oMonthCalSelectionEvent">The MonthCalSelectionEvent object that describes the changed selection.</param>
+    <param name="oMonthCalSelectionEvent">The MonthCalSelectionEvent object that describes the changed selection.</param>
     <seealso cref="T:VO.MonthCalSelectionEvent" />
     <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
   </Window.MonthCalSelectionChanged>

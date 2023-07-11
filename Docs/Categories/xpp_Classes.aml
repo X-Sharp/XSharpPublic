@@ -67,6 +67,22 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.XPP.StaticClassObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This class returns the ClasssObject for classes created at compile time
+            This object allows to access static members and methods late bound
+            Such as Example():Fieldname</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.XPP.XAction</codeEntityReference>
               </para>
             </entry>

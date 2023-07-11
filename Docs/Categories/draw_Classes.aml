@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Create a Bitmap object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
-        </para>
+      Create a Bitmap object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# DrawObject objects are subclassed.
-        </para>
+      Provide the base class from which all X# DrawObject objects are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Create an EllipseObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
-        </para>
+      Create an EllipseObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Provide a way to format a string specifying position (origin), font, and color.
-        </para>
+      Provide a way to format a string specifying position (origin), font, and color.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Create a LineObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
-        </para>
+      Create a LineObject object; this type of entity is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Construct a PieObject object.
-        </para>
+      Construct a PieObject object.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Create a RectangleObject object; this class is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various geometric objects.
-        </para>
+      Create a RectangleObject object; this class is part of the DrawObject hierarchy, which provides a means of displaying and manipulating various geometric objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Provide an intermediate class from which all X# two-dimensional objects are subclassed.
-        </para>
+      Provide an intermediate class from which all X# two-dimensional objects are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +150,8 @@
             </entry>
             <entry>
               <para>
-            Create a text-drawing object.
-        </para>
+      Create a text-drawing object.
+    </para>
             </entry>
           </row>
         </table>

@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Create child application windows.
-        </para>
+      Create child application windows.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Create a control as part of the Window hierarchy, thereby allowing the behavior of the control to be customized using event handlers.
-        </para>
+      Create a control as part of the Window hierarchy, thereby allowing the behavior of the control to be customized using event handlers.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Create a data window that behaves like a modal dialog window (also commonly referred to as a dialog box).
-        </para>
+      Create a data window that behaves like a modal dialog window (also commonly referred to as a dialog box).
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Create a data window which is capable of interacting intelligently with a data server.
-        </para>
+      Create a data window which is capable of interacting intelligently with a data server.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Create a dialog window (also commonly referred to as a dialog box), which allows the application and end user to interact. This type of dialog can be modal or modeless (see the description below).
-        </para>
+      Create a dialog window (also commonly referred to as a dialog box), which allows the application and end user to interact. This type of dialog can be modal or modeless (see the description below).
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Create an edit control as part of the Window hierarchy, thereby allowing the behavior of the edit control to be customized using event handlers.
-        </para>
+      Create an edit control as part of the Window hierarchy, thereby allowing the behavior of the edit control to be customized using event handlers.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# event-handling classes are subclassed, embodying the elements needed by any objects that receive events.
-        </para>
+      Provide the base class from which all X# event-handling classes are subclassed, embodying the elements needed by any objects that receive events.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Create an explorer window.
-        </para>
+      Create an explorer window.
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +150,8 @@
             </entry>
             <entry>
               <para>
-            Create a data window capable of hosting OLE objects.
-        </para>
+      Create a data window capable of hosting OLE objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +165,8 @@
             </entry>
             <entry>
               <para>
-            Create a specialized shell window that includes support for in-place active OLE objects.
-        </para>
+      Create a specialized shell window that includes support for in-place active OLE objects.
+    </para>
             </entry>
           </row>
           <row>
@@ -180,8 +180,8 @@
             </entry>
             <entry>
               <para>
-            Create a shell window, which provides MDI support for your applications.
-        </para>
+      Create a shell window, which provides MDI support for your applications.
+    </para>
             </entry>
           </row>
           <row>
@@ -195,8 +195,8 @@
             </entry>
             <entry>
               <para>
-            Create a split window.
-        </para>
+      Create a split window.
+    </para>
             </entry>
           </row>
           <row>
@@ -210,8 +210,8 @@
             </entry>
             <entry>
               <para>
-            Create a top-level application window.
-        </para>
+      Create a top-level application window.
+    </para>
             </entry>
           </row>
           <row>
@@ -225,8 +225,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# windows are subclassed.
-        </para>
+      Provide the base class from which all X# windows are subclassed.
+    </para>
             </entry>
           </row>
           <row>

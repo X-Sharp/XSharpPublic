@@ -298,8 +298,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:VO.SqlParameterSQL.xmldoc/SqlParameter/*</para>
             </entry>
           </row>
           <row>
@@ -570,8 +569,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListDatabasesSql.xmldoc/SQLListDatabases/*</para>
             </entry>
           </row>
           <row>
@@ -599,8 +597,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListIndexColumnsSql.xmldoc/SQLListIndexColumns/*</para>
             </entry>
           </row>
           <row>
@@ -613,8 +610,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListIndexesSql.xmldoc/SQLListIndexes/*</para>
             </entry>
           </row>
           <row>
@@ -657,8 +653,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListProcedureParametersSql.xmldoc/SQLListProcedureParameters/*</para>
             </entry>
           </row>
           <row>
@@ -686,8 +681,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListReservedWordsSql.xmldoc/SQLListReservedWords/*</para>
             </entry>
           </row>
           <row>
@@ -700,8 +694,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListRestrictionsSql.xmldoc/SQLListRestrictions/*</para>
             </entry>
           </row>
           <row>
@@ -774,8 +767,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListTriggersSql.xmldoc/SQLListTriggers/*</para>
             </entry>
           </row>
           <row>
@@ -803,8 +795,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListUsersSql.xmldoc/SQLListUsers/*</para>
             </entry>
           </row>
           <row>
@@ -817,8 +808,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListViewColumnsSql.xmldoc/SQLListViewColumns/*</para>
             </entry>
           </row>
           <row>
@@ -831,8 +821,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SQLListViewsSql.xmldoc/SQLListViews/*</para>
             </entry>
           </row>
           <row>
@@ -845,8 +834,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:XSharp.VO.SDK.SqlParameterSql.xmldoc/SqlParameter/*</para>
             </entry>
           </row>
           <row>

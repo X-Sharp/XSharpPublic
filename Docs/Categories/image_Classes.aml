@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Create a FixedBitmap object. Unlike the bitmaps created by the Bitmap class, fixed bitmaps are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedBitmap objects can be created dynamically or from a resource entity.
-        </para>
+      Create a FixedBitmap object. Unlike the bitmaps created by the Bitmap class, fixed bitmaps are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedBitmap objects can be created dynamically or from a resource entity.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Create a FixedIcon object. Unlike the icons created by the Icon class, fixed icons are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedIcon objects can be created dynamically or from a resource entity.
-        </para>
+      Create a FixedIcon object. Unlike the icons created by the Icon class, fixed icons are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedIcon objects can be created dynamically or from a resource entity.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which FixedBitmap and FixedIcon are subclassed.
-        </para>
+      Provide the base class from which FixedBitmap and FixedIcon are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Implement a container window for displaying multimedia data.
-        </para>
+      Implement a container window for displaying multimedia data.
+    </para>
             </entry>
           </row>
         </table>

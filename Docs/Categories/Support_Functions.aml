@@ -35,6 +35,20 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.Harbour</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.InitHarbour</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>

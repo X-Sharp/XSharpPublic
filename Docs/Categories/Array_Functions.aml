@@ -584,8 +584,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:XSharp.VFP.Functions.ASize(XSharp.__Array,System.UInt32)VfpRuntimeDocs.xmlRuntimefunctions/asize/*</para>
             </entry>
           </row>
           <row>
@@ -672,6 +671,36 @@
             </entry>
             <entry>
               <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Harbour</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_ADel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+        Delete an element from an array and optionally adjust the length of the array.
+      </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Harbour</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Harbour.Functions.Hb_AIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+        Inserts a value at an array subscript position and optionally increases the length of array.
+      </para>
             </entry>
           </row>
           <row>

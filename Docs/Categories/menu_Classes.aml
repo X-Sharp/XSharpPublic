@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Create an accelerator table.
-        </para>
+      Create an accelerator table.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Create a menu. Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.
-        </para>
+      Create a menu. Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
-        </para>
+      Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
-        </para>
+      Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
-        </para>
+      Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Create a system menu.
-        </para>
+      Create a system menu.
+    </para>
             </entry>
           </row>
         </table>

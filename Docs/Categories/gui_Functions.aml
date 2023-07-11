@@ -71,8 +71,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.CAPaintIsLoadedGui.xmldoc/CAPaintIsLoaded/*</para>
             </entry>
           </row>
           <row>
@@ -85,8 +84,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.CAPaintLastErrorGui.xmldoc/CAPaintLastError/*</para>
             </entry>
           </row>
           <row>
@@ -99,8 +97,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.CAPaintLastErrorMsgGui.xmldoc/CAPaintLastErrorMsg/*</para>
             </entry>
           </row>
           <row>
@@ -113,8 +110,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.CAPaintShowErrors(System.Boolean)Gui.xmldoc/CAPaintShowErrors/*</para>
             </entry>
           </row>
           <row>
@@ -142,8 +138,8 @@
             </entry>
             <entry>
               <para>
-            Create a device independent bitmap (DIB) from an image file.
-        </para>
+      Create a device independent bitmap (DIB) from an image file.
+    </para>
             </entry>
           </row>
           <row>
@@ -157,8 +153,8 @@
             </entry>
             <entry>
               <para>
-            Convert an image file to a device independent bitmap (DIB).
-        </para>
+      Convert an image file to a device independent bitmap (DIB).
+    </para>
             </entry>
           </row>
           <row>
@@ -172,8 +168,8 @@
             </entry>
             <entry>
               <para>
-            Destroy a DIB created either by DIBCreateFromFile() or DIBCreateFromPtr().
-        </para>
+      Destroy a DIB created either by DIBCreateFromFile() or DIBCreateFromPtr().
+    </para>
             </entry>
           </row>
           <row>
@@ -187,8 +183,8 @@
             </entry>
             <entry>
               <para>
-            Retrieve a pointer to the BITMAPINFO structure of a DIB.
-        </para>
+      Retrieve a pointer to the BITMAPINFO structure of a DIB.
+    </para>
             </entry>
           </row>
           <row>
@@ -202,8 +198,8 @@
             </entry>
             <entry>
               <para>
-            Save the DIB to a file.
-        </para>
+      Save the DIB to a file.
+    </para>
             </entry>
           </row>
           <row>
@@ -217,8 +213,8 @@
             </entry>
             <entry>
               <para>
-            Display the DIB within the specified window.
-        </para>
+      Display the DIB within the specified window.
+    </para>
             </entry>
           </row>
           <row>
@@ -232,8 +228,8 @@
             </entry>
             <entry>
               <para>
-            Display the DIB within the specified window.
-        </para>
+      Display the DIB within the specified window.
+    </para>
             </entry>
           </row>
           <row>
@@ -316,8 +312,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.DrawThemeEdge(System.Void*,System.Void*,System.Int32,System.Int32,System.Void*,System.UInt32,System.UInt32,System.Void*)Gui.xmldoc/DrawThemeEdge/*</para>
             </entry>
           </row>
           <row>
@@ -414,8 +409,8 @@
             </entry>
             <entry>
               <para>
-            Return the global App object for this application.
-        </para>
+      Return the global App object for this application.
+    </para>
             </entry>
           </row>
           <row>
@@ -429,8 +424,8 @@
             </entry>
             <entry>
               <para>
-            Return the object corresponding to the control or window that currently has input focus.
-        </para>
+      Return the object corresponding to the control or window that currently has input focus.
+    </para>
             </entry>
           </row>
           <row>
@@ -458,8 +453,8 @@
             </entry>
             <entry>
               <para>
-            Return the object associated with a given window handle.
-        </para>
+      Return the object associated with a given window handle.
+    </para>
             </entry>
           </row>
           <row>
@@ -500,8 +495,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.GUIExit(System.Object,System.EventArgs)Gui.xmldoc/GUIExit/*</para>
             </entry>
           </row>
           <row>
@@ -665,8 +659,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.SetClassStyle(System.Void*,System.UInt32,System.Boolean)Gui.xmldoc/SetClassStyle/*</para>
             </entry>
           </row>
           <row>
@@ -763,8 +756,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.THTMLHelp(System.Void*,XSharp.__Psz,System.UInt32,System.UInt32)Gui.xmldoc/THTMLHelp/*</para>
             </entry>
           </row>
           <row>
@@ -791,8 +783,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOGUIClasses.Functions.UseColonInAutoLayoutCaptions(System.Boolean)Gui.xmldoc/UseColonInAutoLayoutCaptions/*</para>
             </entry>
           </row>
           <row>

@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            An auxiliary class used by the DateTimePicker and MonthCalendar controls to represent a date range.
-        </para>
+      An auxiliary class used by the DateTimePicker and MonthCalendar controls to represent a date range.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Create a Dimension object, which is used to describe the size of two-dimensional objects using ordered pair coordinates (width, height or x, y).
-        </para>
+      Create a Dimension object, which is used to describe the size of two-dimensional objects using ordered pair coordinates (width, height or x, y).
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Create a hot key.
-        </para>
+      Create a hot key.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Create a hot key rule.
-        </para>
+      Create a hot key rule.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# objects containing ordered pairs of values are subclassed.
-        </para>
+      Provide the base class from which all X# objects containing ordered pairs of values are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Create a point, which is used to describe a location on the canvas of a window.
-        </para>
+      Create a point, which is used to describe a location on the canvas of a window.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Create a range, representing the minimum and maximum values of the coordinates (or scroll units) that the thumb position on a scroll bar can move—up or down, left or right.
-        </para>
+      Create a range, representing the minimum and maximum values of the coordinates (or scroll units) that the thumb position on a scroll bar can move—up or down, left or right.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Create a selection, which represents the start and end of a text selection in an edit control as an ordered pair.
-        </para>
+      Create a selection, which represents the start and end of a text selection in an edit control as an ordered pair.
+    </para>
             </entry>
           </row>
           <row>
@@ -395,6 +395,24 @@
             <entry>
               <para> This interface is used to index a collection using the VO Array syntax.
             The interface is implemented by the ARRAY type in the runtime, but you can also use it for your custom types.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ILateBound</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This interface described the methods needed for a LateBound object 
+            When an object implements this interface then the X# runtime will not use
+            reflection to implement late bound calls to properties or methods
+            but will call these methods instead.
+            </para>
             </entry>
           </row>
           <row>

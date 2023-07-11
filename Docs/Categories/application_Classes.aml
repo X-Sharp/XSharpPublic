@@ -44,8 +44,8 @@
             </entry>
             <entry>
               <para>
-            Create an entity that represents the overall application. Please note that you have to create a subclass of App in your code and add a Start() method to this class. You can't add a Start() method to the App() class inside GUI Classes like you can in VO.
-        </para>
+      Create an entity that represents the overall application. Please note that you have to create a subclass of App in your code and add a Start() method to this class. You can't add a Start() method to the App() class inside GUI Classes like you can in VO.
+    </para>
             </entry>
           </row>
           <row>
@@ -59,8 +59,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# application windows are subclassed.
-        </para>
+      Provide the base class from which all X# application windows are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -73,8 +73,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:VO.ClipboardGui.xmldoc/Clipboard/*</para>
             </entry>
           </row>
           <row>
@@ -88,8 +87,8 @@
             </entry>
             <entry>
               <para>
-            Create the client for use in a drag-and-drop operation.
-        </para>
+      Create the client for use in a drag-and-drop operation.
+    </para>
             </entry>
           </row>
           <row>
@@ -103,8 +102,8 @@
             </entry>
             <entry>
               <para>
-            Create the server for use in a drag-and-drop operation.
-        </para>
+      Create the server for use in a drag-and-drop operation.
+    </para>
             </entry>
           </row>
           <row>
@@ -118,8 +117,8 @@
             </entry>
             <entry>
               <para>
-            Register an application as a client able to request and receive data from a designated server application.
-        </para>
+      Register an application as a client able to request and receive data from a designated server application.
+    </para>
             </entry>
           </row>
           <row>
@@ -133,8 +132,8 @@
             </entry>
             <entry>
               <para>
-            Register an application as a server able to access data on specific topics and update registered topics and update registered client applications.
-        </para>
+      Register an application as a server able to access data on specific topics and update registered topics and update registered client applications.
+    </para>
             </entry>
           </row>
           <row>
@@ -148,8 +147,8 @@
             </entry>
             <entry>
               <para>
-            Create topic (and items) to be supported by an IPC server and which IPC clients can request. These objects are used by IpcServer:AddTopic() and IpcClient:RequestData().
-        </para>
+      Create topic (and items) to be supported by an IPC server and which IPC clients can request. These objects are used by IpcServer:AddTopic() and IpcClient:RequestData().
+    </para>
             </entry>
           </row>
           <row>
@@ -163,8 +162,8 @@
             </entry>
             <entry>
               <para>
-            Create a global memory object and pass a data handle back to the application.
-        </para>
+      Create a global memory object and pass a data handle back to the application.
+    </para>
             </entry>
           </row>
           <row>
@@ -178,8 +177,8 @@
             </entry>
             <entry>
               <para>
-            Identify a file containing resource information.
-        </para>
+      Identify a file containing resource information.
+    </para>
             </entry>
           </row>
           <row>
@@ -193,8 +192,8 @@
             </entry>
             <entry>
               <para>
-            Identify and create a ResourceID using a numeric resource ID.
-        </para>
+      Identify and create a ResourceID using a numeric resource ID.
+    </para>
             </entry>
           </row>
           <row>
@@ -208,8 +207,8 @@
             </entry>
             <entry>
               <para>
-            Extract strings from a resource entity.
-        </para>
+      Extract strings from a resource entity.
+    </para>
             </entry>
           </row>
           <row>

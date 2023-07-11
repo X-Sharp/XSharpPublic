@@ -9,7 +9,8 @@ GLOBAL gsCatPath AS STRING
 GLOBAL documents AS Dictionary<STRING, XmlDocument>
 FUNCTION Start AS VOID
     gaFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL", ;
-        "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL",   ;
+        "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL",;
+        "XSharp.Harbour.DLL",;
         "VOSystemClasses.DLL", "VORDDClasses.DLL","VOGUIClasses.DLL", ;
         "VOSQLClasses.DLL","VOInternetClasses.DLL", "VOConsoleClasses.DLL",;
         "XSharp.RT.Debugger.DLL", "XSharp.VOSystemClasses.DLL", ;

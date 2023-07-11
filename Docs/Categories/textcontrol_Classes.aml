@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Create a FixedText object.
-        </para>
+      Create a FixedText object.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Create a group box, which can be used to group related controls together.
-        </para>
+      Create a group box, which can be used to group related controls together.
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Create a hot key edit.
-        </para>
+      Create a hot key edit.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Create a HyperLink control.
-        </para>
+      Create a HyperLink control.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Edit control to edit an IP address that consists of 4 numbers
-        </para>
+      Edit control to edit an IP address that consists of 4 numbers
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Create a multiline edit control for displaying and entering information to a variable or field in a server. Multiline edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
-        </para>
+      Create a multiline edit control for displaying and entering information to a variable or field in a server. Multiline edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Create a rich edit control.
-        </para>
+      Create a rich edit control.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,9 +135,9 @@
             </entry>
             <entry>
               <para>
-            Create a single-line edit control for displaying and entering information to a variable or field in a server.
-            Single-line edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
-        </para>
+      Create a single-line edit control for displaying and entering information to a variable or field in a server.
+      Single-line edit controls may be bound to a data server field of any type (character, date, logical, numeric, or memo).
+    </para>
             </entry>
           </row>
           <row>
@@ -151,8 +151,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# controls are subclassed.
-        </para>
+      Provide the base class from which all X# controls are subclassed.
+    </para>
             </entry>
           </row>
         </table>

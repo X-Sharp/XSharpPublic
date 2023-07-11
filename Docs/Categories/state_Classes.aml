@@ -38,6 +38,35 @@
             </entry>
             <entry>
               <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DialectExtension</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Globals</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            Support class to support runtime access to globals declared in the loaded X# assemblies
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
                 <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RuntimeState</codeEntityReference>
               </para>
             </entry>

@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# buttons are subclassed.
-        </para>
+      Provide the base class from which all X# buttons are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Create check boxes, which are controls that can be toggled on or off by a user (or for 3-state check boxes, to a third state).
-        </para>
+      Create check boxes, which are controls that can be toggled on or off by a user (or for 3-state check boxes, to a third state).
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Create a push button, which can be used to initiate an event and associated action when clicked on by the user.
-        </para>
+      Create a push button, which can be used to initiate an event and associated action when clicked on by the user.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Create a radio button.
-        </para>
+      Create a radio button.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            A group of radio buttons considered as a combination control, presenting a set of options and returning a single value.
-        </para>
+      A group of radio buttons considered as a combination control, presenting a set of options and returning a single value.
+    </para>
             </entry>
           </row>
         </table>

@@ -1353,6 +1353,20 @@
           </row>
           <row>
             <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.Var2Char(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
               <para>XSharp.Core</para>
             </entry>
             <entry>

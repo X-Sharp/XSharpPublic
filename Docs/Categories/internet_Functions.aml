@@ -29,8 +29,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.B64Decode(System.Void*,System.Void*,System.UInt32,System.UInt32@)Internet.xmldoc/B64Decode/*</para>
             </entry>
           </row>
           <row>
@@ -43,8 +42,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.B64DecodeString(System.String)Internet.xmldoc/B64DecodeString/*</para>
             </entry>
           </row>
           <row>
@@ -57,8 +55,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.B64Encode(System.Void*,System.Void*,System.UInt32,System.UInt32@)Internet.xmldoc/B64Encode/*</para>
             </entry>
           </row>
           <row>
@@ -71,8 +68,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.B64EncodeStream(System.String,System.UInt32@)Internet.xmldoc/B64EncodeStream/*</para>
             </entry>
           </row>
           <row>
@@ -85,8 +81,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.B64EncodeString(System.String)Internet.xmldoc/B64EncodeString/*</para>
             </entry>
           </row>
           <row>
@@ -99,8 +94,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.CharSetFromContentType(System.String)Internet.xmldoc/CharSetFromContentType/*</para>
             </entry>
           </row>
           <row>
@@ -113,8 +107,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.CheckHostIP(System.String)Internet.xmldoc/CheckHostIP/*</para>
             </entry>
           </row>
           <row>
@@ -127,8 +120,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.ConvertFromCodePageToCodePage(System.String,System.UInt32,System.UInt32)Internet.xmldoc/ConvertFromCodePageToCodePage/*</para>
             </entry>
           </row>
           <row>
@@ -141,8 +133,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.DecodeMailTimeStamp(System.String,XSharp.__Date@,System.String@)Internet.xmldoc/DecodeMailTimeStamp/*</para>
             </entry>
           </row>
           <row>
@@ -155,8 +146,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.GetHostByIP(System.String)Internet.xmldoc/GetHostByIP/*</para>
             </entry>
           </row>
           <row>
@@ -169,8 +159,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.GetIPAddress(System.String)Internet.xmldoc/GetIPAddress/*</para>
             </entry>
           </row>
           <row>
@@ -197,8 +186,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.GetUseNetMsgID(System.String,System.String)Internet.xmldoc/GetUseNetMsgID/*</para>
             </entry>
           </row>
           <row>
@@ -211,8 +199,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.HostNameInternet.xmldoc/HostName/*</para>
             </entry>
           </row>
           <row>
@@ -225,8 +212,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.IFXFtpFindFirstFile(System.Void*,XSharp.__Psz,VO._WINWIN32_FIND_DATA*,System.UInt32,System.UInt32)Internet.xmldoc/IFXFtpFindFirstFile/*</para>
             </entry>
           </row>
           <row>
@@ -239,8 +225,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.IFXInternetFindNextFile(System.Void*,VO._WINWIN32_FIND_DATA*)Internet.xmldoc/IFXInternetFindNextFile/*</para>
             </entry>
           </row>
           <row>
@@ -253,8 +238,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.INTStatusCallback(System.Void*,System.UInt32,System.UInt32,System.Void*,System.UInt32)Internet.xmldoc/INTStatusCallback/*</para>
             </entry>
           </row>
           <row>
@@ -267,8 +251,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.LibInitInternet.xmldoc/LibInit/*</para>
             </entry>
           </row>
           <row>
@@ -281,8 +264,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.NNTPSendMail(System.String,System.String,System.String,System.String,System.String,XSharp.__Usual,System.String)Internet.xmldoc/NNTPSendMail/*</para>
             </entry>
           </row>
           <row>
@@ -295,8 +277,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.POPGetMails(System.String,System.String,System.String,System.Boolean)Internet.xmldoc/POPGetMails/*</para>
             </entry>
           </row>
           <row>
@@ -309,8 +290,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.QPDecode(System.String,System.Boolean)Internet.xmldoc/QPDecode/*</para>
             </entry>
           </row>
           <row>
@@ -323,8 +303,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.QPEncode(System.String,System.Boolean)Internet.xmldoc/QPEncode/*</para>
             </entry>
           </row>
           <row>
@@ -337,8 +316,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.SMTPSendMail(System.String,System.String,XSharp.__Usual,XSharp.__Usual,System.String,System.String,XSharp.__Usual,System.String,XSharp.__Usual,System.String)Internet.xmldoc/SMTPSendMail/*</para>
             </entry>
           </row>
           <row>
@@ -351,8 +329,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.SystemErrorString(System.UInt32,System.String)Internet.xmldoc/SystemErrorString/*</para>
             </entry>
           </row>
           <row>
@@ -365,8 +342,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.WinSockExitInternet.xmldoc/WinSockExit/*</para>
             </entry>
           </row>
           <row>
@@ -379,8 +355,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>M:VOInternetClasses.Functions.WinSockInitInternet.xmldoc/WinSockInit/*</para>
             </entry>
           </row>
           <row>

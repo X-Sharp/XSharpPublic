@@ -30,8 +30,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an AppCommand event, which is launched by the extra keys on an extended keyboard or mouse.
-        </para>
+      Provide information about an AppCommand event, which is launched by the extra keys on an extended keyboard or mouse.
+    </para>
             </entry>
           </row>
           <row>
@@ -45,8 +45,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a ComboBoxEx EndEdit event
-        </para>
+      Provide information about a ComboBoxEx EndEdit event
+    </para>
             </entry>
           </row>
           <row>
@@ -60,8 +60,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a control that generated a control event.
-        </para>
+      Provide information about a control that generated a control event.
+    </para>
             </entry>
           </row>
           <row>
@@ -75,8 +75,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an ControlFocusChangeEvent, generated when a control gains or loses the keyboard focus.
-        </para>
+      Provide information about an ControlFocusChangeEvent, generated when a control gains or loses the keyboard focus.
+    </para>
             </entry>
           </row>
           <row>
@@ -90,8 +90,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a control notification event, which is generated when a control is required to notify its parent window of an event.
-        </para>
+      Provide information about a control notification event, which is generated when a control is required to notify its parent window of an event.
+    </para>
             </entry>
           </row>
           <row>
@@ -105,8 +105,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a date time selection event, which is generated when a user selected a Date or Time in a DateTimePicker control.
-        </para>
+      Provide information about a date time selection event, which is generated when a user selected a Date or Time in a DateTimePicker control.
+    </para>
             </entry>
           </row>
           <row>
@@ -120,8 +120,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a drag event, which enables the drag-and-drop client (the receiving window) to track the progress of the mouse during the drag operation and to identify the files that the user can drop.
-        </para>
+      Provide information about a drag event, which enables the drag-and-drop client (the receiving window) to track the progress of the mouse during the drag operation and to identify the files that the user can drop.
+    </para>
             </entry>
           </row>
           <row>
@@ -135,8 +135,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an EditFocusChangeEvent, generated when an edit control (i.e., SingleLineEdit, MultiLineEdit, or EditWindow) gains or loses the keyboard focus.
-        </para>
+      Provide information about an EditFocusChangeEvent, generated when an edit control (i.e., SingleLineEdit, MultiLineEdit, or EditWindow) gains or loses the keyboard focus.
+    </para>
             </entry>
           </row>
           <row>
@@ -150,8 +150,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all X# events are subclassed.
-        </para>
+      Provide the base class from which all X# events are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -165,8 +165,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an ExposeEvent, used to notify a window that it may need to be repainted.
-        </para>
+      Provide information about an ExposeEvent, used to notify a window that it may need to be repainted.
+    </para>
             </entry>
           </row>
           <row>
@@ -180,8 +180,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a FocusChangeEvent, used to indicate a change in window focus (i.e., gaining or losing focus).
-        </para>
+      Provide information about a FocusChangeEvent, used to indicate a change in window focus (i.e., gaining or losing focus).
+    </para>
             </entry>
           </row>
           <row>
@@ -195,8 +195,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a HelpRequestEvent, used to describe the context and item combinations for which help is requested. (This can be help for controls, menu commands, and specific areas of a window.)
-        </para>
+      Provide information about a HelpRequestEvent, used to describe the context and item combinations for which help is requested. (This can be help for controls, menu commands, and specific areas of a window.)
+    </para>
             </entry>
           </row>
           <row>
@@ -210,8 +210,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an IpcClientErrorEvent, used to indicate what type of error event occurred in an IPC server.
-        </para>
+      Provide information about an IpcClientErrorEvent, used to indicate what type of error event occurred in an IPC server.
+    </para>
             </entry>
           </row>
           <row>
@@ -225,8 +225,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an IpcDataRequestEvent, used to store the topic name (and length) and the item name (and length) for which data has been requested.
-        </para>
+      Provide information about an IpcDataRequestEvent, used to store the topic name (and length) and the item name (and length) for which data has been requested.
+    </para>
             </entry>
           </row>
           <row>
@@ -240,8 +240,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an IpcDataUpdateEvent, used to store information about the topic name, item name, and the new data.
-        </para>
+      Provide information about an IpcDataUpdateEvent, used to store information about the topic name, item name, and the new data.
+    </para>
             </entry>
           </row>
           <row>
@@ -255,8 +255,8 @@
             </entry>
             <entry>
               <para>
-            Provide the base class from which all Ipc event classes are subclassed.
-        </para>
+      Provide the base class from which all Ipc event classes are subclassed.
+    </para>
             </entry>
           </row>
           <row>
@@ -270,8 +270,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an IpcExecuteRequestEvent, used to store information about the topic, item, and command string.
-        </para>
+      Provide information about an IpcExecuteRequestEvent, used to store information about the topic, item, and command string.
+    </para>
             </entry>
           </row>
           <row>
@@ -285,8 +285,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a KeyEvent, used to encapsulate information about the key that was pressed.
-        </para>
+      Provide information about a KeyEvent, used to encapsulate information about the key that was pressed.
+    </para>
             </entry>
           </row>
           <row>
@@ -300,8 +300,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a list view column click event, which is generated when the header of a column in a list view control is clicked.
-        </para>
+      Provide information about a list view column click event, which is generated when the header of a column in a list view control is clicked.
+    </para>
             </entry>
           </row>
           <row>
@@ -315,8 +315,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a list view delete event, which is generated when an item in a list view control is deleted.
-        </para>
+      Provide information about a list view delete event, which is generated when an item in a list view control is deleted.
+    </para>
             </entry>
           </row>
           <row>
@@ -330,8 +330,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a list view drag event, which is generated when an item in a list view control is dragged.
-        </para>
+      Provide information about a list view drag event, which is generated when an item in a list view control is dragged.
+    </para>
             </entry>
           </row>
           <row>
@@ -345,8 +345,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a list view edit event, which is generated when the label of an item in a list view control is edited.
-        </para>
+      Provide information about a list view edit event, which is generated when the label of an item in a list view control is edited.
+    </para>
             </entry>
           </row>
           <row>
@@ -360,8 +360,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about events generated when operations with list view items are taking place.
-        </para>
+      Provide information about events generated when operations with list view items are taking place.
+    </para>
             </entry>
           </row>
           <row>
@@ -375,8 +375,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a list view key event, which is generated when a key is pressed while the list view control has the input focus.
-        </para>
+      Provide information about a list view key event, which is generated when a key is pressed while the list view control has the input focus.
+    </para>
             </entry>
           </row>
           <row>
@@ -390,8 +390,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a list view mouse event, which is generated when a mouse button in a list view control is clicked or double-clicked.
-        </para>
+      Provide information about a list view mouse event, which is generated when a mouse button in a list view control is clicked or double-clicked.
+    </para>
             </entry>
           </row>
           <row>
@@ -405,8 +405,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
-        </para>
+      Provide information about a MenuCommandEvent, generated when the user executes a menu item, either directly or through the use of accelerator keys.
+    </para>
             </entry>
           </row>
           <row>
@@ -420,8 +420,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
-        </para>
+      Provide information about a MenuInitEvent, generated when the user first activates a menu for the first time.
+    </para>
             </entry>
           </row>
           <row>
@@ -435,8 +435,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
-        </para>
+      Provide information about a MenuSelectEvent, generated whenever a menu item is highlighted on a menu (menu items are highlighted as the user moves either the mouse or the highlight bar up or down a menu).
+    </para>
             </entry>
           </row>
           <row>
@@ -450,8 +450,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MinMaxInfoEvent, generated whenever the size or position of a window is about to change. The MinMaxInfoEvent object describes the maximised width, height and position of the maximised window in addition to the minimum and maximum height and width of the window.
-        </para>
+      Provide information about a MinMaxInfoEvent, generated whenever the size or position of a window is about to change. The MinMaxInfoEvent object describes the maximised width, height and position of the maximised window in addition to the minimum and maximum height and width of the window.
+    </para>
             </entry>
           </row>
           <row>
@@ -465,8 +465,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a monthcalendar selection event, which is generated when a user selects a date in a MonthCalendar control.
-        </para>
+      Provide information about a monthcalendar selection event, which is generated when a user selects a date in a MonthCalendar control.
+    </para>
             </entry>
           </row>
           <row>
@@ -480,8 +480,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about the location of the mouse, as well as which mouse button was pressed, when a MouseEvent occurred.
-        </para>
+      Provide information about the location of the mouse, as well as which mouse button was pressed, when a MouseEvent occurred.
+    </para>
             </entry>
           </row>
           <row>
@@ -495,8 +495,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a MoveEvent, used to notify the program that the user is in the process of moving a window.
-        </para>
+      Provide information about a MoveEvent, used to notify the program that the user is in the process of moving a window.
+    </para>
             </entry>
           </row>
           <row>
@@ -509,8 +509,7 @@
               </para>
             </entry>
             <entry>
-              <para>
-              </para>
+              <para>T:VO.OleDragEventGui.xmldoc/OleDragEvent/*</para>
             </entry>
           </row>
           <row>
@@ -524,8 +523,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a PrinterErrorEvent, used to describe errors that occur during a print job (for example, insufficient memory or disk space).
-        </para>
+      Provide information about a PrinterErrorEvent, used to describe errors that occur during a print job (for example, insufficient memory or disk space).
+    </para>
             </entry>
           </row>
           <row>
@@ -539,8 +538,8 @@
             </entry>
             <entry>
               <para>
-            Provides facilities for determining the number of the page to be painted, as well as the area of the page to be painted.
-        </para>
+      Provides facilities for determining the number of the page to be painted, as well as the area of the page to be painted.
+    </para>
             </entry>
           </row>
           <row>
@@ -554,8 +553,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about the ResizeEvent, used to indicate that a window has been resized.
-        </para>
+      Provide information about the ResizeEvent, used to indicate that a window has been resized.
+    </para>
             </entry>
           </row>
           <row>
@@ -569,8 +568,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a rich edit protection event, which is generated when the user attempts to edit protected text in a rich edit control.
-        </para>
+      Provide information about a rich edit protection event, which is generated when the user attempts to edit protected text in a rich edit control.
+    </para>
             </entry>
           </row>
           <row>
@@ -584,8 +583,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a rich edit selection event, which is generated when the selection in a rich edit control is changed.
-        </para>
+      Provide information about a rich edit selection event, which is generated when the selection in a rich edit control is changed.
+    </para>
             </entry>
           </row>
           <row>
@@ -599,8 +598,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a ScrollEvent, generated when a scroll bar is manipulated.
-        </para>
+      Provide information about a ScrollEvent, generated when a scroll bar is manipulated.
+    </para>
             </entry>
           </row>
           <row>
@@ -614,8 +613,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a slider event, which is generated when the thumb of a slider is dragged with the mouse or moved by pressing the Direction keys.
-        </para>
+      Provide information about a slider event, which is generated when the thumb of a slider is dragged with the mouse or moved by pressing the Direction keys.
+    </para>
             </entry>
           </row>
           <row>
@@ -629,8 +628,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a spinner event, which is generated when either of the spinner's arrow buttons is clicked.
-        </para>
+      Provide information about a spinner event, which is generated when either of the spinner's arrow buttons is clicked.
+    </para>
             </entry>
           </row>
           <row>
@@ -644,8 +643,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about an event that gets generated when a SysLink control is selected
-        </para>
+      Provide information about an event that gets generated when a SysLink control is selected
+    </para>
             </entry>
           </row>
           <row>
@@ -659,8 +658,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view delete event, which is generated when an item in a tree view control is deleted.
-        </para>
+      Provide information about a tree view delete event, which is generated when an item in a tree view control is deleted.
+    </para>
             </entry>
           </row>
           <row>
@@ -674,8 +673,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view drag event, which is generated when an item in a tree view control is dragged.
-        </para>
+      Provide information about a tree view drag event, which is generated when an item in a tree view control is dragged.
+    </para>
             </entry>
           </row>
           <row>
@@ -689,8 +688,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view edit event, which is generated when the label of an item in a tree view control is edited.
-        </para>
+      Provide information about a tree view edit event, which is generated when the label of an item in a tree view control is edited.
+    </para>
             </entry>
           </row>
           <row>
@@ -704,8 +703,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view expanded event, which is generated when an item in a tree view is expanded or collapsed, exposing or hiding its children.
-        </para>
+      Provide information about a tree view expanded event, which is generated when an item in a tree view is expanded or collapsed, exposing or hiding its children.
+    </para>
             </entry>
           </row>
           <row>
@@ -719,8 +718,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view expanding event, which is generated when an item in a tree view is about to be expanded or collapsed, exposing or hiding its children.
-        </para>
+      Provide information about a tree view expanding event, which is generated when an item in a tree view is about to be expanded or collapsed, exposing or hiding its children.
+    </para>
             </entry>
           </row>
           <row>
@@ -734,8 +733,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view key event, which is generated when a key is pressed while the tree view control has the input focus.
-        </para>
+      Provide information about a tree view key event, which is generated when a key is pressed while the tree view control has the input focus.
+    </para>
             </entry>
           </row>
           <row>
@@ -749,8 +748,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view mouse event, which is generated when a mouse button in a tree view control is clicked or double-clicked.
-        </para>
+      Provide information about a tree view mouse event, which is generated when a mouse button in a tree view control is clicked or double-clicked.
+    </para>
             </entry>
           </row>
           <row>
@@ -764,8 +763,8 @@
             </entry>
             <entry>
               <para>
-            Provide information about a tree view selection event, which is generated when the current selection in a tree view control has changed or is about to change.
-        </para>
+      Provide information about a tree view selection event, which is generated when the current selection in a tree view control has changed or is about to change.
+    </para>
             </entry>
           </row>
         </table>

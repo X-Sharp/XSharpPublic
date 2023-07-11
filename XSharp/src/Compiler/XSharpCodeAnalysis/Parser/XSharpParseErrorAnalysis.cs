@@ -287,7 +287,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
         {
             // empty IF and ELSEIF are handled in the condblock
-            CheckEmptyBlock(context, context.ElseStmtBlk, "ELSE block");
+            CheckEmptyBlock(context.ElseStmtBlk, context.ElseStmtBlk, "ELSE block");
         }
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
@@ -296,7 +296,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyStatement, "DO CASE statement"));
             }
-            CheckEmptyBlock(context, context.OtherwiseStmtBlk, "OTHERWISE block");
+            CheckEmptyBlock(context.OtherwiseStmtBlk, context.OtherwiseStmtBlk, "OTHERWISE block");
         }
         public override void ExitCondBlock([NotNull] XSharpParser.CondBlockContext context)
         {

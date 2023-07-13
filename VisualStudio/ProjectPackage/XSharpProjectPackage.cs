@@ -137,7 +137,7 @@ namespace XSharp.Project
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents, IDisposable
     {
-        private static XSharpProjectPackage instance;
+        private static XSharpProjectPackage instance = null;
         private XPackageSettings settings;
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
@@ -145,7 +145,7 @@ namespace XSharp.Project
         private uint shellCookie;
         IVsShell shell = null;
  
-        public static XSharpProjectPackage XInstance = null;
+        public static XSharpProjectPackage XInstance => instance ;
 
 
         // =========================================================================================
@@ -158,7 +158,7 @@ namespace XSharp.Project
 
         public XSharpProjectPackage() : base()
         {
-            XInstance = this;
+            instance = this;
         }
 
 
@@ -172,10 +172,9 @@ namespace XSharp.Project
         {
             // Give the codemodel a way to talk to the VS Shell
             XSettings.ShellLink = new XSharpShellLink();
-            XSettings.Version = await VS.Shell.GetVsVersionAsync();
+
             this.RegisterToolWindows();
 
-            instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -261,27 +260,24 @@ namespace XSharp.Project
                 await options.OtherEditorOptions.SaveAsync();
             }
             options.WriteToSettings();
+            StartLogging();
             return true;
         }
-        private void RemoveRegistryKey(string key)
+        
+	 private void StartLogging()
         {
-            try
-            {
-                using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
-                {
-                    if (root != null)
-                    {
-                        root.DeleteSubKey(key);
-                    }
-                }
-            }
-            catch
-            {
-            }
+            int FileLogging = (int)Constants.GetSetting("Log2File", 0);
+            int DebugLogging = (int)Constants.GetSetting("Log2Debug", 0);
 
+            XSettings.EnableFileLogging = FileLogging != 0;
+            XSettings.EnableDebugLogging = DebugLogging != 0;
+            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
+                Logger.Start();
+            else
+                Logger.Stop();
 
         }
-        
+		
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
         /// </summary>
@@ -329,6 +325,7 @@ namespace XSharp.Project
 
         public void Dispose()
         {
+            Logger.Stop();
             if (shell != null)
             {
                 JoinableTaskFactory.Run(async delegate
@@ -340,20 +337,6 @@ namespace XSharp.Project
             }
         }
     }
-    internal static class Logger
-    {
-        internal static void Exception(Exception e, string msg)
-        {
-            XSettings.Logger.Exception(e, msg);
-        }
-        internal static void Information(string msg)
-        {
-            XSettings.Logger.Information(msg);
-        }
-        internal static void Debug(string msg)
-        {
-            XSettings.Logger.Debug(msg);
-        }
-    }
+    
 
 }

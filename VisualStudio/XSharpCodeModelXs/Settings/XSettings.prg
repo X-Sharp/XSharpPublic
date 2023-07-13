@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharp.Settings
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
-        PUBLIC STATIC PROPERTY Logger                           AS ILogger AUTO := DummyLogger{}
+        PUBLIC STATIC PROPERTY Logger                           AS XSharpModel.ILogger AUTO := DummyLogger{}
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
@@ -130,20 +130,9 @@ BEGIN NAMESPACE XSharp.Settings
         METHOD ShowMessageBox(message AS STRING) AS INT
         PROPERTY IsVsBuilding AS LOGIC GET
    END INTERFACE
-    INTERFACE ILogger
-        METHOD Information(sMsg as STRING) AS VOID
-        METHOD Debug(sMsg as STRING) AS VOID
-        METHOD Start() AS VOID Strict
-        METHOD Stop() AS VOID Strict
-        METHOD SingleLine() AS VOID STRICT
-        METHOD DoubleLine() AS VOID STRICT
-        METHOD Exception (e as Exception, sMsg as STRING) AS VOID
-
-        PROPERTY Active as LOGIC GET
-    END INTERFACE
 
 
-    CLASS DummyLogger IMPLEMENTS ILogger
+    CLASS DummyLogger IMPLEMENTS XSharpModel.ILogger
 
         #region Implement ILogger
 

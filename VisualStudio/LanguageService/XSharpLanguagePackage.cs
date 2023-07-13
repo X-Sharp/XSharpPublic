@@ -27,9 +27,6 @@ using XSharp.Settings;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 
 namespace XSharp.LanguageService
 {
@@ -115,10 +112,6 @@ namespace XSharp.LanguageService
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
 
-        public XSharpLanguagePackage() : base()
-        {
-            ModelScannerEvents.Start();
-        }
 
         public static XSharpLanguagePackage Instance
         {
@@ -222,8 +215,7 @@ namespace XSharp.LanguageService
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
-            LsLogger.InitializeLogger();
-            ModelScannerEvents.Start();
+            LanguageServiceEvents.Start();
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -282,7 +274,6 @@ namespace XSharp.LanguageService
         {
             try
             {
-                XSettings.Logger.Stop();
 
                 if (null != _libraryManager)
                 {
@@ -309,24 +300,6 @@ namespace XSharp.LanguageService
 
 
         const string EXTENSIONS = ".prg;.ppo;.ch;.xh;.xs";
-        private void RemoveRegistryKey(string key)
-        {
-            try
-            {
-                using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
-                {
-                    if (root != null)
-                    {
-                        root.DeleteSubKey(key);
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-
-        }
         private void addOurFileExtensionsForDiffAndPeek(string parent)
         {
             using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
@@ -378,7 +351,6 @@ namespace XSharp.LanguageService
                 {
                     GetIntellisenseSettings(false);
                     var res = ThreadHelper.JoinableTaskFactory.RunAsync(RefreshAllDocumentWindowSettingsAsync);
-                    LsLogger.ActivateWhenNeeded();
 
                 }
             }
@@ -473,16 +445,13 @@ namespace XSharp.LanguageService
     {
         internal static void Exception(Exception e, string msg)
         {
-            LsLogger.Instance.Exception(e, msg);
+            XSettings.Logger.Exception(e, msg);
         }
         internal static void Information(string msg)
         {
-            LsLogger.Instance.Information(msg);
-        }
-        internal static void Debug(string msg)
-        {
-            LsLogger.Instance.Debug(msg);
+            XSettings.Logger.Information(msg);
         }
     }
+   
 
 }

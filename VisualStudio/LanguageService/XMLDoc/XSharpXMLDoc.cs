@@ -23,10 +23,18 @@ namespace XSharp.LanguageService
     // Our system type controller has these already
     static public class XSharpXMLDocTools
     {
-        static readonly Dictionary<string, IVsXMLMemberIndex> _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
-        static IVsXMLMemberIndexService _XMLMemberIndexService = null;
-        static string coreLoc = "";
-        static IVsXMLMemberIndex coreIndex = null;
+        static readonly Dictionary<string, IVsXMLMemberIndex> _memberIndexes;
+        static IVsXMLMemberIndexService _XMLMemberIndexService ;
+        static string coreLoc ;
+        static IVsXMLMemberIndex coreIndex ;
+        static XSharpXMLDocTools()
+        {
+            _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
+            _XMLMemberIndexService = null;
+            coreLoc = "";
+            coreIndex = null;
+        }
+
         static bool GetIndex()
         {
             if (_XMLMemberIndexService == null)

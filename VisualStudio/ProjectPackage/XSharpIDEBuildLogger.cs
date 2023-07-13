@@ -22,7 +22,7 @@ namespace XSharp.Project
         ErrorListManager errorlistManager;
         XSharpProjectNode node;
         bool mustLog;
-        private XSharp.Settings.ILogger Logger => XSettings.Logger;
+        private XSharpModel.ILogger Logger => XSettings.Logger;
         internal XSharpIDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy) : base(output, taskProvider, hierarchy)
         {
 

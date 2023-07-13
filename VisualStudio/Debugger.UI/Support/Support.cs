@@ -7,8 +7,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
 using XSharp.Settings;
+using XSharpModel;
 using XSharp.Debugger.Support;
 using System.Collections.Generic;
+
 
 namespace XSharp.Debugger.UI
 {

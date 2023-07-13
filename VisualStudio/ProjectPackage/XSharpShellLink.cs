@@ -5,6 +5,11 @@ using System;
 using System.IO;
 using XSharpModel;
 using XSharp.Settings;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
+
 namespace XSharp.Project
 {
     internal class XSharpShellLink : IXVsShellLink
@@ -26,23 +31,200 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
+                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
+                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+                VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
+                VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
+                VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
+                VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
                 VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
 
+                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+                _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
+                _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
+                VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
+                var sol = await VS.Solutions.GetCurrentSolutionAsync();
+                if (sol is Solution)
+                {
+                    SolutionEvents_OnAfterOpenSolution(sol);
+                }
             });
 
         }
 
+        private CommandProgression CloseDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            SaveDesignerWindows();
+            return CommandProgression.Continue;
+        }
+
+        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            RestoreDesignerWindows();
+        }
+
+        private void ShellEvents_ShutdownStarted()
+        {
+            XSolution.IsClosing = true;
+            XSolution.IsShuttingDown = true;
+            XSolution.Close();
+
+            Logger.SingleLine();
+            Logger.Information("Shutdown VS");
+            Logger.SingleLine();
+        }
+
+        private void DocumentEvents_Opened(string strDocument)
+        {
+            Logger.Information("Opened " + strDocument);
+        }
+
+
+        private void SaveDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var files = GetAllDesignerWindows(false);
+            XDatabase.SaveOpenDesignerFiles(files);
+        }
+        private void CloseAllDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            GetAllDesignerWindows(true);
+        }
+        private List<string> GetAllDesignerWindows(bool close = false)
+        {
+            var files = new List<string>();
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                
+                var documents = await VS.Windows.GetAllDocumentWindowsAsync();
+                foreach (var doc in documents.ToArray())
+                {
+                    var caption = doc.Caption;
+                    if (caption.IndexOf("[") >= 0 && caption.IndexOf("]") >= 0)
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        if (doc is IVsWindowFrame frame)
+                        {
+                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var docName);
+                            if (docName is string fileName)
+                            {
+                                if (close)
+                                {
+                                    await doc.CloseFrameAsync(FrameCloseOption.NoSave);
+                                }
+                                files.Add(fileName);
+                            }
+                        }
+                    }
+                }
+            });
+            return files;
+        }
+
+        private void RestoreDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                Logger.SingleLine();
+                Logger.Information("Start restoring windows in [Design] mode");
+                Logger.SingleLine();
+                var files = XDatabase.GetOpenDesignerFiles();
+                if (files.Count > 0)
+                {
+                    CloseAllDesignerWindows();
+                }
+                var selection = await VS.Solutions.GetActiveItemsAsync();
+                if (files.Count > 0  )
+                {
+                    foreach (var file in files)
+                    {
+                        try
+                        {
+                            Logger.SingleLine();
+                            Logger.Information("Restoring " + file);
+                            Logger.SingleLine();
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            VsShellUtilities.OpenDocument(ServiceProvider.GlobalProvider, file, VSConstants.LOGVIEWID_Designer, out _, out _, out _);
+
+                            Logger.SingleLine();
+                            Logger.Information("Restored " + file);
+                            Logger.SingleLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.DoubleLine();
+                            Logger.Exception(e, "Restoring [Design] mode windows");
+                            Logger.DoubleLine();
+                        }
+                    }
+                    var sel = selection.Where(s => s.Type == SolutionItemType.PhysicalFile).FirstOrDefault();
+                    if (sel != null)
+                    {
+                        _ = await VS.Documents.OpenAsync(sel.FullPath);
+                    }
+                    Logger.SingleLine();
+                    Logger.Information("End restoring windows in [Design] mode");
+                    Logger.SingleLine();
+                }
+            });
+        }
+
+        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            if (IsXSharpProject(project?.FullPath))
+            {
+                Logger.SingleLine();
+                Logger.Information("Renamed project: " + project?.FullPath ?? "");
+                Logger.SingleLine();
+            }
+        }
+
+        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            if (IsXSharpProject(project?.FullPath))
+            {
+                Logger.SingleLine();
+                Logger.Information("Closing project: " + project.FullPath ?? "");
+                Logger.SingleLine();
+            }
+
+        }
+
+        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            if (IsXSharpProject(project?.FullPath))
+            {
+                Logger.SingleLine();
+                Logger.Information("Opened project: " + project.FullPath ?? "");
+                Logger.SingleLine();
+            }
+        }
 
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
-            Logger.SingleLine();
-            Logger.Information("Before Opening project: " + projectFileName ?? "");
-            Logger.SingleLine();
-            checkProjectFile(projectFileName);
+            if (IsXSharpProject(projectFileName))
+            {
+                Logger.SingleLine();
+                Logger.Information("Before Opening project: " + projectFileName ?? "");
+                Logger.SingleLine();
+                checkProjectFile(projectFileName);
+            }
+        }
+        bool IsXSharpProject(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+            return string.Equals(Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
@@ -117,9 +299,71 @@ namespace XSharp.Project
 
         }
 
+        string solutionName = "";
+        private void SolutionEvents_OnBeforeCloseSolution()
+        {
+            bool hasXsProject = XSolution.Projects.Count > 0;
+            XSolution.IsClosing = true;
+            XSolution.Close();
+            // close OUR documents that are opened in design mode.
+            if (!hasXsProject)
+            {
+                return;
+            }
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var frames = await VS.Windows.GetAllDocumentWindowsAsync();
+                if (frames != null)
+                {
+                    foreach (var frame in frames.ToList())
+                    {
+                        if (frame.Caption.EndsWith("]"))
+                        {
+                            // no need to save here. VS has shown a dialog with the dirty files already
+                            await frame.CloseFrameAsync(FrameCloseOption.NoSave);
+                        }
+                    }
+                }
+            });
 
+            Logger.SingleLine();
+            Logger.Information("Closing solution: " + solutionName);
+            Logger.SingleLine();
+        }
 
+        private void SolutionEvents_OnAfterCloseSolution()
+        {
+            XSolution.IsClosing = false;
+            Logger.SingleLine();
+            Logger.Information("Closed solution: " + solutionName);
+            Logger.SingleLine();
+            solutionName = "";
+        }
 
+        private void SolutionEvents_OnAfterOpenSolution(Solution solution)
+        {
+            if (solution is Solution sol)
+            {
+                var file = sol.FullPath;
+                if (!string.IsNullOrEmpty(file))
+                {
+                    XSolution.Open(file);
+                }
+            }
+
+            Logger.SingleLine();
+            Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
+            Logger.SingleLine();
+            solutionName = solution?.FullPath;
+        }
+
+        private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opening Solution: " + solutionFileName ?? "");
+            Logger.SingleLine();
+            solutionName = solutionFileName;
+        }
 
         public void SetStatusBarAnimation(bool onOff, short id)
         {
@@ -226,7 +470,7 @@ namespace XSharp.Project
         {
             OpenDocumentAsync(file, line, column, preview).FireAndForget();
         }
-
+#region BuildEvents
         public bool IsVsBuilding => building;
         private void BuildEvents_SolutionBuildCancelled()
         {
@@ -243,5 +487,6 @@ namespace XSharp.Project
         {
             building = true;
         }
+#endregion		
     }
 }

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-07-11T10:12:17.272+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-07-14T17:13:12.211+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -18,7 +18,7 @@
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed several incompatibilities with XBase++ regarding using class members (#1215)</li>
+      <li styleclass="Body Text">Fixed several incompatibilities with XBase++ regarding using class members (#1215) <text style="font-weight:bold;">UNCONFIRMED</text></li>
       <li styleclass="Body Text">Fixed /vo3 option not working correctly in XBase++ dialect. Also added support for modifiers <text styleclass="Normal" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;">final, introduce </text>and<text styleclass="Normal" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;"> override</text> (#1244)</li>
       <li styleclass="Body Text">Fixed problem with using the NEW modifier on class fields (#1246)</li>
       <li styleclass="Body Text">Fixed several preprocessor issues with XPP dialect UDCs (#1247, #1250)</li>
@@ -33,6 +33,7 @@
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added support for &quot;classic&quot; INIT PROCEDURE and EXIT PROCEDURE (#1290)</li>
+      <li styleclass="Body Text">Added warnings when statement list inside case blocks, if blocks and other blocks are empty. To suppress the warning you can add a NOP statement in your code.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>

@@ -3,14 +3,14 @@ class CustomerExplorer inherit ExplorerWindow
 	protect oOrdersServer	as OrdersServer
 
 
-method BuildListViewColumns() 
+method BuildListViewColumns()
 	local oListView			as ListView
 	local oListViewColumn	as ListViewColumn
 	local dwCount			as dword
-	
+
 	// store list view locally for faster access
 	oListView := self:ListView
-	
+
 	// for each field in the orders server, create a
 	// list view column and add it to the list view
 	for dwCount := 1 to oOrdersServer:FCount
@@ -19,19 +19,18 @@ method BuildListViewColumns()
 		oListViewColumn:Caption	:= oOrdersServer:FieldName(dwCount)
 		oListViewColumn:Width	:= (LONG) oOrdersServer:FieldSpec(dwCount):Length
 		oListView:AddColumn(oListViewColumn)
-	NEXT dwCount
-
+    NEXT dwCount
 	return nil
 
 
-method BuildListViewItems(uValue) 
+method BuildListViewItems(uValue)
 	local oListView			as ListView
 	local oListViewItem		as ListViewItem
 	local dwCount			as dword
-	
+
 	// store list view locally for faster access
 	oListView := self:ListView
-	
+
 	// position the customer server on the specified value
 	oCustomerServer:Seek(uValue)
 
@@ -46,31 +45,31 @@ method BuildListViewItems(uValue)
 		next dwCount
 		oListViewItem:ImageIndex := 1
 		oListView:AddItem(oListViewItem)
-		
+
 		oOrdersServer:Skip()
 	end do
 
 	return nil
 
 
-method BuildTreeViewItems() 
+method BuildTreeViewItems()
 	local oTreeView			as TreeView
 	local oTreeViewItem		as TreeViewItem
 	local symParentItem		as symbol
-	
+
 	// store tree view locally for faster access
 	oTreeView := self:TreeView
-	
+
 	// add the master tree view item
 	oTreeViewItem			:= TreeViewItem{}
 	oTreeViewItem:NameSym	:= #Customer_Master
 	oTreeViewItem:TextValue	:= "Customers"
 	oTreeViewItem:Bold		:= true
 	oTreeView:AddItem(#Root, oTreeViewItem)
-	
+
 	// reposition the customer server to the topmost record
 	oCustomerServer:GoTop()
-	
+
 	// create each tree view item from a record in the
 	// customer server and add it to the tree view
 	do while !oCustomerServer:EOF
@@ -83,25 +82,25 @@ method BuildTreeViewItems()
 		oTreeView:AddItem(#Customer_Master, oTreeViewItem)
 
 		// create child tree view items for all
-		// child records that satisfy the relation		
+		// child records that satisfy the relation
 		do while !oOrdersServer:EOF
 			oTreeViewItem := TreeViewItem{}
 			oTreeViewItem:NameSym		:= String2Symbol("Orders_" + AllTrim(AsString(oOrdersServer:OrderNum)))
 			oTreeViewItem:@@Value			:= oOrdersServer:OrderNum
 			oTreeViewItem:ImageIndex	:= 1
 			oTreeView:AddItem(symParentItem, oTreeViewItem)
-			
+
 			oOrdersServer:Skip()
 		end do
-	
+
 		oCustomerServer:Skip()
 	end do
 
 	return nil
 
 
-METHOD Close(oCloseEvent) 
-	
+METHOD Close(oCloseEvent AS Event)  AS USUAL
+
 	// clean up the open data servers
 	IF oCustomerServer != NULL_OBJECT
 		oCustomerServer:Close()
@@ -116,42 +115,42 @@ METHOD Close(oCloseEvent)
 	RETURN SUPER:Close(oCloseEvent)
 
 
-method CloseExplorer() 
-	
+method CloseExplorer()
+
 	return self:EndWindow()
 
 
-method DeleteListViewItems() 
+method DeleteListViewItems()
 	return self:ListView:DeleteAll()
 
 
-method EditOrder() 
+method EditOrder()
 	local cTitle	as string
 	local cMessage	as string
-	
+
 	cTitle		:= "Option Not Available"
 	cMessage	:= "This option has not yet been implemented"
 
 	TextBox{self:Owner, cTitle, cMessage}:Show()
-	
+
 	return nil
 
 
 
-CONSTRUCTOR(oOwner) 
+CONSTRUCTOR(oOwner)
 	local oDimension	as Dimension
 	local oImageList	as ImageList
 	local oTreeView		as TreeView
 	local oListView		as ListView
-	
+
 	// initialize super class with no labels, and
 	// the specified view control subclasses
 	SUPER(oOwner, false, #CustomerTreeView, #CustomerListView)
-	
+
 	// store the view controls locally for faster access
 	oTreeView := self:TreeView
 	oListView := self:ListView
-	
+
 	// initialize menu and caption
 	self:Menu := CustomerExplorerMenu{self}
 	self:Caption := "Exploring Customer Orders"
@@ -181,32 +180,32 @@ CONSTRUCTOR(oOwner)
 
 	// initialize data
 	self:InitData()
-	
+
 	return self
 
 
-method InitData() 
+method InitData()
 
 	// create, initialize, and set the relation on the data servers
 	oCustomerServer	:= CustomerServer{}
 	oOrdersServer	:= OrdersServer{}
 	oCustomerServer:SetSelectiveRelation(oOrdersServer, #CustNum)
-	
+
 	// build list view columns and tree view items; it is unnecessary
 	// to build list view items until a tree view item has been selected
 	self:BuildListViewColumns()
 	self:BuildTreeViewItems()
-	
+
 	return nil
 
 
 METHOD ListViewColumnClick(oListViewClickEvent  AS ListViewColumnClickEvent)
 	local symColumnName as symbol
-	
+
 	super:ListViewColumnClick(oListViewClickEvent)
 
 	symColumnName := oListViewClickEvent:ListViewColumn:NameSym
-	
+
 	// based on the column name, set the appropriate sort routine name
 	do case
 		case symColumnName == #CUSTNUM
@@ -246,18 +245,18 @@ METHOD ListViewColumnClick(oListViewClickEvent  AS ListViewColumnClickEvent)
 	return nil
 
 
-method Refresh() 
+method Refresh()
 	// clear and rebuild the list view items
 	self:DeleteListViewItems()
 	self:BuildListViewItems(oCustomerServer:LastName)
 	RETURN SELF
 
 
-METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent AS TreeViewSelectionEvent) 
+METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent AS TreeViewSelectionEvent)
 	local oTreeViewItem	as TreeViewItem
-	
+
 	super:TreeViewSelectionChanged(oTreeViewSelectionEvent)
-	
+
 	oTreeViewItem := oTreeViewSelectionEvent:NewTreeViewItem
 	if oTreeViewItem != NULL_OBJECT .and. InStr("CUSTOMERS_", Upper(Symbol2String(oTreeViewItem:NameSym)))
 		// left-click occurred on a customer tree view item
@@ -292,10 +291,10 @@ END CLASS
 CLASS CustomerListView INHERIT ListView
 
 
-method SortByCustNum(oListViewItem1, oListViewItem2) 
+method SortByCustNum(oListViewItem1, oListViewItem2)
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#CUSTNUM)
     uValue2 := oListViewItem2:GetValue(#CUSTNUM)
 
@@ -311,7 +310,7 @@ method SortByCustNum(oListViewItem1, oListViewItem2)
 METHOD SortByOrderDate(oListViewItem1 AS ListViewItem, oListViewItem2 AS ListViewItem) AS LONG
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#ORDER_DATE)
     uValue2 := oListViewItem2:GetValue(#ORDER_DATE)
 
@@ -324,10 +323,10 @@ METHOD SortByOrderDate(oListViewItem1 AS ListViewItem, oListViewItem2 AS ListVie
 	return 0
 
 
-method SortByOrderNum(oListViewItem1, oListViewItem2) 
+method SortByOrderNum(oListViewItem1, oListViewItem2)
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#ORDERNUM)
     uValue2 := oListViewItem2:GetValue(#ORDERNUM)
 
@@ -340,10 +339,10 @@ method SortByOrderNum(oListViewItem1, oListViewItem2)
 	return 0
 
 
-method SortByOrderPrice(oListViewItem1, oListViewItem2) 
+method SortByOrderPrice(oListViewItem1, oListViewItem2)
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#ORDERPRICE)
     uValue2 := oListViewItem2:GetValue(#ORDERPRICE)
 
@@ -359,7 +358,7 @@ method SortByOrderPrice(oListViewItem1, oListViewItem2)
 METHOD SortBySellerID(oListViewItem1, oListViewItem2) AS LONG
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#SELLER_ID)
     uValue2 := oListViewItem2:GetValue(#SELLER_ID)
 
@@ -375,7 +374,7 @@ METHOD SortBySellerID(oListViewItem1, oListViewItem2) AS LONG
 METHOD SortByShippingAddress(oListViewItem1, oListViewItem2) AS LONG
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#SHIP_ADDRS)
     uValue2 := oListViewItem2:GetValue(#SHIP_ADDRS)
 
@@ -391,7 +390,7 @@ METHOD SortByShippingAddress(oListViewItem1, oListViewItem2) AS LONG
 METHOD SortByShippingCity(oListViewItem1, oListViewItem2) AS LONG
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#SHIP_CITY)
     uValue2 := oListViewItem2:GetValue(#SHIP_CITY)
 
@@ -407,7 +406,7 @@ METHOD SortByShippingCity(oListViewItem1, oListViewItem2) AS LONG
 METHOD SortByShippingDate(oListViewItem1, oListViewItem2) AS LONG
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#SHIP_DATE)
     uValue2 := oListViewItem2:GetValue(#SHIP_DATE)
 
@@ -420,10 +419,10 @@ METHOD SortByShippingDate(oListViewItem1, oListViewItem2) AS LONG
 	return 0
 
 
-method SortByShippingState(oListViewItem1, oListViewItem2) 
+method SortByShippingState(oListViewItem1, oListViewItem2)
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#SHIP_STATE)
     uValue2 := oListViewItem2:GetValue(#SHIP_STATE)
 
@@ -436,10 +435,10 @@ method SortByShippingState(oListViewItem1, oListViewItem2)
 	return 0
 
 
-method SortByShippingZipCode(oListViewItem1, oListViewItem2) 
+method SortByShippingZipCode(oListViewItem1, oListViewItem2)
 	local uValue1	as usual
 	local uValue2	as usual
-	
+
     uValue1 := oListViewItem1:GetValue(#SHIP_ZIP)
     uValue2 := oListViewItem2:GetValue(#SHIP_ZIP)
 
@@ -456,7 +455,7 @@ END CLASS
 
 
 CLASS CustomerTreeView INHERIT TreeView
-	
+
 
 
 END CLASS

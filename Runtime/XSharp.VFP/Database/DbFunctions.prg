@@ -281,6 +281,7 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
         aSource   := uSource
         IF aSource IS __FoxArray
             aFox := (__FoxArray) aSource
+            aFox:__Fill(NIL)
             lMulti := aFox:MultiDimensional
             IF lMulti
                 nRows    := (DWORD) aFox:Rows
@@ -331,7 +332,8 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
             NEXT
         ENDIF
         aResult := aSource
-    ELSE
+        ELSE
+            NOP
     ENDIF
     RETURN aResult
 

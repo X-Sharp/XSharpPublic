@@ -5,11 +5,11 @@
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
 
-USING System.Windows.Forms
+USING SWF := System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 USING System.Collections
 
-CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
+CLASS VOListBox INHERIT SWF.ListBox
 
 #region fields
 	PROTECTED lBusy AS LOGIC
@@ -30,14 +30,14 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
     NEW PROPERTY SelectedItems   AS IList GET SUPER:SelectedItems
 
 #endregion
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 
 
 #region Helper methods
 	METHOD Initialize AS VOID STRICT
 		SELF:DisplayMember         := "DisplayValue"
 		SELF:ValueMember           := "Value"
-		SELF:DrawMode              := DrawMode.OwnerDrawFixed
+		SELF:DrawMode              := SWF.DrawMode.OwnerDrawFixed
 		//SELF:DrawItem += SupportFunctions.listBox_DrawItem
         SELF:oProperties:OnWndProc += OnWndProc
 
@@ -91,14 +91,14 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 			SELF:UseTabStops := _AND(dwStyle, LBS_USETABSTOPS) == LBS_USETABSTOPS
 			IF _AND(dwStyle, LBS_MULTIPLESEL|LBS_EXTENDEDSEL) != 0
 				IF _AND(dwStyle, LBS_EXTENDEDSEL) == LBS_EXTENDEDSEL
-					SELF:SelectionMode := SelectionMode.MultiExtended
+					SELF:SelectionMode := SWF.SelectionMode.MultiExtended
 				ELSE
-					SELF:SelectionMode := SelectionMode.MultiSimple
+					SELF:SelectionMode := SWF.SelectionMode.MultiSimple
 				ENDIF
 			ELSEIF _AND(dwStyle, LBS_NOSEL) != 0
-				SELF:SelectionMode := SelectionMode.None
+				SELF:SelectionMode := SWF.SelectionMode.None
 			ELSE
-				SELF:SelectionMode := SelectionMode.One
+				SELF:SelectionMode := SWF.SelectionMode.One
 			ENDIF
 		ENDIF
 
@@ -107,7 +107,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 #region Windows Forms Method and Property overrides
 
-    VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
+    OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 
@@ -140,13 +140,13 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 	END PROPERTY
 
 
-	VIRTUAL PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
+	VIRTUAL PROTECTED METHOD OnKeyPress(e AS SWF.KeyPressEventArgs) AS VOID
 		SUPER:OnKeyPress(e)
 		e:handled := SELF:IncrementalSearch(e:KeyChar)
 		RETURN
 
 
-	PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID
+	PROTECT METHOD OnMouseDoubleClick(e AS SWF.MouseEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
 		SUPER:OnMouseDoubleClick(e)
@@ -184,22 +184,20 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 
     // This gets called from the WndProc event handler
-	VIRTUAL METHOD OnWndProc(msg REF Message) AS VOID
+	VIRTUAL METHOD OnWndProc(msg REF SWF.Message) AS VOID
 		// Windows forms does not raise a mouse double click event for the right mouse button
 		IF SELF:Control == NULL_OBJECT
 			// do nothing
+            NOP
 		ELSEIF (msg:Msg == WM_RBUTTONDBLCLK)
-			LOCAL me AS MouseEventArgs
-			me := MouseEventArgs{MouseButtons.Right, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})
+			var me := SWF.MouseEventArgs{SWF.MouseButtons.Right, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, SWF.Control.ModifierKeys})
 		ELSEIF (msg:Msg == WM_MBUTTONDBLCLK)
-			LOCAL me AS MouseEventArgs
-			me := MouseEventArgs{MouseButtons.Middle, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})
+			var me := SWF.MouseEventArgs{SWF.MouseButtons.Middle, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, SWF.Control.ModifierKeys})
 		ELSEIF (msg:Msg == WM_XBUTTONDBLCLK)
-			LOCAL me AS MouseEventArgs
-			me := MouseEventArgs{MouseButtons.XButton1, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})
+			var me := SWF.MouseEventArgs{SWF.MouseButtons.XButton1, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, SWF.Control.ModifierKeys})
 		ENDIF
 		RETURN
 
@@ -207,22 +205,22 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 END CLASS
 
-CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
+CLASS VOComboBox INHERIT SWF.ComboBox
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
 	PROTECTED lBusy AS LOGIC
 	PROTECTED cSavedString AS STRING
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 
 	METHOD Initialize AS VOID STRICT
 		SELF:DisplayMember	:= "DisplayValue"
 		SELF:ValueMember	:= "Value"
-		SELF:FlatStyle		:= FlatStyle.System
-		SELF:Margin			:= Padding{0,0,0,0}
+		SELF:FlatStyle		:= SWF.FlatStyle.System
+		SELF:Margin			:= SWF.Padding{0}
 		RETURN
 
-    NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (System.Windows.Forms.AutoCompleteSource) VALUE
+    NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (SWF.AutoCompleteSource) VALUE
     NEW PROPERTY Items           AS IList GET SUPER:Items
 
 	PROPERTY Text AS STRING
@@ -233,7 +231,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 				// During closing of a window the items list may be empty causing a crash
 				LOCAL cResult AS STRING
 				TRY
-					IF SELF:DropDownStyle == ComboBoxStyle.DropDownList
+					IF SELF:DropDownStyle == SWF.ComboBoxStyle.DropDownList
 						IF SELF:SelectedIndex >= 0 .and. SELF:Items:Count > 0
 							cResult := SUPER:Text
 						ELSE
@@ -265,7 +263,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		SELF:Sorted:= lSorted
 		SELF:Initialize()
 		SELF:SetVisualStyle()
-		SELF:DrawMode := DrawMode.OwnerDrawFixed
+		SELF:DrawMode := SWF.DrawMode.OwnerDrawFixed
 		//SELF:DrawItem += SupportFunctions.comboBox_DrawItem
 
 
@@ -315,9 +313,9 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		SUPER:DestroyHandle()
 		RETURN
 
-	VIRTUAL PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
+	VIRTUAL PROTECTED METHOD OnKeyPress(e AS SWF.KeyPressEventArgs) AS VOID
 		SUPER:OnKeyPress(e)
-		IF SELF:DropDownStyle == ComboBoxStyle.DropDownList
+		IF SELF:DropDownStyle == SWF.ComboBoxStyle.DropDownList
 			e:handled := SELF:IncrementalSearch(e:KeyChar)
 		ENDIF
 		RETURN
@@ -367,7 +365,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		RETURN
 
 
-	VIRTUAL PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID
+	VIRTUAL PROTECT METHOD OnMouseDoubleClick(e AS SWF.MouseEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
 		SUPER:OnMouseDoubleClick(e)

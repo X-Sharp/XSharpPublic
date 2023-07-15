@@ -2,6 +2,7 @@
 <Designers>
   <VOWindow Name="OrderDialog">
     <Window Name="OrderDialog">
+      <SavedOnce>Yes</SavedOnce>
       <Name>OrderDialog</Name>
       <Class>FORM:DIALOGWINDOW</Class>
       <Caption>Marios Pizza Blitz</Caption>
@@ -9,7 +10,7 @@
       <Left>5</Left>
       <Top>5</Top>
       <Width>480</Width>
-      <Height>480</Height>
+      <Height>456</Height>
       <BrowseIndex>0</BrowseIndex>
       <BrowseSize>0</BrowseSize>
       <SubForm>No</SubForm>
@@ -24,6 +25,50 @@
         <NewFont>8,25:Microsoft Sans Serif</NewFont>
       </ExProperties>
     </Window>
+    <Control Name="LargeRB">
+      <Name>LargeRB</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON</Class>
+      <Caption>Large</Caption>
+      <Order>4</Order>
+      <Left>255</Left>
+      <Top>19</Top>
+      <Width>71</Width>
+      <Height>29</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073811465</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Large"</HyperLabel>
+        <HyperLabel>"LargeRB"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="MarioButton">
+      <Name>MarioButton</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>
+      </Caption>
+      <Order>24</Order>
+      <Left>263</Left>
+      <Top>240</Top>
+      <Width>200</Width>
+      <Height>200</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073840256</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>"MarioButton"</HyperLabel>
+        <InheritClassName>TWOBMPBUTTON</InheritClassName>
+        <TooltipText>"Press to see Mario smile ..."</TooltipText>
+      </ExProperties>
+    </Control>
     <Control Name="CrustStatic">
       <Name>CrustStatic</Name>
       <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
@@ -106,27 +151,6 @@
       <ExProperties>
         <HyperLabel>,"Medium"</HyperLabel>
         <HyperLabel>"MediumRB"</HyperLabel>
-      </ExProperties>
-    </Control>
-    <Control Name="LargeRB">
-      <Name>LargeRB</Name>
-      <Class>CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON</Class>
-      <Caption>Large</Caption>
-      <Order>4</Order>
-      <Left>255</Left>
-      <Top>19</Top>
-      <Width>71</Width>
-      <Height>29</Height>
-      <BrowseIndex>-1</BrowseIndex>
-      <BrowseSize>0</BrowseSize>
-      <SubForm>No</SubForm>
-      <NoSave>No</NoSave>
-      <Deleted>0</Deleted>
-      <Styles>1073811465</Styles>
-      <ExStyles>0</ExStyles>
-      <ExProperties>
-        <HyperLabel>,"Large"</HyperLabel>
-        <HyperLabel>"LargeRB"</HyperLabel>
       </ExProperties>
     </Control>
     <Control Name="XLargeRB">
@@ -465,29 +489,6 @@
         <HyperLabel>"CancelButton"</HyperLabel>
         <TooltipText>"Press in case you already had enough pizzas."</TooltipText>
         <Image>NOPIZZA</Image>
-      </ExProperties>
-    </Control>
-    <Control Name="MarioButton">
-      <Name>MarioButton</Name>
-      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
-      <Caption>
-      </Caption>
-      <Order>24</Order>
-      <Left>263</Left>
-      <Top>240</Top>
-      <Width>200</Width>
-      <Height>200</Height>
-      <BrowseIndex>-1</BrowseIndex>
-      <BrowseSize>0</BrowseSize>
-      <SubForm>No</SubForm>
-      <NoSave>No</NoSave>
-      <Deleted>0</Deleted>
-      <Styles>1073840256</Styles>
-      <ExStyles>0</ExStyles>
-      <ExProperties>
-        <HyperLabel>"MarioButton"</HyperLabel>
-        <InheritClassName>TWOBMPBUTTON</InheritClassName>
-        <TooltipText>"Press to see Mario smile ..."</TooltipText>
       </ExProperties>
     </Control>
     <Control Name="GroupBox1">

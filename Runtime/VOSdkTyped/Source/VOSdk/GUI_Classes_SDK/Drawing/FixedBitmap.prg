@@ -3,11 +3,11 @@ CLASS FixedBitmap INHERIT FixedImage
 	PROTECT hInst AS IntPtr
 
  /// <exclude />
-	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
+	OVERRIDE METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
 		RETURN SELF:SetBitmap(Bitmap{uResID})
 
 /// <include file="Gui.xml" path="doc/FixedBitmap.AsString/*" />
-	METHOD AsString()
+	METHOD AsString() as string strict
 		RETURN "#FixedBitmap Object"
 
 /// <include file="Gui.xml" path="doc/FixedBitmap.ctor/*" />
@@ -23,6 +23,7 @@ CLASS FixedBitmap INHERIT FixedImage
 		ENDIF
 		RETURN
 
+    /// <inheritdoc />
 	ASSIGN HyperLabel(oHL AS HyperLabel)
 		SUPER:HyperLabel := oHL
 		IF SELF:__Label == NULL_OBJECT .or. SELF:__Label:Image == NULL_OBJECT
@@ -33,7 +34,7 @@ CLASS FixedBitmap INHERIT FixedImage
 /// <include file="Gui.xml" path="doc/FixedBitmap.SetBitmap/*" />
 	METHOD SetBitmap(oBitmap AS Bitmap)
 		LOCAL oImg AS System.Drawing.Image
-		oImg := oBitmap:__Image
+		oImg := oBitmap
 		SELF:SetStyle(SS_BITMAP)
 		IF SELF:oCtrl == NULL_OBJECT
 			SELF:Create()

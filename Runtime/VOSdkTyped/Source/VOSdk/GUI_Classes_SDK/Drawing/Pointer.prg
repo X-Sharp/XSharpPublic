@@ -2,9 +2,9 @@
 
 
 CLASS Pointer INHERIT VObject
-	PROTECT oCursor AS System.Windows.Forms.Cursor
-	ACCESS __Cursor AS System.Windows.Forms.Cursor
-		RETURN oCursor
+    PROTECT oCursor AS System.Windows.Forms.Cursor
+    /// <exclude />
+    
 
 /// <include file="Gui.xml" path="doc/Pointer.Confine/*" />
 	METHOD Confine(oRect as BoundingBox) AS VOID
@@ -100,7 +100,7 @@ CLASS Pointer INHERIT VObject
 
 	OPERATOR IMPLICIT ( p AS Pointer ) AS System.Windows.Forms.Cursor
 		IF p != NULL_OBJECT
-			RETURN p:__Cursor
+			RETURN p:oCursor
 		ENDIF
 		RETURN NULL_OBJECT
 

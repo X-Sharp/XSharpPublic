@@ -358,7 +358,14 @@ FUNCTION Len(uValue AS USUAL) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/default/*" />
 FUNCTION @@Default(uVar REF USUAL, uDefault AS USUAL) AS VOID
-    IF uVar:Type == __UsualType.Void
+    // The next line is needed to be VO compatible, although it does not make sense
+    // See https://github.com/X-Sharp/XSharpPublic/issues/1119
+    IF XSharp.RuntimeState.Dialect:IsVoLike() .and. ;
+        uVar:IsObject .and. (OBJECT) uVar == NULL_OBJECT
+        // do nothing
+        NOP
+
+    ELSEIF uVar:IsNil
         uVar := uDefault
     ENDIF
     RETURN

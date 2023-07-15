@@ -260,6 +260,7 @@ FUNCTION MemComp( ptrFirst AS IntPtr, ptrSecond AS IntPtr, dwCount AS DWORD ) AS
 			EXIT
 		ELSE
 			// Equal, compare next
+            NOP
 		ENDIF
 	NEXT
 	RETURN result

@@ -394,6 +394,7 @@ FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT
                 locked:Add(iRecno)
             ELSEIF iRecno == 0
                 // Todo: FoxPro allows to lock the header
+                NOP
 
             ENDIF
         ELSE

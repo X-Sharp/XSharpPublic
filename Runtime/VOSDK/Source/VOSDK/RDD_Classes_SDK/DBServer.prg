@@ -730,7 +730,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 	DO CASE
 	CASE nEffectiveCCMode == ccNone
 		//nothing to do
-
+        NOP
 
 	CASE nEffectiveCCMode == ccOptimistic
 		FOR w := 1 UPTO wFieldCount

@@ -1,19 +1,18 @@
-
-
+/// <include file="Gui.xml" path="doc/RectangleObject/*" />
 
 CLASS RectangleObject INHERIT ShapeObject
 
 
+/// <include file="Gui.xml" path="doc/RectangleObject.ctor/*" />
 	CONSTRUCTOR(oPoint as USUAl, oDimension as USUAl, oPen as USUAl, oBrush as USUAl) 
 		
 		SUPER(oPoint, oDimension, oPen, oBrush)
 
-
 		RETURN 
 
+/// <include file="Gui.xml" path="doc/RectangleObject.ctor/*" />
 
 	CONSTRUCTOR(oPoint AS Point, oDimension AS Dimension, oPen AS Pen, oBrush AS Brush) 
-		
 		SUPER(oPoint, oDimension, oPen, oBrush)
 
 

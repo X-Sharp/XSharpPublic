@@ -1,5 +1,5 @@
 // DialogForm.prg
-
+USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING System.ComponentModel
 CLASS VODialogForm INHERIT VOForm
@@ -16,7 +16,7 @@ CLASS VODialogForm INHERIT VOForm
 	CONSTRUCTOR(oWindow AS Window, oRes AS ResourceDialog)
 		SUPER(oWindow)
 		SELF:oResDlg := oRes
-		SELF:StartPosition	       := FormStartPosition.CenterParent
+		SELF:StartPosition	       := SWF.FormStartPosition.CenterParent
 		SELF:Text                  := "DialogForm"
 		IF oRes != NULL
 			SELF:Size				:= oRes:Size
@@ -26,11 +26,11 @@ CLASS VODialogForm INHERIT VOForm
 			SELF:lMustAdjust := FALSE
 			SELF:Size				:= System.Drawing.Size{1,1}
 		ENDIF
-		SELF:AutoSizeMode          := AutoSizeMode.GrowAndShrink
+		SELF:AutoSizeMode          := SWF.AutoSizeMode.GrowAndShrink
 
 		oSurfacePanel              := GuiFactory.Instance:CreateSurfacePanel(oWindow)
 		oSurfacePanel:Visible      := TRUE
-		SELF:oSurfacePanel:Dock    := DockStyle.Fill
+		SELF:oSurfacePanel:Dock    := SWF.DockStyle.Fill
 		SELF:Controls:Add(oSurfacePanel)
 
 
@@ -39,19 +39,24 @@ CLASS VODialogForm INHERIT VOForm
 
 	OVERRIDE PROTECT METHOD OnShown(e AS EventArgs) AS VOID STRICT
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Surface:Controls
-			IF oC IS IVOButton VAR button
+			IF oC IS VOButton VAR button
 				IF button:DefaultButton
-					SELF:AcceptButton := (IButtonControl) button
+					SELF:AcceptButton := (SWF.IButtonControl) button
 				ENDIF
 			ENDIF
 		NEXT
-		SUPER:OnShown(e)
-		LOCAL oFirst AS System.Windows.Forms.Control
-		oFirst := SELF:GetFirstEditableControl()
+        SUPER:OnShown(e)
+        SELF:SelectFirstControl()
+        LOCAL oDlg as DialogWindow
+        oDlg := (DialogWindow) SELF:Window
+        oDlg:PostShowDialog()
+
+    PROTECTED METHOD SelectFirstControl() AS System.Windows.Forms.Control STRICT
+		VAR oFirst := SELF:GetFirstEditableControl()
 		IF oFirst != NULL_OBJECT
 			oFirst:Select()
-		ENDIF
-		((DialogWindow) Window):PostShowDialog()
+        ENDIF
+        RETURN oFirst
 
 	OVERRIDE PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
 		GET
@@ -73,7 +78,7 @@ CLASS VODialogForm INHERIT VOForm
 			// Fix problem of group boxes that cover other controls
 			SELF:oSurfacePanel:Prepare()
 			IF ! SELF:IsShown
-				SELF:oSurfacePanel:Dock			:= DockStyle.Fill
+				SELF:oSurfacePanel:Dock			:= SWF.DockStyle.Fill
 				// When the window is painted with style WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOXsometimes the size is too small
 				IF lMustAdjust .AND. !SELF:InitialSize:IsEmpty .AND. (SELF:Width != SELF:InitialSize:Width .OR. SELF:Height != SELF:InitialSize:Height)
 					SELF:Size := SELF:InitialSize
@@ -88,22 +93,17 @@ CLASS VODialogForm INHERIT VOForm
 
 	OVERRIDE PROTECTED METHOD OnSizeChanged(e AS EventArgs) AS VOID
 		SUPER:OnSizeChanged(e)
-
-
-
 #endregion
-
 
 #region Methods to reproduce the VO DIalogwindow behavior
 	METHOD GetFirstEditableControl AS System.Windows.Forms.Control
-		RETURN GetFirstEditableChild(SELF:oSurfacePanel)
-
+		RETURN SELF:oSurfacePanel:GetFirstEditableChild()
 
 	METHOD SetSizable(lSet AS LOGIC) AS VOID
 		IF lSet
-			SELF:FormBorderStyle := FormBorderStyle.Sizable
+			SELF:FormBorderStyle := SWF.FormBorderStyle.Sizable
 		ELSE
-			SELF:FormBorderStyle := FormBorderStyle.FixedDialog
+			SELF:FormBorderStyle := SWF.FormBorderStyle.FixedDialog
 		ENDIF
 
 

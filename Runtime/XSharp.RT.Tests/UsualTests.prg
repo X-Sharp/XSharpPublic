@@ -918,7 +918,23 @@ CLASS UsualTests
       SetExact(lExact)
       Assert.False( InList(ToDay(), Today()+1, Today()-1, 1000.01.01))
       Assert.True( InList(ToDay(), Today()+1, Today()-1, 1000.01.01, ToDay()))
-      InList("abc",1,2,Today(), 1.0)
+        InList("abc",1,2,Today(), 1.0)
+
+    [Fact, Trait("Category", "Usual")];
+    METHOD UsualIsNilTest() AS VOID
+        LOCAL u as USUAL
+        XSharp.RuntimeState.Dialect := XSharpDialect.VO
+        u := NIL
+        Assert.True(IsNil(u))
+        u := Null_OBJECT
+        Assert.True(IsNil(u))
+        Assert.True ( u == NULL_OBJECT )
+        Default(REF u , "test")
+        Assert.True(IsNil(u))
+        Assert.True ( u == NULL_OBJECT )
+
+
+
 END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
 

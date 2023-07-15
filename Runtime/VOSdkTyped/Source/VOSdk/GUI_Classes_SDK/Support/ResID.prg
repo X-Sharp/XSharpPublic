@@ -15,7 +15,7 @@ CLASS ResourceID INHERIT VObject
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ResourceID.Address/*" />
-	METHOD Address() AS IntPtr
+	METHOD Address() AS IntPtr STRICT
 		LOCAL lpAddress AS IntPtr
 
 		IF NULL_STRING != sID
@@ -37,16 +37,13 @@ CLASS ResourceID INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/ResourceID.Name/*" />
-	ACCESS Name as STRING
-		RETURN sID
+	PROPERTY Name as STRING GET sID
 
 /// <include file="Gui.xml" path="doc/ResourceID.ID/*" />
-
-	ACCESS ID	AS LONG
-		RETURN nID
+	PROPERTY ID	AS LONG GET nID
 
 /// <include file="Gui.xml" path="doc/ResourceID.ctor/*" />
-	CONSTRUCTOR(xID, xResourceFile)
+	CONSTRUCTOR(xID as usual, xResourceFile := NIL as usual)
 		LOCAL argTypeError AS LOGIC
 
 		SUPER()

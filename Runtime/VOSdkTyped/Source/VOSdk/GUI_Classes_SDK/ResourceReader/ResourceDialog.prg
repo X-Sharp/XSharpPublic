@@ -25,23 +25,23 @@ CLASS ResourceDialog INHERIT ResourceReader
 	PROPERTY MenuID		    AS LONG     AUTO
 	PROPERTY oOwner		    AS OBJECT   AUTO
 	PROPERTY X              AS LONG		AUTO // Dialog box Units
-	PROPERTY Y              AS LONG     AUTO 
+	PROPERTY Y              AS LONG     AUTO
 	PROPERTY CX             AS LONG		AUTO // Dialog box Units
 	PROPERTY CY             AS LONG		AUTO // Dialog box Units
-	PROPERTY Style          AS INT      AUTO 
-	PROPERTY ExStyle        AS INT      AUTO 
-	PROPERTY ItemCnt		AS LONG     AUTO 
-	PROPERTY HelpID		    AS DWORD	AUTO 
+	PROPERTY Style          AS INT      AUTO
+	PROPERTY ExStyle        AS INT      AUTO
+	PROPERTY ItemCnt		AS LONG     AUTO
+	PROPERTY HelpID		    AS DWORD	AUTO
 	PROPERTY Controls       AS List<ResourceDialogItem> AUTO
 	PROPERTY IsValid		AS LOGIC    AUTO
 
 #region Properties
 	ACCESS Size as System.Drawing.Size
 		RETURN System.Drawing.Size{CX,CY}
-		
+
 	ACCESS Location as System.Drawing.Point
 		RETURN System.Drawing.Point{X,Y}
-		
+
 	ACCESS Font as System.Drawing.Font
 		LOCAL oFont AS System.Drawing.Font
 		LOCAL nStyle AS System.Drawing.FontStyle
@@ -67,12 +67,12 @@ CLASS ResourceDialog INHERIT ResourceReader
 					oWindow := oWindow:Owner
 				ENDDO
 				hOwner := oWindow:Handle()
-				
+
 			ELSE
 				hOwner := IntPtr.Zero
 			ENDIF
 			hWnd := GuiWin32.CreateDialogParam(hDLL, sName, hOwner, IntPtr.Zero, IntPtr.Zero)
-			IF hWnd != IntPtr.Zero 
+			IF hWnd != IntPtr.Zero
 				LOCAL oRect := WINRECT{} AS WINRECT
 				LOCAL oPoint := WINPOINT{} AS WINPOINT
 				LOCAL sb AS StringBuilder
@@ -92,10 +92,11 @@ CLASS ResourceDialog INHERIT ResourceReader
 						SELF:FontPitch   := Convert.ToUInt16(oFont:SizeInPoints)
 						SELF:FontCharSet := oFont:GdiCharSet
 					ENDIF
-				CATCH  AS Exception
+                CATCH  AS Exception
+                    NOP
 				END TRY
-				SELF:Style	 := GuiWin32.GetWindowLong(hWnd, GWL_STYLE)
-				SELF:ExStyle := GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE)
+				SELF:Style	 := GuiWin32.GetWindowStyle(hWnd)
+				SELF:ExStyle := GuiWin32.GetWindowExStyle(hWnd)
 				lOk := GuiWin32.GetWindowRect(hWnd, REF oRect)
 				IF lOk
 					SELF:X := oRect:left
@@ -122,8 +123,8 @@ CLASS ResourceDialog INHERIT ResourceReader
 								oControl:Y         := oPoint:y
 							ENDIF
 						ENDIF
-						oControl:Style	   := GuiWin32.GetWindowLong(hItem, GWL_STYLE)
-						oControl:ExStyle   := GuiWin32.GetWindowLong(hItem, GWL_EXSTYLE)
+						oControl:Style	   := GuiWin32.GetWindowStyle(hItem)
+						oControl:ExStyle   := GuiWin32.GetWindowExStyle(hItem)
 						IF GuiWin32.GetClassName(hItem, sb, sb:Capacity) > 0
 							oControl:ClassName := sb:ToString()
 						ENDIF
@@ -138,7 +139,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 				lOk  := GuiWin32.DestroyWindow(hWnd)
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
 	METHOD __LoadFromResource(hDLL AS IntPtr, hResInfo AS IntPtr) AS LOGIC
 		LOCAL lpBuffer AS IntPtr
@@ -156,11 +157,11 @@ CLASS ResourceDialog INHERIT ResourceReader
 					SELF:IsValid := TRUE
 					GuiWin32.FreeResource(hResource)
 				ENDIF
-			ENDIF	
+			ENDIF
 		ENDIF
 		RETURN SELF:IsValid
-		
-				
+
+
 	CONSTRUCTOR(hDLL AS IntPtr, cName AS STRING, Owner AS OBJECT)
 		LOCAL hResInfo AS IntPtr
 		SUPER()
@@ -169,7 +170,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 		IF SELF:__LoadFromResource(hDLL, hResInfo)
 			SELF:__AdjustSizes(hDLL, cName)
 		ENDIF
-		RETURN 
+		RETURN
 
 
 
@@ -180,23 +181,23 @@ CLASS ResourceDialog INHERIT ResourceReader
 			ENDIF
 		NEXT
 		RETURN NULL_OBJECT
-		
+
 	METHOD CopyCreateParams(params AS System.Windows.Forms.CreateParams, lIsDialog AS LOGIC ) AS VOID
 		IF Slen(SELF:ClassName) > 0
 			params:ClassName := SELF:ClassName
 		ENDIF
 		params:Caption	:= SELF:Caption
 		IF lIsDialog
-			params:X		:= SELF:X 
+			params:X		:= SELF:X
 			params:Y		:= SELF:Y
 			params:Width	:= SELF:CX
 			params:Height	:= SELF:CY
 		ENDIF
 		RETURN
-		
-		
-		
-#region Read from Native Resource	
+
+
+
+#region Read from Native Resource
 	INTERNAL METHOD ReadData(lpBuffer AS IntPtr) AS VOID
 		LOCAL pDialogEx	AS winDLGTEMPLATEEX
 
@@ -207,7 +208,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 		ELSE
 			SELF:ReadDlg( (winDLGTEMPLATE PTR ) lpBuffer)
 		ENDIF
-		RETURN 
+		RETURN
 
 	INTERNAL METHOD ReadDlgEx(pDialogEx AS winDLGTEMPLATEEX) AS VOID
 		LOCAL pWord AS WORD PTR
@@ -219,18 +220,18 @@ CLASS ResourceDialog INHERIT ResourceReader
 		SELF:Y			:= pDialogEx:y
 		SELF:CX			:= pDialogEx:cx
 		SELF:CY			:= pDialogEx:cy
-		SELF:ItemCnt    := pDialogEx:nItems	
+		SELF:ItemCnt    := pDialogEx:nItems
 		pWord			:= @pDialogEx:menu
 		pWord := SELF:ReadExtraInfo(pWord,TRUE)
-		
+
 		//	sz_Or_Ord menu;			// name or ordinal of a menu resource
 		//	sz_Or_Ord windowClass;	// name or ordinal of a window class
 		//	WCHAR title[titleLen];	// title string of the dialog box
 		//	short pointsize;		// only if DS_SETFONT flag is set
 		//	short weight;			// only if DS_SETFONT flag is set 0-1000
 		//	byte bItalic;			// only if DS_SETFONT flag is set 0 - 1
-		//	byte bCharset;			// only if DS_SETFONT flag is set 
-		//	WCHAR font[fontLen];	// typeface name, if DS_SETFONT is set 
+		//	byte bCharset;			// only if DS_SETFONT flag is set
+		//	WCHAR font[fontLen];	// typeface name, if DS_SETFONT is set
 		// } DLGTEMPLATEEX;
 
 		// Read Menu
@@ -253,7 +254,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 		SELF:Y			:= pDialog:y
 		SELF:CX			:= pDialog:cx
 		SELF:CY			:= pDialog:cy
-		SELF:ItemCnt    := pDialog:nItems	
+		SELF:ItemCnt    := pDialog:nItems
 		pWord			:= (WORD PTR) @pDialog:cy
 		pWord			+= 1
 		pWord := SELF:ReadExtraInfo(pWord,FALSE)
@@ -263,8 +264,8 @@ CLASS ResourceDialog INHERIT ResourceReader
 			pWord := oItem:Read(pWord)
 			oItem:TabIndex := (LONG) nItem
 		NEXT
-		RETURN 
-		
+		RETURN
+
 	METHOD ReadExtraInfo(pWord as WORD PTR, lDialogEx as LOGIC) AS WORD PTR
 		LOCAL pByte AS BYTE PTR
 		LOCAL nId AS WORD, sName AS STRING
@@ -293,7 +294,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 			pWord += SELF:FontName:Length+1
 		ENDIF
 		RETURN pWord
-		
+
 	METHOD ToString() AS STRING STRICT
 		LOCAL cResult AS STRING
 		cResult := SELF:Caption
@@ -308,9 +309,9 @@ CLASS ResourceDialog INHERIT ResourceReader
 #endregion
 
 END CLASS
-	
-		
-	
+
+
+
 INTERNAL VOSTRUCT winDLGTEMPLATE ALIGN 2
 	MEMBER style AS INT
 	MEMBER exStyle AS INT
@@ -323,9 +324,9 @@ INTERNAL VOSTRUCT winDLGTEMPLATE ALIGN 2
 	//	sz_Or_Ord windowClass;	// name or ordinal of a window class
 	//	WCHAR title[titleLen];	// title string of the dialog box
 	//	short pointsize;		// only if DS_SETFONT flag is set
-	//	WCHAR font[fontLen];	// typeface name, if DS_SETFONT is set 
+	//	WCHAR font[fontLen];	// typeface name, if DS_SETFONT is set
 	// } DLGTEMPLATEEX;
-	
+
 
 INTERNAL VOSTRUCT winDLGTEMPLATEEX ALIGN 2
 	MEMBER dlgVer AS WORD
@@ -346,9 +347,9 @@ INTERNAL VOSTRUCT winDLGTEMPLATEEX ALIGN 2
 	//	short pointsize;		// only if DS_SETFONT flag is set
 	//	short weight;			// only if DS_SETFONT flag is set 0-1000
 	//	byte bItalic;			// only if DS_SETFONT flag is set 0 - 1
-	//	byte bCharset;			// only if DS_SETFONT flag is set 
-	//	WCHAR font[fontLen];	// typeface name, if DS_SETFONT is set 
+	//	byte bCharset;			// only if DS_SETFONT flag is set
+	//	WCHAR font[fontLen];	// typeface name, if DS_SETFONT is set
 	// } DLGTEMPLATEEX;
-	
+
 
 

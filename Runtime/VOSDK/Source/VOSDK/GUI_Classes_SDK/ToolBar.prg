@@ -313,6 +313,7 @@ METHOD __SetParent(oObject AS OBJECT) AS VOID STRICT
 	IF (oObject != NULL_OBJECT)
 		IF (hWnd != NULL_PTR)
 			// SendMessage(self:Handle(), WM_SIZE, oResEvt:wParam, oResEvt:lParam) // !!! old code !!!
+            NOP
 
 
 			//SendMessage(hWndTB, TB_SETPARENT, dword(_cast, oObject:Handle()), 0) // doesn't work if TB is ReBar, needed ???

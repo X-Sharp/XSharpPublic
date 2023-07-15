@@ -226,5 +226,6 @@ Tools/Converter/PrjConvert.exe
 /Help/Working
 *.chm
 *.exe
-/External/Public/*.*
-/External/Release/*.*
+/External/Public
+/External/Release
+/.cr

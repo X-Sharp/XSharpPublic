@@ -118,6 +118,7 @@ CLASS FormattedTextObject INHERIT TextObject
 		RETURN NIL
 	#endif
 
+/// <include file="Gui.xml" path="doc/FormattedTextObject.TabSize/*" />
 	ASSIGN TabSize(nNewTabSize AS LONG)
 		wTabSize:=nNewTabSize
 

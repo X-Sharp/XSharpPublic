@@ -11,7 +11,7 @@ CLASS CHttp  INHERIT CSession
 
 
  /// <exclude />
-METHOD __GetUrl					(c)										
+METHOD __GetUrl					(c)
 	LOCAL cRet     	AS STRING
 	LOCAL n			AS DWORD
 
@@ -35,7 +35,7 @@ METHOD __GetUrl					(c)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.AddRequestHeaders/*" />
-METHOD AddRequestHeaders(cHeaders, nModifiers)              
+METHOD AddRequestHeaders(cHeaders, nModifiers)
 	LOCAL lRet	AS LOGIC
 
 
@@ -48,16 +48,16 @@ METHOD AddRequestHeaders(cHeaders, nModifiers)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.CloseRemote/*" />
-METHOD CloseRemote  ()                                  
+METHOD CloseRemote  ()
     RETURN SUPER:CloseRemote()
 
 
 
 
 /// <include file="Internet.xml" path="doc/CHttp.CloseRequest/*" />
-METHOD CloseRequest ()                                      
+METHOD CloseRequest ()
     IF SELF:hRequest = NULL_PTR
-        RETURN .F. 
+        RETURN .F.
     ELSE
         SELF:__DelStatus(SELF:hRequest)
         InternetCloseHandle(SELF:hRequest)
@@ -65,7 +65,7 @@ METHOD CloseRequest ()
     ENDIF
 
 
-    RETURN .T. 
+    RETURN .T.
 
 
 
@@ -73,7 +73,7 @@ METHOD CloseRequest ()
 
 
 /// <include file="Internet.xml" path="doc/CHttp.ConnectRemote/*" />
-METHOD ConnectRemote(cIP, cID, cPw)                     
+METHOD ConnectRemote(cIP, cID, cPw)
 	LOCAL lRet		AS LOGIC
 
 
@@ -110,7 +110,7 @@ METHOD ConnectRemote(cIP, cID, cPw)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.Directory/*" />
-METHOD Directory    ()                                 
+METHOD Directory    ()
 	LOCAL cTemp			AS STRING
 	LOCAL cUrl 			AS STRING
 	LOCAL cLine			AS STRING
@@ -159,27 +159,27 @@ METHOD Directory    ()
 
 
 /// <include file="Internet.xml" path="doc/CHttp.FtpRequest/*" />
-ACCESS FtpRequest											
+ACCESS FtpRequest
 	RETURN SELF:lFtpRequest
 
 
 
 
 /// <include file="Internet.xml" path="doc/CHttp.FtpRequest/*" />
-ASSIGN FtpRequest			(lNew)							
+ASSIGN FtpRequest			(lNew)
 	IF IsLogic(lNew)
 		SELF:lFtpRequest  := lNew
 	ENDIF
-	RETURN 
+	RETURN
 
 
 /// <include file="Internet.xml" path="doc/CHttp.GetCurDir/*" />
-METHOD GetCurDir    ()                  					
+METHOD GetCurDir    ()
 	RETURN SELF:cCurDir
 
 
 /// <include file="Internet.xml" path="doc/CHttp.GetDocumentByURL/*" />
-METHOD GetDocumentByURL		(cURL, nFlags)                          
+METHOD GetDocumentByURL		(cURL, nFlags)
     LOCAL cHead             AS STRING
     LOCAL cRet              AS STRING
     LOCAL lRet				AS LOGIC
@@ -201,7 +201,7 @@ METHOD GetDocumentByURL		(cURL, nFlags)
     IF SELF:hSession == NULL_PTR
         lRet := SELF:Open(NIL, SELF:cProxy, SELF:cProxyBypass)
     ELSE
-		lRet := .T. 
+		lRet := .T.
     ENDIF
 
 
@@ -211,6 +211,8 @@ METHOD GetDocumentByURL		(cURL, nFlags)
 
 
         IF SELF:hRequest == NULL_PTR
+            NOP
+
         ELSE
             SELF:__SetStatus(SELF:hRequest)
 
@@ -229,7 +231,7 @@ METHOD GetDocumentByURL		(cURL, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.GetDocumentFromServer/*" />
-METHOD GetDocumentFromServer	(cServer, cDocument, cID, cPw)          
+METHOD GetDocumentFromServer	(cServer, cDocument, cID, cPw)
     LOCAL cRet              AS STRING
 
 
@@ -264,7 +266,7 @@ METHOD GetDocumentFromServer	(cServer, cDocument, cID, cPw)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.GetFile/*" />
-METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists) 		
+METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists)
     LOCAL lRet     	AS LOGIC
     LOCAL cUrl		AS STRING
     LOCAL cRet		AS STRING
@@ -276,7 +278,7 @@ METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists)
 
 
  	IF SLen(cRemoteFile) == 0
-		RETURN .F. 
+		RETURN .F.
 	ENDIF
 
 
@@ -286,7 +288,7 @@ METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists)
 
 
 	IF lFailIfExists .AND. File(cNewFile)
-		RETURN .F. 
+		RETURN .F.
 	ENDIF
 
 
@@ -297,10 +299,10 @@ METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists)
 
 
     IF SLen(cRet)== 0
-        lRet := .F. 
+        lRet := .F.
 	ELSE
 		MemoWrit(cNewFile, cRet)
-		lRet := .T. 
+		lRet := .T.
     ENDIF
 
 
@@ -310,7 +312,7 @@ METHOD GetFile (cRemoteFile, cNewFile, lFailIfExists)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.GetResponse/*" />
-METHOD GetResponse          ()                              
+METHOD GetResponse          ()
     LOCAL cRet  				AS STRING
     LOCAL DIM abTemp[MAX_SOCKBUFF]    AS BYTE
     LOCAL nSize					AS DWORD
@@ -342,7 +344,7 @@ METHOD GetResponse          ()
 
 
 /// <include file="Internet.xml" path="doc/CHttp.GetResponseHeader/*" />
-METHOD GetResponseHeader    ()                              
+METHOD GetResponseHeader    ()
     LOCAL cRet  	AS STRING
     LOCAL pBuffer	AS PTR
     LOCAL nSize		AS DWORD
@@ -367,17 +369,15 @@ METHOD GetResponseHeader    ()
 
 
 /// <include file="Internet.xml" path="doc/CHttp.ctor/*" />
-CONSTRUCTOR         (cCaption, n, lStat)            
+CONSTRUCTOR         (cCaption, n, lStat)
 
 
-    IF IsString(cCaption)
-    ELSE
+    IF !IsString(cCaption)
         cCaption := "VO Http Client"
     ENDIF
 
 
-    IF IsNumeric(n)
-    ELSE
+    IF !IsNumeric(n)
         n := INTERNET_DEFAULT_HTTP_PORT
     ENDIF
 
@@ -391,11 +391,11 @@ CONSTRUCTOR         (cCaption, n, lStat)
     SELF:cCurDir := "/"
 
 
-    RETURN 
+    RETURN
 
 
 /// <include file="Internet.xml" path="doc/CHttp.Open/*" />
-METHOD Open         (nFlags, xProxy, aProxyByPass)      
+METHOD Open         (nFlags, xProxy, aProxyByPass)
     IF IsString(xProxy)
         IF SLen(xProxy) > 0
             SELF:Proxy := xProxy
@@ -408,7 +408,7 @@ METHOD Open         (nFlags, xProxy, aProxyByPass)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.OpenFile/*" />
-METHOD OpenFile (cRemoteFile, nAccess, nFlags)          
+METHOD OpenFile (cRemoteFile, nAccess, nFlags)
     LOCAL cHead     AS STRING
     LOCAL n			AS DWORD
     LOCAL lRet		AS LOGIC
@@ -422,7 +422,7 @@ METHOD OpenFile (cRemoteFile, nAccess, nFlags)
     IF SELF:hSession == NULL_PTR
         lRet := SELF:Open(NIL,SELF:cProxy, SELF:cProxyBypass)
     ELSE
-		lRet := .T. 
+		lRet := .T.
     ENDIF
 
 
@@ -446,7 +446,7 @@ METHOD OpenFile (cRemoteFile, nAccess, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.OpenRequest/*" />
-METHOD OpenRequest(cMethod, cDocument, nFlags)   
+METHOD OpenRequest(cMethod, cDocument, nFlags)
     LOCAL dwFlags           	AS DWORD
     LOCAL lRet                  AS LOGIC
     LOCAL DIM pszAccept[64] 	AS BYTE
@@ -490,10 +490,10 @@ METHOD OpenRequest(cMethod, cDocument, nFlags)
 
 
     IF SELF:hRequest == NULL_PTR
-        lRet := .F. 
+        lRet := .F.
     ELSE
         SELF:__SetStatus(SELF:hRequest)
-        lRet := .T. 
+        lRet := .T.
     ENDIF
 
 
@@ -508,7 +508,7 @@ METHOD OpenRequest(cMethod, cDocument, nFlags)
 
 
 /// <include file="Internet.xml" path="doc/CHttp.Proxy/*" />
-ASSIGN Proxy        (cNew)                              	
+ASSIGN Proxy        (cNew)
     IF IsString(cNew)
     	IF SLen(cNew) > 0
 			IF AtC("=", cNew) == 0
@@ -521,30 +521,30 @@ ASSIGN Proxy        (cNew)
     ENDIF
 
 
-    RETURN 
+    RETURN
 
 
 
 
-ACCESS	Response											
+ACCESS	Response
 	RETURN SELF:cResponse
 
 
 
 
-ACCESS	ResponseHeader										
+ACCESS	ResponseHeader
 	RETURN SELF:cResponseHeader
 
 
 /// <include file="Internet.xml" path="doc/CHttp.SendRequest/*" />
-METHOD SendRequest  (cHeaders, pData, nDataSize)            
+METHOD SendRequest  (cHeaders, pData, nDataSize)
     RETURN HttpSendRequest(SELF:hRequest, cHeaders, SLen(cHeaders), pData, nDataSize)
 
 
 
 
 /// <include file="Internet.xml" path="doc/CHttp.SetCurDir/*" />
-METHOD SetCurDir    (cRemoteDir)                 			
+METHOD SetCurDir    (cRemoteDir)
 	LOCAL cTemp  	AS STRING
 	LOCAL n         AS DWORD
 
@@ -555,6 +555,7 @@ METHOD SetCurDir    (cRemoteDir)
 		ELSE
 			IF cRemoteDir == SELF:cCurDir
 				//	RETURN SELF:cCurDir
+                NOP
 			ELSE
 				IF "/" == cRemoteDir
 					SELF:cCurDir := "/"

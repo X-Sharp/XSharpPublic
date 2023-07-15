@@ -1,18 +1,18 @@
 #region DEFINES
-STATIC DEFINE SUBMITDLG_DONEBUTTON := 101 
-STATIC DEFINE SUBMITDLG_PROGRESSBAR1 := 100 
+STATIC DEFINE SUBMITDLG_DONEBUTTON := 101
+STATIC DEFINE SUBMITDLG_PROGRESSBAR1 := 100
 #endregion
 
-class SubmitDlg inherit DIALOGWINDOW 
+class SubmitDlg inherit DIALOGWINDOW
 
 	protect oDCProgressBar1 as PROGRESSBAR
 	protect oCCDoneButton as PUSHBUTTON
 
-METHOD DoneButton( ) 
+METHOD DoneButton( )
 	SELF:EndDialog()
 	return nil
 
-CONSTRUCTOR(oParent)  
+CONSTRUCTOR(oParent)
 
 self:PreInit()
 
@@ -33,7 +33,7 @@ return self
 
 
 METHOD PostShowDialog() AS USUAL
-  LOCAL i AS INT	
+  LOCAL i AS INT
   	FOR i:=1 TO 100
 		oDCProgressBar1:Position := i
         DoEvents()
@@ -41,15 +41,16 @@ METHOD PostShowDialog() AS USUAL
 	NEXT
 
 
-  
 
-	
 
-method Wait() 
+
+
+method Wait()
 	LOCAL l := DateTime.Now:Ticks AS INT64
-	
-	WHILE ((DateTime.Now:Ticks - l) < 25)
-	end	
+
+    WHILE ((DateTime.Now:Ticks - l) < 25)
+        System.Threading.Thread.Sleep(10)
+	end
 
 	return nil
 

@@ -121,7 +121,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( "12345" , Transform("1234567890" , "@S5") )
 			Assert.Equal( "1234567890" , Transform("1234567890" , "@S15") )
 			Assert.Equal( "1234567890" , Transform("1234567890" , "@S") )
-			Assert.Equal( "1234567890" , Transform("1234567890" , "@S0") )
+            Assert.Equal( "1234567890" , Transform("1234567890" , "@S0") )
+            SetDateFormat("dd/mm/yyyy")
 			Assert.Equal( "01/01" , Transform(ConDate(2000,1,1) , "@S5") )
 
 

@@ -500,7 +500,7 @@ CLASS TabControl INHERIT TextControl
 	ASSIGN ImageList(oNewImageList AS ImageList)
 		IF SELF:ValidateControl()
 			oImageList := oNewImageList
-			__TabControl:ImageList := oImageList:__ImageList
+			__TabControl:ImageList := oImageList
 		ENDIF
 		RETURN
 
@@ -601,9 +601,9 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 
 /// <include file="Gui.xml" path="doc/TabControl.Move/*" />
-	METHOD Move(oMoveEvent)
+	METHOD Move(oMoveEvent as MoveEvent) AS VOID
 		SELF:__AdjustPage()
-		RETURN NIL
+		RETURN 
 
 /// <include file="Gui.xml" path="doc/TabControl.PadTabs/*" />
 	METHOD PadTabs(dwWidth AS INT, dwHeight AS INT) AS VOID
@@ -648,9 +648,9 @@ CLASS TabControl INHERIT TextControl
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/TabControl.Resize/*" />
-	METHOD Resize(oResizeEvent)
+	METHOD Resize(oResizeEvent as ResizeEvent) AS VOID
 		SELF:__AdjustPage()
-		RETURN SELF
+		RETURN 
 
 /// <include file="Gui.xml" path="doc/TabControl.RowCount/*" />
 	ACCESS RowCount AS INT

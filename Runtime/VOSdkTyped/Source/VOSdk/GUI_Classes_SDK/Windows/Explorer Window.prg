@@ -63,28 +63,23 @@ END CLASS
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow/*" />
 CLASS ExplorerWindow INHERIT SplitWindow
-	PROTECT oLabelLeft	AS FixedText
-	PROTECT oLabelRight	AS FixedText
-	PROTECT oTreeView	AS TreeView
-	PROTECT oListView	AS ListView
 
  /// <exclude />
 METHOD __FocusLV AS ExplorerWindow STRICT
-    oListView:SetFocus()
+    SELF:ListView:SetFocus()
 	RETURN SELF
 
  /// <exclude />
 METHOD __FocusTV AS ExplorerWindow STRICT
-
-	oTreeView:SetFocus()
+	SELF:TreeView:SetFocus()
 	RETURN SELF
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.Destroy/*" />
 METHOD Destroy() AS USUAL
-	oLabelLeft := NULL_OBJECT
-	oLabelRight := NULL_OBJECT
-	oTreeView := NULL_OBJECT
-	oListView := NULL_OBJECT
+	SELF:LabelLeft := NULL_OBJECT
+	SELF:LabelRight := NULL_OBJECT
+	SELF:TreeView := NULL_OBJECT
+	SELF:ListView := NULL_OBJECT
 
 	SUPER:Destroy()
 
@@ -109,18 +104,18 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 		SELF:Layout := Dimension{2, 2}
 
 		// create the pane clients
-		oLabelLeft := FixedText{SELF, 1001, Point{}, Dimension{}, NULL_STRING}
-		oLabelLeft:SetExStyle(WS_EX_STATICEDGE)
-		oLabelRight := FixedText{SELF, 1002, Point{}, Dimension{}, NULL_STRING}
-		oLabelRight:SetExStyle(WS_EX_STATICEDGE)
-		oTreeView := CreateInstance(symTreeViewClassName, SELF, 1003, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
-		oListView := CreateInstance(symListViewClassName, SELF, 1004, Point{}, Dimension{}, _Or(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
+		SELF:LabelLeft := FixedText{SELF, 1001, Point{}, Dimension{}, NULL_STRING}
+		SELF:LabelLeft:SetExStyle(WS_EX_STATICEDGE)
+		SELF:LabelRight := FixedText{SELF, 1002, Point{}, Dimension{}, NULL_STRING}
+		SELF:LabelRight:SetExStyle(WS_EX_STATICEDGE)
+		SELF:TreeView := CreateInstance(symTreeViewClassName, SELF, 1003, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
+		SELF:ListView := CreateInstance(symListViewClassName, SELF, 1004, Point{}, Dimension{}, _Or(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
 
 		// associate the clients with the respective panes
-		SELF:SetPaneClient(oLabelLeft, 1)
-		SELF:SetPaneClient(oLabelRight, 2)
-		SELF:SetPaneClient(oTreeView, 3)
-		SELF:SetPaneClient(oListView, 4)
+		SELF:SetPaneClient(SELF:LabelLeft, 1)
+		SELF:SetPaneClient(SELF:LabelRight, 2)
+		SELF:SetPaneClient(SELF:TreeView, 3)
+		SELF:SetPaneClient(SELF:ListView, 4)
 
 		// set the height of the label panes
 		oDimension := SELF:GetPaneSize(1)
@@ -135,45 +130,40 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 		SELF:Layout := Dimension{2, 1}
 
 		// create the pane clients
-		oTreeView := CreateInstance(symTreeViewClassName, SELF, 1001, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
-		oListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _OR(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
+		SELF:TreeView := CreateInstance(symTreeViewClassName, SELF, 1001, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
+		SELF:ListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _OR(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
 		// associate the clients with the respective panes
-		SELF:SetPaneClient(oTreeView, 1)
-		SELF:SetPaneClient(oListView, 2)
+		SELF:SetPaneClient(SELF:TreeView, 1)
+		SELF:SetPaneClient(SELF:ListView, 2)
 	ENDIF
 	// 2.0a-1, add check
-	IF IsInstanceOf(oListView, #__ExplorerLV)
-		oListView:EnableSort(#DefaultSort)
+	IF SELF:ListView IS __ExplorerLV
+		SELF:ListView:EnableSort(#DefaultSort)
 	ENDIF
 
 	RETURN
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.LabelLeft/*" />
-ACCESS LabelLeft AS Fixedtext
-	RETURN oLabelLeft
+PROPERTY LabelLeft AS Fixedtext AUTO GET PRIVATE SET
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.LabelRight/*" />
-ACCESS LabelRight AS Fixedtext
-	RETURN oLabelRight
+PROPERTY LabelRight AS Fixedtext AUTO GET PRIVATE SET
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.ListView/*" />
-ACCESS ListView AS ListView
-	RETURN oListView
-
+PROPERTY ListView AS ListView AUTO GET PRIVATE SET
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.ListViewColumnClick/*" />
-METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent)
+METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) AS USUAL
 
-	IF oListView IS __ExplorerLV VAR oLV
+	IF SELF:ListView IS __ExplorerLV VAR oLV
 		oLV:symSortCol := oEvt:ListViewColumn:NameSym
-		oListView:SortItems()
+		SELF:ListView:SortItems()
 	ENDIF
 
 	RETURN SUPER:ListViewColumnClick(oEvt)
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.TreeView/*" />
-ACCESS TreeView AS TreeView
-	RETURN oTreeView
+PROPERTY TreeView AS TreeView AUTO GET PRIVATE SET
 END CLASS
 
 

@@ -152,7 +152,7 @@ CLASS HotKeyEdit INHERIT TextControl
 		//ENDIF
 		SELF:cClassName := HOTKEY_CLASS
 
-		IF !IsInstanceOfUsual(xID, #ResourceID)
+		IF !(xID IS ResourceID)
 			SUPER(oOwner, xID, oPoint, oDimension, HOTKEY_CLASS, kStyle)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle)

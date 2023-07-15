@@ -100,11 +100,7 @@ CLASS LineObject INHERIT DrawObject
 
 		RETURN
 
-	ACCESS Pen AS Pen
-		RETURN oPen
-
-	ASSIGN Pen(oNewPen AS Pen)
-		oPen := oNewPen
+	PROPERTY Pen AS Pen AUTO GET SET
 
 	ACCESS Size AS Dimension
 		LOCAL oOrg AS Point

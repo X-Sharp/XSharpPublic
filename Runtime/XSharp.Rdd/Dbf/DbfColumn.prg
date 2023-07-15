@@ -771,6 +771,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL nCurrent as LONG
             nCurrent := SELF:Counter
             DO WHILE ! SELF:RDD:HeaderLock(DbLockMode.Lock)
+                NOP
             ENDDO
             SELF:Read()
             SELF:Counter += SELF:IncrStep

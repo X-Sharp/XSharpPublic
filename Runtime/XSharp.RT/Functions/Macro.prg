@@ -319,6 +319,7 @@ INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
         ENDIF
     CATCH
         // Memvar not found ?
+        NOP
     END TRY
     RETURN "&" + cVariableName // include the & symbol which was not included in the argument
 

@@ -230,6 +230,7 @@ CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
 			endif
 		catch as Exception
 			// We catch the exception but do not process it
+                NOP
 		end try
 		return oComObject
 

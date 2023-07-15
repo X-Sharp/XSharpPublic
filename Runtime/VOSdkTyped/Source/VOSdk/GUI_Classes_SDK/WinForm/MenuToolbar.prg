@@ -4,71 +4,73 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
+USING SWF := System.Windows.Forms
+
 USING System.Windows.Forms
 USING System.Reflection
 USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
-CLASS VOMenu INHERIT System.Windows.Forms.MainMenu
+CLASS VOMenu INHERIT SWF.MainMenu
 
 	CONSTRUCTOR() STRICT
 		SUPER()
 
 	METHOD GetItemByID(nItemID as LONG) AS VOMenuItem
 		RETURN VOMenu.GetMenuItem(SELF, nItemID)
-	
-	STATIC METHOD GetMenuItem(oMenu as System.Windows.Forms.Menu, nItemID as Long) as VOMenuItem
+
+	STATIC METHOD GetMenuItem(oMenu as SWF.Menu, nItemID as Long) as VOMenuItem
 		FOREACH oItem as VOMenuItem in oMenu:MenuItems
 			IF oItem:MenuItemID == nItemID
 				RETURN oItem
 			ENDIF
 			IF oItem:IsParent
 				LOCAL oResult as VOMenuItem
-				oResult := GetMenuItem(oItem, nItemID)				
+				oResult := GetMenuItem(oItem, nItemID)
 				IF oResult != NULL_OBJECT
 					RETURN oResult
 				ENDIF
-			ENDIF			
+			ENDIF
 		NEXT
 		RETURN NULL_OBJECT
-		
-	ACCESS MenuItemArray AS MenuItem[]
-		LOCAL oItems AS List<MenuItem>
-		oItems := List<MenuItem>{}
+
+	ACCESS MenuItemArray AS SWF.MenuItem[]
+		LOCAL oItems AS List<SWF.MenuItem>
+		oItems := List<SWF.MenuItem>{}
 		IF SELF:MenuItems:Count == 1
-			// First Item is 'Dummy' 
+			// First Item is 'Dummy'
 			// Rest of the items are the real thing
-			LOCAL oFirst AS MenuItem
+			LOCAL oFirst AS SWF.MenuItem
 			oFirst := SELF:MenuItems[0]
 			FOREACH IMPLIED oItem IN oFirst:MenuItems
 				oItems:Add(oItem)
 			NEXT
-			
-		ELSE			
+
+		ELSE
 			FOREACH IMPLIED oItem IN SELF:MenuItems
 				oItems:Add(oItem)
 			NEXT
 		ENDIF
 		RETURN oItems:ToArray()
-	
-	METHOD AsContextMenu AS ContextMenu STRICT
-		RETURN ContextMenu{SELF:MenuItemArray}
-	
 
-    PROTECTED METHOD ProcessCmdKey (msg REF System.Windows.Forms.Message , keyData AS System.Windows.Forms.Keys ) AS LOGIC
+	METHOD AsContextMenu AS SWF.ContextMenu STRICT
+		RETURN SWF.ContextMenu{SELF:MenuItemArray}
+
+
+    PROTECTED METHOD ProcessCmdKey (msg REF SWF.Message , keyData AS SWF.Keys ) AS LOGIC
         System.Diagnostics.Debug.WriteLine(keyData:ToString())
         RETURN SUPER:ProcessCmdKey(REF msg, keyData)
 
 END CLASS
 
-CLASS VOMenuItem INHERIT MenuItem
-	
-	INTERNAL MenuItemID as LONG	
+CLASS VOMenuItem INHERIT SWF.MenuItem
+
+	INTERNAL MenuItemID as LONG
 	CONSTRUCTOR() STRICT
 		SUPER()
-	
+
 	CONSTRUCTOR(cText as STRING) STRICT
 		SUPER(cText)
-	
+
 	METHOD SetShortCut(nValue AS LONG) AS VOID
 		LOCAL oData AS OBJECT
 		GetShortCutInfo()
@@ -78,8 +80,8 @@ CLASS VOMenuItem INHERIT MenuItem
 				shortCutInfo:SetValue(oData, nValue)
 			ENDIF
 		ENDIF
-	
-	METHOD CloneMenu() AS System.Windows.Forms.MenuItem STRICT
+
+	METHOD CloneMenu() AS SWF.MenuItem STRICT
 	    LOCAL item AS VOMenuItem
 		item := VOMenuItem{}
 		item:CloneMenu(SELF)
@@ -89,19 +91,18 @@ CLASS VOMenuItem INHERIT MenuItem
     METHOD ItemClick (sender AS OBJECT, e AS EventArgs) AS VOID
         RETURN
 
-	ACCESS MenuItemArray AS MenuItem[]
-		LOCAL oItems AS List<MenuItem>
-		oItems := List<MenuItem>{}
+	ACCESS MenuItemArray AS SWF.MenuItem[]
+		LOCAL oItems AS List<SWF.MenuItem>
+		oItems := List<SWF.MenuItem>{}
 		IF SELF:MenuItems:Count == 1
-			// First Item is 'Dummy' 
+			// First Item is 'Dummy'
 			// Rest of the items are the real thing
-			LOCAL oFirst AS MenuItem
-			oFirst := SELF:MenuItems[0]
+			VAR oFirst := SELF:MenuItems[0]
 			FOREACH IMPLIED oItem IN oFirst:MenuItems
 				oItems:Add(oItem)
 			NEXT
-			
-		ELSE			
+
+		ELSE
 			FOREACH IMPLIED oItem IN SELF:MenuItems
 				oItems:Add(oItem)
 			NEXT
@@ -111,11 +112,11 @@ CLASS VOMenuItem INHERIT MenuItem
 	#region Static Methods
 	STATIC PROTECTED dataFieldInfo as FieldInfo
 	STATIC PROTECTED shortCutInfo  as FieldInfo
-	
+
 	STATIC PROTECTED METHOD GetShortCutInfo AS VOID STRICT
 		IF dataFieldInfo == NULL_OBJECT
 			LOCAL oType as System.Type
-			oType := typeof(System.Windows.Forms.MenuItem)
+			oType := typeof(SWF.MenuItem)
 			dataFieldInfo := oType:GetField("data", BindingFlags.Instance|BindingFlags.NonPublic)
 			IF dataFieldInfo != NULL_OBJECT
 				oType := dataFieldInfo:FieldType
@@ -125,35 +126,35 @@ CLASS VOMenuItem INHERIT MenuItem
 	#endregion
 END CLASS
 
-CLASS VOMainMenu INHERIT MainMenu
+CLASS VOMainMenu INHERIT SWF.MainMenu
 	CONSTRUCTOR() STRICT
 		SUPER()
 
 END CLASS
 
-CLASS VOToolStrip INHERIT ToolStrip
-	CONSTRUCTOR() STRICT
-		SUPER()
-
-END CLASS
-
-
-
-CLASS VOSeparator INHERIT ToolStripSeparator
-	CONSTRUCTOR() STRICT
-		SUPER()
-
-END CLASS
-
-CLASS VOToolStripButton INHERIT ToolStripButton
+CLASS VOToolStrip INHERIT SWF.ToolStrip
 	CONSTRUCTOR() STRICT
 		SUPER()
 
 END CLASS
 
 
-CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
-	#include "PropControl.vh"
+
+CLASS VOSeparator INHERIT SWF.ToolStripSeparator
+	CONSTRUCTOR() STRICT
+		SUPER()
+
+END CLASS
+
+CLASS VOToolStripButton INHERIT SWF.ToolStripButton
+	CONSTRUCTOR() STRICT
+		SUPER()
+
+END CLASS
+
+
+CLASS VOToolBar INHERIT SWF.ToolBar IMPLEMENTS IVOControl
+	#include "PropControl.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -162,8 +163,8 @@ CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
 
 	METHOD SetVisualStyle as VOID STRICT
 		// Empty but required
-		
-	METHOD GetButton(nID AS LONG, lMenuId AS LOGIC) AS ToolBarButton
+
+	METHOD GetButton(nID AS LONG, lMenuId AS LOGIC) AS SWF.ToolBarButton
 		if lMenuId
 			FOREACH oButton as VOToolBarButton in Buttons
 				if oButton:MenuID == nID
@@ -179,7 +180,7 @@ CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
 		RETURN NULL_OBJECT
 
 
-    PROTECTED VIRTUAL METHOD OnMouseMove(e as MouseEventArgs) AS VOID
+    PROTECTED VIRTUAL METHOD OnMouseMove(e as SWF.MouseEventArgs) AS VOID
         SUPER:OnMouseMove(e)
         if SELF:Bounds:Contains(Point{e:X, e:Y})
             SELF:ShowStatusMessage(e:X, e:Y)
@@ -207,40 +208,40 @@ CLASS VOToolBar INHERIT System.Windows.Forms.ToolBar IMPLEMENTS IVOControl
            oWindow:MenuSelect(MenuSelectEvent{oMenu, oWindow, nMenuId})
         ENDIF
 
-        
+
 	METHOD PressButton(nID as LONG, lPressed as LOGIC) AS LOGIC
-		LOCAL oButton as ToolBarButton
+		LOCAL oButton as SWF.ToolBarButton
 		oButton := SELF:GetButton(nID, TRUE)
 		IF oButton != NULL_OBJECT
 			oButton:Pushed := lPressed
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
-		
+
 	PROTECTED VIRTUAL METHOD OnResize(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnResize(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ToolBarHeightChanged(ControlNotifyEvent{SELF:Control})
-		RETURN 
-	
+		RETURN
+
 	PROTECTED VIRTUAL METHOD OnHandleCreated( e AS EventArgs) AS VOID
 		SUPER:OnHandleCreated(e)
 		RETURN
 END CLASS
 
-CLASS VOToolBarButton INHERIT ToolBarButton
-	INTERNAL MenuID := 0 AS LONG 
-	
+CLASS VOToolBarButton INHERIT SWF.ToolBarButton
+	INTERNAL MenuID := 0 AS LONG
+
 	CONSTRUCTOR() STRICT
 		SUPER()
 		RETURN
-		
+
 END CLASS
 
 
-CLASS VOToolTip INHERIT ToolTip
-	
+CLASS VOToolTip INHERIT SWF.ToolTip
+
 	CONSTRUCTOR()
 		SUPER()
 		SELF:StripAmpersands := TRUE
@@ -248,14 +249,14 @@ CLASS VOToolTip INHERIT ToolTip
 		SELF:OwnerDraw := TRUE
 		SELF:Draw	+= OnMyDraw
 
-	PRIVATE METHOD OnMyDraw(sender AS OBJECT, e AS System.Windows.Forms.DrawToolTipEventArgs ) AS VOID
+	PRIVATE METHOD OnMyDraw(sender AS OBJECT, e AS SWF.DrawToolTipEventArgs ) AS VOID
 		e:DrawBackground()
         e:DrawBorder()
         e:DrawText()
-	
+
 	METHOD Stop() AS VOID STRICT
 		SELF:Active := FALSE
 		SELF:StopTimer()
 		SELF:RemoveAll()
-		
+
 END CLASS

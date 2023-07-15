@@ -133,6 +133,7 @@ METHOD __RemoveChildToolBar() AS ToolBar STRICT
 		// if (oSavedTB != NULL_OBJECT)
 		// SendMessage(oToolBar:Handle(), RB_DELETEBAND, 1, 0)
 		//endif
+        NOP
 	ENDIF
 
 
@@ -175,6 +176,7 @@ METHOD __SetChildToolBar(oChildToolbar AS ToolBar) AS ToolBar STRICT
 			// oChildToolBar:__SetParent(oToolBar)
 			// oChildToolBar:Show()
 			// oToolBar:AddBand(#__CHILDTBBAND, oChildToolBar, 1, 50, 25)
+            NOP
 		ENDIF
 
 

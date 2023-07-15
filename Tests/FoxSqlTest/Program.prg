@@ -31,6 +31,7 @@ TRY
     //testPG()
     //testExec2()
     //testFile()
+                NOP
 
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")

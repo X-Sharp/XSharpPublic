@@ -12,7 +12,7 @@ CLASS GuiFactory
         @@Instance := GuiFactory{}
 
     METHOD CreateControl(type AS ControlType, owner AS VOSDK.Control, liStyle AS LONG, liExStyle AS LONG) AS OBJECT
-        LOCAL oRes AS IVOControl
+        LOCAL oRes AS Object
         SWITCH type
             
         CASE ControlType.Label

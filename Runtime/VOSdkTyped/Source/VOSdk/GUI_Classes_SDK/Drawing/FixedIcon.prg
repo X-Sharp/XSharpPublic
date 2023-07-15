@@ -3,11 +3,11 @@
 CLASS FixedIcon INHERIT FixedImage
 
  /// <exclude />
-	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
+	OVERRIDE METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
 		RETURN SELF:SetIcon(Icon{uResID})
 
-/// <include file="Gui.xml" path="doc/FixedIcon.AsString/*" />
-	METHOD AsString ()
+    /// <inheritdoc />
+	METHOD AsString () as string strict
 		RETURN "#FixedImage Object"
 
 /// <include file="Gui.xml" path="doc/FixedIcon.ctor/*" />

@@ -53,10 +53,11 @@ PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializab
 
     /// <inheritdoc />
     CONSTRUCTOR( elements AS OBJECT[] )
-        SELF()
         IF elements == NULL
+            SELF()
             RETURN // empty array
         ENDIF
+        SELF((DWord)elements:Length)
         FOREACH element AS OBJECT IN elements
             IF element == NULL
                 _internalList:Add(NIL)

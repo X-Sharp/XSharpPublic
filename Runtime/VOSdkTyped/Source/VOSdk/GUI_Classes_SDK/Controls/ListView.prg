@@ -1,7 +1,10 @@
 USING System.Collections.Generic
 USING System.Diagnostics
+USING System.Collections
+USING System.Reflection
 USING Swf := System.Windows.Forms
 /// <include file="Gui.xml" path="doc/TreeViewItem.NameSym/*" />
+
 
 CLASS ListView INHERIT TextControl
 	PROTECT lDragDropEnabled AS LOGIC
@@ -9,7 +12,7 @@ CLASS ListView INHERIT TextControl
 	PROTECT oTextBackColor AS Color
 	PROTECT oItemComparer as ListViewItemComparer
 
-	/// <inheritdoc  />
+	/// <exclude  />
     PROPERTY ControlType AS ControlType  GET ControlType.ListView
 
 /// <include file="Gui.xml" path="doc/ListView.ctor/*" />
@@ -32,19 +35,21 @@ CLASS ListView INHERIT TextControl
 		oItemComparer := ListViewItemComparer{SELF}
 		RETURN
 
+	/// <exclude  />
 
 	STATIC METHOD ListView_GetStringWidth(hwndLV AS IntPtr, _psz AS STRING) AS INT PASCAL
 		RETURN (INT(_CAST, (GuiWin32.SendMessage(hwndLV, LVM_GETSTRINGWIDTH, 0, _psz))))
 
 
 	#region Static Methods - API calls
-
+	/// <exclude  />
 	STATIC METHOD ListView_Update(hwndLV AS IntPtr, i AS DWORD) AS LOGIC STRICT
 		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_UPDATE, i, 0L))))
-
+	/// <exclude  />
 	STATIC METHOD ListView_Scroll(hwndLV AS IntPtr, dx AS INT, dy AS INT) AS LOGIC STRICT
 		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_SCROLL, DWORD(_CAST,dx), LONGINT(_CAST,dy)))))
 
+	/// <exclude  />
 	STATIC METHOD ListView_RedrawItems(hwndLV AS IntPtr, iFirst AS INT, iLast AS INT) AS LOGIC STRICT
 		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_REDRAWITEMS, DWORD(_CAST, iFirst), LONGINT(_CAST, iLast)))))
 
@@ -53,18 +58,21 @@ CLASS ListView INHERIT TextControl
 
 	//STATIC METHOD ListView_SetItemPosition(hwndLV AS PTR, i AS INT, x AS WORD, y AS WORD) AS LOGIC STRICT
 	//	RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_SETITEMPOSITION, DWORD(_CAST, i), MAKELPARAM(x, y)))))
+	/// <exclude  />
 	STATIC METHOD ListView_GetNextItem(hwnd AS IntPtr, i AS INT, flags AS WORD) AS INT STRICT
 		RETURN (INT(_CAST, (GuiWin32.SendMessage((hwnd), LVM_GETNEXTITEM, DWORD(_CAST,i), MAKELONG((flags), 0)))))
 
+	/// <exclude  />
 	STATIC METHOD ListView_GetItemSpacing(hwndLV AS IntPtr, fSmall AS DWORD) AS LONG STRICT
 		RETURN (LONG(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_GETITEMSPACING, fSmall, 0L))))
 
 	#endregion
 
 
-	ACCESS __ListView AS IVOListView
-		RETURN (IVOListView) oCtrl
+	/// <exclude  />
+	PROPERTY __ListView AS VOListView GET (VOListView) oCtrl
 
+	/// <exclude  />
 	METHOD __GetItemAtIndex(nIndex AS LONG) AS ListViewItem
 		IF SELF:__IsValid
 			IF nIndex > 0 .and. nIndex <= __ListView:Items:Count
@@ -73,6 +81,7 @@ CLASS ListView INHERIT TextControl
 		ENDIF
 		RETURN NULL_OBJECT
 
+	/// <exclude  />
 	METHOD __CreateDragImageList(nItem AS DWORD) AS OBJECT STRICT
 		//Todo __CreateDragImageList
 		//LOCAL hImageList AS PTR
@@ -85,6 +94,7 @@ CLASS ListView INHERIT TextControl
 		//ENDIF
 		RETURN NULL_OBJECT
 
+	/// <exclude  />
 	METHOD __GetColumnFromIndex(nColumn AS LONG) AS ListViewColumn
 		IF SELF:__IsValid
 			IF nColumn <= SELF:__ListView:Columns:Count .and. nColumn > 0
@@ -93,6 +103,7 @@ CLASS ListView INHERIT TextControl
 		ENDIF
 		RETURN NULL_OBJECT
 
+	/// <exclude  />
 	METHOD __GetColumnIndexFromSymbol(symColumnName AS SYMBOL) AS DWORD STRICT
 		FOREACH IMPLIED oCol IN __ListView:Columns
 			LOCAL oColumn AS ListViewColumn
@@ -176,9 +187,10 @@ CLASS ListView INHERIT TextControl
 
 	RETURN
 	*/
-	ACCESS __SortRoutineName AS SYMBOL STRICT
-		RETURN symSortRoutineName
+	/// <exclude  />
+	PROPERTY __SortRoutineName AS SYMBOL GET symSortRoutineName
 
+/// <include file="Gui.xml" path="doc/ListView.AddColumn/*" />
 	METHOD AddColumn(oListViewColumn AS ListViewColumn)
 		RETURN SELF:InsertColumn(oListViewColumn)
 
@@ -268,23 +280,23 @@ CLASS ListView INHERIT TextControl
 		IF SELF:__IsValid
 			nView := __ListView:View
 
-			DO CASE
-			CASE nView == System.Windows.Forms.View.LargeIcon
+			SWITCH nView
+			CASE System.Windows.Forms.View.LargeIcon
 				RETURN #IconView
 
-			CASE nView == System.Windows.Forms.View.SmallIcon
+			CASE System.Windows.Forms.View.SmallIcon
 				RETURN #SmallIconView
 
-			CASE nView == System.Windows.Forms.View.List
+			CASE System.Windows.Forms.View.List
 				RETURN #ListView
 
-			CASE nView == System.Windows.Forms.View.Details
+			CASE System.Windows.Forms.View.Details
 				RETURN #ReportView
 
-			CASE nView == System.Windows.Forms.View.Tile
+			CASE System.Windows.Forms.View.Tile
 				RETURN #TileView
 
-			END CASE
+			END SWITCH
 		ENDIF
 		RETURN NULL_SYMBOL
 
@@ -292,26 +304,26 @@ CLASS ListView INHERIT TextControl
 		LOCAL dwView AS System.Windows.Forms.View
 		IF SELF:__IsValid
 
-		DO CASE
-		CASE symView == #IconView
+        SWITCH AsString(symView)
+		CASE "ICONVIEW"
 			dwView := System.Windows.Forms.View.LargeIcon
 
-		CASE symView == #SmallIconView
+		CASE "SMALLICONVIEW"
 			dwView := System.Windows.Forms.View.SmallIcon
 
-		CASE symView == #ListView
+		CASE "LISTVIEW"
 			dwView := System.Windows.Forms.View.List
 
-		CASE symView == #ReportView
+		CASE "REPORTVIEW"
 			dwView := System.Windows.Forms.View.Details
 
-		CASE symView == #Tileview
+		CASE "TILEVIEW"
 			dwView := System.Windows.Forms.View.Tile
 
 		OTHERWISE
 			dwView := __ListView:View
 
-		END CASE
+		END SWITCH
 		__ListView:View := dwView
 		ENDIF
 		RETURN
@@ -362,13 +374,9 @@ CLASS ListView INHERIT TextControl
 		ENDIF
 		RETURN oItem != NULL_OBJECT
 
-	//METHOD Destroy() AS USUAL STRICT
-	//	SUPER:Destroy()
-	//	RETURN NIL
 
 /// <include file="Gui.xml" path="doc/ListView.DragDropEnabled/*" />
-	ACCESS DragDropEnabled AS LOGIC
-		RETURN lDragDropEnabled
+	PROPERTY DragDropEnabled AS LOGIC GET lDragDropEnabled
 
 /// <include file="Gui.xml" path="doc/ListView.DragImageList/*" />
 	ACCESS DragImageList AS ImageList
@@ -391,13 +399,8 @@ CLASS ListView INHERIT TextControl
 		RETURN NIL
 
 /// <include file="Gui.xml" path="doc/ListView.EnableDragDrop/*" />
-	METHOD EnableDragDrop(lEnable)
-
-
-		DEFAULT(@lEnable, TRUE)
-
+	METHOD EnableDragDrop(lEnable := TRUE AS LOGIC)
 		lDragDropEnabled := lEnable
-
 		RETURN TRUE
 
 	METHOD EnableGroupView(lSetting := TRUE AS LOGIC)  AS VOID
@@ -407,8 +410,8 @@ CLASS ListView INHERIT TextControl
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ListView.EnableSort/*" />
-	METHOD EnableSort(symMethodName)
-		RETURN symSortRoutineName := symMethodName
+	METHOD EnableSort(symMethodName AS SYMBOL) AS VOID
+		symSortRoutineName := symMethodName
 
 /// <include file="Gui.xml" path="doc/ListView.EnsureVisible/*" />
 	METHOD EnsureVisible(nItem AS LONG, lPartiallyVisible := FALSE AS LOGIC) AS LOGIC
@@ -508,12 +511,12 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemAttributes/*" />
 	METHOD GetItemAttributes(nItem AS LONG) AS ListViewItem
-		LOCAL oLvItem		AS IVOListViewItem
+		LOCAL oLvItem		AS VOListViewItem
 		LOCAL oListViewItem AS ListViewItem
 		LOCAL nIndex		AS LONG
 		LOCAL oListViewColumn AS ListViewColumn
 		IF nItem > 0 .and. nItem <= __ListView:Items:Count
-			oLvItem := (IVOListViewItem) __ListView:Items[nItem-1]
+			oLvItem := (VOListViewItem) __ListView:Items[nItem-1]
 			IF oLvItem:Item != NULL_OBJECT
 				oListViewItem	:= oLvItem:Item
 			ELSE
@@ -531,18 +534,18 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemBoundingBox/*" />
 	METHOD GetItemBoundingBox(nItem AS LONG) AS BoundingBox
-		LOCAL oItem AS IVOListViewItem
+		LOCAL oItem AS VOListViewItem
 		IF nItem < __ListView:Items:Count .and. nItem > 0
-			oItem := (IVOListViewItem) __ListView:Items[nItem-1]
+			oItem := (VOListViewItem) __ListView:Items[nItem-1]
 			RETURN (BoundingBox) oItem:Bounds
 		ENDIF
 		RETURN NULL_OBJECT
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemPosition/*" />
 	METHOD GetItemPosition(nItem AS LONG) AS Point
-		LOCAL oItem AS IVOListViewItem
+		LOCAL oItem AS VOListViewItem
 		IF nItem < __ListView:Items:Count .and. nItem > 0
-			oItem := (IVOListViewItem) __ListView:Items[nItem-1]
+			oItem := (VOListViewItem) __ListView:Items[nItem-1]
 			RETURN (Point) oItem:Position
 		ENDIF
 		RETURN NULL_OBJECT
@@ -645,7 +648,7 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.InsertColumn/*" />
 	METHOD InsertColumn(oListViewColumn AS ListViewColumn, nInsertAfter:= -1 AS LONG) AS LOGIC
-		LOCAL oHeader AS IVOColumnHeader
+		LOCAL oHeader AS VOColumnHeader
 		IF ! SELF:ValidateControl()
 			RETURN FALSE
 		ENDIF
@@ -665,7 +668,7 @@ CLASS ListView INHERIT TextControl
 	METHOD InsertItem(oListViewItem AS ListViewItem, nInsertAfter := -1 AS LONG) AS LOGIC
 		LOCAL dwIndex AS LONG
 		LOCAL oListViewColumn	AS ListViewColumn
-		LOCAL iListViewItem		AS IVOListViewItem
+		LOCAL iListViewItem		AS VOListViewItem
 		LOCAL cCaption AS STRING
 		// copy the usual values from the item to the column
 		IF ! SELF:ValidateControl()
@@ -727,13 +730,7 @@ CLASS ListView INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/ListView.LargeImageList/*" />
-	ACCESS LargeImageList  as ImageList
-		RETURN ImageList{__ListView:LargeImageList}
-
-/// <include file="Gui.xml" path="doc/ListView.LargeImageList/*" />
-	ASSIGN LargeImageList(oNewImageList AS ImageList)
-		__ListView:LargeImageList := oNewImageList:__ImageList
-		RETURN
+	PROPERTY  LargeImageList  as ImageList GET ImageList{__ListView:LargeImageList} SET __ListView:LargeImageList := value
 
 /// <include file="Gui.xml" path="doc/ListView.RedrawRange/*" />
 	METHOD RedrawRange(oRange)
@@ -904,9 +901,9 @@ CLASS ListView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/ListView.SetColumnFormat/*" />
 	METHOD SetColumnFormat(nCol AS LONG, dwFlag:= 0 AS LONG,nImage := 0 AS LONG)
 		//PP-030909
-		LOCAL oHeader AS IVOColumnHeader
+		LOCAL oHeader AS VOColumnHeader
 		IF nCol > 0 .and. nCol  <= __ListView:Columns:Count
-			oHeader := (IVOColumnHeader) __ListView:Columns[nCol]
+			oHeader := (VOColumnHeader) __ListView:Columns[nCol]
 			IF nImage != 0
 				oHeader:ImageIndex := nImage-1
 			ENDIF
@@ -983,7 +980,7 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.SetItemAttributes/*" />
 	METHOD SetItemAttributes(oListViewItem AS ListViewItem)
-		LOCAL oLvItem		AS IVOListViewItem
+		LOCAL oLvItem		AS VOListViewItem
 		LOCAL nIndex		AS LONG
 		LOCAL oListViewColumn AS ListViewColumn
 		IF oListViewItem != NULL_OBJECT
@@ -1034,33 +1031,26 @@ CLASS ListView INHERIT TextControl
 		//UpdateWindow(SELF:handle())
 		RETURN FALSE
 
-	METHOD SetStyle(kStyle AS LONG, lEnable AS LOGIC) AS USUAL
+	METHOD SetStyle(kStyle AS LONG, lEnable AS LOGIC) AS VOID
 
-		DO CASE
-		CASE kStyle == LVS_NOCOLUMNHEADER
+		SWITCH kStyle
+		CASE LVS_NOCOLUMNHEADER
 			IF lEnable
 				SELF:__ListView:HeaderStyle := System.Windows.Forms.ColumnHeaderStyle.None
 			ELSE
 				SELF:__ListView:HeaderStyle := System.Windows.Forms.ColumnHeaderStyle.Clickable
 			ENDIF
-		CASE kStyle == LVS_SORTASCENDING
+		CASE LVS_SORTASCENDING
 			IF lEnable
 				SELF:__ListView:Sorting := System.Windows.Forms.SortOrder.Ascending
 			ELSE
 				SELF:__ListView:Sorting := System.Windows.Forms.SortOrder.None
 			ENDIF
-		ENDCASE
-		RETURN SUPER:SetStyle(kStyle, lEnable)
+		END SWITCH
+		SUPER:SetStyle(kStyle, lEnable)
 
 /// <include file="Gui.xml" path="doc/ListView.SmallImageList/*" />
-	ACCESS SmallImageList  AS ImageList
-		//ListView_SetImageList(SELF:Handle(), oNewImageList:Handle(), LVSIL_SMALL)
-		RETURN ImageList{__ListView:SmallImageList}
-
-/// <include file="Gui.xml" path="doc/ListView.SmallImageList/*" />
-	ASSIGN SmallImageList(oNewImageList AS ImageList)
-		__ListView:SmallImageList := oNewImageList:__ImageList
-		RETURN
+	PROPERTY SmallImageList  AS ImageList GET ImageList{__ListView:SmallImageList} SET __ListView:SmallImageList := value
 
 /// <include file="Gui.xml" path="doc/ListView.SortItems/*" />
 	METHOD SortItems()
@@ -1071,13 +1061,7 @@ CLASS ListView INHERIT TextControl
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/ListView.StateImageList/*" />
-	ACCESS StateImageList
-		RETURN ImageList{__ListView:StateImageList}
-
-/// <include file="Gui.xml" path="doc/ListView.StateImageList/*" />
-	ASSIGN StateImageList(oNewImageList)
-		__ListView:StateImageList := oNewImageList:__ImageList
-		RETURN
+	PROPERTY StateImageList AS ImageList GET ImageList{__ListView:StateImageList} SET __ListView:StateImageList := value
 
 	/// <inheritdoc />
 	METHOD RestoreUpdate() AS VOID STRICT
@@ -1102,14 +1086,7 @@ CLASS ListView INHERIT TextControl
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ListView.TextColor/*" />
-	ACCESS TextColor AS Color
-		RETURN (Color) __ListView:ForeColor
-
-/// <include file="Gui.xml" path="doc/ListView.TextColor/*" />
-
-	ASSIGN TextColor(oNewTextColor AS Color)
-		__ListView:ForeColor := oNewTextColor
-		RETURN
+	PROPERTY TextColor AS Color GET __ListView:ForeColor SET __ListView:ForeColor := value
 
 /// <include file="Gui.xml" path="doc/ListView.TopItem/*" />
 	ACCESS TopItem AS LONG
@@ -1121,12 +1098,7 @@ CLASS ListView INHERIT TextControl
 		RETURN 0
 
 /// <include file="Gui.xml" path="doc/ListView.TrackSelection/*" />
-	ACCESS TrackSelection AS LOGIC
-		RETURN __ListView:HotTracking
-
-/// <include file="Gui.xml" path="doc/ListView.TrackSelection/*" />
-	ASSIGN TrackSelection(lNewVal AS LOGIC)
-		__ListView:HotTracking := lNewVal
+	PROPERTY TrackSelection AS LOGIC GET __ListView:HotTracking SET __ListView:HotTracking := value
 
 /// <include file="Gui.xml" path="doc/ListView.Update/*" />
 	METHOD Update(nItem AS DWORD)
@@ -1172,9 +1144,9 @@ CLASS ListViewColumn INHERIT VObject
 	PROTECT oFieldSpec AS FieldSpec
 	PROTECT oHyperLabel AS HyperLabel
 	PROTECT oOwner AS ListView
-	PROTECT oHeader AS IVOColumnHeader
+	PROTECT oHeader AS VOColumnHeader
 
-	PROPERTY __Header AS IVOColumnHeader GET oHeader SET oHeader := VALUE
+	PROPERTY __Header AS VOColumnHeader GET oHeader SET oHeader := VALUE
 	PROPERTY __Owner AS ListView
 		GET
 		RETURN oOwner
@@ -1236,7 +1208,7 @@ CLASS ListViewColumn INHERIT VObject
 
 	CONSTRUCTOR(nWidth, xColumnID, kAlignment)
 		SUPER()
-		oHeader := (IVOColumnHeader) GUIFactory.Instance:CreateListViewElement(ControlType.ListViewColumn, SELF)
+		oHeader := (VOColumnHeader) GUIFactory.Instance:CreateListViewElement(ControlType.ListViewColumn, SELF)
 		// set the width of the column
 		IF IsInstanceOfUsual(nWidth, #FieldSpec)
 			self:nWidth := __GetFSDefaultLength((FieldSpec) nWidth)
@@ -1326,9 +1298,9 @@ CLASS ListViewItem INHERIT VObject
 	PROTECT aColumnText AS Dictionary<SYMBOL, Tuple<STRING, LONG > >
 	PROTECT aColumnValue AS Dictionary<SYMBOL, USUAL>
 	PROTECT lParam AS LONGINT
-	PROTECT oItem AS IVOListViewItem
+	PROTECT oItem AS VOListViewItem
 
-	ACCESS __ListViewItem AS IVOListViewItem
+	ACCESS __ListViewItem AS VOListViewItem
 		RETURN oItem
 
  /// <exclude />
@@ -1443,13 +1415,13 @@ CLASS ListViewItem INHERIT VObject
 		ENDIF
 
 	CONSTRUCTOR() STRICT
-		LOCAL oItem AS IVOListViewItem
-		oItem := (IVOListViewItem) GuiFactory.Instance:CreateListViewElement(Controltype.ListViewItem, SELF)
+		LOCAL oItem AS VOListViewItem
+		oItem := (VOListViewItem) GuiFactory.Instance:CreateListViewElement(Controltype.ListViewItem, SELF)
 		SELF(oItem)
 		RETURN
 
 
-	CONSTRUCTOR(loItem AS IVOListViewItem)
+	CONSTRUCTOR(loItem AS VOListViewItem)
 		SUPER()
 		SELF:oItem := loItem
 		oItem:LinkTo(SELF)
@@ -1525,14 +1497,16 @@ CLASS ListViewItem INHERIT VObject
 
 END CLASS
 
-USING System.Collections
-USING System.Reflection
+
+    /// <exclude />
 CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PROTECT oListView AS ListView
 	PROTECT symMethod AS SYMBOL
+    /// <exclude />
 	CONSTRUCTOR(oLv AS ListView)
 		oListView := oLv
 
+    /// <exclude />
 	PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS INT
 		IF oListView:__SortRoutineName != NULL_SYMBOL
 			IF oListView:__SortRoutineName != symMethod

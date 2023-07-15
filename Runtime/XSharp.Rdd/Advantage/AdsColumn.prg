@@ -303,6 +303,7 @@ BEGIN NAMESPACE XSharp.ADS
                 wValue := 0
             ELSEIF ! SELF:RDD:_CheckError(result,EG_READ)
               // Exception
+                    NOP
             ENDIF
             RETURN wValue != 0
 

@@ -10,7 +10,7 @@ CLASS BitmapObject INHERIT ShapeObject
 		RETURN
 
 
-/// <include file="Gui.xml" path="doc/BitmapObject.dtor/*" />
+/// <exclude />
 	DESTRUCTOR()
 		oBitmap := NULL_OBJECT
 

@@ -5,6 +5,7 @@
 //
 USING XSharp
 USING XSharp.RDD.Enums
+USING System.Collections.Generic
 BEGIN NAMESPACE XSharp
     /// <summary>Values that match the Visual Objects SET_* defines </summary>
     /// <remarks>Global settings are stored in the RuntimeState and are thread specific.
@@ -805,6 +806,8 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.IdleRepeat
             RETURN 0L
 
+        CASE Set.Compatible
+            RETURN "OFF"
 
         CASE Set.AutoOrder
             RETURN 1L
@@ -891,9 +894,11 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
             RETURN NULL
 
         CASE Set.LastScriptError    // Exception object
-        CASE Set.WithStack
+        CASE Set.SysObject
+        CASE Set.RddInfo
             RETURN NULL
-
+        CASE Set.WithStack
+            RETURN Stack<OBJECT>{}
         CASE Set.Intl
         CASE Set.CollationMode
             RETURN CollationMode.Windows

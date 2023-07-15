@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -25,11 +25,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _addError(sError AS STRING) AS VOID
             _errors:Add( sError)
             RETURN
-            
+
         INTERNAL METHOD _validate() AS LOGIC
             LOCAL aLevels   AS List<LONG>
             LOCAL lOk := TRUE AS LOGIC
-            
+
             TRY
                 IF SELF:Xlock()
                     aLevels     := List<LONG>{}
@@ -62,13 +62,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDIF
                     ENDIF
                     SELF:_errors := NULL
-                
+
                 ENDIF
             FINALLY
                 SELF:UnLock()
             END TRY
             RETURN lOk
-            
+
         PRIVATE METHOD _validateLeaves(firstPage AS CdxLeafPage) AS VOID
             LOCAL aRecordList AS BitArray
             LOCAL currentPage AS CdxLeafPage
@@ -102,14 +102,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     prevKey := leaf:Key
                     prevRec := leaf:Recno
                 NEXT
-                
+
                 IF currentPage:HasRight
                     VAR nextPage := SELF:GetPage(currentPage:RightPtr)
                     IF nextPage:LeftPtr != currentPage:PageNo
                         SELF:_addError( i"Left Link on {currentPage.PageType} page {currentPage.PageNo:X} contains incorrect pointer")
                     ENDIF
                     IF nextPage IS CdxLeafPage VAR lp
-                        currentPage := lp 
+                        currentPage := lp
                     ELSE
                         SELF:_addError( i"Page {currentPage.RightPtr:X} should have been a leafpage but instead it is a {nextPage.PageType}")
                         EXIT
@@ -123,6 +123,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 FOR VAR i := 1 TO SELF:_oRdd:RecCount
                     IF aRecordList[i]
                         // Ok
+                        NOP
                     ELSE
                         SELF:_addError( i"Record {i} is not recorded at the Leaf level")
                     ENDIF
@@ -139,13 +140,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             SELF:_addError( i"Record {i} is recorded at the Leaf level, but it DOES NOT match the for condition")
                         ENDIF
                     ELSE
-                        SELF:_addError( i"FOR condition '{SELF._ForExpr}' for index does not return a logical value") 
+                        SELF:_addError( i"FOR condition '{SELF._ForExpr}' for index does not return a logical value")
                         EXIT
                     ENDIF
                 NEXT
             ENDIF
-            RETURN 
-            
+            RETURN
+
         PRIVATE METHOD _validateBranches(firstPage AS CdxBranchPage) AS VOID
             LOCAL currentPage AS CdxBranchPage
             currentPage := firstPage
@@ -190,7 +191,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     currentPage := NULL
                 ENDIF
             ENDDO
-            RETURN 
- 
+            RETURN
+
     END CLASS
 END NAMESPACE

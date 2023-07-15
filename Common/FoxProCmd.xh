@@ -131,41 +131,6 @@
       [; DbSetIndex( <(index1)> )]                  ;
       [; DbSetIndex( <(indexn)> )]
 
-** Todo Handle Collate, Binary, Candidate, Compact clauses for Both INDEX ON commands
-
-#command INDEX ON <key>         										;
-     TAG <order>                										;
-     [BINARY <bin>]                  								    ;
-     [COLLATE <coll>]                								    ;
-     [OF <file>]                										;
-     [FOR <fo>]                 										;
-     [<u:UNIQUE>]               										;
-     [<cmp:COMPACT>]          										    ;
-     [<cand:CANDIDATE>]          										;
-     [<asd:ASCENDING>]          										;
-     [<dsd:DESCENDING>]         										;
-     [<lAdd:ADDITIVE>]          										;
-     [<lNop:NOOPTIMIZE>]        										;
-    => OrdCondSet( <"fo">, , , , , , 			                        ;
-       , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>] )      				;;  ;
-       OrdCreate(<(file)>,<(order)>,<(key)>,,IF(<.u.>,.T., NIL))
-
-#command INDEX ON <key>         										;
-     TO <(file)>                										;
-     [BINARY <bin>]                  								    ;
-     [COLLATE <coll>]                								    ;
-     [FOR <fo>]                 										;
-     [<u:UNIQUE>]               										;
-     [<cmp:COMPACT>]          										    ;
-     [<cand:CANDIDATE>]          										;
-     [<asd:ASCENDING>]          										;
-     [<dsd:DESCENDING>]         										;
-     [<lAdd:ADDITIVE>]          										;
-     [<lNop:NOOPTIMIZE>]        										;
-    => OrdCondSet( <"fo">, , , , , , 			                        ;
-	 , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>] )      				;;  ;
-       dbCreateIndex( <(file)>, <"key">,, IIF( <.u.>, TRUE, NIL ))
-
 #command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
 ** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
 
@@ -192,27 +157,6 @@
 
 ** Todo: Add Tag Clause
 ** Todo: IN <area> which should prefix the calls to DbSetRelation
-
-
-#command SORT  TO <(file)>  [ON <fields,...>] ;
-         [<asc:ASCENDING>]                    ;
-         [<desc:DESCENDING>]                  ;
-         [FOR <lfor>]                         ;
-         [WHILE <lwhile>]                     ;
-         [NEXT <nNext>]                       ;
-         [RECORD <rec>]                       ;
-         [<rest:REST>]                        ;
-         [<noopt: NOOPTIMIZE>]                ;
-         [__FOXLIST__ <fldlist>]              ;
-         [__FOXWILD__ <fldwild> ]             ;
-         [ALL]                                ;
-                                              ;
-      => DbSortFox(                           ;
-                   <(file)>, { <(fields)> },  ;
-                   <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
-                 , IIF(<.asc.> .OR. <.desc.>, <.desc.>, NIL),           ;
-                   IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
-
 
 
 #command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ] ;
@@ -252,6 +196,27 @@
 ** Todo FoxPro [TO ARRAY ArrayName]
 
 */
+        
+/// Index on command with Binary, Collate, Candidate and Compact clauses        
+        
+#command SORT  TO <(file)> ON <fields,...>    ;
+         [<asc:ASCENDING>]                    ;
+         [<desc:DESCENDING>]                  ;
+         [For <lfor>]                         ;
+         [While <lwhile>]                     ;
+         [Next <nNext>]                       ;
+         [RECORD <rec>]                       ;
+         [<rest:REST>]                        ;
+         [<noopt: NOOPTIMIZE>]                ;
+         [__FOXLIST__ <fldlist>]              ;
+		 [__FOXWILD__ <fldwild> ]             ;
+         [ALL]                                ;
+                                              ;
+      => DbSortFox(                           ;
+                   <(file)>, { <(fields)> },  ;
+                   <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
+                 , Iif(<.asc.> .or. <.desc.>, <.desc.>, Nil),           ;
+                   Iif( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
 #command USE IN <(area)> => DbCloseArea(<(area)>)
 

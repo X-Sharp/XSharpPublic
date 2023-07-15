@@ -154,15 +154,21 @@ INTERNAL STATIC CLASS GuiWin32
 
         // Devexpress Controls have paint problems, when old win32 styles are modified
     [DllImport("User32.dll")];
-    STATIC METHOD SetWindowLong(hwnd AS IntPtr, nIndex AS INT, dwNewLong AS LONG) AS LONG
+    PRIVATE STATIC METHOD SetWindowLong(hwnd AS IntPtr, nIndex AS INT, dwNewLong AS LONG) AS LONG
+
+    STATIC METHOD SetWindowStyle(hwnd AS IntPtr, liValue AS LONG) AS LONG => SetWindowLong(hwnd, GWL_STYLE, liValue)
+
+    STATIC METHOD SetWindowExStyle(hwnd AS IntPtr, liValue AS LONG) AS LONG => SetWindowLong(hwnd, GWL_EXSTYLE, liValue)
 
     [DllImport("User32.dll", CharSet:=CharSet.Unicode, EntryPoint := "SetWindowTextW", SetLastError := TRUE)];
     STATIC METHOD SetWindowText(hwnd AS IntPtr, sText as STRING) AS LOGIC
 
     [DllImport("User32.dll")];
-    STATIC METHOD GetWindowLong(hwnd AS IntPtr, nIndex AS INT) AS LONG
+    PRIVATE STATIC METHOD GetWindowLong(hwnd AS IntPtr, nIndex AS INT) AS LONG
 
     STATIC METHOD GetWindowStyle(hwnd AS IntPtr) AS LONG => GetWindowLong(hwnd, GWL_STYLE)
+
+    STATIC METHOD GetWindowExStyle(hwnd AS IntPtr) AS LONG => GetWindowLong(hwnd, GWL_EXSTYLE)
 
     [DllImport("User32.dll")];
     STATIC METHOD GetWindow(hwnd AS IntPtr, nIndex AS INT) AS IntPtr
@@ -360,31 +366,6 @@ INTERNAL VOSTRUCT _winRECT
     MEMBER right AS LONGINT
     MEMBER bottom AS LONGINT
 
-
-//INTERNAL VOSTRUCT _winWNDCLASS
-//	MEMBER style         AS DWORD
-//	MEMBER lpfnWndProc   AS PTR
-//	MEMBER cbClsExtra    AS INT
-//	MEMBER cbWndExtra    AS INT
-//	MEMBER hInstance     AS PTR
-//	MEMBER hIcon         AS PTR
-//	MEMBER hCursor       AS PTR
-//	MEMBER hbrBackground AS PTR
-//	MEMBER lpszMenuName  AS PSZ
-//	MEMBER lpszClassName AS PSZ
-//
-//INTERNAL VOSTRUCT _winCREATESTRUCT
-//	MEMBER lpCreateParams AS PTR
-//	MEMBER hInstance      AS PTR
-//	MEMBER hMenu          AS PTR
-//	MEMBER hwndParent     AS PTR
-//	MEMBER cy             AS INT
-//	MEMBER cx             AS INT
-//	MEMBER y              AS INT
-//	MEMBER x              AS INT
-//	MEMBER style          AS LONGINT
-//	MEMBER lpszName       AS PSZ
-//	MEMBER lpszClass      AS PSZ
 
 INTERNAL VOSTRUCT _winLOGBRUSH
     MEMBER lbStyle AS DWORD

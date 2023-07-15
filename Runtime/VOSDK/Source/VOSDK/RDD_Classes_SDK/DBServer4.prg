@@ -904,6 +904,8 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 			lClearFilter := TRUE
 		ELSEIF __CanEval( cbFilterBlock )
 			// Ok
+            NOP
+            
 		ELSEIF IsString( cbFilterBlock )
 			cFilter := cbFilterBlock
 			IF SLen(AllTrim(cFilter)) == 0

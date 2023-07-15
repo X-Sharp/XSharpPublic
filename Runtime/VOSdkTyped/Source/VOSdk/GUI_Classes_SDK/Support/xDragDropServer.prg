@@ -15,7 +15,7 @@ CLASS DragDropServer INHERIT VObject
 	PROTECT hDragMultipCursor AS PTR
 
 	//PP-030828 Strong typing
-	METHOD __DragAppendFiles(hDrop AS PTR, acFilesToDrop AS ARRAY) AS PTR STRICT 
+	METHOD __DragAppendFiles(hDrop AS PTR, acFilesToDrop AS ARRAY) AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL strDropFile AS __WCDropFiles
 	LOCAL dwLen AS DWORD
@@ -24,7 +24,7 @@ CLASS DragDropServer INHERIT VObject
 	LOCAL pCurPath AS BYTE PTR
 	LOCAL dwPathNameLength AS DWORD
 
-	
+
 
 	iAlen := INT(_CAST, ALen(acFilesToDrop))
 	FOR i:= 1 UPTO iAlen
@@ -48,12 +48,12 @@ CLASS DragDropServer INHERIT VObject
 
 	RETURN hDrop
 
-METHOD __DragCreateMemHandle() AS PTR STRICT 
+METHOD __DragCreateMemHandle() AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL hDrop AS PTR
 	LOCAL strDropFile AS __WCDropFiles
 	LOCAL strPoint IS _winPoint
-	
+
 
 	GetCursorPos(@strPoint) //Get the Drop mouse position
 	hDrop := GlobalAlloc(_OR(GMEM_MOVEABLE,GMEM_SHARE,GMEM_ZEROINIT), _SIZEOF(__WCDropFiles) + 1)
@@ -67,11 +67,11 @@ METHOD __DragCreateMemHandle() AS PTR STRICT
 
 	RETURN hDrop
 
-METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT 
+METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	LOCAL DIM aKeyStates[256] AS BYTE
 
-	
+
 
 	GetKeyboardState(@aKeyStates)
 	IF _AND(aKeyStates[bKey + 1], 1) == 1
@@ -81,7 +81,7 @@ METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 	RETURN FALSE
 
 METHOD Destroy()  AS USUAL STRICT
-	
+
 
 	IF !InCollect()
 		UnRegisterAxit(SELF)
@@ -92,8 +92,8 @@ METHOD Destroy()  AS USUAL STRICT
 
 	RETURN NIL
 
-CONSTRUCTOR(oOwner) 
-	
+CONSTRUCTOR(oOwner)
+
 
 	IF !IsInstanceOfUsual(oOwner,#Window)
 		WCError{#Init,#DragDropServer,__WCSTypeError,oOwner,1}:Throw()
@@ -101,7 +101,7 @@ CONSTRUCTOR(oOwner)
 
 	__LoadShellDll()
 
-	
+
 	oParent := oOwner
 
 	IF hDragSingleCursor == NULL_PTR //load Cursor at first time
@@ -111,9 +111,9 @@ CONSTRUCTOR(oOwner)
 		hDragMultipCursor := LoadCursor(_GetInst(), String2Psz("DragMultip"))
 	ENDIF
 
-	RETURN 
+	RETURN
 
-METHOD StartDrag(acFilesToDrag) 
+METHOD StartDrag(acFilesToDrag)
 	LOCAL strPoint IS _winPoint
 	LOCAL hWndSubject AS PTR
 	LOCAL hWndClient AS PTR
@@ -123,7 +123,7 @@ METHOD StartDrag(acFilesToDrag)
 	LOCAL lStyle AS LONGINT
 	LOCAL hDragCursor AS PTR
 
-	
+
 
 	IF !IsArray(acFilesToDrag)
 		WCError{#Init,#DragDropServer,__WCSTypeError,acFilesToDrag,1}:Throw()
@@ -165,7 +165,7 @@ METHOD StartDrag(acFilesToDrag)
 	//See if the subject window or any of is parent windows are pepared to
 	//accept dropped files
 	DO WHILE IsWindow(hWndSubject)
-		lStyle := _AND(GetWindowLong(hWndSubject,GWL_EXSTYLE), WS_EX_ACCEPTFILES)
+		lStyle := _AND(GetWindowExStyle(hWndSubject), WS_EX_ACCEPTFILES)
 		IF (lStyle > 0)
 			hWndClient := hWndSubject
 			EXIT

@@ -259,8 +259,12 @@ INTERNAL STATIC CLASS ArrayHelpers
         IF cb == NULL
             THROW Error.NullArgumentError( cFuncName, NAMEOF(cb),2)
         ENDIF
-        @@Default( REF iStart, 1)
-        @@Default( REF iCount, ALen(aArray))
+        IF iStart:IsNil
+            iStart := 1
+        ENDIF
+        if iCount:IsNil
+            iCount := ALen(aArray)
+        ENDIF
         IF ! iStart:IsNumeric
             THROW Error.ArgumentError( cFuncName, NAMEOF(iStart), 3 , <OBJECT>{iStart})
         ENDIF
@@ -364,6 +368,21 @@ FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T
     ARRAYNOTNULL aTarget
     aTarget:Add(uNewElement)
     RETURN uNewElement
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
+FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL, nElement as DWORD) AS USUAL
+    ARRAYNOTNULL aTarget
+    RETURN AAdd<USUAL>(aTarget, uNewElement, nElement)
+
+
+    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
+    /// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T, nElement as DWORD) AS T
+    ARRAYNOTNULL aTarget
+    aTarget:Resize((int) aTarget:Length+1)
+    aTarget:Insert((int) nElement, uNewElement)
+    RETURN uNewElement
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
 FUNCTION AClone(aSource AS ARRAY) AS ARRAY
@@ -863,7 +882,9 @@ FUNCTION AReplicate(xFill AS USUAL,nElements AS DWORD) AS ARRAY
 FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY
     LOCAL nLen AS DWORD
     LOCAL oBlock as OBJECT
-    @@Default( REF nStart, 1 )
+    IF nStart:IsNil
+        nStart:= 1
+    ENDIF
 
     nLen := ALen(aTarget)
     IF nLen == 0 // Let it execute if nLen == 1, maybe the codeblock is important to be executed in this case for some (user) reason
@@ -871,7 +892,9 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
     END IF
 
     EnforceNumeric( REF nStart )
-    @@Default( REF nCount, nLen - nStart + 1 )
+    IF nCount:IsNil
+        nCount := nLen - nStart + 1
+    ENDIF
     EnforceNumeric( REF nCount )
 
     // Note: ASort() in VO accepts arguments out of bounds and translates them this way:

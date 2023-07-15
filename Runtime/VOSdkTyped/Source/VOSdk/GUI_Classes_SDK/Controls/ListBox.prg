@@ -1,10 +1,10 @@
 /// <include file="Gui.xml" path="doc/ListBox/*" />
 CLASS ListBox INHERIT BaseListBox
 	PROTECT wSelectNum 		AS LONG
-    /// <inheritdoc  />
+    /// <exclude  />
     PROPERTY ControlType AS ControlType GET ControlType.ListBox
 
-    /// <inheritdoc  />
+    /// <exclude  />
 	METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
 		LOCAL nItem AS LONG
 		SELF:cSavedText := STRING.Empty
@@ -12,6 +12,7 @@ CLASS ListBox INHERIT BaseListBox
 		SUPER:OnHandleCreated(o,e)
 		SELF:__CurrentItemNo := nItem
 
+    /// <exclude  />
 	[Obsolete];
 	METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS LONG) AS VOID STRICT
 		RETURN
@@ -47,6 +48,7 @@ CLASS ListBox INHERIT BaseListBox
 		NEXT
 		RETURN 0
 
+    /// <exclude  />
 	METHOD __SetText(cNewText AS STRING) AS STRING
 		IF cNewText != SELF:CurrentText
 			RETURN SUPER:__SetText(cNewText)
@@ -131,14 +133,9 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN nIndex
 
 /// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
-	ACCESS Caption AS STRING
-		RETURN cCaption
+	PROPERTY Caption AS STRING GET cCaption SET cCaption := Value
 
-/// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
-	ASSIGN Caption(cNewCaption AS STRING)
-		cCaption := cNewCaption
-		RETURN
-
+/// <include file="Gui.xml" path="doc/ListBox.ChangeSelected/*" />
 	METHOD ChangeSelected(oRange AS Range, lEnabled := TRUE AS LOGIC)  AS LOGIC
 		LOCAL nItem AS LONG
 		IF !SELF:lIsComboBox
@@ -189,33 +186,36 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN SUPER:Create()
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentItem/*" />
-	ACCESS CurrentItem  AS STRING
+    PROPERTY CurrentItem  AS STRING
+    GET
 		IF SELF:ValidateControl()
 			RETURN SELF:GetItem(0)
 		ENDIF
-		RETURN sSavedCurrentItem
-
-	ASSIGN CurrentItem(cValue AS STRING)
-		SELF:CurrentItemNo := SELF:FindItem(cValue)
+        RETURN sSavedCurrentItem
+    END GET
+    SET
+		SELF:CurrentItemNo := SELF:FindItem(value)
 		RETURN
-
+    END SET
+    END PROPERTY
 /// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
-	ACCESS CurrentItemNo AS LONG
+    PROPERTY CurrentItemNo AS LONG
+    GET
 		IF SELF:MultiSelection
 			RETURN SELF:FirstSelected()
 		ENDIF
 		RETURN SUPER:CurrentItemNo
+    END GET
+    SET
 
-/// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
-	ASSIGN CurrentItemNo(nItemNo  AS LONG)
 		// nItemNo = 1-based index in collection
 		LOCAL cSelValue AS STRING
 		LOCAL dwIndex AS LONG
 		LOCAL uOldValue AS USUAL
 		LOCAL oItem AS ListBoxItemValue
-		SELF:__CurrentItemNo := nItemNo
+		SELF:__CurrentItemNo := value
 
-		IF nItemNo > 0
+		IF value > 0
 			cSelValue := SELF:CurrentItem
 		ENDIF
 		uOldValue := AsString(uValue)
@@ -227,7 +227,8 @@ CLASS ListBox INHERIT BaseListBox
 		ENDIF
 		SELF:ValueChanged := !(AsString(uValue) == uOldValue)
 
-		RETURN
+    END SET
+    END PROPERTY
 
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentText/*" />

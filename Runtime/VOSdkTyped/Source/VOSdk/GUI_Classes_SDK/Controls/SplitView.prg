@@ -9,12 +9,9 @@ CLASS SplitView INHERIT Control
 	PROTECT	oBarFrameBrush		AS Brush
     PROTECT _aSplits            AS List<VOSplitContainer>
     PROTECT _aPanes             AS List<IGuiObject>
-    PROTECT lHorizontalAlign    AS LOGIC
-    PROTECT lVerticalAlign      AS LOGIC
-    PROTECT lHorizontalDrag     AS LOGIC
-    PROTECT lVerticalDrag       AS LOGIC
 
-    PROPERTY ControlType AS ControlType GET ControlType.SplitContainer
+	/// <exclude />
+    PROPERTY ControlType    AS ControlType GET ControlType.SplitContainer
     PROPERTY HorizontalPanes AS LONG GET oPanes:Width
     PROPERTY VerticalPanes   AS LONG GET oPanes:Height
 
@@ -44,25 +41,25 @@ CLASS SplitView INHERIT Control
                 // Some common scenarios
                 SWITCH PaneCount
                 CASE 3
-                
+
                     IF HorizontalPanes == 3
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Vertical)
-                        oChild:IsSplitterFixed := !SELF:lHorizontalDrag
+                        oChild:IsSplitterFixed := !SELF:HorizontalDrag
                     ELSE
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Horizontal)
-                        oChild:IsSplitterFixed := !SELF:lVerticalDrag
+                        oChild:IsSplitterFixed := !SELF:VerticalDrag
                     ENDIF
-                    
+
                     oMain:Panel1:Controls:Add(oChild)
-                    
+
                 CASE 4
                     oMain:Orientation := System.Windows.Forms.Orientation.Vertical
                     IF HorizontalPanes == 2 .AND. VerticalPanes == 2
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Horizontal)
-                        oChild:IsSplitterFixed := !SELF:lVerticalDrag
+                        oChild:IsSplitterFixed := !SELF:VerticalDrag
                         oMain:Panel1:Controls:Add(oChild)
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Horizontal)
-                        oChild:IsSplitterFixed := !SELF:lVerticalDrag
+                        oChild:IsSplitterFixed := !SELF:VerticalDrag
                         oMain:Panel2:Controls:Add(oChild)
                         IF ! SELF:VerticalDrag
                             oMain:FixedPanel := System.Windows.Forms.FixedPanel.Panel1
@@ -70,21 +67,21 @@ CLASS SplitView INHERIT Control
                         ENDIF
                     ELSEIF HorizontalPanes == 4 .AND. VerticalPanes == 1
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Vertical)
-                        oChild:IsSplitterFixed := !SELF:lHorizontalDrag
+                        oChild:IsSplitterFixed := !SELF:HorizontalDrag
                         oMain:Panel1:Controls:Add(oChild)
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Vertical)
-                        oChild:IsSplitterFixed := !SELF:lHorizontalDrag
+                        oChild:IsSplitterFixed := !SELF:HorizontalDrag
                         oMain:Panel2:Controls:Add(oChild)
-                        IF ! SELF:lHorizontalDrag
+                        IF ! SELF:HorizontalDrag
                             oMain:FixedPanel := System.Windows.Forms.FixedPanel.Panel1
                             oMain:Panel1:AutoSize := FALSE
                         ENDIF
                     ELSE // VerticalPanes == 4 .and HorizontalPanes == 1
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Horizontal)
-                        oChild:IsSplitterFixed := !SELF:lVerticalDrag
+                        oChild:IsSplitterFixed := !SELF:VerticalDrag
                         oMain:Panel1:Controls:Add(oChild)
                         oChild := SELF:_AddControl(System.Windows.Forms.Orientation.Horizontal)
-                        oChild:IsSplitterFixed := !SELF:lVerticalDrag
+                        oChild:IsSplitterFixed := !SELF:VerticalDrag
                         oMain:Panel2:Controls:Add(oChild)
                         IF ! SELF:VerticalDrag
                             oMain:FixedPanel := System.Windows.Forms.FixedPanel.Panel1
@@ -130,7 +127,7 @@ CLASS SplitView INHERIT Control
             END SWITCH
         END SWITCH
         RETURN NULL_OBJECT
-         
+
 
     PRIVATE METHOD __GetPaneObject(oObject AS IGUIObject) AS IVOUIObject
         IF oObject IS Control VAR oCtrl
@@ -157,13 +154,13 @@ CLASS SplitView INHERIT Control
     PRIVATE METHOD __SetPanes() AS VOID
         VAR oMain := SELF:_aSplits[0]
         oMain:SuspendLayout()
-        FOR VAR nI :=1 TO SELF:PaneCount 
+        FOR VAR nI :=1 TO SELF:PaneCount
             SELF:__SetPanelClient(SELF:__GetPanel(nI), SELF:_aPanes[nI-1])
         NEXT
         oMain:ResumeLayout(TRUE)
         oMain:PerformLayout()
         RETURN
-        
+
     PRIVATE METHOD _AddControl(nOrientation AS System.Windows.Forms.Orientation) AS VOSplitContainer
         VAR oCtrl := (VOSplitContainer) GuiFactory.Instance:CreateControl(SELF:ControlType, SELF, 0, 0)
         oCtrl:Orientation := nOrientation
@@ -176,15 +173,15 @@ CLASS SplitView INHERIT Control
 
     METHOD SplitterMoved(sender AS OBJECT, e AS System.Windows.Forms.SplitterEventArgs) AS VOID
         RETURN
-        
+
     METHOD SplitterMoving(sender AS OBJECT, e AS System.Windows.Forms.SplitterCancelEventArgs ) AS VOID
         VAR oSplit := (VOSplitContainer) sender
         IF oSplit:Orientation == System.Windows.Forms.Orientation.Vertical
-            IF ! lVerticalDrag
+            IF ! SELF:VerticalDrag
                 e:Cancel := TRUE
             ENDIF
         ELSE
-            IF ! SELF:lHorizontalDrag
+            IF ! SELF:HorizontalDrag
                  e:Cancel := TRUE
             ENDIF
         ENDIF
@@ -196,11 +193,11 @@ CLASS SplitView INHERIT Control
         RETURN oMain
 
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment)
 		LOCAL oWin AS Window
 
 		// the owner must be a window
-		IF !IsInstanceOfUsual(oOwner, #Window)
+		IF !(oOwner IS Window )
 			WCError{#Init, #SplitView, __WCSTypeError, oOwner, 1}:Throw()
 		ENDIF
 		oWin := oOwner
@@ -209,78 +206,74 @@ CLASS SplitView INHERIT Control
         DEFAULT(@lVerticalDrag , FALSE)
         DEFAULT(@kAlignment, SPLIT_VERTALIGN)
 
-        SELF:lHorizontalDrag    := lHorizontalDrag
-        SELF:lVerticalDrag      := lVerticalDrag
-        SELF:lHorizontalAlign   := _AND(kAlignment, SPLIT_HORZALIGN ) != 0
-        SELF:lVerticalAlign     := _AND(kAlignment, SPLIT_VERTALIGN ) != 0
+        SELF:HorizontalDrag    := lHorizontalDrag
+        SELF:VerticalDrag      := lVerticalDrag
+        SELF:HorizontalAlign   := _AND(kAlignment, SPLIT_HORZALIGN ) != 0
+        SELF:VerticalAlign     := _AND(kAlignment, SPLIT_VERTALIGN ) != 0
         SELF:Layout  := Dimension{2,1}
         SELF:_aPanes := List<IGuiObject>{}
         SELF:_aSplits:= List<VOSplitContainer>{}
 
 		SUPER(oWin, xID, oPoint, oDimension, "", _OR(WS_VISIBLE, WS_CHILD))
 
-		RETURN 
+		RETURN
 
-	METHOD __EditChange() AS VOID STRICT 
+	METHOD __EditChange() AS VOID STRICT
 		SELF:Modified := TRUE
 		RETURN
 
-	ACCESS Background AS Brush
-		RETURN oBackgroundBrush
-
-	ASSIGN Background(oBrush AS Brush) 
-		SELF:ChangeBackground(oBrush, SPLTCOLOR_WINDOW)
-		RETURN 
+	PROPERTY Background AS Brush GET oBackgroundBrush SET SELF:ChangeBackground(value, SPLTCOLOR_WINDOW)
 
 	METHOD ChangeBackground(oBrush AS Brush, kWhere := 0 AS LONG)  AS VOID
-//		LOCAL dwNewColor	AS DWORD
-//
-//		// change the particular color using the supplied brush,
-//		// or the appropriate system color if the brush is null
-//		DO CASE
-//		CASE kWhere == SPLTCOLOR_WINDOW
-//			oBackgroundBrush := oBrush
-//			IF oBackgroundBrush == NULL_OBJECT
-//				dwNewColor := GuiWin32.GetSysColor(COLOR_APPWORKSPACE)
-//			ENDIF
-//
-//		CASE kWhere == SPLTCOLOR_BAR
-//			oBarBrush := oBrush
-//			IF oBarBrush == NULL_OBJECT
-//				IF _AND(GuiWin32.GetVersion(), 0X80000000) != 0
-//					// Use Windows95 constants
-//					dwNewColor := GuiWin32.GetSysColor(COLOR_3DFACE)
-//				ELSE
-//					// Use WindowsNT constants
-//					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
-//				ENDIF
-//			ENDIF
-//
-//		CASE kWhere == SPLTCOLOR_BARFRAME
-//			oBarFrameBrush := oBrush
-//			IF oBarFrameBrush == NULL_OBJECT
-//				IF _AND(GuiWin32.GetVersion(), 0X80000000) != 0
-//					// Use Windows95 constants
-//					dwNewColor := GuiWin32.GetSysColor(COLOR_3DFACE)
-//				ELSE
-//					// Use WindowsNT constants
-//					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
-//				ENDIF
-//			ENDIF
-//		END CASE
-//
-//		IF oBrush != NULL_OBJECT
-//			dwNewColor := WC.GetBrushColor(oBrush)
-//		ENDIF
-//		//PCALL(gpfnSpltColorSet, SELF:Handle(), kWhere, INT(_CAST, dwNewColor))
-//		//dwNewColor := dwNewColor
-//		
-		RETURN 
+        // Todo SplitView.ChangeBackGround
+		// change the particular color using the supplied brush,
+		// or the appropriate system color if the brush is null
+        LOCAL dwNewColor as DWORD
+		SWITCH kWhere
+		CASE SPLTCOLOR_WINDOW
+			oBackgroundBrush := oBrush
+			IF oBackgroundBrush == NULL_OBJECT
+                dwNewColor := GuiWin32.GetSysColor(COLOR_APPWORKSPACE)
+			ENDIF
 
-	ACCESS deferPaintCount 
-		RETURN SELF:dwDeferPaintCount
+		CASE SPLTCOLOR_BAR
+			oBarBrush := oBrush
+			IF oBarBrush == NULL_OBJECT
+				IF _AND(GuiWin32.GetVersion(), 0X80000000) != 0
+					// Use Windows95 constants
+					dwNewColor := GuiWin32.GetSysColor(COLOR_3DFACE)
+				ELSE
+					// Use WindowsNT constants
+					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
+                ENDIF
+			ENDIF
 
-	METHOD Destroy() AS USUAL 
+		CASE SPLTCOLOR_BARFRAME
+			oBarFrameBrush := oBrush
+			IF oBarFrameBrush == NULL_OBJECT
+				IF _AND(GuiWin32.GetVersion(), 0X80000000) != 0
+					// Use Windows95 constants
+					dwNewColor := GuiWin32.GetSysColor(COLOR_3DFACE)
+				ELSE
+					// Use WindowsNT constants
+					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
+				ENDIF
+			ENDIF
+		END SWITCH
+
+		IF oBrush != NULL_OBJECT
+			dwNewColor := (Color) oBrush
+		ENDIF
+		//PCALL(gpfnSpltColorSet, SELF:Handle(), kWhere, INT(_CAST, dwNewColor))
+        FOREACH var Split in _aSplits
+            Split:ForeColor := Color{dwNewColor}
+        NEXT
+
+		RETURN
+
+	PROPERTY deferPaintCount AS DWORD GET SELF:dwDeferPaintCount
+
+	METHOD Destroy() AS USUAL
 		LOCAL liPane  AS LONGINT
 		LOCAL liCount AS LONGINT
 
@@ -309,7 +302,7 @@ CLASS SplitView INHERIT Control
 
 		RETURN SELF
 
-	METHOD Dispatch(oEvent  AS @@Event) 
+	METHOD Dispatch(oEvent  AS @@Event)
 		//LOCAL oSize 	AS Dimension
 		//LOCAL lResize 	AS LOGIC
 		//LOCAL oEvt := oEvent AS @@Event
@@ -336,7 +329,7 @@ CLASS SplitView INHERIT Control
 		IF aChildren == NULL_ARRAY
 			aPanes := {}
 		ELSE
-            aPanes := aChildren		
+            aPanes := aChildren
 		ENDIF
         FOREACH VAR oPane IN SELF:_aPanes
             AAdd(aPanes, oPane)
@@ -353,8 +346,8 @@ CLASS SplitView INHERIT Control
 	METHOD GetPaneSize(nPane AS LONG) AS Dimension
 		LOCAL oRet AS OBJECT
         IF nPane <= SELF:_aPanes:Count
-            VAR panel := SELF:__GetPanel(nPane)            
-            RETURN panel:Size 
+            VAR panel := SELF:__GetPanel(nPane)
+            RETURN panel:Size
         ENDIF
 		RETURN NULL_OBJECT
 
@@ -370,21 +363,22 @@ CLASS SplitView INHERIT Control
             NEXT
         ENDIF
         SELF:__SetPanes()
-		RETURN 
+		RETURN
 
-	PROPERTY HorizontalAlign AS LOGIC GET SELF:lHorizontalAlign 
-	PROPERTY HorizontalDrag  AS LOGIC GET SELF:lHorizontalDrag 
+	PROPERTY HorizontalAlign AS LOGIC AUTO GET PRIVATE SET
+	PROPERTY HorizontalDrag  AS LOGIC AUTO GET PRIVATE SET
 
 
-	ACCESS Layout AS Dimension
+    PROPERTY Layout AS Dimension
+    GET
 		RETURN oPanes
-
-	ASSIGN Layout(oDimension AS Dimension)
-        LOCAL nHorizontal, nVertical AS LONG
-		oPanes := oDimension
+    END GET
+    SET
+		oPanes := value
         SELF:__AdjustSize()
-		RETURN 
-
+		RETURN
+    END SET
+    END PROPERTY
 	METHOD RestoreUpdate() AS VOID STRICT
 		IF (dwDeferPaintCount != 0)
 			--dwDeferPaintCount
@@ -394,7 +388,7 @@ CLASS SplitView INHERIT Control
                 oSplit:ResumeLayout(TRUE)
             NEXT
         ENDIF
-		RETURN 
+		RETURN
 
 	METHOD SetPaneClient(oWindow AS IGuiObject, nPane AS LONG )  AS VOID
         IF nPane > 0 .AND. nPane <= SELF:PaneCount
@@ -402,11 +396,11 @@ CLASS SplitView INHERIT Control
         ENDIF
         SELF:__SetPanes()
         oWindow:Show()
-		RETURN 
+		RETURN
 
 	METHOD SetPaneSize(oDimension AS Dimension, nPane AS LONG)  AS LOGIC
 		IF nPane > 0 .AND. nPane <= SELF:_aPanes:Count
-            VAR panel := SELF:__GetPanel(nPane)            
+            VAR panel := SELF:__GetPanel(nPane)
             panel:Size := oDimension
             VAR split := (VOSplitContainer) panel:Parent
             IF panel == split:Panel1 .AND. split:Orientation == System.Windows.Forms.Orientation.Vertical
@@ -434,19 +428,9 @@ CLASS SplitView INHERIT Control
         SELF:__SetPanes()
         RETURN
 
-	ACCESS SplitBarBackground 
-		RETURN oBarBrush
+	PROPERTY SplitBarBackground AS Brush GET oBarBrush SET SELF:ChangeBackground(value, SPLTCOLOR_BAR)
 
-	ASSIGN SplitBarBackground(oBrush) 
-		SELF:ChangeBackground(oBrush, SPLTCOLOR_BAR)
-		RETURN 
-
-	ACCESS SplitBarFrameBackground 
-		RETURN oBarFrameBrush
-
-	ASSIGN SplitBarFrameBackground(oBrush) 
-		SELF:ChangeBackground(oBrush, SPLTCOLOR_BARFRAME)
-		RETURN 
+	PROPERTY SplitBarFrameBackground AS Brush GET oBarFrameBrush SET SELF:ChangeBackground(value, SPLTCOLOR_BARFRAME)
 
 	METHOD SuspendUpdate()  AS VOID STRICT
 		IF (dwDeferPaintCount == 0)
@@ -454,11 +438,11 @@ CLASS SplitView INHERIT Control
                 oSplit:SuspendLayout()
             NEXT
 		ENDIF
-		dwDeferPaintCount := dwDeferPaintCount + 1 
-		RETURN 
+		dwDeferPaintCount := dwDeferPaintCount + 1
+		RETURN
 
-	PROPERTY VerticalAlign  AS LOGIC GET SELF:lVerticalAlign 
-	PROPERTY VerticalDrag   AS LOGIC GET SELF:lVerticalDrag  
+	PROPERTY VerticalAlign  AS LOGIC AUTO GET PRIVATE SET
+	PROPERTY VerticalDrag   AS LOGIC AUTO GET PRIVATE SET
 
 
 END CLASS

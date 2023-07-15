@@ -1,8 +1,9 @@
 
-
+/// <exclude />
 CLASS WCError INHERIT Error
 
-CONSTRUCTOR(methodName, className, desc, var, varnum, lAllowIgnore) 
+/// <exclude />
+    CONSTRUCTOR(methodName, className, desc, var, varnum, lAllowIgnore)
 	LOCAL rsSubSystem AS ResourceString
 	SUPER()
 
@@ -38,7 +39,7 @@ CONSTRUCTOR(methodName, className, desc, var, varnum, lAllowIgnore)
 
 	Args := <OBJECT>{}
 	Tries := 1
-	RETURN 
+	RETURN
 
 END CLASS
 

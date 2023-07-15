@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -11,30 +11,30 @@ USING System.Collections.Generic
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MAssign(cExp AS STRING,uValue AS USUAL) AS USUAL
     RETURN MemVarPutSym(cExp, uValue)
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarblock/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
-    RETURN {| uValue| IIF (uValue == NIL, MemVarGet(cMemvarName), MemVarPut(cMemvarName, uValue))} 
-    
-    
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGet(cMemvarName), MemVarPut(cMemvarName, uValue))}
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVarName)
-    
+
 
 FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
     RETURN XSharp.MemVar.TryGet(cVarName, OUT uValue)
 
 
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
-    RETURN XSharp.MemVar.Put(cVarName, uValue) 
-    
+    RETURN XSharp.MemVar.Put(cVarName, uValue)
+
 
 
 /// <summary>
@@ -42,10 +42,10 @@ FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
 /// </summary>
 /// <param name="symVar">The name of the variable you want to clear. </param>
 /// <remarks>
-/// The value of this variable will be set to NIL. The variable is NOT deleted.  
+/// The value of this variable will be set to NIL. The variable is NOT deleted.
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION MemVarClear(symVar AS STRING) AS VOID 
+FUNCTION MemVarClear(symVar AS STRING) AS VOID
 	XSharp.MemVar.Put(symVar, NIL)
 	RETURN
 
@@ -56,60 +56,60 @@ FUNCTION MemVarClear(symVar AS STRING) AS VOID
 /// </summary>
 /// <param name="symVar">The name of the variable you want to release. </param>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION MemVarRelease(symVar AS STRING) AS VOID 
+FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 	XSharp.MemVar.Release(symVar)
 	RETURN
 
 
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION VarGet(cVarName AS STRING) AS USUAL
     RETURN __VarGet(cVarName)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVarName, uValue)
-    
+
 
 /// <inheritdoc cref='VarGet' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN __VarGet(symVar)
-    
+
 /// <inheritdoc cref='VarPut' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION VarPutSym(symVar AS SYMBOL,uValue AS USUAL) AS USUAL
     RETURN __VarPut(symVar, uValue)
-    
+
 /// <inheritdoc cref='MemVarBlock' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION MemVarBlockSym(symMemvarName AS SYMBOL) AS OBJECT
-    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(symMemvarName), MemVarPutSym(symMemvarName, uValue))} 
-    
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(symMemvarName), MemVarPutSym(symMemvarName, uValue))}
+
 /// <inheritdoc cref='MemVarGet' />
 /// <param name="symVar">The name of the variable .</param>
-FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL 
+FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL
     RETURN XSharp.MemVar.Get(symVar)
-    
-/// <inheritdoc cref='MemVarPut' /> 
+
+/// <inheritdoc cref='MemVarPut' />
 /// <param name="symVar">The name of the variable you want to assign to.</param>
-FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL  
-    RETURN XSharp.MemVar.Put(symVar, uValue) 
+FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL
+    RETURN XSharp.MemVar.Put(symVar, uValue)
 
 
 /// <summary>
 /// Clear all memory variables (all public variables and the private variables of the current thread)
 /// </summary>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION _MClear() AS VOID STRICT  
+FUNCTION _MClear() AS VOID STRICT
 	XSharp.MemVar.ClearAll()
 	RETURN
 
 /// <summary>
-/// Release one or more memory variables variables. 
+/// Release one or more memory variables variables.
 /// </summary>
 /// <param name="var1">Variable 1</param>
 /// <param name="var2">Variable 2</param>
@@ -120,7 +120,7 @@ FUNCTION _MClear() AS VOID STRICT
 /// The variables are not removed but their values are replaced with NIL.
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER	
+FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 	LOCAL nCount AS LONG
 	LOCAL name AS USUAL
 	nCount := PCount()
@@ -128,13 +128,14 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 		name := _GetFParam(i)
 		IF name:IsString
 			MemVarRelease(name)
-		ELSEIF name:IsSymbol			
+		ELSEIF name:IsSymbol
 			MemVarRelease(name)
-		ELSE  
+		ELSE
 			// throw argument error
+            NOP
 		ENDIF
 	NEXT
-	RETURN 
+	RETURN
 
 /// <summary>
 /// Release variables that match a certain wildcard pattern
@@ -142,7 +143,7 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 /// <param name="cMask">The wildcard pattern to use when releasing the memvars. May contain * and ? characters.</param>
 /// <param name="lMatch">Indicates if the variables that need to be released should match (TRUE) or NOT match (FALSE) the pattern.</param>
 /// <remarks>
-/// For most dialects the variables are not removed but their values are replaced with NIL. 
+/// For most dialects the variables are not removed but their values are replaced with NIL.
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
@@ -150,7 +151,7 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
     LOCAL lFoxPro as LOGIC
     lFoxPro := XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
 	// Case INsensitive comparison. Symbols are all in UPPER case
-	cMask := Upper(cMask)                                        
+	cMask := Upper(cMask)
 	cName := _PrivateFirst(TRUE)
 	DO WHILE cName != NULL
 		IF _Like(cMask, cName) == lMatch
@@ -162,14 +163,14 @@ FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 		ENDIF
 		cName := _PrivateNext()
 	ENDDO
-	RETURN   
+	RETURN
 
 
 
 /// <summary>
 /// Enumerate private variables
 /// </summary>
-FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING 
+FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING
 	RETURN XSharp.MemVar.PrivatesFirst(lCurrentOnly)
 
 
@@ -177,13 +178,13 @@ FUNCTION _PrivateFirst(lCurrentOnly := FALSE AS LOGIC) AS STRING
 /// Enumerate private variables
 /// </summary>
 FUNCTION _PrivateNext() AS STRING STRICT
-	RETURN XSharp.MemVar.PrivatesNext() 
+	RETURN XSharp.MemVar.PrivatesNext()
 
 
 /// <summary>
 /// Enumerate public variables
 /// </summary>
-FUNCTION _PublicFirst() AS STRING STRICT 
+FUNCTION _PublicFirst() AS STRING STRICT
 	RETURN XSharp.MemVar.PublicsFirst()
 
 
@@ -192,19 +193,19 @@ FUNCTION _PublicFirst() AS STRING STRICT
 /// </summary>
 FUNCTION _PublicNext() AS STRING STRICT
 	RETURN XSharp.MemVar.PublicsNext()
-	
+
 /// <summary>
 /// Count private variables
 /// </summary>
 
-FUNCTION _PrivateCount(lCurrentOnly := FALSE AS LOGIC) AS INT      
+FUNCTION _PrivateCount(lCurrentOnly := FALSE AS LOGIC) AS INT
 	RETURN XSharp.MemVar.PrivatesCount(lCurrentOnly)
 
 /// <summary>
 /// Count public variables
 /// </summary>
 
-FUNCTION _PublicCount() AS INT STRICT    
+FUNCTION _PublicCount() AS INT STRICT
 	RETURN XSharp.MemVar.PublicsCount()
 
 /// <summary>

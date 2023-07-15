@@ -7,7 +7,7 @@ CLASS ComboBox INHERIT ListBox
 
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
-		VAR oCombo := (IVOComboBox) oC
+		VAR oCombo := (VOComboBox) oC
 		oCombo:DropDownHeight := oSize:Height
 		RETURN
  /// <exclude />
@@ -44,42 +44,45 @@ CLASS ComboBox INHERIT ListBox
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ComboBox.CurrentText/*" />
-	ASSIGN CurrentText(cNewText AS STRING)
+    PROPERTY CurrentText AS STRING
+    SET
 		LOCAL cCurrentText AS STRING
-		cCurrentText := SELF:__SetText(cNewText)
+		cCurrentText := SELF:__SetText(value)
 		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
 			uValue := ((FieldSpec)SELF:FieldSpec):Val(cCurrentText)
 		ELSE
 			uValue := cCurrentText
 		ENDIF
-		RETURN
+    END SET
+    END PROPERTY
 
 /// <include file="Gui.xml" path="doc/ComboBox.EditHandle/*" />
-	ACCESS EditHandle AS IntPtr
+    PROPERTY EditHandle AS IntPtr
+    GET
 		IF SELF:ValidateControl()
 			GuiWin32.GetWindow(SELF:oCtrl:Handle, GW_CHILD)
 		ENDIF
 		RETURN IntPtr.Zero
-
+    END GET
+    END PROPERTY
 
 
 /// <include file="Gui.xml" path="doc/ComboBox.EditHeight/*" />
-	ACCESS EditHeight  AS LONG
+    PROPERTY EditHeight  AS LONG
+    GET
 		IF SELF:ValidateControl()
 			RETURN SELF:__ComboBox:Height
 		ENDIF
 		RETURN 0
-
-/// <include file="Gui.xml" path="doc/ComboBox.EditHeight/*" />
-	ASSIGN EditHeight(liNewHeight AS LONG)
-
+    END GET
+    SET
 		IF SELF:ValidateControl()
-			IF liNewHeight > 0
-				SELF:__ComboBox:Height := liNewHeight
+			IF value > 0
+				SELF:__ComboBox:Height := value
 			ENDIF
 		ENDIF
-		RETURN
-
+    END SET
+    END PROPERTY
 /// <include file="Gui.xml" path="doc/ComboBox.EnableAutoComplete/*" />
 	METHOD EnableAutoComplete(dwFlags AS DWORD) AS VOID STRICT
 		IF SELF:ValidateControl()
@@ -138,8 +141,8 @@ CLASS ComboBox INHERIT ListBox
 			liComboType := BoxDropDown
 		ENDIF
 
-		IF !IsInstanceOfUsual(xID,#ResourceID)
-			IF !IsInstanceOf(SELF, #ComboBoxEx)
+		IF ! (xID IS ResourceID)
+			IF ! (SELF IS ComboBoxEx)
 				SELF:SetStyle(_OR(WS_CLIPSIBLINGS,WS_CLIPCHILDREN), FALSE)
 				dwStyle := _OR(WS_BORDER, WS_VSCROLL)
 			ENDIF
@@ -219,8 +222,9 @@ CLASS ComboBox INHERIT ListBox
 
 END CLASS
 
-/*
 CLASS ComboBoxEx INHERIT ComboBox
+END CLASS
+/*
 PROTECT oImgList AS ImageList
 
 METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent)
@@ -258,7 +262,7 @@ ENDIF
 lReturnValue := (SendMessage(SELF:Handle(), CBEM_DELETEITEM, dwPos, 0) != CB_ERR)
 
 IF lReturnValue
-dwPos++ 
+dwPos++
 ADel(aDisplayValues, dwPos)
 ADel(aRetValues, dwPos)
 ASize(aDisplayValues, ALen(aDisplayValues) - 1)

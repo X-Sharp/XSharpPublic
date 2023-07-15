@@ -95,7 +95,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN NIL
 
 	METHOD __GetValue(symItem AS SYMBOL) AS USUAL STRICT
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN oItem:Item:Value
 		ENDIF
@@ -109,7 +109,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 
 	METHOD __Remove(symLookUp AS SYMBOL) AS LOGIC STRICT
-		LOCAL IMPLIED oItem := SELF:__GetNode(symLookUp)
+		VAR oItem := SELF:__GetNode(symLookUp)
 		RETURN SELF:__Remove(oItem)
 
 	ACCESS __SortRoutineName AS SYMBOL STRICT
@@ -123,7 +123,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 
 	METHOD __UpdateValue(symItem AS Symbol, uNewValue AS USUAL) AS USUAL STRICT
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			LOCAL oTvItem AS TreeViewItem
 			oTvItem := oItem:Item
@@ -164,7 +164,7 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.Collapse/*" />
 	METHOD Collapse(symName AS SYMBOL, lRemoveChildItems  AS LOGIC, lAll AS LOGIC, lForceNotify AS LOGIC)
-		LOCAL IMPLIED oItem := SELF:GetItemAttributes(symName)
+		VAR oItem := SELF:GetItemAttributes(symName)
 		RETURN SELF:Collapse(oItem, lRemoveChildItems, lAll, lForceNotify)
 
 /// <include file="Gui.xml" path="doc/TreeView.Collapse/*" />
@@ -186,8 +186,8 @@ CLASS TreeView INHERIT TextControl
 		aItems:Clear()
 		RETURN TRUE
 
-
-	METHOD DeleteItemCore(oItem AS VOTreeNode, lChildsOnly AS LOGIC) AS LOGIC
+    /// <exclude />
+	METHOD __DeleteItemCore(oItem AS VOTreeNode, lChildrenOnly AS LOGIC) AS LOGIC
 		LOCAL oWin AS Window
 		oWin := SELF:Owner
 		// deleting of array elements is done by __Remove
@@ -196,7 +196,7 @@ CLASS TreeView INHERIT TextControl
 			RETURN FALSE
 		ENDIF
 
-		IF  lChildsOnly
+		IF  lChildrenOnly
 			FOREACH oChildNode AS VOTreeNode IN oItem:Nodes
 				oWin:TreeViewItemDelete(TreeViewDeleteEvent{SELF, oItem:Item})
 				aItems:Remove( oChildNode:Item:NameSym)
@@ -235,11 +235,11 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 /// <include file="Gui.xml" path="doc/TreeView.DeleteItem/*" />
 
-	METHOD DeleteItem(oItem AS USUAL, lChildsOnly AS LOGIC) AS LOGIC
+	METHOD DeleteItem(oItem AS USUAL, lChildrenOnly AS LOGIC) AS LOGIC
 		IF IsSymbol(oItem)
-			RETURN SELF:DeleteItem((SYMBOL)oItem, lChildsOnly)
+			RETURN SELF:DeleteItem((SYMBOL)oItem, lChildrenOnly)
 		ELSEIF IsInstanceOf(oItem, #TreeViewItem)
-			RETURN SELF:DeleteItem((TreeViewItem)oItem, lChildsOnly)
+			RETURN SELF:DeleteItem((TreeViewItem)oItem, lChildrenOnly)
 		ENDIF
 		RETURN FALSE
 
@@ -250,9 +250,9 @@ CLASS TreeView INHERIT TextControl
 		RETURN SELF:DeleteItem(oItem, FALSE)
 
 /// <include file="Gui.xml" path="doc/TreeView.DeleteItem/*" />
-	METHOD DeleteItem(oItem AS TreeViewItem, lChildsOnly AS LOGIC) AS LOGIC
+	METHOD DeleteItem(oItem AS TreeViewItem, lChildrenOnly AS LOGIC) AS LOGIC
 		IF oItem != NULL_OBJECT
-			RETURN SELF:DeleteItemCore(oItem:__Node, lChildsOnly)
+			RETURN SELF:__DeleteItemCore(oItem:__Node, lChildrenOnly)
 		ENDIF
 		RETURN FALSE
 
@@ -262,10 +262,10 @@ CLASS TreeView INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/TreeView.DeleteItem/*" />
-	METHOD DeleteItem(symName AS SYMBOL, lChildsOnly AS LOGIC) AS LOGIC
-		LOCAL IMPLIED oItem := SELF:__GetNode(symName)
+	METHOD DeleteItem(symName AS SYMBOL, lChildrenOnly AS LOGIC) AS LOGIC
+		VAR oItem := SELF:__GetNode(symName)
 		IF (oItem != NULL_OBJECT)
-			RETURN SELF:DeleteItemCore(oItem, lChildsOnly)
+			RETURN SELF:__DeleteItemCore(oItem, lChildrenOnly)
 		ENDIF
 		RETURN FALSE
 
@@ -307,7 +307,7 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.EnsureVisible/*" />
 	METHOD EnsureVisible(symName AS SYMBOL) AS VOID
-		LOCAL IMPLIED oItem := SELF:__GetNode(symName)
+		VAR oItem := SELF:__GetNode(symName)
 		oItem:EnsureVisible()
 		RETURN
 
@@ -319,7 +319,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 /// <include file="Gui.xml" path="doc/TreeView.Expand/*" />
 	METHOD Expand(symName AS SYMBOL, lAll AS LOGIC, lForceNotify AS LOGIC)
-		LOCAL IMPLIED oItem := SELF:GetItemAttributes(symName)
+		VAR oItem := SELF:GetItemAttributes(symName)
 		RETURN SELF:Expand(oItem, lAll, lForceNotify)
 
 /// <include file="Gui.xml" path="doc/TreeView.Expand/*" />
@@ -356,26 +356,31 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.GetFirstChildItem/*" />
 	METHOD GetFirstChildItem(symItem AS SYMBOL) AS TreeViewItem
-		LOCAL IMPLIED oItem := (VOTreeNode) SELF:__GetNode(symItem)
+		VAR oItem := (VOTreeNode) SELF:__GetNode(symItem)
 		IF oItem:Nodes:Count > 0
 			RETURN SELF:__NodeToTreeviewItem((VOTreeNode) oItem:Nodes:Item[0])
 		ENDIF
 		RETURN NULL_OBJECT
 /// <include file="Gui.xml" path="doc/TreeView.GetFirstVisibleItem/*" />
-	METHOD GetFirstVisibleItem() AS TreeViewItem
-		//Todo GetFirstVisibleItem
-		//LOCAL IMPLIED oItem := __TreeView:FirstNode
-		//IF oItem != NULL_OBJECT
+    METHOD GetFirstVisibleItem() AS TreeViewItem
+        LOCAL oItem AS VOTreeNode
+		IF SELF:__IsValid .and. SELF:__TreeView:Nodes:Count > 0
+            oItem := (VOTreeNode) SELF:__TreeView:Nodes[0]
+            do while oItem != NULL .and. ! oItem:IsVisible
+                oItem := (VOTreeNode) oItem:NextNode
+            enddo
+            RETURN SELF:__NodeToTreeviewItem(oItem)
+        ENDIF
 		RETURN NULL_OBJECT
 
 /// <include file="Gui.xml" path="doc/TreeView.GetItemAtPosition/*" />
 	METHOD GetItemAtPosition(oPoint AS Point)
 		// Fenster-bezogene Koordinate in Control-bezogene Koordinate zurückrechnen
-		LOCAL IMPLIED oNode := (VOTreeNode) __TreeView:GetNodeAt(oPoint)
+		VAR oNode := (VOTreeNode) __TreeView:GetNodeAt(oPoint)
 		RETURN SELF:__NodeToTreeviewItem(oNode)
 
 	METHOD GetCurrentItem()
-		LOCAL IMPLIED oNode := (VOTreeNode) __TreeView:SelectedNode
+		VAR oNode := (VOTreeNode) __TreeView:SelectedNode
 		RETURN SELF:__NodeToTreeviewItem(oNode)
 
 
@@ -388,12 +393,12 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.GetItemAttributes/*" />
 	METHOD GetItemAttributes(symItem AS SYMBOL) AS TreeViewItem
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		RETURN SELF:__NodeToTreeviewItem(oItem)
-/// <include file="Gui.xml" path="doc/TreeView.GetItemBoundingBox/*" />
 
+/// <include file="Gui.xml" path="doc/TreeView.GetItemBoundingBox/*" />
 	METHOD GetItemBoundingBox(symItem AS SYMBOL, lTextOnly := FALSE AS LOGIC) AS BoundingBox
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN (BoundingBox) oItem:Bounds
 		ENDIF
@@ -401,7 +406,6 @@ CLASS TreeView INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetNextSiblingItem/*" />
-
 	METHOD GetNextSiblingItem(oItem AS USUAL) AS TreeViewItem
 		IF IsSymbol(oItem)
 			RETURN SELF:GetNextSiblingItem((SYMBOL) oItem )
@@ -419,7 +423,7 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.GetNextSiblingItem/*" />
 	METHOD GetNextSiblingItem(symItem AS SYMBOL) AS TreeViewItem
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN SELF:__NodeToTreeviewItem((VOTreeNode)oItem:NextNode)
 		ENDIF
@@ -446,7 +450,7 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.GetNextVisibleItem/*" />
 	METHOD GetNextVisibleItem(symItem AS SYMBOL) AS TreeViewItem
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN SELF:__NodeToTreeviewItem((VOTreeNode)oItem:NextVisibleNode)
 		ENDIF
@@ -469,7 +473,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	METHOD GetParentItem(symItem AS SYMBOL) AS TreeViewItem
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN SELF:__NodeToTreeviewItem((VOTreeNode)oItem:Parent)
 		ENDIF
@@ -495,7 +499,7 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.GetPreviousSiblingItem/*" />
 	METHOD GetPreviousSiblingItem(symItem AS SYMBOL) AS TreeViewItem
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN SELF:__NodeToTreeviewItem((VOTreeNode)oItem:PrevNode)
 		ENDIF
@@ -523,7 +527,7 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.GetPreviousVisibleItem/*" />
 	METHOD GetPreviousVisibleItem(symItem AS SYMBOL)
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+		VAR oItem := SELF:__GetNode(symItem)
 		IF oItem != NULL_OBJECT
 			RETURN SELF:__NodeToTreeviewItem((VOTreeNode)oItem:PrevVisibleNode)
 		ENDIF
@@ -543,7 +547,7 @@ CLASS TreeView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TreeView.GetSelectedItem/*" />
 	METHOD GetSelectedItem() AS TreeViewItem
 		IF SELF:__IsValid
-			LOCAL IMPLIED oItem := __TreeView:SelectedNode
+			VAR oItem := __TreeView:SelectedNode
 			IF oItem != NULL_OBJECT
 				RETURN SELF:__NodeToTreeviewItem((VOTreeNode) oItem)
 			ENDIF
@@ -560,7 +564,7 @@ CLASS TreeView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TreeView.ImageList/*" />
 	ASSIGN ImageList(oNewImageList AS ImageList)
 		IF SELF:ValidateControl()
-			__TreeView:ImageList := oNewImageList:__ImageList
+			__TreeView:ImageList := oNewImageList
 		ENDIF
 		RETURN
 
@@ -737,8 +741,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN 0
 
 /// <include file="Gui.xml" path="doc/TreeView.SearchString/*" />
-	ACCESS SearchString AS STRING
-		RETURN cSearchString
+	PROPERTY SearchString AS STRING GET cSearchString
 
 /// <include file="Gui.xml" path="doc/TreeView.SelectItem/*" />
 	METHOD SelectItem(symItem, symCode, lSelect)
@@ -767,7 +770,8 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/TreeView.SetItemAttributes/*" />
-	METHOD SetItemAttributes(oTreeViewItem AS TreeViewItem) AS VOID
+    METHOD SetItemAttributes(oTreeViewItem AS TreeViewItem) AS VOID
+        // Todo
 		RETURN
 
 
@@ -787,10 +791,11 @@ CLASS TreeView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TreeView.StateImageList/*" />
 	ASSIGN StateImageList(oNewImageList AS ImageList)
 		IF SELF:__IsValid
-		__TreeView:StateImageList := oNewImageList:__ImageList
+		    __TreeView:StateImageList := oNewImageList
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/TreeView.RestoreUpdate/*" />
 	METHOD RestoreUpdate() AS VOID STRICT
 		IF SELF:__IsValid
 			SELF:__TreeView:EndUpdate()
@@ -798,6 +803,7 @@ CLASS TreeView INHERIT TextControl
 		ENDIF
 
 
+/// <include file="Gui.xml" path="doc/TreeView.SuspendUpdate/*" />
 	METHOD SuspendUpdate() AS VOID STRICT
 		IF SELF:__IsValid
 			SELF:__TreeView:BeginUpdate()
@@ -806,13 +812,14 @@ CLASS TreeView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TreeView.Toggle/*" />
 	METHOD Toggle(symName AS SYMBOL, lAll := FALSE AS LOGIC, lForceNotify := FALSE AS LOGIC) AS LOGIC
-		LOCAL IMPLIED oItem := SELF:__GetNode(symName)
+		VAR oItem := SELF:__GetNode(symName)
 		IF oItem == NULL_OBJECT
 			RETURN FALSE
 		ENDIF
 
 		RETURN SELF:__Expand(oItem, TVE_TOGGLE, lAll, lForceNotify)
 
+/// <include file="Gui.xml" path="doc/TreeView.VisibleCount/*" />
 	ACCESS VisibleCount AS LONG
 		RETURN __TreeView:VisibleCount
 
@@ -831,11 +838,11 @@ CLASS TreeViewItem INHERIT VObject
 	PROTECT oTVControl AS TreeView
 	PROTECT oNode		AS VOTreeNode
 
-	#region simple properties
+    #region simple properties
+    /// <exclude />
 	PROPERTY __Node AS VOTreeNode GET oNode SET oNode := Value
 	//Todo Set Bold when needed
 	/// <include file="Gui.xml" path="doc/TreeViewItem.Bold/*" />
-
 	PROPERTY Bold  AS LOGIC GET lBold SET lBold := Value
 	//Todo Set Disabled when needed
 
@@ -873,6 +880,7 @@ CLASS TreeViewItem INHERIT VObject
 	/// <include file="Gui.xml" path="doc/TreeViewItem.Value/*" />
 	PROPERTY Value				AS USUAL    GET uValue						SET uValue := Value
 	#endregion
+    /// <exclude />
 
 	ASSIGN __TreeViewControl(oNewTVCtl AS TreeView)  STRICT
 		oTVControl := oNewTVCtl
@@ -894,10 +902,10 @@ CLASS TreeViewItem INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Delete/*" />
-	METHOD Delete(lChildsOnly := FALSE AS LOGIC)
+	METHOD Delete(lChildrenOnly := FALSE AS LOGIC)
 
 		IF (oTVControl != NULL_OBJECT)
-			RETURN oTVControl:DeleteItem(SELF:symName, lChildsOnly)
+			RETURN oTVControl:DeleteItem(SELF:symName, lChildrenOnly)
 		ENDIF
 		RETURN FALSE
 

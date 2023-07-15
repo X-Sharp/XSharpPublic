@@ -153,6 +153,7 @@ STATIC CLASS XSharp.StringHelpers
 						// that could for example happen when ü and u have the same weight
 						// I am not sure if this ever happens. If would make creating an index unreliable
 						// most likely the ü will be sorted between u and v.
+                        NOP
 					ENDIF
 				ENDIF
 			NEXT
@@ -179,6 +180,7 @@ STATIC CLASS XSharp.StringHelpers
 					RETURN 1
 				ELSE
 					// equal, so continue with the next chars
+                    NOP
 				ENDIF
 			NEXT
 		END UNCHECKED

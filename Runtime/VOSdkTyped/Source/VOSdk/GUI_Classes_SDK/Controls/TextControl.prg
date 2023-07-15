@@ -29,7 +29,8 @@ CLASS TextControl INHERIT Control
 			IF SELF:__IsValid .and. !STRING.IsNullOrEmpty(oCtrl:Text)
 				SELF:cSavedText := oCtrl:Text
 			ENDIF
-		CATCH  AS Exception
+        CATCH  AS Exception
+            NOP
 		END TRY
 		RETURN
 

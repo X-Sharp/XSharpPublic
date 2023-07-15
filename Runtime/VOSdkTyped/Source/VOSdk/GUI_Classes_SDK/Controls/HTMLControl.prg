@@ -8,7 +8,7 @@ CLASS HTMLControl INHERIT TextControl
 	PROTECT _oVScrollBar AS System.Windows.Forms.VScrollBar
 
 
-METHOD __SetText(cNewText AS STRING) AS STRING STRICT 
+METHOD __SetText(cNewText AS STRING) AS STRING STRICT
 		SELF:_oWebBrowser:DocumentText := cNewText
 		RETURN cNewText
 
@@ -23,7 +23,7 @@ METHOD OnControlCreated(oC AS IVOControl) AS VOID
 	SELF:_oWebBrowser:Parent := (System.Windows.Forms.Control) oC
 	SELF:_oWebBrowser:Dock := System.Windows.Forms.DockStyle.Fill
 	SELF:_oVScrollBar				:= System.Windows.Forms.VScrollBar{}
-	SELF:_oVScrollBar:Parent		:= (System.Windows.Forms.Control) oC		
+	SELF:_oVScrollBar:Parent		:= (System.Windows.Forms.Control) oC
 	SELF:_oVScrollBar:Visible		:= TRUE
 	SELF:_oVScrollBar:Dock		:= System.Windows.Forms.DockStyle.Right
 	SELF:_oVScrollBar:BackColor	:= System.Drawing.Color.Yellow
@@ -43,31 +43,31 @@ PROTECTED METHOD setDefaultFont(sender AS OBJECT, e AS System.Windows.Forms.WebB
 PROTECTED METHOD OnVScrolled(sender AS OBJECT, se AS System.Windows.Forms.ScrollEventArgs ) AS VOID
 	SELF:_oWebBrowser:Document:body:ScrollTop := SELF:_oVScrollBar:Value * 10
 
-ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
+ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT
 	lForceModFlag2True := lNewValue
 
-ACCESS __NoNotify AS LOGIC STRICT 
+ACCESS __NoNotify AS LOGIC STRICT
 	RETURN lNoNotify
 
-METHOD CanUndo() 
+METHOD CanUndo()
 	RETURN TRUE
 
 ACCESS Caption AS STRING
 	RETURN cCaption
 
-ASSIGN Caption(cNewCaption AS STRING) 
+ASSIGN Caption(cNewCaption AS STRING)
 	cCaption := cNewCaption
 
-METHOD Clear() 
-	RETURN SELF
+METHOD Clear()   AS VOID STRICT
+	RETURN
 
-METHOD Copy() 
-	RETURN SELF
+METHOD Copy()   AS VOID STRICT
+	RETURN
 
-METHOD Cut() 
-	RETURN SELF
+METHOD Cut()   AS VOID STRICT
+	RETURN
 
-METHOD Font(oNewFont, lRescal) 
+METHOD Font(oNewFont, lRescal)
 	LOCAL uRet AS USUAL
 	LOCAL oMargins AS Dimension
 
@@ -79,10 +79,10 @@ METHOD Font(oNewFont, lRescal)
 
 	RETURN uRet
 
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	LOCAL dwStyle AS DWORD
 
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		dwStyle:= _OR(WS_CHILD, WS_CLIPSIBLINGS)
 		IF !IsNil(kStyle)
 			dwStyle := _OR(DWORD(kStyle), dwStyle)
@@ -91,24 +91,21 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle, TRUE)
 	ENDIF
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		SELF:SetStyle(ES_MultiLine)
 	ENDIF
-	RETURN 
+	RETURN
 
-METHOD IsPassword() 
+METHOD IsPassword()
 	RETURN FALSE
 
 ACCESS Margins  AS Dimension
-	LOCAL nLeft AS LONG
-	LOCAL nTop AS LONG
 	IF SELF:ValidateControl()
-		nLeft := _oWebBrowser:Margin:Left
-		nTop  := _oWebBrowser:Margin:Top
+        RETURN (Dimension) _oWebBrowser:Margin
 	ENDIF
-	RETURN Dimension{nLeft, nTop}
-	
-ASSIGN Margins(oNewMargins AS Dimension) 
+	RETURN Dimension{}
+
+ASSIGN Margins(oNewMargins AS Dimension)
 		IF SELF:ValidateControl()
 			LOCAL oPadding AS System.Windows.Forms.Padding
 			oPadding := _oWebBrowser:Margin
@@ -119,57 +116,57 @@ ASSIGN Margins(oNewMargins AS Dimension)
 			ENDIF
 		ENDIF
 
-	RETURN 
+	RETURN
 
-METHOD Paste(cNewString) 
-	RETURN SELF
+METHOD Paste(cNewString as string)   AS VOID STRICT
+	RETURN
 
 
 ACCESS ReadOnly  AS LOGIC
 	RETURN TRUE
 
-ASSIGN ReadOnly(lNewValue AS LOGIC) 
-	RETURN 
+ASSIGN ReadOnly(lNewValue AS LOGIC)
+	RETURN
 
 ACCESS SelectedText AS STRING
 	RETURN ""
 
 ASSIGN SelectedText(cNewString AS STRING)
-	RETURN 
+	RETURN
 
 ACCESS Selection AS Selection
 	RETURN Selection{0,0}
 
-ASSIGN Selection(oSel AS Selection) 
-	RETURN 
+ASSIGN Selection(oSel AS Selection)
+	RETURN
 
 METHOD SelectAll()
 	RETURN NIL
-	
+
 METHOD SelectNone()
 	RETURN NIL
-	
-METHOD SetSelectionFocus() 
+
+METHOD SetSelectionFocus()
 	RETURN NIL
 
 ACCESS TextLimit AS LONG
 	RETURN 0
 
-ASSIGN TextLimit(nChars AS LONG) 
+ASSIGN TextLimit(nChars AS LONG)
 	RETURN
 
-METHOD Undo() 
-	RETURN FALSE
+METHOD Undo() AS VOID
+	RETURN
 
 ACCESS TextValue AS STRING
 	RETURN SELF:_oWebBrowser:DocumentText;
 
 
-ASSIGN TextValue(cNewText AS STRING) 
+ASSIGN TextValue(cNewText AS STRING)
 	LOCAL cOldValue AS STRING
 	IF !SELF:_oWebBrowser:isDisposed
 		cOldValue := AsString(uValue)
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+		IF SELF:FieldSpec != NULL
 			uValue := SELF:FieldSpec:Val(cNewText)
 		ELSE
 			uValue := cNewText
@@ -177,7 +174,7 @@ ASSIGN TextValue(cNewText AS STRING)
 		SELF:_oWebBrowser:DocumentText := cNewText
 		SELF:ValueChanged := !(cOldValue == AsString(uValue))
 	ENDIF
-	RETURN 
+	RETURN
 
 ACCESS Modified AS LOGIC
 	IF SELF:ValidateControl()
@@ -189,11 +186,11 @@ ACCESS Modified AS LOGIC
 	ENDIF
 	RETURN FALSE
 
-ASSIGN Modified(lModified  AS LOGIC) 
+ASSIGN Modified(lModified  AS LOGIC)
 	IF SELF:ValidateControl()
 		SELF:_lModified := lModified
 	ENDIF
-	RETURN 
+	RETURN
 
 END CLASS
 

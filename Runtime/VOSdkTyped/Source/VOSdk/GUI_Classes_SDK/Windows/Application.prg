@@ -12,7 +12,7 @@ CLASS App INHERIT VObject
     PROTECT hHelpAccel AS IntPtr
     PROTECT hHelpCursor AS IntPtr
     PROTECT oMsgFilter as MessageFilter
-
+    /// <exclude />
     ACCESS __HelpCursor() AS IntPtr STRICT
         LOCAL hRet AS IntPtr
         BEGIN LOCK WC.CSApp
@@ -39,9 +39,11 @@ CLASS App INHERIT VObject
             CASE (wMode == HM_GENERAL)
                 //Todo __SetHelpWind
                 //hHelpAccel := LoadAccelerators(_GetInst(), String2Psz("GeneralHelp"))
+                NOP
             CASE (wMode == HM_MOUSE)
                 //Todo __SetHelpWind
                 //hHelpAccel := LoadAccelerators(_GetInst(), String2Psz("CursorHelp"))
+                NOP
             OTHERWISE
                 hHelpAccel := NULL_PTR
             ENDCASE
@@ -49,6 +51,7 @@ CLASS App INHERIT VObject
             IF (hHelpCursor == NULL) //Load help cursor first time through
                 //Todo __SetHelpWind
                 //hHelpCursor := LoadCursor(_GetInst(), String2Psz("HelpCursor"))
+                NOP
             ENDIF
 
         END LOCK
@@ -97,6 +100,7 @@ CLASS App INHERIT VObject
     METHOD Handle() AS IntPtr STRICT
         RETURN _GetInst()
 
+    /// <include file="Gui.xml" path="doc/App.ctor/*" />
     CONSTRUCTOR() STRICT
         //Application.EnableVisualStyles()
         SUPER()
@@ -110,14 +114,17 @@ CLASS App INHERIT VObject
         //		System.AppDomain.CurrentDomain:UnHandledException += UnhandledExceptionEventHandler {SELF, @OnUnhandledException()}
         RETURN
 
+    /// <exclude />
     METHOD OnThreadException (sender AS OBJECT, t AS System.Threading.ThreadExceptionEventArgs) AS VOID
         Debout32(t:Exception:Message+CRLF)
         RETURN
 
+    /// <exclude />
     METHOD OnApplicationExit(sender AS OBJECT, e AS EventArgs) AS VOID
         Debout32("Application Exit"+CRLF)
         RETURN
 
+    /// <exclude />
     METHOD OnUnhandledException(sender AS OBJECT, e AS UnhandledExceptionEventArgs ) AS VOID
         Debout32(e:ToString())
         RETURN
@@ -133,6 +140,7 @@ CLASS App INHERIT VObject
         GuiWin32.WinExec(sCommand, SW_SHOWNORMAL)
         RETURN NIL
 
+    /// <include file="Gui.xml" path="doc/App.BeforeDispatch/*" />
     METHOD BeforeDispatch(hWnd AS IntPtr, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
         RETURN TRUE
 
@@ -141,17 +149,19 @@ CLASS App INHERIT VObject
         RETURN TRUE
 
 
+    /// <include file="Gui.xml" path="doc/App.GetDialogWindow/*" />
     METHOD GetDialogWindow() AS VOPanel STRICT
         RETURN oDialogWnd
 
-    METHOD SetDialogWindow(oSurface AS OBJECT) AS VOID
+    /// <include file="Gui.xml" path="doc/App.SetDialogWindow/*" />
+    METHOD SetDialogWindow(oSurface AS VOPanel) AS VOID
         IF oSurface == NULL_OBJECT
             SELF:oDialogWnd := NULL_OBJECT
-        ELSEIF oSurface IS VOPanel
+        ELSE
             SELF:oDialogWnd := oSurface
         ENDIF
         RETURN
-
+ 
 #region Obsolete Methods
         [Obsolete];
     METHOD GetAccel()  AS IntPtr STRICT
@@ -188,11 +198,7 @@ END CLASS
 GLOBAL glCAPaintInit := FALSE AS LOGIC
 
     //GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
-GLOBAL gsymBrowserDef AS SYMBOL
-
-PROCEDURE __InitFunctionPointer() _INIT3
-    gsymBrowserDef := #DataBrowser
-    RETURN
+GLOBAL gsymBrowserDef := #DataBrowser AS SYMBOL
 
 GLOBAL oApp AS App
 

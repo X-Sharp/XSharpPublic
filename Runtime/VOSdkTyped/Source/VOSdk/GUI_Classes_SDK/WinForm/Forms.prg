@@ -3,7 +3,7 @@
 // Unicode GUI Classes
 // Each class is used for a particular VO Window
 // The VOForm class is the common parent class for all the form classes.
-// The VODataWinForm class has a (VO)Panel{} that acts as the surface 
+// The VODataWinForm class has a (VO)Panel{} that acts as the surface
 // in the standard VO GU classes
 
 
@@ -33,8 +33,8 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	#endregion
 
 	#region Properties
-	PROPERTY Window		AS Window 
-		GET 
+	PROPERTY Window		AS Window
+		GET
 		IF oProperties != NULL_OBJECT
 			RETURN oProperties:Window
 		ELSE
@@ -62,9 +62,9 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		END SET
 	END PROPERTY
 	PROPERTY IsAttached		AS LOGIC GET SELF:oProperties != NULL_OBJECT
-	
+
 	#endregion
-	
+
 	CONSTRUCTOR(oWindow AS Window)
 		SELF:oProperties := VOFormProperties{SELF, oWindow}
 		SUPER()
@@ -74,49 +74,24 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		SELF:Margin		:= Padding{0}
 		SELF:Disposed   += OnDisposed
 		SELF:Cursor := System.Windows.Forms.Cursors.Arrow
-		
 
-	STATIC METHOD __GetAllControls(oParent AS System.Windows.Forms.Control, iList AS List<System.Windows.Forms.Control>) AS VOID
-		FOREACH oC AS System.Windows.Forms.Control IN oParent:Controls
-			iList:Add(oC)
-			__GetAllControls(oC, iList)
-		NEXT
-		RETURN
+
     METHOD AddControl (oCtrl AS IVOControl) AS VOID
         IF oCtrl IS System.Windows.Forms.Control VAR oC
             SELF:Controls:Add( oC)
         ENDIF
+
     METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
         IF oCtrl IS System.Windows.Forms.Control VAR oC
             SELF:Controls:SetChildIndex(oC,nIndex)
         ENDIF
-        
 
-	METHOD GetAllControls() AS IList<System.Windows.Forms.Control>
-		LOCAL aList AS List<System.Windows.Forms.Control>
-		aList := List<System.Windows.Forms.Control>{}
-		__GetAllControls(SELF,aList)
-		RETURN aList
-	
-	STATIC METHOD GetFirstEditableChild(oParent AS System.Windows.Forms.Control)
-		FOREACH oC AS System.Windows.Forms.Control IN oParent:Controls
-			IF oC:CanSelect .AND. !  oc IS IVOButton 
-				RETURN oC
-			ENDIF
-			
-			IF oC:Controls:Count > 0 .AND. ! oC is VOGroupBox
-				LOCAL oC2 AS System.Windows.Forms.Control
-				oC2 := GetFirstEditableChild(oC)
-				IF oC2 != NULL_OBJECT
-					RETURN oC2
-				ENDIF
-			ENDIF
-		NEXT
-		RETURN NULL_OBJECT
-	
+	METHOD GetAllControls() AS IList<System.Windows.Forms.Control> STRICT
+		RETURN SELF:GetAllChildren(TRUE)
+
 	METHOD GetFirstEditableControl AS System.Windows.Forms.Control
-		return GetFirstEditableChild(SELF)
-	
+		return SELF:GetFirstEditableChild()
+
 	PUBLIC METHOD NextControl() AS VOID
 		SUPER:ProcessTabKey(TRUE)
 
@@ -131,14 +106,14 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		ENDIF
 
 
-	// Windows procedure replaces 'Dispatch' 
+	// Windows procedure replaces 'Dispatch'
 	VIRTUAL PROTECT METHOD WndProc(msg REF Message) AS VOID
-		
+
 		TRY
 			LOCAL lCallSuper AS LOGIC
 			lCallSuper := TRUE
 			IF msg:Msg == WM_SYSCOMMAND
-				// This code is necessary because CodeJock intercepts the double click on title bar of 
+				// This code is necessary because CodeJock intercepts the double click on title bar of
 				// a minimized window and closes the window .
 				// By disabling the call to super the window behaves as expected
 				IF SELF:IsMdiChild .and. SELF:WindowState == FormWindowState.Minimized
@@ -154,8 +129,9 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 				DO CASE
 				CASE SELF:Window == NULL_OBJECT
 					// Do nothing
+                    NOP
 				CASE msg:Msg == WM_APPCOMMAND
-					SELF:Window:AppCommand(AppCommandEvent{msg})	
+					SELF:Window:AppCommand(AppCommandEvent{msg})
 				CASE msg:Msg == WM_GETMINMAXINFO
 					SELF:Window:MinMaxInfo(MinMaxInfoEvent{msg})
 				CASE msg:Msg == WM_SIZE
@@ -163,11 +139,11 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 				ENDCASE
 			ENDIF
 		CATCH  AS Exception
-			// Swallow errors in here 
+			// Swallow errors in here
 			//Debout(SELF:ToString(), __ENTITY__, SELF:IsAttached,e:Message, CRLF)
-
+            NOP
 		END TRY
-		RETURN 
+		RETURN
 
 
 	VIRTUAL PROTECT METHOD OnFormClosing(e AS FormClosingEventArgs) AS VOID
@@ -181,8 +157,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 				ENDIF
 			ENDIF
 		ENDIF
-		RETURN 
-
+		RETURN
 
 	PROTECTED METHOD OnDisposed(sender AS OBJECT, e AS EventArgs) AS VOID STRICT
 		// When a window is hidden before it is closed then the FormClosed is not sent
@@ -190,34 +165,34 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		IF SELF:IsAttached
 			SELF:CloseVOForm()
 		ENDIF
-	
-	PROTECTED METHOD CloseVOForm() AS VOID STRICT			
+
+	PROTECTED METHOD CloseVOForm() AS VOID STRICT
 		IF SELF:IsAttached .and. SELF:Window != NULL_OBJECT
 			LOCAL oWindow AS Window
 			oWindow := SELF:Window
 			IF oWindow:__Form == SELF
-				SELF:oProperties := NULL_OBJECT	
+				SELF:oProperties := NULL_OBJECT
 				IF ! oWindow:IsClosing
-					oWindow:Close()
+					oWindow:Close(Event{})
 				ENDIF
 				oWindow:Destroy()
 			ENDIF
-			
+
 		ENDIF
-	
+
 	VIRTUAL PROTECT METHOD OnFormClosed(e AS FormClosedEventArgs) AS VOID STRICT
 		IF SELF:IsAttached
 			SELF:CloseVOForm()
 		ENDIF
 		SUPER:OnFormClosed(e)
-	
-	
+
+
 	PROTECTED METHOD OnPaint (e AS PaintEventargs) AS VOID
 		SUPER:OnPaint(e)
 		IF SELF:Window != NULL_OBJECT
 			LOCAL oWindow AS Window
 			oWindow := SELF:Window
-			oWindow:Expose(ExposeEvent{e})						
+			oWindow:Expose(ExposeEvent{e})
 		ENDIF
 		RETURN
 
@@ -228,7 +203,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	PUBLIC METHOD ResumeRedraw AS VOID
         GuiWin32.SendMessage(SELF:Handle, WM_SETREDRAW, 1, 0)
 		SELF:Refresh()
-    
+
 
 END CLASS
 

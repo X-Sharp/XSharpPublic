@@ -9,12 +9,12 @@ CLASS EventContext INHERIT VObject
 	//RETURN SELF
 
 /// <include file="Gui.xml" path="doc/EventContext.ctor/*" />
-CONSTRUCTOR()
+CONSTRUCTOR() STRICT
 	SUPER()
 	RETURN
 
 /// <include file="Gui.xml" path="doc/EventContext.Override/*" />
-METHOD Override()
+METHOD Override() STRICT
 	RETURN NIL
 
 END CLASS

@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-7
 		Docs\Console.Xml = Docs\Console.Xml
 		Docs\CoreComments.Xml = Docs\CoreComments.Xml
 		Docs\gui.xml = Docs\gui.xml
+		Docs\Harbour.xml = Docs\Harbour.xml
 		Docs\Internet.xml = Docs\Internet.xml
 		Docs\rdd.xml = Docs\rdd.xml
 		Docs\Report.Xml = Docs\Report.Xml

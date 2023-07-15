@@ -4,7 +4,7 @@
 
 USING System.Runtime.InteropServices
 USING VOSDK := XSharp.VO.SDK
-
+/// <exclude />
 FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
 	BEGIN LOCK WC.CSApp
@@ -13,18 +13,19 @@ FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
 	RETURN oApp
 
-
+/// <exclude />
 FUNCTION GetObjectByHandle(hwnd AS IntPtr) AS OBJECT STRICT
 	RETURN WC.GetObjectByHandle(hwnd)
 
-DELEGATE TimerProcDelegate( hWnd AS IntPtr, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD ) AS VOID
+/// <exclude />
 
+INTERNAL DELEGATE TimerProcDelegate( hWnd AS IntPtr, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD ) AS VOID
+
+/// <exclude />
 STATIC CLASS WC
-
-
 	STATIC PROPERTY CoordinateSystem AS LOGIC AUTO
-	STATIC EXPORT INITONLY CartesianCoordinates := TRUE AS LOGIC 
-	STATIC EXPORT INITONLY WindowsCoordinates := FALSE AS LOGIC 
+	STATIC EXPORT INITONLY CartesianCoordinates := TRUE AS LOGIC
+	STATIC EXPORT INITONLY WindowsCoordinates := FALSE AS LOGIC
 
 	#region Timer Fields
 	STATIC HIDDEN TimerProcDelegate AS TimerProcDelegate
@@ -32,18 +33,18 @@ STATIC CLASS WC
 	STATIC HIDDEN TimerObjectID AS DWORD
 	STATIC HIDDEN TimerObjects AS System.Collections.Generic.List<ITimer>
 	#endregion
-	//STATIC EXPORT CSHDC AS OBJECT	
+	//STATIC EXPORT CSHDC AS OBJECT
 	STATIC EXPORT CSApp AS OBJECT
 	//STATIC EXPORT DCCurHDCOwner AS Window
 	//STATIC EXPORT __WCMenuList AS ARRAY
 
 
-	STATIC CONSTRUCTOR 
+	STATIC CONSTRUCTOR
 		//AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @GUIExit() }
 		TimerProcDelegate := TimerProcDelegate{ NULL, @TimerProc() }
 		TimerProcPtr        := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) TimerProcDelegate )
 		TimerObjects		:= System.Collections.Generic.List<ITimer>{}
-		WC.CSApp := OBJECT{} 
+		WC.CSApp := OBJECT{}
 		//WC.CoordinateSystem := WC.CartesianCoordinates
 		//WC.CSHDC := OBJECT{}
 
@@ -63,14 +64,14 @@ STATIC CLASS WC
 	STATIC METHOD ConvertPoint(oWindow AS OBJECT, oPoint AS Point) AS Point STRICT
 		LOCAL sRect  := WINRECT{} AS WINRECT
 		LOCAL yCoord AS INT
-		
+
 		IF CoordinateSystem == WC.CartesianCoordinates
 			IF oWindow == NULL_OBJECT .OR. oWindow IS App
 				yCoord := GuiWin32.GetSystemMetrics(SM_CYSCREEN) - oPoint:Y
 			ELSEIF oWindow IS Window
 				GuiWin32.GetClientRect(oWindow:Handle(4), REF sRect)
 				yCoord :=  sRect:bottom - oPoint:Y
-			ELSE // The parent is a control 
+			ELSE // The parent is a control
 				GuiWin32.GetWindowRect(oWindow:Handle(), REF sRect)
 				yCoord := sRect:bottom - sRect:top - oPoint:Y
 			ENDIF
@@ -81,10 +82,10 @@ STATIC CLASS WC
 		RETURN Point{oPoint:X, yCoord}
 
 	//STATIC METHOD DeleteCriticalSections() AS VOID
-	//	RETURN 
+	//	RETURN
 
 
-	STATIC METHOD DIBFromBitmap(hbm AS IntPtr) AS IntPtr 
+	STATIC METHOD DIBFromBitmap(hbm AS IntPtr) AS IntPtr
 		//LOCAL bm IS _winBITMAP
 		//LOCAL bi IS _winBITMAPINFOHEADER
 		//LOCAL lpbi AS _winBITMAPINFO
@@ -283,9 +284,9 @@ STATIC CLASS WC
 	//	//LOCAL pt IS _winPoint
 	//	LOCAL hDCTemp:= GetDC(hWnd) AS PTR
 	//	LOCAL ratioX := 0 AS INT
-	//	LOCAL ratioY := 0 AS INT  
+	//	LOCAL ratioY := 0 AS INT
 	//	LOCAL nShrinkX, nShrinkY AS FLOAT
-	//	LOCAL nWidth, nHeight AS INT  
+	//	LOCAL nWidth, nHeight AS INT
 	//   LOCAL nX, nY AS INT
 	//	GetWindowRect(hWnd, lpRc)
 	//	OffsetRect(lpRc, - lpRc:left, - lpRc:top)
@@ -313,7 +314,7 @@ STATIC CLASS WC
 	//	// shrinkX = 200/800 = 0.25
 	//	// shrinkY = 300/600 = 0.50
 	//	// we must shrink with 0.25 to fit.
-	//	nShrinkX := FLOAT(nWidth-nX) / FLOAT(lpRC:Right)  
+	//	nShrinkX := FLOAT(nWidth-nX) / FLOAT(lpRC:Right)
 	//	nShrinkY := FLOAT(nHeight-nY) / FLOAT(lpRC:bottom)
 
 	//	IF nShrinkY < nShrinkX
@@ -322,8 +323,8 @@ STATIC CLASS WC
 	//	ELSE
 	//			lpRC:right 	:= INT(FLOAT(lpRC:Right) * nShrinkX)
 	//			lpRC:bottom := INT(FLOAT(lpRC:bottom) * nShrinkX)
-	//	ENDIF   		     
-	//		lpRC:left 	:= nX 
+	//	ENDIF
+	//		lpRC:left 	:= nX
 	//	lpRC:top		:= nY
 	//   ELSE
 	//		OffsetRect(lpRC, (nWidth / 2) - (lpRC:right / 2), (nHeight / 2) - (lpRC:bottom / 2))
@@ -427,7 +428,7 @@ STATIC CLASS WC
 		//LOCAL strucSelf AS SelfPtr
 		//strucSelf := WC.SelfPtrAlloc(oControl)
 		//WC.RegisterProperty(oControl:Handle(), strucSelf)
-		//RETURN 
+		//RETURN
 
 
 	//[Obsolete];
@@ -435,10 +436,10 @@ STATIC CLASS WC
 		//LOCAL idx, iLen AS DWORD
 		//LOCAL p AS PTR PTR// as SelfPtr
 		//LOCAL lFound	AS LOGIC
-		
+
 
 		//BEGIN LOCK __WCMenuList
-		
+
 		//	iLen := ALen(__WCMenuList)
 		//	lFound := FALSE
 		//	FOR idx := 1 TO iLen
@@ -453,7 +454,7 @@ STATIC CLASS WC
 		//		AAdd(__WCMenuList, {p, hMenu}) // menu object, menu handle, ref count
 		//	ENDIF
 
-		//END LOCK	
+		//END LOCK
 
 		//RETURN
 
@@ -528,15 +529,15 @@ STATIC CLASS WC
 
 	STATIC METHOD AppGetDialogWindow() AS OBJECT STRICT
 		LOCAL oRet AS OBJECT
- 
+
 		IF (oApp != NULL_OBJECT)
 			oRet := oApp:GetDialogWindow()
 		ENDIF
- 
+
 		RETURN oRet
 
  	STATIC METHOD AppSetDialogWindow(oSurface AS OBJECT) AS VOID STRICT
- 
+
 		IF (oApp != NULL_OBJECT)
 			oApp:SetDialogWindow(oSurface)
 		ENDIF
@@ -594,7 +595,7 @@ STATIC CLASS WC
 		RETURN FALSE
 
 
-		
+
 
 	STATIC METHOD MoveWindow(oCtrl AS IVOUIObject, oPoint AS Point, bRepaint AS LOGIC) AS VOID
 		LOCAL lX, lY AS LONGINT
@@ -610,16 +611,16 @@ STATIC CLASS WC
 			oCtrl:Location := oPoint
 		ENDIF
 
-		IF bRepaint	
+		IF bRepaint
 			oCtrl:PerformLayout()
 		ENDIF
-		RETURN		
+		RETURN
 
 
-	
+
 
 	#region Timers
-	STATIC METHOD RegisterTimer(oNew AS ITimer) AS DWORD 
+	STATIC METHOD RegisterTimer(oNew AS ITimer) AS DWORD
 		BEGIN LOCK WC.TimerObjects
 			IF ! WC.TimerObjects:Contains(oNew)
 				WC.TimerObjects:Add(oNew)
@@ -629,9 +630,9 @@ STATIC CLASS WC
 			ENDIF
 
 		END LOCK
-		
+
 		RETURN WC.TimerObjectID
-	
+
 	STATIC METHOD UnregisterTimer(oDel AS ITimer) AS VOID STRICT
 
 		BEGIN LOCK TimerObjects
@@ -639,10 +640,10 @@ STATIC CLASS WC
 				WC.TimerObjects:Remove(oDel)
 			ENDIF
 		END LOCK
-		
+
 
 		RETURN
-	
+
 	STATIC METHOD TimerProc(hWnd AS IntPtr, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD) AS VOID
 		IF (ErrorLevel() > ES_WHOCARES)
 			RETURN
@@ -650,14 +651,14 @@ STATIC CLASS WC
 
 		BEGIN LOCK WC.TimerObjects
 			LOCAL IMPLIED aObjects := WC.TimerObjects:ToArray()
-			FOREACH IMPLIED oTimer IN aObjects 
+			FOREACH IMPLIED oTimer IN aObjects
 				oTimer:__Timer()
 			NEXT
 		END LOCK
-		
+
 
 		RETURN
-	#endregion		
+	#endregion
 
 END CLASS
 

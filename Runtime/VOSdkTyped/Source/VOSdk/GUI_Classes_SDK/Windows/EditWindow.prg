@@ -1,165 +1,73 @@
-
-
-
 /// <include file="Gui.xml" path="doc/EditWindow/*" />
 CLASS EditWindow INHERIT ControlWindow
-	PROTECT oMle as MultiLineEdit
-	METHOD AsString()
-		RETURN SELF:TextValue
+    PROTECT oMle as MultiLineEdit
 
-/// <include file="Gui.xml" path="doc/EditWindow.Clear/*" />
-	METHOD Clear()
-		oMle:Clear()
-		RETURN SELF
+    METHOD AsString()
+        RETURN SELF:TextValue
 
-/// <include file="Gui.xml" path="doc/EditWindow.Copy/*" />
-	METHOD Copy()
-		IF oMle:__IsValid
-		oMle:Copy()
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.Clear/*" />
+    METHOD Clear()   AS VOID STRICT => oMle:Clear()
 
-/// <include file="Gui.xml" path="doc/EditWindow.Cut/*" />
-	METHOD Cut()
-		IF oMle:__IsValid
-			oMle:Cut()
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.Copy/*" />
+    METHOD Copy()   AS VOID STRICT => oMle:Copy()
 
-/// <include file="Gui.xml" path="doc/EditWindow.Font/*" />
-	ASSIGN Font(oNewFont AS Font)
-		oFont := oNewFont
-		SELF:__SetFont()
-		RETURN
+    /// <include file="Gui.xml" path="doc/EditWindow.Cut/*" />
+    METHOD Cut()   AS VOID STRICT => oMle:Cut()
 
-/// <include file="Gui.xml" path="doc/EditWindow.GetLine/*" />
-	METHOD GetLine(nLineNumber, nMaxLength)
-		IF oMle:__IsValid
-			RETURN oMle:GetLine(nLineNumber, nMaxLength)
-		ENDIF
-		RETURN STRING.Empty
+    /// <include file="Gui.xml" path="doc/EditWindow.Font/*" />
+    PROPERTY Font(oNewFont AS Font) SET oFont := oNewFont , SELF:__SetFont()
 
-/// <include file="Gui.xml" path="doc/EditWindow.ctor/*" />
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
-		oMle := MultiLineEdit{oOwner,xID,oPoint,oDimension}
-		SUPER(oMle)
-		RETURN
+    /// <include file="Gui.xml" path="doc/EditWindow.GetLine/*" />
+    METHOD GetLine(nLineNumber:= 0 as LONG, nMaxLength := 0 as LONG) AS STRING
+        RETURN oMle:GetLine(nLineNumber, nMaxLength)
 
-/// <include file="Gui.xml" path="doc/EditWindow.Length/*" />
-	ACCESS Length
-		IF oMle:__IsValid
-			RETURN oMle:Length
-		ENDIF
-		RETURN 0
+    /// <include file="Gui.xml" path="doc/EditWindow.ctor/*" />
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+        oMle := MultiLineEdit{oOwner,xID,oPoint,oDimension}
+        SUPER(oMle)
+        RETURN
 
-/// <include file="Gui.xml" path="doc/EditWindow.LineCount/*" />
-	ACCESS LineCount
-		IF oMle:__IsValid
-			RETURN oMle:LineCount
-		ENDIF
-		RETURN 0
+    /// <include file="Gui.xml" path="doc/EditWindow.Length/*" />
+    PROPERTY Length AS LONG => oMle:Length
 
-/// <include file="Gui.xml" path="doc/EditWindow.LineDown/*" />
-	METHOD LineDown()
-		IF oMle:__IsValid
-			oMle:LineDown()
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.LineCount/*" />
+    PROPERTY LineCount  AS LONG => oMle:LineCount
 
-/// <include file="Gui.xml" path="doc/EditWindow.LineUp/*" />
-	METHOD LineUp()
-		IF oMle:__IsValid
-			oMle:LineUp()
-		ENDIF
+    /// <include file="Gui.xml" path="doc/EditWindow.LineDown/*" />
+    METHOD LineDown() AS VOID STRICT => oMle:LineDown()
 
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.LineUp/*" />
+    METHOD LineUp() AS VOID STRICT => oMle:LineUp()
 
-/// <include file="Gui.xml" path="doc/EditWindow.PageDown/*" />
-	METHOD PageDown()
-		IF oMle:__IsValid
-			oMle:PageDown()
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.PageDown/*" />
+    METHOD PageDown() AS VOID STRICT => oMle:PageDown()
 
-/// <include file="Gui.xml" path="doc/EditWindow.PageUp/*" />
-	METHOD PageUp()
-		IF oMle:__IsValid
-			oMle:PageUp()
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.PageUp/*" />
+    METHOD PageUp() AS VOID STRICT => oMle:PageUp()
 
-/// <include file="Gui.xml" path="doc/EditWindow.Paste/*" />
-	METHOD Paste(cNewString)
-		IF oMle:__IsValid
-			oMle:Paste(cNewString)
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.Paste/*" />
+    METHOD Paste(cNewString as string) AS VOID STRICT => oMle:Paste(cNewString)
 
+    /// <include file="Gui.xml" path="doc/EditWindow.ScrollHorizontal/*" />
+    METHOD ScrollHorizontal(nChars AS LONG) AS VOID STRICT  => oMle:ScrollHorizontal(nChars)
 
-/// <include file="Gui.xml" path="doc/EditWindow.ScrollHorizontal/*" />
-METHOD ScrollHorizontal(nChars)
-		IF oMle:__IsValid
-			oMle:ScrollHorizontal(nChars)
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.ScrollVertical/*" />
+    METHOD ScrollVertical(nLines AS LONG) AS VOID STRICT  => oMle:ScrollVertical(nLines)
 
-/// <include file="Gui.xml" path="doc/EditWindow.ScrollVertical/*" />
-	METHOD ScrollVertical(nLines)
-		IF oMle:__IsValid
-			oMle:ScrollVertical(nLines)
-		ENDIF
-		RETURN SELF
+    /// <include file="Gui.xml" path="doc/EditWindow.Selection/*" />
+    PROPERTY Selection AS Selection GET oMle:Selection SET oMle:Selection:=value
 
-/// <include file="Gui.xml" path="doc/EditWindow.Selection/*" />
-	ACCESS Selection
-		IF oMle:__IsValid
-			RETURN oMle:Selection
-		ENDIF
-		RETURN Selection{}
+    /// <include file="Gui.xml" path="doc/EditWindow.TextLimit/*" />
+    PROPERTY TextLimit(nChars AS LONG) SET oMle:TextLimit:=nChars
 
-/// <include file="Gui.xml" path="doc/EditWindow.Selection/*" />
-	ASSIGN Selection(oSelection)
-		IF oMle:__IsValid
-			oMle:Selection:=oSelection
-		ENDIF
+    /// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
+    PROPERTY TextValue AS STRING GET oMle:TextValue SET oMle:TextValue:=value
 
-/// <include file="Gui.xml" path="doc/EditWindow.TextLimit/*" />
-	ASSIGN TextLimit(nChars)
-		IF oMle:__IsValid
-			oMle:TextLimit:=nChars
-		ENDIF
+    /// <include file="Gui.xml" path="doc/EditWindow.Undo/*" />
+    METHOD Undo() AS VOID STRICT  => oMle:Undo()
 
-/// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
-	ACCESS TextValue
-		IF oMle:__IsValid
-			RETURN oMle:TextValue
-		ENDIF
-		RETURN STRING.Empty
+    /// <include file="Gui.xml" path="doc/EditWindow.Value/*" />
+    PROPERTY Value AS USUAL GET SELF:TextValue SET SELF:TextValue := AsString(value)
 
-/// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
-	ASSIGN TextValue(cText)
-		IF oMle:__IsValid
-			oMle:TextValue:=cText
-		ENDIF
-
-/// <include file="Gui.xml" path="doc/EditWindow.Undo/*" />
-	METHOD Undo()
-		IF oMle:__IsValid
-			RETURN oMle:Undo()
-		ENDIF
-		RETURN SELF
-
-/// <include file="Gui.xml" path="doc/EditWindow.Value/*" />
-	ACCESS Value
-		IF oMle:__IsValid
-			RETURN SELF:TextValue
-		ENDIF
-		RETURN STRING.Empty
-
-/// <include file="Gui.xml" path="doc/EditWindow.Value/*" />
-	ASSIGN Value(uValue)
-		IF oMle:__IsValid
-			SELF:TextValue := AsString(uValue)
-		ENDIF
 END CLASS
 

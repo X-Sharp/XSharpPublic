@@ -76,11 +76,7 @@ CLASS HelpDisplay INHERIT VObject
 		RETURN NIL
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.EnableHTMLHelp/*" />
-	METHOD EnableHTMLHelp(lEnable, cPopUpTopic)
-		//SE-060519
-
-
-		Default(@lEnable, TRUE)
+	METHOD EnableHTMLHelp(lEnable := TRUE AS LOGIC, cPopUpTopic AS USUAL) AS LOGIC
 
 		lHTMLHelp := FALSE
 
@@ -98,7 +94,7 @@ CLASS HelpDisplay INHERIT VObject
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.HelpError/*" />
-	METHOD HelpError()
+	METHOD HelpError() AS LONG STRICT
 		RETURN wError
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.ctor/*" />

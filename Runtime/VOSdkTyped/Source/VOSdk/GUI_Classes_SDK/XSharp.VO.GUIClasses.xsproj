@@ -9,7 +9,6 @@
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
-    <XSharpProjectversion>2.12.2.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,6 +22,8 @@
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo14>False</Vo14>
+    <EnforceSelf>True</EnforceSelf>
+    <EnforceOverride>False</EnforceOverride>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -132,6 +133,7 @@
     <Compile Include="ResourceReader\ResourceMenu.prg" />
     <Compile Include="Support\ClipBoard.prg" />
     <Compile Include="Support\EventContext.prg" />
+    <Compile Include="Support\Extensions.prg" />
     <Compile Include="Support\FormattedString.prg" />
     <Compile Include="Support\HelpDisplay.prg" />
     <Compile Include="Support\IPCTopic.prg" />
@@ -188,7 +190,6 @@
     <Compile Include="Windows\ModelessDialog.prg" />
     <Compile Include="Windows\StandardDialog.prg" />
     <Compile Include="Windows\TextBox.prg" />
-    <Compile Include="Windows\WindowEventHandlers.prg" />
     <Compile Include="Windows\Dispatch.prg" />
     <Compile Include="Windows\Explorer Window.prg" />
     <Compile Include="ResourceReader\ResourceDialog.prg" />
@@ -242,6 +243,11 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>Microsoft.CSharp</Name>
+      <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="PresentationCore">
       <Name>PresentationCore</Name>
       <SpecificVersion>False</SpecificVersion>
@@ -280,7 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassMapping.xlsx" />
-    <None Include="WinForm\PropControl.vh" />
+    <None Include="WinForm\PropControl.xh" />
     <None Include="_readme.txt" />
   </ItemGroup>
   <ItemGroup>

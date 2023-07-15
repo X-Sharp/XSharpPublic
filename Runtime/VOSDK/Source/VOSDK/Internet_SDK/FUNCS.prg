@@ -17,7 +17,8 @@ FUNCTION __CheckUUEncode	(c AS STRING)		AS DWORD STRICT
 		IF cBefore == CRLF
 			cTemp   := SubStr(c, nRet + SLen(UUE_START_NEWS), 5)
 			cTemp := AllTrim(cTemp)
-			IF SLen(cTemp) == 3 .AND. Val(cTemp) > 599
+            IF SLen(cTemp) == 3 .AND. Val(cTemp) > 599
+                NOP
 			ELSE
 				nRet := 0
 			ENDIF
@@ -209,7 +210,8 @@ FUNCTION __DecodeUU(cText AS STRING, hfOut AS PTR)    AS DWORD STRICT
 			nRet += UUDecodeLine(cLine, hfOut)
 			nNewPos := At3(CRLF, cText, nPos)
 		ENDDO
-	RECOVER
+    RECOVER
+        NOP
 	END SEQUENCE
 
 

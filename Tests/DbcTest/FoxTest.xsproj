@@ -11,10 +11,9 @@
     <Name>FoxTest</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>FoxPro</Dialect>
+    <Dialect>VO</Dialect>
     <vo15>false</vo15>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -106,11 +105,6 @@
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

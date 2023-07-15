@@ -3,8 +3,6 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Runtime.Targets" />
   <PropertyGroup>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EB3F3142-07F7-48CA-B38D-F611C45A9511}</ProjectGuid>
@@ -17,7 +15,6 @@
     <TargetFrameworkProfile />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <RuntimeIdentifiers>win;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\XSharp.MacroCompiler</IntermediateOutputPath>
     <LangVersion>Preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

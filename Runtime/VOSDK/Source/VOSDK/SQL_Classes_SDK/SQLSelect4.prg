@@ -3,7 +3,7 @@ PARTIAL CLASS SQLSelect
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.ctor/*" />
-CONSTRUCTOR( cSQLSelect, oSQLConnection ) 
+CONSTRUCTOR( cSQLSelect, oSQLConnection )
 
 
 	SUPER()
@@ -34,7 +34,7 @@ CONSTRUCTOR( cSQLSelect, oSQLConnection )
 	SELF:nScrollUpdateType	:= SQL_SC_UPD_CURSOR
 	//SELF:nBuffSize       	:= 0
 	SELF:nLastRecNum     	:= 0
-	SELF:lReadColumnInfo		:= FALSE	//RvdH 070716 Abused to remember lAppendFlag 
+	SELF:lReadColumnInfo		:= FALSE	//RvdH 070716 Abused to remember lAppendFlag
 
 
 	//SELF:lNoBuffering    := TRUE
@@ -42,9 +42,9 @@ CONSTRUCTOR( cSQLSelect, oSQLConnection )
 	IF cSQLSelect != NIL
 		SELF:__FindTableName()
 	ENDIF
-	
-	
-	RETURN 
+
+
+	RETURN
 
 
 
@@ -56,7 +56,7 @@ CONSTRUCTOR( cSQLSelect, oSQLConnection )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.NoIVarGet/*" />
-METHOD NoIVarGet( symFieldName ) 
+METHOD NoIVarGet( symFieldName )
 
 
 	#IFDEF __DEBUG__
@@ -66,7 +66,7 @@ METHOD NoIVarGet( symFieldName )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.NoIVarPut/*" />
-METHOD NoIVarPut( symFieldName,uValue ) 
+METHOD NoIVarPut( symFieldName,uValue )
 
 
 	#IFDEF __DEBUG__
@@ -88,7 +88,7 @@ METHOD NoIVarPut( symFieldName,uValue )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.Notify/*" />
-METHOD Notify( kNotification, uDescription ) 
+METHOD Notify( kNotification, uDescription )
 	LOCAL lRetValue AS  LOGIC
 	LOCAL nClient   := 0 AS  DWORD
 
@@ -124,7 +124,7 @@ METHOD Notify( kNotification, uDescription )
 
 		ELSEIF kNotification = NOTIFYCLEARRELATION
 			// lSelectionActive := FALSE
-
+            NOP
 
 		ELSE                                             // event I don't know about
 			ASend( aClients, #Notify, kNotification, uDescription )
@@ -136,7 +136,7 @@ METHOD Notify( kNotification, uDescription )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.NumResultCols/*" />
-METHOD NumResultCols() 
+METHOD NumResultCols()
 	LOCAL nNumColsNew   AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode      AS INT
 	#IFDEF __DEBUG__
@@ -171,7 +171,7 @@ METHOD NumResultCols()
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.PreExecute/*" />
-METHOD PreExecute( cSQLString ) 
+METHOD PreExecute( cSQLString )
 
 
 	#IFDEF __DEBUG__
@@ -181,7 +181,7 @@ METHOD PreExecute( cSQLString )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.Prepare/*" />
-METHOD Prepare() 
+METHOD Prepare()
 
 
 	#IFDEF __DEBUG__
@@ -201,22 +201,22 @@ METHOD Refresh() CLIPPER
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.ReReadRow/*" />
-METHOD ReReadRow() 
+METHOD ReReadRow()
 	LOCAL i     AS DWORD
 	LOCAL n     AS DWORD
-	
-	
+
+
 	n := SELF:nNumCols
 	FOR i := 1 TO n
 		SELF:__InitColValue( i )
-	NEXT 
+	NEXT
 
 
 	RETURN TRUE
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.ResetCursor/*" />
-METHOD ResetCursor( nUpdateType ) 
+METHOD ResetCursor( nUpdateType )
 	LOCAL lRet          AS LOGIC
 	LOCAL nRecno        AS LONGINT
 	LOCAL lKeyChanged   AS LOGIC
@@ -261,7 +261,7 @@ METHOD ResetCursor( nUpdateType )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.ResetNotification/*" />
-METHOD ResetNotification() 
+METHOD ResetNotification()
 
 
 	--nNotifyCount
@@ -274,7 +274,7 @@ METHOD ResetNotification()
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.RLOCK/*" />
-METHOD RLOCK( uRecordNumber ) 
+METHOD RLOCK( uRecordNumber )
 
 
 	#IFDEF __DEBUG__
@@ -284,7 +284,7 @@ METHOD RLOCK( uRecordNumber )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.RLockVerify/*" />
-METHOD RLockVerify() 
+METHOD RLockVerify()
 
 
 	#IFDEF __DEBUG__
@@ -294,7 +294,7 @@ METHOD RLockVerify()
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.RollBack/*" />
-METHOD RollBack() 
+METHOD RollBack()
 	//
 	//  UH: Obsolete method, don't support after 2.0 !!!!
 	//
@@ -309,7 +309,7 @@ METHOD RollBack()
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SetColumnAttributes/*" />
-METHOD SetColumnAttributes(uFieldPos, oColAttributes) 
+METHOD SetColumnAttributes(uFieldPos, oColAttributes)
 	LOCAL nIndex    AS DWORD
 	LOCAL lOk		 AS LOGIC
 	nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
@@ -332,7 +332,7 @@ METHOD SetColumnAttributes(uFieldPos, oColAttributes)
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SetDataField/*" />
-METHOD SetDataField( nFieldPos, oField ) 
+METHOD SetDataField( nFieldPos, oField )
 	LOCAL oDF          AS DataField
 	LOCAL lRet         AS LOGIC
 
@@ -371,7 +371,7 @@ METHOD SetDataField( nFieldPos, oField )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SetPos/*" />
-METHOD SetPos( nPos, nOption, nLock ) 
+METHOD SetPos( nPos, nOption, nLock )
 	LOCAL lRet          AS LOGIC
 	LOCAL nRetCode      AS INT
 
@@ -415,7 +415,7 @@ METHOD SetPos( nPos, nOption, nLock )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SetPrimaryKey/*" />
-METHOD SetPrimaryKey( uFieldPos ) 
+METHOD SetPrimaryKey( uFieldPos )
 	LOCAL nIndex    AS DWORD
 	LOCAL lRet      AS LOGIC
 
@@ -443,7 +443,7 @@ METHOD SetPrimaryKey( uFieldPos )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SetStatementOption/*" />
-METHOD SetStatementOption( fOption, uValue ) 
+METHOD SetStatementOption( fOption, uValue )
 
 
 	#IFDEF __DEBUG__
@@ -453,10 +453,10 @@ METHOD SetStatementOption( fOption, uValue )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SetTimeStamp/*" />
-METHOD SetTimeStamp( uFieldPos, cTimestamp ) 
+METHOD SetTimeStamp( uFieldPos, cTimestamp )
 	LOCAL nIndex AS DWORD
 	LOCAL nODBCType AS SHORTINT
-	LOCAL oData		AS SQLData 
+	LOCAL oData		AS SQLData
 	LOCAL oErr		AS Error
 
 
@@ -467,7 +467,7 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp )
 		oErr := oStmt:ErrInfo
 		oErr:ArgNum := 1
-		oErr:Args := {uFieldPos, cTimestamp} 
+		oErr:Args := {uFieldPos, cTimestamp}
 		SELF:Error( oErr )
 		RETURN NIL
 	ENDIF
@@ -477,24 +477,24 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp  )
 		oErr := oStmt:ErrInfo
 		oErr:ArgNum := 1
-		oErr:Args := {uFieldPos, cTimestamp} 
+		oErr:Args := {uFieldPos, cTimestamp}
 		SELF:Error( oErr )
 		RETURN NIL
 	ENDIF
-                                                        
-                                                        
+
+
 	IF ! IsString(cTimeStamp )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #SetTimeStamp  )
 		oErr := oStmt:ErrInfo
 		oErr:ArgNum := 2
-		oErr:Args := {uFieldPos, cTimestamp} 
+		oErr:Args := {uFieldPos, cTimestamp}
 		SELF:Error( oErr )
 		RETURN NIL
 	ENDIF
-                                                        
-                                                        
-                                                        
-                                                        
+
+
+
+
 	IF lAppendFlag
 		oData := aAppendData[nIndex]
 	ELSE
@@ -516,7 +516,7 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.Skip/*" />
-METHOD Skip( nRecordCount ) 
+METHOD Skip( nRecordCount )
 	LOCAL siRecCount        AS INT
 
 
@@ -547,7 +547,7 @@ METHOD Skip( nRecordCount )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.SuspendNotification/*" />
-METHOD SuspendNotification() 
+METHOD SuspendNotification()
 
 
 	SELF:nNotifyCount := SELF:nNotifyCount + 1
@@ -558,7 +558,7 @@ METHOD SuspendNotification()
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.Unlock/*" />
-METHOD Unlock( nRecordNumber ) 
+METHOD Unlock( nRecordNumber )
 
 
 	#IFDEF __DEBUG__
@@ -572,7 +572,7 @@ METHOD Unlock( nRecordNumber )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.Update/*" />
-METHOD Update( lUpdateFlag ) 
+METHOD Update( lUpdateFlag )
 	LOCAL nType         AS DWORD
 	LOCAL lRet          AS LOGIC
 
@@ -677,7 +677,7 @@ METHOD Update( lUpdateFlag )
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.UpdateCursor/*" />
-METHOD UpdateCursor() 
+METHOD UpdateCursor()
 	LOCAL oUpdate       AS SQLStatement
 	LOCAL lRet := FALSE AS LOGIC
    LOCAL cUpdate 		  AS STRING
@@ -691,7 +691,7 @@ METHOD UpdateCursor()
 
 
 		IF SLen(cUpdate) == 0
-			lRet := TRUE 
+			lRet := TRUE
 			EXIT
 		ENDIF
 
@@ -721,19 +721,19 @@ METHOD UpdateCursor()
 		nRowCount := oUpdate:NumSuccessfulRows
 		lRowModified := FALSE
 		oConn:__CloseExtraStmt(oUpdate)
-		lRet := TRUE 
+		lRet := TRUE
 		EXIT
-	ENDDO  
+	ENDDO
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "   __UpdateCursor() returns :" + AsString( lRet ) )
 	#ENDIF
-	
-	
+
+
 	RETURN lRet
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.UpdateKey/*" />
-METHOD UpdateKey() 
+METHOD UpdateKey()
 	LOCAL nIndex        AS DWORD
 	LOCAL cUpdate       AS STRING
 	LOCAL oUpdate       AS SQLStatement
@@ -797,7 +797,7 @@ METHOD UpdateKey()
 
 
 /// <include file="SQL.xml" path="doc/SQLSelect.UpdateVal/*" />
-METHOD UpdateVal() 
+METHOD UpdateVal()
 	LOCAL cUpdate       AS STRING
 	LOCAL oUpdate       AS SQLStatement
 	LOCAL lRet          AS LOGIC

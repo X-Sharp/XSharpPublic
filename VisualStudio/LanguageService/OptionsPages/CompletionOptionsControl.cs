@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Windows.Controls;
-using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class CompletionOptionsControl : XSUserControl

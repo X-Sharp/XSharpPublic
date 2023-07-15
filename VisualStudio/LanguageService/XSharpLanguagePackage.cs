@@ -178,6 +178,7 @@ namespace XSharp.LanguageService
             options.IntellisenseOptions = _intellisensePage.Options;
             options.OtherOptions = _otherOptionsPage.Options;
             _txtManager.GetSettings(options.TabOptions);
+            options.LogOptions.ReadFromRegistry();
             return options;
 
         }
@@ -200,6 +201,7 @@ namespace XSharp.LanguageService
                     _intellisensePage.SetOptions(options.IntellisenseOptions);
                     _otherOptionsPage.SetOptions(options.OtherOptions);
                     _txtManager.SetSettings(options.TabOptions);
+
                 }
             }
             else

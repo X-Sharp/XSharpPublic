@@ -266,8 +266,8 @@ namespace XSharp.Project
         
 	 private void StartLogging()
         {
-            int FileLogging = (int)Constants.GetSetting("Log2File", 0);
-            int DebugLogging = (int)Constants.GetSetting("Log2Debug", 0);
+            int FileLogging = (int)Constants.GetSetting("Log2File", XSettings.EnableFileLogging? 1 : 0);
+            int DebugLogging = (int)Constants.GetSetting("Log2Debug", XSettings.EnableDebugLogging ? 1 : 0);
 
             XSettings.EnableFileLogging = FileLogging != 0;
             XSettings.EnableDebugLogging = DebugLogging != 0;

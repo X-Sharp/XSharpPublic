@@ -1,14 +1,14 @@
 ﻿using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
-using System.IO;
-using XSharpModel;
-using XSharp.Settings;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
+using XSharp.Settings;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -44,7 +44,6 @@ namespace XSharp.Project
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
 
-                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
@@ -57,35 +56,13 @@ namespace XSharp.Project
 
         }
 
+        #region DesignerWindows
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             SaveDesignerWindows();
             return CommandProgression.Continue;
         }
-
-        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            RestoreDesignerWindows();
-        }
-
-        private void ShellEvents_ShutdownStarted()
-        {
-            XSolution.IsClosing = true;
-            XSolution.IsShuttingDown = true;
-            XSolution.Close();
-
-            Logger.SingleLine();
-            Logger.Information("Shutdown VS");
-            Logger.SingleLine();
-        }
-
-        private void DocumentEvents_Opened(string strDocument)
-        {
-            Logger.Information("Opened " + strDocument);
-        }
-
 
         private void SaveDesignerWindows()
         {
@@ -98,13 +75,14 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             GetAllDesignerWindows(true);
         }
+
         private List<string> GetAllDesignerWindows(bool close = false)
         {
             var files = new List<string>();
             ThreadHelper.ThrowIfNotOnUIThread();
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                
+
                 var documents = await VS.Windows.GetAllDocumentWindowsAsync();
                 foreach (var doc in documents.ToArray())
                 {
@@ -144,7 +122,7 @@ namespace XSharp.Project
                     CloseAllDesignerWindows();
                 }
                 var selection = await VS.Solutions.GetActiveItemsAsync();
-                if (files.Count > 0  )
+                if (files.Count > 0)
                 {
                     foreach (var file in files)
                     {
@@ -178,6 +156,24 @@ namespace XSharp.Project
                 }
             });
         }
+
+
+
+        #endregion
+
+ 
+        private void ShellEvents_ShutdownStarted()
+        {
+            XSolution.IsClosing = true;
+            XSolution.IsShuttingDown = true;
+            XSolution.Close();
+
+            Logger.SingleLine();
+            Logger.Information("Shutdown VS");
+            Logger.SingleLine();
+        }
+
+        #region Project Events
 
         private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
         {
@@ -279,6 +275,7 @@ namespace XSharp.Project
                 }
             }
         }
+
         public static bool DeleteFileSafe(string fileName)
         {
             try
@@ -297,6 +294,15 @@ namespace XSharp.Project
             }
             return true;
 
+        }
+        #endregion
+
+        #region Solution Events
+
+        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            RestoreDesignerWindows();
         }
 
         string solutionName = "";
@@ -364,7 +370,9 @@ namespace XSharp.Project
             Logger.SingleLine();
             solutionName = solutionFileName;
         }
+        #endregion
 
+        #region StatusBar and Messages
         public void SetStatusBarAnimation(bool onOff, short id)
         {
             if (onOff)
@@ -389,6 +397,9 @@ namespace XSharp.Project
             string title = string.Empty;
             return (int)VS.MessageBox.Show(title, message);
         }
+        #endregion
+
+        #region Documents
 
         /// <summary>
         /// Open a document with 0 based line numbers
@@ -470,7 +481,10 @@ namespace XSharp.Project
         {
             OpenDocumentAsync(file, line, column, preview).FireAndForget();
         }
-#region BuildEvents
+
+        #endregion
+
+        #region BuildEvents
         public bool IsVsBuilding => building;
         private void BuildEvents_SolutionBuildCancelled()
         {
@@ -487,6 +501,6 @@ namespace XSharp.Project
         {
             building = true;
         }
-#endregion		
+        #endregion
     }
 }

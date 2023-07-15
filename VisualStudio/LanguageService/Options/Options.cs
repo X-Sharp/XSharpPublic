@@ -1,10 +1,12 @@
-﻿using Microsoft.VisualStudio;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Newtonsoft.Json;
-using System;
-using System.ComponentModel;
-using XSharpModel;
 using XSharp.LanguageService.OptionsPages;
 using XSharp.Settings;
 namespace XSharp.LanguageService
@@ -65,6 +67,8 @@ namespace XSharp.LanguageService
         public IndentingOptions IndentingOptions { get; set; } 
         public GeneratorOptions GeneratorOptions { get; set; } 
         public TabOptions TabOptions { get; set; }
+        [JsonIgnore]
+        public LogOptions LogOptions { get; set; }
 
         #endregion
         public LanguageServiceOptions()
@@ -76,6 +80,7 @@ namespace XSharp.LanguageService
             CompletionOptions = new CompletionOptions();
             IndentingOptions = new IndentingOptions();
             GeneratorOptions = new GeneratorOptions();
+            LogOptions = LogOptions.Instance;
         }
 
         public override void WriteToSettings()
@@ -87,6 +92,7 @@ namespace XSharp.LanguageService
             IndentingOptions.WriteToSettings();
             OtherOptions.WriteToSettings();
             TabOptions.WriteToSettings();
+            LogOptions.WriteToSettings();
         }
         public bool Save()
         {

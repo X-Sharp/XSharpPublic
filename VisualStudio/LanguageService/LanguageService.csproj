@@ -168,8 +168,6 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsPages\TabOptions.cs" />
-    <Compile Include="OptionsPages\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -206,6 +204,13 @@
     <Compile Include="OptionsPages\XSUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Options\CompletionOptions.cs" />
+    <Compile Include="Options\FormattingOptions.cs" />
+    <Compile Include="Options\IntellisenseOptions.cs" />
+    <Compile Include="Options\LogOptions.cs" />
+    <Compile Include="Options\Options.cs" />
+    <Compile Include="Options\OtherOptions.cs" />
+    <Compile Include="Options\TabOptions.cs" />
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />

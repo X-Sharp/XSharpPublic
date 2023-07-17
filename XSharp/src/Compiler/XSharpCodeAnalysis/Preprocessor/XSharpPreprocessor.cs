@@ -2340,6 +2340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // 2) Look for and replace Macros (combined with 1) for performance)
             // 3) look for and replace (x)translates
             // 4) look for and replace (x)commands
+            var orgline = line;
             if (IsActive())
             {
                 Debug.Assert(line?.Count > 0);
@@ -2375,6 +2376,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     if (changed && result != null)
                     {
+                        // Adjust positions of the tokens to improve error reports
+                        var start = orgline[0].StartIndex;
+                        foreach (XSharpToken t in result)
+                        {
+                            t.StartIndex = start;
+                            start += t.Text.Length;
+                        }
                         result = _lexer.ReclassifyTokens(result);
                     }
                 }

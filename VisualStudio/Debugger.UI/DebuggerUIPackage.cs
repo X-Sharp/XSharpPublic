@@ -16,11 +16,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.
-// See License.txt in the project root for license information.
-//
+
 
 namespace XSharp.Debugger.UI
 {
@@ -46,7 +42,7 @@ namespace XSharp.Debugger.UI
     public sealed class XSharpDebuggerUIPackage : ToolkitPackage,  IVsDebuggerEvents, IDisposable
     {
         private static XSharpDebuggerUIPackage _instance;
-        DTE2 m_dte;
+        DTE2 m_dte = null;
         internal DTE2 Dte => m_dte;
 
        
@@ -66,30 +62,33 @@ namespace XSharp.Debugger.UI
         /// </summary>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-
-            this.RegisterToolWindows();
             await base.InitializeAsync(cancellationToken, progress);
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            m_dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
-
-            // make sure the debugger has the version from the main thread
+            // This method inside the toolkit collects a list of BaseToolWindow classes
+            // And calls their Initialization code
+            this.RegisterToolWindows();
             await this.RegisterDebuggerEventsAsync();
-            await this.RegisterCommandsAsync();
         }
-
 
   
         private async Task<bool> RegisterDebuggerEventsAsync()
         {
             int hr;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            m_dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
+
             m_debugger = await VS.Services.GetDebuggerAsync();
             if (m_debugger != null)
             {
                 hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
                 ErrorHandler.ThrowOnFailure(hr);
                 XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
+            }
+            else
+            {
+                await VS.MessageBox.ShowAsync("Cannot register the debugger events", icon: OLEMSGICON.OLEMSGICON_CRITICAL,
+                    buttons: OLEMSGBUTTON.OLEMSGBUTTON_OK);
+
             }
             return true;
         }
@@ -113,11 +112,11 @@ namespace XSharp.Debugger.UI
         private uint m_Debuggercookie = 0;
 
         /// <summary>
-        /// This method is called by the debugger when the mode changes and is reponsible for refreshing the pane windows
-        /// and for storing the current state in the Settings object.
+        /// This method is called by the debugger when the mode changes and is responsible for 
+        /// refreshing the pane windows and for storing the current debugging state in the Settings object.
         /// </summary>
-        /// <param name="dbgmodeNew"></param>
-        /// <returns></returns>
+        /// <param name="dbgmodeNew">New value of DBGMODE</param>
+        /// <returns>VS_OK</returns>
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
             var changed = XDebuggerSettings.DebuggerMode != (DebuggerMode)dbgmodeNew;

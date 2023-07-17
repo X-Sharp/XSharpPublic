@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using XSharp.Settings;
 using XSharpModel;
 
@@ -79,28 +80,46 @@ namespace XSharp.Project
         private List<string> GetAllDesignerWindows(bool close = false)
         {
             var files = new List<string>();
-            ThreadHelper.ThrowIfNotOnUIThread();
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-
                 var documents = await VS.Windows.GetAllDocumentWindowsAsync();
                 foreach (var doc in documents.ToArray())
                 {
                     var caption = doc.Caption;
-                    if (caption.IndexOf("[") >= 0 && caption.IndexOf("]") >= 0)
+                    if (caption.EndsWith("]"))
                     {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        if (doc is IVsWindowFrame frame)
+                        string docName = "";
+                        // use reflection to get the _frame field which has the full URL to the file
+                        // and please note that we do not check for "[Design]" because that can (will)
+                        // be translated in localized versions of VS, for example [Entwurf] in German.
+                        var field = doc.GetType().GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic);
+                        if (field != null)
                         {
-                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var docName);
-                            if (docName is string fileName)
+                            dynamic _frame = field.GetValue(doc);
+                            docName = _frame.EffectiveDocumentMoniker;
+                            var type = XFileTypeHelpers.GetFileType(docName);
+                            if (type != XFileType.SourceCode)
+                                continue;
+                            string capt = _frame.EditorCaption;
+                            if (capt == null || !capt.EndsWith("]"))
+                                continue;
+
+                        }
+#if !DEV17
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+#endif
+                        if (string.IsNullOrEmpty(docName) && doc is IVsWindowFrame frame)
+                        {
+                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var objdocName);
+                            if (objdocName is string fileName)
                             {
-                                if (close)
-                                {
-                                    await doc.CloseFrameAsync(FrameCloseOption.NoSave);
-                                }
-                                files.Add(fileName);
+                                docName = fileName;
                             }
+                        }
+                        if (!string.IsNullOrEmpty(docName))
+                        {
+                            await doc.CloseFrameAsync(FrameCloseOption.NoSave);
+                            files.Add(docName);
                         }
                     }
                 }

@@ -1659,7 +1659,7 @@ CLASS ApplicationDescriptor
 /*						oOutput:WriteLine(String.Format('    <Reference Include="{0}">' , cReference ) )
 						oOutput:WriteLine(String.Format('      <SpecificVersion>false</SpecificVersion>') )
                         oOutput:WriteLine(String.Format('    </Reference>'))*/
-                        nop
+                        NOP
 					ENDIF
 				NEXT
 
@@ -2476,6 +2476,29 @@ CLASS EntityDescriptor
 
 		cLine := oLine:LineText
 		cLineUpper := cLine:ToUpper():Trim()
+		
+		IF cLine:Contains("{VOXP:")
+			LOCAL nCommentMarker := -1 AS INT
+			DO CASE
+			CASE cLine:Contains("{VOXP:COM}")
+				nCommentMarker := cLine:LastIndexOf("//")
+				IF nCommentMarker != - 1
+					cLine := cLine:Substring(0 , nCommentMarker):TrimEnd()
+				ENDIF
+				cLine := "// " + cLine
+			CASE cLine:Contains("{VOXP:UNC}")
+				nCommentMarker := cLine:IndexOf("//")
+				IF nCommentMarker != - 1
+					cLine := cLine:Substring(nCommentMarker + 2):TrimStart()
+					nCommentMarker := cLine:LastIndexOf("//")
+					IF nCommentMarker != - 1
+						cLine := cLine:Substring(0 , nCommentMarker):TrimEnd()
+					ENDIF
+				END IF
+			CASE cLine:Contains("{VOXP:DEL}") .or. cLine:Contains("{VOXP:REM}")
+				cLine := ""
+			END CASE
+		END IF
 
 		IF cLineUpper:StartsWith("VTRACE") .OR. cLineUpper:StartsWith("VMETHOD")
 			cLine := "// " + cLine

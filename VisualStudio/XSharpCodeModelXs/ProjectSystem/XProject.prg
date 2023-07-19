@@ -499,9 +499,12 @@ CLASS XProject
         VAR outputFile := ""
         TRY
             VAR properties := p:Properties
-            VAR propType := properties:Item("OutputType")
-            VAR propName := properties:Item("AssemblyName")
-            VAR propPath := p:ConfigurationManager:ActiveConfiguration:Properties:Item( "OutputPath")
+            VAR propType   := properties:Item("OutputType")
+            VAR propName   := properties:Item("AssemblyName")
+            var confMan    := p:ConfigurationManager
+            var activeConf := confMan:ActiveConfiguration
+            var props      := activeConf:Properties
+            VAR propPath   := props:Item( "OutputPath")
             IF propName != NULL .AND. propPath != NULL .AND. propType != NULL
 
                 VAR path    := (STRING) propPath:Value

@@ -45,11 +45,25 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetDeclaredMembers( SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Parent == type}):ToArray()
 
-      STATIC METHOD GetConstructors(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
+        /// <summary>
+        /// Return the instance constructors
+        /// </summary>
+        /// <param name="type">Type to search</param>
+        /// <param name="declaredOnly">Only constructors of the class itself. Exclude inherited constructors?</param>
+        /// <returns></returns>
+      STATIC METHOD GetConstructors(SELF type as IXTypeSymbol, declaredOnly AS LOGIC) AS IXMemberSymbol[]
          if declaredOnly
-               return type:GetDeclaredMembers():Where( { m => m.Kind == Kind.Constructor}):ToArray()
+               return type:GetDeclaredMembers():Where( { m => m.Kind == Kind.Constructor .and. !m.IsStatic}):ToArray()
          endif
-         return type:Members:Where( { m => m.Kind == Kind.Constructor}):ToArray()
+         return type:Members:Where( { m => m.Kind == Kind.Constructor .and. !m.IsStatic }):ToArray()
+
+        /// <summary>
+        /// Return the instance constructors
+        /// </summary>
+        /// <param name="type">Type to search</param>
+        /// <returns></returns>
+      STATIC METHOD GetConstructors(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
+        RETURN GetConstructors(type, FALSE)
 
       STATIC METHOD GetFields(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Kind:IsField()}):ToArray()

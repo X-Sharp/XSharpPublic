@@ -163,7 +163,7 @@ namespace XSharp.Project
                 _dialectIsCached = true;
             }
             _cachedProjectProperties[e.PropertyName] = e.NewValue;
-            this.options = null;
+            this.ClearOptions();
         }
 
 
@@ -2204,6 +2204,36 @@ namespace XSharp.Project
 
         }
 
+        /// <summary>
+        /// Clear cached Config and ParseOptions
+        /// </summary>
+        internal void ClearOptions()
+        {
+            this.CachedConfig = null;
+            this.CachedOptions = null;
+
+        }
+        internal void GetParseOptions()
+        {
+            this.ClearOptions();
+            this.CachedConfig = this.CurrentConfig;
+            this.CachedOptions = this.ParseOptions;
+
+        }
+
+        internal ProjectConfig CachedConfig;
+        public override ProjectConfig CurrentConfig
+        {
+            get
+            {
+                if (CachedConfig == null)
+                {
+                    CachedConfig = base.CurrentConfig;
+                }
+                return CachedConfig;
+            }
+        }
+
         public void CreateParseOptions()
         {
             var xoptions = CreateProjectOptions() as XSharpProjectOptions;
@@ -2212,10 +2242,13 @@ namespace XSharp.Project
                 xoptions.BuildCommandLine();
             }
         }
+         internal XSharpParseOptions CachedOptions;
         public XSharpParseOptions ParseOptions
         {
             get
             {
+                if (CachedOptions != null)
+                    return CachedOptions;
                 if (this.IsClosed || XSolution.IsClosing)
                     return XSharpParseOptions.Default;
                 try
@@ -2228,7 +2261,8 @@ namespace XSharp.Project
                         {
                             if (xoptions.ParseOptions == null)
                                 xoptions.BuildCommandLine();
-                            return xoptions.ParseOptions;
+                            CachedOptions = xoptions.ParseOptions;
+                            return CachedOptions;
                         }
                     }
                 }

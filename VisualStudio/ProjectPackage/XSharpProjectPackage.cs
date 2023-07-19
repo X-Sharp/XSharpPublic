@@ -234,6 +234,7 @@ namespace XSharp.Project
                 {
                     project.CreateProjectOptions();
                     project.ClearCache();
+                    project.GetParseOptions();
 
                 }
             }

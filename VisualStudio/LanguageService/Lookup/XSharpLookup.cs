@@ -764,13 +764,13 @@ namespace XSharp.LanguageService
                 }
                 var tokenType = currentToken.Type;
                 bool isType = XSharpLexer.IsType(tokenType);
-
+                var isPseudo = XSharpLexer.IsPseudoFunction(tokenType);
                 var isId = tokenType == XSharpLexer.ID ||
                                   tokenType == XSharpLexer.KWID ||
                                   tokenType == XSharpLexer.SELF ||
                                   tokenType == XSharpLexer.SUPER ||
                                   tokenType == XSharpLexer.COLONCOLON ||
-                                  XSharpLexer.IsPseudoFunction(tokenType) ||
+                                  isPseudo ||
                                   isType;
                 if (isId)
                 {
@@ -798,6 +798,7 @@ namespace XSharp.LanguageService
                 }
                 var qualifiedName = false;
                 var findMethod = false;
+                var canbeMethod = true;
                 var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
                 if (!state.HasFlag(CompletionState.Inherit))
                 {
@@ -813,6 +814,15 @@ namespace XSharp.LanguageService
                     qualifiedName = list.La1 == XSharpLexer.DOT;
                     findMethod = list.La1 == XSharpLexer.LPAREN && !isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
+                    if (isPseudo)
+                    {
+                        var line = location.Document.GetTokensInLineAndFollowing(currentToken.Line - 1).Where(t => t.Channel == XSharpLexer.DefaultTokenChannel);
+                        if (line.First() == currentToken)
+                        {
+                            canbeMethod = false;
+                            findMethod = false;
+                        }
+                    }
 
                     // Find all fields and properties
                     var props = SearchPropertyOrField(location, currentType, currentName, visibility);
@@ -940,23 +950,11 @@ namespace XSharp.LanguageService
                         }
                     }
                     // if nothing found, check for a method with the same name
-                    if (result.Count == 0)
+                    if (result.Count == 0 && canbeMethod)
                     {
                         // we do not want IF at the start of the line (or any other keyword)
                         // to trigger a method  / function lookup and match IF(...)
-                        bool canbeMethod = true;
-                        if (XSharpLexer.IsKeyword(currentToken.Type))
-                        {
-                            var line = location.Document.GetTokensInLineAndFollowing(currentToken.Line-1).Where(t =>t.Channel == XSharpLexer.DefaultTokenChannel);
-                            if (line.First() == currentToken)
-                            {
-                                canbeMethod = false;
-                            }
-                        }
-                        if (canbeMethod)
-                        {
-                            FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
-                        }
+                        FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
                     }
                     if (result.Count == 0 && currentToken.Type == XSharpLexer.ID)
                     {

@@ -202,6 +202,10 @@ namespace XSharp.LanguageService
                             }
                             memberName = xmember.Name;
                         }
+                        else 
+                        {
+                            type = xmember.ResolvedType;
+                        }
                     }
                     else if (symbol is IXVariableSymbol xvar)
                     {

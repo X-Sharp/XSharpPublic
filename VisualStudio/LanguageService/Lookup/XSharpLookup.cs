@@ -1379,7 +1379,8 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    var ctors = type.Members.Where(x => x.Kind == Kind.Constructor && x.IsVisible(minVisibility));
+                    
+                    var ctors = type.GetConstructors().Where(x => x.IsVisible(minVisibility));
                     result.AddRange(ctors);
                 }
                 DumpResults(result, $"--> SearchConstructorIn {type?.FullName}");

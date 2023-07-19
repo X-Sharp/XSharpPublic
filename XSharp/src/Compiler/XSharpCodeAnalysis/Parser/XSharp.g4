@@ -545,7 +545,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
                       StmtBlk=statementBlock
-                      (e = NEXT | e = END FOR)? eos	                  #forStmt
+                      (e = NEXT | e = END FOR) eos	                  #forStmt
 
                     | i=IF IfBlocks += condBlock[$i]
                       (e=ELSEIF IfBlocks += condBlock[$e])*
@@ -555,28 +555,28 @@ statement           : Decl=localdecl                            #declarationStmt
                     | DO CASE end=eos
                       (c=CASE CaseBlocks +=condBlock[$c])*
                       (OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
-                      (e=END CASE? | e=ENDCASE)   eos                  #caseStmt
+                      (e=END CASE? | e=ENDCASE)   eos                   #caseStmt
 
-                    | Key=EXIT end=eos                                    #jumpStmt
-                    | Key=LOOP end=eos                                    #jumpStmt
-                    | Key=BREAK Expr=expression? end=eos                  #jumpStmt
-                    | R=RETURN (Void=VOID|Expr=expression)? end=eos       #returnStmt
+                    | Key=EXIT end=eos                                  #jumpStmt
+                    | Key=LOOP end=eos                                  #jumpStmt
+                    | Key=BREAK Expr=expression? end=eos                #jumpStmt
+                    | R=RETURN (Void=VOID|Expr=expression)? end=eos     #returnStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)?
-                       end=eos                                            #qoutStmt
+                       end=eos                                          #qoutStmt
 
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY eos FinBlock=statementBlock)?
-                      e=END (SEQUENCE)? eos                            #seqStmt
+                      e=END (SEQUENCE)? eos                             #seqStmt
                     //
-                    // New in Vulcan
+                    // New in Vulcan 
                     //
                     | r=REPEAT end=eos
                       StmtBlk=statementBlock
                       UNTIL Expr=expression
-                      eos                                                 #repeatStmt
+                      eos                                               #repeatStmt
 
                     | (f=FOREACH | f=FOR EACH)
                       ( V=IMPLIED Id=varidentifier
@@ -585,9 +585,9 @@ statement           : Decl=localdecl                            #declarationStmt
                       )
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
-                      (e=NEXT |e=END FOR)? eos	    #foreachStmt
+                      (e=NEXT |e=END FOR) eos	                          #foreachStmt
 
-                    | Key=THROW Expr=expression? end=eos                  #jumpStmt
+                    | Key=THROW Expr=expression? end=eos                #jumpStmt
 
                     | T=TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*

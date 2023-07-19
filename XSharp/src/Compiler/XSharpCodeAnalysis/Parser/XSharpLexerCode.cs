@@ -2172,6 +2172,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // normal keywords
                     // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
+                    // We handle that in XBasePPCmd.xh
                     {"ENDFOR",   NEXT },
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
@@ -2227,7 +2228,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var vfpKeywords = new XSharpKeywords
                 {
                     // normal keywords
-                    //{"THIS", SELF},
                     {"THIS_ACCESS",THISACCESS },
                     {"HELPSTRING",HELPSTRING },
                     {"DIMENSION",DIMENSION},

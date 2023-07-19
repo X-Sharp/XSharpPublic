@@ -62,6 +62,7 @@ namespace XSharp.LanguageService
         private XSharpLineKeywords _lineKeywords;
         private bool IsLexing = false;
         private bool IsStarted = false;
+        private bool _needsKeywords = false;
 
         #endregion
 
@@ -172,6 +173,20 @@ namespace XSharp.LanguageService
             }
             return _document;
         }
+        internal async Task<XSharpLineKeywords> GetKeywordsAsync()
+        {
+            try
+            {
+                _needsKeywords = true;
+                var _ = await LexAsync();
+                return _lineKeywords;
+            }
+            finally
+            {
+                _needsKeywords = false;
+            }
+        }
+
         public async Task ForceClassifyAsync()
         {
             var _ = await LexAsync();
@@ -246,7 +261,6 @@ namespace XSharp.LanguageService
                         xDocument.SetTokens(tokens, snapshot);
                     }
                     xDocument.SetState(_lineState, snapshot);
-                    xDocument.SetKeywords(_lineKeywords);
                 }
             }
             BuildColorClassifications();
@@ -723,7 +737,7 @@ namespace XSharp.LanguageService
                     if (token.Line != iLastLine)
                     {
                         // register the type for the previous line
-                        if (currentLine?.Count > 0 && _document.NeedsKeywords)
+                        if (currentLine?.Count > 0 && _needsKeywords)
                         {
                             kw = XSharpLineKeywords.Tokens2Keyword(currentLine);
                             addKw(kw, iLastLine-1);
@@ -795,7 +809,7 @@ namespace XSharp.LanguageService
                         lastToken = token;
                     }
                 }
-                if (currentLine?.Count > 0 && _document.NeedsKeywords)
+                if (currentLine?.Count > 0 && _needsKeywords)
                 {
                     kw = XSharpLineKeywords.Tokens2Keyword(currentLine);
                     addKw(kw, iLastLine - 1);

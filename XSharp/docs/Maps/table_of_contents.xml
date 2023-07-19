@@ -589,6 +589,18 @@
           <caption translate="true">Item Templates</caption>
         </topicref>
       </topicref>
+      <topicref type="topic" id="451268217126267" build="ALL" modified="2023-07-19T21:05:52.301Z" icon="0" href="VOXporter">
+        <caption translate="true">VOXporter</caption>
+      </topicref>
+      <topicref type="topic" id="451270867221772" build="ALL" modified="2023-07-19T21:06:01.750Z" icon="0" href="XPorter">
+        <caption translate="true">XPorter</caption>
+      </topicref>
+      <topicref type="topic" id="451267155245686" build="ALL" modified="2023-07-19T21:06:12.194Z" icon="0" href="VFPXporter">
+        <caption translate="true">VFPXporter</caption>
+      </topicref>
+      <topicref type="topic" id="451267900754777" build="ALL" modified="2023-07-19T21:06:18.960Z" icon="0" href="UDC-Tester">
+        <caption translate="true">UDC Tester</caption>
+      </topicref>
     </topicref>
     <topicref type="topic" id="423889242125195" build="ALL" modified="2019-01-27T16:06:07.284Z" icon="0" href="X-Programming-guide">
       <caption translate="true">X# Programming guide</caption>

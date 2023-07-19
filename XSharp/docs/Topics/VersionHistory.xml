@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-07-18T09:43:58.608+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-07-19T21:07:43.503+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
-    <para styleclass="Heading1">Changes in 2.17.0.0</para>
+    <para styleclass="Heading1">Changes in 2.17.0.1</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -34,6 +34,7 @@
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added support for &quot;classic&quot; INIT PROCEDURE and EXIT PROCEDURE (#1290)</li>
       <li styleclass="Body Text">Added warnings when statement list inside case blocks, if blocks and other blocks are empty. To suppress the warning you can add a NOP statement in your code.</li>
+      <li styleclass="Body Text">We have made some changes to the parser in the compiler. This may result in faster compilation speed for code with many nested blocks.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -56,6 +57,8 @@
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">You can open these windows from the Debug/XSharp menu during debugging. There is also a special &quot;X# Debugger Toolbar&quot; which is also only shown during debugging.</li>
       <li styleclass="Body Text">These windows will only show information when the app being debugged uses the X# runtime (so they will not work in combination with the Vulcan Runtime). <br/>If you are debugging an application written in another language that uses the X# runtime then these windows will also show information.<br/>We have planned to add more features to these windows in future builds, like the properties of the current selected area and the field/values in the current selected workarea </li>
+      <li styleclass="Body Text">We have added support for &quot;FileCodeModel&quot; for X# files. This is used by the WPF designer and XAML editor. <br/>This now also fixes the Goto definition in the XAML editor (#1026)</li>
+      <li styleclass="Body Text">Several properties of X# projects are now cached. This should result in slightly faster performance.</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -82,6 +85,8 @@
       <li styleclass="Body Text">Fixed problem with incorrectly trying to open in design mode files with filenames starting with an opening bracket (#1292 )</li>
       <li styleclass="Body Text">The &quot;XSharp Website&quot; menu option inside VS was broken (#1297)</li>
       <li styleclass="Body Text">Fixed problem with the Match Identical Identifiers functionality that could slow down Visual Studio</li>
+      <li styleclass="Body Text">Fixed a VS lock up that could happen when a file was opened during debugging.</li>
+      <li styleclass="Body Text">Parameter tips for classes with a static constructor and a normal constructor were not processed correctly. This has been fixed.</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">New Features</para>

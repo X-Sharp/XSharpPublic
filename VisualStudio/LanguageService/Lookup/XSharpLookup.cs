@@ -942,7 +942,21 @@ namespace XSharp.LanguageService
                     // if nothing found, check for a method with the same name
                     if (result.Count == 0)
                     {
-                        FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
+                        // we do not want IF at the start of the line (or any other keyword)
+                        // to trigger a method  / function lookup and match IF(...)
+                        bool canbeMethod = true;
+                        if (XSharpLexer.IsKeyword(currentToken.Type))
+                        {
+                            var line = location.Document.GetTokensInLineAndFollowing(currentToken.Line-1).Where(t =>t.Channel == XSharpLexer.DefaultTokenChannel);
+                            if (line.First() == currentToken)
+                            {
+                                canbeMethod = false;
+                            }
+                        }
+                        if (canbeMethod)
+                        {
+                            FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
+                        }
                     }
                     if (result.Count == 0 && currentToken.Type == XSharpLexer.ID)
                     {

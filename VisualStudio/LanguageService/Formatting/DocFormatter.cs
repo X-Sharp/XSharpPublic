@@ -29,12 +29,12 @@ namespace XSharp.LanguageService
         private SourceCodeEditorSettings _settings;
         private int[] _expectedIndent;
         private int _indentSize;
-        internal DocFormatter(XDocument document, SourceCodeEditorSettings settings)
+        internal DocFormatter(XDocument document, SourceCodeEditorSettings settings, XSharpLineKeywords keywords)
         {
             _blocks = new Stack<blockindent>();
             _firstDoccomment = -1;
             _document = document;
-            _lineKeywords = document.LineKeywords;
+            _lineKeywords = keywords;
             _settings = settings;
         }
 

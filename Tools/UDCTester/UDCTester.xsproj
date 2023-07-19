@@ -25,7 +25,7 @@
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <ApplicationIcon>C:\XSharp\DevPublic\Tools\VOXporter\Source\VOXPorter\Resources\XSharp.ico</ApplicationIcon>
+    <ApplicationIcon>$(SolutionDir)Tools\VOXporter\Source\VOXPorter\Resources\XSharp.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Optimize>false</Optimize>
@@ -68,12 +68,12 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="XSharp.VSParser, Version=2.8.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.VSParser">
       <Name>XSharp.VSParser</Name>
       <AssemblyName>XSharp.VSParser.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\..\XSharp\DevPublic\External\Debug\XSharp.VSParser.dll</HintPath>
+      <HintPath>$(SolutionDir)External\Debug\XSharp.VSParser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

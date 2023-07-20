@@ -168,6 +168,13 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Options\CompletionOptions.cs" />
+    <Compile Include="Options\FormattingOptions.cs" />
+    <Compile Include="Options\IntellisenseOptions.cs" />
+    <Compile Include="Options\LogOptions.cs" />
+    <Compile Include="Options\OtherOptions.cs" />
+    <Compile Include="Options\TabOptions.cs" />
+    <Compile Include="Options\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -204,13 +211,6 @@
     <Compile Include="OptionsPages\XSUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Options\CompletionOptions.cs" />
-    <Compile Include="Options\FormattingOptions.cs" />
-    <Compile Include="Options\IntellisenseOptions.cs" />
-    <Compile Include="Options\LogOptions.cs" />
-    <Compile Include="Options\Options.cs" />
-    <Compile Include="Options\OtherOptions.cs" />
-    <Compile Include="Options\TabOptions.cs" />
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
@@ -235,11 +235,12 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="XSharp.MonoCecil">
-      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(Solutiondir)External\Debug\XSharp.MonoCecil.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
+      <HintPath>$(Solutiondir)External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -313,7 +314,7 @@
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="C:\XSharp\DevPublic\External\Debug\XSharp.MonoCecil.dll">
+    <Content Include="$(SolutionDir)External\Debug\XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

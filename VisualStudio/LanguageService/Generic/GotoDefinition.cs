@@ -9,6 +9,8 @@ using XSharpModel;
 using static System.Windows.Forms.AxHost;
 using File = System.IO.File;
 using XSharp.Settings;
+using System.Linq;
+
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
@@ -16,7 +18,7 @@ namespace XSharp.LanguageService
 
         internal static void Goto(IXSymbol element, ITextView TextView, CompletionState state)
         {
-            if (state == CompletionState.Constructors && element is IXTypeSymbol xtype)
+            if (element is IXTypeSymbol xtype)
             {
                 // when the cursor is before a "{" then goto the constructor and not the type
                 var ctors = xtype.GetConstructors();
@@ -51,6 +53,7 @@ namespace XSharp.LanguageService
         {
             try
             {
+                ModelWalker.Suspend();
                 var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();

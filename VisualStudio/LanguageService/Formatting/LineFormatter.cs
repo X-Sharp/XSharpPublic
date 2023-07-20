@@ -127,8 +127,10 @@ namespace XSharp.LanguageService
         {
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
-            // to detect that we take the start of the line and check if it is in
+            // to detect that we check the linestate in the document
             if (line.Length == 0)
+                return;
+            if (_document.HasLineState(line.LineNumber, LineFlags.MultiLineComments))
                 return;
             var tokens = _document.GetTokensInSingleLine(line, false);
             IToken lastToken = null;

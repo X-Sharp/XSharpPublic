@@ -1,15 +1,16 @@
-﻿using EnvDTE;
-using EnvDTE80;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using EnvDTE;
 using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using XSharp.CodeDom;
 
 namespace XSharp.Project.FileCodeModel

@@ -88,7 +88,7 @@ namespace XSharp.Project.FileCodeModel
                 if (part == vsCMPart.vsCMPartBody)
                 {
                     // The XAML editor inserts a CRLF in the middle of a line when we set this to something else...
-                    p.X = 0;
+                    p.X = 1;
                 }
                 point = new CodeDomTextPoint(GetTextDocument(), p.X, p.Y);
             }

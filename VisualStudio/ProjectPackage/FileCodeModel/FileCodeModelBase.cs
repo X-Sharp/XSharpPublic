@@ -1,32 +1,17 @@
-﻿/***************************************************************************
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-This code is licensed under the Visual Studio SDK license terms.
-THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
-ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
-IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
-PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
-
-***************************************************************************/
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
-using System.IO;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 using EnvDTE;
-using Microsoft.VisualStudio.TextManager.Interop;
 
 using CDCodeNamespace = System.CodeDom.CodeNamespace;
 using VSCodeNamespace = EnvDTE.CodeNamespace;
-using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Designer.Interfaces;
-using Microsoft.VisualStudio.Project;
-using Microsoft.VisualStudio.Project.Automation;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharp.Project.FileCodeModel
 {

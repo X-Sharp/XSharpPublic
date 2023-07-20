@@ -9,7 +9,9 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Project;
 
 using EnvDTE;
-
+using XSharp.Project.WPF;
+using XSharp.Project.FileCodeModel;
+using Microsoft.VisualStudio.Debugger.Interop;
 
 namespace XSharp.Project
 {
@@ -42,5 +44,17 @@ namespace XSharp.Project
 
             return base.Open(viewKind);
         }
+
+        /// <summary>
+        /// Gets the FileCodeModel object for the project item.
+        /// </summary>
+        public override EnvDTE.FileCodeModel FileCodeModel
+        {
+            get
+            {
+                return new XSharpFileCodeModel(this, Node);
+            }
+        }
+
     }
 }

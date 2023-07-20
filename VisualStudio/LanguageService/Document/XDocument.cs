@@ -141,7 +141,7 @@ namespace XSharp.LanguageService
 
         internal IList<IToken> GetTokensInSingleLine(ITextSnapshotLine line, bool allowCached)
         {
-            List<IToken> tokens = new List<IToken>(); ;
+            List<IToken> tokens = new List<IToken>(); 
             if (line.Length == 0)
                 return tokens;
             if (line.Snapshot.Version == this.SnapShot.Version && allowCached)

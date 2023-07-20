@@ -79,7 +79,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                throw new NotImplementedException();
+                return false; // throw new NotImplementedException();
             }
             set
             {

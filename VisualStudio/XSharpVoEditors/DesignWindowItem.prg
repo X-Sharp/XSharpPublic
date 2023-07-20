@@ -23,7 +23,7 @@ CLASS XSharpDesignWindowItem inherit DesignWindowItem
         LOCAL oXSharpDesigner as XSharp_VOWindowEditor
         oXSharpDesigner := SELF:oDesigner astype XSharp_VOWindowEditor
         IF !String.IsNullOrEmpty(cResult) .and. oXSharpDesigner != NULL_OBJECT
-            LOCAL aStyles := cResult:Split("|":ToCharArray()) AS STRING[]
+            LOCAL aStyles := cResult:Split(<char>{'|'}) AS STRING[]
             oXSharpDesigner:AddStyles(aStyles)
             oXSharpDesigner:AddStyles(<STRING>{"WS_VISIBLE"})
         ENDIF

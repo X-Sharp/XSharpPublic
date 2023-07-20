@@ -4,21 +4,15 @@
 // See License.txt in the project root for license information.
 //
 
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+using XSharp.Settings;
+
 namespace XSharp.Project
 {
-    using Microsoft.VisualStudio.PlatformUI;
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Text;
-    using System.Collections.Generic;
-    using System.Windows.Forms;
-    using System.ComponentModel;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-    using Microsoft.VisualStudio.Shell.Interop;
-    using XSharpModel;
-
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>
@@ -201,13 +195,9 @@ namespace XSharp.Project
         }
         private void EnabledisableStandardDefs()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            btnStandardHeader.Enabled = !this.chkNoStandardDefs.Checked;
-            if (this.chkNoStandardDefs.Checked && ! string.IsNullOrEmpty(this.tbStandardDefs.Text))
-            {
-                ParentPropertyPage.SetProperty(XSharpProjectFileConstants.StandardDefs, "");
-                this.tbStandardDefs.Text = LanguagePropertyPagePanel.StdDefDescription;
-            }
+            //ThreadHelper.ThrowIfNotOnUIThread();
+            //btnStandardHeader.Enabled = this.chkNoStandardDefs.Checked;
+            //tbStandardDefs.Enabled = btnStandardHeader.Enabled;
         }
 
         private void chkIncludePaths_Click(object sender, EventArgs e)

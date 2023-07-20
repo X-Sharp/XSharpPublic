@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
 

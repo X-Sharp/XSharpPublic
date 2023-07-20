@@ -13,7 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.Shell.TableManager;
-
+using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.Project
 {
     internal class XSharpIDEBuildLogger : IDEBuildLogger
@@ -21,6 +22,7 @@ namespace XSharp.Project
         ErrorListManager errorlistManager;
         XSharpProjectNode node;
         bool mustLog;
+        private XSharpModel.ILogger Logger => XSettings.Logger;
         internal XSharpIDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy) : base(output, taskProvider, hierarchy)
         {
 

@@ -2,10 +2,8 @@
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System;
-using LanguageService.SyntaxTree;
-using XSharpLanguage;
-using XSharp.LanguageService;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal sealed class XSharpPeekItemSource : IPeekableItemSource
@@ -78,7 +76,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "XSharpPeekItemSource.AugmentPeekSession failed : ");
+                Logger.Exception(ex, "XSharpPeekItemSource.AugmentPeekSession failed : ");
             }
             finally
             {

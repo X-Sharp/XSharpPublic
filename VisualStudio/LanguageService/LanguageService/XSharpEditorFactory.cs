@@ -54,7 +54,7 @@ namespace XSharp.LanguageService
         public virtual object GetService(Type serviceType)
         {
             // This is were we will load the IVSMDProvider interface
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            return ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -194,7 +194,7 @@ namespace XSharp.LanguageService
 
                 // set the buffer's site
                 IOleServiceProvider provider = null;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     provider = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider));
@@ -273,7 +273,7 @@ namespace XSharp.LanguageService
             try
             {
                 IOleServiceProvider service = null;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     service = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider)) ;

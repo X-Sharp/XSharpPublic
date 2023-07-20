@@ -4,12 +4,8 @@
 // See License.txt in the project root for license information.
 //
 using System.CodeDom;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using XSharpModel;
-using Microsoft.VisualStudio.Shell.Design.Serialization;
 
 namespace XSharp.CodeDom
 {

@@ -12,7 +12,7 @@ using System;
 using XSharp.Parser;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     partial class XSharpFormattingCommandHandler
@@ -131,10 +131,7 @@ namespace XSharp.LanguageService
                 editSession = _buffer.CreateEdit();
                 var document = _buffer.GetDocument();
                 document.NeedsKeywords = true;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-              {
-                  await _classifier.ForceClassifyAsync();
-              });
+                var res = ThreadHelper.JoinableTaskFactory.RunAsync(_classifier.ForceClassifyAsync);
 
                 document.NeedsKeywords = false;
                 var formatter = new DocFormatter(document, settings);

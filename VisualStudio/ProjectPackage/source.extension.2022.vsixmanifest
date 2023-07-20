@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem.2022" Version="2.16.0.5" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem.2022" Version="2.17.0.0" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp VS Integration for 2022 and later</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
@@ -29,6 +29,11 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase2022" Path="|ProjectBase2022|" AssemblyName="|ProjectBase2022;AssemblyName|" />
         <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharp.Debugger2022.vsdconfig" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="XSharp.MonoCecil.dll" AssemblyName="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="Debugger.UI2022" Path="|Debugger.UI2022;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.UI2022" Path="|Debugger.UI2022|" AssemblyName="|Debugger.UI2022;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Debugger.UI2022" Path="|Debugger.UI2022|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.Support" Path="|Debugger.Support|" AssemblyName="|Debugger.Support;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeGenerator" Path="|CodeGenerator|" AssemblyName="|CodeGenerator;AssemblyName|" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

@@ -16,6 +16,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 USING STATIC XSharp.Parser.VsParser
 USING LanguageService.CodeAnalysis.Text
 USING XSharp.Parser
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
@@ -81,11 +82,11 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         LOCAL stream := NULL AS ITokenStream
         TRY
             XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
-            AddIncludes(includeFiles)
+            SELF:AddIncludes(includeFiles)
         CATCH e AS Exception
             WriteOutputMessage("Lex() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
         END TRY
         WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
         RETURN (BufferedTokenStream) stream
@@ -180,7 +181,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
 
         CATCH e AS Exception
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
         END TRY
         WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
 
@@ -209,7 +210,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         CATCH e AS Exception
             WriteOutputMessage("Parse() Failed:")
             WriteOutputMessage(SELF:SourcePath)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
 
         END TRY
         WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)
@@ -257,7 +258,7 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         */
     STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
         IF XSettings.EnableParseLog .AND. XSettings.EnableLogging
-            XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
+            XSettings.Information("XModel.SourceWalker "+message)
         ENDIF
 
 #endregion

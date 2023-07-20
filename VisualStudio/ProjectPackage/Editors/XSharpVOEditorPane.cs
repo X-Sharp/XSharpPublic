@@ -18,6 +18,7 @@ using EnvDTE;
 using XSharp.VOEditors;
 using Microsoft.VisualStudio.Project;
 using XSharpModel;
+using XSharp.Settings;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
@@ -1191,7 +1192,7 @@ namespace XSharp.Project
 
 
         #region IVsFileChangeEvents Members
-
+        private ILogger Logger => XSettings.Logger;
         /// <summary>
         /// Notify the editor of the changes made to one or more files
         /// </summary>

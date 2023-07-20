@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal static class XSharpLookup
@@ -87,6 +87,15 @@ namespace XSharp.LanguageService
                 {
                     if (variable.File == null)
                         variable.File = member.File;
+                    if (variable.ResolvedType == null)
+                    {
+                        var types = SearchType(location, variable.TypeName, location.Usings);
+                        variable.ResolvedType = types.FirstOrDefault();
+                        if (variable.ResolvedType != null && variable.ResolvedType.FullName != KnownTypes.SystemArray)
+                        {
+                            variable.TypeName = variable.ResolvedType.FullName;
+                        }
+                    }
                 }
                 if (result.Count == 0)
                 {
@@ -129,7 +138,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "FindIdentifier failed");
+                Logger.Exception(ex, "FindIdentifier failed");
             }
             finally
             {
@@ -243,7 +252,7 @@ namespace XSharp.LanguageService
 
         private static IXTypeSymbol GetArrayType(XSharpSearchLocation location, string elementName)
         {
-            var oType = SearchType(location, "System.Array").FirstOrDefault();
+            var oType = SearchType(location, KnownTypes.SystemArray).FirstOrDefault();
             if (oType is XPETypeSymbol peType)
             {
                 oType = new XPEArrayTypeSymbol(peType, elementName);
@@ -475,6 +484,24 @@ namespace XSharp.LanguageService
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
             // delete tokens between {} and other operators so we get the return type of the outer construct
+            if (tokenList.First().Type == XSharpLexer.LPAREN)
+            {
+                // starts with typecast
+                var temp = new List<IToken>();
+                for (int i = 1; i < tokenList.Count; i++)
+                {
+                    var token = tokenList[i];
+                    if (token.Type != XSharpLexer.RPAREN)
+                    {
+                        temp.Add(token);
+                    }
+                    else
+                    {
+                        tokenList.Clear();
+                        tokenList.AddRange(temp);
+                    }
+                }
+            }
             tokenList = DeleteNestedTokens(tokenList);
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();
@@ -626,6 +653,8 @@ namespace XSharp.LanguageService
                 var lastToken = currentToken;
                 switch (currentToken.Type)
                 {
+                    #region Tokens that require no further processing, so they all end with a continue
+
                     case XSharpLexer.LPAREN:
                         startOfExpression = true;
                         continue;
@@ -633,8 +662,11 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
+                        if (symbols.Peek().TypeName != KnownTypes.SystemArray)
+                        {
+                            startOfExpression = true;
+                        }
                         hasBracket = true;
-                        startOfExpression = true;
                         continue;
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RCURLY:
@@ -662,7 +694,13 @@ namespace XSharp.LanguageService
                                 var top = symbols.Peek();
                                 var type = FindElementType(top, location);
                                 if (type != null)
-                                    symbols.Push(type);
+                                {
+                                    var loc = new TextRange(currentToken, currentToken);
+                                    var pos = new TextInterval(currentToken, currentToken);
+                                    var parent = location.Member;
+                                    var element = new XSourceVariableSymbol(parent, "array-element", loc, pos, type.FullName);
+                                    symbols.Push(element);
+                                }
                             }
                         }
                         else if (symbols.Count > 0)
@@ -694,11 +732,24 @@ namespace XSharp.LanguageService
                         startOfExpression = false;
                         state = CompletionState.Namespaces;
                         continue;
+                    #endregion 
+                    case XSharpLexer.CLASS:
+                    case XSharpLexer.STRUCTURE:
+                    case XSharpLexer.VOSTRUCT:
+                    case XSharpLexer.UNION:
+                    case XSharpLexer.INTERFACE:
+                    case XSharpLexer.ENUM:
+                    case XSharpLexer.DELEGATE:
+                        // After these keywords we expect an ID or a Namespace.ID
+                        startOfExpression = true;
+                        state = CompletionState.Types | CompletionState.Namespaces;
+                        break;
                     case XSharpLexer.COMMA:
                         startOfExpression = true;
                         state = CompletionState.General;
                         break;
                     case XSharpLexer.VAR:
+                    case XSharpLexer.STEP:
                         startOfExpression = true;
                         state = CompletionState.General;
                         break;
@@ -785,7 +836,7 @@ namespace XSharp.LanguageService
                 else if (findMethod)
                 {
                     FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
-                    if (list.Eoi())
+                    if (list.Eoi() && result.Count > 0)
                     {
                         return result;
                     }
@@ -795,8 +846,26 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        symbols.Clear();
-                        break;
+                        // This could be the declaration of a delegate
+                        if (state.HasFlag(CompletionState.Types))
+                        {
+                            var types = SearchType(location, currentName, additionalUsings).Where(t => t.Kind == Kind.Delegate);
+                            if (types.Count() > 0)
+                            {
+                                result.Add(types.First());
+                                symbols.Push(result[0]);
+                            }
+                            else
+                            {
+                                symbols.Clear();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            symbols.Clear();
+                            break;
+                        }
                     }
                 }
                 else if (isId)
@@ -810,6 +879,14 @@ namespace XSharp.LanguageService
                     // but we want to find the type of course
                     if (findType || findConstructor)
                     {
+                        if (currentName.ToLower() == "array" && symbols.Count > 0)
+                        {
+                            var top = symbols.Peek();
+                            if (top.Kind == Kind.Namespace && top.Name == "System")
+                            {
+                                currentName = KnownTypes.SystemArray;
+                            }
+                        }
                         var types = SearchType(location, currentName, additionalUsings);
                         if (types?.Count() > 0)
                         {
@@ -932,7 +1009,7 @@ namespace XSharp.LanguageService
             if (result.Count == 0 && (XSharpLexer.IsKeyword(currentToken.Type) ||
                 XSharpLexer.IsPPKeyword(currentToken.Type) ))
             {
-                ((XSharpToken)currentToken).Text = XSettings.FormatKeyword(currentToken.Text);
+                ((XSharpToken)currentToken).Text = XLiterals.FormatKeyword(currentToken.Text);
                 var sym = new XKeywordSymbol(currentToken.Text);
                 result.Add(sym);
             }
@@ -1327,15 +1404,15 @@ namespace XSharp.LanguageService
                 case XSharpLexer.INT_CONST:
                     if (token.Text.ToUpper().EndsWith("L"))
                     {
-                        result = project.FindSystemType("System.Int32", susings);
+                        result = project.FindSystemType(KnownTypes.SystemInt32, susings);
                     }
                     else if (token.Text.ToUpper().EndsWith("U"))
                     {
-                        result = project.FindSystemType("System.UInt32", susings);
+                        result = project.FindSystemType(KnownTypes.SystemUInt32, susings);
                     }
                     else
                     {
-                        result = project.FindSystemType("System.Int32", susings);
+                        result = project.FindSystemType(KnownTypes.SystemInt32, susings);
                     }
                     break;
                 case XSharpLexer.DATE_CONST:
@@ -1343,28 +1420,28 @@ namespace XSharp.LanguageService
                     result = project.FindSystemType("__Date", xusings);
                     break;
                 case XSharpLexer.DATETIME_CONST:
-                    result = project.FindSystemType("System.DateTime", susings);
+                    result = project.FindSystemType(KnownTypes.SystemDateTime, susings);
                     break;
                 case XSharpLexer.REAL_CONST:
                     if (token.Text.ToUpper().EndsWith("M"))
                     {
-                        result = project.FindSystemType("System.Decimal", susings);
+                        result = project.FindSystemType(KnownTypes.SystemDecimal, susings);
                     }
                     else if (token.Text.ToUpper().EndsWith("S"))
                     {
-                        result = project.FindSystemType("System.Single", susings);
+                        result = project.FindSystemType(KnownTypes.SystemSingle, susings);
                     }
                     else // if (token.Text.ToUpper().EndsWith("D"))
                     {
-                        result = project.FindSystemType("System.Double", susings);
+                        result = project.FindSystemType(KnownTypes.SystemDouble, susings);
                     }
                     break;
                 case XSharpLexer.SYMBOL_CONST:
                 case XSharpLexer.NULL_SYMBOL:
-                    result = project.FindSystemType("__Symbol", xusings);
+                    result = project.FindSystemType(KnownTypes.SymbolType, xusings);
                     break;
                 case XSharpLexer.CHAR_CONST:
-                    result = project.FindSystemType("System.Char", susings);
+                    result = project.FindSystemType(KnownTypes.SystemChar, susings);
                     break;
                 case XSharpLexer.STRING_CONST:
                 case XSharpLexer.ESCAPED_STRING_CONST:
@@ -1374,27 +1451,27 @@ namespace XSharp.LanguageService
                 case XSharpLexer.BRACKETED_STRING_CONST:
                 case XSharpLexer.NULL_STRING:
                 case XSharpLexer.MACRO:
-                    result = project.FindSystemType("System.String", susings);
+                    result = project.FindSystemType(KnownTypes.SystemString, susings);
                     break;
                 case XSharpLexer.BINARY_CONST:
-                    result = project.FindSystemType("__Binary", xusings);
+                    result = project.FindSystemType(KnownTypes.BinaryType, xusings);
                     break;
 
                 case XSharpLexer.NULL_ARRAY:
-                    result = project.FindSystemType("__Array", xusings);
+                    result = project.FindSystemType(KnownTypes.ArrayType, xusings);
                     break;
                 case XSharpLexer.NULL_CODEBLOCK:
-                    result = project.FindSystemType("CodeBlock", xusings);
+                    result = project.FindSystemType(KnownTypes.CodeBlockType, xusings);
                     break;
                 case XSharpLexer.NULL_PSZ:
-                    result = project.FindSystemType("__Psz", xusings);
+                    result = project.FindSystemType(KnownTypes.PszType, xusings);
                     break;
                 case XSharpLexer.NULL_PTR:
-                    result = project.FindSystemType("System.IntPtr", susings);
+                    result = project.FindSystemType(KnownTypes.SystemIntPtr, susings);
                     break;
                 case XSharpLexer.NULL_OBJECT:
                 default:
-                    result = project.FindSystemType("System.Object", susings);
+                    result = project.FindSystemType(KnownTypes.SystemObject, susings);
                     break;
             }
             return result;
@@ -1594,6 +1671,7 @@ namespace XSharp.LanguageService
         internal static IList<IXMemberSymbol> SearchMethod(XSharpSearchLocation location, IXTypeSymbol type, string name, Modifiers minVisibility, bool staticOnly)
         {
             var result = new List<IXMemberSymbol>();
+            var isTicked = name.IndexOfAny(new char[] { '`', '<' }) > 0;
             if (location == null || location.File == null || type == null)
             {
                 return result;
@@ -1609,14 +1687,24 @@ namespace XSharp.LanguageService
 
             WriteOutputMessage($" SearchMethod {type.FullName} , '{name}'");
             IList<IXMemberSymbol> tmp;
+            // when a search does not find a method
+            // then check for a generic method (wihout passing the # of type arguments)
             if (type.IsFunctionsClass)
             {
                 tmp = type.GetMembers(name, true).Where(x => x.Kind == Kind.Function).ToList();
+                if (tmp.Count == 0 && !isTicked)
+                {
+                    tmp = type.GetMembers(name + "`").Where(x => x.Kind == Kind.Function).ToList();
+                }
                 staticOnly = false;
             }
             else
             {
                 tmp = type.GetMembers(name, true).Where(x => x.Kind.IsClassMethod(location.Dialect)).ToList();
+                if (tmp.Count == 0 && !isTicked) 
+                {
+                    tmp = type.GetMembers(name + "`").Where(x => x.Kind.IsClassMethod(location.Dialect)).ToList();
+                }
             }
             foreach (var m in tmp)
             {
@@ -1763,12 +1851,12 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                XSettings.LogMessage(heading + " returns " + results.Count().ToString() + " items");
+                Logger.Information(heading + " returns " + results.Count().ToString() + " items");
                 int i = 0;
                 foreach (var result in results)
                 {
                     ++i;
-                    XSettings.LogMessage($"{i}: {result.Kind} {result.Prototype}");
+                    Logger.Information($"{i}: {result.Kind} {result.Prototype}");
                 }
             }
         }
@@ -1777,7 +1865,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                XSettings.LogMessage("XSharp.Lookup :" + message);
+                Logger.Information("XSharp.Lookup :" + message);
             }
         }
     }

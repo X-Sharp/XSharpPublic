@@ -20,7 +20,6 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
-using XSharpModel;
 using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
@@ -266,7 +265,7 @@ namespace Microsoft.VisualStudio.Project
                     VS.MessageBox.ShowError(title, e.Message);
                 }
 
-                XSettings.LogException(e, "OpenChildren");
+                Logger.Exception(e, "OpenChildren");
                 throw;
             }
             finally

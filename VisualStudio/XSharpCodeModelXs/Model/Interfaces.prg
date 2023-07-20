@@ -65,6 +65,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParameterList  as STRING GET
       PROPERTY Value          AS STRING GET
       PROPERTY Parameters     AS IList<IXParameterSymbol> GET
+      PROPERTY TickedName     AS STRING GET
       PROPERTY TypeParameters AS IList<STRING> GET
       PROPERTY DeclaringType  AS STRING GET
       PROPERTY IsExtension    AS LOGIC GET

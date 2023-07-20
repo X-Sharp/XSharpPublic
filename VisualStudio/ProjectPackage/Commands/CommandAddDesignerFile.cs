@@ -15,7 +15,7 @@ using System.CodeDom.Compiler;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Shell.Interop;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     [Command(PackageIds.idAddDesignerFile)]
@@ -79,7 +79,7 @@ namespace XSharp.Project
                         projectNode = (XSharpProjectNode)xproject.ProjectNode;
                     }
 
-                    Logger.Information($"Reading file data for {currentFile.FullPath} from database");
+                    XSettings.Information($"Reading file data for {currentFile.FullPath} from database");
                     XSharpFileNode fileNode;
                     fileNode = (XSharpFileNode) projectNode.FindChild(currentFile.FullPath);
                     var provider = new VSXSharpCodeDomProvider(fileNode);

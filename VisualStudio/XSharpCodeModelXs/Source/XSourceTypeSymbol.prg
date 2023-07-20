@@ -152,6 +152,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
+
       INTERNAL METHOD SetMembers( list AS  IList<XSourceMemberSymbol>) AS VOID
         SELF:_members:Clear()
         SELF:_members:AddRange(list)
@@ -159,23 +160,19 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
          VAR tempMembers := List<IXMemberSymbol>{}
-          IF elementName:StartsWith("@@")
-                elementName := elementName:Substring(2)
-         ENDIF
          If ! String.IsNullOrEmpty(elementName)
-            tempMembers:AddRange(SELF:_members:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
+            elementName := elementName:GetTickedname()
+            tempMembers:AddRange(SELF:_members:Where({ m => m.TickedName:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
             tempMembers:AddRange(SELF:_members)
          ENDIF
          RETURN tempMembers
 
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
-          IF elementName:StartsWith("@@")
-                elementName := elementName:Substring(2)
-          ENDIF
+         elementName := elementName:GetTickedname()
          IF lExact
             VAR result := List<IXMemberSymbol>{}
-            result:AddRange(SELF:_members:Where ({ m => m.Name:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
+            result:AddRange(SELF:_members:Where ({ m => m.TickedName:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
             RETURN result
          ELSE
             RETURN SELF:GetMembers(elementName)

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
-
+using XSharp.Settings;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {

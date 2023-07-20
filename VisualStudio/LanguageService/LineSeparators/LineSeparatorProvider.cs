@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
-using XSharpModel;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {

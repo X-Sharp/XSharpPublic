@@ -3,12 +3,10 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using XSharpModel;
-using System.Data.Common;
 using EditorConfig.Core;
 using Microsoft.VisualStudio.Text;
-using Community.VisualStudio.Toolkit;
 using System.Text;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {

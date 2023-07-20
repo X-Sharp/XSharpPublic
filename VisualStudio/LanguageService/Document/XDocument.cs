@@ -11,7 +11,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using XSharpModel;
-
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -30,7 +29,7 @@ namespace XSharp.LanguageService
             _tokensPerLine = new Dictionary<int, IList<IToken>>();
             _lineKeywords = new XSharpLineKeywords();
             _lineState = new XSharpLineState();
-            _identifiers = new ConcurrentDictionary<string,string>(StringComparer.OrdinalIgnoreCase);
+            _identifiers = new ConcurrentDictionary<string, IList<IToken>>(StringComparer.OrdinalIgnoreCase);
             NeedsKeywords = false;
         }
 
@@ -41,7 +40,7 @@ namespace XSharp.LanguageService
         private XSharpLineState _lineState;
         private XSharpLineKeywords _lineKeywords;
         private ITextSnapshot _snapShot;
-        private ConcurrentDictionary<string, string> _identifiers;
+        private ConcurrentDictionary<string, IList<IToken>> _identifiers;
         private ITextBuffer _buffer;
         private IList<XSourceBlock> _blocks;
 
@@ -53,7 +52,7 @@ namespace XSharp.LanguageService
         internal Dictionary<int, IList<IToken>> TokensPerLine => _tokensPerLine;
         internal XSharpLineState LineState => _lineState;
         internal XSharpLineKeywords LineKeywords => _lineKeywords;
-        internal IDictionary<string, string> Identifiers => _identifiers;
+        internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
         internal bool NeedsKeywords { get; set; }
         #endregion
@@ -62,7 +61,19 @@ namespace XSharp.LanguageService
         {
             return LineState.Get(line, out var flags ) && flags.HasFlag(flag);
         }
-
+        internal bool LineAfterAttribute(int line)
+        {
+            while (line > 0)
+            {
+                line -= 1;
+                LineState.Get(line, out var flags);
+                if (flags.HasFlag(LineFlags.StartsWithAttribute))
+                    return true;
+                if (!flags.HasFlag(LineFlags.IsContinued))
+                    return false;
+            }
+            return false;
+        }
         internal void SetTokens(Dictionary<int, IList<IToken>> tokens)
         {
             lock (this)
@@ -92,7 +103,7 @@ namespace XSharp.LanguageService
                 _lineKeywords = keywords;
             }
         }
-        internal void SetIdentifiers(ConcurrentDictionary<string, string> ids)
+        internal void SetIdentifiers(ConcurrentDictionary<string, IList<IToken>> ids)
         {
             lock (this)
             {
@@ -120,14 +131,27 @@ namespace XSharp.LanguageService
         {
             return _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
         }
-
-        internal IList<IToken> GetTokensInLine(int lineNo)
+        /// <summary>
+        /// Returns token in the line, and when the line is continued also from the continued line
+        /// </summary>
+        /// <param name="lineNo">Starting Line Number</param>
+        /// <returns>Tokens from the line and the lines following it when the statement is spread over multiple lines</returns>
+        internal IList<IToken> GetTokensInLineAndFollowing(int lineNo)
         {
             var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
-            return GetTokensInLine(line);
+            var result = GetTokensInSingleLine(line, true);
+            lineNo += 1;
+            while (HasLineState(lineNo, LineFlags.IsContinued))
+            {
+                line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
+                var temp = GetTokensInSingleLine(line, true);
+                result.AddRange(temp);
+                lineNo += 1;
+            }
+            return result;
         }
 
-        internal IList<IToken> GetTokensInLine(ITextSnapshotLine line, bool allowCached = true)
+        internal IList<IToken> GetTokensInSingleLine(ITextSnapshotLine line, bool allowCached)
         {
             List<IToken> tokens = new List<IToken>(); ;
             if (line.Length == 0)
@@ -180,7 +204,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "GetTokens");
+                Logger.Exception(e, "GetTokens");
             }
             return tokens;
         }

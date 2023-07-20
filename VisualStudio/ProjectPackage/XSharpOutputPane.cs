@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 using Microsoft;
 using Community.VisualStudio.Toolkit;
+using XSharp.Settings;
 
 namespace XSharp.Project
 {
@@ -29,7 +30,7 @@ namespace XSharp.Project
         }
         internal async static Task DisplayOutputMessageAsync(string message)
         {
-            if (!XSharpModel.XSettings.EnableOutputWindowLogging)
+            if (!XSettings.EnableOutputWindowLogging)
                 return;
             if (! busy && pane == null)
             {

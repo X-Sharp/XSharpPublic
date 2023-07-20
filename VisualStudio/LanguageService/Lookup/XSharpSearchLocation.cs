@@ -127,7 +127,7 @@ namespace XSharp.LanguageService
                 }
                 if (ns?.Length > 0)
                 {
-                    var elements = ns.Split(".".ToCharArray());
+                    var elements = ns.Split(new char[] { '.',});
                     ns = "";
                     for (int i = 0; i < elements.Length; i++)
                     {

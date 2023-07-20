@@ -25,7 +25,7 @@ using XSharpModel;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Imaging;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     /// <summary>
@@ -216,7 +216,7 @@ namespace XSharp.Project
                 if (pos > 0)
                 {
                     source = source.Substring(pos + token.Length);
-                    var words = source.Split(";\t \r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    var words = source.Split(new char[] { ';', '\t', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     if (words.Length > 0)
                     {
                         var parentclass = words[0].ToLower();
@@ -390,7 +390,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "AddDependant failed");
+                Logger.Exception(e, "AddDependant failed");
             }
             dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 

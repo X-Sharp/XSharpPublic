@@ -8,6 +8,7 @@ USING XSharpModel
 USING System.Diagnostics
 USING System.Collections.Generic
 USING LanguageService.SyntaxTree
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 /// <summary>An symbol in the source code. Can be an entity but also a local or parameter</summary>

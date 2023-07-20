@@ -5,9 +5,44 @@
 //
 
 USING System
+using XSharp.Settings
 BEGIN NAMESPACE XSharpModel
 
 STATIC CLASS XFileTypeHelpers
+
+    STATIC METHOD GetXSharpTypeName( SELF sysType AS Mono.Cecil.TypeReference) AS STRING
+        var fullName := sysType:FullName
+        IF (fullName == NULL)
+            fullName := sysType:Name
+        ENDIF
+        local suffix := TypeExtensions.GetTypeSuffix(ref fullName) as string
+        fullName := fullName:GetXSharpTypeName()
+        // Maybe it's a Raw format ?
+        LOCAL genMarker := fullName:IndexOf('`') AS INT
+        IF (genMarker > -1)
+            // First extract the type
+            LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
+            VAR genericString := "<"
+            VAR GenericParameters := sysType:GenericParameters
+            LOCAL first := TRUE AS LOGIC
+            FOREACH VAR genArg IN GenericParameters
+                IF first
+                    genericString += genArg:Name
+                    first := FALSE
+                ELSE
+                    genericString += "," + genArg:Name
+                ENDIF
+            NEXT
+            //
+            genericString += ">"
+            fullName := genTypeName + genericString
+        ENDIF
+        if suffix:Length > 0
+            fullName += suffix
+        endif
+        RETURN fullName
+
+
     // Methods
     STATIC METHOD GetFileType(filename AS STRING) AS XFileType
 

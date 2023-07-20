@@ -10,6 +10,7 @@ USING System.Collections.Generic
 USING System.Collections
 USING System.IO
 USING XSharpModel
+using XSharp.Settings
 
 ENUM ViewMode
     MEMBER Auto
@@ -1432,6 +1433,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                         cMap := VOWindowEditorTemplate.GetAssignMap(oProp:cMember)
                         DO CASE
                         CASE oProp:lMethod
+                            nop
                         CASE cMap == NULL
                             cValue := oProp:cMember + "{ " + cValue + " }"
                         CASE cMap:Length != 0
@@ -1447,6 +1449,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                         ENDIF
                         DO CASE
                         CASE oProp:lMethod .AND. (oProp:cMember == NULL .OR. oProp:cMember:ToUpper() != "FONT")
+                            nop
                         CASE cMap == NULL
                             cValue := oProp:cMember + "{ " + cValue + " }"
                         CASE cMap:Length != 0
@@ -1866,7 +1869,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             ENDIF
 
         CATCH e AS Exception
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
 
             MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
             lSuccess := FALSE
@@ -2264,6 +2267,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                             oItem := (DesignWindowItem)aSorted[n]
                             DO CASE
                             CASE SELF:aSelected:Contains(oItem)
+                                nop
                             CASE n == nTargetIndex
                                 IF !lLeft
                                     aNewOrder:Add(oItem)
@@ -4175,6 +4179,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             cLine := oStream:ReadLine():Trim()
             DO CASE
             CASE cLine:StartsWith(";")
+                nop
             CASE cLine:StartsWith("[") .AND. cLine:EndsWith("]")
                 oTemplate := TemplateCode{cLine:Substring(1, cLine:Length - 2)}
                 aTpl:Add(oTemplate)

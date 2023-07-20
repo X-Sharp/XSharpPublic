@@ -19,7 +19,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using XSharpModel;
 using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildConstruction = Microsoft.Build.Construction;
 
@@ -1148,7 +1147,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "DebugLaunch");
+                Logger.Exception(e, "DebugLaunch");
                 return Marshal.GetHRForException(e);
             }
 
@@ -1448,7 +1447,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Build");
+                Logger.Exception(e, "Build");
                 this.BuildCoda(new BuildResult(MSBuildResult.Failed, null, null), output, shouldRepaintReferences);
                 throw;
             }

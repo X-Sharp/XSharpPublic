@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class GeneratorOptionsControl : XSUserControl
@@ -8,19 +9,20 @@ namespace XSharp.LanguageService.OptionsPages
         public GeneratorOptionsControl()
         {
             InitializeComponent();
+            chkShowXMLComments.Tag = nameof(GeneratorOptions.ShowXmlComments); 
             rbExport.Tag = nameof(PublicStyle.Export);
             rbPublic.Tag = nameof(PublicStyle.Public);
             rbNone.Tag = nameof(PublicStyle.None);
             rbPrivate.Tag = nameof(PrivateStyle.Private);
             rbHidden.Tag = nameof(PrivateStyle.Hidden);
         }
-        internal GeneratorOptionsPage OurOptionsPage => (GeneratorOptionsPage) optionPage;
 
-        internal override void ReadValues()
+        internal override void ReadValues(object options)
         {
-            base.ReadValues();
+            GeneratorOptionsPage OurOptionsPage = (GeneratorOptionsPage)optionPage;
+            base.ReadValues(options);
 
-            switch (OurOptionsPage.PublicStyle)
+            switch (OurOptionsPage.Options.PublicStyle)
             {
                 case 1:
                     rbExport.Checked = true;
@@ -32,7 +34,7 @@ namespace XSharp.LanguageService.OptionsPages
                     rbPublic.Checked = true;
                     break;
             }
-            switch (OurOptionsPage.PrivateStyle)
+            switch (OurOptionsPage.Options.PrivateStyle)
             {
                 case 1:
                     rbHidden.Checked = true;
@@ -42,9 +44,9 @@ namespace XSharp.LanguageService.OptionsPages
                     break;
             }
         }
-        internal override void SaveValues()
+        internal override void SaveValues(object options)
         {
-            base.SaveValues();
+            base.SaveValues(options);
             var controls = new RadioButton[] { rbExport, rbNone, rbPublic, rbPrivate, rbHidden };
             foreach (var rb in controls)
             {
@@ -56,11 +58,11 @@ namespace XSharp.LanguageService.OptionsPages
                         case nameof(PublicStyle.Export):
                         case nameof(PublicStyle.Public):
                         case nameof(PublicStyle.None):
-                            OurOptionsPage.PublicStyle = (int)(PublicStyle)Enum.Parse(typeof(PublicStyle), strTag);
+                            ((GeneratorOptions) options).PublicStyle = (int)(PublicStyle)Enum.Parse(typeof(PublicStyle), strTag);
                             break;
                         case nameof(PrivateStyle.Private):
                         case nameof(PrivateStyle.Hidden):
-                            OurOptionsPage.PrivateStyle = (int)(PrivateStyle)Enum.Parse(typeof(PrivateStyle), strTag);
+                            ((GeneratorOptions)options).PrivateStyle = (int)(PrivateStyle)Enum.Parse(typeof(PrivateStyle), strTag);
                             break;
                     }
                 }

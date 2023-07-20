@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL prefix AS STRING
             prefix := "PARAMETER "
             VAR result := prefix + SELF:Prototype
-            result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
+            result += ParamTypeDesc + SELF:TypeName
             RETURN result
          END GET
       END PROPERTY

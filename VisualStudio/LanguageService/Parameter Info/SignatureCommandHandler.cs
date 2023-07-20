@@ -22,7 +22,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
 using XSharpModel;
-
+using XSharp.Settings;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
@@ -245,6 +245,8 @@ namespace XSharp.LanguageService
                     }
                     curLine = line;
                 }
+                if (ssp.Position == 0)
+                    break;
                 ssp = ssp - 1;
                 var ch = ssp.GetChar();
                 {
@@ -603,7 +605,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Start Signature session failed:");
+                Logger.Exception(e, "Start Signature session failed:");
             }
             //
 
@@ -665,7 +667,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.ParameterInfo:" + strMessage);
+                Logger.Information("XSharp.ParameterInfo:" + strMessage);
             }
         }
 

@@ -7,8 +7,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-USING XSharpModel
-
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
@@ -151,7 +150,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
             ENDIF
 
         CATCH e AS Exception
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
 
             XFuncs.WarningBox(e:Message )
             lSuccess := FALSE

@@ -5,8 +5,7 @@ namespace XSharp.LanguageService.OptionsPages
 {
     public partial class IndentingOptionsControl : XSUserControl
     {
-
-        private IndentingOptionsPage OurOptionPage => (IndentingOptionsPage)optionPage;
+        private IndentingOptions Options => (IndentingOptions) optionPage.AutomationObject;
         public IndentingOptionsControl()
         {
             InitializeComponent();
@@ -62,8 +61,9 @@ namespace XSharp.LanguageService.OptionsPages
             ShowCodeSample(e.Node);
         }
 
-        internal override void ReadValues()
+        internal override void ReadValues(object options)
         {
+            base.ReadValues(options);
             foreach (TreeNode tvi in this.treeIndentStyle.Nodes)
             {
                 ReadItem(tvi);
@@ -82,10 +82,10 @@ namespace XSharp.LanguageService.OptionsPages
                 if (tags.Length > 0)
                 {
                     var strTag = tags[0];
-                    var prop = optionPage.GetType().GetProperty(strTag);
+                    var prop = typeof(IndentingOptions).GetProperty(strTag);
                     if (prop != null)
                     {
-                        var val = prop.GetValue(optionPage);
+                        var val = prop.GetValue(Options);
                         if (val is bool bValue)
                         {
                             tvi.Checked = bValue;
@@ -95,8 +95,9 @@ namespace XSharp.LanguageService.OptionsPages
             }
         }
 
-        internal override void SaveValues()
+        internal override void SaveValues(object options)
         {
+            base.SaveValues(options);
             foreach (TreeNode tvi in this.treeIndentStyle.Nodes)
             {
                 SaveItem(tvi);
@@ -115,10 +116,10 @@ namespace XSharp.LanguageService.OptionsPages
                 if (tags.Length > 0)
                 {
                     var strTag = tags[0];
-                    var prop = optionPage.GetType().GetProperty(strTag);
+                    var prop = typeof(IndentingOptions).GetProperty(strTag);
                     if (prop != null && prop.SetMethod != null)
                     {
-                        prop.SetValue(optionPage, tvi.Checked);
+                        prop.SetValue(Options, tvi.Checked);
                     }
                 }
             }

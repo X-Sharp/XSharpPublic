@@ -18,7 +18,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
-using XSharpModel;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Shell;
 
@@ -549,7 +548,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected bool CanEditFile(string documentMoniker)
         {
-            XSettings.LogMessage(String.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
+            Logger.Information(String.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
 
             // Check the status of the recursion guard
             if (this.gettingCheckoutStatus)

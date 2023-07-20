@@ -21,7 +21,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
 using System.Linq;
 using XSharpModel;
-
+using XSharp.Settings;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
 {
@@ -266,13 +266,13 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.Formatting:" + strMessage);
+                Logger.Information("XSharp.Formatting:" + strMessage);
             }
         }
         private void adjustWhiteSpace()
         {
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ()=>
             {
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -398,7 +398,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var editSession = _buffer.CreateEdit();

@@ -13,7 +13,7 @@ using XSharp.CodeDom;
 using System.CodeDom.Compiler;
 using Microsoft;
 using Microsoft.VisualStudio.Project;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
 
@@ -296,7 +296,7 @@ namespace XSharp.Project
                 //
                 // Backup original Form file and Form.Designer file
                 //
-                if (XSharpModel.XCustomEditorSettings.BackupFormFiles)
+                if (XCustomEditorSettings.BackupFormFiles)
                 {
                     if (File.Exists(prgFileName))
                     {
@@ -376,7 +376,7 @@ namespace XSharp.Project
         }
         void WriteOutputMessage(string msg)
         {
-            XSharpModel.XSolution.WriteOutputMessage("XCodeDom: " + msg);
+            XSettings.Information("XCodeDom: " + msg);
         }
     }
 }

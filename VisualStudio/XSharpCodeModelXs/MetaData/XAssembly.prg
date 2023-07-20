@@ -8,7 +8,7 @@ USING System
 USING System.IO
 USING System.Linq
 USING System.Diagnostics
-
+using XSharp.Settings
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DisplayName,nq}")];
    CLASS XAssembly
@@ -197,6 +197,7 @@ BEGIN NAMESPACE XSharpModel
             WriteOutputMessage(e:ToString())
          FINALLY
             //WriteOutputMessage("<-- AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
+                NOP
          END TRY
       // Properties
       PROPERTY DisplayName AS STRING
@@ -230,7 +231,7 @@ BEGIN NAMESPACE XSharpModel
 
 
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-         XSolution.WriteOutputMessage("XModel.XAssembly " +message )
+         XSettings.Information("XModel.XAssembly " +message )
 
       METHOD FindExtensionMethodsForType(typeName AS STRING) AS IList<IXMemberSymbol>
          VAR result := List<IXMemberSymbol>{}

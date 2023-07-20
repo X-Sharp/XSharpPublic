@@ -9,6 +9,7 @@ USING System.Drawing
 USING System.Runtime.InteropServices
 USING System.IO
 using System.Xml
+using XSharp.Settings
 
 
 INTERNAL _DLL FUNCTION GetDialogBaseUnits() AS LONG PASCAL:USER32.GetDialogBaseUnits
@@ -165,8 +166,8 @@ PUBLIC STATIC PARTIAL CLASS Funcs
         oRect:Height :=(INT)((REAL8(oRect:Height * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
 
         LOCAL ix, iy AS REAL8
-        ix := XSharpModel.XCustomEditorSettings.SizeAdjustmentX
-        iy := XSharpModel.XCustomEditorSettings.SizeAdjustmentY
+        ix := XSharp.Settings.XCustomEditorSettings.SizeAdjustmentX
+        iy := XSharp.Settings.XCustomEditorSettings.SizeAdjustmentY
         IF ix > 0.1 .and. iy > 0.1 .and. ix < 10.0  .and. iy < 10.0
             LOCAL x := 0.75, y := 0.812 AS REAL8
             x := ix // (REAL8)ix / 1000.0

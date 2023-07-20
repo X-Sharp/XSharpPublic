@@ -7,15 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using XSharp.Settings;
 using XSharpModel;
 
 namespace XSharp.Project
 {
     internal class XSharpShellLink : IXVsShellLink
     {
-
-        bool building;
-        bool success;
+        static ILogger Logger => XSettings.Logger;
 
         static bool hasEnvironmentvariable = false;
         static XSharpShellLink()
@@ -44,7 +43,7 @@ namespace XSharp.Project
                 VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
-                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
@@ -57,31 +56,13 @@ namespace XSharp.Project
 
         }
 
+        #region DesignerWindows
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             SaveDesignerWindows();
             return CommandProgression.Continue;
         }
-
-        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            RestoreDesignerWindows();
-        }
-
-        private void ShellEvents_ShutdownStarted()
-        {
-            Logger.SingleLine();
-            Logger.Information("Shutdown VS");
-            Logger.SingleLine();
-        }
-
-        private void DocumentEvents_Opened(string strDocument)
-        {
-            Logger.Information("Opened " + strDocument);
-        }
-
 
         private void SaveDesignerWindows()
         {
@@ -94,13 +75,14 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             GetAllDesignerWindows(true);
         }
+
         private List<string> GetAllDesignerWindows(bool close = false)
         {
             var files = new List<string>();
             ThreadHelper.ThrowIfNotOnUIThread();
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                
+
                 var documents = await VS.Windows.GetAllDocumentWindowsAsync();
                 foreach (var doc in documents.ToArray())
                 {
@@ -140,7 +122,7 @@ namespace XSharp.Project
                     CloseAllDesignerWindows();
                 }
                 var selection = await VS.Solutions.GetActiveItemsAsync();
-                if (files.Count > 0  )
+                if (files.Count > 0)
                 {
                     foreach (var file in files)
                     {
@@ -175,34 +157,70 @@ namespace XSharp.Project
             });
         }
 
+
+
+        #endregion
+
+ 
+        private void ShellEvents_ShutdownStarted()
+        {
+            XSolution.IsClosing = true;
+            XSolution.IsShuttingDown = true;
+            XSolution.Close();
+
+            Logger.SingleLine();
+            Logger.Information("Shutdown VS");
+            Logger.SingleLine();
+        }
+
+        #region Project Events
+
         private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
         {
-            Logger.SingleLine();
-            Logger.Information("Renamed project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
+            if (IsXSharpProject(project?.FullPath))
+            {
+                Logger.SingleLine();
+                Logger.Information("Renamed project: " + project?.FullPath ?? "");
+                Logger.SingleLine();
+            }
         }
 
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
-            Logger.SingleLine();
-            Logger.Information("Closing project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
+            if (IsXSharpProject(project?.FullPath))
+            {
+                Logger.SingleLine();
+                Logger.Information("Closing project: " + project.FullPath ?? "");
+                Logger.SingleLine();
+            }
 
         }
 
         private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
-            Logger.SingleLine();
-            Logger.Information("Opened project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
+            if (IsXSharpProject(project?.FullPath))
+            {
+                Logger.SingleLine();
+                Logger.Information("Opened project: " + project.FullPath ?? "");
+                Logger.SingleLine();
+            }
         }
 
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
-            Logger.SingleLine();
-            Logger.Information("Opening project: " + projectFileName ?? "");
-            Logger.SingleLine();
-            checkProjectFile(projectFileName);
+            if (IsXSharpProject(projectFileName))
+            {
+                Logger.SingleLine();
+                Logger.Information("Before Opening project: " + projectFileName ?? "");
+                Logger.SingleLine();
+                checkProjectFile(projectFileName);
+            }
+        }
+        bool IsXSharpProject(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return false;
+            return string.Equals(Path.GetExtension(fileName), ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
@@ -257,6 +275,7 @@ namespace XSharp.Project
                 }
             }
         }
+
         public static bool DeleteFileSafe(string fileName)
         {
             try
@@ -276,10 +295,43 @@ namespace XSharp.Project
             return true;
 
         }
+        #endregion
+
+        #region Solution Events
+
+        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            RestoreDesignerWindows();
+        }
 
         string solutionName = "";
         private void SolutionEvents_OnBeforeCloseSolution()
         {
+            bool hasXsProject = XSolution.Projects.Count > 0;
+            XSolution.IsClosing = true;
+            XSolution.Close();
+            // close OUR documents that are opened in design mode.
+            if (!hasXsProject)
+            {
+                return;
+            }
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var frames = await VS.Windows.GetAllDocumentWindowsAsync();
+                if (frames != null)
+                {
+                    foreach (var frame in frames.ToList())
+                    {
+                        if (frame.Caption.EndsWith("]"))
+                        {
+                            // no need to save here. VS has shown a dialog with the dirty files already
+                            await frame.CloseFrameAsync(FrameCloseOption.NoSave);
+                        }
+                    }
+                }
+            });
+
             Logger.SingleLine();
             Logger.Information("Closing solution: " + solutionName);
             Logger.SingleLine();
@@ -287,7 +339,7 @@ namespace XSharp.Project
 
         private void SolutionEvents_OnAfterCloseSolution()
         {
-
+            XSolution.IsClosing = false;
             Logger.SingleLine();
             Logger.Information("Closed solution: " + solutionName);
             Logger.SingleLine();
@@ -318,32 +370,9 @@ namespace XSharp.Project
             Logger.SingleLine();
             solutionName = solutionFileName;
         }
+        #endregion
 
-        private void BuildEvents_SolutionBuildCancelled()
-        {
-            building = false;
-            // Start or Resume the model walker
-            XSharpModel.ModelWalker.Start();
-        }
-
-        private void BuildEvents_SolutionBuildDone(bool result)
-        {
-            building = false;
-            success = result;
-            // Start or Resume the model walker
-            XSharpModel.ModelWalker.Start();
-        }
-
-        private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
-        {
-            building = true;
-            if (XSharpModel.ModelWalker.IsRunning)
-            {
-                // Do not walk while building
-                XSharpModel.ModelWalker.Suspend();
-            }
-        }
-
+        #region StatusBar and Messages
         public void SetStatusBarAnimation(bool onOff, short id)
         {
             if (onOff)
@@ -368,18 +397,9 @@ namespace XSharp.Project
             string title = string.Empty;
             return (int)VS.MessageBox.Show(title, message);
         }
+        #endregion
 
-        public void LogException(Exception ex, string msg)
-        {
-            Logger.Exception(ex, msg);
-            XSharpOutputPane.DisplayException(ex);
-        }
-
-        public void LogMessage(string message)
-        {
-            Logger.Information(message);
-            XSharpOutputPane.DisplayOutputMessage(message);
-        }
+        #region Documents
 
         /// <summary>
         /// Open a document with 0 based line numbers
@@ -393,6 +413,8 @@ namespace XSharp.Project
         {
             try
             {
+                Logger.Information("OpenDocumentAsync: {file} {line} {column} {preview}");
+
                 DocumentView view;
                 if (preview)
                 {
@@ -449,7 +471,7 @@ namespace XSharp.Project
             });
         }
         /// <summary>
-        /// OPen a document with 0 based line/column numbers
+        /// Open a document with 0 based line/column numbers
         /// </summary>
         /// <param name="file"></param>
         /// <param name="line"></param>
@@ -460,9 +482,25 @@ namespace XSharp.Project
             OpenDocumentAsync(file, line, column, preview).FireAndForget();
         }
 
+        #endregion
+
+        #region BuildEvents
         public bool IsVsBuilding => building;
-        public bool LastBuildResult => success;
+        private void BuildEvents_SolutionBuildCancelled()
+        {
+            building = false;
+        }
+        bool building;
 
+        private void BuildEvents_SolutionBuildDone(bool result)
+        {
+            building = false;
+        }
 
+        private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
+        {
+            building = true;
+        }
+        #endregion
     }
 }

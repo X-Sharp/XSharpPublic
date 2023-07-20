@@ -39,7 +39,10 @@ namespace XSharp.LanguageService
         /// This line contains a preprocessor instruction
         /// </summary>
         Preprocessor = 1 << 7,
-
+        /// <summary>
+        /// This line starts with an attribute
+        /// </summary>
+        StartsWithAttribute = 1 << 8,
     }
     /// <summary>
     /// This class keeps the state for 0 based line numbers

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -63,7 +64,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (XSettings.EnableLogging)
             {
                 var prefix = this.GetType().FullName;
-                XSettings.LogMessage(prefix+":" + strMessage);
+                Logger.Information(prefix+":" + strMessage);
             }
         }
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)

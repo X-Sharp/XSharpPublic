@@ -9,7 +9,7 @@ USING System.Linq
 USING System
 USING System.IO
 USING System.Reflection
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 	/// <summary>
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD GetTickedTypeName(typeName as STRING) AS STRING
            IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 				IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
-					VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
+					VAR elements := typeName:Split(<CHAR>{'<',',','>'}, System.StringSplitOptions.RemoveEmptyEntries)
 					VAR num := (elements:Length - 1)
 					typeName := elements[ 1] + "`" + num:ToString()
 				ELSE
@@ -113,12 +113,12 @@ BEGIN NAMESPACE XSharpModel
 						typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
 						pos := typeParams:IndexOf("<")
 					ENDDO
-					VAR elements := typeParams:Split(",":ToCharArray())
+					VAR elements := typeParams:Split(<Char>{','})
 					typeName := baseName + "`" + elements:Length:ToString()
 				ENDIF
             ENDIF
-            IF typeName:EndsWith("[]")
-                RETURN "System.Array"
+            IF typeName:EndsWith("]") .and. typeName:Contains("[")
+                RETURN KnownTypes.SystemArray
             ENDIF
             RETURN typeName
 
@@ -163,7 +163,7 @@ BEGIN NAMESPACE XSharpModel
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
 			CATCH e AS Exception
-				XSolution.WriteException(e,__FUNCTION__)
+				XSettings.Exception(e,__FUNCTION__)
 				result := NULL
             FINALLY
                 lastSearch := ""
@@ -241,7 +241,7 @@ BEGIN NAMESPACE XSharpModel
 			//GC.Collect()
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
+			XSettings.Information("XModel.Typecontroller "+message)
 
 		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMemberSymbol>
 			// First Search for a system Type

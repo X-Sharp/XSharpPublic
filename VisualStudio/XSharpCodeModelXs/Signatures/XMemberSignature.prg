@@ -7,6 +7,7 @@ USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharpModel
 USING System.Linq
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];

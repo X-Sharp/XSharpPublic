@@ -70,8 +70,8 @@ namespace XSharp.LanguageService
             }
 
             // 2. Let others do their thing
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-             {
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
+            {
                  await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                  hresult = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
@@ -99,7 +99,7 @@ namespace XSharp.LanguageService
             }
             int result = 0;
             var cmdGroup = pguidCmdGroup;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 result = Next.QueryStatus(cmdGroup, cCmds, prgCmds, pCmdText);

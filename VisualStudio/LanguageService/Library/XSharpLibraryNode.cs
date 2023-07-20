@@ -27,7 +27,7 @@ using XSharpModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
 
@@ -625,7 +625,7 @@ namespace XSharp.LanguageService
 
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -679,7 +679,7 @@ namespace XSharp.LanguageService
                 if (member.Kind != Kind.Field)
                 {
                     VSOBDESCRIPTIONSECTION descName = VSOBDESCRIPTIONSECTION.OBDS_MISC;
-                    descText = XSettings.FormatKeyword(member.Kind.DisplayName()) + " ";
+                    descText = XLiterals.FormatKeyword(member.Kind.DisplayName()) + " ";
                     if (member.Kind == Kind.Constructor)
                     {
                         descName = VSOBDESCRIPTIONSECTION.OBDS_NAME;
@@ -792,7 +792,7 @@ namespace XSharp.LanguageService
             {
                 if (string.IsNullOrEmpty(fileMoniker))
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

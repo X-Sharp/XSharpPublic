@@ -1,12 +1,9 @@
 ﻿using Microsoft.VisualStudio.Text;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     class DocFormatter
@@ -232,9 +229,17 @@ namespace XSharp.LanguageService
                     if (!singleLineEntityStart && !_lineKeywords.ContainsKey(lineNumber) )
                     {
                         // check for continuation
-                        if (_settings.IndentContinuedLines && _document.HasLineState(lineNumber, LineFlags.IsContinued))
+                        if (_settings.IndentContinuedLines &&
+                            _document.HasLineState(lineNumber, LineFlags.IsContinued) )
                         {
-                            _expectedIndent[lineNumber] = _indentSize + 1;
+                            if (_document.LineAfterAttribute(lineNumber))
+                            {
+                                _expectedIndent[lineNumber] = _indentSize ;
+                            }
+                            else
+                            {
+                                _expectedIndent[lineNumber] = _indentSize + 1;
+                            }
                         }
                         continue;
                     }

@@ -1,15 +1,15 @@
-using System;
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using System.CodeDom;
-using System.Collections.Generic;
-
 using EnvDTE;
-
-using CodeNamespace = EnvDTE.CodeNamespace;
 using System.Diagnostics.CodeAnalysis;
 
 namespace XSharp.Project.FileCodeModel
 {
-	class CodeDomCodeVariant : CodeDomCodeClass
+    class CodeDomCodeVariant : CodeDomCodeClass
 	{
 		[SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "0#dte")]
 		public CodeDomCodeVariant(DTE dte, CodeElement parent, string name, object bases, object interfaces, vsCMAccess access)

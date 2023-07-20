@@ -20,7 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -128,7 +128,7 @@ namespace XSharp.LanguageService
             ClassifyBuffer();
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
-            LexAsync().FireAndForget();
+            var x = ThreadHelper.JoinableTaskFactory.RunAsync(LexAsync);
 
         }
 
@@ -174,7 +174,7 @@ namespace XSharp.LanguageService
         }
         public async Task ForceClassifyAsync()
         {
-            await LexAsync();
+            var _ = await LexAsync();
         }
         public async Task ClassifyWhenNeededAsync()
         {
@@ -183,23 +183,22 @@ namespace XSharp.LanguageService
             {
                 if (xDocument == null || xDocument.SnapShot.Version != _buffer.CurrentSnapshot.Version)
                 {
-                    await LexAsync();
+                    var _ = await LexAsync();
                 }
             }
         }
-        private async Task LexAsync()
+        private async Task<bool> LexAsync()
         {
             var success = false;
             //await TaskScheduler.Default;
             try
             {
                 IsLexing = true;
-                ClassifyBuffer();
-                success = true;
+                success = ClassifyBuffer();
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "LexAsync");
+                Logger.Exception(ex, "LexAsync");
             }
             finally
             {
@@ -207,26 +206,25 @@ namespace XSharp.LanguageService
                 IsStarted = false;
                 if (success)
                 {
-                    await ParseAsync();
+                    success = await ParseAsync();
                 }
             }
+            return success;
         }
         public void Parse()
         {
             XDocument xDocument = GetDocument();
             if (xDocument != null)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ParseAsync();
-                });
+                var _= ThreadHelper.JoinableTaskFactory.RunAsync(ParseAsync);
             }
         }
 
-        private void ClassifyBuffer()
+        private bool ClassifyBuffer()
         {
+            bool result = false;
             if (XEditorSettings.DisableSyntaxHighlighting)
-                return;
+                return result;
             var snapshot = _buffer.CurrentSnapshot;
             XDocument xDocument = GetDocument();
             if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version)
@@ -253,14 +251,15 @@ namespace XSharp.LanguageService
             }
             BuildColorClassifications();
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            return;
+            result = true;
+            return result;
         }
 
         private void TriggerRepaint(ITextSnapshot snapshot)
         {
             if (ClassificationChanged != null)
             {
-                XSettings.LogMessage("-->> XSharpClassifier.triggerRepaint()");
+                Logger.Information("-->> XSharpClassifier.triggerRepaint()");
                 if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
                     // tell the editor that we have new info
@@ -270,7 +269,7 @@ namespace XSharp.LanguageService
                                 new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                     }
                 }
-                XSettings.LogMessage("<<-- XSharpClassifier.triggerRepaint()");
+                Logger.Information("<<-- XSharpClassifier.triggerRepaint()");
             }
         }
 
@@ -278,23 +277,23 @@ namespace XSharp.LanguageService
 
 #region Parser Methods
 
-        private async Task ParseAsync()
+        private async Task<bool> ParseAsync()
         {
             if (XSettings.DisableEntityParsing)
-                return;
+                return false;
             if (IsLexing)
-                return;
+                return false;
             await TaskScheduler.Current;
             var snapshot = _buffer.CurrentSnapshot;
             var xDocument = GetDocument();
             if (xDocument == null) // should not happen
-                return;
+                return false;
             if (xDocument.SnapShot != snapshot)
             {
-                XSettings.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
-                return;
+                Logger.Information($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
+                return false;
             }
-            XSettings.LogMessage("-->> XSharpClassifier.ParseAsync()");
+            Logger.Information("-->> XSharpClassifier.ParseAsync()");
             // Note this runs in the background
             if (xDocument.Tokens != null)
             {
@@ -312,7 +311,8 @@ namespace XSharp.LanguageService
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.ParseAsync()");
+            Logger.Information("<<-- XSharpClassifier.ParseAsync()");
+            return true;
         }
 #endregion
 
@@ -358,7 +358,7 @@ namespace XSharp.LanguageService
             {
                 return new List<ClassificationSpan>();
             }
-            XSettings.LogMessage("-->> XSharpClassifier.BuildRegionTags()");
+            Logger.Information("-->> XSharpClassifier.BuildRegionTags()");
             var regions = new List<ClassificationSpan>();
             foreach (var entity in entities)
             {
@@ -411,7 +411,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.BuildRegionTags()");
+            Logger.Information("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;
         }
         private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int startPos, int endPos)
@@ -426,12 +426,14 @@ namespace XSharp.LanguageService
                 }
                 if (startPos < snapshot.Length)
                 {
-                    int nLineLength = snapshot.GetLineFromPosition(startPos).Length;
+                    var line = snapshot.GetLineFromPosition(startPos);
+                    int nLineLength = line.Length;
                     tokenSpan = new TextSpan(startPos, nLineLength);
                     span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart);
                     regions.Add(span);
-                    endPos = snapshot.GetLineFromPosition(endPos).Start;
-                    nLineLength = snapshot.GetLineFromPosition(endPos).Length;
+                    line = snapshot.GetLineFromPosition(endPos);
+                    endPos = line.Start;
+                    nLineLength = line.Length;
                     tokenSpan = new TextSpan(endPos, nLineLength);
                     span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop);
                     regions.Add(span);
@@ -627,220 +629,6 @@ namespace XSharp.LanguageService
             return result;
         }
 
-#if FALSE
-        private List<ClassificationSpan> ClassifyKeyword(IToken token, ITextSnapshot snapshot, ref IToken keywordContext)
-        {
-            var tokenType = token.Type;
-            var result = new List<ClassificationSpan>();
-            if (_buffer.CurrentSnapshot != snapshot)
-                return result;
-            // Todo: base this on the Formatter Rules
-            IClassificationType type = null;
-            IClassificationType type2 = null;
-            IToken startToken = null;
-            if (keywordContext != null)
-            {
-                startToken = keywordContext;
-                if (startToken.Line != token.Line)
-                {
-                    keywordContext = null;
-                    startToken = null;
-                }
-            }
-            //
-            switch (tokenType)
-            {
-                case XSharpLexer.DO:
-                    if (startToken != null)
-                    {
-                        if (startToken.Type == XSharpLexer.END) // END DO
-                        {
-                            keywordContext = null;
-                            type = xsharpKwCloseType;
-                        }
-                        else
-                            startToken = null;
-                    }
-                    else
-                        keywordContext = token;
-                    break;
-
-                case XSharpLexer.BEGIN:     // followed by another keyword
-                    keywordContext = token;
-                    //type = xsharpKwOpenType;
-                    break;
-
-                case XSharpLexer.SWITCH:
-                    type = xsharpKwOpenType;
-                    if (startToken != null)
-                        if (startToken.Type == XSharpLexer.END)     // END SWITCH
-                        {
-                            type = xsharpKwCloseType;
-                            keywordContext = null;
-                        }
-                        else if ((startToken.Type != XSharpLexer.DO) || (startToken.Type != XSharpLexer.BEGIN))  // DO SWITCH or BEGIN SWITCH are also allowed
-                            startToken = null;
-                    break;
-
-                case XSharpLexer.TRY:
-                case XSharpLexer.IF:
-                    type = xsharpKwOpenType;
-                    if (startToken != null)
-                        if (startToken.Type == XSharpLexer.END)         // END TRY or END IF
-                        {
-                            type = xsharpKwCloseType;
-                            keywordContext = null;
-                        }
-                        else
-                            startToken = null;
-                    break;
-
-                case XSharpLexer.WHILE:
-                    type = xsharpKwOpenType;
-                    if (startToken != null)
-                        if (startToken.Type == XSharpLexer.END) // END WHILE
-                            type = xsharpKwCloseType;
-                        else if (startToken.Type != XSharpLexer.DO)
-                            startToken = null;
-                    break;
-
-
-                case XSharpLexer.CASE:
-                    if (startToken != null)
-                    {
-                        if (startToken.Type == XSharpLexer.DO)  // DO CASE
-                            type = xsharpKwOpenType;
-                        else if (startToken.Type == XSharpLexer.END) // END CASE
-                        {
-                            type = xsharpKwCloseType;
-                            keywordContext = null;
-                        }
-                    }
-                    else
-                    {
-                        type = xsharpKwCloseType;       // CASE inside, so close and open
-                        type2 = xsharpKwOpenType;
-                    }
-                    break;
-
-                case XSharpLexer.FOR:
-                case XSharpLexer.FOREACH:
-                case XSharpLexer.REPEAT:
-                    startToken = null;
-                    type = xsharpKwOpenType;            // Simple open
-                    break;
-
-                case XSharpLexer.NEXT:
-                case XSharpLexer.UNTIL:
-                case XSharpLexer.ENDDO:
-                case XSharpLexer.ENDIF:
-                case XSharpLexer.ENDCASE:
-                case XSharpLexer.ENDDEFINE:             // FoxPro end of class definition
-                case XSharpLexer.ENDCLASS:              // XPP end of class definition
-                    startToken = null;
-                    type = xsharpKwCloseType;           // Simple close
-                    break;
-
-                case XSharpLexer.END:                   // followed by other keyword
-                    keywordContext = token;
-                    //type = xsharpKwCloseType;
-                    break;
-                case XSharpLexer.ELSE:
-                case XSharpLexer.ELSEIF:
-                case XSharpLexer.OTHERWISE:
-                case XSharpLexer.RECOVER:
-                case XSharpLexer.CATCH:
-                case XSharpLexer.FINALLY:
-                    startToken = null;                  // inside other block, so close and open
-                    type = xsharpKwCloseType;
-                    type2 = xsharpKwOpenType;
-                    break;
-
-                // begin .. end
-                case XSharpLexer.SEQUENCE:
-                case XSharpLexer.NAMESPACE:
-                case XSharpLexer.LOCK:
-                case XSharpLexer.SCOPE:
-                case XSharpLexer.FIXED:
-                case XSharpLexer.UNSAFE:
-                case XSharpLexer.USING:
-                case XSharpLexer.CHECKED:
-                case XSharpLexer.UNCHECKED:
-                    if (startToken != null)
-                    {
-                        if (startToken.Type == XSharpLexer.BEGIN)           // prefixed by BEGIN
-                        {
-                            type = xsharpKwOpenType;
-                            keywordContext = null;
-                        }
-                        else if (startToken.Type == XSharpLexer.END)        // prefixed by END
-                        {
-                            type = xsharpKwCloseType;
-                            keywordContext = null;
-                        }
-                    }
-                    break;
-                case XSharpLexer.PROPERTY:
-                case XSharpLexer.SET:
-                case XSharpLexer.INIT:
-                case XSharpLexer.GET:
-                case XSharpLexer.ADD:
-                case XSharpLexer.REMOVE:
-                    type = xsharpKwOpenType;
-                    if (startToken != null && startToken.Type == XSharpLexer.END)
-                    {
-                        keywordContext = null;
-                        type = xsharpKwCloseType;
-                    }
-                    break;
-                // some entities also have an END marker
-                case XSharpLexer.CLASS:
-                case XSharpLexer.INTERFACE:
-                case XSharpLexer.STRUCTURE:
-                case XSharpLexer.ENUM:
-                    type = xsharpKwOpenType;
-                    if (startToken != null && startToken.Type == XSharpLexer.END)
-                    {
-                        type = xsharpKwCloseType;
-                        keywordContext = null;
-                    }
-                    break;
-                case XSharpLexer.UDC_KEYWORD:
-                    var text = token.Text.ToUpper();
-                    switch (text)
-                    {
-                        case "TEXT":
-                            startToken = null;
-                            type = xsharpKwOpenType;
-                            break;
-                        case "ENDTEXT":
-                            startToken = null;
-                            type = xsharpKwCloseType;
-                            break;
-                    }
-                    break;
-
-            }
-            //
-            if (type != null)
-            {
-                if (startToken != null)
-                    result.Add(Token2ClassificationSpan(startToken, token, snapshot, type));
-                else
-                    result.Add(Token2ClassificationSpan(token, snapshot, type));
-            }
-            if (type2 != null)
-            {
-                if (startToken != null)
-                    result.Add(Token2ClassificationSpan(startToken, token, snapshot, type2));
-                else
-                    result.Add(Token2ClassificationSpan(token, snapshot, type2));
-            }
-            return result;
-        }
-
-#endif
-
         private void ScanForRegion(IToken token, int iToken, IList<IToken> tokens,
             ref int iLast, ITextSnapshot snapshot, IList<ClassificationSpan> regionTags)
         {
@@ -898,7 +686,7 @@ namespace XSharp.LanguageService
             XClassificationSpans newtags;
             var lineTokens = new Dictionary<int, IList<IToken>>(snapshot.LineCount);
             var currentLine = new List<IToken>();
-            var ids = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var ids = new ConcurrentDictionary<string, IList<IToken>>(StringComparer.OrdinalIgnoreCase);
             RuleStack = new Stack<XFormattingRule>();
             var regionTags = new List<ClassificationSpan>();
             if (tokens != null)
@@ -917,11 +705,17 @@ namespace XSharp.LanguageService
                 for (var iToken = 0; iToken < tokens.Count; iToken++)
                 {
                     var token = tokens[iToken];
-                    if (token.Type == XSharpLexer.ID && XEditorSettings.IdentifierCase)
+                    if (token.Type == XSharpLexer.ID && (XEditorSettings.IdentifierCase || !XEditorSettings.DisableHighLightWord))
                     {
                         if (!ids.ContainsKey(token.Text))
                         {
-                            ids.TryAdd(token.Text,token.Text);
+                            var xtokens = new List<IToken> { token };
+                            ids.TryAdd(token.Text, xtokens);
+                        }
+                        else
+                        {
+                            var xtokens = ids[token.Text];
+                            xtokens.Add(token);
                         }
                     }
                     // store the tokens per line in a dictionary so we can quickly look them up
@@ -939,6 +733,10 @@ namespace XSharp.LanguageService
                         {
                             currentLine = new List<IToken>();
                             lineTokens.Add(line, currentLine);
+                            if (token.Type == XSharpLexer.LBRKT)
+                            {
+                                _lineState.Set(token.Line-1, LineFlags.StartsWithAttribute);
+                            }
                         }
                     }
                     currentLine.Add(token);
@@ -1016,13 +814,13 @@ namespace XSharp.LanguageService
             {
                 newtags = _colorTags;
             }
-            XSettings.LogMessage("-->> XSharpClassifier.BuildColorClassifications()");
+            Logger.Information("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.BuildColorClassifications()");
+            Logger.Information("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             TriggerRepaint(snapshot);
         }
@@ -1067,7 +865,7 @@ namespace XSharp.LanguageService
 
         public IList<ClassificationSpan> GetRegionTags()
         {
-            XSettings.LogMessage($"-->> XSharpClassifier.GetRegionTags()");
+            Logger.Information($"-->> XSharpClassifier.GetRegionTags()");
             List<ClassificationSpan> result = new List<ClassificationSpan>();
             lock (gate)
             {
@@ -1080,19 +878,19 @@ namespace XSharp.LanguageService
                     result.AddRange(_parserRegions);
                 }
             }
-            XSettings.LogMessage($"<<-- XSharpClassifier.GetRegionTags() {result.Count}");
+            Logger.Information($"<<-- XSharpClassifier.GetRegionTags() {result.Count}");
             return result;
         }
 
         public IList<ClassificationSpan> GetTags()
         {
-            XSettings.LogMessage("-->> XSharpClassifier.GetTags()");
+            Logger.Information("-->> XSharpClassifier.GetTags()");
             IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
             }
-            XSettings.LogMessage("<<-- XSharpClassifier.GetTags()");
+            Logger.Information("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
 
@@ -1160,25 +958,11 @@ namespace XSharp.LanguageService
 
         internal static void Debug(string msg, params object[] o)
         {
-            XSettings.LogMessage(string.Format("XSharpClassifier: " + msg, o));
+            Logger.Information(string.Format("XSharpClassifier: " + msg, o));
         }
     }
 
-#if FALSE
-    [DebuggerDisplay("{Span} {ClassificationType.Classification,nq} ")]
-    public class XsClassificationSpan : ClassificationSpan
-    {
 
-        public int startTokenType;
-        public int endTokenType;
-
-        public XsClassificationSpan(SnapshotSpan span, IClassificationType classification) : base(span, classification)
-        {
-            startTokenType = -1;
-            endTokenType = -1;
-        }
-    }
-#endif
     internal class XClassificationSpans
     {
         private readonly IList<ClassificationSpan> _tags;
@@ -1201,7 +985,7 @@ namespace XSharp.LanguageService
                 _tags.Add(span);
                 int start = span.Span.Start.GetContainingLine().LineNumber;
                 int end = span.Span.End.GetContainingLine().LineNumber;
-                if (end > start + 1)
+                if (end > start)
                 {
                     _multilineTokens.Add(span);
                 }

@@ -24,21 +24,25 @@
     <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
     <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>165,219,1030,9047,1701,1591</DisabledWarnings>
+    <DisabledWarnings>1591,219,165</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>XSharpModel.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.CodeModel.Xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>162,1030,165,219,1701</DisabledWarnings>
+    <DisabledWarnings>1591,219,165</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>
     </DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -94,19 +98,26 @@
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
     <Compile Include="Parser\XSharpTokenList.prg" />
+    <Compile Include="PE\XPEEventSymbol.prg" />
+    <Compile Include="PE\XPEFieldSymbol.prg" />
+    <Compile Include="PE\XPEMethodSymbol.prg" />
     <Compile Include="PE\XPEMemberSymbol.prg" />
     <Compile Include="PE\XPEParameterSymbol.prg" />
+    <Compile Include="PE\XPEPropertySymbol.prg" />
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
-    <Compile Include="ProjectSystem\XDictionary.prg" />
     <Compile Include="ProjectSystem\XInclude.prg" />
+    <Compile Include="Settings\Enums.prg" />
+    <Compile Include="Settings\KnownTypes.prg" />
+    <Compile Include="Settings\OptionsBase.prg" />
     <Compile Include="Settings\Strings.prg" />
-    <Compile Include="Settings\XDebuggerSettings.prg" />
+    <Compile Include="Settings\TypeExtensions.prg" />
     <Compile Include="Settings\XCustomEditorSettings.prg" />
-    <Compile Include="Settings\XSourceEditorSettings.prg" />
+    <Compile Include="Settings\XDebuggerSettings.prg" />
+    <Compile Include="Settings\XDictionary.prg" />
     <Compile Include="Settings\XEditorSettings.prg" />
-    <Compile Include="Settings\XLiterals.prg" />
     <Compile Include="Settings\XSettings.prg" />
+    <Compile Include="Settings\XSourceEditorSettings.prg" />
     <Compile Include="Signatures\XBaseSignature.prg" />
     <Compile Include="Signatures\XMemberSignature.prg" />
     <Compile Include="Signatures\XTypeSignature.prg" />
@@ -121,7 +132,6 @@
     <Compile Include="Source\XSourceVariableSymbol.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />
-    <Compile Include="Support\TypeExtensions.prg" />
     <Compile Include="Support\Error.prg" />
     <Compile Include="Support\FileTypeHelpers.prg" />
     <Compile Include="Interfaces.prg" />
@@ -142,6 +152,7 @@
     <Compile Include="Parser\ModelWalker.prg" />
     <Compile Include="Parser\XsParser.prg" />
     <Compile Include="Parser\SourceWalker.prg" />
+    <Compile Include="XLiterals.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
@@ -149,7 +160,7 @@
     <Folder Include="Database" />
     <Folder Include="Formatting" />
     <Folder Include="PE\" />
-    <Folder Include="Settings" />
+    <Folder Include="Settings\" />
     <Folder Include="Signatures\" />
     <Folder Include="Source\" />
     <Folder Include="Support" />

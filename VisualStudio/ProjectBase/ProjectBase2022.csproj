@@ -10,11 +10,6 @@
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <TargetFrameworkProfile />
     <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C696}</ProjectGuid>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -173,7 +168,6 @@
       <DependentUpon>XStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Wix\XVsConstants.cs" />
-    <Compile Include="XSharpFileType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Wix\Resources\Delete.png" />
@@ -203,7 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.492</Version>
+      <Version>17.0.507</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>17.4.0</Version>

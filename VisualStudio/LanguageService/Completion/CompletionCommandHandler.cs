@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using XSharpModel;
+using XSharp.Settings;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
@@ -257,7 +258,7 @@ namespace XSharp.LanguageService
 #endif
         private void FilterCompletionSession(char ch)
         {
-
+            
             WriteOutputMessage("FilterCompletionSession()");
             if (_completionSession == null)
                 return;
@@ -273,6 +274,9 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
+                    var props = _completionSession.GetCompletionProperties();
+                    if (ch != '\0')
+                        props.Filter += ch;
                     WriteOutputMessage(" --> Selecting ");
                     _completionSession.SelectedCompletionSet.SelectBestMatch();
                     _completionSession.SelectedCompletionSet.Recalculate();
@@ -307,8 +311,7 @@ namespace XSharp.LanguageService
                 CancelCompletionSession();
                 return false;
             }
-            bool moveCursorBack = false;
-            ITextCaret caret = session.TextView.Caret; ;
+            ITextCaret caret = session.TextView.Caret;
             WriteOutputMessage("CompleteCompletionSession()");
             bool addClose = false;
             Kind kind = Kind.Unknown;
@@ -388,19 +391,16 @@ namespace XSharp.LanguageService
             {
                 if (completion.InsertionText.EndsWith("("))
                 {
-                    moveCursorBack = true;
                     completion.InsertionText += ")";
                     triggerSignatureHelp = true;
                 }
                 else if (completion.InsertionText.EndsWith("{"))
                 {
-                    moveCursorBack = true;
                     completion.InsertionText += "}";
                     triggerSignatureHelp = true;
                 }
                 else if (completion.InsertionText.EndsWith("["))
                 {
-                    moveCursorBack = true;
                     completion.InsertionText += "]";
                     triggerSignatureHelp = false;
                 }
@@ -411,35 +411,20 @@ namespace XSharp.LanguageService
             var type = props.Type;
             var triggerChar = props.Char;
             string insertionText = completion.InsertionText;
+            // When completing by typing '.' or ':' we want to add that token as well
             if (ch == '.' || ch == ':')
             {
-                if (insertionText.IndexOfAny("({".ToCharArray()) == -1)
+                if (insertionText.IndexOfAny(new char[] { '(', '{' } ) == -1)
                 {
                     completion.InsertionText += ch;
                 }
             }
-            var buffer = _completionSession.TextView.TextBuffer;
-            int start = -1;
-            if (props.NumCharsToDelete != 0)
-            {
-                start = _completionSession.GetTriggerPoint(buffer).GetPosition(buffer.CurrentSnapshot);
-            }
-            // We cannot change the triggerpoint for the session.
-            // so commit first and delete later. 
             session.Commit();
-            if (props.NumCharsToDelete != 0)
-            {
-                var editSession = buffer.CreateEdit();
-                editSession.Delete(start - props.NumCharsToDelete, props.NumCharsToDelete);
-                editSession.Apply();
-            }
-            if (moveCursorBack)
-            {
-                caret.MoveToPreviousCaretPosition();
-            }
             // if a method or constructor was chosen, then trigger the signature help
             if (triggerSignatureHelp)
             {
+                if (addClose)
+                    caret.MoveToPreviousCaretPosition();
                 TriggerSignatureHelp(type, insertionText, triggerChar);
             }
             return true;
@@ -487,7 +472,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Start Completion failed");
+                Logger.Exception(e, "Start Completion failed");
             }
             return true;
         }
@@ -554,7 +539,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.Completion:" + strMessage);
+                Logger.Information("XSharp.Completion:" + strMessage);
             }
         }
         private char GetTypeChar(IntPtr pvaIn)
@@ -643,7 +628,7 @@ namespace XSharp.LanguageService
         }
         void formatKeyword(Completion completion)
         {
-            completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
+            completion.InsertionText = XLiterals.FormatKeyword(completion.InsertionText);
         }
 
     }

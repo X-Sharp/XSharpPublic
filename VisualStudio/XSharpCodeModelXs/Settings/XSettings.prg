@@ -8,9 +8,10 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 USING System
-BEGIN NAMESPACE XSharpModel
+BEGIN NAMESPACE XSharp.Settings
     STATIC CLASS XSettings
         // Fields
+
         PUBLIC STATIC PROPERTY EnableLogging                      AS LOGIC GET EnableFileLogging .or. EnableOutputWindowLogging .or. EnableDebugLogging
         PUBLIC STATIC PROPERTY EnableBraceMatchLog                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableCodeCompletionLog            AS LOGIC AUTO
@@ -38,10 +39,16 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
+        PUBLIC STATIC PROPERTY Logger                           AS XSharpModel.ILogger AUTO := DummyLogger{}
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
         PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
+        PUBLIC STATIC Property Version as Version AUTO := Version{}
+
+        PUBLIC STATIC PROPERTY IsVs15 AS LOGIC => Version:Major == 15
+        PUBLIC STATIC PROPERTY IsVs16 AS LOGIC => Version:Major == 16
+        PUBLIC STATIC PROPERTY IsVs17 AS LOGIC => Version:Major == 17
 
         PUBLIC STATIC METHOD EnableAll() AS VOID
              EnableBraceMatchLog           := TRUE
@@ -54,16 +61,25 @@ BEGIN NAMESPACE XSharpModel
              EnableTypelookupLog           := TRUE
              RETURN
 
-        PUBLIC STATIC METHOD LogMessage(message AS STRING) AS VOID
-            IF EnableLogging .and. ShellLink != NULL
-                ShellLink:LogMessage(message)
+        PUBLIC STATIC METHOD Information(message AS STRING) AS VOID
+            IF EnableLogging
+                Logger:Information(message)
             ENDIF
             RETURN
 
-        PUBLIC STATIC METHOD LogException(ex AS Exception, msg as STRING) AS VOID
-            IF ShellLink != NULL
-                ShellLink:LogException(ex, msg)
+        STATIC METHOD Log(cMessage AS STRING) AS VOID
+            IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
+                Logger.Information(cMessage)
             ENDIF
+            RETURN
+
+
+        PUBLIC STATIC METHOD Exception(ex AS Exception, msg as STRING) AS VOID
+            Logger:Exception(ex, msg)
+            RETURN
+
+        PUBLIC STATIC METHOD Debug(msg as STRING) AS VOID
+            Logger:Debug(msg)
             RETURN
 
         PUBLIC STATIC METHOD ShowMessageBox(cMessage as STRING) AS INT
@@ -100,45 +116,50 @@ BEGIN NAMESPACE XSharpModel
 
         PUBLIC STATIC PROPERTY IsVsBuilding AS LOGIC GET IIF(ShellLink != NULL, ShellLink:IsVsBuilding, FALSE)
 
-        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
-            RETURN FormatKeyword(sKeyword, XEditorSettings.KeywordCase)
 
-        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS STRING, nKeywordCase AS KeywordCase) AS STRING
-            IF sKeyword == NULL
-                RETURN ""
-            ENDIF
-            SWITCH nKeywordCase
-                CASE KeywordCase.None
-                    RETURN sKeyword
-                CASE KeywordCase.Upper
-                    RETURN sKeyword:ToUpper()
-                CASE KeywordCase.Lower
-                    RETURN sKeyword:ToLower()
-                CASE KeywordCase.Title
-                    RETURN IIF(sKeyword:Length > 1 , sKeyword:Substring(0, 1):ToUpper() + sKeyword:Substring(1):ToLower() , sKeyword:ToUpper())
-            END SWITCH
-            RETURN sKeyword
-
-        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS OBJECT) AS STRING
-            RETURN FormatKeyword(sKeyword:ToString(), XEditorSettings.KeywordCase)
-
-        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS OBJECT, nKeywordCase AS KeywordCase) AS STRING
-            RETURN FormatKeyword(sKeyword:ToString(), nKeywordCase)
-
-        PUBLIC STATIC METHOD FormatKeyword(keyword AS Kind) AS STRING
-            RETURN FormatKeyword(keyword , XEditorSettings.KeywordCase)
-
-        PUBLIC STATIC METHOD FormatKeyword(keyword AS Kind, nKeywordCase AS KeywordCase) AS STRING
-            SWITCH (keyword)
-                CASE Kind.VODefine
-                    RETURN XSettings.FormatKeyword("define",nKeywordCase)
-                CASE Kind.VOGlobal
-                    RETURN XSettings.FormatKeyword("global",nKeywordCase)
-                CASE Kind.VODLL
-                    RETURN XSettings.FormatKeyword("_dll function",nKeywordCase)
-            END SWITCH
-            RETURN XSettings.FormatKeyword(keyword:ToString(),nKeywordCase)
 
     END CLASS
+
+    /// <summary>This interface allows the code model to call back into the VS Shell</summary>
+   INTERFACE IXVsShellLink
+        METHOD OpenDocument(file AS STRING, line AS LONG, column AS LONG, lPreview as LOGIC) AS VOID
+        METHOD IsDocumentOpen(file as STRING) AS LOGIC
+        METHOD SetStatusBarText(cText AS STRING) AS VOID
+        METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
+        METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+        METHOD ShowMessageBox(message AS STRING) AS INT
+        PROPERTY IsVsBuilding AS LOGIC GET
+   END INTERFACE
+
+
+    CLASS DummyLogger IMPLEMENTS XSharpModel.ILogger
+
+        #region Implement ILogger
+
+        PUBLIC METHOD Information(sMsg AS STRING) AS VOID
+            RETURN
+
+        PUBLIC METHOD Debug(sMsg AS STRING) AS VOID
+            RETURN
+
+        PUBLIC METHOD Start() AS VOID
+            RETURN
+
+        PUBLIC METHOD Stop() AS VOID
+            RETURN
+
+        PUBLIC PROPERTY Active AS LOGIC GET FALSE
+
+
+        PUBLIC METHOD SingleLine() AS VOID
+            RETURN
+
+        PUBLIC METHOD DoubleLine() AS VOID
+            RETURN
+        METHOD Exception (e as Exception, sMsg as STRING) AS VOID
+            RETURN
+        #endregion
+    END CLASS
+
 
 END NAMESPACE

@@ -3,21 +3,22 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio;
-using System;
-using System.Runtime.InteropServices;
-using XSharp.LanguageService.OptionsPages;
-using System.Threading;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.ComponentModel.Design;
-using Microsoft.VisualStudio.ComponentModelHost;
-using XSharpModel;
-using Microsoft.Win32;
-using Microsoft;
-using Microsoft.VisualStudio.OLE.Interop;
 using Community.VisualStudio.Toolkit;
+using Microsoft;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.Win32;
+using System;
+using System.ComponentModel.Design;
+using System.Runtime.InteropServices;
+using System.Threading;
+using XSharp.LanguageService.OptionsPages;
+using XSharpModel;
+using XSharp.Settings;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -26,6 +27,7 @@ using Community.VisualStudio.Toolkit;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
+
 namespace XSharp.LanguageService
 {
 
@@ -37,7 +39,7 @@ namespace XSharp.LanguageService
 
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideService(typeof(XSharpLanguagePackage), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
@@ -97,7 +99,7 @@ namespace XSharp.LanguageService
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
-    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
+    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204", keywordListResourceId: 304)]
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
@@ -109,26 +111,21 @@ namespace XSharp.LanguageService
         private XSharpLibraryManager _libraryManager;
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
-        internal bool optionWasChanged = false;
 
-        public XSharpLanguagePackage() : base()
-        {
-            ModelScannerEvents.Start();
-        }
 
         public static XSharpLanguagePackage Instance
         {
             get { return XSharpLanguagePackage.instance; }
         }
 
-        private object CreateLibraryService(IServiceContainer container, Type serviceType)
-        {
-            if (typeof(IXSharpLibraryManager) == serviceType)
-            {
-                return _libraryManager = new XSharpLibraryManager(this);
-            }
-            return null;
-        }
+        //private object CreateLibraryService(IServiceContainer container, Type serviceType)
+        //{
+        //    if (typeof(IXSharpLibraryManager) == serviceType)
+        //    {
+        //        return _libraryManager = new XSharpLibraryManager(this);
+        //    }
+        //    return null;
+        //}
 
 
         IntellisenseOptionsPage _intellisensePage;
@@ -137,153 +134,90 @@ namespace XSharp.LanguageService
         OtherOptionsPage _otherOptionsPage;
         GeneratorOptionsPage _generatorOptionsPage;
         CompletionOptionsPage _completionOptionsPage;
-        public void GetIntellisenseSettings()
+        private T GetDialogPage<T>() where T : DialogPage
         {
-            if (_intellisensePage == null)
+            return (T)base.GetDialogPage(typeof(T));
+        }
+
+        private LanguageServiceOptions GetOptions()
+        {
+            // pages in alphabetical order
+            if (_completionOptionsPage == null)
             {
-                _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+                _completionOptionsPage = GetDialogPage<CompletionOptionsPage>();
             }
             if (_formattingPage == null)
             {
-                _formattingPage = (FormattingOptionsPage)GetDialogPage(typeof(FormattingOptionsPage));
-            }
-            if (_indentingPage == null)
-            {
-                _indentingPage = (IndentingOptionsPage)GetDialogPage(typeof(IndentingOptionsPage));
-            }
-            if (_otherOptionsPage == null)
-            {
-                _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
-            }
-            if (_otherOptionsPage == null)
-            {
-                _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
+                _formattingPage = GetDialogPage<FormattingOptionsPage>();
             }
             if (_generatorOptionsPage == null)
             {
-                _generatorOptionsPage = (GeneratorOptionsPage)GetDialogPage(typeof(GeneratorOptionsPage));
+                _generatorOptionsPage = GetDialogPage<GeneratorOptionsPage>();
             }
-            if (_completionOptionsPage == null)
+            if (_indentingPage == null)
             {
-                _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
+                _indentingPage = GetDialogPage<IndentingOptionsPage>();
             }
-            // Intellisense
-            XSettings.EnableOutputWindowLogging = _intellisensePage.EnableOutputPane;
-            XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
-            XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
-            XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
-            XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
-            XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
-            XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
-            XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
-            XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
-
-
-            XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
-            XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
-            XSettings.DisableEditorDropDowns = _intellisensePage.DisableEditorDropdowns;
-            XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
-            XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
-            XEditorSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
-            XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
-
-            //XEditorSettings.IndentSize
-            XEditorSettings.CompletionListTabs = _intellisensePage.CompletionListTabs;
-            XEditorSettings.CommitChars = _intellisensePage.CommitChars;
-            XEditorSettings.CompletionListAfterEachChar = false; // _intellisensePage.ShowAfterChar;
-            XEditorSettings.KeywordsInAll = _intellisensePage.KeywordsInAll;
-
-            XEditorSettings.NavigationSorted = _intellisensePage.SortNavigationBars;
-            XEditorSettings.NavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
-            XEditorSettings.NavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
-            XEditorSettings.NavigationExcludeMembersFromOtherFiles = _intellisensePage.ExcludeMembersFromOtherFiles;
-            var languagePreferences = new LANGPREFERENCES3[1];
-            languagePreferences[0].guidLang = XSharpConstants.guidLanguageService;
-            int result = VSConstants.S_FALSE;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (_intellisensePage == null)
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                result = _txtManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
-            });
-            if (result == VSConstants.S_OK)
-            {
-                XEditorSettings.IndentStyle = (int)languagePreferences[0].IndentStyle;
-                XEditorSettings.HideAdvancedMembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
-                XEditorSettings.TabSize = (int)languagePreferences[0].uTabSize;
-                XEditorSettings.IndentSize = (int)languagePreferences[0].uIndentSize;
-                XEditorSettings.TabsAsSpaces = languagePreferences[0].fInsertTabs == 0;
+                _intellisensePage = GetDialogPage<IntellisenseOptionsPage>();
             }
-            // Formatting
-            XEditorSettings.IndentFactor = _formattingPage.MultiFactor;
-            XEditorSettings.IdentifierCase = _formattingPage.IdentifierCase;
-            XEditorSettings.UDCKeywordCase = _formattingPage.UdcCase;
-            XEditorSettings.TrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
-            XEditorSettings.InsertFinalNewline = _formattingPage.InsertFinalNewLine;
-            XEditorSettings.KeywordCase = _formattingPage.KeywordCase;
-            // Indentation
+            if (_otherOptionsPage == null)
+            {
+                _otherOptionsPage = GetDialogPage<OtherOptionsPage>();
+            }
+            return GetOptionsFromPages();
+        }
+        private LanguageServiceOptions GetOptionsFromPages()
+        {
+            var options = new LanguageServiceOptions();
+            options.CompletionOptions = _completionOptionsPage.Options;
+            options.GeneratorOptions = _generatorOptionsPage.Options;
+            options.FormattingOptions = _formattingPage.Options;
+            options.IndentingOptions = _indentingPage.Options;
+            options.IntellisenseOptions = _intellisensePage.Options;
+            options.OtherOptions = _otherOptionsPage.Options;
+            _txtManager.GetSettings(options.TabOptions);
+            options.LogOptions.ReadFromRegistry();
+            return options;
 
-            // validate indentation settings
-            _indentingPage.ValidateSettings();
-            XEditorSettings.IndentTypeMembers = _indentingPage.IndentEntityContent;
-            XEditorSettings.IndentTypeFields = _indentingPage.IndentFieldContent;
-            XEditorSettings.IndentStatements = _indentingPage.IndentBlockContent;
-            XEditorSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
-            XEditorSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
-            XEditorSettings.IndentContinuedLines = _indentingPage.IndentMultiLines;
-            XEditorSettings.IndentPreprocessorLines = _indentingPage.IndentPreprocessorLines;
-            XEditorSettings.IndentNamespace = _indentingPage.IndentNamespace;
+        }
+        public void GetIntellisenseSettings(bool load)
+        {
+            LanguageServiceOptions options = GetOptions();
+            if (load)
+            {
+                options = LanguageServiceOptions.Load();
+                if (options == null)
+                {
+                    options = GetOptionsFromPages();
+                }
+                else
+                {
+                    _completionOptionsPage.SetOptions(options.CompletionOptions);
+                    _generatorOptionsPage.SetOptions(options.GeneratorOptions);
+                    _formattingPage.SetOptions(options.FormattingOptions);
+                    _indentingPage.SetOptions(options.IndentingOptions);
+                    _intellisensePage.SetOptions(options.IntellisenseOptions);
+                    _otherOptionsPage.SetOptions(options.OtherOptions);
+                    _txtManager.SetSettings(options.TabOptions);
 
-            // Completion
-            XEditorSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
-            XEditorSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
-            XEditorSettings.CompleteParent = _completionOptionsPage.CompleteParent;
-            XEditorSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
-            XEditorSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
-            XEditorSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
-            XEditorSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
-            XEditorSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
-            XEditorSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
-            XEditorSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
-            XEditorSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
-            XEditorSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
-            XEditorSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
-            XEditorSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
-            //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
-            // Generator
-            XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_generatorOptionsPage.PrivateStyle;
-            XSettings.CodeGeneratorPublicStyle = (PublicStyle)_generatorOptionsPage.PublicStyle;
-            XSettings.CodeGeneratorShowXmlComments = _generatorOptionsPage.ShowXmlComments;
-
-            // Other
-            XEditorSettings.ShowDividers = _otherOptionsPage.ShowDividers;
-            XEditorSettings.CompletionAutoPairs = _otherOptionsPage.AutoPairs;
-            XEditorSettings.ShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
-            XEditorSettings.DisableAutoOpen = !_otherOptionsPage.AutoOpen;
-            XEditorSettings.DisableHighLightWord = !_otherOptionsPage.EnableHighlightWord;
-            XEditorSettings.DisableBraceMatching = !_otherOptionsPage.EnableBraceMatching;
-            XEditorSettings.DisableKeywordMatching = !_otherOptionsPage.EnableKeywordmatching;
-            XEditorSettings.DisableCodeCompletion = !_otherOptionsPage.EnableCodeCompletion;
-            XEditorSettings.DisableLightBulb = !_otherOptionsPage.EnableLightBulbs;
-            XEditorSettings.DisableParameterInfo = !_otherOptionsPage.EnableParameterInfo;
-            XEditorSettings.DisableQuickInfo = !_otherOptionsPage.EnableQuickInfo;
-            XEditorSettings.DisableRegions = !_otherOptionsPage.EnableRegions;
-
-            XSettings.EnableFileLogging = _otherOptionsPage.LanguageServiceLogging;
-
-            // Persist in registry for CodeDomProvider code generation
-            Constants.WriteSetting(Constants.RegistryKeywordCase, (int)XEditorSettings.KeywordCase);
-            Constants.WriteSetting(Constants.RegistryPrivateKeyword, (int)XSettings.CodeGeneratorPrivateStyle);
-            Constants.WriteSetting(Constants.RegistryPublicKeyword, (int)XSettings.CodeGeneratorPublicStyle);
-            Constants.WriteSetting(Constants.RegistryUseTabs, XEditorSettings.TabsAsSpaces ? 0 : 1);
-            Constants.WriteSetting(Constants.RegistryTabSize, XEditorSettings.TabSize);
-            Constants.WriteSetting(Constants.RegistryIndentSize, XEditorSettings.IndentSize);
-            optionWasChanged = false;
+                }
+            }
+            else
+            {
+                options.Save();
+            }
+            options.WriteToSettings();
+            options.WriteToRegistry();
             return;
         }
+        
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
+            LanguageServiceEvents.Start();
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -297,6 +231,7 @@ namespace XSharp.LanguageService
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
+            XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this as IServiceContainer;
             XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);
@@ -331,7 +266,7 @@ namespace XSharp.LanguageService
 
                 int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
             }
-            GetIntellisenseSettings();
+            GetIntellisenseSettings(true);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.LanguageService = this;
         }
@@ -349,7 +284,7 @@ namespace XSharp.LanguageService
                 }
                 if (_oleComponentManager != null)
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         _oleComponentManager.FRevokeComponent(m_componentID);
@@ -414,10 +349,11 @@ namespace XSharp.LanguageService
             if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool lValue)
             {
                 // when modal window closes
-                if (!lValue )
+                if (!lValue)
                 {
-                    GetIntellisenseSettings();
-                    RefreshDocumentSettingsAsync().FireAndForget();
+                    GetIntellisenseSettings(false);
+                    var res = ThreadHelper.JoinableTaskFactory.RunAsync(RefreshAllDocumentWindowSettingsAsync);
+
                 }
             }
             return VSConstants.S_OK;
@@ -427,7 +363,7 @@ namespace XSharp.LanguageService
         /// Reload the source code editor settings for all open X# editor windows
         /// </summary>
         /// <returns></returns>
-        private async System.Threading.Tasks.Task RefreshDocumentSettingsAsync()
+        private async System.Threading.Tasks.Task RefreshAllDocumentWindowSettingsAsync()
         {
             var docs = await VS.Windows.GetAllDocumentWindowsAsync();
             foreach (var doc in docs)
@@ -451,7 +387,7 @@ namespace XSharp.LanguageService
             return (IComponentModel)GetGlobalService(typeof(SComponentModel));
         }
 
-#region IOLEComponent
+        #region IOLEComponent
         public int FReserved1(uint dwReserved, uint message, IntPtr wParam, IntPtr lParam)
         {
             return 1;
@@ -505,7 +441,19 @@ namespace XSharp.LanguageService
         {
             return IntPtr.Zero;
         }
-#endregion
+        #endregion
     }
+    internal static class Logger
+    {
+        internal static void Exception(Exception e, string msg)
+        {
+            XSettings.Logger.Exception(e, msg);
+        }
+        internal static void Information(string msg)
+        {
+            XSettings.Logger.Information(msg);
+        }
+    }
+   
 
 }

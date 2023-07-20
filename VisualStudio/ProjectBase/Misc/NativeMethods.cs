@@ -13,12 +13,10 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
-using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -941,7 +939,7 @@ namespace Microsoft.VisualStudio.Project
             catch(UriFormatException e)
             {
 
-                XSettings.LogException(e, "IsSamePath");
+                Logger.Exception(e, "IsSamePath");
             }
 
             return false;

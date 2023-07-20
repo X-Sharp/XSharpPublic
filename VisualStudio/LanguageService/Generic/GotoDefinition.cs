@@ -8,7 +8,7 @@ using System.IO;
 using XSharpModel;
 using static System.Windows.Forms.AxHost;
 using File = System.IO.File;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
@@ -62,7 +62,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "Goto failed");
+                Logger.Exception(ex, "Goto failed");
             }
             finally
             {
@@ -156,6 +156,8 @@ namespace XSharp.LanguageService
             {
                 foreach (var entity in entities)
                 {
+                    if (element is IXTypeSymbol && entity is IXTypeSymbol)
+                        return entity;
                     if (entity.Name == element.Name)
                     {
                         if (entity is IXMemberSymbol m1 && m1.IsExtension && element is IXMemberSymbol m2)
@@ -213,18 +215,27 @@ namespace XSharp.LanguageService
             {
                 Directory.CreateDirectory(nspath);
             }
-            var temp = Path.Combine(nspath, petype.Name) + ".prg";
+            var fileName = petype.Name;
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(c, '_');
+            }
+            var temp = Path.Combine(nspath, fileName) + ".prg";
             var fi = new FileInfo(temp);
             mustCreate = !fi.Exists || fi.Length < 10;
             if (mustCreate)
             {
-                VS.StatusBar.ShowMessageAsync("Generating reference source for " + petype.FullName).FireAndForget();
-                VS.StatusBar.StartAnimationAsync(StatusAnimation.General).FireAndForget();
-                var aLines = XClassCreator.Create(petype, LookupXml);
-                File.WriteAllLines(temp, aLines, System.Text.Encoding.UTF8);
-                File.SetAttributes(temp, FileAttributes.ReadOnly);
-                VS.StatusBar.ClearAsync().FireAndForget();
-                VS.StatusBar.EndAnimationAsync(StatusAnimation.General).FireAndForget();
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
+                {
+                    await VS.StatusBar.ShowMessageAsync("Generating reference source for " + petype.FullName);
+                    await VS.StatusBar.StartAnimationAsync(StatusAnimation.General);
+                    var aLines = XClassCreator.Create(petype, LookupXml);
+                    File.WriteAllLines(temp, aLines, System.Text.Encoding.UTF8);
+                    File.SetAttributes(temp, FileAttributes.ReadOnly);
+                    await VS.StatusBar.ClearAsync();
+                    await VS.StatusBar.EndAnimationAsync(StatusAnimation.General);
+
+                });
             }
             var xFile = XSolution.AddOrphan(temp);
             return xFile;
@@ -234,7 +245,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage(strMessage);
+                Logger.Information(strMessage);
             }
         }
     }

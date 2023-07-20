@@ -10,7 +10,7 @@ USING System.Collections.Generic
 
 USING System.IO
 using System.Text
-using XSHarpModel
+using XSharp.Settings
 
 PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
     PROTECT cLoadedDir AS STRING
@@ -507,7 +507,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
             END IF
 
         CATCH e AS Exception
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
             MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
             lSuccess := FALSE
 
@@ -907,6 +907,7 @@ CLASS FSEListView INHERIT ListView
                 SELF:Append()
             ENDIF
         CASE e:KeyCode == Keys.Down
+            nop
             /*			IF SELF:SelectedIndices:Count == 1 .and. SELF:SelectedIndices[0] == SELF:Items:Count - 1
             IF SELF:oFSEditor:lLoadedAsXml
             SELF:Append()

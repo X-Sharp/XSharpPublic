@@ -6,7 +6,7 @@ USING Xide
 BEGIN NAMESPACE Xide
 
 CLASS BaseBuffer INHERIT LanguageBuffer
-	
+
 	CONSTRUCTOR(eFileType AS FileType, _aLines AS List<LineObject>)
 		SUPER(eFileType , _aLines)
 	RETURN
@@ -51,7 +51,7 @@ CLASS BaseBuffer INHERIT LanguageBuffer
 		LOCAL cBracketOpen , cBracketClose AS Char
 		LOCAL lPartial AS LOGIC
 		LOCAL n,n1,n2 AS INT
-		
+
 		LOCAL aRet AS ArrayList
 		LOCAL oWord AS WordObject
 		LOCAL lMustLoop AS LOGIC
@@ -83,16 +83,16 @@ CLASS BaseBuffer INHERIT LanguageBuffer
 		LOCAL hVis , hEnt AS Dictionary<STRING,STRING>
 		LOCAL nCaseReserved AS INT
 		LOCAL nCaseFunctions AS INT
-		
+
 		LOCAL lInProperty AS LOGIC
 		LOCAL nAfterColonEquals AS INT
-		
+
 		LOCAL _lLinesModified AS LOGIC
 		LOCAL _lEntities AS LOGIC
 		LOCAL _lFields AS LOGIC
 		LOCAL _lTokens AS LOGIC
 		LOCAL _lWords AS LOGIC
-		
+
 		LOCAL lXSharp := SELF:eFileType == FileType.XSharp AS LOGIC
 #endregion
 
@@ -106,7 +106,7 @@ state:Reset()
 		IF _lEntities
 			_lFields := TRUE
 		END IF
-		
+
 #region init
 		aFields := ArrayList{}
 		aLocals := ArrayList{}
@@ -116,17 +116,17 @@ state:Reset()
 		cClassType := ""
 		cBaseNameSpace := ""
 		aNameSpaces := List<STRING>{}
-		
+
 		hEnt := SELF:oParsingOptions:oEntityMarkers
 		hVis := SELF:oParsingOptions:oEntityVisibility
 		nCaseReserved := 0
 		nCaseFunctions := 0
-		
+
 		cWordBeforeSpace := NULL
 		IF _lWords
 			aRet := ArrayList{}
 		END IF
-		
+
 		IF _lLinesModified .and. nStartLine != 0
 			DO WHILE nStartLine > 1 .and. SELF:aLines[nStartLine - 2]:lOutAmpersand
 				lMoreModified := TRUE
@@ -153,7 +153,7 @@ state:Reset()
 				END DO
 			END IF
 		END IF
-#endregion		
+#endregion
 		IF nStartLine == 0
 			nStartLine := 1
 			nEndLine := SELF:aLines:Count
@@ -171,7 +171,7 @@ state:Reset()
 				nEndLine := SELF:aLines:Count
 			END IF
 		END IF
-		
+
 		IF nStartLine > 1
 			nLine := nStartLine - 1
 			DO WHILE nLine > 0
@@ -195,14 +195,14 @@ state:Reset()
 				lInProperty := oLine:oEntity:eType == EntityType._Property
 			END IF
 		END IF
-		
+
 		sWord := System.Text.StringBuilder{20}
 		sFoundType := System.Text.StringBuilder{20}
 
 //		nLine := 0
 		nLine := nStartLine
 		DO WHILE nLine <= nEndLine
-		
+
 			// Line parsing
 			oLine := SELF:aLines[nLine - 1]
 			oLine:lInAmpersand := lContinueNextLine
@@ -267,9 +267,9 @@ state:Reset()
 			IF eLexer != LexerStep.BlockComment
 				eLexer := LexerStep.None
 			END IF
-			
+
 			DO WHILE nChar <= nLineLen // one more than chars in line
-				
+
 				// Lexing
 				IF sWord:Length == 0
 					cCharBeforeWord := cRealChar
@@ -350,7 +350,7 @@ state:Reset()
 					END IF
 				END IF
 
-				
+
 /*				// performance hack
 				IF state:lIgnore
 					DO WHILE nChar < nLineLen
@@ -374,13 +374,13 @@ state:Reset()
 				ENDIF
 				cRealChar := cChar
 				nChar ++
-				
+
 				IF state:lFirstChar
 					IF cOldChar != ' ' .and. cOldChar != '\t'
 						state:lFirstChar := FALSE
 					END IF
 				END IF
-				
+
 				lBeforeLexerChange := FALSE
 				lMustLoop := FALSE
 				eWordStatus := WordStatus.Text
@@ -535,7 +535,7 @@ state:Reset()
 						nBracketCount --
 					END IF
 				ENDIF
-				
+
 				IF .not. (_lWords .or. _lTokens)
 					IF lMustLoop
 						LOOP
@@ -543,17 +543,17 @@ state:Reset()
 					IF state:lIgnore .or. lContinueNextLine
 						LOOP
 					ENDIF
-					
+
 					// Ignore code inside {..} , [..]
 					IF nBracketCount != 0
 						LOOP
 					END IF
-					
+
 					IF cChar == ';' .and. sWord:Length == 0
 						LOOP
 					END IF
 				END IF
-				
+
 				lIsSpaceChar := cChar == ' ' .or. cChar == '\t'
 				IF .not. lIsSpaceChar
 					lAllowAttribute := cRealChar == '(' .or. cRealChar == ',' .or. (state:lFirstWord .and. (cRealChar == ']' .or. cRealChar == ';') )
@@ -598,7 +598,7 @@ state:Reset()
 					eCharStatus := WordStatus.Text
 					eCharSubStatus := WordSubStatus.Text
 				ENDIF
-				
+
 				IF cChar == '=' .and. cOldChar == ':'
 					nAfterColonEquals := nChar
 				END IF
@@ -608,7 +608,7 @@ state:Reset()
 					LOOP
 				ENDIF
 				// End of lexing
-				
+
 
 				// Parsing
 				IF sWord:Length == 0
@@ -618,7 +618,7 @@ state:Reset()
 					cWord := sWord:ToString()
 					cUpperWord := cWord:ToUpper()
 				END IF
-				
+
 				IF eWordSubStatus == WordSubStatus.LiteralSymbol .and. sWord:Length != 0
 					IF state:lFirstWord .and. SELF:oParsingOptions:oDirectives:ContainsKey(cUpperWord)
 						eWordStatus := WordStatus.Text
@@ -757,8 +757,10 @@ state:Reset()
 								FOR m := 1 UPTO cUpperWord:Length - 1
 									cNumChar := cUpperWord[m]
 									DO CASE
-									CASE cNumChar >= 48 .and. cNumChar <= 57
+                                    CASE cNumChar >= 48 .and. cNumChar <= 57
+                                        NOP
 									CASE lHex .and. cNumChar >= 65 .and. cNumChar <= 70
+                                        NOP
 									CASE m == 1 .and. (cNumChar == 'X' .or. cNumChar == 'B') .and. cUpperWord[0] == '0'
 										lHex := TRUE
 										eWordSubStatus := WordSubStatus.LiteralUInt
@@ -845,7 +847,7 @@ state:Reset()
 						END IF
 					ENDIF
 				ENDIF
-				
+
 				LOCAL lAllowEntityParse AS LOGIC
 				lAllowEntityParse := _lEntities .and. .not. state:lIgnore
 
@@ -854,7 +856,7 @@ state:Reset()
 					sWord:Length := 0
 					lEscapedWord := FALSE
 					LOOP
-				
+
 				CASE eStep == ParseStep.WaitImplements .and. .not. (cUpperWord == "IMPLEMENTS" .and. .not. lEscapedWord)
 					eStep := ParseStep.None
 					state:lIgnore := TRUE
@@ -906,6 +908,7 @@ state:Reset()
 					END IF
 
 				CASE eWordStatus == WordStatus.Literal .or. eWordStatus == WordStatus.Comment .or. eWordSubStatus == WordSubStatus.TextDirective
+                    NOP
 
 				CASE (lIsSpaceChar .or. cChar == ';') .and. sWord:Length == 0
 					lEscapedWord := FALSE
@@ -917,7 +920,8 @@ state:Reset()
 					sWord:Length := 0
 					lEscapedWord := FALSE
 					LOOP
-				CASE .not. (_lEntities) .and. .not. _lTokens
+                CASE .not. (_lEntities) .and. .not. _lTokens
+                    NOP
 				CASE state:lFirstWord .and. cUpperWord == "RETURN" .and. .not. lEscapedWord
 					oStatementLine:eType := LineType.Return
 					oStatementLine:cArgument := NULL
@@ -1103,13 +1107,13 @@ state:Reset()
 						eStep == ParseStep.AfterAs .or. eStep == ParseStep.AfterRef .or. ;
 						eStep == ParseStep.AfterBeginNamespace .or. ;
 						.not. state:lNameFound
-						
+
 						IF eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterImplements .or. eStep == ParseStep.AfterAs .or. eStep == ParseStep.AfterRef
 							// Waiting for type that may be generic, array
 							lFindingType := TRUE
 							sFoundType:Append(sWord:ToString())
 							sWord:Length := 0
-							
+
 								DO WHILE nChar < nLineLen .and. (cChar == ' ' .or. cChar == '\t')
 									cOldOldChar := cOldChar
 									cOldChar := cChar
@@ -1158,7 +1162,7 @@ state:Reset()
 							END IF
 							cWord := sFoundType:ToString()
 							sFoundType:Length := 0
-							
+
 							lFindingType := FALSE
 
 						ELSE // eStep == ParseStep.AfterBeginNamespace .or. .not. state:lNameFound
@@ -1174,7 +1178,7 @@ state:Reset()
 							cWord := sFoundType:ToString()
 							sFoundType:Length := 0
 							lFindingName := FALSE
-	
+
 						END IF
 
 						IF state:lEntityIsClass .and. .not. state:lNameFound
@@ -1286,7 +1290,7 @@ state:Reset()
 								state:lIgnore := TRUE
 							END IF
 						END CASE
-					
+
 					END CASE
 					IF state:lInParams
 						IF cChar == ','
@@ -1370,7 +1374,7 @@ state:Reset()
 							END IF
 						END IF
 					ENDIF
-				
+
 				CASE _lTokens .and. state:lFirstWord .and. cUpperWord == "USING"
 					lInEnum := FALSE
 					eStep := ParseStep.AfterUsing
@@ -1477,16 +1481,16 @@ state:Reset()
 				sWord:Length := 0
 				lEscapedWord := FALSE
 				// End of parsing
-				
+
 			END DO
 
 			IF oLine != NULL
 				oLine:lOutAmpersand := lContinueNextLine
 				oLine:lOutBlockComment := eLexer == LexerStep.BlockComment
 			END IF
-			
+
 			nLine ++
-			
+
 			IF _lLinesModified .and. nLine > nEndLine .and. nLine <= SELF:aLines:Count
 				oLine := SELF:aLines[nLine - 1]
 				IF (oLine:lInBlockComment .and. eLexer != LexerStep.BlockComment) .or. ;
@@ -1532,7 +1536,7 @@ state:Reset()
 										oLine:aFields[n]:cClassType := cClassType
 									NEXT
 								END IF
-								
+
 							CASE oLine:lEntity
 								lLineNumsVerified := oLine:VerifyEntitiesLineNum(nTestLine , FALSE)
 								IF oLine:oEntity:IsType
@@ -1578,9 +1582,9 @@ state:Reset()
 									ENDIF*/
 								END IF
 							END CASE
-							
+
 							oLine := oLine:oSubLine
-							
+
 						ENDDO
 
 						IF lMustExit
@@ -1593,7 +1597,7 @@ state:Reset()
 				END IF
 
 			END IF
-			
+
 		ENDDO
 
 		IF _lLinesModified .and. nLine > nEndLine .and. .not. lLineNumsVerified
@@ -1605,12 +1609,12 @@ state:Reset()
 				nLine ++
 			END DO
 		ENDIF
-		
+
 		IF _lWords
 			aRet:Insert(0 , WordObject{""})
 			aRet:Add(WordObject{""})
 		END IF
-		
+
 		IF _lLinesModified
 			IF lMoreModified
 				aRet := ArrayList{}
@@ -1618,7 +1622,7 @@ state:Reset()
 				aRet := NULL
 			END IF
 		END IF
-		
+
 	RETURN aRet
 
 	PROTECTED STATIC METHOD GetEntityType(cWord AS STRING) AS EntityType
@@ -1638,15 +1642,15 @@ state:Reset()
 			eType := EntityType._Access
 		CASE "ASSIGN"
 			eType := EntityType._Assign
-		case "FUNCTION" 
+		case "FUNCTION"
         CASE "FUNC"
 			eType := EntityType._Function
-		case "PROCEDURE" 
+		case "PROCEDURE"
         CASE "PROC"
 			eType := EntityType._Procedure
 		CASE "ENUM"
 			eType := EntityType._Enum
-		case "STRUCTURE" 
+		case "STRUCTURE"
         CASE "STRUCT"
 			eType := EntityType._Structure
 		CASE "VOSTRUCT"
@@ -1667,7 +1671,7 @@ state:Reset()
 			eType := EntityType._Define
 		END SWITCH
 	RETURN eType
-	
+
 	PROTECTED STATIC METHOD GetNameSpace(aNameSpaces AS List<STRING>) AS STRING
 		LOCAL oEnumerator AS IEnumerator
 		LOCAL cRet AS STRING

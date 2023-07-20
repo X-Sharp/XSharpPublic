@@ -29,7 +29,7 @@ using XSharpModel;
 using IServiceProvider = System.IServiceProvider;
 using Microsoft.VisualStudio;
 using System.Diagnostics;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
 
@@ -144,7 +144,7 @@ namespace XSharp.LanguageService
             // Remove this library from the object manager.
             if (0 != objectManagerCookie)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -194,7 +194,7 @@ namespace XSharp.LanguageService
             //
             if (0 == objectManagerCookie)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -332,7 +332,7 @@ namespace XSharp.LanguageService
             XSharpModuleId found = FindFileByFileName(task.FileName);
             if (found != null)
             {
-                //XSettings.LogMessage("Library scanning: "+task.FileName);
+                //Logger.Information("Library scanning: "+task.FileName);
                 // Doesn't it have the same members?
                 // if (found.ContentHashCode == task.ModuleID.ContentHashCode)
                 //    continue;
@@ -401,7 +401,7 @@ namespace XSharp.LanguageService
                     {
                         //if (requests.Count % 25 == 0)
                         //{
-                        //    XSettings.LogMessage("Remaining requests " + requests.Count.ToString());
+                        //    Logger.Information("Remaining requests " + requests.Count.ToString());
                         //}
                         task = requests.Dequeue();
                         if (tasks.ContainsKey(task.FileName))
@@ -513,7 +513,7 @@ namespace XSharp.LanguageService
 
             if (!file.HasCode)
                 return;
-            //XSettings.LogMessage("CreateModuleTree " + file.FullPath);
+            //Logger.Information("CreateModuleTree " + file.FullPath);
             //
             XSharpLibraryNode newNode;
             LibraryNode nsNode;
@@ -640,7 +640,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            //XSettings.LogMessage("OnFileWalkComplete " + xfile.FullPath);
+            //Logger.Information("OnFileWalkComplete " + xfile.FullPath);
             if (filedict.TryGetValue(xfile.FullPath, out var module))
             {
                 CreateUpdateTreeRequest(xfile.SourcePath, module.Hierarchy, module.ItemID);
@@ -652,7 +652,7 @@ namespace XSharp.LanguageService
                     var hierarchyId = prjNode.ownerHierarchy;
                     uint itemid = 0;
                     int hr = 0;
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async () =>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out itemid);
@@ -682,7 +682,7 @@ namespace XSharp.LanguageService
                         var xfile = xsProject.FindXFile(path);
                         uint itemid = 0;
                         int hr = 0;
-                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                         {
                             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                             hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out itemid);
@@ -707,7 +707,7 @@ namespace XSharp.LanguageService
             {
                 if (! tasks.ContainsKey(file))
                 {
-                    //XSettings.LogMessage("CreateUpdateTreeRequest Library Enqueue " + file);
+                    //Logger.Information("CreateUpdateTreeRequest Library Enqueue " + file);
                     var id = new XSharpModuleId(owner, itemId, file);
                     LibraryTask task = new LibraryTask(file, id);
                     requests.Enqueue(task);
@@ -721,7 +721,7 @@ namespace XSharp.LanguageService
         //{
 
         //    string fileName = "";
-        //    ThreadHelper.JoinableTaskFactory.Run(async delegate
+        //    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
         //    {
         //        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -759,7 +759,7 @@ namespace XSharp.LanguageService
         /// <param name="args"></param>
         private void OnNewFile(object sender, HierarchyEventArgs args)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -782,7 +782,7 @@ namespace XSharp.LanguageService
         /// <param name="args"></param>
         private void OnDeleteFile(object sender, HierarchyEventArgs args)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -791,7 +791,7 @@ namespace XSharp.LanguageService
                     return;
                 }
                 XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName);
-                XSettings.LogMessage("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
+                Logger.Information("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
                 // Ok, now remove ALL nodes for that key
                 lock (files)
                 {

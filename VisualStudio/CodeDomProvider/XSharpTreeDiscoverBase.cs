@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using XSharpModel;
+using XSharp.Settings;
 #if DUMPSNIPPETS
 using System.IO;
 #endif
@@ -1017,7 +1018,7 @@ namespace XSharp.CodeDom
             }
             else
             {
-                typeRef = new XCodeTypeReference("XSharp.__Array");
+                typeRef = new XCodeTypeReference(KnownTypes.XSharpArray);
             }
             ac = new CodeArrayCreateExpression(typeRef, elements.ToArray());
             return ac;
@@ -1711,7 +1712,7 @@ namespace XSharp.CodeDom
                 if (name.IndexOf("`") == -1)
                 {
                     var parts = typeName.Substring(index);
-                    var genargs = parts.Split(",".ToCharArray());
+                    var genargs = parts.Split(new char[]{ ','});
                     name = name + "`" + genargs.Length.ToString();
                 }
             }

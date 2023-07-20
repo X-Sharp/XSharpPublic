@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Serilog;
 using System.IO;
 using XSharpModel;
+using XSharp.Settings;
 using System.ComponentModel;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
@@ -17,6 +18,11 @@ namespace XSharp.Project
     {
         static bool log2debugger = false;
         static bool log2file = false;
+
+        static Logger()
+        {
+            XSettings.Logger = new LoggerImpl();
+        }
 
         private static string singleline = new string('-', 80);
         private static string doubleline = new string('=', 80);
@@ -251,5 +257,45 @@ namespace XSharp.Project
             return string.Format("{0:X4} {1}", System.Threading.Thread.CurrentThread.ManagedThreadId, message);
         }
 
+    }
+
+    internal class LoggerImpl : XSharpModel.ILogger
+    {
+        public bool Active => Logger.Active;
+
+        public void Debug(string sMsg)
+        {
+            Logger.Debug(sMsg);
+        }
+
+        public void DoubleLine()
+        {
+            Logger.DoubleLine();
+        }
+
+        public void Exception(Exception e, string sMsg)
+        {
+            Logger.Debug(sMsg);
+        }
+
+        public void Information(string sMsg)
+        {
+            Logger.Information(sMsg);
+        }
+
+        public void SingleLine()
+        {
+            Logger.SingleLine();
+        }
+
+        public void Start()
+        {
+            Logger.Start();
+        }
+
+        public void Stop()
+        {
+            Logger.Stop();
+        }
     }
 }

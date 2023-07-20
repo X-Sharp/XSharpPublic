@@ -6,15 +6,11 @@
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.BraceCompletion;
-using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
-using XSharpModel;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Language.StandardClassification;
-using XSharp.LanguageService.Editors.HighlightWord;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     [Export(typeof(IBraceCompletionContextProvider))]
@@ -38,7 +34,7 @@ namespace XSharp.LanguageService
             {
                 foreach (ClassificationSpan item in spans)
                 {
-                    if (HighlightWordTaggerProvider.IsInActiveSpan(item))
+                    if (AbstractMatchingTagger.IsInActiveSpan(item))
                         return false;
                 }
             }

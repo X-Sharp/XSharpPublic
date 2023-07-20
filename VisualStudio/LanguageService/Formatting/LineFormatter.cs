@@ -8,13 +8,11 @@
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using XSharpModel;
-using XSharpModel.Formatting;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class LineFormatter
@@ -55,7 +53,7 @@ namespace XSharp.LanguageService
             {
                 line = line.Snapshot.GetLineFromLineNumber(lineNo);
             }
-            tokens = _document.GetTokensInLine(line);
+            tokens = _document.GetTokensInSingleLine(line, true);
             if (tokens.Count > 0)
             {
                 keyword = XSharpLineKeywords.Tokens2Keyword(tokens);
@@ -72,7 +70,7 @@ namespace XSharp.LanguageService
         {
             if (line.Length == 0)
                 return true;
-            var tokens = _document.GetTokensInLine(line);
+            var tokens = _document.GetTokensInSingleLine(line, true);
             if (tokens.Count > 0)
             {
                 var token = tokens.Where((t) => t.Type != XSharpLexer.WS).FirstOrDefault();
@@ -132,7 +130,7 @@ namespace XSharp.LanguageService
             // to detect that we take the start of the line and check if it is in
             if (line.Length == 0)
                 return;
-            var tokens = _document.GetTokensInLine(line, false);
+            var tokens = _document.GetTokensInSingleLine(line, false);
             IToken lastToken = null;
             foreach (var token in tokens)
             {
@@ -273,7 +271,7 @@ namespace XSharp.LanguageService
             if (syncKeyword)
             {
                 var keyword = token.Text;
-                var transform = XSettings.FormatKeyword(keyword, Settings.KeywordCase);
+                var transform = XLiterals.FormatKeyword(keyword, Settings.KeywordCase);
                 if (string.Compare(transform, keyword) != 0)
                 {
                     editSession.Replace(token.StartIndex, transform.Length, transform);
@@ -285,7 +283,8 @@ namespace XSharp.LanguageService
                 var transform = id;
                 if (_document.Identifiers.ContainsKey(id))
                 {
-                    transform = _document.Identifiers[id];
+                    var list = _document.Identifiers[id];
+                    transform = list.First().Text;
                 }
                 if (string.Compare(transform, id) != 0)
                 {
@@ -308,7 +307,7 @@ namespace XSharp.LanguageService
             {
                 XKeyword kw = GetFirstKeywordInLine(lineNo);
 
-                if (kw.IsEntity())
+                if (kw.IsEntity() || kw.IsAttribute())
                 {
                     prevIndentation = CalculateIndentForLine(kw, lineNo);
                     break;
@@ -368,19 +367,38 @@ namespace XSharp.LanguageService
         }
         bool LineIsContinuation(int lineNo)
         {
-            return _document.HasLineState(lineNo, LineFlags.IsContinued);
+            if (_document.HasLineState(lineNo, LineFlags.IsContinued))
+            {
+                return !LineIsContinuationFromAttribute(lineNo);
+            }
+            return false;
         }
+        bool LineIsContinuationFromAttribute(int lineNo)
+        {
+            while (lineNo > 0)
+            {
+                lineNo -= 1;
+                if (_document.HasLineState(lineNo, LineFlags.StartsWithAttribute))
+                    return true;
+                if (!_document.HasLineState(lineNo, LineFlags.IsContinued))
+                    return false;
+            }
+            return false;
+        }
+
         private int GetDesiredIndentationAfterLine(int prevLineNo)
         {
             if (prevLineNo < 0)
                 return 0;
             int curLine = prevLineNo + 1;
             var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(prevLineNo);
-            var prevLineKeyword = GetFirstKeywordInLine(line ,out _, out var prevTokens);
             var indentValue = GetLineIndent(prevLineNo);
+            if (_document.HasLineState(prevLineNo, LineFlags.StartsWithAttribute))
+                return indentValue;
+            var prevLineKeyword = GetFirstKeywordInLine(line, out _, out var prevTokens);
             var settings = Settings;
             var rule = XFormattingRule.GetFirstRuleByStart(prevLineKeyword);
-            if (LineIsContinuation(curLine))
+            if (_document.HasLineState(curLine, LineFlags.IsContinued))
             {
                 // when this was already a continued line then we do not need to add another tab
                 if (LineIsContinuation(prevLineNo))
@@ -395,8 +413,11 @@ namespace XSharp.LanguageService
                 return indentValue;
             }
             // if the previous line was an indentation then we have to unindent
+            // but not if that was a line after a attribute
 
-            if (LineIsContinuation(prevLineNo) && settings.IndentContinuedLines)
+            if (LineIsContinuation(prevLineNo) &&
+                settings.IndentContinuedLines &&
+                !LineIsContinuationFromAttribute(prevLineNo))
             {
                 indentValue -= settings.IndentSize;
                 return indentValue;
@@ -479,7 +500,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "SmartIndent.GetDesiredIndentation failed");
+                Logger.Exception(ex, "SmartIndent.GetDesiredIndentation failed");
             }
             return _lastIndentValue;
         }
@@ -510,7 +531,7 @@ namespace XSharp.LanguageService
             int indent = 0;
             if (_lineIndent.ContainsKey(line))
                 return _lineIndent[line];
-            var tokens = _document.GetTokensInLine(line);
+            var tokens = _document.GetTokensInLineAndFollowing(line);
             if (tokens.Count > 0 && tokens[0].Type == XSharpLexer.WS)
             {
                 indent = GetIndentTokenLength(tokens[0]);
@@ -570,7 +591,7 @@ namespace XSharp.LanguageService
             int prevIndentation = 0;
             IList<IToken> tokens;
             var settings = Settings;
-            if (keyword.IsEntity())
+            if (keyword.IsEntity() || _document.HasLineState(lineNo, LineFlags.EntityStart))
             {
                 if (keyword.IsType()) // Type or namespace
                 {
@@ -631,7 +652,7 @@ namespace XSharp.LanguageService
                         }
                         else if (kw.IsType())
                         {
-                            tokens = _document.GetTokensInLine(tempLineNo);
+                            tokens = _document.GetTokensInLineAndFollowing(tempLineNo);
                             if (tokens.Count > 0)
                             {
                                 prevIndentation = GetLineIndent(tempLineNo);
@@ -755,7 +776,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.Formatting:" + strMessage);
+                Logger.Information("XSharp.Formatting:" + strMessage);
             }
         }
 

@@ -4,18 +4,15 @@
 // See License.txt in the project root for license information.
 //
 
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.Language.Intellisense;
-using System.Windows.Documents;
-using System.Windows.Media;
-using XSharpModel;
-using Microsoft.VisualStudio.Language.StandardClassification;
-using Microsoft.VisualStudio.Text.Adornments;
-using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
-
+using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Text.Adornments;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     internal class XAnalysis
@@ -132,7 +129,7 @@ namespace XSharp.LanguageService
             {
                 var content = new List<ClassifiedTextRun>();
 
-                content.addKeyword(XSettings.FormatKeyword(symbol.KindKeyword) + " ");
+                content.addKeyword(XLiterals.FormatKeyword(symbol.KindKeyword) + " ");
                 //
                 //
                 content.addText(Prototype);
@@ -155,37 +152,6 @@ namespace XSharp.LanguageService
                 return;
             Type = typeInfo;
             Name = typeInfo.FullName;
-            //
-            if (typeInfo.IsGeneric)
-            {
-                // convert syntax with `2 to real type parameter names
-                string genName = typeInfo.FullName;
-                if (typeInfo is XPETypeSymbol petype)
-                {
-                    genName = petype.OriginalTypeName;
-                }
-                int index = genName.IndexOf('`');
-                if (index != -1)
-                {
-                    genName = genName.Substring(0, index);
-                }
-                if (genName.IndexOf('<') == -1)
-                {
-                    genName += "<";
-                    int count = 0;
-                    int max = typeInfo.TypeParameters.Count;
-                    foreach (var genType in typeInfo.TypeParameters)
-                    {
-                        genName += genType;
-                        count++;
-                        if ((count < max))
-                            genName += ", ";
-                    }
-                    genName += ">";
-                }
-                Name = genName;
-
-            }
         }
 
         public override ClassifiedTextRun[] WPFDescription
@@ -196,30 +162,59 @@ namespace XSharp.LanguageService
 
                 if (Type.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Type.ModifiersKeyword) );
+                    content.addKeyword(XLiterals.FormatKeyword(Type.ModifiersKeyword));
                     content.addWs();
                 }
-                content.addKeyword(XSettings.FormatKeyword(Type.VisibilityKeyword) );
+                content.addKeyword(XLiterals.FormatKeyword(Type.VisibilityKeyword));
                 content.addWs();
                 //
                 if (Type.Kind != Kind.Field)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Type.KindKeyword) );
+                    content.addKeyword(XLiterals.FormatKeyword(Type.KindKeyword));
                     content.addWs();
                 }
                 //
-                content.addText(Prototype);
+                if (Type.IsGeneric)
+                {
+                    // convert syntax with `2 to real type parameter names
+                    string genName = Type.FullName;
+                    if (Type is XPETypeSymbol petype)
+                    {
+                        genName = petype.OriginalTypeName;
+                    }
+                    int index = genName.IndexOfAny(new char[] { '`','<'});
+                    if (index != -1)
+                    {
+                        genName = genName.Substring(0, index);
+                    }
+                    content.addText(genName);
+                    bool first = true;
+                    foreach (var str in Type.TypeParameters)
+                    {
+                        if (first)
+                            content.addOperator("<");
+                        else
+                            content.addOperator(",");
+                        content.addText(str);
+                        first = false;
+                    }
+                    content.addOperator(">");
+                }
+                else
+                {
+                    content.addText(Prototype);
+                }
                 if (!string.IsNullOrWhiteSpace(Type.BaseTypeName))
                 {
                     content.addText("\r\n");
-                    content.addKeyword(XSettings.FormatKeyword("INHERIT") );
+                    content.addKeyword(XLiterals.FormatKeyword("INHERIT"));
                     content.addWs();
                     content.addText(Type.BaseTypeName);
                 }
                 if (Type.Interfaces?.Count > 0)
                 {
                     content.addText("\r\n");
-                    content.addKeyword(XSettings.FormatKeyword("IMPLEMENTS"));
+                    content.addKeyword(XLiterals.FormatKeyword("IMPLEMENTS"));
                     content.addWs();
                     bool first = true;
                     int count = 0;
@@ -229,7 +224,7 @@ namespace XSharp.LanguageService
                             first = false;
                         else
                         {
-                            content.addText(", ");
+                            content.addOperator(", ");
                         }
                         content.addText(name);
                         if (++count > 4 && Type.Interfaces.Count > 5)
@@ -239,6 +234,20 @@ namespace XSharp.LanguageService
                             break;
                         }
                     }
+                }
+                if (Type.Kind == Kind.Delegate)
+                {
+                    var mem = Type.Members.First();
+                    var memana = new XMemberAnalysis(mem);
+                    var desc = memana.WPFPrototype;
+                    var name = mem.Name;
+                    // skip first element: Invoke
+                    for (int i = 1; i < desc.Length; i++)
+                    {
+                        var element = desc[i];
+                        content.Add(element);
+                    }
+
                 }
                 //
                 string returns;
@@ -261,7 +270,7 @@ namespace XSharp.LanguageService
         public string Value { get; private set; }
         public IXMemberSymbol Member;
 
-     
+
 
         internal XMemberAnalysis(IXMemberSymbol member)
         {
@@ -285,18 +294,18 @@ namespace XSharp.LanguageService
 
                 if (Member.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Member.ModifiersKeyword) + " ");
+                    content.addKeyword(XLiterals.FormatKeyword(Member.ModifiersKeyword) + " ");
                 }
-                content.addKeyword(XSettings.FormatKeyword(Member.VisibilityKeyword) + " ");
+                content.addKeyword(XLiterals.FormatKeyword(Member.VisibilityKeyword) + " ");
                 //
                 if ((Member.IsStatic) && ((Member.Kind != Kind.Function) && (Member.Kind != Kind.Procedure)))
                 {
-                    content.addKeyword(XSettings.FormatKeyword("STATIC "));
+                    content.addKeyword(XLiterals.FormatKeyword("STATIC "));
                 }
                 //
                 if ((Member.Kind != Kind.Field) && (Member.Kind != Kind.Constructor))
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Member.KindKeyword) + " ");
+                    content.addKeyword(XLiterals.FormatKeyword(Member.KindKeyword) + " ");
                 }
                 //
                 content.AddRange(WPFPrototype);
@@ -311,28 +320,29 @@ namespace XSharp.LanguageService
             get
             {
                 var content = new List<ClassifiedTextRun>();
-                if (Member.Kind.HasParameters() && Member.Kind.IsProperty())
+                if (Member.Kind.HasParameters() /*&& Member.Kind.IsProperty()*/)
                 {
                     content.addText(Name);
-                    content.addKeyword(Member.Kind == Kind.Constructor ? "{" : "(");
+                    content.addOperator(Member.Kind == Kind.Constructor ? "{" : "(");
                     bool first = true;
                     foreach (IXParameterSymbol var in Member.Parameters)
                     {
                         if (!first)
                         {
-                            content.addText(", ");
+                            content.addOperator(", ");
                         }
                         first = false;
                         content.addText(var.Name + " ");
                         content.addKeyword(var.ParamTypeDesc + " ");
                         content.addKeyword(var.TypeName);
                     }
-                    content.addKeyword(Member.Kind == Kind.Constructor ? "}" : ")");
+                    content.addOperator(Member.Kind == Kind.Constructor ? "}" : ")");
                 }
                 //
                 if (!string.IsNullOrEmpty(Value))
                 {
-                    content.addText(" := " + Value);
+                    content.addOperator(" := ");
+                    content.addText(Value);
                 }
                 if (Member.Kind.HasReturnType())
                 {

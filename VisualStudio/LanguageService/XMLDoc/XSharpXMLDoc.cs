@@ -16,22 +16,30 @@ using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
 using System.Text;
 using System.Xml;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     // No need to do a complicated lookup for the reference assembly names
     // Our system type controller has these already
     static public class XSharpXMLDocTools
     {
-        static readonly Dictionary<string, IVsXMLMemberIndex> _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
-        static IVsXMLMemberIndexService _XMLMemberIndexService = null;
-        static string coreLoc = "";
-        static IVsXMLMemberIndex coreIndex = null;
+        static readonly Dictionary<string, IVsXMLMemberIndex> _memberIndexes;
+        static IVsXMLMemberIndexService _XMLMemberIndexService ;
+        static string coreLoc ;
+        static IVsXMLMemberIndex coreIndex ;
+        static XSharpXMLDocTools()
+        {
+            _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
+            _XMLMemberIndexService = null;
+            coreLoc = "";
+            coreIndex = null;
+        }
+
         static bool GetIndex()
         {
             if (_XMLMemberIndexService == null)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                 {
                     _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService, IVsXMLMemberIndexService>();
                 });
@@ -97,7 +105,7 @@ namespace XSharp.LanguageService
             {
                 if (!_memberIndexes.TryGetValue(location, out index))
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         if (GetIndex())
@@ -135,7 +143,7 @@ namespace XSharp.LanguageService
                 {
                     if (!_memberIndexes.TryGetValue(refasm, out index))
                     {
-                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                         {
                             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                             if (GetIndex())
@@ -164,7 +172,7 @@ namespace XSharp.LanguageService
         public static IEnumerable<string> MemoLines(this string str, int maxLength)
         {
             str = str.Replace("\r\n", "\r");
-            var tokens = str.Split(" \t".ToCharArray());
+            var tokens = str.Split(new char[]{' ','\t'});
             var result = "";
             foreach (var token in tokens)
             {
@@ -224,7 +232,7 @@ namespace XSharp.LanguageService
             {
                 uint id = 0;
                 string xml = "";
-                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                return ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     StringBuilder sb = new StringBuilder();
@@ -299,7 +307,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetSummary");
+                Logger.Exception(e, "Exception in XSharpXMLDocMember.GetSummary");
                 summary = "** Invalid XML comment ** \r"+e.Message;
 
             }
@@ -482,7 +490,7 @@ namespace XSharp.LanguageService
             {
                 uint id = 0;
                 string xml = "";
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -531,7 +539,7 @@ namespace XSharp.LanguageService
                     uint id = 0;
                     string xml = "";
                     int result = 0;
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         result = file.ParseMemberSignature(sig, out id);
@@ -545,7 +553,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
+                Logger.Exception(e, "Exception in XSharpXMLDocMember.GetDocSummary");
             }
             //
             return summary;
@@ -558,7 +566,7 @@ namespace XSharp.LanguageService
             IVsXMLMemberData data = null;
             int result = 0;
             int numparams = 0;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 result = file.GetMemberDataFromXML(xml, out data);
@@ -573,7 +581,7 @@ namespace XSharp.LanguageService
                 string paramDesc = "";
                 for (int i = 0; i < numparams; i++)
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -589,7 +597,7 @@ namespace XSharp.LanguageService
         }
         static public bool GetMemberParameters(IXMemberSymbol member, XProject project, IList<string> names, IList<string> descriptions)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (member == null)
@@ -629,7 +637,7 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception e)
                 {
-                    XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
+                    Logger.Exception(e, "Exception in XSharpXMLDocMember.GetDocSummary");
                     return false;
                 }
                 return true;

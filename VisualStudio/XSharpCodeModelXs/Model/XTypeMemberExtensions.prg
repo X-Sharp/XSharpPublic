@@ -8,7 +8,7 @@ USING System
 USING System.Text
 USING System.Linq
 USING System.Collections.Generic
-
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 
@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharpModel
                      IF  nPos > 0
                         result := result:Substring(0, nPos)
                      ENDIF
-                     VAR vars := typeName:Split(",":ToCharArray())
+                     VAR vars := typeName:Split(<char>{','})
                      VAR delim := "{"
                      FOREACH VAR parName IN vars
                         result += delim
@@ -230,7 +230,16 @@ BEGIN NAMESPACE XSharpModel
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-
+        STATIC METHOD GetTickedName(SELF m as IXMemberSymbol) AS STRING
+            var result := m:Name
+            var pos := result:IndexOfAny(<CHAR>{'<','`'})
+            if pos > 0
+                result := result:Substring(0, pos-1)
+            endif
+            IF m:TypeParameters?:Count > 0
+                result += "`"+m:TypeParameters:Count:ToString()
+            ENDIF
+            return result
    END CLASS
 END NAMESPACE
 

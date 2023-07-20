@@ -1658,7 +1658,8 @@ CLASS ApplicationDescriptor
 					ELSE
 /*						oOutput:WriteLine(String.Format('    <Reference Include="{0}">' , cReference ) )
 						oOutput:WriteLine(String.Format('      <SpecificVersion>false</SpecificVersion>') )
-						oOutput:WriteLine(String.Format('    </Reference>'))*/
+                        oOutput:WriteLine(String.Format('    </Reference>'))*/
+                        nop
 					ENDIF
 				NEXT
 

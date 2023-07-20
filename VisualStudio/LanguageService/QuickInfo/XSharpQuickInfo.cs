@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {
@@ -38,7 +39,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableQuickInfoLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage("XSharp.QuickInfoSource :" + message);
+                Logger.Information("XSharp.QuickInfoSource :" + message);
             }
         }
 
@@ -101,7 +102,7 @@ namespace XSharp.LanguageService
                         if (location.LineNumber == location.Member.FirstSourceLine(location.Document))
                             element = location.Member;
                     }
-                    var lineTokens = document.GetTokensInLine(lastToken.Line - 1);
+                    var lineTokens = document.GetTokensInLineAndFollowing(lastToken.Line - 1);
                     if (element is XSourceUndeclaredVariableSymbol ||
                         lineTokens.First()?.Type == XSharpLexer.UDC_KEYWORD)
                     {
@@ -176,7 +177,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "XSharpQuickInfo.AugmentQuickInfoSession failed : ");
+                Logger.Exception(ex, "XSharpQuickInfo.AugmentQuickInfoSession failed : ");
             }
             finally
             {
@@ -278,6 +279,12 @@ namespace XSharp.LanguageService
             protected void addVarInfo(List<ClassifiedTextRun> list, IXVariableSymbol var)
             {
                 var name = var.Name;
+                var kw = var.ModifiersKeyword;
+                if (!string.IsNullOrEmpty(kw))
+                {
+                    list.addKeyword(kw);
+                    list.addWs();
+                }
                 var hasValue = !string.IsNullOrEmpty(var.Value);
                 if (hasValue && var.Kind == Kind.DbField)
                 {
@@ -286,8 +293,9 @@ namespace XSharp.LanguageService
                 list.addText(name + " ");
                 if (hasValue && var.Kind != Kind.DbField) // default value
                 {
-                    var text = " :=  " + var.Value + " ";
-                    list.addText(text);
+                    var text = " :=  ";
+                    list.addOperator(text);
+                    list.addText(var.Value + " ");
 
                 }
                 if (var is IXParameterSymbol xps)
@@ -332,18 +340,18 @@ namespace XSharp.LanguageService
                     string text;
                     if (this.typeMember.Modifiers != Modifiers.None)
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
+                        text = XLiterals.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
                         content.addKeyword(text);
                     }
                     if (!this.typeMember.Kind.IsPPSymbol())
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
+                        text = XLiterals.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
                         content.addKeyword(text);
                     }
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        text = XSettings.FormatKeyword(this.typeMember.KindKeyword) + " ";
+                        text = XLiterals.FormatKeyword(this.typeMember.KindKeyword) + " ";
                         content.addKeyword(text);
                     }
                     //
@@ -379,16 +387,34 @@ namespace XSharp.LanguageService
                 }
                 name += this.typeMember.Name;
                 content.addText(name);
+                if (this.typeMember.TypeParameters?.Count > 0)
+                {
+                    bool first = true;
+                    foreach (var str in this.typeMember.TypeParameters)
+                    {
+                        if (first)
+                        {
+                            content.addOperator("<");
+                        }
+                        else
+                        {
+                            content.addOperator(",");
+                        }
+                        content.addText(str);
+                        first = false;
+                    }
+                    content.addOperator(">");
+                }
                 if (this.typeMember.Kind.HasParameters() && !this.typeMember.Kind.IsProperty())
                 {
                     var isExt = typeMember.IsExtension;
-                    content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                    content.addOperator(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
                     bool first = true;
                     foreach (var var in this.typeMember.Parameters)
                     {
                         if (!first)
                         {
-                            content.addText(", ");
+                            content.addOperator(", ");
                         }
                         if (isExt)
                         {
@@ -398,14 +424,15 @@ namespace XSharp.LanguageService
                         first = false;
                         addVarInfo(content, var);
                     }
-                    content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                    content.addOperator(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                 }
                 //
                 //
                 if (!String.IsNullOrEmpty(this.typeMember.Value))
                 {
-                    var text = " := " + this.typeMember.Value;
-                    content.addText(text);
+                    var text = " := ";
+                    content.addOperator(text);
+                    content.addText(this.typeMember.Value);
                 }
                 if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                 {
@@ -466,7 +493,7 @@ namespace XSharp.LanguageService
                     }
                     if (xVar.Kind == Kind.DbField)
                         kind = "Field";
-                    content.addKeyword(XSettings.FormatKeyword(kind + " "));
+                    content.addKeyword(XLiterals.FormatKeyword(kind + " "));
                     addVarInfo(content, xVar);
                     content.addLocation(xVar.Location);
                     return content.ToArray();
@@ -489,6 +516,11 @@ namespace XSharp.LanguageService
             var temp = new ClassifiedTextRun(PredefinedClassificationTypeNames.WhiteSpace, " ");
             content.Add(temp);
 
+        }
+        static internal void addOperator(this List<ClassifiedTextRun> content, string kw)
+        {
+            var temp = new ClassifiedTextRun(PredefinedClassificationTypeNames.Operator, kw);
+            content.Add(temp);
         }
         static internal void addKeyword(this List<ClassifiedTextRun> content, string kw)
         {
@@ -547,7 +579,7 @@ namespace XSharp.LanguageService
         }
         static internal void addReturnType(this List<ClassifiedTextRun> content, string typeName)
         {
-            content.addPair(" " + XSettings.FormatKeyword("AS "), typeName.GetXSharpTypeName());
+            content.addPair(" " + XLiterals.FormatKeyword("AS "), typeName.GetXSharpTypeName());
         }
 
         static internal int FirstSourceLine(this XSourceSymbol member, XDocument doc)

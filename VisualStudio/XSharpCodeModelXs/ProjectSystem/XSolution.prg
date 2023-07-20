@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 USING System
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
     STATIC CLASS XSolution
@@ -44,13 +44,6 @@ BEGIN NAMESPACE XSharpModel
         _commentTokens:Clear()
         _commentTokens:AddRange(aTokens)
 
-    STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
-        IF XSettings.EnableLogging
-            XSettings.LogMessage(message)
-        ENDIF
-    STATIC METHOD WriteException(ex AS Exception, msg as STRING) AS VOID
-        XSettings.LogException(ex, msg)
-        RETURN
 
     STATIC PRIVATE METHOD _ClearFolder(directory as DirectoryInfo, lDeleteFiles as LOGIC) AS VOID
         if lDeleteFiles
@@ -78,6 +71,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN TRUE
         CATCH
             // the file may be in use or so
+            NOP
         END TRY
         RETURN FALSE
 
@@ -99,15 +93,15 @@ BEGIN NAMESPACE XSharpModel
             System.IO.File.WriteAllText(BuiltInFunctions, XSharpBuiltInFunctions(BuiltInFunctions))
             System.IO.File.SetAttributes(BuiltInFunctions, FileAttributes.ReadOnly)
         CATCH e as Exception
-            XSettings.LogException(e,__FUNCTION__)
+            XSettings.Exception(e,__FUNCTION__)
             BuiltInFunctions := ""
         END TRY
 
     STATIC METHOD Open(cFile as STRING) AS VOID
-        WriteOutputMessage("XModel.Solution.OpenSolution() "+cFile)
+        XSettings.Information("XModel.Solution.OpenSolution() "+cFile)
         IF IsOpen
             IF String.Compare(_fileName, cFile, TRUE) == 0
-                WriteOutputMessage("XModel.Solution.OpenSolution() File was already open"+cFile)
+                XSettings.Information("XModel.Solution.OpenSolution() File was already open"+cFile)
                 RETURN
             ENDIF
             Close()
@@ -155,7 +149,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN @@Add(project:Name, project)
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
-        WriteOutputMessage("XModel.Solution.Add() "+projectName+" "+project.FileName)
+        XSettings.Information("XModel.Solution.Add() "+projectName+" "+project.FileName)
         IF _projects:ContainsKey(projectName)
             RETURN FALSE
         ENDIF
@@ -168,7 +162,7 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD Close() AS VOID
         IF IsOpen
-            WriteOutputMessage("XModel.Solution.CloseSolution()" + _fileName)
+            XSettings.Information("XModel.Solution.CloseSolution()" + _fileName)
             ModelWalker.Stop()
             XDatabase.CloseDatabase(_sqldb)
 
@@ -216,7 +210,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN NULL
 
     INTERNAL STATIC METHOD Remove(projectName AS STRING) AS LOGIC
-        WriteOutputMessage("XModel.Solution.Remove() "+projectName)
+        XSettings.Information("XModel.Solution.Remove() "+projectName)
         IF _projects:ContainsKey(projectName)
             VAR result := _projects:TryRemove(projectName, OUT VAR p)
             IF (p != NULL)
@@ -229,7 +223,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN FALSE
 
     INTERNAL STATIC METHOD RenameProject(oldName AS STRING, newName AS STRING) AS VOID
-         WriteOutputMessage("XModel.Solution.RenameProject() "+oldName+" "+newName)
+         XSettings.Information("XModel.Solution.RenameProject() "+oldName+" "+newName)
         IF _projects:ContainsKey(oldName)
             _projects:TryRemove(oldName, OUT VAR project)
             IF project != NULL
@@ -278,7 +272,6 @@ BEGIN NAMESPACE XSharpModel
     END PROPERTY
 
     END CLASS
-
 
 END NAMESPACE
 

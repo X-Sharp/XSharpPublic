@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -38,6 +39,20 @@ namespace Microsoft.VisualStudio.Project.Automation
                     return 0;
                 }
                 return BaseReferenceNode.ResolvedAssembly.Version.Build;
+            }
+        }
+        public override bool CopyLocal
+        {
+            get
+            {
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var props = this.BaseReferenceNode.NodeProperties as ReferenceNodeProperties;
+                    if (props != null)
+                        return props.CopyToLocal;
+                    return false;
+                });
             }
         }
         public override string Culture

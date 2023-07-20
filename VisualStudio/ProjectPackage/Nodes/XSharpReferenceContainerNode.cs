@@ -7,9 +7,6 @@ using System;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using System.IO;
-using XSharpModel;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace XSharp.Project
 {
@@ -68,7 +65,7 @@ namespace XSharp.Project
           }
           catch (Exception e)
           {
-                XSettings.LogException(e, "CreateAssemblyReferenceNode");
+                Logger.Exception(e, "CreateAssemblyReferenceNode");
             }
           ReferenceNode existing = null;
           if (isDuplicateNode(node, ref existing))
@@ -204,7 +201,7 @@ namespace XSharp.Project
           }
           catch (Exception e)
           {
-                XSettings.LogException(e, "CreateAssemblyReferenceNode");
+                Logger.Exception(e, "CreateAssemblyReferenceNode");
           }
           return node;
       }

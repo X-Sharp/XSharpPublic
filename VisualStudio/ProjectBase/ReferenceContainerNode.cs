@@ -23,7 +23,6 @@ using MSBuild = Microsoft.Build.Evaluation;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
@@ -562,7 +561,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                XSettings.LogException(e, "CreateAssemblyReferenceNode");
+                Logger.Exception(e, "CreateAssemblyReferenceNode");
             }
 
             return node;
@@ -579,7 +578,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                XSettings.LogException(e, "CreateAssemblyReferenceNode");
+                Logger.Exception(e, "CreateAssemblyReferenceNode");
             }
             
 

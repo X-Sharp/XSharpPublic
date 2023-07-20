@@ -8,7 +8,7 @@
 using System.Linq
 using System.Collections.Generic
 using Mono.Cecil
-
+USING XSharp.Settings
 BEGIN NAMESPACE XSharpModel
 
 DELEGATE XmlDocProvider (entry as IXSymbol) AS STRING
@@ -52,14 +52,14 @@ CLASS XClassCreator
             var result := List<String>{}
             result:Add("// Exception occurred during reading type information: ")
             result:Add("// "+e:Message)
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
             return result
 		END TRY
 
     PROTECTED METHOD GetDoc(sym as IXSymbol,nNest as long) AS VOID
-        IF oDocProvider != NULL .and. XSettings.CodeGeneratorShowXmlComments
+        IF SELF:oDocProvider != NULL .and. XSettings.CodeGeneratorShowXmlComments
             LOCAL cDoc as STRING
-            cDoc := oDocProvider(sym)
+            cDoc := SELF:oDocProvider(sym)
             IF ! String.IsNullOrWhiteSpace(cDoc)
                 var docLines := cDoc:Split(<char>{'\r','\n'},StringSplitOptions.RemoveEmptyEntries)
                 foreach var docLine in docLines
@@ -122,6 +122,7 @@ CLASS XClassCreator
 
 		IF oType:Kind == Kind.Delegate
 			//SELF:AddDelegate(oType , nNest)
+            NOP
 		ELSEIF oType:IsPublic .or. oType:IsNested
 			SELF:AddType(oType , nNest)
 		END IF
@@ -313,7 +314,7 @@ CLASS XClassCreator
 
 	PROTECTED METHOD AddDelegate(oType AS XPETypeSymbol , nNest AS INT, cParentName := "" AS STRING) AS VOID
 
-		AddAttributes(oType , SELF:aLines , nNest)
+		SELF:AddAttributes(oType , SELF:aLines , nNest)
         var cLine := oType:VisibilityKeyword+" "+oType:ModifiersKeyword+" "+ oType:KindKeyword + " "
         cLine += oType:Prototype
         SELF:AddLine(cLine, nNest)

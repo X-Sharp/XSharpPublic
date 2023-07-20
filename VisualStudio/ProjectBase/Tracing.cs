@@ -10,7 +10,6 @@
  * ***************************************************************************/
 
 using System.Diagnostics;
-using XSharpModel;
 
 
 namespace Microsoft.VisualStudio.Project
@@ -28,7 +27,7 @@ namespace Microsoft.VisualStudio.Project
             if(method != null)
             {
                 string name = method.Name + " \tin class " + method.DeclaringType.Name;
-                XSettings.LogMessage("Call Trace: \t" + name);
+                Logger.Information("Call Trace: \t" + name);
             }
         }
 
@@ -43,26 +42,26 @@ namespace Microsoft.VisualStudio.Project
         static public void TraceCall(string strParameters)
         {
             CCITracing.InternalTraceCall(2);
-            XSettings.LogMessage("\tParameters: \t" + strParameters);
+            Logger.Information("\tParameters: \t" + strParameters);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void Trace(System.Exception e)
         {
             CCITracing.InternalTraceCall(2);
-            XSettings.LogException(e,"");
+            Logger.Exception(e,"");
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void Trace(string strOutput)
         {
-            XSettings.LogMessage(strOutput);
+            Logger.Information(strOutput);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void TraceData(string strOutput)
         {
-            XSettings.LogMessage("Data Trace: \t" + strOutput);
+            Logger.Information("Data Trace: \t" + strOutput);
         }
 
         [ConditionalAttribute("Enable_CCIFileOutput")]

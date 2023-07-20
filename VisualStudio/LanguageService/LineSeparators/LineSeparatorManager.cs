@@ -13,7 +13,7 @@ using System;
 using XSharpModel;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
-
+using XSharp.Settings;
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -93,7 +93,7 @@ namespace XSharp.LanguageService
         internal void Repaint()
         {
             // now we know which lines to draw, now it is time to remove the old lines and paint the new ones
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (! closed)

@@ -4,19 +4,15 @@
 // See License.txt in the project root for license information.
 //
 
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+using XSharp.Settings;
+
 namespace XSharp.Project
 {
-    using Microsoft.VisualStudio.PlatformUI;
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Text;
-    using System.Collections.Generic;
-    using System.Windows.Forms;
-    using System.ComponentModel;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-    using XSharpModel;
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>

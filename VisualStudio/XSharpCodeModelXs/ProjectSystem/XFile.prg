@@ -11,6 +11,7 @@ USING System.IO
 USING System.Linq
 USING System.Diagnostics
 USING XSharpModel
+using XSharp.Settings
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
@@ -167,7 +168,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD SetTypes(types AS IDictionary<STRING, XSourceTypeSymbol>, usings AS IList<STRING>, ;
             staticUsings AS IList<STRING>, aEntities AS IList<XSourceEntity>) AS VOID
             IF SELF:HasCode
-                WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
+                SELF:WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 LOCAL globalType 	  AS XSourceTypeSymbol
                 globalType := types:Values:Where( { x => XSourceTypeSymbol.IsGlobalType(x)} ).FirstOrDefault()
                 SELF:Clear()
@@ -178,7 +179,7 @@ BEGIN NAMESPACE XSharpModel
                 IF globalType != NULL
                     SELF:_globalType := globalType
                 ENDIF
-                WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
+                SELF:WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
             ENDIF
 
         METHOD FindType(typeName AS STRING, nameSpace := "" AS STRING) AS IXTypeSymbol
@@ -198,7 +199,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         METHOD NofityClients as VOID
             IF ContentsChanged != NULL
-                ContentsChanged()
+                SELF:ContentsChanged()
             ENDIF
             RETURN
 
@@ -206,7 +207,7 @@ BEGIN NAMESPACE XSharpModel
             //
             IF SELF:HasCode
 
-                WriteOutputMessage("-->> ParseContents()")
+                SELF:WriteOutputMessage("-->> ParseContents()")
                 BEGIN USING VAR walker := SourceWalker{SELF}
                     TRY
                         if String.IsNullOrEmpty(cSource)
@@ -216,14 +217,14 @@ BEGIN NAMESPACE XSharpModel
                         endif
 
                     CATCH exception AS System.Exception
-                        XSolution.WriteException(exception,__FUNCTION__)
+                        XSettings.Exception(exception,__FUNCTION__)
                     END TRY
                 END USING
-                WriteOutputMessage("<<-- ParseContents()")
+                SELF:WriteOutputMessage("<<-- ParseContents()")
             ENDIF
 
        METHOD WriteOutputMessage(message AS STRING) AS VOID
-            XSolution.WriteOutputMessage("XModel.File "+message)
+            XSettings.Information("XModel.File "+message)
 
       #region Properties
             // Properties

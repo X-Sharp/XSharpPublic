@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using XSharpModel;
+using XSharp.Settings;
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class FormattingOptionsControl : XSUserControl
@@ -15,19 +16,18 @@ namespace XSharp.LanguageService.OptionsPages
             rbTitle.Tag = nameof(KeywordCase.Title);
             rbNone.Tag = nameof(KeywordCase.None);
 
-            chkSynchronizeUDCKeywords.Tag = nameof(FormattingOptionsPage.UdcCase);
-            chkIdentifierCase.Tag = nameof(FormattingOptionsPage.IdentifierCase);
-            chkInsertFinalNewLine.Tag = nameof(FormattingOptionsPage.InsertFinalNewLine);
-            chkTrimTrailngWhiteSpace.Tag = nameof(FormattingOptionsPage.TrimTrailingWhiteSpace);
+            chkSynchronizeUDCKeywords.Tag = nameof(FormattingOptions.UdcCase);
+            chkIdentifierCase.Tag = nameof(FormattingOptions.IdentifierCase);
+            chkInsertFinalNewLine.Tag = nameof(FormattingOptions.InsertFinalNewLine);
+            chkTrimTrailngWhiteSpace.Tag = nameof(FormattingOptions.TrimTrailingWhiteSpace);
 
         }
 
 
-        private FormattingOptionsPage OurOptionPage => (FormattingOptionsPage)optionPage;
-        internal override void ReadValues()
+        internal override void ReadValues(object options)
         {
-            base.ReadValues();
-            switch (OurOptionPage.KeywordCase)
+            base.ReadValues(options);
+            switch (((FormattingOptions)options).KeywordCase)
             {
                 case KeywordCase.Upper:
                     rbUpper.Checked = true;
@@ -44,9 +44,9 @@ namespace XSharp.LanguageService.OptionsPages
             }
             showExample();
         }
-        internal override void SaveValues()
+        internal override void SaveValues(object options)
         {
-            base.SaveValues();
+            base.SaveValues(options);
             var controls = new RadioButton[] { rbLower, rbUpper, rbNone, rbTitle };
             foreach (var rb in controls)
             {
@@ -59,7 +59,7 @@ namespace XSharp.LanguageService.OptionsPages
                         case nameof(KeywordCase.Upper):
                         case nameof(KeywordCase.Lower):
                         case nameof(KeywordCase.Title):
-                            OurOptionPage.KeywordCase = (KeywordCase)Enum.Parse(typeof(KeywordCase), strTag);
+                            ((FormattingOptions) options).KeywordCase = (KeywordCase)Enum.Parse(typeof(KeywordCase), strTag);
                             break;
                     }
                 }

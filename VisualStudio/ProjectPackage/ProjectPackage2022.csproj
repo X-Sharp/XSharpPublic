@@ -9,7 +9,7 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Ngen>true</Ngen>
+    <Ngen>false</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -23,7 +23,7 @@
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}</ProjectGuid>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
@@ -74,6 +74,11 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="XSharp.CodeAnalysis">
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
@@ -113,14 +118,14 @@
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
-    <Compile Include="Commands\CommandViewInDisassembler.cs" />
-    <Compile Include="Commands\CommandViewRepo.cs" />
-    <Compile Include="Commands\CommandViewWorkareas.cs" />
-    <Compile Include="Commands\CommandViewSettings.cs" />
-    <Compile Include="Commands\CommandViewMemVars.cs" />
     <Compile Include="Commands\CommandViewGlobals.cs" />
+    <Compile Include="Commands\CommandViewInDisassembler.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewRepo.cs" />
     <Compile Include="Commands\CommandUDCTester.cs" />
     <Compile Include="Commands\CommandFoxXPorter.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
     <Compile Include="Commands\CommandXsWebsite.cs" />
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
@@ -153,6 +158,7 @@
     <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
+    <Compile Include="OptionsPages\ProjectSystemOptions.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
@@ -199,6 +205,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
     <Content Include="$(OutDir)\XSharp.AppDesigner2022.pkgdef">
       <Link>XSharp.AppDesigner2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(OutDir)\XSharp.Debugger.UI2022.pkgdef">
+      <Link>XSharp.Debugger.UI2022.pkgdef</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="$(OutDir)\XSharp.LanguageService2022.pkgdef">
@@ -403,10 +413,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
+    <Compile Include="XSharpFileType.cs" />
+    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
-    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
     <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
@@ -634,6 +645,28 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider2022.csproj">
+      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b5}</Project>
+      <Name>CodeDomProvider2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Project>{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}</Project>
+      <Name>CodeGenerator</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Debugger.Support\Debugger.Support.csproj">
+      <Project>{BBD309AA-A928-461E-B91C-7C12B1145A06}</Project>
+      <Name>Debugger.Support</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Debugger.UI\Debugger.UI2022.csproj">
+      <Project>{960714e8-ff93-4a42-b9ba-610b0f2014db}</Project>
+      <Name>Debugger.UI2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>LanguageService2022</Name>
@@ -647,10 +680,6 @@
       <Name>ProjectBase2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
-      <Name>CodeDomProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
@@ -697,7 +726,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.492</Version>
+      <Version>17.0.507</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -706,6 +735,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>1.4.0</Version>
+      <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Debug">
       <Version>2.0.0</Version>
@@ -750,7 +780,8 @@
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
-  -->
+
   <Target Name="AfterBuild">
   </Target>
+    -->
 </Project>

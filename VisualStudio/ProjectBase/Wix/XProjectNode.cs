@@ -11,12 +11,10 @@ using System.Runtime.InteropServices;
 
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio;
 using MSBuild = Microsoft.Build.Evaluation;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.Shell;
 
@@ -38,6 +36,12 @@ namespace Microsoft.VisualStudio.Project
         public XProjectNode(): base()
         {
             URLNodes = new Dictionary<string, HierarchyNode>(1000, StringComparer.OrdinalIgnoreCase);
+        }
+
+
+        public virtual bool IsProjectItemType(MSBuild.ProjectItem item)
+        {
+            return true;
         }
 
         protected override void Dispose(bool disposing)
@@ -660,7 +664,7 @@ namespace Microsoft.VisualStudio.Project
         }
         private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            //XSettings.LogMessage("FileChangedOnDisk " + e.FileName);
+            //Logger.Information("FileChangedOnDisk " + e.FileName);
             this.OnFileChanged(e.FileName);
             
         }

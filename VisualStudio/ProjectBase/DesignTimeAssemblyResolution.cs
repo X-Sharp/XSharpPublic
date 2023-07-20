@@ -14,11 +14,10 @@ using System.Linq;
 using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Build.Utilities;
 using Microsoft.Build.Execution;
 using System.IO;
 using System.Globalization;
-using XSharpModel;
+
 namespace Microsoft.VisualStudio.Project
 {
     public class DesignTimeAssemblyResolution
@@ -110,7 +109,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex,"");
+                Logger.Exception(ex,"");
             }
             finally
             {

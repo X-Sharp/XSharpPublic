@@ -27,6 +27,7 @@ using VSLangProj;
 using XSharp.CodeDom;
 using XSharp.Project.WPF;
 using XSharpModel;
+using XSharp.Settings;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
@@ -53,6 +54,7 @@ namespace XSharp.Project
 
         static IDictionary<string, string> dependencies;
         static IDictionary<string, string> _changedProjectFiles;
+
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
@@ -167,7 +169,7 @@ namespace XSharp.Project
 
         protected override void OnFileChanged(string url)
         {
-            //XSettings.LogMessage("FileChangedOnDisk " + e.FileName);
+            //Logger.LogMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(url) || IsCodeFile(url))
             {
                 XFile file = this.ProjectModel.FindXFile(url);
@@ -1125,6 +1127,12 @@ namespace XSharp.Project
 
         #endregion
 
+
+        public override bool IsProjectItemType(MSBuild.ProjectItem item)
+        {
+            return XSharpFileType.IsProjectItemType(item);
+        }
+
         XSharpIncludeContainerNode includeNode = null;
         protected void CreateIncludeFileFolder()
         {
@@ -1328,13 +1336,13 @@ namespace XSharp.Project
         {
             if (String.Equals(target, "Clean", StringComparison.OrdinalIgnoreCase))
             {
-                if (logger != null)
+                if (buildLogger != null)
                 {
-                    logger.Clear();
+                    buildLogger.Clear();
 
                 }
             }
-            Logger.Debug("InvokeMsBuild (" + this.Url + ") : " + target);
+            Logger.Debug($"InvokeMsBuild Target: {target}, Project: {Url}");
             return base.InvokeMsBuild(target);
         }
 
@@ -1742,7 +1750,7 @@ namespace XSharp.Project
             {
                 if (XSharpLexer.IsKeyword(token.Type))
                 {
-                    sb.Append(XSettings.FormatKeyword(token.Text));
+                    sb.Append(XLiterals.FormatKeyword(token.Text));
                 }
                 else
                 {
@@ -1925,19 +1933,19 @@ namespace XSharp.Project
             {
                 case "object":
                 case "system.object":
-                    name = "System.Object";
+                    name = KnownTypes.SystemObject;
                     break;
                 case "void":
                 case "system.void":
-                    name = "System.Void";
+                    name = KnownTypes.SystemVoid;
                     break;
                 case "boolean":
                 case "system.boolean":
-                    name = "System.Boolean";
+                    name = KnownTypes.SystemBoolean;
                     break;
                 case "string":
                 case "system.string":
-                    name = "System.String";
+                    name = KnownTypes.SystemString;
                     break;
             }
             var model = this.ProjectModel;
@@ -2084,17 +2092,17 @@ namespace XSharp.Project
         TaskListManager _taskListManager = null;
 
 
-        XSharpIDEBuildLogger logger = null;
+        XSharpIDEBuildLogger buildLogger = null;
 
         protected override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
-            logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
-            logger.ProjectNode = this;
-            logger.ErrorString = ErrorString;
-            logger.WarningString = WarningString;
+            buildLogger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
+            buildLogger.ProjectNode = this;
+            buildLogger.ErrorString = ErrorString;
+            buildLogger.WarningString = WarningString;
             CreateListManagers();
-            logger.ErrorListManager = _errorListManager;
-            return logger;
+            buildLogger.ErrorListManager = _errorListManager;
+            return buildLogger;
         }
 
         public override BuildResult Build(string target)
@@ -2226,7 +2234,7 @@ namespace XSharp.Project
                 }
                 catch (Exception e)
                 {
-                    XSettings.LogException(e, "Retrieving Parse Options");
+                    Logger.Exception(e, "Retrieving Parse Options");
                 }
                 return XSharpParseOptions.Default;
             }
@@ -2257,9 +2265,9 @@ namespace XSharp.Project
             _closing = true;
             var res = base.Close();
 
-            if (logger != null)
+            if (buildLogger != null)
             {
-                logger.Clear();
+                buildLogger.Clear();
             }
             ErrorListManager.RemoveProject(this);
             if (_errorListManager != null)

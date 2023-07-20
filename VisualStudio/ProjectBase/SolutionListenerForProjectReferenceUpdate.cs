@@ -17,7 +17,6 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
-using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
@@ -132,7 +131,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.LogException(e, "OnAfterRenameProject");
+                Logger.Exception(e, "OnAfterRenameProject");
                 return e.ErrorCode;
             }
 

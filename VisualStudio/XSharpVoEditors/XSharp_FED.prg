@@ -9,7 +9,7 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 USING XSharpModel
-
+using XSharp.Settings
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
@@ -38,6 +38,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
         IF (oFile != NULL_OBJECT)
             oXProject := oFile:Project
         ELSE
+            nop
         ENDIF
         IF oXProject == NULL
             XFuncs.ErrorBox("Cannot find project for file "+cFileName)
@@ -153,7 +154,7 @@ CLASS XSharp_VOFieldSpecEditor INHERIT VOFieldSpecEditor
             END IF
 
         CATCH e AS Exception
-            XSettings.LogException(e, __FUNCTION__)
+            XSettings.Exception(e, __FUNCTION__)
 
             XFuncs.ErrorBox(e:Message )
             lSuccess := FALSE

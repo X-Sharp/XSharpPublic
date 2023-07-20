@@ -41,6 +41,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
             TRY
                 lOk := SELF:OpenVNDBS(cFileName)
             CATCH
+                nop
             END TRY
         ENDIF
         SELF:lLoading := FALSE

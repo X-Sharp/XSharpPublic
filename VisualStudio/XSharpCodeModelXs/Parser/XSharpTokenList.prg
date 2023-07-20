@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN _index >= _list:Count
 
       PUBLIC METHOD Eos() AS LOGIC
-         RETURN SELF:La1 == XSharpLexer.EOS .OR. Eoi()
+         RETURN SELF:La1 == XSharpLexer.EOS .OR. SELF:Eoi()
 
       PUBLIC METHOD PushBack() AS VOID
          _index-= 1
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ConsumeUntilEndToken(nType as LONG, endToken OUT IToken) AS LOGIC
           LOCAL nested := 0 as LONG
           endToken := NULL
-          DO WHILE ! Eoi()
+          DO WHILE ! SELF:Eoi()
                 var nextType := self:La1
                 switch nextType
                 CASE XSharpLexer.LPAREN
@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ExpectOnThisLine(nType as LONG) AS LOGIC
          local nIndex := 1 AS LONG
          do while nIndex < _count
-           local nToken := La(nIndex) AS LONG
+           local nToken := SELF:La(nIndex) AS LONG
            switch nToken
             case XSharpLexer.EOS
             case XSharpLexer.EOF

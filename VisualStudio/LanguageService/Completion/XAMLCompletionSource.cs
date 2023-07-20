@@ -12,8 +12,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 using XSharp.LanguageService;
-using System.Runtime.CompilerServices;
-using XSharpModel;
+using XSharp.Settings;
 namespace XSharpLanguage
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -62,7 +61,7 @@ namespace XSharpLanguage
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.LogMessage(strMessage);
+                Logger.Information(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -100,7 +99,7 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                XSettings.LogException(ex, "XAML AugmentCompletionSessions failed");
+                Logger.Exception(ex, "XAML AugmentCompletionSessions failed");
             }
             finally
             {

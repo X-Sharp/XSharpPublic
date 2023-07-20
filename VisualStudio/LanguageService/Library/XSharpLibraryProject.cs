@@ -28,6 +28,7 @@ using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 using VSConstants = Microsoft.VisualStudio.VSConstants;
 using XSharpModel;
 using System.Collections.Generic;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {
@@ -73,7 +74,7 @@ namespace XSharp.LanguageService
             defaultNS.displayData.Image = (ushort)IconImageIndex._Namespace;
             defaultNS.displayData.SelectedImage = (ushort)IconImageIndex._Namespace;
             this.AddNode(defaultNS);
-            XSettings.LogMessage("Added LibraryProject " + prj.Name);
+            Logger.Information("Added LibraryProject " + prj.Name);
             //
         }
 

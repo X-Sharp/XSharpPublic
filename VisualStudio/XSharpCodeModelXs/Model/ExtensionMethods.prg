@@ -9,13 +9,13 @@ USING System.Linq
 USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.XSharp
 USING LanguageService.SyntaxTree
-
+USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 
 
     STATIC CLASS SynchronizedExtensionMethods
-        STATIC METHOD AddRange<T>(SELF items as SynchronizedCollection<T> ,  newItems as IEnumerable<T> ) AS VOID
+        STATIC METHOD AddRange<T>(SELF items as ICollection<T> ,  newItems as IEnumerable<T> ) AS VOID
             if newItems != null
                 FOREACH VAR item in newItems
                     items:Add(item)
@@ -25,6 +25,19 @@ BEGIN NAMESPACE XSharpModel
     END CLASS
 
     STATIC CLASS ExtensionMethods
+
+        static method GetTickedname(SELF name as STRING) AS STRING
+             IF name:StartsWith("@@")
+                name := name:Substring(2)
+            ENDIF
+            var pos := name:IndexOf('<')
+            if pos > 0
+                var rest := name.Substring(pos)
+                name := name.Substring(0, pos )
+                var types := rest.Split(<char>{',','>','<'}, StringSplitOptions.RemoveEmptyEntries)
+                name += "`" + types.Length.ToString()
+            endif
+            return name
 
         STATIC METHOD AddRange<T>(SELF collection as HashSet<T>, newItems as IEnumerable<T>) as VOID
             if newItems != null
@@ -53,7 +66,14 @@ BEGIN NAMESPACE XSharpModel
                 RETURN dict:Item[key]
             ENDIF
         RETURN DEFAULT (TValue)
-
+        STATIC METHOD AddUnique<TKey>( SELF list AS IList<TKey>, key AS TKey) AS VOID
+            IF list != NULL .AND. key != NULL
+                IF ! list:Contains(key)
+                    list:Add(key)
+                    RETURN
+                ENDIF
+            ENDIF
+            RETURN
 
         STATIC METHOD DisplayName( SELF elementKind AS Kind) AS STRING
             SWITCH elementKind
@@ -238,6 +258,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.XTranslate
                 CASE Kind.Attribute
                 CASE Kind.Include
+                CASE Kind.Using
                     RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -440,9 +461,51 @@ BEGIN NAMESPACE XSharpModel
                 NEXT
             ENDIF
             RETURN
+ STATIC METHOD ToDisplayString(SELF mods AS Modifiers) AS STRING
+            // remove EXTERNAL since we do not have that in our language
+            mods := _AND(mods, ~Modifiers.External)
+            if (mods == Modifiers.None)
+                return ""
+            endif
+            VAR result := mods:ToString():Replace(","," ")
+            if mods:HasFlag(Modifiers.ProtectedInternal)
+                result := "PROTECTED INTERNAL"
+            elseif mods:HasFlag(Modifiers.Public)
+                switch XSettings.CodeGeneratorPublicStyle
+                    case PublicStyle.Public
+                        result := result.Replace("Export","Public")
+                    case PublicStyle.Export
+                        result := result.Replace("Public","Export")
+                    case PublicStyle.None
+                        result := result.Replace("Public","")
+                        result := result.Replace("Export","")
+                end switch
+
+            ELSEIF mods:HasFlag(Modifiers.Private)
+                switch XSettings.CodeGeneratorPrivateStyle
+                    case PrivateStyle.Private
+                        result := result.Replace("Hidden","Private")
+                    case PrivateStyle.Hidden
+                        result := result.Replace("Private","Hidden")
+                end switch
+            ENDIF
+
+        RETURN XLiterals.Capitalize(result)
+
+        STATIC METHOD ToDisplayString(SELF kind as Kind) AS STRING
+            VAR result := kind:DisplayName()
+            RETURN XLiterals.Capitalize(result)
 
     END CLASS
 END NAMESPACE
 
 
+
+
+INTERNAL FUNCTION RemoveGenericParameters(typeName as STRING) AS STRING
+    var pos := typeName:IndexOf('<')
+    IF pos > 0
+        typeName := typeName:Substring(0, pos)
+    ENDIF
+RETURN typeName
 

@@ -16,9 +16,8 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using XSharpModel;
 using Community.VisualStudio.Toolkit;
-
+using XSharp.Settings;
 namespace XSharp.Project
 {
     /// <summary>
@@ -40,7 +39,7 @@ namespace XSharp.Project
         {
             if (name.IndexOf("|") >= 0)
             {
-                var elements = name.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var elements = name.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 name = elements[0];
                 platName = elements[1];
             }
@@ -109,6 +108,7 @@ namespace XSharp.Project
 
         public int OnBeforeDebugLaunch(uint grfLaunch)
         {
+            XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
             return VSConstants.S_OK;
         }
 
@@ -223,7 +223,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e, "DebugLaunch");
+                Logger.Exception(e, "DebugLaunch");
 
                 return Marshal.GetHRForException(e);
             }

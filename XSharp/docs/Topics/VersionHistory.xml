@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-07-19T21:07:43.503+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-07-20T13:50:13.211+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -29,6 +29,7 @@
       <li styleclass="Body Text">Fixed a couple &#160;preprocessor issues (#1284, #1289)</li>
       <li styleclass="Body Text">Fixed missing compiler error on calling with SUPER a method that does not exist, when late binding is enabled (#1285)</li>
       <li styleclass="Body Text">Fixed a Failed to emit Module error with CONST class field missing value assignment (#1293)</li>
+      <li styleclass="Body Text">Fixed a problem with repeated match markers (such as in the SET INDEX TO command) in the preprocessor.</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

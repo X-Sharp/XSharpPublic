@@ -198,6 +198,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             result = Math.Max(result, mi.Children.Count);
                         }
+                        else
+                        {
+                            result = Math.Max(result, 1);
+                        }
                     }
                 }
             }

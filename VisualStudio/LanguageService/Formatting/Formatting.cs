@@ -130,11 +130,13 @@ namespace XSharp.LanguageService
             {
                 editSession = _buffer.CreateEdit();
                 var document = _buffer.GetDocument();
-                document.NeedsKeywords = true;
-                var res = ThreadHelper.JoinableTaskFactory.RunAsync(_classifier.ForceClassifyAsync);
+                XSharpLineKeywords keywords = null;
+                ThreadHelper.JoinableTaskFactory.Run(async  delegate
+                {
+                    keywords = await _classifier.GetKeywordsAsync();
+                });
 
-                document.NeedsKeywords = false;
-                var formatter = new DocFormatter(document, settings);
+                var formatter = new DocFormatter(document, settings, keywords);
                 var expectedIndent = formatter.GetIndentSizes(lines, startLine, endLine, startIndent);
 
                 // now process the lines

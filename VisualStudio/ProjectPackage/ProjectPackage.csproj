@@ -83,15 +83,15 @@
     </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
-      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+      <HintPath>$(Solutiondir)External\Debug\XSharp.Evaluator.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+      <HintPath>$(Solutiondir)External\Debug\XSharp.MonoCecil.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
+      <HintPath>$(Solutiondir)External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +130,28 @@
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ExternalAssemblies.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeAttribute.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeClass.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeDelegate.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeElement.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeElements.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeEnum.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeFunction.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeInterface.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeNamespace.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeParameter.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeProperty.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeStruct.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeType.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeTypeRef.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeVariable.cs" />
+    <Compile Include="FileCodeModel\CodeDomCodeVariant.cs" />
+    <Compile Include="FileCodeModel\CodeDomEditPoint.cs" />
+    <Compile Include="FileCodeModel\FileCodeModelBase.cs" />
+    <Compile Include="FileCodeModel\NullTextPoint.cs" />
+    <Compile Include="FileCodeModel\SimpleCodeElement.cs" />
+    <Compile Include="FileCodeModel\TextPoint.cs" />
+    <Compile Include="FileCodeModel\XSharpFileCodeModel.cs" />
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
@@ -413,9 +435,6 @@
     </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
-    <Compile Include="WPF\XSharpEventBindingProvider.cs" />
-    <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
-    <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />
     <Compile Include="WPF\XSharpWPFProjectFactory.cs" />
     <Compile Include="Nodes\XSharpAssemblyReferenceNode.cs" />
@@ -586,6 +605,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
+    <None Include="FileCodeModel\Readme.md" />
     <None Include="source.extension.vsixmanifest">
       <Generator>VsixManifestGenerator</Generator>
       <LastGenOutput>source.extension.cs</LastGenOutput>

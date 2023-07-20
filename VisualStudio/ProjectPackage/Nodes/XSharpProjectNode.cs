@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Windows.Design.Host;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -163,7 +162,7 @@ namespace XSharp.Project
                 _dialectIsCached = true;
             }
             _cachedProjectProperties[e.PropertyName] = e.NewValue;
-            this.options = null;
+            this.ClearOptions();
         }
 
 
@@ -526,10 +525,6 @@ namespace XSharp.Project
                 provider.AddService(typeof(VSProject), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
                 //provider.AddService(typeof(VSProject), this.VSProject, false);
 
-                if (node.IsXAML || node.IsForm)
-                {
-                    provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
-                }
                 // Not just for source items. Also for ResX and Settings
                 provider.AddService(typeof(SVSMDCodeDomProvider), new XSharpVSMDProvider(node), false);
             }
@@ -1111,9 +1106,6 @@ namespace XSharp.Project
                 libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
             }
 #endif
-            //If this is a WPFFlavor-ed project, then add a project-level DesignerContext service to provide
-            //event handler generation (EventBindingProvider) for the XAML designer.
-            this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
             CreateListManagers();
 
@@ -1302,10 +1294,6 @@ namespace XSharp.Project
             //{
             //    service = this.CodeDomProvider.CodeDomProvider;
             //}
-            else if (typeof(DesignerContext) == serviceType)
-            {
-                service = this.DesignerContext;
-            }
             else if (typeof(IVsSingleFileGeneratorFactory) == serviceType)
             {
                 service = new SingleFileGeneratorFactory(this.ProjectGuid, this.Site);
@@ -1316,22 +1304,7 @@ namespace XSharp.Project
         }
 
 
-        private DesignerContext _designerContext;
-        protected internal Microsoft.Windows.Design.Host.DesignerContext DesignerContext
-        {
-            get
-            {
-                if (_designerContext == null)
-                {
-                    _designerContext = new DesignerContext();
-                    //Set the RuntimeNameProvider so the XAML designer will call it when items are added to
-                    //a design surface. Since the provider does not depend on an item context, we provide it at
-                    //the project level.
-                    _designerContext.RuntimeNameProvider = new XSharpRuntimeNameProvider();
-                }
-                return _designerContext;
-            }
-        }
+
         protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target)
         {
             if (String.Equals(target, "Clean", StringComparison.OrdinalIgnoreCase))
@@ -2204,6 +2177,36 @@ namespace XSharp.Project
 
         }
 
+        /// <summary>
+        /// Clear cached Config and ParseOptions
+        /// </summary>
+        internal void ClearOptions()
+        {
+            this.CachedConfig = null;
+            this.CachedOptions = null;
+
+        }
+        internal void GetParseOptions()
+        {
+            this.ClearOptions();
+            this.CachedConfig = this.CurrentConfig;
+            this.CachedOptions = this.ParseOptions;
+
+        }
+
+        internal ProjectConfig CachedConfig;
+        public override ProjectConfig CurrentConfig
+        {
+            get
+            {
+                if (CachedConfig == null)
+                {
+                    CachedConfig = base.CurrentConfig;
+                }
+                return CachedConfig;
+            }
+        }
+
         public void CreateParseOptions()
         {
             var xoptions = CreateProjectOptions() as XSharpProjectOptions;
@@ -2212,10 +2215,13 @@ namespace XSharp.Project
                 xoptions.BuildCommandLine();
             }
         }
+         internal XSharpParseOptions CachedOptions;
         public XSharpParseOptions ParseOptions
         {
             get
             {
+                if (CachedOptions != null)
+                    return CachedOptions;
                 if (this.IsClosed || XSolution.IsClosing)
                     return XSharpParseOptions.Default;
                 try
@@ -2228,7 +2234,8 @@ namespace XSharp.Project
                         {
                             if (xoptions.ParseOptions == null)
                                 xoptions.BuildCommandLine();
-                            return xoptions.ParseOptions;
+                            CachedOptions = xoptions.ParseOptions;
+                            return CachedOptions;
                         }
                     }
                 }

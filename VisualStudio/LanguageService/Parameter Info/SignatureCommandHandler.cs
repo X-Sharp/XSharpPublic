@@ -452,7 +452,7 @@ namespace XSharp.LanguageService
             }
             else if (element is IXTypeSymbol xtype)
             {
-                currentElement = xtype.Members.Where(m => m.Kind == Kind.Constructor).FirstOrDefault();
+                currentElement = xtype.GetConstructors().FirstOrDefault();
             }
             return currentElement;
 

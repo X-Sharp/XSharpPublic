@@ -109,6 +109,11 @@ namespace XSharp.Project
         public int OnBeforeDebugLaunch(uint grfLaunch)
         {
             XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
+            // Store all project options, so there are cached when the debugger runs.
+            foreach (var prj in XSharpProjectNode.AllProjects)
+            {
+                prj.GetParseOptions();
+            }
             return VSConstants.S_OK;
         }
 

@@ -27,10 +27,8 @@ namespace XSharp.LanguageService
             _entities = null;
             _blocks = null;
             _tokensPerLine = new Dictionary<int, IList<IToken>>();
-            _lineKeywords = new XSharpLineKeywords();
             _lineState = new XSharpLineState();
             _identifiers = new ConcurrentDictionary<string, IList<IToken>>(StringComparer.OrdinalIgnoreCase);
-            NeedsKeywords = false;
         }
 
         #region fields
@@ -38,7 +36,6 @@ namespace XSharp.LanguageService
         private IList<XSourceEntity> _entities;
         private Dictionary<int, IList<IToken>> _tokensPerLine;
         private XSharpLineState _lineState;
-        private XSharpLineKeywords _lineKeywords;
         private ITextSnapshot _snapShot;
         private ConcurrentDictionary<string, IList<IToken>> _identifiers;
         private ITextBuffer _buffer;
@@ -51,10 +48,8 @@ namespace XSharp.LanguageService
         internal IList<XSourceEntity> Entities => _entities;
         internal Dictionary<int, IList<IToken>> TokensPerLine => _tokensPerLine;
         internal XSharpLineState LineState => _lineState;
-        internal XSharpLineKeywords LineKeywords => _lineKeywords;
         internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
-        internal bool NeedsKeywords { get; set; }
         #endregion
 
         internal bool HasLineState(int line, LineFlags flag)
@@ -96,13 +91,6 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void SetKeywords(XSharpLineKeywords keywords)
-        {
-            lock (this)
-            {
-                _lineKeywords = keywords;
-            }
-        }
         internal void SetIdentifiers(ConcurrentDictionary<string, IList<IToken>> ids)
         {
             lock (this)
@@ -153,7 +141,7 @@ namespace XSharp.LanguageService
 
         internal IList<IToken> GetTokensInSingleLine(ITextSnapshotLine line, bool allowCached)
         {
-            List<IToken> tokens = new List<IToken>(); ;
+            List<IToken> tokens = new List<IToken>(); 
             if (line.Length == 0)
                 return tokens;
             if (line.Snapshot.Version == this.SnapShot.Version && allowCached)

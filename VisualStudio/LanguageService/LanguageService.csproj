@@ -233,6 +233,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(Solutiondir)External\Debug\XSharp.MonoCecil.dll</HintPath>

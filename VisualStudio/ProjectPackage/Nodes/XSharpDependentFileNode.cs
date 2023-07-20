@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.Windows.Design.Host;
 using XSharp.Project.WPF;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio;
@@ -124,25 +123,7 @@ namespace XSharp.Project
 
         #endregion
 
-        #region Members
 
-        private DesignerContext _designerContext;
-        protected internal override DesignerContext DesignerContext
-        {
-            get
-            {
-                if (_designerContext == null)
-                {
-                    //Set the EventBindingProvider for this XAML file so the designer will call it
-                    //when event handlers need to be generated
-                    _designerContext = new DesignerContext { EventBindingProvider = new XSharpEventBindingProvider(this) };
-                }
-
-                return _designerContext;
-            }
-        }
-
-        #endregion
 
     }
 }

@@ -4,27 +4,40 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Antlr4.Runtime;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
+
+    public class XSharpPPToken : XSharpToken
+    {
+
+        readonly XSharpToken sourceSymbol;
+
+        internal XSharpPPToken(int type, string text, XSharpToken token) : base(token, type, text)
+        {
+            this.sourceSymbol = token;
+        }
+        internal XSharpPPToken(XSharpToken token, XSharpToken source) : base(token)
+        {
+            this.sourceSymbol = source;
+        }
+        internal override XSharpToken SourceSymbol => sourceSymbol;
+    }
+
+
     [DebuggerDisplay("{DebuggerString(),nq} ")]
     public class XSharpToken : CommonToken, IFormattable
     {
         //internal string SourceFileName;
         public bool FromInclude { get; set; } = false;
-        internal string MappedFileName;
         internal int OriginalChannel;
         private int _originalTokenIndex = -1;
-        internal int MappedLine = -1;
-        internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
 
         #region Wrappers for compatibility with Macro compiler
@@ -69,13 +82,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool HasXmlComments => HasTrivia && Trivia.Any(t => t.Channel == XSharpLexer.XMLDOCCHANNEL);
         public IList<XSharpToken> Trivia { get; set; } = null;
         public bool HasTrivia => Trivia?.Count > 0;
-        public string TextWithTrivia
-        {
-            get
-            {
-                return TriviaAsText + Text;
-            }
-        }
+        public string TextWithTrivia => TriviaAsText + Text;
         public string TriviaAsText
         {
             get
@@ -103,14 +110,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             source = token.source;
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
+            CopyCustomFields(token);
+        }
+
+        private void CopyCustomFields(XSharpToken token)
+        {
             Trivia = token.Trivia;
             FromInclude = token.FromInclude;
         }
+
         internal XSharpToken(IToken t) : base(t)
         {
             if (t is XSharpToken xt && t != this)
             {
-                copyToken(xt);
+                CopyCustomFields(xt);
             }
         }
         internal XSharpToken(IToken t, int type, string text) : base(t)
@@ -123,20 +136,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         internal XSharpToken(int type) : base(type)
         {
-        }
-        internal XSharpToken(int type, XSharpToken token) : base(type)
-        {
-            copyToken(token);
-            this.Type = type;
-            SourceSymbol = token;
-
-        }
-        internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
-        {
-            copyToken(token);
-            this.Type = type;
-            this.Text = text;
-            SourceSymbol = token;
         }
 
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :
@@ -166,13 +165,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 _original = value;
             }
         }
-        public string SourceName
-        {
-            get
-            {
-                return Original.TokenSource?.SourceName;
-            }
-        }
+        public string SourceName => Original.TokenSource?.SourceName;
         public override int Line
         {
             get
@@ -183,22 +176,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return org.Line;
             }
         }
-        public int FullWidth
-        {
-            get
-            {
-                if (StopIndex > StartIndex)
-                    return StopIndex + StartIndex + 1;
-                return 1;
-            }
-        }
+        public int FullWidth => Text != null ? Text.Length : 1;
         public int Position => StartIndex;
         public override int TokenIndex
         {
-            get
-            {
-                return base.TokenIndex;
-            }
+            get => base.TokenIndex;
             set
             {
                 base.TokenIndex = value;
@@ -211,9 +193,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public int OriginalTokenIndex => _originalTokenIndex;
 
+        /// <summary>
+        /// When the token comes from a UDC then this is the UDC node
+        /// </summary>
+        internal virtual XSharpToken SourceSymbol => null;
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return this.Text;
+        }
+        internal void CopyTokenSource(XSharpToken token)
+        {
+            this.source = token.source;
         }
     }
 }

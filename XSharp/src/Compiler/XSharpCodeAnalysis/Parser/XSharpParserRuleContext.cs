@@ -16,10 +16,7 @@ using MCT = Microsoft.CodeAnalysis.Text;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
-    public class XSharpParserRuleContext :
-        Antlr4.Runtime.ParserRuleContext,
-        IXParseTree
-        , IFormattable
+    public class XSharpParserRuleContext : ParserRuleContext, IXParseTree, IFormattable
     {
         public XSharpParserRuleContext() : base()
         {
@@ -29,10 +26,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public SyntaxTriviaList ParseTrivia(String comments)
         {
             var source = MCT.SourceText.From(comments);
-            using (var lexer = new InternalSyntax.Lexer(source, CSharpParseOptions.Default))
-            {
-                return lexer.LexSyntaxLeadingTrivia();
-            }
+            using var lexer = new InternalSyntax.Lexer(source, CSharpParseOptions.Default);
+            return lexer.LexSyntaxLeadingTrivia();
 
         }
         public SyntaxTriviaList GetFunctionDoc(CSharpSyntaxNode node, CompilationUnitSyntax cu)
@@ -129,8 +124,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public object CsNode { get; set; }
         public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
-        public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
-
 #if !VSPARSER
 
         internal bool ContainsCast
@@ -255,6 +248,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return Start.StartIndex;
             }
         }
+        public int Column => Start.Column;
         public int FullWidth
         {
             get
@@ -268,8 +262,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             }
         }
-        public int MappedLine { get { return (Start as XSharpToken).MappedLine; } }
-        public IToken SourceSymbol { get { return (Start as XSharpToken).SourceSymbol; } }
+        public int Line { get { return (Start as XSharpToken).Line; } }
+        public XSharpToken SourceSymbol { get { return (Start as XSharpToken).SourceSymbol; } }
         public override string ToString()
         {
             /*return this.GetText();*/

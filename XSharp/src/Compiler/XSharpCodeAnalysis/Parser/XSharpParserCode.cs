@@ -1288,9 +1288,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int Position { get; }
         int FullWidth { get; }
         string SourceFileName { get; }
-        string MappedFileName { get; }
-        int MappedLine { get; }
-        IToken SourceSymbol { get; }
+        int Line { get; }
+        int Column { get; }
+
+        /// <summary>
+        /// When the token is coming from an UDC then this is the UDC anchor
+        /// </summary>
+        XSharpToken SourceSymbol { get; }
 #if !VSPARSER
         Microsoft.CodeAnalysis.Location GetLocation(SyntaxTree syntaxTree);
 #endif
@@ -1305,8 +1309,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public XTerminalNodeImpl(IToken symbol) : base(symbol)
         { }
         public object CsNode { get; set; }
-        public int Position { get { return Symbol.StartIndex; } }
-        public int FullWidth { get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
+        public int Column => Symbol.Column;
+        public int Line => Symbol.Line;
+        public int Position => Symbol.StartIndex;
+        public int FullWidth => Symbol.StopIndex - Symbol.StartIndex + 1;
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return ToString();
@@ -1328,9 +1334,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             set => fileName = value;
         }
-        public string MappedFileName { get { return ((XSharpToken)Symbol).MappedFileName; } }
-        public int MappedLine { get { return ((XSharpToken)Symbol).MappedLine; } }
-        public IToken SourceSymbol
+
+        public XSharpToken SourceSymbol
         {
             get
             {

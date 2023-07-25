@@ -1782,8 +1782,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     result.Add(tokens[i]);
                 }
-                foreach (var t in result)
+                for (int i = 0; i < result.Count; i++)
                 {
+                    var t = result[i];
+                    if (t is not XSharpPPToken)
+                    {
+                        t = new XSharpPPToken(t, source);
+                        result[i] = t;
+                    }
                     if (t.Channel == Channel.PreProcessor)
                     {
                         // Leave PP commands alone so we can redirect input to #error or #warning
@@ -1792,7 +1798,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             t.Channel = Channel.Default;
                         }
                     }
-                    t.SourceSymbol = source;
                 }
             }
             //result.TrimLeadingSpaces();
@@ -1846,7 +1851,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Link the new token to the first token of the UDC
             // so for the command #xcommand WAIT [<msg>]                  => _wait( <msg> )
             // the LPAREN and RPAREN will also be linked to the WAIT keyword in the source.
-            var newToken = new XSharpToken(resultToken.Token) { SourceSymbol = tokens[0] };
+            var newToken = new XSharpPPToken(resultToken.Token, tokens[0]);
             result.Add(newToken);
         }
         void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)

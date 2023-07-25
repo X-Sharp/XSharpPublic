@@ -6,14 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
-using Microsoft.CodeAnalysis.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-using System.Globalization;
+using Microsoft.CodeAnalysis.Text;
 
 namespace XSharp.Parser
 {
@@ -35,8 +35,8 @@ namespace XSharp.Parser
             foreach (var error in parseErrors)
             {
 
-                string file= error.Node.SourceFileName;
-                var ls = new LinePositionSpan() { Line = error.Node.MappedLine, Column = error.Node.Position, FileName = error.Node.SourceFileName };
+                string file = error.Node.SourceFileName;
+                var ls = new LinePositionSpan() { Line = error.Node.Line, Column = error.Node.Column, FileName = error.Node.SourceFileName };
                 var msg = ErrorFacts.GetMessage(error.Code, CultureInfo.CurrentCulture);
                 if (ErrorFacts.IsWarning(error.Code))
                 {
@@ -47,7 +47,6 @@ namespace XSharp.Parser
                     listener.ReportError(file, ls, error.Code.ToString(), msg, error.Args);
                 }
             }
-
         }
 
         private static bool LexerHelper(string sourceText, string fileName, CSharpParseOptions options,
@@ -186,7 +185,7 @@ namespace XSharp.Parser
         {
             return Lex(sourceText, fileName, options, listener, out tokens, out _);
         }
-        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
+        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
             out ITokenStream tokens, out List<string> includeFiles)
         {
             tokens = null;

@@ -308,7 +308,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             NoStdDef = opt.NoStdDef;
             Overflow = opt.Overflow;
             ParseLevel = opt.ParseLevel;
-            ParseLevel = opt.ParseLevel;
             PreprocessorOutput = opt.PreprocessorOutput;
             RuntimeAssemblies = opt.RuntimeAssemblies;
             SaveAsCSharp = opt.SaveAsCSharp;
@@ -372,107 +371,121 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.LanguageVersion = LanguageVersion.CSharp9;
             return result;
         }
+#nullable disable
+        public bool HasOption(string option, XSharpToken token, IList<PragmaOption> options)
+        {
+            return HasOption2(CompilerOptionDecoder.Decode(option), token, options);
+        }
 
         public bool HasOption(CompilerOption option, XSharpParserRuleContext context, IList<PragmaOption> options)
+        {
+            if (context == null)
+            {
+                return HasOption2(option, null, options);
+            }
+            return HasOption2(option, (XSharpToken)context.Start, options);
+        }
+#nullable enable
+        public bool HasOption2(CompilerOption option, XSharpToken token, IList<PragmaOption> options)
         {
             switch (option)
             {
                 case CompilerOption.AllowDotForInstanceMembers: // allowdot
-                    return CheckOption(option, AllowDotForInstanceMembers, context, options);
+                    return CheckOption(option, AllowDotForInstanceMembers, token, options);
 
                 case CompilerOption.AllowOldStyleAssignments: // allowoldstyleassignments
-                    return CheckOption(option, AllowOldStyleAssignments, context, options);
+                    return CheckOption(option, AllowOldStyleAssignments, token, options);
 
                 case CompilerOption.ArrayZero: // az
-                    return CheckOption(option, ArrayZero, context, options);
+                    return CheckOption(option, ArrayZero, token, options);
 
                 case CompilerOption.InitLocals: // initlocals
-                    return CheckOption(option, InitLocals, context, options);
+                    return CheckOption(option, InitLocals, token, options);
 
                 case CompilerOption.MemVars: // memvar
-                    return CheckOption(option, MemVars, context, options);
+                    return CheckOption(option, MemVars, token, options);
 
                 case CompilerOption.Overflow: // ovf
-                    return CheckOption(option, Overflow, context, options);
+                    return CheckOption(option, Overflow, token, options);
 
                 case CompilerOption.UndeclaredMemVars: // undeclared
-                    return CheckOption(option, UndeclaredMemVars, context, options);
+                    return CheckOption(option, UndeclaredMemVars, token, options);
 
                 case CompilerOption.Vo1: // Init/Axit => Constructor / Destruction
-                    return CheckOption(option, vo1, context, options);
+                    return CheckOption(option, vo1, token, options);
 
                 case CompilerOption.NullStrings: // vo2
-                    return CheckOption(option, VONullStrings, context, options);
+                    return CheckOption(option, VONullStrings, token, options);
 
                 case CompilerOption.VirtualInstanceMethods: // /vo3
-                    return CheckOption(option, VirtualInstanceMethods, context, options);
+                    return CheckOption(option, VirtualInstanceMethods, token, options);
 
                 case CompilerOption.Vo4: // vo4
-                    return CheckOption(option, vo4, context, options);
+                    return CheckOption(option, vo4, token, options);
 
                 case CompilerOption.ClipperCallingConvention: // vo5
-                    return CheckOption(option, VOClipperCallingConvention, context, options);
+                    return CheckOption(option, VOClipperCallingConvention, token, options);
 
                 case CompilerOption.Vo6: // ResolveTypedFunctionPointersToPtr:
-                    return CheckOption(option, vo6, context, options);
+                    return CheckOption(option, vo6, token, options);
 
                 case CompilerOption.ImplicitCastsAndConversions: // vo7
-                    return CheckOption(option, VOImplicitCastsAndConversions, context, options);
+                    return CheckOption(option, VOImplicitCastsAndConversions, token, options);
 
                 case CompilerOption.Vo8: // Compatible Preprocessor
-                    return CheckOption(option, vo8, context, options);
+                    return CheckOption(option, vo8, token, options);
 
                 case CompilerOption.AllowMissingReturns: // vo9
-                    return CheckOption(option, VOAllowMissingReturns, context, options);
+                    return CheckOption(option, VOAllowMissingReturns, token, options);
 
                 case CompilerOption.Vo10: // :  // vo10
-                    return CheckOption(option, vo10, context, options);
+                    return CheckOption(option, vo10, token, options);
 
                 case CompilerOption.Vo11: // ArithmeticConversions: // vo11
-                    return CheckOption(option, vo11, context, options);
+                    return CheckOption(option, vo11, token, options);
 
                 case CompilerOption.ClipperIntegerDivisions: // vo12
-                    return CheckOption(option, VOClipperIntegerDivisions, context, options);
+                    return CheckOption(option, VOClipperIntegerDivisions, token, options);
 
                 case CompilerOption.Vo13: // StringComparisons: // vo13
-                    return CheckOption(option, vo13, context, options);
+                    return CheckOption(option, vo13, token, options);
 
                 case CompilerOption.FloatConstants: // vo14
-                    return CheckOption(option, VOFloatConstants, context, options);
+                    return CheckOption(option, VOFloatConstants, token, options);
 
                 case CompilerOption.UntypedAllowed: // vo15
-                    return CheckOption(option, VOUntypedAllowed, context, options);
+                    return CheckOption(option, VOUntypedAllowed, token, options);
 
                 case CompilerOption.DefaultClipperContructors: // vo16
-                    return CheckOption(option, VOClipperConstructors, context, options);
+                    return CheckOption(option, VOClipperConstructors, token, options);
 
                 case CompilerOption.CompatibleBeginSequence: // vo17
-                    return CheckOption(option, VOBeginSequence, context, options);
+                    return CheckOption(option, VOBeginSequence, token, options);
 
                 case CompilerOption.FoxArraySupport: // fox2
-                    return CheckOption(option, FoxArraySupport, context, options);
+                    return CheckOption(option, FoxArraySupport, token, options);
 
                 case CompilerOption.LateBinding:  // lb
-                    return CheckOption(option, LateBinding, context, options);
+                    return CheckOption(option, LateBinding, token, options);
 
                 case CompilerOption.EnforceOverride:  // EnforceOverride
-                    return CheckOption(option, EnforceOverride, context, options);
+                    return CheckOption(option, EnforceOverride, token, options);
 
                 case CompilerOption.EnforceSelf:  // enforceself
-                    return CheckOption(option, EnforceSelf, context, options);
+                    return CheckOption(option, EnforceSelf, token, options);
 
                 case CompilerOption.Xpp1: // Inherit from Custom
-                    return CheckOption(option, XPPInheritFromAbstract, context, options);
+                    return CheckOption(option, XPPInheritFromAbstract, token, options);
                 //case CompilerOption.Xpp2:
 
                 case CompilerOption.Fox1: // Inherit from Custom
-                    return CheckOption(option, FoxInheritUnknown, context, options);
+                    return CheckOption(option, FoxInheritUnknown, token, options);
 
                 case CompilerOption.AllowNamedArgs: // AllowNamedArguments: used in Antlr rules
-                    return CheckOption(option, AllowNamedArguments, context, options);
+                    return CheckOption(option, AllowNamedArguments, token, options);
 
                 case CompilerOption.ImplicitNamespace:
-                    return CheckOption(option, ImplicitNamespace, context, options);
+                    return CheckOption(option, ImplicitNamespace, token, options);
 
                 case CompilerOption.ClrVersion:
                 case CompilerOption.All:
@@ -481,12 +494,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        public bool CheckOption(CompilerOption option, bool defaultValue, XSharpParserRuleContext context, IList<PragmaOption> options)
+        public bool CheckOption(CompilerOption option, bool defaultValue, XSharpToken token, IList<PragmaOption> options)
         {
             bool result = defaultValue;
-            if (context != null && options != null && options.Count > 0)
+            if (token != null && options != null && options.Count > 0)
             {
-                var token = (XSharpToken) context.Start;
                 int line = token.Line;
                 if (token.SourceSymbol != null)
                     line = token.SourceSymbol.Line;

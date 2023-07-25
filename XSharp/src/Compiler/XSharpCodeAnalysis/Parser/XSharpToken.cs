@@ -19,13 +19,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         readonly XSharpToken sourceSymbol;
 
-        internal XSharpPPToken(int type, string text, XSharpToken token) : base(token, type, text)
+        internal XSharpPPToken(int type, string text, XSharpToken token, bool defaultChannel = false) : base(token, type, text)
         {
             this.sourceSymbol = token;
+            if (defaultChannel)
+                Channel = XSharpLexer.DefaultTokenChannel;
         }
-        internal XSharpPPToken(XSharpToken token, XSharpToken source) : base(token)
+        internal XSharpPPToken(XSharpToken token, XSharpToken source, bool defaultChannel = false) : base(token)
         {
             this.sourceSymbol = source;
+            if (defaultChannel)
+                Channel = XSharpLexer.DefaultTokenChannel;
         }
         internal override XSharpToken SourceSymbol => sourceSymbol;
     }

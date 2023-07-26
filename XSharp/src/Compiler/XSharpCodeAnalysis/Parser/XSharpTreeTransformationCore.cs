@@ -263,10 +263,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
             emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
             var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                             SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                             SyntaxFactory.OpenBracket,
                              emptysizes,
-                             SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
-
+                             SyntaxFactory.CloseBracket);
+            _pool.Free(emptysizes);
             _byteArrayType = _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), emptyrank);
             _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
@@ -620,9 +620,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected AccessorListSyntax MakeAccessorList(IEnumerable<AccessorDeclarationSyntax> accessors)
         {
             return _syntaxFactory.AccessorList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    SyntaxFactory.OpenBrace,
                     MakeList(accessors),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                    SyntaxFactory.CloseBrace);
         }
         protected AccessorListSyntax MakeAccessorList(params AccessorDeclarationSyntax[] accessors)
         {
@@ -695,7 +695,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (item != null)
                 {
                     if (l.Count > 0)
-                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        l.AddSeparator(SyntaxFactory.Comma);
                     l.Add(((IXParseTree)item).Get<T>());
                 }
             }
@@ -712,7 +712,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (item != null)
                 {
                     if (l.Count > 0)
-                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        l.AddSeparator(SyntaxFactory.Comma);
                     l.Add(item);
                 }
             }
@@ -1015,20 +1015,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int i = 0; i < ranks; i++)
             {
                 if (i > 0)
-                    sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    sizes.AddSeparator(SyntaxFactory.Comma);
                 sizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
             }
-            var r = _syntaxFactory.ArrayRankSpecifier(SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+            var r = _syntaxFactory.ArrayRankSpecifier(SyntaxFactory.OpenBracket,
                 sizes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                SyntaxFactory.CloseBracket);
             _pool.Free(sizes);
             return r;
         }
 
         protected ExpressionSyntax MakeCastTo(TypeSyntax type, ExpressionSyntax expr, bool markAsGenerated = false)
         {
-            var res = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), expr);
+            var res = _syntaxFactory.CastExpression(SyntaxFactory.OpenParen,
+                type, SyntaxFactory.CloseParen, expr);
             if (markAsGenerated)
                 res.XGenerated = true;
             return res;
@@ -1040,33 +1040,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return _syntaxFactory.CheckedExpression(SyntaxKind.CheckedExpression,
                     SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
             }
             else
             {
                 return _syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
                     SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
             }
         }
         protected LockStatementSyntax MakeLock(ExpressionSyntax expr, StatementSyntax statement, IToken token = null)
         {
             var kwd = token == null ? SyntaxFactory.MakeToken(SyntaxKind.LockKeyword) : token.SyntaxKeyword();
             return _syntaxFactory.LockStatement(attributeLists: default, kwd,
-                                               SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                               SyntaxFactory.OpenParen,
                                                 expr,
-                                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                                SyntaxFactory.CloseParen,
                                                 statement);
 
         }
         protected AssignmentExpressionSyntax MakeSimpleAssignment(ExpressionSyntax lhs, ExpressionSyntax rhs)
         {
             return _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                     lhs, SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), rhs);
+                     lhs, SyntaxFactory.Equals, rhs);
         }
         protected MemberAccessExpressionSyntax MakeSimpleMemberAccess(ExpressionSyntax lhs, SimpleNameSyntax rhs)
         {
@@ -1077,13 +1077,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.TypeOfExpression(
                     SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     type,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
         }
         protected StatementSyntax GenerateEmptyStatement()
         {
-            var stmt = _syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var stmt = _syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.SemiColon);
             stmt.XGenerated = true;
             return stmt;
         }
@@ -1097,9 +1097,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _syntaxFactory.IfStatement(
                         attributeLists: default,
                         SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        SyntaxFactory.OpenParen,
                         condition,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        SyntaxFactory.CloseParen,
                         statement, @else);
         }
 
@@ -1172,7 +1172,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return _syntaxFactory.VariableDeclarator(
                     nameToken, null,
-                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initexpr)
+                    _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, initexpr)
                     );
             }
             else
@@ -1203,7 +1203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         usingKeyword: null,
                         modifiers: TokenList(),
                         declaration: decl,
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        semicolonToken: SyntaxFactory.SemiColon);
             result.XGenerated = true;
             return result;
         }
@@ -1211,7 +1211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ReturnStatementSyntax GenerateReturn(ExpressionSyntax result = null, bool markAsGenerated = false, IToken returnToken = null)
         {
             var kwd = returnToken == null ? SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword) : returnToken.SyntaxKeyword();
-            var stmt = _syntaxFactory.ReturnStatement(attributeLists: default, kwd, result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var stmt = _syntaxFactory.ReturnStatement(attributeLists: default, kwd, result, SyntaxFactory.SemiColon);
             stmt.XGenerated = markAsGenerated;
             return stmt;
         }
@@ -1231,7 +1231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected NameEqualsSyntax GenerateNameEquals(string name)
         {
             return _syntaxFactory.NameEquals(
-                  GenerateSimpleName(name), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken));
+                  GenerateSimpleName(name), SyntaxFactory.Equals);
         }
 
         protected internal NameSyntax GenerateQualifiedName(string name)
@@ -1328,7 +1328,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (attributes.Count > 0)
                 {
-                    attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    attributes.AddSeparator(SyntaxFactory.Comma);
                 }
                 attributes.Add(_syntaxFactory.Attribute(
                     name: GenerateQualifiedName(attributeName),
@@ -1365,7 +1365,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var memAcc = _syntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
                     thisExpr,
-                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    SyntaxFactory.Dot,
                     GenerateSimpleName(MethodName));
             memAcc.XGenerated = markAsGenerated;
             ExpressionSyntax expr = _syntaxFactory.InvocationExpression(memAcc, args);
@@ -1408,7 +1408,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 #endif
-            var stmt = _syntaxFactory.ExpressionStatement(attributeLists: default, expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var stmt = _syntaxFactory.ExpressionStatement(attributeLists: default, expr, SyntaxFactory.SemiColon);
             stmt.XGenerated = markAsGenerated;
             stmt.XNode = context;
             return stmt;
@@ -1434,9 +1434,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var block = _syntaxFactory.Block(
                         attributeLists: default,
-                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        openBraceToken: SyntaxFactory.OpenBrace,
                         statements: default,
-                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                        closeBraceToken: SyntaxFactory.CloseBrace);
             block.XGenerated = true;
             return block;
         }
@@ -1444,9 +1444,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var block = _syntaxFactory.Block(
                         attributeLists: default,
-                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        openBraceToken: SyntaxFactory.OpenBrace,
                         statements,
-                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                        closeBraceToken: SyntaxFactory.CloseBrace);
             block.XGenerated = true;
             return block;
         }
@@ -1461,9 +1461,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return _syntaxFactory.DefaultExpression(
                     SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     type,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
             }
         }
 
@@ -1476,12 +1476,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: default,
                     SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: ns.Get<NameSyntax>(),
-                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    openBraceToken: SyntaxFactory.OpenBrace,
                     externs: default,
                     usings: default,
                     members: MakeList(m),
-                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    closeBraceToken: SyntaxFactory.CloseBrace,
+                    semicolonToken: SyntaxFactory.SemiColon);
 
             }
             return m;
@@ -1524,7 +1524,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     tokenStatic,
                     alias,
                     usingName,
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    SyntaxFactory.SemiColon));
             }
         }
         protected void AddUsingWhenMissing(string name, bool bStatic, NameEqualsSyntax alias)
@@ -1540,12 +1540,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers: default,
                 SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                 name: GenerateQualifiedName(name),
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 externs: default,
                 usings: default,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                closeBraceToken: SyntaxFactory.CloseBrace,
+                semicolonToken: SyntaxFactory.SemiColon);
             return r;
         }
 
@@ -1579,10 +1579,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null, // BaseListSyntax baseList = _syntaxFactory.BaseList(colon, list)
                 constraintClauses: default,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                closeBraceToken: SyntaxFactory.CloseBrace,
+                semicolonToken: SyntaxFactory.SemiColon);
             _pool.Free(modifiers);
             r.XGenerated = true;
             if (nameSpace.Length > 0)
@@ -1638,10 +1638,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null, // BaseListSyntax baseList = _syntaxFactory.BaseList(colon, list)
                 constraintClauses: default,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: globalClassMembers,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                closeBraceToken: SyntaxFactory.CloseBrace,
+                semicolonToken: SyntaxFactory.SemiColon);
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
             classdecl.XGenerated = true;
@@ -1705,7 +1705,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                  body: body,
                  expressionBody: expressionBody,
-                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                 semicolonToken: SyntaxFactory.SemiColon
                  );
             var rule = context as XSharpParserRuleContext;
             rule.Put(m);
@@ -1854,10 +1854,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(rawMods);
             if (getVisLvl <= setVisLvl)
             {
+                _pool.Free(setMods);
                 setMods = innerMods;
             }
             else
             {
+                _pool.Free(getMods);
                 getMods = innerMods;
             }
             #endregion
@@ -1904,17 +1906,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     @params.Add(p);
                 }
                 voPropParams = _syntaxFactory.BracketedParameterList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    SyntaxFactory.OpenBracket,
                     MakeSeparatedList<ParameterSyntax>(@params),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    SyntaxFactory.CloseBracket);
                 voPropArgs = @params.Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
             }
             else if (accParamCount > 0)
             {
                 voPropParams = _syntaxFactory.BracketedParameterList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    SyntaxFactory.OpenBracket,
                     MakeSeparatedList<ParameterSyntax>(AccMet.ParamList._Params),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    SyntaxFactory.CloseBracket);
                 voPropArgs = AccMet.ParamList._Params.Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
             }
             else
@@ -2164,7 +2166,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: voPropParams,
                     accessorList: accessorList,
                     expressionBody: null,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
             }
             else
             {
@@ -2177,7 +2179,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessorList: accessorList,
                     expressionBody: null,
                     initializer: null,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
             }
 
             _pool.Free(getMods);
@@ -2614,12 +2616,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         modifiers: default,
                         namespaceKeyword: SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                         name: GenerateQualifiedName(_options.DefaultNamespace),
-                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        openBraceToken: SyntaxFactory.OpenBrace,
                         externs: default,
                         usings: default,
                         members: globalTypes,
-                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                        closeBraceToken: SyntaxFactory.CloseBrace,
+                        semicolonToken: SyntaxFactory.SemiColon)
                     );
 
                 AddUsingWhenMissing(_options.DefaultNamespace, false, null);
@@ -2714,9 +2716,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                 staticKeyword: context.Static?.SyntaxKeyword(),
-                alias: context.Alias == null ? null : _syntaxFactory.NameEquals(context.Alias.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken)),
+                alias: context.Alias == null ? null : _syntaxFactory.NameEquals(context.Alias.Get<IdentifierNameSyntax>(), SyntaxFactory.Equals),
                 name: context.Name.Get<NameSyntax>(),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.SemiColon));
         }
 
         protected void _exitNamespace(XSharpParserRuleContext context, string name, IList<XSharpParserRuleContext> entities)
@@ -2740,12 +2742,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             MemberDeclarationSyntax ns = _syntaxFactory.NamespaceDeclaration(attributeLists: default, modifiers: default, SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                 name: GenerateQualifiedName(name),
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 externs: externs,
                 usings: usings,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                closeBraceToken: SyntaxFactory.CloseBrace,
+                semicolonToken: SyntaxFactory.SemiColon);
 
             _pool.Free(externs);
             _pool.Free(usings);
@@ -2918,7 +2920,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var pCtx in context._Parents)
             {
                 if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    baseTypes.AddSeparator(SyntaxFactory.Comma);
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(pCtx.Get<TypeSyntax>()));
             }
             MemberDeclarationSyntax m = _syntaxFactory.InterfaceDeclaration(
@@ -2927,11 +2929,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.InterfaceKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.Colon, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             _pool.Free(members);
             _pool.Free(baseTypes);
@@ -3003,7 +3005,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var iCtx in context._Implements)
             {
                 if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    baseTypes.AddSeparator(SyntaxFactory.Comma);
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
 
@@ -3013,11 +3015,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.Colon, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             _pool.Free(members);
             _pool.Free(baseTypes);
@@ -3074,7 +3076,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var iCtx in context._Implements)
             {
                 if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    baseTypes.AddSeparator(SyntaxFactory.Comma);
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
 
@@ -3084,11 +3086,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.Colon, baseTypes),
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             _pool.Free(members);
             _pool.Free(baseTypes);
@@ -3126,7 +3128,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: SyntaxFactory.SemiColon);
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
@@ -3149,7 +3151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(context.Type.Get<TypeSyntax>()));
                 baselist = _syntaxFactory.BaseList(
-                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes);
+                    SyntaxFactory.Colon, baseTypes);
 
             }
             MemberDeclarationSyntax m = _syntaxFactory.EnumDeclaration(
@@ -3158,10 +3160,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 enumKeyword: SyntaxFactory.MakeToken(SyntaxKind.EnumKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 baseList: baselist,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: MakeSeparatedList<EnumMemberDeclarationSyntax>(context._Members),
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                closeBraceToken: SyntaxFactory.CloseBrace,
+                semicolonToken: SyntaxFactory.SemiColon);
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
@@ -3176,7 +3178,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributeLists: getAttributes(context.Attributes),
                 modifiers: default,
                 identifier: context.Id.Get<SyntaxToken>(),
-                equalsValue: context.Expr == null ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                equalsValue: context.Expr == null ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals,
                     context.Expr.Get<ExpressionSyntax>())));
         }
 
@@ -3207,7 +3209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 explif = _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
-                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
+                        dotToken: SyntaxFactory.Dot);
             }
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false);
             //if (context.ExplicitIface != null)
@@ -3269,7 +3271,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(getReturnType(context),
                                 MakeSeparatedList(GenerateVariable(evtFldName))),
-                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                            SyntaxFactory.SemiColon)
                         );
                     var add_ = _syntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration,
                             attributeLists: default,
@@ -3320,7 +3322,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             getReturnType(context),
                             MakeSeparatedList<VariableDeclaratorSyntax>(
                                 GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        semicolonToken: SyntaxFactory.SemiColon));
                 }
             }
         }
@@ -3336,7 +3338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: context.Key.SyntaxKeyword(),
                 body: MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? default),
                 expressionBody: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.SemiColon));
             }
         }
         public override void EnterEventAccessor([NotNull] XP.EventAccessorContext context)
@@ -3354,7 +3356,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: context.Key.SyntaxKeyword(),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.SemiColon));
         }
         #endregion
 
@@ -3363,9 +3365,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitArraysub([NotNull] XP.ArraysubContext context)
         {
             context.Put(_syntaxFactory.ArrayRankSpecifier(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                SyntaxFactory.OpenBracket,
                 MakeSeparatedList<ExpressionSyntax>(context._ArrayIndex),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                SyntaxFactory.CloseBracket));
         }
 
         public override void EnterClassvars([NotNull] XP.ClassvarsContext context)
@@ -3418,7 +3420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributeLists: atts,
                     modifiers: mods,
                     declaration: vardecl,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
                 fielddecl.XNode = context;
                 var currentClass = ClassEntities.Peek();
                 currentClass.Members.Add(fielddecl);
@@ -3567,7 +3569,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             keyword: SyntaxFactory.Identifier("get"),
                             body: null,
                             expressionBody: null,
-                            semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                            semicolonToken: SyntaxFactory.SemiColon);
                         decl = decl.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GeneratingGetAccessor));
                         newaccessor.Put(decl);
                         context._LineAccessors.Add(newaccessor);
@@ -3591,7 +3593,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     keyword: SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                                     body: null,
                                     expressionBody: null,
-                                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                                    semicolonToken: SyntaxFactory.SemiColon
                                     ),
                                 _syntaxFactory.AccessorDeclaration(
                                     kind: SyntaxKind.SetAccessorDeclaration,
@@ -3600,7 +3602,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     keyword: SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                                     body: null,
                                     expressionBody: null,
-                                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                                    semicolonToken: SyntaxFactory.SemiColon));
                 }
             }
             else if (context._LineAccessors != null && context._LineAccessors.Count > 0)
@@ -3614,7 +3616,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessorList = MakeAccessorList(list.Nodes);
             var explicitif = context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
-                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
+                        dotToken: SyntaxFactory.Dot);
 
             // check the accessor list. if none of the Gets/Sets have a body then generate a warning
             var emulateAuto = false;
@@ -3650,7 +3652,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     initValue = GenerateInitializer(context.Type);
                 }
                 var initializer = initValue == null ? null :
-                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initValue);
+                    _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, initValue);
 
                 MemberDeclarationSyntax propertydecl = _syntaxFactory.PropertyDeclaration(
                      attributeLists: atts,
@@ -3661,7 +3663,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                      accessorList: accessorList,
                      expressionBody: null,
                      initializer: initializer,
-                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                     semicolonToken: SyntaxFactory.SemiColon);
                 context.Put(propertydecl);
             }
             else
@@ -3684,7 +3686,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: context.ParamList?.Get<BracketedParameterListSyntax>(),
                     accessorList: accessorList,
                     expressionBody: null, // Can we do an indexer with an expression body and no accessors ?
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
                 context.Put(indexer);
             }
         }
@@ -3738,13 +3740,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var paramCtx in context._Params)
                 {
                     if (@params.Count > 0)
-                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        @params.AddSeparator(SyntaxFactory.Comma);
                     @params.Add(paramCtx.Get<ParameterSyntax>());
                 }
                 context.Put(_syntaxFactory.BracketedParameterList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    SyntaxFactory.OpenBracket,
                     @params,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                    SyntaxFactory.CloseBracket));
                 _pool.Free(@params);
             }
         }
@@ -3757,7 +3759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: context.Key.SyntaxKeyword(),
                 body: null,
                 expressionBody: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.SemiColon));
         }
 
         public override void ExitPropertyLineAccessor([NotNull] XP.PropertyLineAccessorContext context)
@@ -3815,7 +3817,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: key,
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: SyntaxFactory.SemiColon);
             context.Put(decl);
         }
 
@@ -3838,9 +3840,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null,
                 constraintClauses: default,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: MakeList(member),
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             return cls;
         }
@@ -3858,7 +3860,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var result = _syntaxFactory.ConstructorInitializer(chain.Start.CtorInitializerKind(),
-                                            SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                            SyntaxFactory.Colon,
                                             chain.Start.SyntaxKeyword(),
                                             chain.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList());
                 chain.Put(result);
@@ -3923,7 +3925,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 initializer: createInitializer(context.Chain),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.SemiColon);
             if (context.Chain != null)
             {
                 context.Chain.SetSequencePoint();
@@ -3977,7 +3979,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameterList: EmptyParameterList(),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.SemiColon);
             if (missingParent)
             {
                 dtor = dtor.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Missing CLASS clause"));
@@ -4015,7 +4017,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: context.Key.SyntaxKeyword(),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.SemiColon));
         }
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
@@ -4250,14 +4252,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returnType: returntype,
                 explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                     name: context.ExplicitIface.Get<NameSyntax>(),
-                    dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
+                    dotToken: SyntaxFactory.Dot),
                 identifier: idName,
                 typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.SemiColon);
             if (hasExtensionAttribute)
             {
                 m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitExtension));
@@ -4377,7 +4379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: getParameters(context.ParamList),
                     body: body,
                     expressionBody: expressionBody,
-                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.SemiColon));
             else
             {
                 SyntaxToken opToken;
@@ -4406,7 +4408,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: getParameters(context.ParamList),
                     body: body,
                     expressionBody: expressionBody,
-                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.SemiColon));
             }
         }
 
@@ -4442,7 +4444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var type in context._GenericArgs)
             {
                 if (types.Count != 0)
-                    types.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    types.AddSeparator(SyntaxFactory.Comma);
                 types.Add(type.Get<TypeSyntax>());
             }
             context.Put(_syntaxFactory.TypeArgumentList(
@@ -4459,7 +4461,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var tpCtx in context._TypeParams)
             {
                 if (parameters.Count > 0)
-                    parameters.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    parameters.AddSeparator(SyntaxFactory.Comma);
                 parameters.Add(tpCtx.Get<TypeParameterSyntax>());
             }
             context.Put(_syntaxFactory.TypeParameterList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
@@ -4482,13 +4484,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var cCtx in context._Constraints)
             {
                 if (constraints.Count > 0)
-                    constraints.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    constraints.AddSeparator(SyntaxFactory.Comma);
                 constraints.Add(cCtx.Get<TypeParameterConstraintSyntax>());
             }
             context.Put(_syntaxFactory.TypeParameterConstraintClause(
                 SyntaxFactory.MakeToken(SyntaxKind.WhereKeyword),
                 context.Name.Get<IdentifierNameSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                SyntaxFactory.Colon,
                 constraints));
             _pool.Free(constraints);
         }
@@ -4510,8 +4512,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.ConstructorConstraint(
                 SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                SyntaxFactory.OpenParen,
+                SyntaxFactory.CloseParen));
         }
 
         #endregion
@@ -4588,18 +4590,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected AttributeListSyntax MakeAttributeList(AttributeTargetSpecifierSyntax target, SeparatedSyntaxList<AttributeSyntax> attributes)
         {
             return _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        openBracketToken: SyntaxFactory.OpenBracket,
                         target: target,
                         attributes: attributes,
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
+                        closeBracketToken: SyntaxFactory.CloseBracket
                         );
         }
         protected AttributeArgumentListSyntax MakeAttributeArgumentList(SeparatedSyntaxList<AttributeArgumentSyntax> args)
         {
             return _syntaxFactory.AttributeArgumentList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        SyntaxFactory.OpenParen,
                         args,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)
+                        SyntaxFactory.CloseParen
                         );
         }
 
@@ -4609,7 +4611,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                        condition,
                                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
                                        left,
-                                       SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                                       SyntaxFactory.Colon,
                                        right);
         }
 
@@ -4671,7 +4673,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (attributes.Count > 0)
                 {
-                    attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    attributes.AddSeparator(SyntaxFactory.Comma);
                 }
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
             }
@@ -4706,7 +4708,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case "property":
                 case "struct":
                     var id = SyntaxFactory.MakeIdentifier(target);
-                    context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                    context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.Colon));
                     break;
                 default:
                     ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
@@ -4723,7 +4725,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (arguments.Count != 0)
                     {
-                        arguments.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        arguments.AddSeparator(SyntaxFactory.Comma);
                     }
                     arguments.Add(paramCtx.Get<AttributeArgumentSyntax>());
                 }
@@ -4738,7 +4740,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.AttributeArgument(
                 _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken)),
+                    SyntaxFactory.Equals),
                 null, // TODO: (grammar) name: attr arg syntax?
                 context.Expr.Get<ExpressionSyntax>()));
         }
@@ -4759,7 +4761,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (attributes.Count > 0)
                 {
-                    attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    attributes.AddSeparator(SyntaxFactory.Comma);
                 }
                 // we have this code here because roslyn does not allow '*' in file version and informational version
                 // vulcan did. We are compatible here with Vulcan.
@@ -4825,7 +4827,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(_syntaxFactory.AttributeTargetSpecifier(
                     SyntaxFactory.Identifier(text),
-                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+                    SyntaxFactory.Colon));
             }
         }
 
@@ -4875,7 +4877,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: SyntaxFactory.SemiColon);
             context.Put(localfuncdecl);
         }
 
@@ -4898,9 +4900,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
 
                         _emptyParameterList = _syntaxFactory.ParameterList(
-                            openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            openParenToken: SyntaxFactory.OpenParen,
                             parameters: default,
-                            closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                            closeParenToken: SyntaxFactory.CloseParen);
                     }
                 }
             }
@@ -4915,7 +4917,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             EqualsValueClauseSyntax eqv = null;
             if (defaultExpression != null)
             {
-                eqv = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), defaultExpression);
+                eqv = _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, defaultExpression);
             }
             var parsyntax = _syntaxFactory.Parameter(
                  default, modifiers, type, SyntaxFactory.MakeIdentifier(name), eqv);
@@ -4927,9 +4929,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (parameters == null || parameters.Count == 0)
                 return EmptyParameterList();
             var result = _syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 MakeSeparatedList(parameters.ToArray()),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                SyntaxFactory.CloseParen);
             return result;
         }
 
@@ -4966,14 +4968,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 if (@params.Count > 0)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    @params.AddSeparator(SyntaxFactory.Comma);
 
                 @params.Add(paramNode);
             }
             context.Put(_syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                SyntaxFactory.CloseParen));
             _pool.Free(@params);
         }
 
@@ -5063,7 +5065,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type: type,
                 identifier: context.Id.Get<SyntaxToken>(),
                 @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    SyntaxFactory.Equals,
                     context.Default.Get<ExpressionSyntax>()));
 
             if (hasParamArrayAttribute)
@@ -5397,7 +5399,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
                 expressionBody: expressionBody,
-                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: (body != null) ? null : SyntaxFactory.SemiColon));
 
         }
 
@@ -5480,7 +5482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 default,
                 modifiers,
                 _syntaxFactory.VariableDeclaration(type, variables),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                SyntaxFactory.SemiColon);
             context.Put(field);
             _pool.Free(variables);
             GlobalEntities.Globals.Add(field);
@@ -5521,7 +5523,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributeLists: atts,
                     modifiers: mods,
                     declaration: vardecl,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
                 varCtx.Put(global);
                 context.Put(global);
                 GlobalEntities.Globals.Add(global);
@@ -5636,7 +5638,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: default,
                 body: null,
                 expressionBody: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: SyntaxFactory.SemiColon));
         }
 
         public override void ExitDllcallconv([NotNull] XP.DllcallconvContext context)
@@ -5883,9 +5885,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 incr.XGenerated = true;
                 // [Xs$Local]
                 var elementrank = _syntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    SyntaxFactory.OpenBracket,
                     MakeSeparatedList(MakeArgument(name)),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    SyntaxFactory.CloseBracket);
                 // Xs$Array[Xs$Local]
                 var lhs = _syntaxFactory.ElementAccessExpression(varname, elementrank);
                 // Xs$Array[Xs$Local] := ""
@@ -5893,14 +5895,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stmt = _syntaxFactory.ForStatement(
                     default,
                     SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     null,
                     MakeSeparatedList<ExpressionSyntax>(init),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
+                    SyntaxFactory.SemiColon,
                     cond,
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
+                    SyntaxFactory.SemiColon,
                     MakeSeparatedList<ExpressionSyntax>(incr),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    SyntaxFactory.CloseParen,
                     forbody);
                 stmt.XGenerated = true;
                 stmts.Add(stmt);
@@ -5940,7 +5942,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     constraintClauses: default,
                     body: body,
                     expressionBody: null,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
             funcdecl.XNode = sub.Parent as XSharpParserRuleContext;
             GlobalClassEntities.Members.Add(funcdecl);
             var expr = GenerateMethodCall(funcname);
@@ -6009,7 +6011,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                         _syntaxFactory.VariableDeclaration(varType,
                             MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName), simpleInit ? initExpr : null))),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        SyntaxFactory.SemiColon);
                 field.XNode = context;
                 currentclass.Members.Add(field);
                 if (initExpr != null && !simpleInit)
@@ -6021,7 +6023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 MakeSeparatedList(
                                         GenerateVariable(SyntaxFactory.Identifier(initName),
                                         GenerateLiteral(true)))),
-                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                            SyntaxFactory.SemiColon);
                     field.XNode = context;
                     currentclass.Members.Add(field);
                     field = _syntaxFactory.FieldDeclaration(
@@ -6030,7 +6032,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             _syntaxFactory.VariableDeclaration(_objectType,
                                 MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(lockName),
                                         CreateObject(_objectType, EmptyArgumentList())))),
-                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                            SyntaxFactory.SemiColon);
                     field.XNode = context;
                     currentclass.Members.Add(field);
                 }
@@ -6040,12 +6042,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isStatic)
             {
                 var refexpr = _syntaxFactory.RefExpression(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword), GenerateSimpleName(staticName));
-                var eqvalue = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), refexpr);
+                var eqvalue = _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, refexpr);
                 vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null, eqvalue);
             }
             else
             {
-                var eqvalue = (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr);
+                var eqvalue = (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, initExpr);
                 vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null, eqvalue);
             }
             vardecl.XVoIsDim = isDim;
@@ -6070,7 +6072,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     usingKeyword: null,
                     modifiers.ToList<SyntaxToken>(),
                     _syntaxFactory.VariableDeclaration(varType, variables),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    SyntaxFactory.SemiColon);
                 ldecl.XVoIsDim = isDim;
                 ldecl.XVoIsDecl = varType.XVoIsDecl;
                 context.Put(ldecl);
@@ -6084,7 +6086,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         awaitKeyword: null,
                         usingKeyword: null,
                         modifiers.ToList<SyntaxToken>(), _syntaxFactory.VariableDeclaration(refType, variables),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        SyntaxFactory.SemiColon);
                 decl.Add(ldecl);
                 if (initExpr != null && !simpleInit)
                 {
@@ -6123,7 +6125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
-                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>()));
+                _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, context.Expression.Get<ExpressionSyntax>()));
             context.Put(variable);
             variables.Add(variable);
             if (isConst)
@@ -6136,7 +6138,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         usingKeyword: isUsing ? parent.Using.SyntaxKeyword() : null,
                         modifiers: default,
                 _syntaxFactory.VariableDeclaration(_impliedType, variables),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                SyntaxFactory.SemiColon));
             _pool.Free(variables);
         }
 
@@ -6153,7 +6155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var decl = _syntaxFactory.VariableDeclarator(
                 context.Id.Get<SyntaxToken>(),
                 null,
-                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expr.Get<ExpressionSyntax>()));
+                _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, context.Expr.Get<ExpressionSyntax>()));
             context.Put(decl);
         }
 
@@ -6173,9 +6175,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             StatementSyntax whileStmt = _syntaxFactory.WhileStatement(
                 attributeLists: default,
                 whileKeyword: whileKwd,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                SyntaxFactory.CloseParen,
                 context.StmtBlk.Get<BlockSyntax>());
             context.Put(whileStmt);
         }
@@ -6190,11 +6192,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 doKwd,
                 context.StmtBlk.Get<BlockSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 _syntaxFactory.PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken),
                     context.Expr.Get<ExpressionSyntax>()),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                SyntaxFactory.CloseParen,
+                SyntaxFactory.SemiColon);
             context.Put(doStmt);
         }
 
@@ -6342,14 +6344,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             StatementSyntax forStmt = _syntaxFactory.ForStatement(
                 attributeLists: default,
                 forKwd,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 decl,
                 init,
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
+                SyntaxFactory.SemiColon,
                 whileExpr,
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
+                SyntaxFactory.SemiColon,
                 incr,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                SyntaxFactory.CloseParen,
                 context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
@@ -6396,12 +6398,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributeLists: default,
                 awaitKeyword: null,
                 foreachKwd,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 dt,
                 id,
                 SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
                 context.Container.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                SyntaxFactory.CloseParen,
                 block);
             context.Put(forStmt);
 
@@ -6554,7 +6556,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.GotoKeyword),
                 null,
                 GenerateSimpleName(label),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                SyntaxFactory.SemiColon);
             gotoStmt.XGenerated = true;
             bool needLabel = false;
             var condStmts = _pool.Allocate<StatementSyntax>();
@@ -6620,7 +6622,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var labelStatement = _syntaxFactory.LabeledStatement(
                         null,
                         SyntaxFactory.MakeIdentifier(label),
-                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                        SyntaxFactory.Colon,
                         empty
                         );
                     labelStatement.XGenerated = true;
@@ -6669,12 +6671,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             StatementSyntax switchStmt = _syntaxFactory.SwitchStatement(
                 attributeLists: default,
                 context.S.SyntaxKeyword(),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.CloseParen,
+                SyntaxFactory.OpenBrace,
                 sections,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                SyntaxFactory.CloseBrace);
 
             context.Put(switchStmt);
             _pool.Free(sections);
@@ -6685,7 +6687,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var labels = _pool.Allocate<SwitchLabelSyntax>();
             var kw = context.Key.SyntaxKeyword();
-            var colon = SyntaxFactory.MakeToken(SyntaxKind.ColonToken);
+            var colon = SyntaxFactory.Colon;
             context.SetSequencePoint(context.end);
             SwitchLabelSyntax label;
             if (kw.Kind == SyntaxKind.CaseKeyword)
@@ -6723,7 +6725,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                label = _syntaxFactory.DefaultSwitchLabel(kw, SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
+                label = _syntaxFactory.DefaultSwitchLabel(kw, SyntaxFactory.Colon);
             }
             labels.Add(label);
             var stmts = _pool.Allocate<StatementSyntax>();
@@ -6733,7 +6735,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (NeedsBreak(context.StmtBlk._Stmts))
                 {
                     var brk = _syntaxFactory.BreakStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        SyntaxFactory.SemiColon);
                     brk.XGenerated = true;
                     brk.XNode = context.StmtBlk._Stmts.Last();
                     stmts.Add(brk);
@@ -6800,19 +6802,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type = GenerateQualifiedName("System.Exception");
                 }
                 decl = _syntaxFactory.CatchDeclaration(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     type,
                     id,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
             }
             CatchFilterClauseSyntax filter = null;
             if (context.whenexpr != null)
             {
                 filter = _syntaxFactory.CatchFilterClause(
                     context.W.SyntaxKeyword(),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     context.whenexpr.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
             }
 
             context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
@@ -6893,7 +6895,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
                                         GenerateSimpleName(vardecl.Identifier.Text));
 
-                        var initexpr = _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                        var initexpr = _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals,
                                         addressof);
                         var newvardecl = _syntaxFactory.VariableDeclarator(newId, null, initexpr);
                         var newvardecl2 = _syntaxFactory.VariableDeclaration(ptype, MakeSeparatedList(newvardecl));
@@ -6901,9 +6903,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var newStmt = _syntaxFactory.FixedStatement(
                                     attributeLists: default,
                                     SyntaxFactory.MakeToken(SyntaxKind.FixedKeyword),
-                                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    SyntaxFactory.OpenParen,
                                     newvardecl2,
-                                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                    SyntaxFactory.CloseParen,
                                 newBlock);
                         statements.Add(newStmt);
                         return statements;
@@ -7033,11 +7035,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XP.EXIT:
                     context.Put(_syntaxFactory.BreakStatement(attributeLists: default, context.Key.SyntaxKeyword(),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        SyntaxFactory.SemiColon));
                     break;
                 case XP.LOOP:
                     context.Put(_syntaxFactory.ContinueStatement(attributeLists: default, context.Key.SyntaxKeyword(),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        SyntaxFactory.SemiColon));
                     break;
                 case XP.BREAK:
                     // Error already handled in ParseErrorAnalysis
@@ -7045,7 +7047,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.THROW:
                     context.Put(_syntaxFactory.ThrowStatement(attributeLists: default, context.Key.SyntaxKeyword(),
                         context.Expr.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        SyntaxFactory.SemiColon));
                     break;
 
             }
@@ -7172,7 +7174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.YieldStatement(kind, attributeLists: default,
                                     context.Y.SyntaxKeyword(), token, arg,
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                SyntaxFactory.SemiColon));
         }
 
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context)
@@ -7215,9 +7217,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 args.Insert(0, MakeArgument(GenerateLiteral(mask)));
                 // convert args to Array because the overload that receives a collection expects another kind of object
                 var arglist = _syntaxFactory.ArgumentList(
-                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                SyntaxFactory.OpenParen,
                                 MakeSeparatedList<ArgumentSyntax>(args.ToArray()),
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                                SyntaxFactory.CloseParen);
 
                 expr = GenerateMethodCall(SystemQualifiedNames.Write, arglist);
                 context.Put(GenerateExpressionStatement(expr, context));
@@ -7256,17 +7258,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XP.FIXED:
                         node = _syntaxFactory.FixedStatement(attributeLists: default, token.SyntaxKeyword(),
-                               SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                               SyntaxFactory.OpenParen,
                                context.VarDecl?.Get<VariableDeclarationSyntax>(),
-                               SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                               SyntaxFactory.CloseParen,
                             context.StmtBlk.Get<BlockSyntax>());
                         break;
                     case XP.USING:
                         node = _syntaxFactory.UsingStatement(attributeLists: default, awaitKeyword: null, token.SyntaxKeyword(),
-                               SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                               SyntaxFactory.OpenParen,
                                context.VarDecl?.Get<VariableDeclarationSyntax>(),
                                context.Expr?.Get<ExpressionSyntax>(),
-                               SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                               SyntaxFactory.CloseParen,
                                context.StmtBlk.Get<BlockSyntax>());
                         break;
                     default:
@@ -7351,9 +7353,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 context.ArgList?.Get<BracketedArgumentListSyntax>()
                     ?? _syntaxFactory.BracketedArgumentList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        SyntaxFactory.OpenBracket,
                         default(SeparatedSyntaxList<ArgumentSyntax>),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))));
+                        SyntaxFactory.CloseBracket)));
         }
 
         public override void ExitBoundMethodCall([NotNull] XP.BoundMethodCallContext context)
@@ -7362,9 +7364,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 context.ArgList?.Get<ArgumentListSyntax>()
                     ?? _syntaxFactory.ArgumentList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        SyntaxFactory.OpenParen,
                         default(SeparatedSyntaxList<ArgumentSyntax>),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                        SyntaxFactory.CloseParen)));
         }
 
         public override void ExitBoundCondAccessExpr([NotNull] XP.BoundCondAccessExprContext context)
@@ -7379,7 +7381,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitBindMemberAccess([NotNull] XP.BindMemberAccessContext context)
         {
             context.Put(_syntaxFactory.MemberBindingExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                SyntaxFactory.Dot,
                 context.Name.Get<SimpleNameSyntax>()));
         }
 
@@ -7447,7 +7449,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.Put(_syntaxFactory.QualifiedName(
                         context.Expr.Get<NameSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        SyntaxFactory.Dot,
                         context.Name.Get<SimpleNameSyntax>()));
                 }
                 else
@@ -7506,10 +7508,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XP.EXP:
                     var expr = GenerateMethodCall(SystemQualifiedNames.Pow,
-                        _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        _syntaxFactory.ArgumentList(SyntaxFactory.OpenParen,
                             MakeSeparatedList(MakeArgument(left),
                                 MakeArgument(right)),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                            SyntaxFactory.CloseParen));
                     //expr.XNoTypeWarning = true;
                     context.Put(expr);
 
@@ -7524,7 +7526,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var indexof = _syntaxFactory.ConditionalAccessExpression(
                                     right,
                                     SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                    _syntaxFactory.InvocationExpression(_syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken), GenerateSimpleName("IndexOf")),
+                                    _syntaxFactory.InvocationExpression(_syntaxFactory.MemberBindingExpression(SyntaxFactory.Dot, GenerateSimpleName("IndexOf")),
                                      MakeArgumentList(MakeArgument(left))));
                     var rhsExp = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression, indexof,
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
@@ -7955,14 +7957,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (size.RefOut != null)
                             ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_BadTypeArgument, size));
                         if (sizes.Count > 0)
-                            sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                            sizes.AddSeparator(SyntaxFactory.Comma);
                         sizes.Add(size.Expr.Get<ExpressionSyntax>());
                     }
                 }
                 rankSpecifiers[0] = _syntaxFactory.ArrayRankSpecifier(
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                            SyntaxFactory.OpenBracket,
                             sizes,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                            SyntaxFactory.CloseBracket);
                 _pool.Free(sizes);
                 context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                     _syntaxFactory.ArrayType(type, MakeList(rankSpecifiers)),
@@ -8015,8 +8017,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var openBracket = SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken);
-                var closeBracket = SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken);
+                var openBracket = SyntaxFactory.OpenBracket;
+                var closeBracket = SyntaxFactory.CloseBracket;
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.BracketedArgumentList(openBracket, args, closeBracket);
             }
@@ -8040,9 +8042,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context._Exprs.Count == 1)
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     context.Expr.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                    SyntaxFactory.CloseParen));
             }
             else
             {
@@ -8203,7 +8205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     constraintClauses: default,
                                     MakeBlock(statements),
                                     expressionBody: null,
-                                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                                    SyntaxFactory.SemiColon);
                 localFunctions.Add(func);
 
                 if (parnames.Count > 0)
@@ -8223,9 +8225,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = GenerateMethodCall(fname, false);
                 }
                 context.Put(_syntaxFactory.ParenthesizedExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                    SyntaxFactory.CloseParen));
 
             }
         }
@@ -8440,9 +8442,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var expr = _syntaxFactory.SizeOfExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.SizeOfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.OpenParen,
                 context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                SyntaxFactory.CloseParen);
             expr.XGenerated = true;
             expr.XNoTypeWarning = true;
             context.Put(expr);
@@ -8491,9 +8493,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_emptyArgs == null)
                     {
                         _emptyArgs = _syntaxFactory.ArgumentList(
-                                openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                openParenToken: SyntaxFactory.OpenParen,
                                 arguments: default,
-                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                                closeParenToken: SyntaxFactory.CloseParen);
                     }
                 }
             }
@@ -8511,9 +8513,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_emptyBracketedArgs == null)
                     {
                         _emptyBracketedArgs = _syntaxFactory.BracketedArgumentList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        openBracketToken: SyntaxFactory.OpenBracket,
                         arguments: default,
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                        closeBracketToken: SyntaxFactory.CloseBracket);
                     }
                 }
             }
@@ -8523,17 +8525,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ArgumentListSyntax MakeArgumentList(params ArgumentSyntax[] items)
         {
             return _syntaxFactory.ArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    SyntaxFactory.OpenParen,
                     MakeSeparatedList(items),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    SyntaxFactory.CloseParen);
         }
 
         protected BracketedArgumentListSyntax MakeBracketedArgumentList(params ArgumentSyntax[] items)
         {
             return _syntaxFactory.BracketedArgumentList(
-                    openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    openBracketToken: SyntaxFactory.OpenBracket,
                     MakeSeparatedList(items),
-                    closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    closeBracketToken: SyntaxFactory.CloseBracket);
         }
 
         public override void ExitBracketedArgumentList([NotNull] XP.BracketedArgumentListContext context)
@@ -8542,13 +8544,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var argCtx in context._Args)
             {
                 if (args.Count != 0)
-                    args.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    args.AddSeparator(SyntaxFactory.Comma);
                 args.Add(argCtx.Get<ArgumentSyntax>());
             }
             context.Put(_syntaxFactory.BracketedArgumentList(
-                openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                openBracketToken: SyntaxFactory.OpenBracket,
                 arguments: args,
-                closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                closeBracketToken: SyntaxFactory.CloseBracket));
             _pool.Free(args);
         }
 
@@ -8565,12 +8567,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitArgumentList([NotNull] XP.ArgumentListContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
-            var openParen = SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken);
-            var closeParen = SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken);
+            var openParen = SyntaxFactory.OpenParen;
+            var closeParen = SyntaxFactory.CloseParen;
             foreach (var argCtx in context._Args)
             {
                 if (args.Count != 0)
-                    args.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    args.AddSeparator(SyntaxFactory.Comma);
                 args.Add(argCtx.Get<ArgumentSyntax>());
             }
             context.Put(_syntaxFactory.ArgumentList(openParen, args, closeParen));
@@ -8626,7 +8628,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             context.Put(_syntaxFactory.Argument(
-                context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.ColonToken)),
+                context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.Colon),
                 refKeyword, expr));
         }
 
@@ -8637,7 +8639,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitQualifiedNameDot([NotNull] XP.QualifiedNameDotContext context)
         {
             context.Put(_syntaxFactory.QualifiedName(context.Left.Get<NameSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                SyntaxFactory.Dot,
                 context.Right.Get<SimpleNameSyntax>()));
         }
 
@@ -8649,7 +8651,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitQualifiedName([NotNull] XP.QualifiedNameContext context)
         {
             context.Put(_syntaxFactory.QualifiedName(context.Left.Get<NameSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                SyntaxFactory.Dot,
                 context.Right.Get<SimpleNameSyntax>()));
         }
 
@@ -8784,7 +8786,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (c == ',')
                     {
                         sizes.Add(omittedArraySizeExpressionInstance);
-                        sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        sizes.AddSeparator(SyntaxFactory.Comma);
                     }
                     else if (!char.IsWhiteSpace(c))
                     {
@@ -8799,14 +8801,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var comma in context._Commas)
                 {
                     sizes.Add(omittedArraySizeExpressionInstance);
-                    sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    sizes.AddSeparator(SyntaxFactory.Comma);
                 }
             }
             sizes.Add(omittedArraySizeExpressionInstance);
             var ars = _syntaxFactory.ArrayRankSpecifier(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                SyntaxFactory.OpenBracket,
                 sizes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                SyntaxFactory.CloseBracket);
             if (hasError)
             {
                 ars = ars.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedCharacter, errorchar));
@@ -9217,9 +9219,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                             _byteArrayType,
                             _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                SyntaxFactory.OpenBrace,
                                 MakeSeparatedList<ExpressionSyntax>(values.ToArray()),
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
+                                SyntaxFactory.CloseBrace));
                     if (error)
                     {
                         var msg = "length of literal must be an even number of characters";
@@ -9415,7 +9417,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var item in context._Elements)
                 {
                     if (l.Count > 0)
-                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        l.AddSeparator(SyntaxFactory.Comma);
                     if (item.Expr != null)
                         l.Add(item.Expr.Get<ExpressionSyntax>());
                     else
@@ -9430,26 +9432,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ExpressionSyntax expr;
             var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.OpenBrace,
                 exprs,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                SyntaxFactory.CloseBrace);
             if (type != null)
             {
                 expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                     _syntaxFactory.ArrayType(type,
                     MakeList(_syntaxFactory.ArrayRankSpecifier(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        SyntaxFactory.OpenBracket,
                         MakeSeparatedList<ExpressionSyntax>(
                             _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
+                        SyntaxFactory.CloseBracket))),
                     initializer);
             }
             else
             {
                 expr = _syntaxFactory.ImplicitArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    SyntaxFactory.OpenBracket,
                     default,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
+                    SyntaxFactory.CloseBracket,
                     initializer);
                 if (!isNestedArray(context))
                 {
@@ -9490,9 +9492,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.AnonymousObjectCreationExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.OpenBrace,
                 MakeSeparatedList<AnonymousObjectMemberDeclaratorSyntax>(context._Members),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
+                SyntaxFactory.CloseBrace));
         }
 
         private static bool isAnonymousTypeExpression(ExpressionSyntax expr)
@@ -9527,7 +9529,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr.Get<ExpressionSyntax>();
             if (context.Name != null)
             {
-                nameEquals = _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken));
+                nameEquals = _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.Equals);
             }
             var amd = _syntaxFactory.AnonymousObjectMemberDeclarator(nameEquals, expr);
             {
@@ -9661,7 +9663,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var expr = _syntaxFactory.IdentifierName(newparam.Identifier);
                     expr.XGenerated = true;
                     var variable = _syntaxFactory.VariableDeclarator(param.Identifier, null,
-                        _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr));
+                        _syntaxFactory.EqualsValueClause(SyntaxFactory.Equals, expr));
                     variable.XGenerated = true;
                     variables.Add(variable);
                     var decl = _syntaxFactory.LocalDeclarationStatement(
@@ -9670,7 +9672,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         usingKeyword: null,
                         modifiers: default,
                         _syntaxFactory.VariableDeclaration(param.Type, variables),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        SyntaxFactory.SemiColon);
                     decl.XGenerated = true;
                     newstmts.Add(decl);
                     _pool.Free(variables);
@@ -9726,7 +9728,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(MakeBlock(MakeList<StatementSyntax>(
                 from ctx in context._Exprs
                 select _syntaxFactory.ExpressionStatement(attributeLists: default,
-                    ctx.Get<ExpressionSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                    ctx.Get<ExpressionSyntax>(), SyntaxFactory.SemiColon),
                 GenerateReturn(context.ReturnExpr.Get<ExpressionSyntax>())
                 )));
         }
@@ -9819,7 +9821,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.LetClause(
                 SyntaxFactory.MakeToken(SyntaxKind.LetKeyword),
                 context.Id.Get<SyntaxToken>(),
-                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                SyntaxFactory.Equals,
                 context.Expr.Get<ExpressionSyntax>()
                 ));
         }
@@ -10081,18 +10083,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var objinit = _syntaxFactory.InitializerExpression(
                 SyntaxKind.ObjectInitializerExpression,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.OpenBrace,
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                SyntaxFactory.CloseBrace);
             context.Put(objinit);
         }
         public override void ExitCollectioninitializer([NotNull] XP.CollectioninitializerContext context)
         {
             var collinit = _syntaxFactory.InitializerExpression(
                 inArrayCtorCall(context) ? SyntaxKind.ArrayInitializerExpression : SyntaxKind.CollectionInitializerExpression,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.OpenBrace,
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                SyntaxFactory.CloseBrace);
             context.Put(collinit);
         }
         public override void ExitMemberinitializer([NotNull] XP.MemberinitializerContext context)
@@ -10100,7 +10102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var memberinit = _syntaxFactory.AssignmentExpression(
                 SyntaxKind.SimpleAssignmentExpression,
                 context.Name.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                SyntaxFactory.Equals,
                 context.Expr.Get<ExpressionSyntax>());
             context.Put(memberinit);
         }
@@ -10122,9 +10124,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var collinit = _syntaxFactory.InitializerExpression(
                 inArrayCtorCall(context) ? SyntaxKind.ArrayInitializerExpression : SyntaxKind.ComplexElementInitializerExpression,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.OpenBrace,
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                SyntaxFactory.CloseBrace);
             context.Put(collinit);
         }
         public override void ExitInitializerMember([NotNull] XP.InitializerMemberContext context)

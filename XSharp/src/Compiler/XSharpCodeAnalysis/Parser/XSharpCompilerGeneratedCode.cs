@@ -248,9 +248,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 null,
                                 null,
                                 default,
-                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                SyntaxFactory.OpenBrace,
                                 members,
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                                SyntaxFactory.CloseBrace,
                                 null);
             return decl;
         }

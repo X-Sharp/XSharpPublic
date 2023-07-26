@@ -831,7 +831,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
 
                 case XSharpParser.ASSIGN_OP:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.EqualsToken);
+                    r = SyntaxFactory.Equals;
                     break;
                 case XSharpParser.ASSIGN_ADD:
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken);

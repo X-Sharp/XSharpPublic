@@ -64,9 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null,
                 constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             m.XVoStructUnion = true;
             if (context.Namespace != null)
@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     MakeSeparatedList(
                         isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
                         : GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                SyntaxFactory.SemiColon));
         }
 
         public override void EnterVounion([NotNull] XP.VounionContext context)
@@ -182,9 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null,
                 constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             m.XVoStructUnion = true;
             if (context.Namespace != null)

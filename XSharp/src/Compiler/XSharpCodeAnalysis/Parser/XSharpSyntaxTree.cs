@@ -22,6 +22,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal static readonly SyntaxTrivia WS = Whitespace(" ");
         //internal static readonly ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
 
+        internal static SyntaxToken SemiColon = MakeTokenNoWs(SyntaxKind.SemicolonToken);
+        internal static SyntaxToken CloseParen = MakeTokenNoWs(SyntaxKind.CloseParenToken);
+        internal static SyntaxToken OpenParen = MakeTokenNoWs(SyntaxKind.OpenParenToken);
+        internal static SyntaxToken OpenBrace = MakeTokenNoWs(SyntaxKind.OpenBraceToken);
+        internal static SyntaxToken CloseBrace = MakeTokenNoWs(SyntaxKind.CloseBraceToken);
+        internal static SyntaxToken CloseBracket = MakeTokenNoWs(SyntaxKind.CloseBracketToken);
+        internal static SyntaxToken OpenBracket = MakeTokenNoWs(SyntaxKind.OpenBracketToken);
+        internal static SyntaxToken Comma = MakeTokenNoWs(SyntaxKind.CommaToken);
+        internal static SyntaxToken Colon = MakeTokenNoWs(SyntaxKind.ColonToken);
+        internal static SyntaxToken Dot = MakeTokenNoWs(SyntaxKind.DotToken);
+        internal new static SyntaxToken Equals = MakeTokenNoWs(SyntaxKind.EqualsToken);
         internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
         {
             return Token(kind);

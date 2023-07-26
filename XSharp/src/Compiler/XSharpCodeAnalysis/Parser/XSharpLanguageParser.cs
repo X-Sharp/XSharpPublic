@@ -674,12 +674,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: default,
                     SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: trans.GenerateQualifiedName(nsName),
-                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    openBraceToken: SyntaxFactory.OpenBrace,
                     externs: null,
                     usings: null,
                     members: members,
-                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    closeBraceToken: SyntaxFactory.CloseBrace,
+                    semicolonToken: SyntaxFactory.SemiColon);
                 _pool.Free(members);
 
             }

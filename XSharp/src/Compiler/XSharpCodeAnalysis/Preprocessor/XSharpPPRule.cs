@@ -1716,7 +1716,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if VSPARSER
             foreach (var token in matchedWithToken)
             {
-                if (!token.IsKeyword())
+                if (!token.IsOperator())
                 {
                     token.Type = XSharpLexer.UDC_KEYWORD;
                     token.UDCLocation = this._matchtokens[0].Token;

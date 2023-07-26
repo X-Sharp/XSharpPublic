@@ -169,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private PropertyDeclarationSyntax makeSuperProperty(TypeSyntax baseType)
         {
             var publicMod = MakeList(SyntaxFactory.MakeGeneratedToken(SyntaxKind.PublicKeyword));
-            var semi = SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken);
+            var semi = SyntaxFactory.SemiColon;
             var arrow = _syntaxFactory.ArrowExpressionClause(
                 SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                 GenerateSelf());
@@ -242,7 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var iCtx in context._Implements)
             {
                 if (baseTypes.Count > 0)
-                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    baseTypes.AddSeparator(SyntaxFactory.Comma);
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
 
@@ -252,11 +252,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
-                baseList: _syntaxFactory.BaseList(SyntaxFactory.MakeToken(SyntaxKind.ColonToken), baseTypes),
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.Colon, baseTypes),
                 constraintClauses: null,
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                openBraceToken: SyntaxFactory.OpenBrace,
                 members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                closeBraceToken: SyntaxFactory.CloseBrace,
                 semicolonToken: null);
             _pool.Free(members);
             _pool.Free(baseTypes);
@@ -266,9 +266,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Generate XBase++ Class Function
             var expr = _syntaxFactory.TypeOfExpression(SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    SyntaxFactory.OpenParen,
                                     GenerateSimpleName(context.Id.GetText()),
-                                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                                    SyntaxFactory.CloseParen);
             var args = MakeArgumentList(MakeArgument(expr));
             var result = GenerateMethodCall(ReservedNames.GetXppClassObject, args, true);
             var stmt = GenerateReturn(result, true);
@@ -286,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: null,
                 body: body,
                 expressionBody: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                semicolonToken: SyntaxFactory.SemiColon);
             func.XGenerated = true;
             if (context.TypeData.HasStatic)
             {
@@ -449,7 +449,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         attributeLists: attributeLists,
                         modifiers: modifiers,
                         declaration: decl,
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        semicolonToken: SyntaxFactory.SemiColon);
                     fdecl.XNode = id;
                     ClassEntities.Peek().Members.Add(fdecl);
                     fieldList.Add(fdecl);
@@ -750,7 +750,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                   body: body,
                   expressionBody: expressionBody,
-                  semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                  semicolonToken: SyntaxFactory.SemiColon);
             return m;
         }
 
@@ -821,7 +821,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         default,
                         default,
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
-                        block, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        block, null, SyntaxFactory.SemiColon);
                 accessor.XNode = method;
                 accessors.Add(accessor);
             }
@@ -847,7 +847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxKind.SetAccessorDeclaration,
                         default, default,
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
-                        block, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        block, null, SyntaxFactory.SemiColon);
                 accessor.XNode = method;
                 accessors.Add(accessor);
             }
@@ -862,7 +862,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessorList: accessorList,
                     expressionBody: null,
                     initializer: null,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    semicolonToken: SyntaxFactory.SemiColon);
             prop.XNode = (IXParseTree)propDecl.Declaration;
             if (methType.ToFullString() != propType.ToFullString())
             {

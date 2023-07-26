@@ -213,10 +213,10 @@ namespace Microsoft.VisualStudio.Project
                 changed = false;
             else
                 changed = String.Compare(currentValue, attributeValue) != 0;
-            if (changed)
+            if (changed && item != null)
             {
 	            // Check out the project file.
-	            if(!this.itemProject.QueryEditProjectFile(false))
+	            if(this.itemProject != null && !this.itemProject.QueryEditProjectFile(false))
 	            {
 	                throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
 	            }

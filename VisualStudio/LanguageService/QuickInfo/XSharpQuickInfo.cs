@@ -270,6 +270,11 @@ namespace XSharp.LanguageService
                         case Kind.Local:
                         case Kind.MemVar:
                             return KnownMonikers.LocalVariable;
+                        case Kind.Command:
+                        case Kind.XCommand:
+                        case Kind.Translate:
+                        case Kind.XTranslate:
+                            return KnownMonikers.MacroPublic;
                     }
                     return default;
                 }

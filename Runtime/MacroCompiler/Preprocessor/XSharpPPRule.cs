@@ -29,7 +29,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         private readonly PPUDCType _type;
         private PPMatchToken[] _matchtokens;
         private PPMatchToken[] _matchTokensFlattened;
-        private int tokenCount = 0;
+        private int _tokenCount = 0;
         private PPResultToken[] _resulttokens;
         private readonly PPErrorMessages _errorMessages;
         internal PPRuleFlags _flags;
@@ -37,10 +37,12 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal bool hasRepeats => _flags.HasFlag(PPRuleFlags.HasRepeats);
         internal bool hasOptionalResult => _flags.HasFlag(PPRuleFlags.HasOptionalResult);
         internal bool hasOptionalMatch => _flags.HasFlag(PPRuleFlags.HasOptionalMatch);
-        internal int firstOptionalMatchToken = -1;
+        internal int _firstOptionalMatchToken = -1;
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
+        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand;
+
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
             _options = options;
@@ -206,7 +208,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var linearlist = new List<PPMatchToken>();
             addMatchTokens(_matchtokens, linearlist);
             _matchTokensFlattened = linearlist.ToArray();
-            tokenCount = _matchTokensFlattened.Length;
+            _tokenCount = _matchTokensFlattened.Length;
             _resulttokens = resultTokens.ToArray();
             checkMatchingTokens(_resulttokens, markers);
             return _errorMessages == null || _errorMessages.Count == 0;
@@ -322,6 +324,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 break;
                             }
                         }
+                        if (m.IsRepeat)
+                        {
+                            foreach (var c in m.Children)
+                            {
+                                c.IsRepeat = true;
+                            }
+                        }
                     }
                 }
                 foreach (var r in _resulttokens)
@@ -334,6 +343,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                             {
                                 r.IsRepeat = true;
                                 break;
+                            }
+                        }
+                        if (r.IsRepeat)
+                        {
+                            foreach (var c in r.OptionalElements)
+                            {
+                                c.IsRepeat = true;
                             }
                         }
                     }
@@ -553,8 +569,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                          * [...]
                          */
                         _flags |= PPRuleFlags.HasOptionalMatch;
-                        if (firstOptionalMatchToken == -1)
-                            firstOptionalMatchToken = i;
+                        if (_firstOptionalMatchToken == -1)
+                            _firstOptionalMatchToken = i;
                         more = getNestedTokens(i, max, matchTokens);
                         if (more != null)
                         {
@@ -633,8 +649,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                 var linearlist = new List<PPMatchToken>();
                 addMatchTokens(mt, linearlist);
                 _matchTokensFlattened = linearlist.ToArray();
-                tokenCount = _matchTokensFlattened.Length;
-                for (int i = 0; i < tokenCount; i++)
+                _tokenCount = _matchTokensFlattened.Length;
+                for (int i = 0; i < _tokenCount; i++)
                 {
                     var marker = _matchTokensFlattened[i];
                     if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat)
@@ -653,13 +669,15 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     if (marker.RuleTokenType.HasSingleStopToken())
                     {
-                        if (i < tokenCount - 1)
+                        if (i < _tokenCount - 1)
                         {
                             var next = _matchTokensFlattened[i + 1];
                             if (!next.IsOptional)
                             {
-                                var stopTokens = new List<XSharpToken>();
-                                stopTokens.Add(next.Token);
+                                var stopTokens = new List<XSharpToken>
+                                {
+                                    next.Token
+                                };
                                 marker.StopTokens = stopTokens.ToArray();
                             }
                             else if (next.Children != null)
@@ -1119,6 +1137,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case PPUDCType.XTranslate:
                 case PPUDCType.Define:
                     return string.Equals(lhs, rhs, mode);
+                default:
+                    break;
             }
             return false;
         }
@@ -1257,7 +1277,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             else if (tokens[iStart].IsString())
             {
                 matchInfo[mToken.Index].SetPos(iStart, iStart);
-                iSource = iSource + 1;
+                iSource++;
                 found = true;
             }
             else
@@ -1495,7 +1515,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             XSharpToken ruleToken = mToken.Token;
             int iEnd;
             bool found = false;
-            while (sourceToken.Type == XSharpLexer.WS)
+            while (sourceToken.Type == XSharpLexer.WS || sourceToken.Type == XSharpLexer.ML_COMMENT)
             {
                 iSource += 1;
                 if (iSource == tokens.Count)
@@ -1619,7 +1639,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             int iRule = 0;
             int iSource = 0;
-            matchInfo = new PPMatchRange[tokenCount];
+            matchInfo = new PPMatchRange[_tokenCount];
             List<XSharpToken> matchedWithToken = new List<XSharpToken>();
             int firstOptional = -1;
             bool hasSkippedMarkers = false;
@@ -1663,7 +1683,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     break;
             }
             // #command and #xcommand should match all tokens on the input line
-            if (iSource < tokens.Count && (this.Type == PPUDCType.Command || this.Type == PPUDCType.XCommand))
+            if (iSource < tokens.Count && this.isCommand)
             {
                 if (tokens[iSource].Type != XSharpLexer.EOS)
                     return false;
@@ -1692,7 +1712,6 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             matchInfo[wholeUdc.Index].SetPos(0, last);
 
-
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
             // Since our token may be a clone, we change the Type of the source token
 #if VSPARSER
@@ -1709,13 +1728,13 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         internal IList<XSharpToken> Replace(IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
         {
-            Debug.Assert(matchInfo.Length == tokenCount);
-            return Replace(_resulttokens, tokens, matchInfo);
+            Debug.Assert(matchInfo.Length == _tokenCount);
+            return Replace(_resulttokens, tokens, matchInfo, 0, true);
 
         }
-        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset = 0, bool isLast = true)
+        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset, bool isTopLevel)
         {
-            Debug.Assert(matchInfo.Length == tokenCount);
+            Debug.Assert(matchInfo.Length == _tokenCount);
             List<XSharpToken> result = new List<XSharpToken>();
             foreach (var resultToken in resulttokens)
             {
@@ -1747,7 +1766,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             // we need to determine the tokens at the end of the tokens list that are not matched 
             // in the results and then copy these to the result as well
-            if (isLast)
+            if (isTopLevel)
             {
                 var source = tokens[0];
                 if (source.SourceSymbol != null)
@@ -1764,8 +1783,14 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     result.Add(tokens[i]);
                 }
-                foreach (var t in result)
+                for (int i = 0; i < result.Count; i++)
                 {
+                    var t = result[i];
+                    if (t is not XSharpPPToken)
+                    {
+                        t = new XSharpPPToken(t, source);
+                        result[i] = t;
+                    }
                     if (t.Channel == Channel.PreProcessor)
                     {
                         // Leave PP commands alone so we can redirect input to #error or #warning
@@ -1774,7 +1799,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                             t.Channel = Channel.Default;
                         }
                     }
-                    t.SourceSymbol = source;
                 }
             }
             //result.TrimLeadingSpaces();
@@ -1829,7 +1853,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             // Link the new token to the first token of the UDC
             // so for the command #xcommand WAIT [<msg>]                  => _wait( <msg> )
             // the LPAREN and RPAREN will also be linked to the WAIT keyword in the source.
-            var newToken = new XSharpToken(resultToken.Token) { SourceSymbol = tokens[0] };
+            var newToken = new XSharpPPToken(resultToken.Token, tokens[0]);
             result.Add(newToken);
         }
         void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
@@ -1851,8 +1875,21 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     else
                     {
-                        var block = Replace(resultToken.OptionalElements, tokens, matchInfo);
-                        result.AddRange(block);
+                        if (resultToken.IsRepeat)
+                        {
+                            // determine the # of repeats in the source
+                            var max = resultToken.RepeatCount(matchInfo);
+                            for (int i = 0; i < max; i++)
+                            {
+                                var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i, false);
+                                result.AddRange(block);
+                            }
+                        }
+                        else
+                        {
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo,0, false);
+                            result.AddRange(block);
+                        }
                     }
                 }
             }
@@ -2026,7 +2063,6 @@ namespace XSharp.MacroCompiler.Preprocessor
             return;
         }
 
-
         bool matchAmpersandToken(PPMatchToken mToken, IList<XSharpToken> tokens, int start, ref int end)
         {
             end = -1;
@@ -2047,6 +2083,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case XSharpLexer.BACKSLASH:
                 case XSharpLexer.DOT:
                     return true;
+                default:
+                    break;
             }
             return false;
         }
@@ -2237,7 +2275,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                         result.Add(joinTokensToString(tokens, start, end));
                     }
                     break;
-
 
                 case PPTokenType.ResultSmartStringify:
                     // Only works when input text is delimited with parentheses
@@ -2472,5 +2509,3 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
     }
 }
-
-

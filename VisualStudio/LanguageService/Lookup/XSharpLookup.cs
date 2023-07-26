@@ -753,6 +753,59 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         state = CompletionState.General;
                         break;
+                    case XSharpLexer.UDC_KEYWORD:
+                        // the UDC location is in the token
+                        var xToken = ((XSharpToken)currentToken);
+                        var udcLoc = xToken.UDCLocation;
+                        var range = new TextRange(udcLoc, udcLoc);
+                        var interval = new TextInterval(udcLoc, udcLoc);
+                        Kind kind;
+                        switch (xToken.UDCType)
+                        {
+                            /*
+                             enum PPUDCType : byte
+                                {
+                                    None,
+                                    Define = 1,                 // #define
+                                    Command = 2,                 // #command 
+                                    Translate = 3,               // #translate 
+                                    XCommand = 4,                // #xcommand
+                                    XTranslate = 5,              // #xtranslate
+                                }
+                             * */
+                            case 1:
+                                kind = Kind.VODefine;
+                                break;
+                            case 2:
+                                kind = Kind.Command;
+                                break;
+                            case 3:
+                                kind = Kind.Translate;
+                                break;
+                            case 4:
+                                kind = Kind.XCommand;
+                                break;
+                            case 5:
+                                kind = Kind.XTranslate;
+                                break;
+                            default:
+                                kind = Kind.Unknown;
+                                break;
+                        }
+                        var ent = new XSourceMemberSymbol(udcLoc.Text, kind, Modifiers.None, range, interval, "", null, false);
+                        var sourceFile = udcLoc.SourceName;
+
+                        var file = XSolution.FindFile(sourceFile);
+                        if (file == null)
+                        {
+                            file = new XFile(sourceFile, XSolution.OrphanedFilesProject);
+                        }
+                        ent.File = file;
+                        ent.Parent = file.GlobalType;
+                        symbols.Push(ent);
+                        result.Add(ent);
+                        continue;
+                        
                     default:
                         hasBracket = false;
                         if (XSharpLexer.IsOperator(currentToken.Type))

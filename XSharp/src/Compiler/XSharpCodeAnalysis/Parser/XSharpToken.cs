@@ -210,5 +210,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             this.source = token.source;
         }
+#if VSPARSER
+        public XSharpToken UDCLocation {get; set;}
+        public byte UDCType { get; set; }
+#endif
     }
 }

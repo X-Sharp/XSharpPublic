@@ -1719,6 +1719,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (!token.IsKeyword())
                 {
                     token.Type = XSharpLexer.UDC_KEYWORD;
+                    token.UDCLocation = this._matchtokens[0].Token;
+                    token.UDCType = (byte)this.Type;
                 }
             }
 #endif

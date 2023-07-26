@@ -4,27 +4,23 @@
 // See License.txt in the project root for license information.
 //
 
-using System;
-using Microsoft.VisualStudio.Project.Automation;
-using System.Globalization;
-using XSharp.Project.WPF;
-using XSharp.CodeDom;
-using System.Diagnostics;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Project.Automation;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using System.Runtime.InteropServices;
+using XSharpModel;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
-using Microsoft.VisualStudio.TextManager.Interop;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
-using XSharpModel;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.Imaging.Interop;
-using Microsoft.VisualStudio.Imaging;
-using XSharp.Settings;
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 namespace XSharp.Project
 {
     /// <summary>
@@ -39,7 +35,7 @@ namespace XSharp.Project
         #endregion
         #region Constructors
 
-        static XSharpFileNode ()
+        static XSharpFileNode()
         {
             AddExtension(".vnfrm", KnownMonikers.FormInstance);
             AddExtension(".xsfrm", KnownMonikers.FormInstance);
@@ -87,7 +83,7 @@ namespace XSharp.Project
         {
             get
             {
-                if (IsForm || IsUserControl || IsNonMemberItem )
+                if (IsForm || IsUserControl || IsNonMemberItem)
                     return true;
 #if VS17
                 if (!File.Exists(this.Url))
@@ -120,7 +116,7 @@ namespace XSharp.Project
                 int ret = -1;
                 if (SupportsIconMonikers)
                     return ret;
-                if (! File.Exists(Url))
+                if (!File.Exists(Url))
                 {
                     return XSharpImageListIndex.MissingFile + XProjectNode.imageOffset;
                 }
@@ -133,7 +129,7 @@ namespace XSharp.Project
             }
         }
 
-#endregion
+        #endregion
         protected override void DeleteFromStorage(string path)
         {
             if (File.Exists(path))
@@ -160,18 +156,18 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
-               return ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            //if (this.FileType == XFileType.SourceCode)
-            {
-                var prjNode = this.ProjectMgr as XSharpProjectNode;
-                prjNode.ProjectModel.RemoveFile(this.Url);
-                prjNode.ClearIntellisenseErrors(this.Url);
-                prjNode.ShowIntellisenseErrors();
-            }
-            return base.ExcludeFromProject();
-			});
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+         {
+             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+             //if (this.FileType == XFileType.SourceCode)
+             {
+                 var prjNode = this.ProjectMgr as XSharpProjectNode;
+                 prjNode.ProjectModel.RemoveFile(this.Url);
+                 prjNode.ClearIntellisenseErrors(this.Url);
+                 prjNode.ShowIntellisenseErrors();
+             }
+             return base.ExcludeFromProject();
+         });
         }
 
         private static string typeNameToSubtype(string typeName)
@@ -282,7 +278,7 @@ namespace XSharp.Project
             HasDesigner = XSharpFileType.HasDesigner(this.Url, SubType);
         }
 
-#region Dependent Items
+        #region Dependent Items
         internal String GetParentName()
         {
             // There needs to be a better way to handle this
@@ -446,7 +442,7 @@ namespace XSharp.Project
                 switch (type)
                 {
                     case XFileType.ManagedResource:
-                        if (!this.Parent.HasDesigner)
+                        if (this.Parent != null && !this.Parent.HasDesigner)
                         {
                             if (!msBuildItem.HasMetadata(ProjectFileConstants.Generator))
                             {
@@ -527,7 +523,7 @@ namespace XSharp.Project
             get
             {
                 if (FileType.IsVOBinary())
-                    return DefaultSortOrderNode.VOBinaryNode+ (int) FileType;
+                    return DefaultSortOrderNode.VOBinaryNode + (int)FileType;
                 return DefaultSortOrderNode.HierarchyNode;
             }
         }
@@ -537,9 +533,9 @@ namespace XSharp.Project
             get
             {
                 if (_fileType == XFileType.Unknown)
-                    _fileType  = XFileTypeHelpers.GetFileType(this.Url);
+                    _fileType = XFileTypeHelpers.GetFileType(this.Url);
                 return _fileType;
-             }
+            }
         }
 
         private void CheckItemType()
@@ -618,9 +614,9 @@ namespace XSharp.Project
         }
 
 
-#endregion
+        #endregion
 
-#region Code Generation and Code Parsing
+        #region Code Generation and Code Parsing
         /// <summary>
         /// factory method for creating single file generators.
         /// </summary>
@@ -646,9 +642,9 @@ namespace XSharp.Project
 
 
 
-#endregion
+        #endregion
 
-#region Overriden implementation
+        #region Overriden implementation
 
         /// <summary>
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
@@ -828,9 +824,9 @@ namespace XSharp.Project
             return result;
         }
 
-#endregion
+        #endregion
 
-#region Private implementation
+        #region Private implementation
         internal OleServiceProvider.ServiceCreatorCallback ServiceCreator
         {
             get { return new OleServiceProvider.ServiceCreatorCallback(this.CreateServices); }
@@ -846,9 +842,9 @@ namespace XSharp.Project
             return service;
         }
 
-#endregion
+        #endregion
 
-#region Operate on Open Files
+        #region Operate on Open Files
         private IVsTextLines TextLines
         {
             get
@@ -866,7 +862,7 @@ namespace XSharp.Project
             }
         }
 
-        public string DocumentGetText( )
+        public string DocumentGetText()
         {
             return VsShellUtilities.GetRunningDocumentContents(this.ProjectMgr.Site, this.Url);
         }
@@ -882,7 +878,7 @@ namespace XSharp.Project
             try
             {
                 line -= 1;
-                Int32 result = VsTxtlines.ReplaceLines(line , 0, line , 0, handle.AddrOfPinnedObject(), text.Length, span);
+                Int32 result = VsTxtlines.ReplaceLines(line, 0, line, 0, handle.AddrOfPinnedObject(), text.Length, span);
                 if (result == VSConstants.S_OK)
                     Result = true;
             }
@@ -906,7 +902,7 @@ namespace XSharp.Project
                 int line, col;
                 Int32 result = VsTxtlines.GetLastLineIndex(out line, out col);
                 if (result == VSConstants.S_OK)
-                    result = VsTxtlines.ReloadLines(0, 0, line, col, handle.AddrOfPinnedObject(), text.Length,  span);
+                    result = VsTxtlines.ReloadLines(0, 0, line, col, handle.AddrOfPinnedObject(), text.Length, span);
                 if (result == VSConstants.S_OK)
                     Result = true;
             }
@@ -917,6 +913,6 @@ namespace XSharp.Project
             return Result;
         }
 
-#endregion
+        #endregion
     }
 }

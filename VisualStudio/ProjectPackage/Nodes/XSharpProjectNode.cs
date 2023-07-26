@@ -1879,9 +1879,8 @@ namespace XSharp.Project
                 var parentName = element.Item2;
                 var subType = element.Item3;
                 var parentNode = FindURL(parentName);
-                if (parentNode != null && parentNode is XSharpFileNode)
+                if (parentNode != null && parentNode is XSharpFileNode parent)
                 {
-                    XSharpFileNode parent = (XSharpFileNode)parentNode;
                     parent.AddDependant(NodeToMove);
                     NodeToMove.SubType = subType;
                     bMoved = true;

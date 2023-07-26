@@ -26,65 +26,65 @@
 // #include "dbfaxs.vh"
 /// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DBServer
-/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams )
-    LOCAL cTemp AS STRING
-    LOCAL cFileName AS STRING
+    /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+    CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams )
+        LOCAL cTemp AS STRING
+        LOCAL cFileName AS STRING
 
 
-    // Set the query text, this is necessary because the VO runtime doesn't like
-    // some of the special characters that are used in SQL queries
-    RDDINFO( _SET_SQL_QUERY, oFile )
+        // Set the query text, this is necessary because the VO runtime doesn't like
+        // some of the special characters that are used in SQL queries
+        RDDINFO( _SET_SQL_QUERY, oFile )
+
+        SELF:_SetParameters(aParams)
+        // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
+        // just grab the first word of the SQL query and use it as the alias.  The VO
+        // runtime will adjust it to be unique if there is a naming conflict.
+        cTemp := Left( oFile, At( " ", oFile ) - 1 )
 
 
-    IF ( IsNil( aParams ) )
-		// Pass in an empty array.  Passing in NIL doesn't get to the RDD.
-		RDDINFO( _SET_SQL_PARAMETERS, {} )
-	ELSE
-      RDDINFO( _SET_SQL_PARAMETERS, aParams )
-	ENDIF
+        // Call the DBServer init method which will execute the query
+        SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRDD )
 
 
-    // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
-    // just grab the first word of the SQL query and use it as the alias.  The VO
-    // runtime will adjust it to be unique if there is a naming conflict.
-    cTemp := Left( oFile, At( " ", oFile ) - 1 )
+        // Now that the query is executed, fixup some member variables that couldn't
+        // be set properly before the query was executed.  Only do this if the table
+        // handle is set (i.e. there is a result set and thus a table in the DBServer)
+        IF SELF:Info( DBI_GET_ACE_TABLE_HANDLE ) <> IntPtr.Zero
+            oFileSpec := FileSpec{ SELF:Info( DBI_FULLPATH ) }
+            cFileName := oFileSpec:FileName
 
 
-    // Call the DBServer init method which will execute the query
-    SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRDD )
+            cTemp := Symbol2String( ClassName( SELF ) )
+            oHyperLabel := HyperLabel{ cFileName, cFileName,  ;
+                cTemp + ": " + cFileName + " Alias=" +  ;
+                cTemp + "_" + cFileName }
+        ENDIF
 
 
-    // Now that the query is executed, fixup some member variables that couldn't
-    // be set properly before the query was executed.  Only do this if the table
-    // handle is set (i.e. there is a result set and thus a table in the DBServer)
-    IF SELF:Info( DBI_GET_ACE_TABLE_HANDLE ) <> IntPtr.Zero
-        oFileSpec := FileSpec{ SELF:Info( DBI_FULLPATH ) }
-        cFileName := oFileSpec:FileName
+        RETURN
 
+    METHOD Refresh( aParams ) CLASS AdsSQLServer
+        // This version of Refresh() accepts an array of SQL parameters
+        // for the query.  The array should be an array of parameter names and
+        // parameter values. For example:
+        //  {{ "lastname", "Smith" }, { "ID", 25 }}
 
-        cTemp := Symbol2String( ClassName( SELF ) )
-        oHyperLabel := HyperLabel{ cFileName, cFileName,  ;
-            cTemp + ": " + cFileName + " Alias=" +  ;
-            cTemp + "_" + cFileName }
-    ENDIF
+        SELF:_SetParameters(aParams)
+        SELF:Info(_SET_SQL_PARAMETERS, aParams)  // this triggers the refresh in the RDD
 
-
-RETURN
-
-METHOD Refresh( aParams ) CLASS AdsSQLServer
-	// This version of Refresh() accepts an array of SQL parameters
-	// for the query.  The array should be an array of parameter names and
-	// parameter values. For example:
-	//  {{ "lastname", "Smith" }, { "ID", 25 }}
-
-	// Set the parameters if provided.
-	IF aParams != nil
-      RDDINFO( _SET_SQL_PARAMETERS, aParams )
-	ENDIF
-
-   return SUPER:Refresh()
-
+        return SUPER:Refresh()
+    PRIVATE METHOD _SetParameters( aParams AS USUAL) AS VOID
+        local oParameters as object[]
+        IF ( isArray( aParams ) )
+            // Convert from Array to object[]
+            local aParameters := aParams as ARRAY
+            oParameters := aParameters
+        ELSE
+            oParameters := <OBJECT>{}
+        ENDIF
+        RDDINFO( _SET_SQL_PARAMETERS, oParameters )
+        RETURN
 
 END CLASS
 

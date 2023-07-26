@@ -37,6 +37,7 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     PRIVATE  _syncSettings AS LOGIC
     PRIVATE  _syncDeleted  AS LOGIC
     PRIVATE  _syncFolders  AS LOGIC
+    PROTECT _Hot            AS LOGIC
     PRIVATE CONST CLIPPER_MIN_DATE := 2415386U AS DWORD	// 1901-01-01
     PRIVATE CONST CLIPPER_MAX_DATE := 4606840U AS DWORD	// 7900-12-31
 
@@ -441,17 +442,23 @@ RETURN SELF:RecordMovement()
     /// <inheritdoc />
 OVERRIDE METHOD Close() AS LOGIC
     LOCAL result AS LOGIC
+    SELF:GoCold()
     result := SUPER:Close()
-    IF SELF:_Table != IntPtr.Zero
-        SELF:_CheckError(ACE.AdsCloseTable(SELF:_Table),EG_CLOSE)
+    TRY
+        IF SELF:_Table != IntPtr.Zero
+            SELF:_CheckError(ACE.AdsCloseTable(SELF:_Table),EG_CLOSE)
+        ENDIF
+    CATCH e as Exception
+        THROW e
+    FINALLY
         SELF:_Table := IntPtr.Zero
-    ENDIF
-    SELF:_Index := IntPtr.Zero
-    SELF:_CheckRights := 0
-    SELF:_LockType := 0
-    SELF:_TableType := 0
-    SELF:Area  := 0
-    RuntimeState.StateChanged -= StateChanged
+        SELF:_Index := IntPtr.Zero
+        SELF:_CheckRights := 0
+        SELF:_LockType := 0
+        SELF:_TableType := 0
+        SELF:Area  := 0
+        RuntimeState.StateChanged -= StateChanged
+    END TRY
 RETURN result
 
     /// <inheritdoc />
@@ -564,12 +571,13 @@ RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 OVERRIDE METHOD GoTo(lRec AS LONG) AS LOGIC
+    SELF:GoCold()
     SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR recordnum),EG_READ)
     IF recordnum == lRec
+        // check if we need to write
         SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
         SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT VAR atBOF),EG_READ)
-        IF atEOF== 0 .AND. atBOF == 0
-            SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_WRITE)
+        IF atEOF == 0 .AND. atBOF == 0
             SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table),EG_READ)
         ENDIF
     ELSE
@@ -592,6 +600,7 @@ RETURN SELF:GoTo(recNum)
 OVERRIDE METHOD Skip(lCount AS LONG) AS LOGIC
     LOCAL result AS DWORD
     LOCAL flag AS LOGIC
+    SELF:GoCold()
     SELF:_SynchronizeVODeletedFlag()
     IF lCount == 0
         SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_WRITE)
@@ -668,11 +677,15 @@ RETURN SELF:GoCold()
   /// <inheritdoc />
 OVERRIDE METHOD Refresh() AS LOGIC
     SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table),EG_READ)
+    SELF:_Hot           := FALSE
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 OVERRIDE METHOD GoCold() AS LOGIC
-    SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_READ)
+    IF SELF:_Hot
+        SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_READ)
+    ENDIF
+    SELF:_Hot           := FALSE
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
@@ -709,6 +722,7 @@ OVERRIDE METHOD GoHot() AS LOGIC
             ENDIF
         ENDIF
     ENDIF
+    SELF:_Hot           := TRUE
 RETURN TRUE
 
     /// <inheritdoc />
@@ -729,6 +743,7 @@ RETURN SELF:GoTop()
     /// <inheritdoc />
 OVERRIDE METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
     LOCAL result        AS DWORD
+    SELF:GoCold()
     IF fReleaseLocks
         SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT VAR handleType),EG_APPENDLOCK)
         IF handleType != ACE.ADS_CURSOR
@@ -747,14 +762,17 @@ OVERRIDE METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
     IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
         SELF:_CheckError(result,EG_SHARED)
     ENDIF
+    SELF:_Hot           := TRUE
 RETURN SELF:RecordMovement()
 
 OVERRIDE METHOD Delete() AS LOGIC
     SELF:_CheckError(ACE.AdsDeleteRecord(SELF:_Table),EG_WRITE)
+    SELF:_Hot           := TRUE
 RETURN TRUE
 
 OVERRIDE METHOD Recall() AS LOGIC
     SELF:_CheckError(ACE.AdsRecallRecord(SELF:_Table),EG_WRITE)
+    SELF:_Hot           := TRUE
 RETURN SELF:RecordMovement()
 
     #endregion
@@ -766,6 +784,7 @@ OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
 
 
 OVERRIDE METHOD Pack () AS LOGIC
+    SELF:GoCold()
     SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_READ)
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
         SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED, "Pack")
@@ -917,6 +936,7 @@ RETURN TRUE
     /// <inheritdoc />
 OVERRIDE METHOD ClearFilter() AS LOGIC
     LOCAL result AS DWORD
+    SELF:GoCold()
     IF SELF:_Table != System.IntPtr.Zero
         // Clear normal filter
         result := ACE.AdsClearFilter(SELF:_Table)

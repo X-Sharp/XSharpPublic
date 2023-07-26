@@ -24,8 +24,8 @@ namespace XSharp.LanguageService
             _buffer = buffer;
             _tokens = tokens;
             _snapShot = snapshot;
-            _entities = null;
-            _blocks = null;
+            _entities = new List<XSourceEntity>() ;
+            _blocks = new List<XSourceBlock>();
             _tokensPerLine = new Dictionary<int, IList<IToken>>();
             _lineState = new XSharpLineState();
             _identifiers = new ConcurrentDictionary<string, IList<IToken>>(StringComparer.OrdinalIgnoreCase);
@@ -51,6 +51,21 @@ namespace XSharp.LanguageService
         internal IDictionary<string, IList<IToken>> Identifiers => _identifiers;
         internal IList<XSourceBlock> Blocks => _blocks;
         #endregion
+
+
+        internal void Clear()
+        {
+
+            lock (this)
+            {
+                _tokens.Clear();
+                _identifiers.Clear();
+                _lineState.Clear();
+                _tokensPerLine.Clear();
+                _entities.Clear();
+                _blocks.Clear();
+            }
+        }
 
         internal bool HasLineState(int line, LineFlags flag)
         {

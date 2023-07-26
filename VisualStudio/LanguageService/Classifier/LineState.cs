@@ -54,6 +54,13 @@ namespace XSharp.LanguageService
         {
             
         }
+        internal void Clear()
+        {
+            lock (dict)
+            {
+                dict.Clear();
+            }
+        }
         internal void SetFlags(int line, LineFlags flags)
         {
             lock (dict)

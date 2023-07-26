@@ -82,28 +82,30 @@ namespace XSharp.LanguageService
             var file = _buffer.GetFile();
             caseSensitive = file.Project.ParseOptions.CaseSensitive;
 
-
             oStart = DateTime.Now;
 
             if (spans.Count == 0 || _currentChar == null)   //there is no content in the buffer
                 yield break;
 
-            //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
-            if (!_currentChar.HasValue || _currentChar.Value.Position >= _currentChar.Value.Snapshot.Length)
+            SnapshotPoint currentChar = _currentChar.Value;
+            if (currentChar.Position == currentChar.Snapshot.Length)
                 yield break;
 
-            SnapshotPoint currentChar = _currentChar.Value;
-            if (spans[0].Snapshot != currentChar.Snapshot)
-            {
-                yield break;
-            }
             //hold on to a snapshot of the current character
             var ch = currentChar.GetChar();
             if (char.IsWhiteSpace(ch))
                 yield break;
 
+            // Verify that the document and spans have the right version 
+            if (currentChar.Snapshot.Version != _document.SnapShot.Version || spans[0].Snapshot != currentChar.Snapshot)
+                yield break;
+
+            // don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
+            if (currentChar.Position >= currentChar.Snapshot.Length )
+                yield break;
+
+
             int currentLine = _currentChar.Value.GetContainingLine().LineNumber; 
-            int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
             IList<ITagSpan<TextMarkerTag>> result = new List<ITagSpan<TextMarkerTag>>();
             try
             {
@@ -126,7 +128,7 @@ namespace XSharp.LanguageService
                         foreach (var token2 in matchingTokens)
                         {
                             // Only match when text is identical. So do NOT ignore case
-                            if (! caseSensitive || token2.Text == token.Text)
+                            if (!caseSensitive || token2.Text == token.Text)
                             {
                                 var span = MakeSnapshotSpan(token2, snapshot);
                                 var tagspan = new TagSpan<TextMarkerTag>(span, _tag);

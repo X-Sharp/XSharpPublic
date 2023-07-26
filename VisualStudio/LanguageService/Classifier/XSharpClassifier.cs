@@ -258,6 +258,7 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
+                        xDocument.Clear();
                         xDocument.SetTokens(tokens, snapshot);
                     }
                     xDocument.SetState(_lineState, snapshot);

@@ -1263,7 +1263,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 r = _syntaxFactory.QualifiedName(
                     r,
-                    SyntaxFactory.MakeTokenNoWs(SyntaxKind.DotToken),
+                    SyntaxFactory.Dot,
                     GenerateSimpleName(ids[i]));
             }
             return r;
@@ -1315,7 +1315,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 r = _syntaxFactory.QualifiedName(
                     r,
-                    SyntaxFactory.MakeTokenNoWs(SyntaxKind.DotToken),
+                    SyntaxFactory.Dot,
                     GenerateSimpleName(dotName));
             }
             return r;
@@ -1854,12 +1854,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(rawMods);
             if (getVisLvl <= setVisLvl)
             {
-                _pool.Free(setMods);
                 setMods = innerMods;
             }
             else
             {
-                _pool.Free(getMods);
                 getMods = innerMods;
             }
             #endregion

@@ -25,16 +25,16 @@
 //#include "VOSystemLibrary.vh"
 // #include "dbfaxs.vh"
 /// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
-CLASS AdsSQLServer INHERIT DBServer
+CLASS AdsSQLServer INHERIT DbServer
     /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-    CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams )
+    CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams ) CLIPPER
         LOCAL cTemp AS STRING
         LOCAL cFileName AS STRING
 
 
         // Set the query text, this is necessary because the VO runtime doesn't like
         // some of the special characters that are used in SQL queries
-        RDDINFO( _SET_SQL_QUERY, oFile )
+        RddInfo( _SET_SQL_QUERY, oFile )
 
         SELF:_SetParameters(aParams)
         // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
@@ -64,7 +64,18 @@ CLASS AdsSQLServer INHERIT DBServer
 
         RETURN
 
-    METHOD Refresh( aParams ) CLASS AdsSQLServer
+    /// <summary>
+    /// Requery the SQL statement
+    /// </summary>
+    /// <param name="aParams">Values for the parameters in the original query</param>
+    /// <returns>TRUE </returns>
+    /// <remarks>
+    /// This version of Refresh() accepts an array of SQL parameters
+    /// for the query.  The array should be an array of parameter names and
+    /// parameter values. For example:
+    ///  {{ "lastname", "Smith" }, { "ID", 25 }}
+    /// </remarks>
+    METHOD Refresh( aParams ) AS USUAL CLIPPER
         // This version of Refresh() accepts an array of SQL parameters
         // for the query.  The array should be an array of parameter names and
         // parameter values. For example:
@@ -83,7 +94,7 @@ CLASS AdsSQLServer INHERIT DBServer
         ELSE
             oParameters := <OBJECT>{}
         ENDIF
-        RDDINFO( _SET_SQL_PARAMETERS, oParameters )
+        RddInfo( _SET_SQL_PARAMETERS, oParameters )
         RETURN
 
 END CLASS

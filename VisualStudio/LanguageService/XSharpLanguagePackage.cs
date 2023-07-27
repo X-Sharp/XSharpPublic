@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 using Community.VisualStudio.Toolkit;
 using Microsoft;
 using Microsoft.VisualStudio;
@@ -245,6 +246,22 @@ namespace XSharp.LanguageService
             //    ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
             //    serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
             //}
+
+            /*
+             * This can also be achived with a pkgdef file
+             ﻿[$RootKey$\Diff\SupportedContentTypes]
+                ".prg"=""
+                ".ppo"=""
+                ".ch"=""
+                ".xh"=""
+                ".xs"=""
+             ﻿[$RootKey$\Peek\SupportedContentTypes]
+               ".prg"=""
+                ".ppo"=""
+                ".ch"=""
+                ".xh"=""
+                ".xs"=""
+             * */
 
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
             addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");

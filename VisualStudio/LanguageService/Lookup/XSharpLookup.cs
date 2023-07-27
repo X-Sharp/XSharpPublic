@@ -874,6 +874,7 @@ namespace XSharp.LanguageService
                         {
                             canbeMethod = false;
                             findMethod = false;
+                            isId = false;
                         }
                     }
 

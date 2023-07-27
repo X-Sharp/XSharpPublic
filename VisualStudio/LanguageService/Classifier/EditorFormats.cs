@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace XSharp.LanguageService
 {
-
+    #region RegionMarkers - Invisible !
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpRegionStartFormat)]
     [Name(ColorizerConstants.XSharpRegionStartFormat)]
@@ -19,10 +19,6 @@ namespace XSharp.LanguageService
 
     internal sealed class XSharpRegionStartFormat : ClassificationFormatDefinition
     {
-        public XSharpRegionStartFormat()
-        {
-            this.DisplayName = "XSharp Region Start";
-        }
     }
 
     [Export(typeof(EditorFormatDefinition))]
@@ -32,13 +28,9 @@ namespace XSharp.LanguageService
     [Order(After = Priority.Default)]
     internal sealed class XSharpRegionStopFormat : ClassificationFormatDefinition
     {
-        public XSharpRegionStopFormat()
-        {
-            this.DisplayName = "XSharp Region Stop";
-        }
     }
-
-
+    #endregion
+    #region Text .. EndText
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpTextEndTextFormat)]
     [Name(ColorizerConstants.XSharpTextEndTextFormat)]
@@ -52,7 +44,8 @@ namespace XSharp.LanguageService
             this.ForegroundColor = Colors.DarkSalmon;
         }
     }
-
+    #endregion
+    #region Marker Formats These are combined with the color of the text
     [Export(typeof(EditorFormatDefinition))]
     [Name(ColorizerConstants.BraceFormatDefinition)]
     [UserVisible(true)]
@@ -63,7 +56,8 @@ namespace XSharp.LanguageService
         /// </summary>
         public BraceFormatDefinition()
         {
-            this.BackgroundColor = Colors.Tan;
+            // foreground = border
+            this.BackgroundColor = this.ForegroundColor = Colors.Tan;
             this.DisplayName = "X# Brace Matching";
             this.ZOrder = 5;
         }
@@ -79,7 +73,8 @@ namespace XSharp.LanguageService
         /// </summary>
         public KeywordFormatDefinition()
         {
-            this.BackgroundColor = Colors.LightSalmon;
+            // foreground = border
+            this.BackgroundColor = this.ForegroundColor = Colors.LightSalmon;
             this.DisplayName = "X# Highlight Keyword";
             this.ZOrder = 5;
         }
@@ -94,9 +89,11 @@ namespace XSharp.LanguageService
         /// </summary>
         public HighLightIdentifierFormatDefinition()
         {
-            this.BackgroundColor = Colors.Bisque;
+            // foreground = border
+            this.BackgroundColor = this.ForegroundColor = Colors.Bisque;
             this.DisplayName = "X# Highlight Identifier";
             this.ZOrder = 5;
         }
     }
+    #endregion
 }

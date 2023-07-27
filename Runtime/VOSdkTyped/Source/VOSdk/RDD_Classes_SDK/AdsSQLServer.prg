@@ -26,10 +26,8 @@
 // #include "dbfaxs.vh"
 /// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DbServer
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) CLIPPER
+	/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+    CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams ) CLIPPER
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 
@@ -38,7 +36,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) CLIPPER
     // some of the special characters that are used in SQL queries
     RddInfo( _SET_SQL_QUERY, oFile )
 
-
+        SELF:_SetParameters(aParams)
     // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
     // just grab the first word of the SQL query and use it as the alias.  The VO
     // runtime will adjust it to be unique if there is a naming conflict.
@@ -64,7 +62,41 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) CLIPPER
     ENDIF
 
 
-RETURN
+    RETURN
+    /// <inheritdoc cref="M:XSharp.VO.SDK.AdsSQLServer.Refresh(XSharp.__Usual)"  />
+    METHOD Refresh( ) AS LOGIC STRICT
+        RETURN SELF:Refresh(NIL)
 
+    /// <summary>
+    /// Requery the SQL statement
+    /// </summary>
+    /// <param name="aParams">Values for the parameters in the original query</param>
+    /// <returns>TRUE when succesfull</returns>
+    /// <remarks>
+    /// This version of Refresh() accepts an array of SQL parameters
+    /// for the query.  The array should be an array of parameter names and
+    /// parameter values. For example:
+    ///  {{ "lastname", "Smith" }, { "ID", 25 }}
+    /// </remarks>
+    METHOD Refresh( aParams  AS USUAL) AS LOGIC
+        // This version of Refresh() accepts an array of SQL parameters
+        // for the query.  The array should be an array of parameter names and
+        // parameter values. For example:
+        //  {{ "lastname", "Smith" }, { "ID", 25 }}
 
+        SELF:_SetParameters(aParams)
+        SELF:Info(_SET_SQL_PARAMETERS, aParams)  // this triggers the refresh in the RDD
+
+        return SUPER:Refresh()
+    PRIVATE METHOD _SetParameters( aParams AS USUAL) AS VOID
+        local oParameters as object[]
+        IF ( IsArray( aParams ) )
+            // Convert from Array to object[]
+            local aParameters := aParams as ARRAY
+            oParameters := aParameters
+        ELSE
+            oParameters := <OBJECT>{}
+        ENDIF
+        RddInfo( _SET_SQL_PARAMETERS, oParameters )
+        RETURN
 END CLASS

@@ -198,6 +198,9 @@ namespace XSharp.LanguageService
                             {
                                 _linesToSync.Clear();
                                 _suspendSync = true;
+                                // todo: Use Command for formatting
+                                // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Formatting.cs
+
                                 FormatDocument();
                             }
                             finally
@@ -211,6 +214,8 @@ namespace XSharp.LanguageService
                             try
                             {
                                 _suspendSync = true;
+                                // todo: Use Command for formatting
+                                // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Formatting.cs
                                 FormatSelection();
                             }
                             finally

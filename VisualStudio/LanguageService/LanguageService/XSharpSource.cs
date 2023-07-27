@@ -18,6 +18,11 @@ namespace XSharp.LanguageService
 {
     class XSharpSource : Source
     {
+        // Todo: Hook Commenting the modern way.
+        // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Commenting.cs
+        // Then remove the XSharpSource class
+
+
         public XSharpSource(XSharpLanguageService service,
                         IVsTextLines textLines,
                         Colorizer colorizer)

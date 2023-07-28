@@ -82,10 +82,11 @@
       <CustomToolNamespace></CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild">
-    <MakeDir Directories="$(VsExternalDir)" /> 
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="'$(Configuration)' == 'Debug'">
+    <MakeDir Directories="$(VsExternalDir)" />  
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)') and '$(IsCrossTargetingBuild)' != 'true'" >
+  <Target Name="CopyFiles" AfterTargets="Build" 
+       Condition="Exists('$(VsExternalDir)') and '$(IsCrossTargetingBuild)' != 'true' and  '$(Configuration)' == 'Debug'">
     <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
     <ItemGroup>
       <XsEvaluatorFiles Include="$(OutputPath)\XSharp*.*" />

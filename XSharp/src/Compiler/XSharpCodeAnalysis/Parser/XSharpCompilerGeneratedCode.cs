@@ -4,16 +4,11 @@
 // See License.txt in the project root for license information.
 //
 
-// Uncomment this define to dump time profiling info of the parsing phases.
-
 #nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Roslyn.Utilities;
-using Antlr4.Runtime.Dfa;
-using Antlr4.Runtime.Sharpen;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -248,9 +243,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 null,
                                 null,
                                 default,
-                                SyntaxFactory.OpenBrace,
+                                SyntaxFactory.OpenBraceToken,
                                 members,
-                                SyntaxFactory.CloseBrace,
+                                SyntaxFactory.CloseBraceToken,
                                 null);
             return decl;
         }
@@ -264,7 +259,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             fields.Clear();
             return GenerateClass(XSharpSpecialNames.SymbolTable, clsmembers, trans);
         }
-
         private ClassDeclarationSyntax GeneratePszClass(Dictionary<string, Tuple<string, FieldDeclarationSyntax>> fields, XSharpTreeTransformationCore trans)
         {
             var clsmembers = _pool.Allocate<MemberDeclarationSyntax>();
@@ -276,7 +270,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             fields.Clear();
             return GenerateClass(XSharpSpecialNames.PSZTable, clsmembers, trans);
         }
-
         private void GeneratePartialProperties(List<PartialPropertyElement> classes,
                                     SyntaxListBuilder<UsingDirectiveSyntax> usingslist,
                                     XSharpTreeTransformationCore trans,

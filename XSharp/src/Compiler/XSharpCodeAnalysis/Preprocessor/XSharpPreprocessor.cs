@@ -1311,8 +1311,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var startTime = DateTime.Now;
 
                 var stream = new AntlrInputStream(text.ToString()) { name = resolvedIncludeFileName };
-                var lexer = new XSharpLexer(stream) { TokenFactory = XSharpTokenFactory.Default };
-                lexer.Options = _options;
+                var lexer = new XSharpLexer(stream)
+                {
+                    TokenFactory = XSharpTokenFactory.Instance,
+                    Options = _options
+                };
                 var ct = new CommonTokenStream(lexer);
                 ct.Fill();
                 foreach (var e in lexer.LexErrors)

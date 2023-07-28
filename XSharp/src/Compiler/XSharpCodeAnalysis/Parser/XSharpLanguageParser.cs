@@ -489,9 +489,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return parseFunc();
             }
-            // TODO (DevDiv workitem 966425): Replace exception name test with a type test once the type
-            // is available in the PCL
-            catch (Exception ex) when (ex.GetType().Name == "InsufficientExecutionStackException")
+            catch (InsufficientExecutionStackException)
             {
                 return CreateForGlobalFailure(_lexerTokenStream?.Lt(1)?.StartIndex ?? 0, createEmptyNodeFunc());
             }
@@ -660,7 +658,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private MemberDeclarationSyntax WrapInNamespace(XSharpTreeTransformationCore trans, MemberDeclarationSyntax member,
             XP.Namespace_Context xns, string defaultNamespace)
         {
-            if (xns != null || !String.IsNullOrEmpty(defaultNamespace))
+            if (xns != null || !string.IsNullOrEmpty(defaultNamespace))
             {
                 var members = _pool.Allocate<MemberDeclarationSyntax>();
                 string nsName;
@@ -674,14 +672,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: default,
                     SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: trans.GenerateQualifiedName(nsName),
-                    openBraceToken: SyntaxFactory.OpenBrace,
+                    openBraceToken: SyntaxFactory.OpenBraceToken,
                     externs: null,
                     usings: null,
                     members: members,
-                    closeBraceToken: SyntaxFactory.CloseBrace,
-                    semicolonToken: SyntaxFactory.SemiColon);
+                    closeBraceToken: SyntaxFactory.CloseBraceToken,
+                    semicolonToken: SyntaxFactory.SemicolonToken);
                 _pool.Free(members);
-
             }
             return member;
         }
@@ -700,9 +697,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Usings = usings;
             }
         }
-
- 
- 
- 
     }
 }

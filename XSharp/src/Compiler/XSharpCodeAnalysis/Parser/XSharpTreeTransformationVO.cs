@@ -64,9 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null,
                 constraintClauses: null,
-                openBraceToken: SyntaxFactory.OpenBrace,
+                openBraceToken: SyntaxFactory.OpenBraceToken,
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
-                closeBraceToken: SyntaxFactory.CloseBrace,
+                closeBraceToken: SyntaxFactory.CloseBraceToken,
                 semicolonToken: null);
             m.XVoStructUnion = true;
             if (context.Namespace != null)
@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     MakeSeparatedList(
                         isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
                         : GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                SyntaxFactory.SemiColon));
+                SyntaxFactory.SemicolonToken));
         }
 
         public override void EnterVounion([NotNull] XP.VounionContext context)
@@ -182,9 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: null,
                 baseList: null,
                 constraintClauses: null,
-                openBraceToken: SyntaxFactory.OpenBrace,
+                openBraceToken: SyntaxFactory.OpenBraceToken,
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
-                closeBraceToken: SyntaxFactory.CloseBrace,
+                closeBraceToken: SyntaxFactory.CloseBraceToken,
                 semicolonToken: null);
             m.XVoStructUnion = true;
             if (context.Namespace != null)

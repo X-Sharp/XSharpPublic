@@ -2606,7 +2606,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             };
             var lexer = new XSharpLexer(stream)
             {
-                TokenFactory = XSharpTokenFactory.Default
+                TokenFactory = XSharpTokenFactory.Instance
             };
 
 #if !TEST

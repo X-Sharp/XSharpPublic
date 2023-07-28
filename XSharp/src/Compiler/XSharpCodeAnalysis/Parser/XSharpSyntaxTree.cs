@@ -20,44 +20,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal static partial class SyntaxFactory
     {
         internal static readonly SyntaxTrivia WS = Whitespace(" ");
-        //internal static readonly ConcurrentDictionary<SyntaxKind, SyntaxToken> tokens = new ConcurrentDictionary<SyntaxKind, SyntaxToken>();
-
-        internal static SyntaxToken SemiColon = MakeTokenNoWs(SyntaxKind.SemicolonToken);
-        internal static SyntaxToken CloseParen = MakeTokenNoWs(SyntaxKind.CloseParenToken);
-        internal static SyntaxToken OpenParen = MakeTokenNoWs(SyntaxKind.OpenParenToken);
-        internal static SyntaxToken OpenBrace = MakeTokenNoWs(SyntaxKind.OpenBraceToken);
-        internal static SyntaxToken CloseBrace = MakeTokenNoWs(SyntaxKind.CloseBraceToken);
-        internal static SyntaxToken CloseBracket = MakeTokenNoWs(SyntaxKind.CloseBracketToken);
-        internal static SyntaxToken OpenBracket = MakeTokenNoWs(SyntaxKind.OpenBracketToken);
-        internal static SyntaxToken Comma = MakeTokenNoWs(SyntaxKind.CommaToken);
-        internal static SyntaxToken Colon = MakeTokenNoWs(SyntaxKind.ColonToken);
-        internal static SyntaxToken Dot = MakeTokenNoWs(SyntaxKind.DotToken);
-        internal new static SyntaxToken Equals = MakeTokenNoWs(SyntaxKind.EqualsToken);
-        internal static SyntaxToken MakeTokenNoWs(SyntaxKind kind)
-        {
-            return Token(kind);
-        }
-        internal static SyntaxToken MakeToken(SyntaxKind kind)
-        {
-            var token = Token(WS, kind, WS);
-            return token;
-        }
+        // do NOT cache these tokens. That will cause many problems !
+        // the only exception is the Whitespace trivia
+        internal static SyntaxToken AmpersandToken => Token(SyntaxKind.AmpersandToken);
+        internal static SyntaxToken CloseBraceToken => Token(SyntaxKind.CloseBraceToken);
+        internal static SyntaxToken CloseBracketToken => Token(SyntaxKind.CloseBracketToken);
+        internal static SyntaxToken CloseParenToken => Token(SyntaxKind.CloseParenToken);
+        internal static SyntaxToken ColonColonToken => Token(SyntaxKind.ColonColonToken);
+        internal static SyntaxToken ColonToken => Token(SyntaxKind.ColonToken);
+        internal static SyntaxToken CommaToken => Token(SyntaxKind.CommaToken);
+        internal static SyntaxToken DotToken => Token(SyntaxKind.DotToken);
+        internal static SyntaxToken EqualsToken => Token(SyntaxKind.EqualsToken);
+        internal static SyntaxToken OpenBraceToken => Token(SyntaxKind.OpenBraceToken);
+        internal static SyntaxToken OpenBracketToken => Token(SyntaxKind.OpenBracketToken);
+        internal static SyntaxToken OpenParenToken => Token(SyntaxKind.OpenParenToken);
+        internal static SyntaxToken SemicolonToken => Token(SyntaxKind.SemicolonToken);
+        internal static SyntaxToken MakeToken(SyntaxKind kind) => Token(WS, kind, WS);
         internal static SyntaxToken MakeGeneratedToken(SyntaxKind kind)
         {
             var token = MakeToken(kind);
             token.XGenerated = true;
             return token;
         }
-
-        internal static SyntaxToken MakeToken(SyntaxKind kind, string text)
-        {
-            return Token(WS, kind, text, text, WS);
-        }
-
-        internal static SyntaxToken MakeIdentifier(string text)
-        {
-            return Identifier(WS, text, WS);
-        }
+        internal static SyntaxToken MakeToken(SyntaxKind kind, string text) => Token(WS, kind, text, text, WS);
+        internal static SyntaxToken MakeIdentifier(string text) => Identifier(WS, text, WS);
     }
     [FlagsAttribute]
     enum XNodeFlags : short

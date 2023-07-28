@@ -794,7 +794,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //    r = SyntaxKind.None;
                 //    break;
                 case XSharpParser.AMP:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.AmpersandToken;
                     break;
                 case XSharpParser.TILDE:
                     // Note
@@ -813,7 +813,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
                     break;
                 case XSharpParser.BIT_AND:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.AmpersandToken;
                     break;
                 case XSharpParser.OR:
                 case XSharpParser.LOGIC_OR:
@@ -831,7 +831,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
 
                 case XSharpParser.ASSIGN_OP:
-                    r = SyntaxFactory.Equals;
+                    r = SyntaxFactory.EqualsToken;
                     break;
                 case XSharpParser.ASSIGN_ADD:
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken);
@@ -871,7 +871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken);
                     break;
                 case XSharpParser.ADDROF:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.AmpersandToken;
                     break;
                 case XSharpParser.INC:
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusPlusToken);
@@ -926,7 +926,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
                 case XSharpParser.ADDROF:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.AmpersandToken;
                     break;
                 case XSharpParser.INC:
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusPlusToken);
@@ -1560,7 +1560,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.PercentToken);
                     break;
                 case XSharpParser.ASSIGN_BITAND:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.AmpersandToken;
                     break;
                 case XSharpParser.ASSIGN_BITOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);

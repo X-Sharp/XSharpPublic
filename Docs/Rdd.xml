@@ -895,9 +895,10 @@
     </DbServer.FileNameClause>
     <DbServer.ctor>
         <summary>
-            Construct a DBServer object.
+            Construct a server object.
         </summary>
-        <param name="cFile">
+     
+      <param name="cFile">
             The name of the file to open<br/>
             <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
         </param>
@@ -915,7 +916,8 @@
         <param name="aRDD">
             A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds" /> is omitted, no additional RDDs are assumed.
         </param>
-        <returns>
+      <param name="aParams">Optional array of parameter values</param>
+      <returns>
             As with all Init() methods, the instantiation returns the object. An object is created even if the file was not successfully opened, perhaps because the file does not exist, is corrupted or is locked by another user. Thus, before using the DBServer error, verify that it was successfully opened with the DBServer:Used or Status access methods.
         </returns>
         <example>

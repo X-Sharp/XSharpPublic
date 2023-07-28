@@ -26,6 +26,26 @@ namespace XSharp.MacroCompiler.Preprocessor
     using IToken = Token;
     using SourceText = System.String;
     using CSharpParseOptions = MacroOptions;
+
+    internal class XSharpPPToken : Token
+    {
+        readonly XSharpToken sourceSymbol;
+
+        internal XSharpPPToken(TokenType type, string text, XSharpToken token, bool defaultChannel = false) : base(token, type, text)
+        {
+            this.sourceSymbol = token;
+            if (defaultChannel)
+                Channel = Channel.Default;
+        }
+        internal XSharpPPToken(XSharpToken token, XSharpToken source, bool defaultChannel = false) : base(token)
+        {
+            this.sourceSymbol = source;
+            if (defaultChannel)
+                Channel = Channel.Default;
+        }
+        internal override XSharpToken SourceSymbol => sourceSymbol;
+
+    }
     internal partial class XSharpPreprocessor
     {
         static Dictionary<string, string> embeddedHeaders = null;
@@ -69,7 +89,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 foreach (var key in oldkeys)
                 {
-                    cache.TryRemove(key, out PPIncludeFile _);
+                    cache.TryRemove(key, out var _);
                 }
             }
 
@@ -236,20 +256,30 @@ namespace XSharp.MacroCompiler.Preprocessor
         public int MaxUDCDepth { get; set; } = 256;
         bool ProcessingIncludeFile => _files.Count > 0;
         public string StdDefs { get; set; } = string.Empty;
+        void addMacro(string macro, TokenType type)
+        {
+            addMacro(macro, type, macro);
+        }
+        void addMacro(string macro, TokenType type, string value)
+        {
+            if (type == XSharpLexer.STRING_CONST)
+                value = '"' + value + '"';
+            _macroDefines.Add(macro, (token) => new XSharpPPToken(type, value, token));
+        }
         private void initStdDefines(string fileName)
         {
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
             // Make sure you also update the MACROs in XSharpLexerCode.cs !
-            _macroDefines.Add("__ARRAYBASE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1") { SourceSymbol = token });
+            addMacro("__ARRAYBASE__", XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1");
 #if FULLCOMPILER
             if (_options.ClrVersion == 2)
-                _macroDefines.Add("__CLR2__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                addMacro("__CLR2__", XSharpLexer.TRUE_CONST);
             if (_options.ClrVersion == 4)
-                _macroDefines.Add("__CLR4__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-            _macroDefines.Add("__CLRVERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"" + _options.ClrVersion.ToString() + ".0\"", token));
+                addMacro("__CLR4__", XSharpLexer.TRUE_CONST);
+            addMacro("__CLRVERSION__", XSharpLexer.STRING_CONST, _options.ClrVersion.ToString() + ".0");
 #endif
-            _macroDefines.Add("__DATE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"') { SourceSymbol = token });
-            _macroDefines.Add("__DATETIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"') { SourceSymbol = token });
+            addMacro("__DATE__", XSharpLexer.STRING_CONST, DateTime.Now.Date.ToString("yyyyMMdd"));
+            addMacro("__DATETIME__", XSharpLexer.STRING_CONST, DateTime.Now.ToString());
             bool debug = false;
 #if FULLCOMPILER
 #if VSPARSER
@@ -267,65 +297,67 @@ namespace XSharp.MacroCompiler.Preprocessor
 
             if (debug)
             {
-                _macroDefines.Add("__DEBUG__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+                addMacro("__DEBUG__", XSharpLexer.TRUE_CONST);
             }
-            _macroDefines.Add("__DIALECT__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.Dialect.ToString() + '"') { SourceSymbol = token });
+            addMacro("__DIALECT__", XSharpLexer.STRING_CONST, _options.Dialect.ToString());
             switch (_options.Dialect)
             {
                 case XSharpDialect.Core:
-                    _macroDefines.Add("__DIALECT_CORE__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+                    addMacro("__DIALECT_CORE__", XSharpLexer.TRUE_CONST);
                     break;
                 case XSharpDialect.VO:
-                    _macroDefines.Add("__DIALECT_VO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
-                    _macroDefines.Add("__VO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+                    addMacro("__DIALECT_VO__", XSharpLexer.TRUE_CONST);
+                    addMacro("__VO__", XSharpLexer.TRUE_CONST);
                     break;
                 case XSharpDialect.Vulcan:
-                    _macroDefines.Add("__DIALECT_VULCAN__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
-                    _macroDefines.Add("__VULCAN__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+                    addMacro("__DIALECT_VULCAN__", XSharpLexer.TRUE_CONST);
+                    addMacro("__VULCAN__", XSharpLexer.TRUE_CONST);
                     break;
                 case XSharpDialect.Harbour:
-                    _macroDefines.Add("__DIALECT_HARBOUR__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+                    addMacro("__DIALECT_HARBOUR__", XSharpLexer.TRUE_CONST);
                     // Harbour always includes hbver.h . The macro is defined in that file.
-                    //_macroDefines.Add("__HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                    //addMacro("__HARBOUR__", XSharpLexer.TRUE_CONST);
                     break;
                 case XSharpDialect.XPP:
-                    _macroDefines.Add("__DIALECT_XBASEPP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
-                    _macroDefines.Add("__XPP__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"') { SourceSymbol = token });
+                    addMacro("__DIALECT_XBASEPP__", XSharpLexer.TRUE_CONST);
+                    addMacro("__XPP__", XSharpLexer.TRUE_CONST);
                     break;
                 case XSharpDialect.FoxPro:
-                    _macroDefines.Add("__DIALECT_FOXPRO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+                    addMacro("__DIALECT_FOXPRO__", XSharpLexer.TRUE_CONST);
                     break;
                 default:
                     break;
             }
-            _macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"") { SourceSymbol = token });  // Handled later in Transformation phase
-            _macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
-            _macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"") { SourceSymbol = token }); // Handled later in Transformation phase
-            _macroDefines.Add("__FUNCTIONS__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTIONS__\"") { SourceSymbol = token }); // Handled later in Transformation phase
-            _macroDefines.Add("__LINE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, new SourceLocation(token.Source.SourceText, token.Start).Line.ToString()) { SourceSymbol = token });
-            _macroDefines.Add("__MODULE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
-            _macroDefines.Add("__SIG__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__SIG__\"") { SourceSymbol = token }); // Handled later in Transformation phase
-            _macroDefines.Add("__SRCLOC__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + new SourceLocation(token.Source.SourceText, token.Start).Line.ToString() + '"') { SourceSymbol = token });
-            _macroDefines.Add("__TIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"') { SourceSymbol = token });
-            _macroDefines.Add("__UTCTIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"') { SourceSymbol = token });
-            _macroDefines.Add("__VERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"') { SourceSymbol = token });
-            _macroDefines.Add("__XSHARP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+            addMacro("__ENTITY__", XSharpLexer.STRING_CONST);
+            addMacro("__FILE__", XSharpLexer.STRING_CONST, (inputs.SourceFileName ?? fileName));
+            addMacro("__FUNCTION__", XSharpLexer.STRING_CONST);
+            addMacro("__FUNCTIONS__", XSharpLexer.STRING_CONST);
+            addMacro("__MODULE__", XSharpLexer.STRING_CONST, (inputs.SourceFileName ?? fileName));
+            addMacro("__SIG__", XSharpLexer.STRING_CONST);
+            addMacro("__TIME__", XSharpLexer.STRING_CONST, DateTime.Now.ToString("HH:mm:ss"));
+            addMacro("__UTCTIME__", XSharpLexer.STRING_CONST, DateTime.Now.ToUniversalTime().ToString("HH:mm:ss"));
+            addMacro("__VERSION__", XSharpLexer.STRING_CONST, global::XSharp.Constants.FileVersion);
+            addMacro("__XSHARP__", XSharpLexer.TRUE_CONST);
+
+            _macroDefines.Add("__LINE__", (token) => new XSharpPPToken(XSharpLexer.INT_CONST, token.Line.ToString(), token));
+            _macroDefines.Add("__SRCLOC__", (token) => new XSharpPPToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + token.Line.ToString() + '"', token));
+
 #if MACROCOMPILER
-             _macroDefines.Add("__XSHARP_RT__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+            addMacro("__XSHARP_RT__", XSharpLexer.TRUE_CONST);
 #else
             if (_options.XSharpRuntime)
             {
-                _macroDefines.Add("__XSHARP_RT__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                addMacro("__XSHARP_RT__", XSharpLexer.TRUE_CONST);
             }
-            _macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.SystemDir + '"', token));
-            _macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir + '"', token));
-            _macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir?.Substring(0, 2) + '"', token));
+            addMacro("__SYSDIR__", XSharpLexer.STRING_CONST, _options.SystemDir);
+            addMacro("__WINDIR__", XSharpLexer.STRING_CONST, _options.WindowsDir);
+            addMacro("__WINDRIVE__", XSharpLexer.STRING_CONST, _options.WindowsDir?.Substring(0, 2));
             var options = new string[] { "__VO1__", "__VO2__", "__VO3__", "__VO4__", "__VO5__", "__VO6__", "__VO7__", "__VO8__", "__VO9__", "__VO10__",
                                         "__VO11__","__VO12__","__VO13__","__VO14__","__VO15__","__VO16__","__VO17__","__XPP1__", "__FOX1__","__FOX2__",
-                                        "__MEMVAR__","__UNDECLARED__", "__UNSAFE__"};
+                                        "__MEMVAR__","__UNDECLARED__"};
             foreach (var option in options)
             {
-                _macroDefines.Add(option, (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token.Text) { SourceSymbol = token }); 
+                _macroDefines.Add(option, (token) => new XSharpPPToken(_options.HasOption(option.Replace("_", ""), token, null) ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, option, token));
             }
 
             if (!_options.NoStdDef)
@@ -725,6 +757,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         {
                             var temp = stripWs(line);
                             line = doNormalLine(temp, write2ppo);
+                            _textProps = null;
                         }
                         else
                         {
@@ -914,7 +947,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     var oldtokens = _symbolDefines[def.Text];
                     var cOld = oldtokens.AsString();
                     var cNew = line.AsString();
-                    def.SourceSymbol = null;    // make sure we point to the location in the include file when this happens  (and not to the location where we were included)
+                    def = new XSharpPPToken(def, null);
                     if (cOld == cNew && oldtokens?.Count > 0)
                     {
                         // check to see if the same file has been added twice
@@ -2453,11 +2486,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         {
                             foreach (var t in deflist)
                             {
-                                var t2 = new XSharpToken(t)
-                                {
-                                    Channel = Channel.Default,
-                                    SourceSymbol = token
-                                };
+                                var t2 = new XSharpPPToken(t, token, true);
                                 tempResult.Add(t2);
                             }
                         }

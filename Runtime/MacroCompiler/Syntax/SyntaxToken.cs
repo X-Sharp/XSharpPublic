@@ -237,7 +237,8 @@ namespace XSharp.MacroCompiler.Syntax
         internal string Value;
         internal TokenSource Source = null;
         internal int Index = -1;
-        internal Token SourceSymbol = null;
+        internal int Line => this.Location().Line;
+        internal virtual Token SourceSymbol => null;
         internal Token(TokenType type, TokenType subtype, int start, int length, string value, Channel channel)
         {
             this.Type = type;

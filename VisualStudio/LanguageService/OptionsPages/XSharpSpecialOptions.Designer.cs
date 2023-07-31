@@ -127,6 +127,7 @@
             // chkDisableClassViewObjectView
             // 
             this.chkDisableClassViewObjectView.AutoSize = true;
+            this.chkDisableClassViewObjectView.Enabled = false;
             this.chkDisableClassViewObjectView.Location = new System.Drawing.Point(18, 87);
             this.chkDisableClassViewObjectView.Name = "chkDisableClassViewObjectView";
             this.chkDisableClassViewObjectView.Size = new System.Drawing.Size(169, 17);

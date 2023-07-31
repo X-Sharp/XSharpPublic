@@ -1,4 +1,5 @@
-﻿//
+﻿#undef LIBRARYMANAGER
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -109,7 +110,9 @@ namespace XSharp.LanguageService
         private static XSharpLanguagePackage instance;
         private IVsTextManager4 _txtManager;
         private uint shellCookie;
+#if LIBRARYMANAGER
         private XSharpLibraryManager _libraryManager;
+#endif
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
 
@@ -119,15 +122,16 @@ namespace XSharp.LanguageService
             get { return XSharpLanguagePackage.instance; }
         }
 
-        //private object CreateLibraryService(IServiceContainer container, Type serviceType)
-        //{
-        //    if (typeof(IXSharpLibraryManager) == serviceType)
-        //    {
-        //        return _libraryManager = new XSharpLibraryManager(this);
-        //    }
-        //    return null;
-        //}
-
+#if LIBRARYMANAGER
+        private object CreateLibraryService(IServiceContainer container, Type serviceType)
+        {
+            if (typeof(IXSharpLibraryManager) == serviceType)
+            {
+                return _libraryManager = new XSharpLibraryManager(this);
+            }
+            return null;
+        }
+#endif
 
         IntellisenseOptionsPage _intellisensePage;
         FormattingOptionsPage _formattingPage;
@@ -234,19 +238,18 @@ namespace XSharp.LanguageService
             }
             XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
-            IServiceContainer serviceContainer = this as IServiceContainer;
-            XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);
+            XSharpLanguageService languageService = new XSharpLanguageService(this);
             languageService.SetSite(this);
-
-            serviceContainer.AddService(typeof(XSharpLanguageService),
+            ((IServiceContainer ) this).AddService(typeof(XSharpLanguageService),
                                         languageService,
                                         true);
-            //if (!XSettings.DisableClassViewObjectView)
-            //{
-            //    ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
-            //    serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
-            //}
-
+#if LIBRARYMANAGER
+            if (!XSettings.DisableClassViewObjectView)
+            {
+                ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
+                serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
+            }
+#endif
 
 
             // Register a timer to call several services
@@ -275,12 +278,13 @@ namespace XSharp.LanguageService
         {
             try
             {
-
+#if LIBRARYMANAGER
                 if (null != _libraryManager)
                 {
                     _libraryManager.Dispose();
                     _libraryManager = null;
                 }
+#endif
                 if (_oleComponentManager != null)
                 {
                     ThreadHelper.JoinableTaskFactory.Run(async ( )=>
@@ -383,8 +387,10 @@ namespace XSharp.LanguageService
         public int FDoIdle(uint grfidlef)
         {
             bool bPeriodic = (grfidlef & (uint)_OLEIDLEF.oleidlefPeriodic) != 0;
+#if LIBRARYMANAGER
             if (_libraryManager != null)
                 _libraryManager.OnIdle();
+#endif
 
             if (!ModelWalker.IsRunning && ModelWalker.HasWork)
             {

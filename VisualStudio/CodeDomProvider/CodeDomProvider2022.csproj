@@ -3,12 +3,12 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Common2022.props" />
   <PropertyGroup>
+    <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharpCodeDomProvider</RootNamespace>
     <AssemblyName>XSharp.CodeDomProvider2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B5}</ProjectGuid>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <VsixType>v3</VsixType>
@@ -81,11 +81,6 @@
   <ItemGroup>
     <Content Include="ReadMe-MachineConfig.txt" />
     <Content Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.507</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

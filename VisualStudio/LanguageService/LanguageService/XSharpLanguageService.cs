@@ -30,8 +30,6 @@ namespace XSharp.LanguageService
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
-            base.SetSite(serviceContainer);
-
         }
 
          public override string GetFormatFilterList()

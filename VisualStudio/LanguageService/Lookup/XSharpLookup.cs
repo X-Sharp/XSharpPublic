@@ -870,7 +870,7 @@ namespace XSharp.LanguageService
                     if (isPseudo)
                     {
                         var line = location.Document.GetTokensInLineAndFollowing(currentToken.Line - 1).Where(t => t.Channel == XSharpLexer.DefaultTokenChannel);
-                        if (line.First() == currentToken)
+                        if (line.FirstOrDefault() == currentToken)
                         {
                             canbeMethod = false;
                             findMethod = false;

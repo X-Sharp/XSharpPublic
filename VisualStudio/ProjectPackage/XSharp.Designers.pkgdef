@@ -56,3 +56,19 @@
 "0"="{449EC4CC-30D2-4032-9256-EE18EB41B62B}"
 ; Managed and Native
 "1"="{92EF0900-2251-11D2-B72E-0000F87572EF}"
+
+; The following keys register the extensions for Diff and Peek
+[$RootKey$\Diff\SupportedContentTypes]
+".prg"=""
+".ppo"=""
+".ch"=""
+".xh"=""
+".xs"=""
+[$RootKey$\Peek\SupportedContentTypes]
+".prg"=""
+".ppo"=""
+".ch"=""
+".xh"=""
+".xs"=""
+
+

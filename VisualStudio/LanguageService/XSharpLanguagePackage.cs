@@ -247,24 +247,6 @@ namespace XSharp.LanguageService
             //    serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
             //}
 
-            /*
-             * This can also be achived with a pkgdef file
-             ﻿[$RootKey$\Diff\SupportedContentTypes]
-                ".prg"=""
-                ".ppo"=""
-                ".ch"=""
-                ".xh"=""
-                ".xs"=""
-             ﻿[$RootKey$\Peek\SupportedContentTypes]
-               ".prg"=""
-                ".ppo"=""
-                ".ch"=""
-                ".xh"=""
-                ".xs"=""
-             * */
-
-            addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
-            addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 
 
             // Register a timer to call several services
@@ -287,7 +269,6 @@ namespace XSharp.LanguageService
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.LanguageService = this;
         }
-
 
         protected override void Dispose(bool disposing)
         {
@@ -317,38 +298,6 @@ namespace XSharp.LanguageService
             }
         }
 
-
-        const string EXTENSIONS = ".prg;.ppo;.ch;.xh;.xs";
-        private void addOurFileExtensionsForDiffAndPeek(string parent)
-        {
-            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
-            {
-                if (root != null)
-                {
-                    using (RegistryKey key = root.OpenSubKey(parent, true))
-                    {
-                        key.SetValue(EXTENSIONS, "");
-                    }
-                }
-            }
-            /*
-            // our user text editor settings are stored inside ApplicationPrivateSettings\\TextEditor\\XSharp
-            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_UserSettings))
-            {
-                var subkey = root.OpenSubKey("ApplicationPrivateSettings\\TextEditor\\XSharp");
-                {
-                    var names = subkey.GetValueNames();
-                    var list = new List<string>();
-                    foreach (var name in names)
-                    {
-                        list.Add(subkey.GetValue(name).ToString());
-                    }
-                }
-            }
-            */
-
-
-        }
         public void Terminate()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -397,7 +346,6 @@ namespace XSharp.LanguageService
             }
             return;
         }
-
 
         internal static IComponentModel GetComponentModel()
         {

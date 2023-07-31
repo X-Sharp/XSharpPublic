@@ -117,7 +117,11 @@ namespace XSharp.Project
                 include = _includedirs;
             }
             options.Add("i:" + include);
-            options.Add("ns:" + _prjNode.GetProjectProperty(XSharpProjectFileConstants.RootNamespace));
+            var ns = _prjNode.GetLogicProjectProperty(XSharpProjectFileConstants.NS);
+            if (ns)
+            {
+                options.Add("ns:" + _prjNode.GetProjectProperty(XSharpProjectFileConstants.RootNamespace));
+            }
             var flags = new string[] {XSharpProjectFileConstants.Vo1,
                 XSharpProjectFileConstants.Vo2,
                 XSharpProjectFileConstants.Vo3,

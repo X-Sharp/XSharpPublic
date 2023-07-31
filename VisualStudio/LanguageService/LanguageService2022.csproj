@@ -57,6 +57,7 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
+    <Compile Include="Commands\Commenting.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />
     <Compile Include="MatchingTokens\IdentifierMatching.cs" />
     <Compile Include="MatchingTokens\KeywordMatching.cs" />
@@ -122,7 +123,6 @@
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
-    <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Generic\DropDownClient.cs" />

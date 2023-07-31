@@ -11,37 +11,30 @@ using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Editor;
-using System.ComponentModel.Design;
 using XSharpModel;
 using LanguageService.SyntaxTree;
-using XSharpLanguage;
 using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.VisualStudio.ComponentModelHost;
 using System.Diagnostics;
-using Microsoft.VisualStudio.Shell;
-using XSharp.Settings;
+using Community.VisualStudio.Toolkit;
+
 namespace XSharp.LanguageService
 {
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     public class XSharpLanguageService: Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
     {
-        private readonly IServiceContainer _serviceContainer;
-        private readonly IComponentModel _componentModel;
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
 
-        public XSharpLanguageService(IServiceContainer serviceContainer) : base()
+        public XSharpLanguageService(object serviceContainer) : base()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _serviceContainer = serviceContainer;
-            _componentModel = XSharpLanguagePackage.GetComponentModel();
-            _editorAdaptersFactoryService = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
+            var componentModel = XSharpLanguagePackage.GetComponentModel();
+            _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
 
         }
 
-        public override string GetFormatFilterList()
+         public override string GetFormatFilterList()
         {
             string[] files = { "Source Files (*.prg)\n*.prg\n",
                                "Alternative Source Files (*.xs)\n*.xs\n",
@@ -83,25 +76,12 @@ namespace XSharp.LanguageService
 
         public override IScanner GetScanner(IVsTextLines buffer) => null;
         public override AuthoringScope ParseSource(ParseRequest req) => null;
-
-        public override string Name
-        {
-            get { return XSharpConstants.LanguageName; }
-        }
-
-        
+        public override string Name => XSharpConstants.LanguageName;
         public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
         {
             // still needed for snippets. Once that is moved to MEF then this can disappear
             return new XSharpViewFilter(mgr, newView);
         }
-
-        //public override Source CreateSource(IVsTextLines buffer)
-        //{
-        //    // Used for commenting. Once that is moved to MEF then this can disappear
-        //    XSharpSource src = new XSharpSource(this, buffer, GetColorizer(buffer));
-        //    return src;
-        //}
 
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
@@ -271,8 +251,7 @@ namespace XSharp.LanguageService
                 slines += line.GetText() + "\r\n";
             }
             var reporter = new ErrorIgnorer();
-            ITokenStream tokenStream;
-            bool ok = XSharp.Parser.VsParser.Lex(slines, file.FullPath, file.Project.ParseOptions, reporter, out tokenStream);
+            bool ok = XSharp.Parser.VsParser.Lex(slines, file.FullPath, file.Project.ParseOptions, reporter, out var tokenStream);
             var stream = tokenStream as BufferedTokenStream;
             var tokens = stream.GetTokens();
             string expression = "";

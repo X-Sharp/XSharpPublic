@@ -5,11 +5,8 @@ using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Text;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using EnvDTE;
-using XSharp.Settings;
-using Microsoft.VisualStudio.Text.Editor;
+using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService
 {

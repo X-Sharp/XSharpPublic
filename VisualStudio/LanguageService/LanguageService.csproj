@@ -56,6 +56,7 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
+    <Compile Include="Commands\Commenting.cs" />
     <Compile Include="MatchingTokens\AbstractMatching.cs" />
     <Compile Include="MatchingTokens\IdentifierMatching.cs" />
     <Compile Include="MatchingTokens\KeywordMatching.cs" />
@@ -86,12 +87,6 @@
     <Compile Include="Formatting\LineFormatter.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Generic\HelpViewer.cs" />
-    <Compile Include="LanguageService\LanguageServiceMenu.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LanguageServiceMenu.vsct</DependentUpon>
-    </Compile>
-    <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
@@ -121,7 +116,6 @@
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
-    <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Generic\DropDownClient.cs" />
@@ -303,10 +297,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Completion\Notes.txt" />
-    <Content Include="LanguageService\LanguageServiceMenu.vsct">
-      <Generator>VsctGenerator</Generator>
-      <LastGenOutput>LanguageServiceMenu.cs</LastGenOutput>
-    </Content>
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
     <Content Include="QuickInfo\Notes.txt" />

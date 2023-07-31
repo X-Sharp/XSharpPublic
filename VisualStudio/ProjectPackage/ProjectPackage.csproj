@@ -747,7 +747,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Threading">
       <Version>15.3.20</Version>
     </PackageReference>
-    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+    <Content Include="$(SOlutionDir)\External\Debug\XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

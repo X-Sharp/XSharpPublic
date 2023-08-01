@@ -11,9 +11,6 @@
     <AssemblyName>XSharp.CodeGenerator</AssemblyName>
     <Dialect>Core</Dialect>
     <OutputName>CodeGenerator</OutputName>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
-    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <NamedArgs>true</NamedArgs>
     <StartupObject />
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -60,13 +57,6 @@
       <Name>System</Name>
       <AssemblyName>System.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.CodeAnalysis</Name>
-      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

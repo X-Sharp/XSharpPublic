@@ -94,7 +94,7 @@ namespace XSharp.Project
         {
             get
             {
-                return Filename + Line.ToString() + Column.ToString() + ErrorCode;
+                return Filename + Line.ToString() + Column.ToString() + ErrorCode + Message;
             }
         }
         public bool GetValue(string columnName, out object content)

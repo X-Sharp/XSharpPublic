@@ -184,7 +184,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             _sourceName = _sourceName ?? memberName; // _sourceName may have been set while loading attributes
 #if XSHARP
-            _sourceName = (syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText;
+            if (syntax is IndexerDeclarationSyntax ids)
+            {
+                _sourceName = ids.ThisKeyword.ValueText;
+            }
             if (_isIndexedProperty)
             {
                 _name = ExplicitInterfaceHelpers.GetMemberName(_sourceName, _explicitInterfaceType, aliasQualifierOpt);

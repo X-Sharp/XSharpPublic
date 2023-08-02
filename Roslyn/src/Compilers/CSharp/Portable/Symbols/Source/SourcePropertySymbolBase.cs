@@ -117,9 +117,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
             _isIndexedProperty = IsIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText);
             _IsGeneratedFromAccessAssign = syntax.XNode is XSharpParser.MethodContext;
-            
+            if (isExplicitInterfaceImplementation && explicitInterfaceType is ErrorTypeSymbol)
+            {
+                _lazyExplicitInterfaceImplementations = ImmutableArray<PropertySymbol>.Empty;
+            }
 #endif
-
             if (isExplicitInterfaceImplementation)
             {
                 _propertyFlags |= Flags.IsExplicitInterfaceImplementation;
@@ -182,12 +184,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             _sourceName = _sourceName ?? memberName; // _sourceName may have been set while loading attributes
 #if XSHARP
+            _sourceName = (syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText;
             if (_isIndexedProperty)
             {
-                _name = _sourceName = (syntax as IndexerDeclarationSyntax)?.ThisKeyword.ValueText;
+                _name = ExplicitInterfaceHelpers.GetMemberName(_sourceName, _explicitInterfaceType, aliasQualifierOpt);
             }
             else
-            { 
+            {
                 _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
             }
 #else
@@ -251,8 +254,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 else
                 {
                     CSharpSyntaxNode syntax = CSharpSyntaxNode;
+#if XSHARP
+                    string interfacePropertyName;
+                    if (_isIndexedProperty)
+                    {
+                        interfacePropertyName = _sourceName;
+                    }
+                    else if (IsIndexer)
+                    {
+                        interfacePropertyName = WellKnownMemberNames.Indexer;
+                    }
+                    else
+                    {
+                        interfacePropertyName = ((PropertyDeclarationSyntax)syntax).Identifier.ValueText;
+                    }
+#else
                     string interfacePropertyName = IsIndexer ? WellKnownMemberNames.Indexer : ((PropertyDeclarationSyntax)syntax).Identifier.ValueText;
-                    explicitlyImplementedProperty = this.FindExplicitlyImplementedProperty(_explicitInterfaceType, interfacePropertyName, GetExplicitInterfaceSpecifier(syntax), diagnostics);
+#endif
+                explicitlyImplementedProperty = this.FindExplicitlyImplementedProperty(_explicitInterfaceType, interfacePropertyName, GetExplicitInterfaceSpecifier(syntax), diagnostics);
                     this.FindExplicitlyImplementedMemberVerification(explicitlyImplementedProperty, diagnostics);
                     overriddenOrImplementedProperty = explicitlyImplementedProperty;
                 }
@@ -348,7 +367,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#nullable enable 
+#nullable enable
 
         private void EnsureSignature()
         {

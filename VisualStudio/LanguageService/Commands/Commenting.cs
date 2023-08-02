@@ -4,6 +4,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
+using static LanguageService.SyntaxTree.Atn.SemanticContext;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService
@@ -38,25 +39,29 @@ namespace XSharp.LanguageService
         private static void Comment(DocumentView doc)
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
-            int start = doc.TextView.Selection.Start.Position.Position;
-            int end = doc.TextView.Selection.End.Position.Position;
+            var sel = doc.TextView.Selection;
+            var start = sel.Start.Position.Position;
+            var end = sel.End.Position.Position;
             var editsession = doc.TextBuffer.CreateEdit();
-            while (start < end)
+            do
             {
                 var line = snapshot.GetLineFromPosition(start);
                 editsession.Insert(line.Start.Position, CommentChars[0] + " ");
                 start = line.EndIncludingLineBreak.Position;
-            }
+                if (start == end)
+                    break;
+            } while (start < end);
             editsession.Apply();
         }
 
         private static void Uncomment(DocumentView doc)
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
-            int start = doc.TextView.Selection.Start.Position.Position;
-            int end = doc.TextView.Selection.End.Position.Position;
+            var sel = doc.TextView.Selection;
+            var start = sel.Start.Position.Position;
+            var end = sel.End.Position.Position;
             var editsession = doc.TextBuffer.CreateEdit();
-            while (start < end)
+            do
             {
                 var line = snapshot.GetLineFromPosition(start);
                 var originalText = line.GetText();
@@ -85,7 +90,9 @@ namespace XSharp.LanguageService
                     editsession.Delete(commentCharSpan);
                 }
                 start = line.EndIncludingLineBreak.Position;
-            }
+                if (start == end)
+                    break;
+            } while (start < end) ;
             editsession.Apply();
         }
     }

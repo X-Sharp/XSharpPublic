@@ -7694,5 +7694,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ParameterMustBeTyped" xml:space="preserve">
   <value>Untyped parameter '{0}' and '{1}' calling convention, assuming '{2}' type.</value>
  </data>
+  <data name="WRN_PropertyParametersBrackets" xml:space="preserve">
+  <value>Property parameters should be specified between Square Brackets ('[ &lt;parameters&gt; ]').</value>
+ </data>
+  
 </root>
 

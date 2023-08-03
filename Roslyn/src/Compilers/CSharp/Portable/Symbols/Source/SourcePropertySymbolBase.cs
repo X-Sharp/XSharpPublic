@@ -182,14 +182,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
 
-            _sourceName = _sourceName ?? memberName; // _sourceName may have been set while loading attributes
 #if XSHARP
-            if (syntax is IndexerDeclarationSyntax ids)
+            _sourceName = memberName;
+            // For indexed properties the name is in the ThisKeyword
+            // For SELF properties the ThisKeyword has an empty name
+            if (syntax is IndexerDeclarationSyntax ids && IsIndexedProperty)
             {
                 _sourceName = ids.ThisKeyword.ValueText;
             }
             if (_isIndexedProperty)
             {
+                // Check to see if we have an explicit interface
                 _name = ExplicitInterfaceHelpers.GetMemberName(_sourceName, _explicitInterfaceType, aliasQualifierOpt);
             }
             else
@@ -197,6 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
             }
 #else
+            _sourceName = _sourceName ?? memberName; // _sourceName may have been set while loading attributes
             _name = isIndexer ? ExplicitInterfaceHelpers.GetMemberName(WellKnownMemberNames.Indexer, _explicitInterfaceType, aliasQualifierOpt) : _sourceName;
 #endif
 
@@ -659,6 +663,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (IsExplicitInterfaceImplementation)
                 {
                     EnsureSignature();
+#if XSHARP
+                    if (_lazyExplicitInterfaceImplementations.IsDefault)
+                        _lazyExplicitInterfaceImplementations = ImmutableArray<PropertySymbol>.Empty;
+#endif
                 }
                 else
                 {

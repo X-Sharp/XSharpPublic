@@ -16,7 +16,7 @@ using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
-using Community.VisualStudio.Toolkit;
+using XSharp.Settings;
 
 namespace XSharp.LanguageService
 {
@@ -30,9 +30,10 @@ namespace XSharp.LanguageService
         {
             var componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+            base.SetSite(serviceContainer);
         }
 
-         public override string GetFormatFilterList()
+        public override string GetFormatFilterList()
         {
             string[] files = { "Source Files (*.prg)\n*.prg\n",
                                "Alternative Source Files (*.xs)\n*.xs\n",
@@ -137,11 +138,13 @@ namespace XSharp.LanguageService
         }
 
         public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView) => null;
-       #region IVsLanguageDebugInfo Members
+        #region IVsLanguageDebugInfo Members
+
+        Guid XSharpLanguage = new Guid(Constants.XSharpLanguageString);
 
         int IVsLanguageDebugInfo.GetLanguageID(IVsTextBuffer pBuffer, int iLine, int iCol, out Guid pguidLanguageID)
         {
-            pguidLanguageID = Guid.Empty;
+            pguidLanguageID = XSharpLanguage;
             return VSConstants.S_OK;
         }
 
@@ -153,16 +156,24 @@ namespace XSharp.LanguageService
 
          int IVsLanguageDebugInfo.GetNameOfLocation(IVsTextBuffer pBuffer, int iLine, int iCol, out string pbstrName, out int piLineOffset)
         {
-            var file = getFile(pBuffer);
-
             pbstrName = "";
             piLineOffset = iCol;
+            var file = getFile(pBuffer);
             if (file != null)
             {
                 var member = file.FindMemberAtRow(iLine);
                 if (member != null)
                 {
-                    pbstrName = member.Name;
+                    if (member.Kind.IsClassMember(file.Project.Dialect))
+                    {
+                        pbstrName = member.FullName;
+                    }
+                    else
+                    {
+                        pbstrName = member.Name;
+                    }
+                    piLineOffset = member.Interval.Start;
+                    return VSConstants.S_OK;
                 }
             }
             return VSConstants.E_FAIL;
@@ -171,10 +182,12 @@ namespace XSharp.LanguageService
         public XFile getFile(IVsTextBuffer pBuffer)
         {
             var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
-            XFile file;
-            if (buffer.Properties.TryGetProperty(typeof(XSharpModel.XFile), out file))
+            if (buffer != null)
             {
-                return file;
+                if (buffer.Properties.TryGetProperty<XFile>(typeof(XSharpModel.XFile), out var file))
+                {
+                    return file;
+                }
             }
             return null;
         }
@@ -182,121 +195,125 @@ namespace XSharp.LanguageService
         int IVsLanguageDebugInfo.GetProximityExpressions(IVsTextBuffer pBuffer, int iLine, int iCol, int cLines, out IVsEnumBSTR ppEnum)
         {
             ppEnum = null;
+            if (XDebuggerSettings.DebuggerMode == DebuggerMode.Running)
+            {
+                return VSConstants.S_OK;
+            }
             var file = getFile(pBuffer);
             var list = new List<String>();
             XSourceEntity member;
-            // We use our original syntax here (so SELF and ":"). The expression compiler
-            // in the debugger takes care of translating SELF to this and ':' to '.'
-            if (file != null)
+            try
             {
-                member = file.FindMemberAtRow(iLine);
-                if (member == null)
+                // We use our original syntax here (so SELF and ":"). The expression compiler
+                // in the debugger takes care of translating SELF to this and ':' to '.'
+                if (file != null)
                 {
-                    return VSConstants.S_OK;
-                }
-                if (member.Kind.IsClassMember(file.Project.ParseOptions.Dialect))
-                {
-                    if (!member.Modifiers.HasFlag(Modifiers.Static))
+                    member = file.FindMemberAtRow(iLine);
+                    if (member == null)
                     {
-                        list.Add(XLiterals.FormatKeyword("SELF"));
+                        return VSConstants.S_OK;
                     }
-                }
-            
-                var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
-                Dictionary<string, IXVariableSymbol> locals = null;
-                if (member != null)
-                {
-                    if (member is XSourceMemberSymbol tm)
+                    if (member.Kind.IsClassMember(file.Project.ParseOptions.Dialect))
                     {
-                        locals = new Dictionary<string, IXVariableSymbol>(StringComparer.OrdinalIgnoreCase);
-                        var location = new XSharpSearchLocation(buffer.GetDocument(), tm.File, tm, buffer.CurrentSnapshot, iLine);
-                        var vars = tm.GetLocals(location);
-                        foreach (var v in vars)
+                        if (!member.Modifiers.HasFlag(Modifiers.Static))
                         {
-                            if (! locals.ContainsKey(v.Name))
-                                locals.Add(v.Name,  v);
-                        }
-                        foreach (var p in tm.Parameters)
-                        {
-                            if (!locals.ContainsKey(p.Name))
-                                locals.Add(p.Name, p);
+                            list.Add(XLiterals.FormatKeyword("SELF"));
                         }
                     }
-                    addtokens(buffer, iLine , list, file, locals);
+
+                    var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
+                    var xDocument = buffer.GetDocument();
+                    if (xDocument == null)
+                        return VSConstants.S_OK;
+                    Dictionary<string, IXVariableSymbol> locals = null;
+                    if (member != null)
+                    {
+                        if (member is XSourceMemberSymbol tm)
+                        {
+                            locals = new Dictionary<string, IXVariableSymbol>(StringComparer.OrdinalIgnoreCase);
+                            var location = new XSharpSearchLocation(xDocument, tm.File, tm, buffer.CurrentSnapshot, iLine);
+                            var vars = tm.GetLocals(location);
+                            foreach (var v in vars)
+                            {
+                                if (!locals.ContainsKey(v.Name))
+                                    locals.Add(v.Name, v);
+                            }
+                            foreach (var p in tm.Parameters)
+                            {
+                                if (!locals.ContainsKey(p.Name))
+                                    locals.Add(p.Name, p);
+                            }
+                        }
+                        var tokens = new List<IToken>();
+                        //iLine is 1 based here...
+                        iLine -= 1;
+                        for (int i = iLine; i < iLine+cLines;  i++)
+                        {
+                            tokens.AddRange(xDocument.GetTokensInLineAndFollowing(i));
+                        }
+                        addtokens(buffer, tokens, list, file, locals);
+                    }
                 }
             }
-
-
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "Get auto expressions");
+            }
             ppEnum = new VsEnumBSTR(list);
             return VSConstants.S_OK;
         }
 
-        private void addtokens(ITextBuffer buffer, int iLine, IList<string> list, XFile file, IDictionary<string, IXVariableSymbol> locals)
+        private void addtokens(ITextBuffer buffer, List<IToken> tokens, IList<string> list, XFile file, IDictionary<string, IXVariableSymbol> locals)
         {
-            if (iLine <= 0)
-                return;
-            iLine -= 1;
-            string slines = "";
-            // parse the expression on three lines.
-            // we don't have to worry if it can be translated or not
-            // the expression compiler in the debugger will simply ignore incorrect expressions
-            // we use the locals array to make sure the case of the locals and parameters is correct
-            int start = Math.Max(iLine - 1, 0);
-            int end = Math.Min(iLine + 1, buffer.CurrentSnapshot.LineCount - 1);
-            for (int i = start; i <= end; i++)
+            try
             {
-                var line = buffer.CurrentSnapshot.GetLineFromLineNumber(i);
-                slines += line.GetText() + "\r\n";
-            }
-            var reporter = new ErrorIgnorer();
-            bool ok = XSharp.Parser.VsParser.Lex(slines, file.FullPath, file.Project.ParseOptions, reporter, out var tokenStream);
-            var stream = tokenStream as BufferedTokenStream;
-            var tokens = stream.GetTokens();
-            string expression = "";
-            foreach (var token in tokens)
-            {
-                var type = token.Type;
-                switch (type)
+                string expression = "";
+                foreach (var token in tokens)
                 {
-                    case XSharpLexer.ID:
-                        if (expression.Length == 0)
-                        {
-                            expression = token.Text;
-                            if (locals != null && locals.ContainsKey(expression))
+                    var type = token.Type;
+                    switch (type)
+                    {
+                        case XSharpLexer.ID:
+                            if (expression.Length == 0)
                             {
-                                expression = locals[expression].Name;
+                                expression = token.Text;
+                                if (locals != null && locals.ContainsKey(expression))
+                                {
+                                    expression = locals[expression].Name;
+                                }
                             }
-                        }
-                        else
-                        {
-                            expression += token.Text;
-                        }
-                        if (!list.Contains(expression))
-                        {
+                            else
+                            {
+                                expression += token.Text;
+                            }
+                            if (!list.Contains(expression))
+                            {
 
-                            list.Add(expression);
-                        }
-                        break;
-                    case XSharpLexer.COLON:
-                    case XSharpLexer.DOT:
-                    case XSharpLexer.SELF:
-                    case XSharpLexer.SUPER:
-                        expression += token.Text;
-                        break;
-                    default:
-                        if (XSharpLexer.IsLiteral(token.Type))
-                        {
-                            list.Add(token.Text);
-                        }
-                        expression = "";
-                        break;
+                                list.Add(expression);
+                            }
+                            break;
+                        case XSharpLexer.COLON:
+                        case XSharpLexer.DOT:
+                        case XSharpLexer.SELF:
+                        case XSharpLexer.SUPER:
+                            expression += token.Text;
+                            break;
+                        default:
+                            if (XSharpLexer.IsLiteral(token.Type))
+                            {
+                                list.Add(token.Text);
+                            }
+                            expression = "";
+                            break;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Logger.Exception(e, "Add Auto Tokens");
+            }
         }
-        public override void SynchronizeDropdowns()
-        {
-            base.SynchronizeDropdowns();
-        }
+
         int IVsLanguageDebugInfo.IsMappedLocation(IVsTextBuffer pBuffer, int iLine, int iCol)
         {
             return VSConstants.S_FALSE;

@@ -26,6 +26,8 @@ using XSharp.Settings;
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
 
 namespace XSharp.LanguageService
@@ -236,9 +238,11 @@ namespace XSharp.LanguageService
             }
             XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
-            XSharpLanguageService languageService = new XSharpLanguageService(this);
+            IServiceContainer serviceContainer = this as IServiceContainer;
+            XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);
             languageService.SetSite(this);
-            ((IServiceContainer ) this).AddService(typeof(XSharpLanguageService),
+
+            serviceContainer.AddService(typeof(XSharpLanguageService),
                                         languageService,
                                         true);
 #if LIBRARYMANAGER

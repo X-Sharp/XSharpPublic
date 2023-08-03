@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-07-26T17:43:15.669+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-08-02T16:58:05.923+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
-    <para styleclass="Heading1">Changes in 2.17.0.2</para>
+    <para styleclass="Heading1">Changes in 2.17.0.3</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -26,10 +26,11 @@
       <li styleclass="Body Text">Fixed problem with the debugger erratically stepping to incorrect lines (#1254, #1264)</li>
       <li styleclass="Body Text">Fixed problem with showing the wrong error line number in some cases with nested statements (#1268)</li>
       <li styleclass="Body Text">Fixed problem where a DO CASE statement without CASE lines was producing an internal error in the compiler (#1281)</li>
-      <li styleclass="Body Text">Fixed a couple &#160;preprocessor issues (#1284, #1289)</li>
+      <li styleclass="Body Text">Fixed a couple preprocessor issues (#1284, #1289)</li>
       <li styleclass="Body Text">Fixed missing compiler error on calling with SUPER a method that does not exist, when late binding is enabled (#1285)</li>
       <li styleclass="Body Text">Fixed a Failed to emit Module error with CONST class field missing value assignment (#1293)</li>
       <li styleclass="Body Text">Fixed a problem with repeated match markers (such as in the SET INDEX TO command) in the preprocessor.</li>
+      <li styleclass="Body Text">Fixed a problem that an property definition with an explicit interface prefix could lead to a compiler crash when the interface was &quot;unknown&quot; at compile time and/or the property name was not &quot;Item&quot; (#1306)</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -93,6 +94,7 @@
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">When a project was opened where the dependency between a dependent item (like a .resx file or a .designer.prg file) and its parent was missing, then an exception could occur, which prevented the project from opening. This has been fixed.</li>
+      <li styleclass="Body Text">When 2 compiler errors occurred on the same line with the same error code they were sometimes shown in the VS output window but not in the Error List. This has been fixed (#1308)</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">New Features</para>

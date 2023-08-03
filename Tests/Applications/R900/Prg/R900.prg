@@ -81,7 +81,7 @@ class Test IMPLEMENTS ITest
     METHOD ITest.TestMe() as Object
         RETURN ""
     PROPERTY Foo[nItem as LONG] AS STRING => nItem:ToString()
-    PROPERTY Foo2[nItem as LONG] AS STRING GET nItem:ToString()
+    PROPERTY Foo2(nItem as LONG) AS STRING GET nItem:ToString()
 
 END class
 

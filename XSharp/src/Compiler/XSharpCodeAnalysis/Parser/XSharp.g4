@@ -339,6 +339,23 @@ eventLineAccessor   : Attributes=attributes? Modifiers=accessorModifiers?
                       | {InputStream.La(2) != ADD}?    Key=REMOVE ExprList=expressionList?
                       | Key=(ADD|REMOVE) )
                     ;
+
+                    /*
+                      EVENT Foo as STRING
+                        ADD
+                          statements
+                        END ADD
+                        REMOVE
+                          statements
+                        END REMOVE
+                      END EVENT
+                      but also
+                      EVENT Foo as STRING
+                        ADD    => ExpressionBody
+                        REMOVE => ExpressionBody
+                      END EVENT
+                    */
+
 eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=ADD     end=eos StmtBlk=statementBlock END ADD?
                       | Key=ADD     UDCSEP ExpressionBody=expression              // New: Expression Body
@@ -368,9 +385,27 @@ arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression
                     | ArrayIndex+=expression
                     ;
 
+                    /*
+                    There are basically 3 variations of properties
+                    1) Normal multi line
+                    PROPERTY Foo as STRING
+                      // Accessors
+                    END PROPERTY
+
+
+                    2) Single Line
+                    PROPERTY Foo as STRING GET "42"
+                    // You can specify Accessors with single expression.
+
+                    3) Auto property, generates a backing field
+                    PROPERTY Foo AS STRING AUTO
+                    - You can specify GET/SET/INIT accessor on the same line
+                    PROPERTY Foo AS STRING AUTO GET SET
+                    */
+
 property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
-                      P=PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier)
-                      (ParamList=propertyParameterList)?
+                      P=PROPERTY (ExplicitIface=nameDot)? (Self=SELF | Id=identifier)
+                      (ParamList=propertyParameterList)? 
                       (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (Op=assignoperator Initializer=expression)? end=EOS	// Auto
                         | (LineAccessors+=propertyLineAccessor)+ end=EOS                     // Single Line
@@ -379,12 +414,28 @@ property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
                     ;
 
 propertyParameterList
-                    : LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? RBRKT
-                    | LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN		// Allow Parentheses as well
+                    : L=LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? R=RBRKT
+                    // Parentheses are parsed but may generate an error in the future
+                    | L=LPAREN (Params+=parameter (COMMA Params+=parameter)*)? R=RPAREN		
                     ;
+                    /*
+                     Examples of Auto Accessors
+                     PROPERTY Foo AS STRING AUTO      // Get/Set
+                     PROPERTY Foo AS STRING AUTO GET  // Get only
+                     PROPERTY Foo AS STRING AUTO GET SET // Get Set
+                     PROPERTY Foo AS STRING AUTO SET  // Set only
+                     PROPERTY Foo AS STRING AUTO INIT // Init only
+                    */
 
 propertyAutoAccessor: Attributes=attributes? Modifiers=accessorModifiers? Key=(GET|SET|INIT)
                     ;
+                    /*
+                       Examples of Line Accessors
+                       PROPERTY Foo AS STRING GET "42" SET SELF:_Store(value)
+                       PROPERTY Foo AS STRING => "42"
+                       PROPERTY Foo AS STRING GET SET // no expression, this generates an AUTO property. And warning 9047
+                       PROPERTY Foo as STRING SET     // Generates warning 9051 that get accessor is created
+                    */
 
 propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
                       ( {InputStream.La(2) != SET && InputStream.La(2) != INIT}?     Key=(GET|UDCSEP)    Expr=expression?
@@ -398,6 +449,23 @@ accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | 
 
 expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
+
+                    /*
+                      Example of Multi Line Accessors
+                      PROPERTY Foo as STRING
+                        GET
+                          statements
+                        END GET
+                        SET
+                          statements
+                        END SET
+                      END PROPERTY
+                      but also
+                      PROPERTY Foo as STRING
+                        GET => ExpressionBody
+                        SET => ExpressionBody
+                      END PROPERTY
+                    */
 
 propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
                       ( Key=GET end=eos StmtBlk=statementBlock END Key2=GET?

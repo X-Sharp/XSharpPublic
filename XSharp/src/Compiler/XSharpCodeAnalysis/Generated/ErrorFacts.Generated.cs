@@ -352,6 +352,7 @@
                 case ErrorCode.WRN_NullPszForStringArgument:
                 case ErrorCode.WRN_ConversionFromNilNotSupported:
                 case ErrorCode.WRN_ParameterMustBeTyped:
+                case ErrorCode.WRN_PropertyParametersBrackets:
                         return true;
                 default:
                     return false;

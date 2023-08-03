@@ -3672,9 +3672,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 // Make sure that a property with the name "Item" is treated as a SELF property
                 // There is a lot of code in Roslyn that checks for this
-                var thisName = context.Id?.Start.Text ?? "";
-                if (XSharpString.Equals(thisName, "Item"))
-                    thisName = "";
+                string thisName = "";
+                if (context.Self == null)
+                {
+                    thisName = context.Id?.Start.Text;
+                    if (XSharpString.Equals(thisName, "Item"))
+                        thisName = "";
+                }
                 var indexer = _syntaxFactory.IndexerDeclaration(
                     attributeLists: atts,
                     modifiers: mods,

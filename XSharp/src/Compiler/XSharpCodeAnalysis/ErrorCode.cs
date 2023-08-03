@@ -2088,6 +2088,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_NullPszForStringArgument = 9116,
         WRN_ConversionFromNilNotSupported = 9117,
         WRN_ParameterMustBeTyped = 9118,
+        WRN_PropertyParametersBrackets = 9119,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

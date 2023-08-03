@@ -961,6 +961,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        // we may want to produce an error here in the future
+        public override void ExitPropertyParameterList([NotNull] XSharpParser.PropertyParameterListContext context)
+        {
+            if (context.L.Type == XSharpLexer.LPAREN)
+            {
+                _parseErrors.Add(new ParseErrorData(context.L, ErrorCode.WRN_PropertyParametersBrackets));
+            }
+        }
+
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
             var isInInterface = context.isInInterface();

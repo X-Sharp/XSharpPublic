@@ -105,33 +105,35 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 // Add a comment  ??
                 insertText = new StringBuilder();
                 // Create an Edit Session
-                var editSession = m_textView.TextBuffer.CreateEdit();
-                try
+                using (var editSession = m_textView.TextBuffer.CreateEdit())
                 {
-                    foreach (string line in CreateCtor(prefix, settings.IndentSize))
+                    try
                     {
-                        insertText.AppendLine(line);
+                        foreach (string line in CreateCtor(prefix, settings.IndentSize))
+                        {
+                            insertText.AppendLine(line);
+                        }
+                        // Inject code
+                        editSession.Insert(lastLine.Start.Position, insertText.ToString());
                     }
-                    // Inject code
-                    editSession.Insert(lastLine.Start.Position, insertText.ToString());
-                }
-                catch (Exception e)
-                {
-                    WriteOutputMessage("editSession : error " + e.Message);
-                }
-                finally
-                {
-                    // Validate the Edit Session ?
-                    if (editSession.HasEffectiveChanges)
+                    catch (Exception e)
                     {
-                        editSession.Apply();
-                        //m_textView.Caret.MoveTo(lastLine.Start);
+                        WriteOutputMessage("editSession : error " + e.Message);
                     }
-                    else
+                    finally
                     {
-                        editSession.Cancel();
+                        // Validate the Edit Session ?
+                        if (editSession.HasEffectiveChanges)
+                        {
+                            editSession.Apply();
+                            //m_textView.Caret.MoveTo(lastLine.Start);
+                        }
+                        else
+                        {
+                            editSession.Cancel();
+                        }
+                        //
                     }
-                    //
                 }
             }
             catch (Exception e)

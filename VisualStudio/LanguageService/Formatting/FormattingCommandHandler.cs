@@ -281,44 +281,46 @@ namespace XSharp.LanguageService
             {
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var editSession = _buffer.CreateEdit();
-                var settings = Settings;
-                try
+                using (var editSession = _buffer.CreateEdit())
                 {
-                    var snapshot = editSession.Snapshot;
-                    if (settings.InsertFinalNewline)
+                    var settings = Settings;
+                    try
                     {
-                        var text = snapshot.GetText();
-                        if (!text.EndsWith(Environment.NewLine))
+                        var snapshot = editSession.Snapshot;
+                        if (settings.InsertFinalNewline)
                         {
-                            var line = snapshot.GetLineFromLineNumber(snapshot.LineCount - 1);
-                            editSession.Insert(line.End.Position, Environment.NewLine);
-                        }
-
-                    }
-                    if (settings.TrimTrailingWhiteSpace)
-                    {
-                        foreach (var line in snapshot.Lines)
-                        {
-                            var text = line.GetText();
-                            if (text.Length > 0)
+                            var text = snapshot.GetText();
+                            if (!text.EndsWith(Environment.NewLine))
                             {
-                                var last = text[text.Length - 1];
-                                if (last == ' ' || last == '\t')
+                                var line = snapshot.GetLineFromLineNumber(snapshot.LineCount - 1);
+                                editSession.Insert(line.End.Position, Environment.NewLine);
+                            }
+
+                        }
+                        if (settings.TrimTrailingWhiteSpace)
+                        {
+                            foreach (var line in snapshot.Lines)
+                            {
+                                var text = line.GetText();
+                                if (text.Length > 0)
                                 {
-                                    editSession.Replace(line.Start.Position, line.Length, text.TrimEnd());
+                                    var last = text[text.Length - 1];
+                                    if (last == ' ' || last == '\t')
+                                    {
+                                        editSession.Replace(line.Start.Position, line.Length, text.TrimEnd());
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception)
-                {
-                    editSession.Cancel();
-                }
-                finally
-                {
-                    ApplyChanges(editSession);
+                    catch (Exception)
+                    {
+                        editSession.Cancel();
+                    }
+                    finally
+                    {
+                        ApplyChanges(editSession);
+                    }
                 }
             });
         }

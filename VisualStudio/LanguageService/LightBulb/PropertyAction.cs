@@ -78,43 +78,45 @@ namespace XSharp.LanguageService.Editors.LightBulb
             // Add a comment with the Interface name ??
             insertText = new StringBuilder();
             // Create an Edit Session
-            var editSession = m_textView.TextBuffer.CreateEdit();
-            try
+            using (var editSession = m_textView.TextBuffer.CreateEdit())
             {
-                foreach (string line in CreateProperty(prefix, settings.IndentSize))
+                try
                 {
-                    insertText.AppendLine(line);
-                }
-                // Inject code
-                editSession.Insert(lastLine.Start.Position, insertText.ToString());
-                if (_renameField)
-                {
-                    lineNumber = _fieldEntity.Range.StartLine;
-                    ITextSnapshotLine fieldLine = m_snapshot.GetLineFromLineNumber(lineNumber);
-                    string sourceCode = _fieldEntity.SourceCode;
-                    sourceCode = sourceCode.Replace(_fieldEntity.Name, _generateName);
-                    editSession.Insert( fieldLine.Start.Position, prefix);
-                    editSession.Replace( fieldLine.Extent, sourceCode);
-                }
-
-            }
-            catch (Exception e)
-            {
-                WriteOutputMessage("editSession : error " + e.Message);
-            }
-            finally
-            {
-                // Validate the Edit Session ?
-                if (editSession.HasEffectiveChanges)
-                {
-                    editSession.Apply();
+                    foreach (string line in CreateProperty(prefix, settings.IndentSize))
+                    {
+                        insertText.AppendLine(line);
+                    }
+                    // Inject code
+                    editSession.Insert(lastLine.Start.Position, insertText.ToString());
+                    if (_renameField)
+                    {
+                        lineNumber = _fieldEntity.Range.StartLine;
+                        ITextSnapshotLine fieldLine = m_snapshot.GetLineFromLineNumber(lineNumber);
+                        string sourceCode = _fieldEntity.SourceCode;
+                        sourceCode = sourceCode.Replace(_fieldEntity.Name, _generateName);
+                        editSession.Insert(fieldLine.Start.Position, prefix);
+                        editSession.Replace(fieldLine.Extent, sourceCode);
+                    }
 
                 }
-                else
+                catch (Exception e)
                 {
-                    editSession.Cancel();
+                    WriteOutputMessage("editSession : error " + e.Message);
                 }
-                //
+                finally
+                {
+                    // Validate the Edit Session ?
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
+                    //
+                }
             }
         }
 

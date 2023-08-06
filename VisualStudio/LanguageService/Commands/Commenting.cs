@@ -38,20 +38,24 @@ namespace XSharp.LanguageService
 
         private static void Comment(DocumentView doc)
         {
+            // Todo: add check to see if we have a block marked on a single line
+            // in that case surround with /* */
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
             var start = sel.Start.Position.Position;
             var end = sel.End.Position.Position;
-            var editsession = doc.TextBuffer.CreateEdit();
-            do
+            using (var editsession = doc.TextBuffer.CreateEdit())
             {
-                var line = snapshot.GetLineFromPosition(start);
-                editsession.Insert(line.Start.Position, CommentChars[0] + " ");
-                start = line.EndIncludingLineBreak.Position;
-                if (start == end)
-                    break;
-            } while (start < end);
-            editsession.Apply();
+                do
+                {
+                    var line = snapshot.GetLineFromPosition(start);
+                    editsession.Insert(line.Start.Position, CommentChars[0] + " ");
+                    start = line.EndIncludingLineBreak.Position;
+                    if (start == end)
+                        break;
+                } while (start < end);
+                editsession.Apply();
+            }
         }
 
         private static void Uncomment(DocumentView doc)
@@ -60,40 +64,42 @@ namespace XSharp.LanguageService
             var sel = doc.TextView.Selection;
             var start = sel.Start.Position.Position;
             var end = sel.End.Position.Position;
-            var editsession = doc.TextBuffer.CreateEdit();
-            do
+            using (var editsession = doc.TextBuffer.CreateEdit())
             {
-                var line = snapshot.GetLineFromPosition(start);
-                var originalText = line.GetText();
-                var trimmedText = originalText.TrimStart(new char[] { ' ', '\t' });
-                string leading = "";
-                if (trimmedText.Length < originalText.Length)
+                do
                 {
-                    leading = originalText.Substring(0, originalText.Length - trimmedText.Length);
-                }
-                int lenToDelete = 0;
-                foreach (var str in CommentChars)
-                {
-                    if (trimmedText.StartsWith(str))
+                    var line = snapshot.GetLineFromPosition(start);
+                    var originalText = line.GetText();
+                    var trimmedText = originalText.TrimStart(new char[] { ' ', '\t' });
+                    string leading = "";
+                    if (trimmedText.Length < originalText.Length)
                     {
-                        lenToDelete = str.Length;
-                        // delete whitespace after comment chars?
-                        if (trimmedText.Length > str.Length && char.IsWhiteSpace(trimmedText[lenToDelete]))
-                            lenToDelete++;
-                        break;
+                        leading = originalText.Substring(0, originalText.Length - trimmedText.Length);
                     }
-                }
-                if (lenToDelete != 0)
-                {
-                    var pos = line.Start.Position + leading.Length;
-                    Span commentCharSpan = new Span(pos, lenToDelete);
-                    editsession.Delete(commentCharSpan);
-                }
-                start = line.EndIncludingLineBreak.Position;
-                if (start == end)
-                    break;
-            } while (start < end) ;
-            editsession.Apply();
+                    int lenToDelete = 0;
+                    foreach (var str in CommentChars)
+                    {
+                        if (trimmedText.StartsWith(str))
+                        {
+                            lenToDelete = str.Length;
+                            // delete whitespace after comment chars?
+                            if (trimmedText.Length > str.Length && char.IsWhiteSpace(trimmedText[lenToDelete]))
+                                lenToDelete++;
+                            break;
+                        }
+                    }
+                    if (lenToDelete != 0)
+                    {
+                        var pos = line.Start.Position + leading.Length;
+                        Span commentCharSpan = new Span(pos, lenToDelete);
+                        editsession.Delete(commentCharSpan);
+                    }
+                    start = line.EndIncludingLineBreak.Position;
+                    if (start == end)
+                        break;
+                } while (start < end);
+                editsession.Apply();
+            }
         }
     }
 

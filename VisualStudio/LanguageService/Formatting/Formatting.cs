@@ -46,31 +46,33 @@ namespace XSharp.LanguageService
                 if (!WaitUntilBufferReady())
                     return;
                 //var _ = _classifier.ClassifyWhenNeededAsync();
-                var editSession = _buffer.CreateEdit();
-                try
+                using (var editSession = _buffer.CreateEdit())
                 {
-                    switch ((EnvDTE.vsIndentStyle)Settings.IndentStyle)
+                    try
                     {
-                        case EnvDTE.vsIndentStyle.vsIndentStyleSmart:
-                            if (lineNumber > 0)
-                            {
-                                _lineFormatter.FormatLine(editSession, line);
-                            }
-                            break;
-                        case EnvDTE.vsIndentStyle.vsIndentStyleDefault:
-                        case EnvDTE.vsIndentStyle.vsIndentStyleNone:
-                            break;
+                        switch ((EnvDTE.vsIndentStyle)Settings.IndentStyle)
+                        {
+                            case EnvDTE.vsIndentStyle.vsIndentStyleSmart:
+                                if (lineNumber > 0)
+                                {
+                                    _lineFormatter.FormatLine(editSession, line);
+                                }
+                                break;
+                            case EnvDTE.vsIndentStyle.vsIndentStyleDefault:
+                            case EnvDTE.vsIndentStyle.vsIndentStyleNone:
+                                break;
+                        }
                     }
-                }
-                finally
-                {
-                    if (editSession.HasEffectiveChanges)
+                    finally
                     {
-                        editSession.Apply();
-                    }
-                    else
-                    {
-                        editSession.Cancel();
+                        if (editSession.HasEffectiveChanges)
+                        {
+                            editSession.Apply();
+                        }
+                        else
+                        {
+                            editSession.Cancel();
+                        }
                     }
                 }
             }
@@ -128,35 +130,37 @@ namespace XSharp.LanguageService
             var settings = Settings;
             try
             {
-                editSession = _buffer.CreateEdit();
-                var document = _buffer.GetDocument();
-                XSharpLineKeywords keywords = null;
-                ThreadHelper.JoinableTaskFactory.Run(async  delegate
+                using (editSession = _buffer.CreateEdit())
                 {
-                    keywords = await _classifier.GetKeywordsAsync();
-                });
-
-                var formatter = new DocFormatter(document, settings, keywords);
-                var expectedIndent = formatter.GetIndentSizes(lines, startLine, endLine, startIndent);
-
-                // now process the lines
-                foreach (var line in lines)
-                {
-                    var number = line.LineNumber;
-                    if (number >= startLine && number <= endLine)
+                    var document = _buffer.GetDocument();
+                    XSharpLineKeywords keywords = null;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        var indent = expectedIndent[number];
-                        _lineFormatter.FormatLineIndent(editSession, line, indent * settings.IndentSize);
-                        _lineFormatter.FormatLineCase(editSession, line);
+                        keywords = await _classifier.GetKeywordsAsync();
+                    });
+
+                    var formatter = new DocFormatter(document, settings, keywords);
+                    var expectedIndent = formatter.GetIndentSizes(lines, startLine, endLine, startIndent);
+
+                    // now process the lines
+                    foreach (var line in lines)
+                    {
+                        var number = line.LineNumber;
+                        if (number >= startLine && number <= endLine)
+                        {
+                            var indent = expectedIndent[number];
+                            _lineFormatter.FormatLineIndent(editSession, line, indent * settings.IndentSize);
+                            _lineFormatter.FormatLineCase(editSession, line);
+                        }
                     }
-                }
-                if (editSession.HasEffectiveChanges)
-                {
-                    editSession.Apply();
-                }
-                else
-                {
-                    editSession.Cancel();
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
                 }
             }
             catch

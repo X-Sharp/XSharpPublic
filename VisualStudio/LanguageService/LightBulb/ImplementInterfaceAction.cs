@@ -221,29 +221,31 @@ namespace XSharp.LanguageService.Editors.LightBulb
             insertText.Append(indent);
             insertText.AppendLine("#endregion");
             // Create an Edit Session
-            var editSession = m_textView.TextBuffer.CreateEdit();
-            try
+            using (var editSession = m_textView.TextBuffer.CreateEdit())
             {
-                // Inject code
-                editSession.Insert(lastLine.Start.Position, insertText.ToString());
-            }
-            catch (Exception e)
-            {
-                WriteOutputMessage("editSession : error " + e.Message);
-            }
-            finally
-            {
-                // Validate the Edit Session ?
-                if (editSession.HasEffectiveChanges)
+                try
                 {
-                    editSession.Apply();
+                    // Inject code
+                    editSession.Insert(lastLine.Start.Position, insertText.ToString());
+                }
+                catch (Exception e)
+                {
+                    WriteOutputMessage("editSession : error " + e.Message);
+                }
+                finally
+                {
+                    // Validate the Edit Session ?
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
 
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
+                    //
                 }
-                else
-                {
-                    editSession.Cancel();
-                }
-                //
             }
         }
 

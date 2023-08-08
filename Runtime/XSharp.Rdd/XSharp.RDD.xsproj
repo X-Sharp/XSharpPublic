@@ -117,6 +117,29 @@
     <Compile Include="Other\TextRDD.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />
+    <Compile Include="SqlRDD\Connection\Connection.prg" />
+    <Compile Include="SqlRDD\Functions\Provider.prg" />
+    <Compile Include="SqlRDD\Providers\Advantage.prg" />
+    <Compile Include="SqlRDD\Providers\MySql.prg" />
+    <Compile Include="SqlRDD\Providers\ODBC.prg" />
+    <Compile Include="SqlRDD\Providers\OleDb.prg" />
+    <Compile Include="SqlRDD\Providers\Oracle.prg" />
+    <Compile Include="SqlRDD\Providers\Provider.prg" />
+    <Compile Include="SqlRDD\Providers\SqlServer.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Abstract.prg" />
+    <Compile Include="SqlRDD\SupportClasses\ColumnDef.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Defines.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Enums.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Expression.prg" />
+    <Compile Include="SqlRDD\SupportClasses\IniFile.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Order.prg" />
+    <Compile Include="SqlRDD\SupportClasses\OrderBag.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Segment.prg" />
+    <Compile Include="SqlRDD\Functions\Connection.prg" />
+    <Compile Include="SqlRDD\SqlRDD.prg" />
+    <Compile Include="SqlRDD\SupportClasses\TableDef.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Token.prg" />
+    <Compile Include="SqlRDD\SupportClasses\TokenType.prg" />
     <Compile Include="Support.prg" />
     <Compile Include="DbfCdx\CdxEnums.prg" />
     <Compile Include="DbfCdx\CdxOrderBag.prg" />
@@ -158,6 +181,10 @@
     <Folder Include="Other\" />
     <Folder Include="Properties\" />
     <Folder Include="SqlRDD\" />
+    <Folder Include="SqlRDD\Connection" />
+    <Folder Include="SqlRDD\Providers" />
+    <Folder Include="SqlRDD\SupportClasses" />
+    <Folder Include="SqlRDD\Functions" />
     <Folder Include="VfpCollations\" />
   </ItemGroup>
   <ItemGroup>
@@ -181,7 +208,8 @@
     <None Include="DbfCdx\Pages\CdxDebug.xh" />
     <None Include="DbfCdx\Todo.txt" />
     <None Include="DbfNtx\NtxFormat.txt" />
-    <None Include="SqlRDD\SqlRddspecs.txt" />
+    <None Include="SqlDbExamples.Xml" />
+    <None Include="SqlRDD\SqlRddspecs.md" />
     <None Include="VfpCollations\CZECH_1250_Collate.bin" />
     <None Include="VfpCollations\CZECH_1250_Combi.bin" />
     <None Include="VfpCollations\CZECH_852_Collate.bin" />

@@ -16,14 +16,15 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD
 [DebuggerDisplay("{Name,nq}, {Type.Name,nq} {Length}")];
 CLASS SqlDbColumnDef INHERIT SqlDbObject
     PROPERTY OrdinalPosition AS LONG AUTO GET SET
-    PROPERTY Type		 AS System.Type AUTO GET SET
-    PROPERTY Length		 AS LONG AUTO GET SET
-    PROPERTY Precision	 AS LONG AUTO GET SET
-    PROPERTY Scale		 AS LONG AUTO GET SET
-    PROPERTY bType		 AS BYTE AUTO GET SET
-    PROPERTY Updatable	 AS LOGIC AUTO GET SET
-    CONSTRUCTOR(ColumnName AS STRING)
-        SUPER(ColumnName)
+    PROPERTY Type		 AS System.Type GET ColumnInfo:DotNetType
+    PROPERTY Length		 AS LONG GET ColumnInfo:Length
+    PROPERTY Precision	 AS LONG GET ColumnInfo:NumericPrecision
+    PROPERTY Scale		 AS LONG GET ColumnInfo:NumericScale
+    PROPERTY ReadOnly	 AS LOGIC GET ColumnInfo:ReadOnly
+    PROPERTY ColumnInfo as DbColumnInfo AUTO GET PRIVATE SET
+    CONSTRUCTOR(oCol as DbColumnInfo)
+        SUPER(oCol:Name)
+        SELF:ColumnInfo := oCol
         RETURN
 
 

@@ -5,34 +5,34 @@
 //
 
 using XSharp.RDD.SqlRDD
-
+using System.Collections.Generic
+using System.Text
 /// <summary>
 /// Open a connection for the X# SQL RDD
 /// </summary>
 /// <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
-/// <param name="UserName">Username to login to the database.</param>
-/// <param name="Password">Password to login to the database.</param>
 /// <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
 /// <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
-/// <remarks>This will open the default connection. UserName and Passwords are either not needed or part of
+/// <remarks>This will open the default connection.
+/// If the connection string needs a UserName and/or Password then these need to be included in
 /// the connection string.</remarks>
 
 FUNCTION SqlDbOpenConnection(ConnectionString as STRING) as IntPtr
-    var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, "",""}
+    var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString}
     RETURN oConn:Handle
 
-/// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-FUNCTION SqlDbOpenConnection(ConnectionString as STRING, UserName as STRING, Password as String) as IntPtr
-    var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, UserName,Password}
+FUNCTION SqlDbOpenConnection(ConnectionString as STRING, @@CallBack AS SqlRDDEventHandler) as IntPtr
+    var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, @@CallBack}
     RETURN oConn:Handle
+
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
 FUNCTION SqlDbOpenConnection(ConnectionName as String, ConnectionString as STRING) as IntPtr
-    var oConn := SqlDbConnection{ConnectionName, ConnectionString, "",""}
+    var oConn := SqlDbConnection{ConnectionName, ConnectionString}
     RETURN oConn:Handle
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-FUNCTION SqlDbOpenConnection(ConnectionName as String, ConnectionString as STRING, UserName as STRING, Password as String) as IntPtr
-    var oConn := SqlDbConnection{ConnectionName, ConnectionString, UserName,Password}
+FUNCTION SqlDbOpenConnection(ConnectionName as String, ConnectionString as STRING, @@CallBack AS SqlRDDEventHandler) as IntPtr
+    var oConn := SqlDbConnection{ConnectionName, ConnectionString, @@CallBack}
     RETURN oConn:Handle
 
     /// <summary>
@@ -95,4 +95,20 @@ FUNCTION SqlDbCacheConnection(ShouldCache as LOGIC) AS LOGIC
     var old := SqlDbConnection.DefaultCached
     SqlDbConnection.DefaultCached := ShouldCache
     RETURN  old
+
+
+
+
+FUNCTION List2String(list as IList<String>) AS STRING
+        var sb := StringBuilder{}
+        var first := TRUE
+        foreach var item in list
+            if first
+                first := FALSE
+            else
+                sb:Append(", ")
+            endif
+            sb:Append(item)
+        next
+        return sb:ToString()
 

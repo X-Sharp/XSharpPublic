@@ -11,6 +11,7 @@ USING System.Collections.Generic
 USING System.Data
 USING System.Diagnostics
 USING System.Reflection
+USING System.Data.Common
 
 BEGIN NAMESPACE XSharp.RDD.SqlRDD
 
@@ -25,6 +26,9 @@ CLASS SQLRDD INHERIT DBFVFP
     PROTECT _incrementKey   AS LONG
     PROTECT _incrementColumn AS DataColumn
     PROTECT _tableMode      AS TableMode
+    PROTECT _connection     AS SqlDbConnection
+    PROTECT _oTd            as SqlDbTableDef
+
 #region Overridden properties
     OVERRIDE PROPERTY Driver AS STRING GET "SQLRDD"
 #endregion
@@ -34,7 +38,59 @@ CLASS SQLRDD INHERIT DBFVFP
         _creatingIndex   := FALSE
         _tableMode       := TableMode.Query
         _ReadOnly        := TRUE
+        _connection      := NULL
         RETURN
+
+    PRIVATE METHOD TempFileName() AS STRING
+        local result as string
+        REPEAT
+            var folder := Path.GetTempPath()
+            var nId  := SqlDbConnection.GetId() / 0x100000
+            var name := i"SQL{nId:X5}"
+            result := Path.Combine(folder, name)
+            result := Path.ChangeExtension(result, ".DBF")
+        UNTIL ! File.Exists(result)
+        return result
+    OVERRIDE METHOD Open(info as DbOpenInfo) AS LOGIC
+        var query := info:FileName
+        local strConnection as STRING
+        local pos as INT
+        strConnection := SqlDbConnection.DefaultConnection
+        pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
+        if pos > 0
+            strConnection := query:Substring(0, pos)
+            query := query:Substring(pos+2)
+            info:FileName := query
+        endif
+        _connection := SqlDbGetConnection(strConnection)
+        _connection:AddRdd(SELF)
+        // Get the structure
+        _oTd := _connection:GetStructureForQuery(query,"QUERY")
+        var oFields := List<RddFieldInfo>{}
+        foreach var oCol in _oTd:Columns
+            oFields:Add(oCol:ColumnInfo)
+        next
+        var aFields := oFields:ToArray()
+        var tempFile   := TempFileName()
+        CoreDb.Create(tempFile,aFields,Typeof(DBFVFP),TRUE,"SQLRDD-TEMP","",FALSE,FALSE)
+        info:FileName := Path.Combine(Path.GetDirectoryName(tempFile), Path.GetFileNameWithoutExtension(tempFile))
+        info:Extension := ".DBF"
+        info:ReadOnly := FALSE
+        SUPER:Open(info)
+        // Assoctiate the extra properties
+        FOR VAR nI := 1 to aFields:Length
+            var aField := aFields[nI-1]
+            SELF:FieldInfo(nI, DBS_COLUMNINFO, aField)
+        NEXT
+        var cmd   := _connection:Provider:CreateCommand()
+        cmd:CommandText := query
+        cmd:Connection := _connection:DbConnection
+        using var reader := cmd:ExecuteReader()
+        local oDataTable as DataTable
+        oDataTable := DataTable{}
+        oDataTable:Load(reader)
+        self:DataTable := oDataTable
+        return true
 
     /// <inheritdoc />
     OVERRIDE METHOD SetFieldExtent(nFields AS LONG) AS LOGIC
@@ -164,6 +220,7 @@ CLASS SQLRDD INHERIT DBFVFP
             _oStream:SafeWriteByte(26)
             _oStream:SafeSetLength(lOffset+1)
             // now set the file size and reccount in the header
+            SELF:GoTop()
         END SET
     END PROPERTY
 
@@ -173,6 +230,7 @@ CLASS SQLRDD INHERIT DBFVFP
         // This method deletes the temporary file after the file is closed
         LOCAL cFileName := SELF:_FileName AS STRING
         LOCAL cMemoName := "" AS STRING
+        _connection:RemoveRdd(SELF)
         IF SELF:_Memo IS AbstractMemo VAR memo
             cMemoName := memo:FileName
         ENDIF

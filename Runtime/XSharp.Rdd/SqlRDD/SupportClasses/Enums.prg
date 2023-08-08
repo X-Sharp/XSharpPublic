@@ -16,4 +16,18 @@ ENUM TableMode
     MEMBER Query
 END ENUM
 
+
+ENUM SqlRDDEventReason
+    MEMBER ConnectionString
+    MEMBER CommandText
+    MEMBER MaxRecords
+    MEMBER ColumnList
+    MEMBER OrderByClause
+    MEMBER WhereClause
+    MEMBER RecnoColumn
+    MEMBER DeletedColumn
+    MEMBER LongFieldNames
+END ENUM
+
+
 END NAMESPACE

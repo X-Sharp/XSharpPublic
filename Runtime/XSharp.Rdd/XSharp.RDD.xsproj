@@ -130,6 +130,7 @@
     <Compile Include="SqlRDD\SupportClasses\ColumnDef.prg" />
     <Compile Include="SqlRDD\SupportClasses\Defines.prg" />
     <Compile Include="SqlRDD\SupportClasses\Enums.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Events.prg" />
     <Compile Include="SqlRDD\SupportClasses\Expression.prg" />
     <Compile Include="SqlRDD\SupportClasses\IniFile.prg" />
     <Compile Include="SqlRDD\SupportClasses\Order.prg" />

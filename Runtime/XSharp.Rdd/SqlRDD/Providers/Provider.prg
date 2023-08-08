@@ -17,6 +17,10 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD
 /// </summary>
 ABSTRACT CLASS SqlDbProvider INHERIT SqlDbObject
 
+    INTERNAL CONST DefaultQuotePrefix       := """" AS STRING
+    INTERNAL CONST DefaultQuoteSuffix       := """" AS STRING
+
+
 #region Static fields and methods
     STATIC _ProviderClasses as IDictionary<String, System.Type>
     STATIC _ProviderObjects as IDictionary<String, SqlDbProvider>
@@ -172,15 +176,19 @@ ABSTRACT CLASS SqlDbProvider INHERIT SqlDbObject
     VIRTUAL PROPERTY SelectTopStatement     AS STRING => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+FromClauseMacro
     VIRTUAL PROPERTY InsertStatement        AS STRING => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
     VIRTUAL PROPERTY OrderByClause          AS STRING => " order by "+ColumnsMacro+" "
-    VIRTUAL PROPERTY WhereClause            AS STRING => " where "
-    VIRTUAL PROPERTY AndClause              AS STRING => " and "
-    VIRTUAL PROPERTY OrClause               AS STRING => " or "
     VIRTUAL PROPERTY MaxRows                AS INT    => 1000
     VIRTUAL PROPERTY QuotePrefix            AS STRING AUTO := "["
     VIRTUAL PROPERTY QuoteSuffix            AS STRING AUTO := "]"
+
 #endregion
 
-#region Constants
+    #region Constants
+    PUBLIC CONST SelectClause    := "select " AS STRING
+    PUBLIC CONST FromClause      := " from "  AS STRING
+    PUBLIC CONST WhereClause     := " where " AS STRING
+    PUBLIC CONST AndClause       := " and " AS STRING
+    PUBLIC CONST OrClause        := " or "  AS STRING
+
     PUBLIC CONST FieldListMacro  := "%FL%" AS STRING
     PUBLIC CONST IndexNameMacro  := "%I%" AS STRING
     PUBLIC CONST TopCountMacro   := "%N%" AS STRING

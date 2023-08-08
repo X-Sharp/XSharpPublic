@@ -2,33 +2,75 @@
 using System.Data
 using MySql.Data.MySqlClient
 using Advantage.Data
+using System.Collections.Generic
+
+global SqlConnStr := "Server=(local);Initial catalog=NorthWind;Trusted_Connection=True;" as STRING
+global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=NorthWind;Trusted_Connection=Yes;" as STRING
+global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=NorthWind;Integrated Security=SSPI;" as STRING
+
 
 function Start as void
     //TestProviders()
-    TestSqlServer()
-    wait
-    TestODBC()
-    wait
-    TestOLEDB()
+    //TestSqlServer()
+    //TestODBC()
+    //TestOLEDB()
+    TestRDDSql()
+    TestRDDODBC()
+    TestRDDOLEDB()
     wait
     return
 
+Function TestRDD(cDriver as string, cConn as STRING) as void
+    Console.Clear()
+    var secs := Seconds()
+    SqlDbSetProvider(cDriver)
+    var handle := SqlDbOpenConnection(cConn, EventHandler)
+    DumpCustomers()
+    ? Seconds() - secs
+    WAIT
+    VoDbCloseArea()
+    SqlDbCloseConnection(handle)
+
+function TestRDDSql() as void
+    testRDD("SqlServer", SqlConnStr)
+
+function TestRDDODBC() as void
+    testRDD("ODBC", ODBCConnStr)
+
+function TestRDDOLEDB() as void
+    testRDD("OLEDB", OleDbConnStr)
+
+function DumpCustomers() as VOID
+    VoDbUseArea(TRUE, typeof(SQLRDD),"Select * from Customers","Customers",TRUE, TRUE)
+    ? FCount(), RecCount()
+    local nI as DWORD
+    For nI  := 1 to FCount()
+        ? FieldName(nI), DbFieldInfo(DBS_ALIAS, nI)
+    next
+    DO WHILE ! Eof()
+        ? Recno(), FieldGet(1), FieldGet(2)
+        DbSkip(1)
+    ENDDO
+
 function TestSqlServer as void
+    Console.Clear()
     SqlDbSetProvider("SqlServer")
-    var handle := SqlDbOpenConnection("Server=(local);Initial catalog=NorthWind;Trusted_Connection=True;")
+    var handle := SqlDbOpenConnection(SqlConnStr)
     var conn := SqlDbGetConnection(handle)
     DumpConnection(conn)
     SqlDbCloseConnection(handle)
 
 function TestODBC as void
+    Console.Clear()
     SqlDbSetProvider("ODBC")
-    var handle := SqlDbOpenConnection("Driver={SQL Server};Server=(local);Database=NorthWind;Trusted_Connection=Yes;")
+    var handle := SqlDbOpenConnection(ODBCConnStr)
     var conn := SqlDbGetConnection(handle)
     DumpConnection(conn)
     SqlDbCloseConnection(handle)
 function TestOLEDB as void
+    Console.Clear()
     SqlDbSetProvider("OLEDB")
-    var handle := SqlDbOpenConnection("Provider=sqloledb;Data Source=(local);Initial Catalog=NorthWind;Integrated Security=SSPI;")
+    var handle := SqlDbOpenConnection(OleDbConnStr)
     var conn := SqlDbGetConnection(handle)
     DumpConnection(conn)
     SqlDbCloseConnection(handle)
@@ -36,30 +78,40 @@ function TestOLEDB as void
 Function DumpConnection(conn as SqlDbConnection) as void
     var secs := Seconds()
     if conn != NULL
-        Console.Clear()
         ? "Provider",conn:Provider:Name
         ? "Handle  ",conn:Handle
         ? "ConnStr ",conn:DbConnection:ConnectionString
         ? "State   ",conn:DbConnection:State:ToString()
         ? "IsOpen  ", conn:IsOpen
-//         var coll := conn:GetMetaDataCollections()
-//         ? "Collections: ", coll:Count
-//         foreach var name in coll
-//             ? Name
-//         next
-         var tables := conn:GetTables("TABLE")
-         ? "Tables: ", tables:Count
-         foreach var name in tables
-              DumpStructure(conn:GetStructure(name))
-         next
+        //         var coll := conn:GetMetaDataCollections()
+        //         ? "Collections: ", coll:Count
+        //         foreach var name in coll
+        //             ? Name
+        //         next
+        var tables := conn:GetTables("TABLE")
+        ? "Tables: ", tables:Count
+        foreach var name in tables
+            DumpStructure(conn:GetStructure(name))
+        next
     ENDIF
     ? Seconds() - secs
 function DumpStructure(oTd as SqlDbTableDef) as VOID
-//     ? "Table", oTd:Name, "Columns", oTd:Columns:Count
-//     Foreach oCol as SqlDbColumnDef in oTd:Columns
-//         ? oCol:Name, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
-//     next
-//     ?
+    //     ? "Table", oTd:Name, "Columns", oTd:Columns:Count
+    //     Foreach oCol as SqlDbColumnDef in oTd:Columns
+    //         ? oCol:Name, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
+    //     next
+    //     ?
+
+FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
+    local strValue as string
+    if e:Value is IList<String>  var listValue
+        strValue := List2String(listValue)
+    else
+        strValue := e:Value:ToString()
+    endif
+
+    ? "Event", e:Reason:ToString(), e:Table, strValue
+    RETURN e:Value
 
 function TestProviders as void
     local oProv as SqlDbProvider
@@ -110,4 +162,6 @@ Function DumpExpression(oExpr as SqlDbExpression) AS VOID
     ? "Cols ",oExpr:ColumnListString
     ? "SqlKey", oExpr:SQLKey
     ?
+
+
 

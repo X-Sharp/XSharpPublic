@@ -4,24 +4,24 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections.Generic
-USING System.Diagnostics
-USING System.Linq
+using System
+using System.Collections.Generic
+using System.Diagnostics
+using System.Linq
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The TableDef class.
 /// </summary>
 [DebuggerDisplay("{Name,nq}, {Columns.Count}")];
-CLASS SqlDbTableDef INHERIT SqlDbObject
-    PROPERTY Columns AS IList<SqlDbColumnDef> AUTO GET PRIVATE SET
+class SqlDbTableDef inherit SqlDbObject
+    property Columns as IList<SqlDbColumnDef> auto get private set
 
-    CONSTRUCTOR(cName AS STRING, aColumns AS IList<SqlDbColumnDef>)
-        SUPER(cName)
-        SELF:Columns := aColumns:ToArray()
-        RETURN
+    constructor(cName as string, aColumns as IList<SqlDbColumnDef>)
+        super(cName)
+        self:Columns := aColumns:ToArray()
+        return
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD

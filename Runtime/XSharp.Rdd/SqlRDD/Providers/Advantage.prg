@@ -4,30 +4,30 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING XSharp.RDD.SqlRDD
-USING System.Data.Common
+using System
+using System.Collections.Generic
+using System.Text
+using XSharp.RDD.SqlRDD
+using System.Data.Common
 using System.Reflection
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
+begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The ODBC class.
 /// </summary>
-CLASS Advantage INHERIT SqlDbProvider
+class Advantage inherit SqlDbProvider
     override property DllName as string => "Advantage.Data.Provider.Dll"
     override property TypeName as string => "Advantage.Data.Provider.AdsFactory"
-    CONSTRUCTOR()
-        SUPER("Advantage")
-        RETURN
-    private static aFuncs := NULL as Dictionary<String, String>
-    OVERRIDE METHOD GetFunctions() AS Dictionary<String, String>
-        if aFuncs == NULL
-            aFuncs := Dictionary<String, String>{StringComparer.OrdinalIgnoreCase}
+    constructor()
+        super("Advantage")
+        return
+    private static aFuncs := null as Dictionary<string, string>
+    override method GetFunctions() as Dictionary<string, string>
+        if aFuncs == null
+            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         endif
         return aFuncs
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

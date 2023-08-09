@@ -4,118 +4,118 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections
-USING System.Collections.Generic
-USING System.Text
-USING System.Runtime.InteropServices
+using System
+using System.Collections
+using System.Collections.Generic
+using System.Text
+using System.Runtime.InteropServices
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
-INTERNAL CLASS IniFile
-    PROTECTED cFileName AS STRING
-    PROPERTY FullName AS STRING GET cFileName
-    CONSTRUCTOR(cFile AS STRING)
+internal class IniFile
+    protected cFileName as string
+    property FullName as string get cFileName
+    constructor(cFile as string)
         cFileName := cFile
-        RETURN
+        return
 
-    METHOD Create() AS LOGIC STRICT
-        TRY
+    method Create() as logic strict
+        try
             System.IO.File.WriteAllText(cFileName,"")
-        CATCH
-            RETURN FALSE
-        END TRY
-        RETURN TRUE
+        catch
+            return false
+        end try
+        return true
 
-    METHOD DeleteEntry(sSection AS STRING,sEntry AS STRING) AS LOGIC
-        SELF:WriteString( sSection, sEntry, NULL)
-        RETURN TRUE
+    method DeleteEntry(sSection as string,sEntry as string) as logic
+        self:WriteString( sSection, sEntry, null)
+        return true
 
-    METHOD DeleteSection(sSection AS STRING) AS LOGIC
-        SELF:WriteString( sSection, NULL, NULL )
-        RETURN TRUE
+    method DeleteSection(sSection as string) as logic
+        self:WriteString( sSection, null, null )
+        return true
 
-    METHOD GetInt(sSection AS STRING,sEntry AS STRING,nDefault AS LONGINT) AS LONGINT
-        VAR sValue := GetString(sSection, sEntry, "")
-        VAR nValue := nDefault
-        IF ! String.IsNullOrEmpty(sValue)
-            IF ! Int32.TryParse(sValue, OUT nValue)
+    method GetInt(sSection as string,sEntry as string,nDefault as longint) as longint
+        var sValue := GetString(sSection, sEntry, "")
+        var nValue := nDefault
+        if ! String.IsNullOrEmpty(sValue)
+            if ! Int32.TryParse(sValue, out nValue)
                 nValue := nDefault
-            ENDIF
-        ENDIF
-        RETURN nValue
+            endif
+        endif
+        return nValue
 
-    METHOD GetLogic(sSection AS STRING,sEntry AS STRING,lDefault AS LOGIC) AS LOGIC
-        VAR sValue := SELF:GetStringUpper(sSection, sEntry, "")
-        VAR lResult := lDefault
-        IF !String.IsNullOrEmpty(sValue)
-            SWITCH sValue
-            CASE "ON"
-            CASE "TRUE"
-            CASE "YES"
-                lResult := TRUE
-            OTHERWISE
+    method GetLogic(sSection as string,sEntry as string,lDefault as logic) as logic
+        var sValue := self:GetStringUpper(sSection, sEntry, "")
+        var lResult := lDefault
+        if !String.IsNullOrEmpty(sValue)
+            switch sValue
+            case "ON"
+            case "TRUE"
+            case "YES"
+                lResult := true
+            otherwise
                 if (Int32.TryParse(sValue, out var intValue))
                     lResult := intValue != 0
                 else
-                    lResult := FALSE
+                    lResult := false
                 endif
-            END SWITCH
-        ENDIF
-        RETURN lResult
+            end switch
+        endif
+        return lResult
 
-    METHOD GetSection(sSection AS STRING) AS IList<STRING>
-        VAR result := CHAR[]{4096}
-        VAR done := FALSE
-        LOCAL nSize := 0 AS LONG
-        DO WHILE ! done
+    method GetSection(sSection as string) as IList<string>
+        var result := char[]{4096}
+        var done := false
+        local nSize := 0 as long
+        do while ! done
             nSize := GetPrivateProfileSection(sSection, @result, result:Length, cFileName)
-            IF nSize >= result:Length
+            if nSize >= result:Length
                 // resize the buffer
-                result := CHAR[]{result:Length*2}
-            ELSE
-                done := TRUE
-            ENDIF
-        ENDDO
-        VAR sValues := STRING{result,0, nSize}
-        VAR aElements := sValues:Split( c'\0')
-        RETURN aElements
+                result := char[]{result:Length*2}
+            else
+                done := true
+            endif
+        enddo
+        var sValues := string{result,0, nSize}
+        var aElements := sValues:Split( c'\0')
+        return aElements
 
-    METHOD GetString(sSection AS STRING,sEntry AS STRING,sDefault AS STRING) AS STRING
-        VAR result := StringBuilder{255}
-        VAR done := FALSE
-        DO WHILE ! done
-            VAR nSize := GetPrivateProfileString(sSection, sEntry, "", result, result:Capacity, cFileName)
-            IF nSize >= result:Capacity -1
+    method GetString(sSection as string,sEntry as string,sDefault as string) as string
+        var result := StringBuilder{255}
+        var done := false
+        do while ! done
+            var nSize := GetPrivateProfileString(sSection, sEntry, "", result, result:Capacity, cFileName)
+            if nSize >= result:Capacity -1
                 // resize the buffer
                 result := StringBuilder{result:Capacity*2}
-            ELSE
-                done := TRUE
-            ENDIF
-        ENDDO
-        RETURN result:ToString()
+            else
+                done := true
+            endif
+        enddo
+        return result:ToString()
 
-    METHOD GetStringUpper(sSection AS STRING,sEntry AS STRING,sDefault AS STRING) AS STRING
-        RETURN GetString(sSection, sEntry, sDefault):ToUpper()
+    method GetStringUpper(sSection as string,sEntry as string,sDefault as string) as string
+        return GetString(sSection, sEntry, sDefault):ToUpper()
 
 
-    METHOD WriteInt(sSection AS STRING,sEntry AS STRING,nValue AS LONGINT) AS LOGIC
-        RETURN WritePrivateProfileString(sSection, sEntry, nValue:ToString(), cFileName)
+    method WriteInt(sSection as string,sEntry as string,nValue as longint) as logic
+        return WritePrivateProfileString(sSection, sEntry, nValue:ToString(), cFileName)
 
-    METHOD WriteString(sSection AS STRING,sEntry AS STRING,sString AS STRING) AS LOGIC
-        RETURN WritePrivateProfileString(sSection, sEntry, sString, cFileName)
+    method WriteString(sSection as string,sEntry as string,sString as string) as logic
+        return WritePrivateProfileString(sSection, sEntry, sString, cFileName)
 
 #region external methods
 
-    [DllImport("kernel32", CharSet := CharSet.Unicode)];
-    STATIC METHOD WritePrivateProfileString(section AS STRING, Key AS STRING, strValue AS STRING, FileName AS STRING) AS LOGIC
+        [DllImport("kernel32", CharSet := CharSet.Unicode)];
+    static method WritePrivateProfileString(section as string, Key as string, strValue as string, FileName as string) as logic
 
-    [DllImport("kernel32", CharSet := CharSet.Unicode)];
-    STATIC METHOD GetPrivateProfileString(section AS STRING, Key AS STRING, strDefault AS STRING, retval AS StringBuilder, nSize AS LONG, FileName AS STRING) AS LONG
+        [DllImport("kernel32", CharSet := CharSet.Unicode)];
+    static method GetPrivateProfileString(section as string, Key as string, strDefault as string, retval as StringBuilder, nSize as long, FileName as string) as long
 
-    [DllImport("kernel32", CharSet := CharSet.Unicode)];
-    STATIC METHOD GetPrivateProfileSection(section AS STRING, retval AS CHAR PTR, nSize AS LONG, FileName AS STRING) AS LONG
+        [DllImport("kernel32", CharSet := CharSet.Unicode)];
+    static method GetPrivateProfileSection(section as string, retval as char ptr, nSize as long, FileName as string) as long
 
 #endregion
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD

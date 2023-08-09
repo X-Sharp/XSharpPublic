@@ -5,28 +5,28 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING XSharp.RDD.SqlRDD
-USING System.Data.Common
+using System
+using System.Collections.Generic
+using XSharp.RDD.SqlRDD
+using System.Data.Common
 using System.Reflection
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
+begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The Oracle provider class.
 /// </summary>
-CLASS Oracle INHERIT SqlDbProvider
+class Oracle inherit SqlDbProvider
     override property DllName as string => "System.Data.OracleClient.dll"
     override property TypeName as string => "System.Data.OracleClient.OracleClientFactory"
 
-    CONSTRUCTOR()
-        SUPER("Oracle")
-        RETURN
-    private static aFuncs as Dictionary<String, String>
-    OVERRIDE METHOD GetFunctions() AS Dictionary<String, String>
-        IF aFuncs == NULL
-            aFuncs := Dictionary<String, String>{StringComparer.OrdinalIgnoreCase} {;
+    constructor()
+        super("Oracle")
+        return
+    private static aFuncs as Dictionary<string, string>
+    override method GetFunctions() as Dictionary<string, string>
+        if aFuncs == null
+            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
                 {"LEFT(%1%,%2%)"			,"SUBSTR(%1%,1,%2%)"},;
                 {"DTOS(%1%)"				,"TO_CHAR(%1%,'YYYYMMDD')"},;
                 {"DAY(%1%)"					,"TO_NUM(TO_CHAR(%1%,'DD'))"},;
@@ -43,7 +43,7 @@ CLASS Oracle INHERIT SqlDbProvider
         endif
         return aFuncs
 
-    OVERRIDE PROPERTY SelectTopStatement     AS STRING => "select * from (select "+ColumnsMacro+" from "+FromClauseMacro+" ) where RowNum <= "+TopCountMacro
+    override property SelectTopStatement     as string => "select * from (select "+ColumnsMacro+" from "+FromClauseMacro+" ) where RowNum <= "+TopCountMacro
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

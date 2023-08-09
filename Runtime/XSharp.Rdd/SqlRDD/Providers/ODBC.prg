@@ -4,29 +4,29 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING XSharp.RDD.SqlRDD
-USING System.Data.Common
+using System
+using System.Collections.Generic
+using System.Text
+using XSharp.RDD.SqlRDD
+using System.Data.Common
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
+begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The ODBC provider class.
 /// </summary>
-CLASS ODBC INHERIT SqlDbProvider
+class ODBC inherit SqlDbProvider
     override property DllName as string => "System.Data.dll"
     override property TypeName as string => "System.Data.Odbc.OdbcFactory"
 
-    CONSTRUCTOR()
-        SUPER("ODBC")
-        RETURN
+    constructor()
+        super("ODBC")
+        return
 
-    private static aFuncs := NULL as Dictionary<String, String>
-    OVERRIDE METHOD GetFunctions() AS Dictionary<String, String>
-        if aFuncs == NULL
-            aFuncs := Dictionary<String, String>{StringComparer.OrdinalIgnoreCase} {;
+    private static aFuncs := null as Dictionary<string, string>
+    override method GetFunctions() as Dictionary<string, string>
+        if aFuncs == null
+            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
                 {"STR(%1%,%2%,%3%)"			,"{fn RIGHT({fn SPACE(%2%)}+{fn CONVERT({fn ROUND(%1%,%3%)},SQL_VARCHAR)},%2%)}"},;
                 {"STR(%1%,%2%)"				,"{fn RIGHT({fn SPACE(%2%)}+{fn CONVERT({fn ROUND(%1%,0)},SQL_VARCHAR)},%2%)}"},;
                 {"SUBSTR(%1%,%2%,%3%)"		,"{fn SUBSTRING(%1%,%2%,%3%)}"},;
@@ -47,7 +47,7 @@ CLASS ODBC INHERIT SqlDbProvider
                 {"RIGHT(%1%)"				,"{fn RIGHT(%1%)}"},;
                 {"+"						,"+"}}
         endif
-        RETURN aFuncs
+        return aFuncs
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

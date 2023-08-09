@@ -5,44 +5,44 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Text
 using System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Token class.
 /// </summary>
 [DebuggerDisplay("{Type} {Name,nq}")];
-CLASS SqlDbToken
-    PROPERTY Type       AS TokenType    AUTO GET INTERNAL SET
-    PROPERTY Name       AS STRING       AUTO GET INTERNAL SET
-    PROPERTY SQLName    AS STRING       AUTO GET SET
-    PROPERTY PCount     AS LONG         AUTO GET SET
-    PROPERTY Args       AS IList<OBJECT> AUTO GET SET
-    PROPERTY Descend    AS LOGIC        AUTO GET SET
-    PROPERTY NewSeg     AS LOGIC        AUTO GET SET
+class SqlDbToken
+    property Type       as TokenType    auto get internal set
+    property Name       as string       auto get internal set
+    property SQLName    as string       auto get set
+    property PCount     as long         auto get set
+    property Args       as IList<object> auto get set
+    property Descend    as logic        auto get set
+    property NewSeg     as logic        auto get set
 
-    CONSTRUCTOR(tokenType AS TokenType, name AS STRING)
-        SELF:Type   := tokenType
-        SELF:Name   := name
-        SELF:SQLName := name
-        SELF:Args  := List<Object>{}
-        RETURN
+    constructor(tokenType as TokenType, name as string)
+        self:Type   := tokenType
+        self:Name   := name
+        self:SQLName := name
+        self:Args  := List<object>{}
+        return
 
-    METHOD Func2String() AS STRING
-        LOCAL i 		AS INT
-        LOCAL sb        AS StringBuilder
+    method Func2String() as string
+        local i 		as int
+        local sb        as StringBuilder
         ~"ONLYEARLY+"
-        sb := StringBuilder{SELF:SQLName}
+        sb := StringBuilder{self:SQLName}
         i := 1
-        FOREACH var arg in Args
+        foreach var arg in Args
             sb:Replace("%"+i:ToString()+"%", arg:ToString())
             i++
-        NEXT
-        RETURN sb:ToString()
+        next
+        return sb:ToString()
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD

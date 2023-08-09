@@ -5,28 +5,28 @@
 //
 
 
-USING System
-USING System.Diagnostics
+using System
+using System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The ColumnDef class.
 /// </summary>
 [DebuggerDisplay("{Name,nq}, {Type.Name,nq} {Length}")];
-CLASS SqlDbColumnDef INHERIT SqlDbObject
-    PROPERTY OrdinalPosition AS LONG AUTO GET SET
-    PROPERTY Type		 AS System.Type GET ColumnInfo:DotNetType
-    PROPERTY Length		 AS LONG GET ColumnInfo:Length
-    PROPERTY Precision	 AS LONG GET ColumnInfo:NumericPrecision
-    PROPERTY Scale		 AS LONG GET ColumnInfo:NumericScale
-    PROPERTY ReadOnly	 AS LOGIC GET ColumnInfo:ReadOnly
-    PROPERTY ColumnInfo as DbColumnInfo AUTO GET PRIVATE SET
-    CONSTRUCTOR(oCol as DbColumnInfo)
-        SUPER(oCol:Name)
-        SELF:ColumnInfo := oCol
-        RETURN
+class SqlDbColumnDef inherit SqlDbObject
+    property OrdinalPosition as long auto get set
+    property Type		 as System.Type get ColumnInfo:DotNetType
+    property Length		 as long get ColumnInfo:Length
+    property Precision	 as long get ColumnInfo:NumericPrecision
+    property Scale		 as long get ColumnInfo:NumericScale
+    property ReadOnly	 as logic get ColumnInfo:ReadOnly
+    property ColumnInfo as DbColumnInfo auto get private set
+    constructor(oCol as DbColumnInfo)
+        super(oCol:Name)
+        self:ColumnInfo := oCol
+        return
 
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD

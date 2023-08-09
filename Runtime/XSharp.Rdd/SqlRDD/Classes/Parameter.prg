@@ -4,36 +4,36 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Data.Common
-USING System.Data
+using System
+using System.Collections.Generic
+using System.Text
+using System.Data.Common
+using System.Data
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Parameter class.
 /// </summary>
-CLASS SqlDbParameter INHERIT SqlDbObject
-    PROPERTY Ordinal    as LONG AUTO
-    PROPERTY Value      AS OBJECT AUTO
-    PROPERTY DbParameter as DbParameter AUTO
-    PROPERTY Command    AS SqlDbCommand AUTO
-    PROPERTY Direction  AS ParameterDirection AUTO
+class SqlDbParameter inherit SqlDbObject
+    property Ordinal    as long auto
+    property Value      as object auto
+    property DbParameter as DbParameter auto
+    property Command    as SqlDbCommand auto
+    property Direction  as ParameterDirection auto
 
-    CONSTRUCTOR(nOrdinal as LONG, oValue as OBJECT)
-        SUPER(nOrdinal:ToString())
-        SELF:Ordinal := nOrdinal
-        SELF:Value   := oValue
-        SELF:Direction := ParameterDirection.Input
-        RETURN
-    CONSTRUCTOR(cName as STRING, oValue as OBJECT)
-        SUPER(cName)
-        SELF:Ordinal := -1
-        SELF:Value   := oValue
-        SELF:Direction := ParameterDirection.Input
-        RETURN
+    constructor(nOrdinal as long, oValue as object)
+        super(nOrdinal:ToString())
+        self:Ordinal := nOrdinal
+        self:Value   := oValue
+        self:Direction := ParameterDirection.Input
+        return
+    constructor(cName as string, oValue as object)
+        super(cName)
+        self:Ordinal := -1
+        self:Value   := oValue
+        self:Direction := ParameterDirection.Input
+        return
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.Classes
+end class
+end namespace // XSharp.RDD.SqlRDD.Classes

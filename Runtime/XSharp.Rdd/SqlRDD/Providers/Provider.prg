@@ -5,29 +5,28 @@
 //
 
 
-USING System
-USING System.Reflection
-USING System.Collections.Generic
-USING System.Text
-USING System.Data.Common
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+using System
+using System.Reflection
+using System.Collections.Generic
+using System.Text
+using System.Data.Common
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Provider class.
 /// </summary>
-ABSTRACT CLASS SqlDbProvider INHERIT SqlDbObject
+abstract class SqlDbProvider inherit SqlDbObject
 
-    INTERNAL CONST DefaultQuotePrefix       := """" AS STRING
-    INTERNAL CONST DefaultQuoteSuffix       := """" AS STRING
-
+    internal const DefaultQuotePrefix       := """" as string
+    internal const DefaultQuoteSuffix       := """" as string
 
 #region Static fields and methods
-    STATIC _ProviderClasses as IDictionary<String, System.Type>
-    STATIC _ProviderObjects as IDictionary<String, SqlDbProvider>
-    STATIC PROPERTY Current AS SqlDbProvider AUTO
+    static _ProviderClasses as IDictionary<string, System.Type>
+    static _ProviderObjects as IDictionary<string, SqlDbProvider>
+    static property Current as SqlDbProvider auto
 
-    STATIC CONSTRUCTOR()
-        Current := NULL
+    static constructor()
+        Current := null
         _ProviderClasses := Dictionary<string,  System.Type>{StringComparer.OrdinalIgnoreCase}
         _ProviderObjects := Dictionary<string, SqlDbProvider>{StringComparer.OrdinalIgnoreCase}
         RegisterProvider("SQLSERVER",typeof(XSharp.RDD.SqlRDD.Providers.SqlServer))
@@ -39,40 +38,40 @@ ABSTRACT CLASS SqlDbProvider INHERIT SqlDbObject
         RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.Oracle ))
         SetDefaultProvider("ODBC")
 
-    STATIC METHOD RegisterProvider(Name as STRING, ClassName as System.Type) AS LOGIC
+    static method RegisterProvider(Name as string, ClassName as System.Type) as logic
         _ProviderClasses[Name] := ClassName
-        RETURN TRUE
+        return true
 
-    STATIC METHOD UnRegisterProvider(Name as STRING) AS LOGIC
+    static method UnRegisterProvider(Name as string) as logic
         if (_ProviderClasses:ContainsKey(Name))
             _ProviderClasses:Remove(Name)
-            RETURN TRUE
-        ENDIF
-        RETURN FALSE
+            return true
+        endif
+        return false
 
-    STATIC METHOD SetDefaultProvider(provider as SqlDbProvider) AS SqlDbProvider
+    static method SetDefaultProvider(provider as SqlDbProvider) as SqlDbProvider
         var old := Current
         Current := provider
         return old
 
-    STATIC METHOD SetDefaultProvider(name as String) AS SqlDbProvider
+    static method SetDefaultProvider(name as string) as SqlDbProvider
         var old := Current
         Current := GetProvider(name)
         return old
 
-    STATIC PROTECTED METHOD _FindType(cName as STRING) AS System.Type
+    static protected method _FindType(cName as string) as System.Type
         var aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
         foreach asm as Assembly in aAssemblies
-            FOREACH t as System.Type in asm:DefinedTypes
+            foreach t as System.Type in asm:DefinedTypes
                 if String.Compare(t:FullName, cName ,true) == 0
-                    RETURN t
+                    return t
                 endif
             next
         next
-        RETURN NULL
-    STATIC PROTECTED METHOD _LoadFactoryFromDllAndType(DllName as STRING, TypeName as STRING) AS DbProviderFactory
-        local assembly := NULL as Assembly
-        local type     := NULL as System.Type
+        return null
+    static protected method _LoadFactoryFromDllAndType(DllName as string, TypeName as string) as DbProviderFactory
+        local assembly := null as Assembly
+        local type     := null as System.Type
         foreach var asm in AppDomain.CurrentDomain.GetAssemblies()
             type := asm:GetType(TypeName, false)
             if type != null
@@ -81,26 +80,26 @@ ABSTRACT CLASS SqlDbProvider INHERIT SqlDbObject
         next
         if type == null .and. System.IO.File.Exists(DllName)
             var fileInfo := System.IO.FileInfo{DllName}
-                var asm := System.Reflection.Assembly.LoadFile(fileInfo:FullName)
+            var asm := System.Reflection.Assembly.LoadFile(fileInfo:FullName)
             type := asm:GetType(TypeName)
-        ENDIF
+        endif
         if type != null
             local oFld := type:GetField("Instance") as FieldInfo
-            if oFld != NULL
+            if oFld != null
                 var oFact := (DbProviderFactory) oFld:GetValue(null)
-                RETURN oFact
-            ENDIF
+                return oFact
+            endif
         endif
-        RETURN NULL
-    STATIC METHOD GetProvider(Name as STRING) AS SqlDbProvider
+        return null
+    static method GetProvider(Name as string) as SqlDbProvider
         if _ProviderObjects:ContainsKey(Name)
-            RETURN _ProviderObjects[Name]
+            return _ProviderObjects[Name]
         endif
         if ! _ProviderClasses:ContainsKey(Name)
-            RETURN NULL
-        ENDIF
+            return null
+        endif
         var type := _ProviderClasses[Name]
-        TRY
+        try
             if typeof(SqlDbProvider):IsAssignableFrom(type)
                 var oProv := (SqlDbProvider) Activator.CreateInstance(type)
                 if (oProv:Factory != null)
@@ -108,106 +107,107 @@ ABSTRACT CLASS SqlDbProvider INHERIT SqlDbObject
                     return oProv
                 endif
             endif
-        CATCH e as Exception
-        END TRY
-        RETURN NULL
+        catch e as Exception
+            nop
+        end try
+        return null
 
-    #endregion
-    PRIVATE _Factory as DbProviderFactory
+#endregion
+    private _Factory as DbProviderFactory
 
-    PROPERTY Factory AS DbProviderFactory
-        GET
-            IF _Factory == NULL
+    property Factory as DbProviderFactory
+        get
+            if _Factory == null
                 _Factory := _LoadFactoryFromDllAndType(DllName, TypeName)
-                IF _Factory == NULL
-                    Throw Exception{i"Could not load DbProviderFactory {TypeName} from DLL {DllName}"}
-                ENDIF
-            ENDIF
-            RETURN _Factory
-        END GET
-    END PROPERTY
-    ABSTRACT PROPERTY DllName AS STRING GET
-    ABSTRACT PROPERTY TypeName AS STRING GET
-    ABSTRACT METHOD GetFunctions() AS Dictionary<String, String>
-    METHOD GetFunction(cFunction as STRING) AS STRING
+                if _Factory == null
+                    throw Exception{i"Could not load DbProviderFactory {TypeName} from DLL {DllName}"}
+                endif
+            endif
+            return _Factory
+        end get
+    end property
+    abstract property DllName as string get
+    abstract property TypeName as string get
+    abstract method GetFunctions() as Dictionary<string, string>
+    method GetFunction(cFunction as string) as string
         var funcs := GetFunctions()
         if funcs:ContainsKey(cFunction)
             return funcs[cFunction]
         endif
         return cFunction
-    CONSTRUCTOR(cName as STRING)
-        SUPER(cName)
-        var cmdBuilder := SELF:CreateCommandBuilder()
-        SELF:QuotePrefix := cmdBuilder:QuotePrefix
-        SELF:QuoteSuffix := cmdBuilder:QuoteSuffix
+    constructor(cName as string)
+        super(cName)
+        var cmdBuilder := self:CreateCommandBuilder()
+        self:QuotePrefix := cmdBuilder:QuotePrefix
+        self:QuoteSuffix := cmdBuilder:QuoteSuffix
 
 
 #region Methods and Properties from the factory
-    PROPERTY CanCreateDataSourceEnumerator as LOGIC GET Factory:CanCreateDataSourceEnumerator
+    property CanCreateDataSourceEnumerator as logic get Factory:CanCreateDataSourceEnumerator
 
-    METHOD CreateCommand() as DbCommand
-        RETURN Factory:CreateCommand()
+    method CreateCommand() as DbCommand
+        return Factory:CreateCommand()
 
-    METHOD CreateCommandBuilder() as DbCommandBuilder
-        RETURN Factory:CreateCommandBuilder()
+    method CreateCommandBuilder() as DbCommandBuilder
+        return Factory:CreateCommandBuilder()
 
-    METHOD CreateConnection() as DbConnection
-        RETURN Factory:CreateConnection()
+    method CreateConnection() as DbConnection
+        return Factory:CreateConnection()
 
-    METHOD CreateConnectionStringBuilder() as DbConnectionStringBuilder
-        RETURN Factory:CreateConnectionStringBuilder()
+    method CreateConnectionStringBuilder() as DbConnectionStringBuilder
+        return Factory:CreateConnectionStringBuilder()
 
-    METHOD CreateParameter() as DbParameter
-        RETURN Factory:CreateParameter()
+    method CreateParameter() as DbParameter
+        return Factory:CreateParameter()
 
-    METHOD CreateDataSourceEnumerator() as DbDataSourceEnumerator
-        IF Factory:CanCreateDataSourceEnumerator
-            RETURN Factory:CreateDataSourceEnumerator()
-        ENDIF
-        RETURN NULL
+    method CreateDataSourceEnumerator() as DbDataSourceEnumerator
+        if Factory:CanCreateDataSourceEnumerator
+            return Factory:CreateDataSourceEnumerator()
+        endif
+        return null
 
 #endregion
 #region Virtual Properties with statements etc
-    VIRTUAL PROPERTY CreateTableStatement   AS STRING => "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )"
-    VIRTUAL PROPERTY CreateIndexStatement   AS STRING => "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
-    VIRTUAL PROPERTY DropTableStatement     AS STRING => "drop table "+TableNameMacro
-    VIRTUAL PROPERTY DropIndexStatement     AS STRING => "drop index "+TableNameMacro+"_"+IndexNameMacro
-    VIRTUAL PROPERTY DeleteAllRowsStatement AS STRING => "delete from "+TableNameMacro
-    VIRTUAL PROPERTY SelectTopStatement     AS STRING => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+FromClauseMacro
-    VIRTUAL PROPERTY InsertStatement        AS STRING => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
-    VIRTUAL PROPERTY OrderByClause          AS STRING => " order by "+ColumnsMacro+" "
-    VIRTUAL PROPERTY MaxRows                AS INT    => 1000
-    VIRTUAL PROPERTY QuotePrefix            AS STRING AUTO := "["
-    VIRTUAL PROPERTY QuoteSuffix            AS STRING AUTO := "]"
+    virtual property CreateTableStatement   as string => "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )"
+    virtual property CreateIndexStatement   as string => "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
+    virtual property DropTableStatement     as string => "drop table "+TableNameMacro
+    virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"_"+IndexNameMacro
+    virtual property DeleteAllRowsStatement as string => "delete from "+TableNameMacro
+    virtual property SelectTopStatement     as string => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+FromClauseMacro
+    virtual property InsertStatement        as string => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
+    virtual property OrderByClause          as string => " order by "+ColumnsMacro+" "
+    virtual property MaxRows                as int    => 1000
+    virtual property QuotePrefix            as string auto := "["
+    virtual property QuoteSuffix            as string auto := "]"
 
 #endregion
 
-    #region Constants
-    PUBLIC CONST SelectClause    := "select " AS STRING
-    PUBLIC CONST FromClause      := " from "  AS STRING
-    PUBLIC CONST WhereClause     := " where " AS STRING
-    PUBLIC CONST AndClause       := " and " AS STRING
-    PUBLIC CONST OrClause        := " or "  AS STRING
+#region Constants
+    public const SelectClause    := "select " as string
+    public const FromClause      := " from "  as string
+    public const WhereClause     := " where " as string
+    public const AndClause       := " and " as string
+    public const OrClause        := " or "  as string
 
-    PUBLIC CONST FieldListMacro  := "%FL%" AS STRING
-    PUBLIC CONST IndexNameMacro  := "%I%" AS STRING
-    PUBLIC CONST TopCountMacro   := "%N%" AS STRING
-    PUBLIC CONST TableNameMacro  := "%T%" AS STRING
-    PUBLIC CONST UniqueMacro     := "%U%" AS STRING
-    PUBLIC CONST FieldDefinitionListMacro := "%FDL%" AS STRING
-    PUBLIC CONST FromClauseMacro := "%FROM%" AS STRING
-    PUBLIC CONST ColumnsMacro    := "%C%" AS STRING
-    PUBLIC CONST ValuesMacro     := "%V%" AS STRING
+    public const FieldListMacro  := "%FL%" as string
+    public const IndexNameMacro  := "%I%" as string
+    public const TopCountMacro   := "%N%" as string
+    public const TableNameMacro  := "%T%" as string
+    public const UniqueMacro     := "%U%" as string
+    public const FieldDefinitionListMacro := "%FDL%" as string
+    public const FromClauseMacro := "%FROM%" as string
+    public const ColumnsMacro    := "%C%" as string
+    public const ValuesMacro     := "%V%" as string
 
-    PUBLIC CONST ConnectionDelimiter := "::" AS STRING
-    PUBLIC CONST IndexExt            := "SQX" AS STRING
-    PUBLIC CONST TableExt            := "SQF" AS STRING
-    PUBLIC CONST ConfigFile          := "confix.sql" AS STRING
+    public const ConnectionDelimiter := "::" as string
+    public const IndexExt            := "SQX" as string
+    public const TableExt            := "SQF" as string
+    public const ConfigFile          := "confix.sql" as string
 
 
 #endregion
 
-END CLASS
+end class
 
 
-END NAMESPACE // XSharp.RDD.SqlRDD
+end namespace // XSharp.RDD.SqlRDD

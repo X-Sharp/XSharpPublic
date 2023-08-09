@@ -5,41 +5,41 @@
 // WorkStation   : NYX
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Diagnostics
+using System
+using System.Collections.Generic
+using System.Text
+using System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Segment class.
 /// </summary>
 [DebuggerDisplay("{Key}")];
-CLASS SqlDbSegment INHERIT SqlDbObject
-    PROPERTY Key		    AS STRING AUTO
-    PROPERTY Key1	        AS STRING AUTO
-    PROPERTY Expression	    AS SqlDbExpression  AUTO
-    PROPERTY Descending     AS LOGIC  AUTO
-    PROPERTY KeyLen 	    AS LONG  AUTO
-    PROPERTY HasFunctions   AS LOGIC  AUTO
-    PROPERTY SQLKey	        AS STRING  AUTO
-    PROPERTY OrderList	    AS IList<STRING> AUTO
-    PROPERTY ColumnList	    AS IList<STRING> AUTO
-    PROPERTY Widths		    AS IList<LONG> AUTO
+class SqlDbSegment inherit SqlDbObject
+    property Key		    as string auto
+    property Key1	        as string auto
+    property Expression	    as SqlDbExpression  auto
+    property Descending     as logic  auto
+    property KeyLen 	    as long  auto
+    property HasFunctions   as logic  auto
+    property SQLKey	        as string  auto
+    property OrderList	    as IList<string> auto
+    property ColumnList	    as IList<string> auto
+    property Widths		    as IList<long> auto
 
-    CONSTRUCTOR(oExpr as SqlDbExpression, cKey AS STRING, lDesc AS LOGIC)
-        SUPER(cKey)
-        SELF:Expression := oExpr
-        SELF:Key        := cKey
-        SELF:Descending := lDesc
-        IF lDesc
-            SELF:Key1   := "DESCEND("+cKey+")"
-        ELSE
-            SELF:Key1   := cKey
-        ENDIF
-        RETURN
-    METHOD CalculateKeyLength AS VOID
-        RETURN
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+    constructor(oExpr as SqlDbExpression, cKey as string, lDesc as logic)
+        super(cKey)
+        self:Expression := oExpr
+        self:Key        := cKey
+        self:Descending := lDesc
+        if lDesc
+            self:Key1   := "DESCEND("+cKey+")"
+        else
+            self:Key1   := cKey
+        endif
+        return
+    method CalculateKeyLength as void
+        return
+end class
+end namespace // XSharp.RDD.SqlRDD

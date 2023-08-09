@@ -4,48 +4,48 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections.Generic
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The SqlRddEvent class.
 /// </summary>
-CLASS SqlRddEventArgs
-    PROPERTY Reason as SqlRDDEventReason AUTO
-    PROPERTY Value  as Object AUTO
-    PROPERTY Table  as String Auto
-    Constructor( nReason as SqlRDDEventReason, cTable as string, oValue as Object)
-        SELF:Reason := nReason
-        SELF:Value  := oValue
-        SELF:Table  := cTable
-        RETURN
-    PROPERTY StringValue as STRING
-        GET
-            IF SELF:Value IS String var strValue
-                RETURN strValue
-            ENDIF
-            RETURN NULL
-        END GET
-    END PROPERTY
-    PROPERTY IntValue as LONG
-        GET
-            IF SELF:Value IS Long var intValue
-                RETURN intValue
-            ENDIF
-            RETURN 0
-        END GET
-    END PROPERTY
-    PROPERTY ListValue as List<String>
-        GET
-            IF SELF:Value IS List<String> var listValue
-                RETURN listValue
-            ENDIF
-            RETURN NULL
-        END GET
-    END PROPERTY
+class SqlRddEventArgs
+    property Reason as SqlRDDEventReason auto
+    property Value  as object auto
+    property Table  as string auto
+    constructor( nReason as SqlRDDEventReason, cTable as string, oValue as object)
+        self:Reason := nReason
+        self:Value  := oValue
+        self:Table  := cTable
+        return
+    property StringValue as string
+        get
+            if self:Value is string var strValue
+                return strValue
+            endif
+            return null
+        end get
+    end property
+    property IntValue as long
+        get
+            if self:Value is long var intValue
+                return intValue
+            endif
+            return 0
+        end get
+    end property
+    property ListValue as List<string>
+        get
+            if self:Value is List<string> var listValue
+                return listValue
+            endif
+            return null
+        end get
+    end property
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

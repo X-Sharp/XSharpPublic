@@ -5,70 +5,70 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Handles class.
 /// </summary>
-STATIC CLASS SqlDbHandles
-    PRIVATE STATIC RandomGenerator  AS Random
-    PRIVATE STATIC Objects          AS Dictionary<IntPtr, SqlDbHandleObject>
+static class SqlDbHandles
+    private static RandomGenerator  as Random
+    private static Objects          as Dictionary<IntPtr, SqlDbHandleObject>
 
-    STATIC CONSTRUCTOR()
+    static constructor()
         var seed := (Int32) (DateTime.Now:Ticks % Int32.MaxValue)
         RandomGenerator := Random{ seed }
         Objects         := Dictionary<IntPtr, SqlDbHandleObject>{}
 
-        RETURN
-    STATIC METHOD GetId(maxValue as Int32) as IntPtr
+        return
+    static method GetId(maxValue as Int32) as IntPtr
         return IntPtr{RandomGenerator:Next()} % maxValue
 
-    STATIC METHOD GetHandle(oObject as SqlDbHandleObject) as IntPtr
-        local ok := TRUE as LOGIC
+    static method GetHandle(oObject as SqlDbHandleObject) as IntPtr
+        local ok := true as logic
         local id as IntPtr
-        BEGIN LOCK Objects
-            REPEAT
+        begin lock Objects
+            repeat
                 id := GetId(Int32.MaxValue)
                 ok := ! Objects:ContainsKey(id)
-                if ok .and. oObject != NULL
+                if ok .and. oObject != null
                     Objects:Add(id, oObject)
                 endif
-            UNTIL ok
-        END LOCK
+            until ok
+        end lock
         return id
 
-    STATIC Method Remove(oObject as SqlDbHandleObject) AS LOGIC
-        BEGIN LOCK Objects
+    static method Remove(oObject as SqlDbHandleObject) as logic
+        begin lock Objects
             if Objects:ContainsKey(oObject:Handle)
                 if Objects[oObject:Handle] == oObject
                     Objects:Remove(oObject:Handle)
-                    RETURN TRUE
+                    return true
                 endif
-            ENDIF
-        END LOCK
-        RETURN FALSE
-    STATIC METHOD FindById(nId as IntPtr) AS SqlDbHandleObject
-        IF Objects:ContainsKey(nId)
+            endif
+        end lock
+        return false
+    static method FindById(nId as IntPtr) as SqlDbHandleObject
+        if Objects:ContainsKey(nId)
             return Objects[nId]
         endif
         return null
 
-END CLASS
+end class
 /// <summary>
 /// The HandleObject class.
 /// </summary>
-CLASS SqlDbHandleObject INHERIT SqlDbObject
-    PROPERTY Handle             AS IntPtr AUTO
-    CONSTRUCTOR(cName as STRING)
-        SUPER(cName)
-        SELF:Handle := SqlDbHandles.GetHandle(SELF)
-        RETURN
-    DESTRUCTOR
-        SqlDbHandles.Remove(SELF)
-        RETURN
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+class SqlDbHandleObject inherit SqlDbObject
+    property Handle             as IntPtr auto
+    constructor(cName as string)
+        super(cName)
+        self:Handle := SqlDbHandles.GetHandle(self)
+        return
+    destructor
+        SqlDbHandles.Remove(self)
+        return
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

@@ -5,29 +5,29 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING XSharp.RDD.SqlRDD
-USING System.Data.Common
+using System
+using System.Collections.Generic
+using XSharp.RDD.SqlRDD
+using System.Data.Common
 using System.Reflection
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
+begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The Oracle provider class.
 /// </summary>
-CLASS MySql INHERIT SqlDbProvider
+class MySql inherit SqlDbProvider
     override property DllName as string => "MySql.Data.dll"
     override property TypeName as string => "MySql.Data.MySqlClient.MySqlClientFactory"
 
 
-    CONSTRUCTOR()
-        SUPER("MySql")
-        RETURN
-    private static aFuncs := NULL as Dictionary<String, String>
-    OVERRIDE METHOD GetFunctions() AS Dictionary<String, String>
-        if aFuncs == NULL
-            aFuncs := Dictionary<String, String>{StringComparer.OrdinalIgnoreCase} {;
+    constructor()
+        super("MySql")
+        return
+    private static aFuncs := null as Dictionary<string, string>
+    override method GetFunctions() as Dictionary<string, string>
+        if aFuncs == null
+            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
                 {"LEFT(%1%,%2%)"			,"LEFT(%1%,%2%)"},;
                 {"LOWER(%1%)"			    ,"LOWER(%1%)"},;
                 {"UPPER(%1%)"			    ,"UPPER(%1%)"},;
@@ -46,7 +46,7 @@ CLASS MySql INHERIT SqlDbProvider
         endif
         return aFuncs
 
-    OVERRIDE PROPERTY SelectTopStatement     AS STRING => "select "+ColumnsMacro+" from "+FromClauseMacro+" limit "+TopCountMacro
+    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+FromClauseMacro+" limit "+TopCountMacro
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

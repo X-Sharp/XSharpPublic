@@ -21,8 +21,8 @@ STATIC CLASS SQLHelpers
         aFieldNames   := System.Collections.Generic.Dictionary<STRING, STRING>{}
 
     STATIC METHOD GetColumnInfo (aFieldNames as IList<STRING>, columnName as STRING, oType as System.Type, nSize as LONG, ;
-        nScale as LONG, nPrec as LONG, IsAutoInc as LOGIC, lAllowNull as LOGIC, lReadOnly as LOGIC,;
-        nOrdinal as LONG, lLongNamesAllowed AS LOGIC) AS DbColumnInfo
+            nScale as LONG, nPrec as LONG, IsAutoInc as LOGIC, lAllowNull as LOGIC, lReadOnly as LOGIC,;
+            nOrdinal as LONG, lLongNamesAllowed AS LOGIC) AS DbColumnInfo
         LOCAL TC AS TypeCode
         LOCAL nLen as LONG
         LOCAL nDec as LONG
@@ -169,7 +169,7 @@ STATIC CLASS SQLHelpers
 
     STATIC METHOD GetColumnInfoFromSchemaRow(oColumn AS DataColumn, aFieldNames AS IList<STRING>, lLongNamesAllowed := FALSE AS LOGIC) AS DbColumnInfo
         RETURN GetColumnInfo(aFieldNames, oColumn:ColumnName, oColumn:DataType, oColumn:MaxLength, -1,-1, ;
-        oColumn:AutoIncrement, oColumn:AllowDBNull, oColumn:ReadOnly, oColumn:Ordinal, lLongNamesAllowed)
+            oColumn:AutoIncrement, oColumn:AllowDBNull, oColumn:ReadOnly, oColumn:Ordinal, lLongNamesAllowed)
 
 
     INTERNAL CONST COLUMNNAME := "ColumnName" AS STRING
@@ -297,5 +297,28 @@ STATIC CLASS SQLHelpers
         ENDIF
         aFldNames:Add(cName)
         RETURN cName
+
+    PUBLIC STATIC METHOD ReturnsRows(cCommand AS STRING) AS LOGIC
+        LOCAL aParts := cCommand:Split(" ()":ToCharArray()) AS STRING[]
+        IF aParts:Length > 0
+            LOCAL cWord := aParts[1]:ToLower() AS STRING
+            SWITCH cWord
+            CASE "select"
+            CASE "execute"
+                RETURN TRUE
+                // dml
+            CASE "insert"
+            CASE "delete"
+            CASE "update"
+                // ddl
+            CASE "create"
+            CASE "drop"
+            CASE "alter"
+                RETURN FALSE
+            OTHERWISE
+                RETURN TRUE  //?
+            END SWITCH
+        ENDIF
+        RETURN FALSE
 END CLASS
 END NAMESPACE

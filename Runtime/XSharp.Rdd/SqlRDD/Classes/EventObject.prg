@@ -6,52 +6,52 @@
 
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
-	/// <summary>
-    /// The EventObject class.
-    /// </summary>
-	CLASS SqlDbEventObject INHERIT SqlDbHandleObject
+/// <summary>
+/// The EventObject class.
+/// </summary>
+class SqlDbEventObject inherit SqlDbHandleObject
 
-        CONSTRUCTOR(cName as STRING)
-            SUPER(cName)
-         RETURN
+    constructor(cName as string)
+        super(cName)
+        return
 
-    PUBLIC EVENT CallBack AS SqlRDDEventHandler
-    PROTECTED METHOD RaiseEvent(oObject AS SqlDbEventObject, nEvent AS SqlRDDEventReason, cTable as string, oValue AS Object) AS Object
-        VAR oArgs := SqlRddEventArgs{ nEvent, cTable, oValue}
-        IF @@CallBack != NULL
+    public event CallBack as SqlRDDEventHandler
+    protected method RaiseEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as object) as object
+        var oArgs := SqlRddEventArgs{ nEvent, cTable, oValue}
+        if @@CallBack != null
             @@CallBack ( oObject, oArgs )
-        ENDIF
-        RETURN oArgs:Value
-    PROTECTED METHOD RaiseStringEvent(oObject AS SqlDbEventObject, nEvent AS SqlRDDEventReason, cTable as string, oValue AS STRING) as String
+        endif
+        return oArgs:Value
+    protected method RaiseStringEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as string) as string
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
-        if result IS String var strValue
-            RETURN strValue
-        ENDIF
+        if result is string var strValue
+            return strValue
+        endif
         return oValue
-    PROTECTED METHOD RaiseIntEvent(oObject AS SqlDbEventObject, nEvent AS SqlRDDEventReason, cTable as string, oValue AS INT) as INT
+    protected method RaiseIntEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as int) as int
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
-        if result IS Int var intValue
-            RETURN intValue
-        ENDIF
+        if result is int var intValue
+            return intValue
+        endif
         return oValue
-    PROTECTED METHOD RaiseListEvent(oObject AS SqlDbEventObject, nEvent AS SqlRDDEventReason, cTable as string, oValue AS IList<String>) as IList<String>
+    protected method RaiseListEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as IList<string>) as IList<string>
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
-        if result IS IList<String> VAR listValue
-            RETURN listValue
-        ENDIF
+        if result is IList<string> var listValue
+            return listValue
+        endif
         return oValue
-    PROTECTED METHOD RaiseLogicEvent(oObject AS SqlDbEventObject, nEvent AS SqlRDDEventReason, cTable as string, oValue AS LOGIC) as LOGIC
+    protected method RaiseLogicEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as logic) as logic
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
-        if result IS Logic var logValue
-            RETURN logValue
-        ENDIF
+        if result is logic var logValue
+            return logValue
+        endif
         return oValue
 
-	END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.Classes
+end class
+end namespace // XSharp.RDD.SqlRDD.Classes

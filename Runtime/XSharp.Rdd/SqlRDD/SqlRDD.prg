@@ -51,6 +51,17 @@ CLASS SQLRDD INHERIT DBFVFP
             result := Path.Combine(folder, name+".DBF")
         UNTIL ! File.Exists(result)
         return result
+
+    PRIVATE METHOD GetTableInfo(cTable as STRING) AS LOGIC
+        // First check to see if there is a tableDef for this table in the connection
+        local oTd as SqlDbTableDef
+        
+        oTd := SELF:_connection:GetStructure(cTable)
+        if oTd != NULL
+
+        ENDIF
+        RETURN FALSE
+
     OVERRIDE METHOD Open(info as DbOpenInfo) AS LOGIC
         var query := info:FileName
         local strConnection as STRING
@@ -69,8 +80,18 @@ CLASS SQLRDD INHERIT DBFVFP
             query := query:Substring(pos+2)
             info:FileName := query
         endif
+
+        // Determine if this is a single table name or a query (select or Execute)
+        var selectStmt := XSharp.SQLHelpers.ReturnsRows(query)
+        if (selectStmt)
+            SELF:_tableMode := TableMode.Query
+            SELF:_oTd := _connection:GetStructureForQuery(query,"QUERY")
+        else
+            self:_tableMode := TableMode.Table
+
+        endif
+
         // Get the structure
-        _oTd := _connection:GetStructureForQuery(query,"QUERY")
         var oFields := List<RddFieldInfo>{}
         foreach var oCol in _oTd:Columns
             oFields:Add(oCol:ColumnInfo)

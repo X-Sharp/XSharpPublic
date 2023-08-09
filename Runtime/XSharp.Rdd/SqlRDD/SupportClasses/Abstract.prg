@@ -5,40 +5,40 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Diagnostics
+using System
+using System.Collections.Generic
+using System.Text
+using System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Abstract class.
 /// </summary>
 [DebuggerDisplay("{Name,nq}")];
-CLASS SqlDbObject
+class SqlDbObject
 #ifdef DEBUG
-    STATIC PRIVATE nId := 0 AS LONG
-    PROPERTY Id	  AS LONG AUTO GET PRIVATE SET
+    static private nId := 0 as long
+    property Id	  as long auto get private set
 #endif
-    PROPERTY Name AS STRING AUTO GET PRIVATE SET
+    property Name as string auto get private set
 
-    CONSTRUCTOR()
+    constructor()
 #ifdef DEBUG
-        SELF:Id := ++nId
+        self:Id := ++nId
 #endif
-        RETURN
-    CONSTRUCTOR(cName AS STRING)
-        SELF()
-        SELF:Name := cName
-        RETURN
+        return
+    constructor(cName as string)
+        self()
+        self:Name := cName
+        return
 
-    OVERRIDE METHOD ToString() AS STRING
-        RETURN SELF:Name
+    override method ToString() as string
+        return self:Name
 
-    INTERNAL METHOD SetName(cName as STRING) AS VOID
-        SELF:Name := cName
-        RETURN
+    internal method SetName(cName as string) as void
+        self:Name := cName
+        return
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD

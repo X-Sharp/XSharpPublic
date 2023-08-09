@@ -51,11 +51,10 @@ FUNCTION SqlDbCloseConnection(ConnectionName as String) as LOGIC
 /// <inheritdoc cref="SqlDbCloseConnection(System.String)" />
 FUNCTION SqlDbCloseConnection(Handle as IntPtr) as LOGIC
     var oConn := SqlDbConnection.FindByHandle(Handle)
-    if (oConn != NULL)
-        oConn:Close()
-        RETURN TRUE
+    if oConn != NULL
+        RETURN oConn:Close()
     endif
-RETURN FALSE
+    RETURN oConn != NULL
 
 FUNCTION SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
     RETURN SqlDbConnection.FindByHandle(Handle)

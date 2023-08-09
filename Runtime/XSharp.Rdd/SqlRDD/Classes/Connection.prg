@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD
 /// <summary>
 /// Connection class.
 /// </summary>
-CLASS SqlDbConnection INHERIT SqlDbObject
+CLASS SqlDbConnection INHERIT SqlDbEventObject IMPLEMENTS IDisposable
     // Constants for the Metadata collections
     INTERNAL CONST COLLECTIONNAME := "CollectionName" AS STRING
     INTERNAL CONST TABLECOLLECTION := "Tables" as STRING
@@ -36,89 +36,57 @@ CLASS SqlDbConnection INHERIT SqlDbObject
     PROPERTY Schema             AS Dictionary<string, SqlDbTableDef> AUTO
     PROPERTY RDDs               AS IList<SQLRDD> AUTO
     PROPERTY KeepOpen           AS LOGIC AUTO
-    PROPERTY Handle             AS IntPtr AUTO
     PROPERTY TimeOut            AS LONG AUTO
+    PROPERTY TrimTrailingSpaces AS LOGIC AUTO
+    PROPERTY DbTransaction      AS DbTransaction Auto
 
 #endregion
-
-    PUBLIC EVENT CallBack AS SqlRDDEventHandler
-    PRIVATE METHOD RaiseEvent(oConn AS SqlDbConnection, nEvent AS SqlRDDEventReason, cTable as string, oValue AS Object) AS Object
-        VAR oArgs := SqlRddEventArgs{ nEvent, cTable, oValue}
-        IF @@CallBack != NULL
-            @@CallBack ( oConn, oArgs )
-        ENDIF
-        RETURN oArgs:Value
-    PRIVATE METHOD RaiseStringEvent(oConn AS SqlDbConnection, nEvent AS SqlRDDEventReason, cTable as string, oValue AS STRING) as String
-        var result := RaiseEvent(oConn, nEvent, cTable, oValue)
-        if result IS String var strValue
-            RETURN strValue
-        ENDIF
-        return oValue
-    PRIVATE METHOD RaiseIntEvent(oConn AS SqlDbConnection, nEvent AS SqlRDDEventReason, cTable as string, oValue AS INT) as INT
-        var result := RaiseEvent(oConn, nEvent, cTable, oValue)
-        if result IS Int var intValue
-            RETURN intValue
-        ENDIF
-        return oValue
-    PRIVATE METHOD RaiseListEvent(oConn AS SqlDbConnection, nEvent AS SqlRDDEventReason, cTable as string, oValue AS IList<String>) as IList<String>
-        var result := RaiseEvent(oConn, nEvent, cTable, oValue)
-        if result IS IList<String> VAR listValue
-            RETURN listValue
-        ENDIF
-        return oValue
-    PRIVATE METHOD RaiseLogicEvent(oConn AS SqlDbConnection, nEvent AS SqlRDDEventReason, cTable as string, oValue AS LOGIC) as LOGIC
-        var result := RaiseEvent(oConn, nEvent, cTable, oValue)
-        if result IS Logic var logValue
-            RETURN logValue
-        ENDIF
-        return oValue
 
 #region static properties and methods
     CONST DefaultConnection := "DEFAULT" AS STRING
     STATIC Connections      AS List<SqlDbConnection>
-    STATIC RandomGenerator  AS Random
     STATIC INTERNAL PROPERTY DefaultCached  AS LOGIC AUTO
     STATIC Constructor()
         Connections     := List<SqlDbConnection>{}
-        RandomGenerator := Random{ 12345 }
         DefaultCached   := TRUE
-    STATIC METHOD GetId() as IntPtr
-        local ok := TRUE as LOGIC
-        local id as IntPtr
-        REPEAT
-            id := IntPtr{RandomGenerator:Next()}
-            FOREACH var connection in Connections
-                if connection:Handle == id
-                    ok := FALSE
-                    EXIT
-                endif
-            NEXT
-        UNTIL ok
-        return id
+
     STATIC METHOD FindByHandle(id as IntPtr) AS SqlDbConnection
-        FOREACH var connection in Connections
-            if connection:Handle == id
-                return connection
-            endif
-        NEXT
+        IF SqlDbHandles.FindById(id) IS SqlDbConnection VAR oConn
+            return oConn
+        endif
         RETURN NULL
+
     STATIC METHOD FindByName(name as String) AS SqlDbConnection
-        FOREACH var connection in Connections
-            if String.Compare(connection:Name, name, true) == 0
-                return connection
+        FOREACH var oConn in Connections
+            if String.Compare(oConn:Name, name, true) == 0
+                return oConn
             endif
         NEXT
         RETURN NULL
+
 #endregion
 
+    PRIVATE METHOD AnalyzeConnectionString(cConnectionString as STRING) AS STRING
+        var options := DbConnectionStringBuilder{SELF:Provider:Name:ToLower() == "odbc"}
+        options:ConnectionString := cConnectionString
+        var builder := Provider:CreateConnectionStringBuilder()
+        foreach key as string in options:Keys
+            var value := options[key]:ToString()
+            if String.Compare(key, "TrimTrailingSpaces", true) == 0
+                SELF:TrimTrailingSpaces := (value:ToLower() == "true")
+            else
+                builder:Add(key, value)
+            endif
+        next
+        RETURN builder:ConnectionString
     CONSTRUCTOR(cName AS STRING, cConnectionString as STRING, @@Callback := NULL as SqlRDDEventHandler)
         SUPER(cName)
-        SELF:ConnectionString := cConnectionString
         RDDs            := List<SQLRDD>{}
         Schema          := Dictionary<string, SqlDbTableDef>{StringComparer.OrdinalIgnoreCase}
         Provider        := SqlDbProvider.Current
+        cConnectionString := SELF:AnalyzeConnectionString(cConnectionString)
+        SELF:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
-        Handle          := GetId()
         TimeOut         := 15
         KeepOpen        := DefaultCached
         IF @@Callback != NULl
@@ -160,11 +128,33 @@ CLASS SqlDbConnection INHERIT SqlDbObject
 #endregion
 #region Transactions
     METHOD BeginTrans AS LOGIC
-        RETURN FALSE
+        TRY
+            SELF:DbTransaction := SELF:DbConnection:BeginTransaction()
+        CATCH e as Exception
+            SELF:DbTransaction := NULL
+        END TRY
+        RETURN SELF:DbTransaction != NULL
+    METHOD BeginTrans(isolationLevel AS System.Data.IsolationLevel)  AS LOGIC
+        TRY
+            SELF:DbTransaction := SELF:DbConnection:BeginTransaction(isolationLevel)
+        CATCH e as Exception
+            SELF:DbTransaction := NULL
+        END TRY
+        RETURN SELF:DbTransaction != NULL
     METHOD CommitTrans() AS LOGIC
+        IF SELF:DbTransaction != NULL
+            SELF:DbTransaction:Commit()
+            SELF:DbTransaction := NULL
+            RETURN TRUE
+        ENDIF
         RETURN FALSE
 #endregion
     METHOD RollBackTrans AS LOGIC
+        IF SELF:DbTransaction != NULL
+            SELF:DbTransaction:Rollback()
+            SELF:DbTransaction := NULL
+            RETURN TRUE
+        ENDIF
         RETURN FALSE
 
 
@@ -179,13 +169,11 @@ CLASS SqlDbConnection INHERIT SqlDbObject
 #region MetaData
     METHOD GetStructureForQuery(cQuery as STRING, TableName as STRING) AS SqlDbTableDef
         cQuery := RaiseStringEvent(SELF, SqlRDDEventReason.CommandText, TableName, cQuery)
-        var longFieldNames := TRUE
+        var longFieldNames := FALSE
         longFieldNames := RaiseLogicEvent(SELF,SqlRDDEventReason.LongFieldNames, TableName, longFieldNames)
-        var cmd   := Self:Provider:CreateCommand()
+        var cmd   := SqlDbCommand{TableName, SELF}
         cmd:CommandText := cQuery
-        cmd:Connection := SELF:DbConnection
-        using var reader := cmd:ExecuteReader(CommandBehavior.SchemaOnly)
-        var schema := reader:GetSchemaTable()
+        var schema := cmd:GetSchemaTable()
         var oCols := List<SqlDbColumnDef>{}
         var fieldNames := List<String>{}
         foreach row as DataRow in schema:Rows
@@ -238,5 +226,12 @@ CLASS SqlDbConnection INHERIT SqlDbObject
         RETURN result
 #endregion
 
+
+    #region Implement IDisposable
+
+    PUBLIC METHOD Dispose() AS VOID
+        SELF:Close()
+
+    #endregion
 END CLASS
 END NAMESPACE // XSharp.RDD.SqlRDD

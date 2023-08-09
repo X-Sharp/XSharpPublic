@@ -28,6 +28,7 @@ CLASS SQLRDD INHERIT DBFVFP
     PROTECT _tableMode      AS TableMode
     PROTECT _connection     AS SqlDbConnection
     PROTECT _oTd            as SqlDbTableDef
+    PROTECT _command        AS SqlDbCommand
 
 #region Overridden properties
     OVERRIDE PROPERTY Driver AS STRING GET "SQLRDD"
@@ -45,10 +46,9 @@ CLASS SQLRDD INHERIT DBFVFP
         local result as string
         REPEAT
             var folder := Path.GetTempPath()
-            var nId  := SqlDbConnection.GetId() / 0x100000
-            var name := i"SQL{nId:X5}"
-            result := Path.Combine(folder, name)
-            result := Path.ChangeExtension(result, ".DBF")
+            var nId  := SqlDbHandles.GetId(0xFFFFF)
+            var name := i"SQL"+nId:ToInt32():ToString("X5")
+            result := Path.Combine(folder, name+".DBF")
         UNTIL ! File.Exists(result)
         return result
     OVERRIDE METHOD Open(info as DbOpenInfo) AS LOGIC
@@ -56,14 +56,19 @@ CLASS SQLRDD INHERIT DBFVFP
         local strConnection as STRING
         local pos as INT
         strConnection := SqlDbConnection.DefaultConnection
+        _connection := SqlDbGetConnection(strConnection)
+        if _connection == NULL
+            // Exception
+            NOP
+        ENDIF
+        _connection:AddRdd(SELF)
+        _command    := SqlDbCommand{info:Alias, _connection}
         pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
         if pos > 0
             strConnection := query:Substring(0, pos)
             query := query:Substring(pos+2)
             info:FileName := query
         endif
-        _connection := SqlDbGetConnection(strConnection)
-        _connection:AddRdd(SELF)
         // Get the structure
         _oTd := _connection:GetStructureForQuery(query,"QUERY")
         var oFields := List<RddFieldInfo>{}
@@ -71,7 +76,7 @@ CLASS SQLRDD INHERIT DBFVFP
             oFields:Add(oCol:ColumnInfo)
         next
         var aFields := oFields:ToArray()
-        var tempFile   := TempFileName()
+        var tempFile   := SELF:TempFileName()
         CoreDb.Create(tempFile,aFields,Typeof(DBFVFP),TRUE,"SQLRDD-TEMP","",FALSE,FALSE)
         info:FileName := Path.Combine(Path.GetDirectoryName(tempFile), Path.GetFileNameWithoutExtension(tempFile))
         info:Extension := ".DBF"
@@ -82,14 +87,8 @@ CLASS SQLRDD INHERIT DBFVFP
             var aField := aFields[nI-1]
             SELF:FieldInfo(nI, DBS_COLUMNINFO, aField)
         NEXT
-        var cmd   := _connection:Provider:CreateCommand()
-        cmd:CommandText := query
-        cmd:Connection := _connection:DbConnection
-        using var reader := cmd:ExecuteReader()
-        local oDataTable as DataTable
-        oDataTable := DataTable{}
-        oDataTable:Load(reader)
-        self:DataTable := oDataTable
+        _command:CommandText := query
+        self:DataTable   := _command:GetDataTable(info:Alias)
         return true
 
     /// <inheritdoc />
@@ -144,12 +143,21 @@ CLASS SQLRDD INHERIT DBFVFP
             ELSE
                 result := _phantomRow[nFldPos]
             ENDIF
+            if result is String var strValue .and. ! _creatingIndex
+                if SELF:_connection:TrimTrailingSpaces
+                    result := strValue:TrimEnd()
+                else
+                    result := strValue:PadRight(_Fields[nFldPos]:Length,' ')
+                endif
+            endif
+
             IF result == DBNull.Value
                 // The phantom row already is padded with trailing spaces
                 result := _phantomRow[nFldPos]
             ELSEIF _creatingIndex .AND. result IS STRING VAR strResult
                 result := strResult:PadRight(_Fields[nFldPos]:Length,' ')
             ENDIF
+
             RETURN result
         ENDIF
         RETURN SUPER:GetValue(nFldPos)

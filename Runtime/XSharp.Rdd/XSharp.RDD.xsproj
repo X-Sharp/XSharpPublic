@@ -117,7 +117,9 @@
     <Compile Include="Other\TextRDD.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />
-    <Compile Include="SqlRDD\Connection\Connection.prg" />
+    <Compile Include="SqlRDD\Classes\Connection.prg" />
+    <Compile Include="SqlRDD\Classes\Command.prg" />
+    <Compile Include="SqlRDD\Classes\EventObject.prg" />
     <Compile Include="SqlRDD\Functions\Provider.prg" />
     <Compile Include="SqlRDD\Providers\Advantage.prg" />
     <Compile Include="SqlRDD\Providers\MySql.prg" />
@@ -132,6 +134,7 @@
     <Compile Include="SqlRDD\SupportClasses\Enums.prg" />
     <Compile Include="SqlRDD\SupportClasses\Events.prg" />
     <Compile Include="SqlRDD\SupportClasses\Expression.prg" />
+    <Compile Include="SqlRDD\SupportClasses\Handles.prg" />
     <Compile Include="SqlRDD\SupportClasses\IniFile.prg" />
     <Compile Include="SqlRDD\SupportClasses\Order.prg" />
     <Compile Include="SqlRDD\SupportClasses\OrderBag.prg" />
@@ -182,7 +185,7 @@
     <Folder Include="Other\" />
     <Folder Include="Properties\" />
     <Folder Include="SqlRDD\" />
-    <Folder Include="SqlRDD\Connection" />
+    <Folder Include="SqlRDD\Classes" />
     <Folder Include="SqlRDD\Providers" />
     <Folder Include="SqlRDD\SupportClasses" />
     <Folder Include="SqlRDD\Functions" />

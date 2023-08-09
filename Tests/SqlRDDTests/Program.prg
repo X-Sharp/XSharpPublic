@@ -4,9 +4,9 @@ using MySql.Data.MySqlClient
 using Advantage.Data
 using System.Collections.Generic
 
-global SqlConnStr := "Server=(local);Initial catalog=NorthWind;Trusted_Connection=True;" as STRING
-global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=NorthWind;Trusted_Connection=Yes;" as STRING
-global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=NorthWind;Integrated Security=SSPI;" as STRING
+global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;TrimTrailingSpaces=True;" as STRING
+global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;TrimTrailingSpaces=True;" as STRING
+global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;TrimTrailingSpaces=True;" as STRING
 
 
 function Start as void
@@ -14,20 +14,58 @@ function Start as void
     //TestSqlServer()
     //TestODBC()
     //TestOLEDB()
-    TestRDDSql()
-    TestRDDODBC()
-    TestRDDOLEDB()
+    //     TestRDDODBC()
+    //     TestRDDOLEDB()
+    //     TestRDDSql()
+    TestCommandSql()
+    TestCommandODBC()
+    TestCommandOLEDB()
     wait
     return
 
+function TestCommandSql() as void
+    TestCommand("SqlServer", SqlConnStr)
+
+function TestCommandODBC() as void
+    TestCommand("ODBC", ODBCConnStr)
+
+function TestCommandOLEDB() as void
+    TestCommand("OLEDB", OleDbConnStr)
+
+FUNCTION TestCommand(cDriver as string, cConn as STRING) AS VOID
+    local conn as SqlDbConnection
+    TRY
+        SqlDbSetProvider(cDriver)
+        var handle := SqlDbOpenConnection(cConn, EventHandler)
+        conn := SqlDbGetConnection(handle)
+        conn:BeginTrans()
+        var oCommand := SqlDbCommand{"TEST", conn}
+        oCommand:CommandText := "Select count(*) from Customers"
+        ? oCommand:ExecuteScalar()
+        oCommand:CommandText := "Execute CustOrderHist @Customerid = 'ALFKI'"
+        ? oCommand:ExecuteScalar() // returns primary key of new record
+        oCommand:CommandText := "Select count(*) from Customers"
+        ? oCommand:ExecuteScalar()
+        conn:RollbackTrans()
+    CATCH e as Exception
+        ? e:Message
+        if e:InnerException != null
+            ? e:InnerException:Message
+        endif
+        if conn != null
+            conn:RollbackTrans()
+        endif
+    END TRY
+    WAIT
+    RETURN
 Function TestRDD(cDriver as string, cConn as STRING) as void
-    Console.Clear()
+    //Console.Clear()
     var secs := Seconds()
     SqlDbSetProvider(cDriver)
     var handle := SqlDbOpenConnection(cConn, EventHandler)
     DumpCustomers()
     ? Seconds() - secs
-    WAIT
+    //WAIT
     VoDbCloseArea()
     SqlDbCloseConnection(handle)
 
@@ -41,14 +79,17 @@ function TestRDDOLEDB() as void
     testRDD("OLEDB", OleDbConnStr)
 
 function DumpCustomers() as VOID
-    VoDbUseArea(TRUE, typeof(SQLRDD),"Select * from Customers","Customers",TRUE, TRUE)
+    VoDbUseArea(TRUE, typeof(SQLRDD),"Select * from tblProjecten","tblProjecten",TRUE, TRUE)
     ? FCount(), RecCount()
     local nI as DWORD
     For nI  := 1 to FCount()
         ? FieldName(nI), DbFieldInfo(DBS_ALIAS, nI)
     next
     DO WHILE ! Eof()
-        ? Recno(), FieldGet(1), FieldGet(2)
+        ? Recno()
+        For nI  := 1 to Min(FCount(),5)
+            ?? "; ", FieldGet(nI)
+        next
         DbSkip(1)
     ENDDO
 
@@ -162,6 +203,7 @@ Function DumpExpression(oExpr as SqlDbExpression) AS VOID
     ? "Cols ",oExpr:ColumnListString
     ? "SqlKey", oExpr:SQLKey
     ?
+
 
 
 

@@ -38,22 +38,15 @@ FUNCTION TestCommand(cDriver as string, cConn as STRING) AS VOID
         SqlDbSetProvider(cDriver)
         var handle := SqlDbOpenConnection(cConn, EventHandler)
         conn := SqlDbGetConnection(handle)
-        conn:BeginTrans()
-        var oCommand := SqlDbCommand{"TEST", conn}
-        oCommand:CommandText := "Select count(*) from Customers"
-        ? oCommand:ExecuteScalar()
-        oCommand:CommandText := "Execute CustOrderHist @Customerid = 'ALFKI'"
-        ? oCommand:ExecuteScalar() // returns primary key of new record
-        oCommand:CommandText := "Select count(*) from Customers"
-        ? oCommand:ExecuteScalar()
-        conn:RollbackTrans()
+        var stmt := SqlDbCreateSqlStatement(handle)
+        var res := SqlDbExecuteSQLDirect(stmt, "Select count(*) from Customers")
+        ? res
+        SqlDbCloseStatement(stmt)
+        SqlDbCloseConnection(handle)
     CATCH e as Exception
         ? e:Message
         if e:InnerException != null
             ? e:InnerException:Message
-        endif
-        if conn != null
-            conn:RollbackTrans()
         endif
     END TRY
     WAIT

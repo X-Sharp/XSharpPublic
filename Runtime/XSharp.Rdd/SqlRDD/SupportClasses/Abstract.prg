@@ -36,5 +36,9 @@ CLASS SqlDbObject
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Name
 
+    INTERNAL METHOD SetName(cName as STRING) AS VOID
+        SELF:Name := cName
+        RETURN
+
 END CLASS
 END NAMESPACE // XSharp.RDD.SqlRDD

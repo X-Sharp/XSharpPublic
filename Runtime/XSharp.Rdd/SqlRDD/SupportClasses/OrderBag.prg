@@ -6,40 +6,41 @@
 
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The OrderBag class.
 /// </summary>
-CLASS OrderBag INHERIT List<SqlDbOrder>
-    PROPERTY FileName           AS STRING AUTO
-    PROPERTY ProductionIndex    AS LOGIC AUTO
-    PROPERTY WorkArea	        AS SQLRDD AUTO
+class SqlDbOrderBag inherit List<SqlDbOrder>
+    property FileName           as string auto
+    property ProductionIndex    as logic auto
+    property WorkArea	        as SQLRDD auto
 
-    CONSTRUCTOR(cName AS STRING, oArea AS SQLRDD)
-        SUPER()
-        SELF:FileName := cName
-        SELF:WorkArea := oArea
-        RETURN
-    NEW METHOD Add(oOrder AS SqlDbOrder) AS VOID
-        SUPER:Add(oOrder)
+    constructor(cName as string, oArea as SQLRDD)
+        super()
+        self:FileName := cName
+        self:WorkArea := oArea
+        return
+    new method Add(oOrder as SqlDbOrder) as void
+        super:Add(oOrder)
         //SELF:WorkArea:Orders:Add(oOrder)
-        SELF:Save()
-        RETURN
-    METHOD Close AS LOGIC
-        SELF:Clear()
-        RETURN TRUE
-    METHOD Load(aTags AS IList<STRING>) AS VOID
-        RETURN
-    METHOD Remove(nTagPos AS LONG)  AS OBJECT
-        RETURN NULL
-    METHOD Remove(cTagName AS STRING)  AS OBJECT
-        RETURN NULL
-    METHOD Save()  AS VOID
-        RETURN
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
-DEFINE strTags := "Tags"
+        self:Save()
+        return
+    method Close as logic
+        self:Clear()
+        return true
+    method Load(aTags as IList<string>) as void
+        return
+    method Remove(nTagPos as long)  as object
+        return null
+    method Remove(cTagName as string)  as object
+        return null
+    method Save()  as void
+        return
+end class
+end namespace // XSharp.RDD.SqlRDD
+define strTags := "Tags"
+

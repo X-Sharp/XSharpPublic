@@ -5,44 +5,44 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Order class.
 /// </summary>
-CLASS SqlDbOrder INHERIT SqlDbObject
-    PROPERTY Bag		AS OrderBag AUTO
-    PROPERTY WorkArea	AS SQLRDD   AUTO
-    PROPERTY KeyExp     AS STRING   AUTO
-    PROPERTY AdoKey		AS STRING   AUTO
-    PROPERTY cbExpr		AS OBJECT   AUTO
-    PROPERTY uTopScope	AS OBJECT   AUTO
-    PROPERTY uBotScope	AS OBJECT   AUTO
-    PROPERTY Descending AS LOGIC    AUTO
-    PROPERTY Unique    	AS LOGIC    AUTO
-    PROPERTY KeyLength	AS DWORD    AUTO
-    PROPERTY HasFunctions AS LOGIC  AUTO
-    PROPERTY Segments	AS IList<SqlDbSegment>   AUTO
-    PROPERTY ColumnList	AS IList<STRING>    AUTO
-    PROPERTY OrderList	AS IList<STRING>    AUTO
+class SqlDbOrder inherit SqlDbObject
+    property Bag		as SqlDbOrderBag auto
+    property WorkArea	as SQLRDD   auto
+    property KeyExp     as string   auto
+    property AdoKey		as string   auto
+    property cbExpr		as object   auto
+    property uTopScope	as object   auto
+    property uBotScope	as object   auto
+    property Descending as logic    auto
+    property Unique    	as logic    auto
+    property KeyLength	as dword    auto
+    property HasFunctions as logic  auto
+    property Segments	as IList<SqlDbSegment>   auto
+    property ColumnList	as IList<string>    auto
+    property OrderList	as IList<string>    auto
 
-    CONSTRUCTOR(oRDD AS SQLRDD, cName AS STRING, cIndexExpr AS STRING, oBag AS OrderBag)
-        SUPER(cName)
-        SELF:WorkArea       := oRDD
-        SELF:KeyExp         := cIndexExpr
-        SELF:Bag            := oBag
-        VAR oExp            := SqlDbExpression{SELF,cIndexExpr}
-        SELF:HasFunctions 	:= oExp:HasFunctions
-        SELF:AdoKey			:= oExp:SQLKey
-        SELF:OrderList 	    := oExp:OrderList
-        SELF:ColumnList	    := oExp:ColumnList
-        SELF:Segments		:= oExp:Segments
+    constructor(oRDD as SQLRDD, cName as string, cIndexExpr as string, oBag as SqlDbOrderBag)
+        super(cName)
+        self:WorkArea       := oRDD
+        self:KeyExp         := cIndexExpr
+        self:Bag            := oBag
+        var oExp            := SqlDbExpression{self,cIndexExpr}
+        self:HasFunctions 	:= oExp:HasFunctions
+        self:AdoKey			:= oExp:SQLKey
+        self:OrderList 	    := oExp:OrderList
+        self:ColumnList	    := oExp:ColumnList
+        self:Segments		:= oExp:Segments
 
-        RETURN
+        return
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD

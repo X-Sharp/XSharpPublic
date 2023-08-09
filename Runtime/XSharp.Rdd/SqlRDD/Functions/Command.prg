@@ -7,42 +7,43 @@
 using XSharp.RDD.SqlRDD
 using System.Collections.Generic
 using System.Text
-USING System.Data
+using System.Data
 
-FUNCTION SqlDbCreateSQLStatement(hConn as IntPtr) AS IntPtr
-    LOCAL oConn as SqlDbConnection
-    LOCAL oCmd  as SqlDbCommand
+function SqlDbCreateSQLStatement(hConn as IntPtr) as IntPtr
+    local oConn as SqlDbConnection
+    local oCmd  as SqlDbCommand
     oConn := SqlDbGetConnection(hConn)
-    if oConn != NULL
+    if oConn != null
         oCmd := SqlDbCommand{"CMD", oConn}
-        RETURN oCmd:Handle
-    ENDIF
-    RETURN IntPtr.Zero
+        return oCmd:Handle
+    endif
+    return IntPtr.Zero
 
-FUNCTION SqlDbGetStatement(hStmt as IntPtr) AS SqlDbCommand
-    LOCAL oCmd  as SqlDbCommand
+function SqlDbGetStatement(hStmt as IntPtr) as SqlDbCommand
+    local oCmd  as SqlDbCommand
     oCmd := SqlDbCommand.FindByHandle(hStmt)
-    RETURN oCmd
+    return oCmd
 
-FUNCTION SqlDbExecuteSQLDirect(hStmt as IntPtr, sCommandText as STRING) AS Object
-    VAR oCmd := SqlDbGetStatement(hStmt)
-    IF oCmd != NULL
+function SqlDbExecuteSQLDirect(hStmt as IntPtr, sCommandText as string) as object
+    var oCmd := SqlDbGetStatement(hStmt)
+    if oCmd != null
         oCmd:CommandText := sCommandText
-        RETURN oCmd:ExecuteScalar()
-    ENDIF
-    RETURN NULL
+        return oCmd:ExecuteScalar()
+    endif
+    return null
 
-FUNCTION SqlDbExecuteQueryDirect(hStmt as IntPtr, sCommandText as STRING) AS DataTable
-    VAR oCmd := SqlDbGetStatement(hStmt)
-    IF oCmd != NULL
+function SqlDbExecuteQueryDirect(hStmt as IntPtr, sCommandText as string) as DataTable
+    var oCmd := SqlDbGetStatement(hStmt)
+    if oCmd != null
         oCmd:CommandText := sCommandText
-        RETURN oCmd:GetDataTable("Table")
-    ENDIF
-    RETURN NULL
-FUNCTION SqlDbCloseStatement(hStmt as IntPtr) AS LOGIC
-    VAR oCmd := SqlDbGetStatement(hStmt)
-    IF oCmd != NULL
+        return oCmd:GetDataTable("Table")
+    endif
+    return null
+function SqlDbCloseStatement(hStmt as IntPtr) as logic
+    var oCmd := SqlDbGetStatement(hStmt)
+    if oCmd != null
         oCmd:Close()
-    ENDIF
-    RETURN oCmd != NULL
+    endif
+    return oCmd != null
+
 

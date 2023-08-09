@@ -5,28 +5,28 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING XSharp.RDD.SqlRDD
+using System
+using System.Collections.Generic
+using System.Text
+using XSharp.RDD.SqlRDD
 using System.Data.Common
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
-    
+begin namespace XSharp.RDD.SqlRDD.Providers
+
 /// <summary>
 /// The SqlServer provider class.
 /// </summary>
-CLASS SqlServer INHERIT SqlDbProvider
+class SqlServer inherit SqlDbProvider
     override property DllName as string => "System.Data.dll"
     override property TypeName as string => "System.Data.SqlClient.SqlClientFactory"
-        
-    CONSTRUCTOR() STRICT
-        SUPER("SqlServer")
-        RETURN
-    private static aFuncs := NULL as Dictionary<String, String>
-    OVERRIDE METHOD GetFunctions() AS Dictionary<String, String>
-        if aFuncs == NULL
-            aFuncs := Dictionary<String, String>{StringComparer.OrdinalIgnoreCase} {;
+
+    constructor() strict
+        super("SqlServer")
+        return
+    private static aFuncs := null as Dictionary<string, string>
+    override method GetFunctions() as Dictionary<string, string>
+        if aFuncs == null
+            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
                 {"STR(%1%,%2%,%3%)"			,"STR(%1%,%2%,%3%)"},;
                 {"STR(%1%,%2%)"				,"STR(%1%,%2%,0)"},;
                 {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%,%3%)"},;
@@ -41,5 +41,5 @@ CLASS SqlServer INHERIT SqlDbProvider
                 {"+"						,"+"}}
         endif
         return aFuncs
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD.SupportClasses
+end class
+end namespace // XSharp.RDD.SqlRDD.SupportClasses

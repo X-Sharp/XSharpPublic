@@ -17,50 +17,50 @@ using System.Text
 /// If the connection string needs a UserName and/or Password then these need to be included in
 /// the connection string.</remarks>
 
-FUNCTION SqlDbOpenConnection(ConnectionString as STRING) as IntPtr
+function SqlDbOpenConnection(ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString}
-    RETURN oConn:Handle
+    return oConn:Handle
 
-FUNCTION SqlDbOpenConnection(ConnectionString as STRING, @@CallBack AS SqlRDDEventHandler) as IntPtr
+function SqlDbOpenConnection(ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, @@CallBack}
-    RETURN oConn:Handle
+    return oConn:Handle
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-FUNCTION SqlDbOpenConnection(ConnectionName as String, ConnectionString as STRING) as IntPtr
+function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString}
-    RETURN oConn:Handle
+    return oConn:Handle
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-FUNCTION SqlDbOpenConnection(ConnectionName as String, ConnectionString as STRING, @@CallBack AS SqlRDDEventHandler) as IntPtr
+function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString, @@CallBack}
-    RETURN oConn:Handle
+    return oConn:Handle
 
-    /// <summary>
-    /// Close a SQLRDD Connection.
-    /// </summary>
-    /// <param name="ConnectionName">Name of the connection to close.</param>
-    /// <param name="Handle">Handle of the connection to close.</param>
-    /// <returns>TRUE when the connection was successfully closed. FALSE if the connection did not exist or was already closed</returns>
-FUNCTION SqlDbCloseConnection(ConnectionName as String) as LOGIC
+/// <summary>
+/// Close a SQLRDD Connection.
+/// </summary>
+/// <param name="ConnectionName">Name of the connection to close.</param>
+/// <param name="Handle">Handle of the connection to close.</param>
+/// <returns>TRUE when the connection was successfully closed. FALSE if the connection did not exist or was already closed</returns>
+function SqlDbCloseConnection(ConnectionName as string) as logic
     var oConn := SqlDbConnection.FindByName(ConnectionName)
-    if (oConn != NULL)
+    if (oConn != null)
         oConn:Close()
-        RETURN TRUE
+        return true
     endif
-    RETURN FALSE
+    return false
 /// <inheritdoc cref="SqlDbCloseConnection(System.String)" />
-FUNCTION SqlDbCloseConnection(Handle as IntPtr) as LOGIC
+function SqlDbCloseConnection(Handle as IntPtr) as logic
     var oConn := SqlDbConnection.FindByHandle(Handle)
-    if oConn != NULL
-        RETURN oConn:Close()
+    if oConn != null
+        return oConn:Close()
     endif
-    RETURN oConn != NULL
+    return oConn != null
 
-FUNCTION SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
-    RETURN SqlDbConnection.FindByHandle(Handle)
+function SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
+    return SqlDbConnection.FindByHandle(Handle)
 
-FUNCTION SqlDbGetConnection(ConnectionName as String) as SqlDbConnection
-    RETURN SqlDbConnection.FindByName(ConnectionName)
+function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
+    return SqlDbConnection.FindByName(ConnectionName)
 
 
 /// <summary>
@@ -90,24 +90,25 @@ FUNCTION SqlDbGetConnection(ConnectionName as String) as SqlDbConnection
 /// </para>
 /// </remarks>
 
-FUNCTION SqlDbCacheConnection(ShouldCache as LOGIC) AS LOGIC
+function SqlDbCacheConnection(ShouldCache as logic) as logic
     var old := SqlDbConnection.DefaultCached
     SqlDbConnection.DefaultCached := ShouldCache
-    RETURN  old
+    return  old
 
 
 
 
-FUNCTION List2String(list as IList<String>) AS STRING
-        var sb := StringBuilder{}
-        var first := TRUE
-        foreach var item in list
-            if first
-                first := FALSE
-            else
-                sb:Append(", ")
-            endif
-            sb:Append(item)
-        next
-        return sb:ToString()
+function List2String(list as IList<string>) as string
+    var sb := StringBuilder{}
+    var first := true
+    foreach var item in list
+        if first
+            first := false
+        else
+            sb:Append(", ")
+        endif
+        sb:Append(item)
+    next
+    return sb:ToString()
+
 

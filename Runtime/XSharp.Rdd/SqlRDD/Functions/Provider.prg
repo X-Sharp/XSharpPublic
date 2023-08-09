@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharp.RDD.SqlRDD
+using XSharp.RDD.SqlRDD
 
 /// <summary>
 /// Set the default SqlDbProvider to use for the SqlDb Connections. The default SQLDbProvider is ODBC
@@ -21,17 +21,17 @@ USING XSharp.RDD.SqlRDD
 /// </param>
 /// <returns>TRUE when a provider was found matching the name.</returns>
 /// <include file="SqlDbExamples.xml" path="doc/NorthWind1/*" />
-FUNCTION SqlDbSetProvider(ProviderName as STRING) AS LOGIC
+function SqlDbSetProvider(ProviderName as string) as logic
     SqlDbProvider.SetDefaultProvider(ProviderName)
-    RETURN SqlDbProvider.Current != null
+    return SqlDbProvider.Current != null
 
 
 /// <summary>
 /// Retrieve the default SqlDbProvider object
 /// </summary>
 /// <returns>The SqlDbProvider object or NULL when the ProviderName has not been registered.</returns>
-FUNCTION SqlDbGetProvider() AS SqlDbProvider
-    RETURN SqlDbProvider.Current
+function SqlDbGetProvider() as SqlDbProvider
+    return SqlDbProvider.Current
 
 
 /// <summary>
@@ -42,7 +42,8 @@ FUNCTION SqlDbGetProvider() AS SqlDbProvider
 /// This class needs to inherit from the SqlDbProvider class
 /// </param>
 /// <returns></returns>
-FUNCTION SqlDbRegisterProvider(ProviderName as string, ClassName as STRING) AS LOGIC
-    RETURN FALSE
+function SqlDbRegisterProvider(ProviderName as string, ClassName as string) as logic
+    return false
+
 
 

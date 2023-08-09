@@ -5,140 +5,140 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
+using System
+using System.Collections.Generic
+using System.Linq
+using System.Text
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Expression class.
 /// </summary>
-CLASS SqlDbExpression INHERIT SqlDbObject
-    #ifdef DEBUG
-        STATIC PUBLIC SqlTranslator as TranslateFunctionDelegate
-    #endif
-    PROPERTY Owner      AS OBJECT AUTO
-    PROPERTY VoKey		AS STRING AUTO
-    PROPERTY Tokens		AS IList<SqlDbToken> AUTO
-    PROPERTY Funcs		AS IList<SqlDbToken> AUTO
-    PROPERTY HasFunctions	AS LOGIC AUTO
-    PROPERTY CurToken 	AS INT AUTO
-    PROPERTY KeyLen		AS INT GET SELF:VoKey:Length
-    PROPERTY ColumnList AS List<String> AUTO
-    PROPERTY Translated AS LOGIC AUTO
-    PROPERTY Segments	AS IList<SqlDbSegment> AUTO
-    PROPERTY Widths		AS IList<LONG> AUTO
+class SqlDbExpression inherit SqlDbObject
+#ifdef DEBUG
+    static public SqlTranslator as TranslateFunctionDelegate
+#endif
+    property Owner      as object auto
+    property VoKey		as string auto
+    property Tokens		as IList<SqlDbToken> auto
+    property Funcs		as IList<SqlDbToken> auto
+    property HasFunctions	as logic auto
+    property CurToken 	as int auto
+    property KeyLen		as int get self:VoKey:Length
+    property ColumnList as List<string> auto
+    property Translated as logic auto
+    property Segments	as IList<SqlDbSegment> auto
+    property Widths		as IList<long> auto
 
-    PROPERTY OrderListString as String => List2String(SELF:OrderList)
-    PROPERTY ColumnListString as String => List2String(SELF:ColumnList)
+    property OrderListString as string => List2String(self:OrderList)
+    property ColumnListString as string => List2String(self:ColumnList)
 
 
-    CONSTRUCTOR(oOwner as Object, cIndexExpr AS STRING)
-        SUPER(cIndexExpr)
-        SELF:Owner := oOwner
-        SELF:VoKey := SELF:TranslateField(cIndexExpr)
+    constructor(oOwner as object, cIndexExpr as string)
+        super(cIndexExpr)
+        self:Owner := oOwner
+        self:VoKey := self:TranslateField(cIndexExpr)
         // Parse the expression and create a column list (for index on)
         // and an OrderList (for Orderby clauses)
         // and more
-        SELF:CurToken := 1
-        SELF:Tokens  	:= List<SqlDbToken>{}
-        SELF:Funcs	  	:= List<SqlDbToken>{}
-        SELF:ColumnList := List<String>{}
-        SELF:Segments   := SELF:GetSegments( SELF:VoKey)
-        SELF:ParseVoKey()
-        #ifdef DEBUG
+        self:CurToken := 1
+        self:Tokens  	:= List<SqlDbToken>{}
+        self:Funcs	  	:= List<SqlDbToken>{}
+        self:ColumnList := List<string>{}
+        self:Segments   := self:GetSegments( self:VoKey)
+        self:ParseVoKey()
+#ifdef DEBUG
         //oCb				:= oOwner:oWorkArea:oConnInfo:oCallBack
         //SELF:TranslateFunctions(oCb)
-        SELF:TranslateFunctions(SqlTranslator)
-        #endif
-        IF SELF:Segments:Count > 1
-            FOREACH var oSeg in SELF:Segments
-                VAR oExp 			:= SqlDbExpression{oOwner, oSeg:Key}
+        self:TranslateFunctions(SqlTranslator)
+#endif
+        if self:Segments:Count > 1
+            foreach var oSeg in self:Segments
+                var oExp 			:= SqlDbExpression{oOwner, oSeg:Key}
                 //oExp:CalculateColumnWidths()
                 oSeg:HasFunctions   := oExp:HasFunctions
                 oSeg:SQLKey			:= oExp:SQLKey
                 oSeg:OrderList 	    := oExp:OrderList
                 oSeg:ColumnList	    := oExp:ColumnList
                 oSeg:Widths		    := oExp:Widths
-            NEXT
-        ELSE
-            VAR oSeg := SELF:Segments:First()
-            oSeg:HasFunctions   := SELF:HasFunctions
-            oSeg:SQLKey			:= SELF:SQLKey
-            oSeg:OrderList 	    := SELF:OrderList
-            oSeg:ColumnList	    := SELF:ColumnList
-            oSeg:Widths		    := SELF:Widths
-        ENDIF
-        RETURN
-    PROTECT METHOD TranslateField(cIndexExpr AS STRING) AS STRING
-        LOCAL cField as STRING
+            next
+        else
+            var oSeg := self:Segments:First()
+            oSeg:HasFunctions   := self:HasFunctions
+            oSeg:SQLKey			:= self:SQLKey
+            oSeg:OrderList 	    := self:OrderList
+            oSeg:ColumnList	    := self:ColumnList
+            oSeg:Widths		    := self:Widths
+        endif
+        return
+    protect method TranslateField(cIndexExpr as string) as string
+        local cField as string
         cField := "_FIELD->"
-        DO WHILE TRUE
+        do while true
             var index := cIndexExpr:IndexOf(cField, StringComparison.OrdinalIgnoreCase)
             if index == -1
-                EXIT
-            ENDIF
+                exit
+            endif
             cIndexExpr :=cIndexExpr:Substring(0, index)+ cIndexExpr:Substring(index)
-        ENDDO
-        RETURN cIndexExpr
+        enddo
+        return cIndexExpr
 
 
-    PROTECT METHOD AddToken(symType AS TokenType, sb AS StringBuilder) AS VOID
+    protect method AddToken(symType as TokenType, sb as StringBuilder) as void
         AddToken(symType, sb:ToString())
-    PROTECT METHOD AddToken(symType AS TokenType, cName as STRING) AS VOID
-        LOCAL oFunc		AS SqlDbToken
-        LOCAL oToken 	AS SqlDbToken
-        LOCAL i			AS DWORD
+    protect method AddToken(symType as TokenType, cName as string) as void
+        local oFunc		as SqlDbToken
+        local oToken 	as SqlDbToken
+        local i			as dword
         oToken := SqlDbToken{symType, cName}
-        IF symType = TokenType.Token
+        if symType = TokenType.Token
             oToken:Name     := cName
             oToken:SQLName 	:= cName
-            IF cName:ToUpper() == ".OR." .or. cName:ToUpper() == ".AND."
+            if cName:ToUpper() == ".OR." .or. cName:ToUpper() == ".AND."
                 oToken:Type     := TokenType.Logic
                 oToken:SQLName 	:= cName:Replace(".","")
-            ELSEIF IsValidToken(cName)
+            elseif IsValidToken(cName)
                 oToken:Type := TokenType.Token
-                SELF:ColumnList:Add(cName)
-            ELSE
+                self:ColumnList:Add(cName)
+            else
                 oToken:Type := TokenType.Literal
-            ENDIF
-        ELSEIF symType = TokenType.BoFunc
+            endif
+        elseif symType = TokenType.BoFunc
             oToken:Name 	:= cName
             oToken:SQLName := cName
-        ENDIF
-        SELF:Tokens:Add(oToken)
-        IF symType == TokenType.BoFunc
+        endif
+        self:Tokens:Add(oToken)
+        if symType == TokenType.BoFunc
             oFunc := oToken
-            SELF:Funcs:Add(oFunc)
+            self:Funcs:Add(oFunc)
             oFunc:PCount := 1
-            SELF:HasFunctions := TRUE
+            self:HasFunctions := true
 
-        ELSEIF symType == TokenType.Delimiter
-            IF SELF:Funcs:Count > 0
-                oFunc := SELF:Funcs:Last()
+        elseif symType == TokenType.Delimiter
+            if self:Funcs:Count > 0
+                oFunc := self:Funcs:Last()
                 oFunc:PCount 	+= 1
                 oToken:Name 	:= ""
                 oToken:SQLName := ""
-            ENDIF
-        ELSEIF symType == TokenType.EoFunc
-            IF SELF:Funcs:Count > 0
-                oFunc	:= SELF:Funcs:Last()
-                FOR i := 1 TO oFunc:PCount
-                    IF i > 1
+            endif
+        elseif symType == TokenType.EoFunc
+            if self:Funcs:Count > 0
+                oFunc	:= self:Funcs:Last()
+                for i := 1 to oFunc:PCount
+                    if i > 1
                         oFunc:Name += ","
-                    ENDIF
+                    endif
                     oFunc:Name += "%"+i:ToString()+"%"
-                NEXT
+                next
                 oFunc:Name += ")"
                 oFunc:SQLName := oFunc:Name
-                SELF:Funcs:RemoveAt(SELF:Funcs:Count-1)
+                self:Funcs:RemoveAt(self:Funcs:Count-1)
                 oToken:SQLName := ""
-            ENDIF
-        ENDIF
-        RETURN
-    METHOD CalculateColumnWidths AS VOID
+            endif
+        endif
+        return
+    method CalculateColumnWidths as void
         /*
         LOCAL dw 	AS DWORD
         LOCAL cCol	AS STRING
@@ -161,319 +161,319 @@ CLASS SqlDbExpression INHERIT SqlDbObject
         */
 
 
-    PROTECT METHOD GetExpression(nLevel AS DWORD) AS STRING
-        LOCAL cKey	 AS STRING
+    protect method GetExpression(nLevel as dword) as string
+        local cKey	 as string
         cKey := ""
-        IF ! SELF:Translated
-            RETURN ""
-        ENDIF
-        DO WHILE SELF:NextToken() <> NULL_OBJECT
-            VAR oToken := SELF:GetToken()
-            var done := FALSE
-            SWITCH oToken:Type
-            CASE TokenType.EoExpr
+        if ! self:Translated
+            return ""
+        endif
+        do while self:NextToken() <> null_object
+            var oToken := self:GetToken()
+            var done := false
+            switch oToken:Type
+            case TokenType.EoExpr
                 cKey += oToken:SQLName
-                done := TRUE
-            CASE TokenType.EoFunc
+                done := true
+            case TokenType.EoFunc
                 // doe niets
-            CASE TokenType.Delimiter
+            case TokenType.Delimiter
                 cKey += oToken:SQLName
-            CASE TokenType.Operator
+            case TokenType.Operator
                 cKey += " "+oToken:SQLName +" "
-            CASE TokenType.Logic
-                DO CASE
-                CASE oToken:SQLName = "!"
+            case TokenType.Logic
+                do case
+                case oToken:SQLName = "!"
                     cKey += " Not "
-                OTHERWISE
+                otherwise
                     cKey += " "+oToken:SQLName +" "
-                ENDCASE
-            CASE TokenType.BoFunc
-                oToken:Args := List<Object>{}
-                FOR VAR i := 1 TO oToken:PCount
-                    oToken:Args:Add(SELF:GetExpression(++nLevel))
-                NEXT
+                endcase
+            case TokenType.BoFunc
+                oToken:Args := List<object>{}
+                for var i := 1 to oToken:PCount
+                    oToken:Args:Add(self:GetExpression(++nLevel))
+                next
                 cKey += oToken:Func2String()
 
-            OTHERWISE
+            otherwise
                 cKey += oToken:SQLName
-            END SWITCH
+            end switch
             if done
-                Exit
-            ENDIF
-        ENDDO
-        RETURN cKey
+                exit
+            endif
+        enddo
+        return cKey
 
-    PROTECT METHOD GetToken AS SqlDbToken
-        LOCAL oToken  := NextToken() AS SqlDbToken
-        IF oToken != NULL
-            ++SELF:CurToken
-        ENDIF
-        RETURN oToken
+    protect method GetToken as SqlDbToken
+        local oToken  := NextToken() as SqlDbToken
+        if oToken != null
+            ++self:CurToken
+        endif
+        return oToken
 
-    PROTECT METHOD NextToken AS SqlDbToken
-        LOCAL oToken := NULL	AS SqlDbToken
-        IF SELF:CurToken <= SELF:Tokens:Count
-            oToken := SELF:Tokens[SELF:CurToken]
-        ENDIF
-        RETURN oToken
+    protect method NextToken as SqlDbToken
+        local oToken := null	as SqlDbToken
+        if self:CurToken <= self:Tokens:Count
+            oToken := self:Tokens[self:CurToken]
+        endif
+        return oToken
 
-    METHOD GetSegments(cKey AS STRING) AS IList<SqlDbSegment>
+    method GetSegments(cKey as string) as IList<SqlDbSegment>
 
-        LOCAL aSeg	AS List<SqlDbSegment>
-        LOCAL cSeg	AS STRING
-        LOCAL nPos	AS DWORD
-        LOCAL nLev	AS INT
+        local aSeg	as List<SqlDbSegment>
+        local cSeg	as string
+        local nPos	as dword
+        local nLev	as int
         aSeg := List<SqlDbSegment>{}
         nPos := AtC("DESCEND(" , cKey)
-        DO WHILE nPos > 0
+        do while nPos > 0
             cSeg := GetSegKey(Left(cKey, nPos-1))
-            IF ! String.IsNullOrEmpty(cSeg)
-                aSeg:Add(SqlDbSegment{SELF, cSeg, FALSE})
-            ENDIF
+            if ! String.IsNullOrEmpty(cSeg)
+                aSeg:Add(SqlDbSegment{self, cSeg, false})
+            endif
             cKey := SubStr2(cKey, nPos)
             nLev := 1
             nPos := 9
-            DO WHILE nPos <= cKey:Length .AND. nLev > 0
-                VAR cChar := cKey[(int) nPos-1]
-                IF  cChar == c'('
+            do while nPos <= cKey:Length .and. nLev > 0
+                var cChar := cKey[(int) nPos-1]
+                if  cChar == c'('
                     ++nLev
-                ELSEIF cChar == c')'
-                    IF nLev == 1
+                elseif cChar == c')'
+                    if nLev == 1
                         // take part upto close parenthesis of DESCEND(..)
                         cSeg := Left(cKey, nPos-1)
                         // Remove 'DESCEND('
                         cSeg := SubStr2(cSeg, 9)
-                        aSeg:Add( SqlDbSegment{SELF, cSeg, TRUE})
+                        aSeg:Add( SqlDbSegment{self, cSeg, true})
                         cKey := SubStr2(cKey, nPos+1)
-                        EXIT
-                    ELSE
+                        exit
+                    else
                         --nLev
-                    ENDIF
-                ENDIF
+                    endif
+                endif
                 ++nPos
-            ENDDO
+            enddo
             nPos := AtC("DESCEND(" , cKey)
-        ENDDO
+        enddo
         cKey := GetSegKey(cKey)
-        IF ! String.IsNullOrEmpty(cKey)
-            aSeg:Add(SqlDbSegment{SELF, cKey,FALSE})
-        ENDIF
-        RETURN aSeg
+        if ! String.IsNullOrEmpty(cKey)
+            aSeg:Add(SqlDbSegment{self, cKey,false})
+        endif
+        return aSeg
 
 
-    PRIVATE METHOD List2String(list as List<String>) as STring
+    private method List2String(list as List<string>) as string
         var sb := StringBuilder{}
-        var first := TRUE
+        var first := true
         foreach var column in list
             if first
-                first := FALSE
+                first := false
             else
                 sb:Append(", ")
             endif
             sb:Append(column)
         next
         return sb:ToString()
-    ACCESS OrderList AS List<String>
-        LOCAL aList AS List<String>
-        IF SELF:Segments:Count > 1
-            aList := List<String>{}
-            FOREACH var oSeg in SELF:Segments
-                FOREACH VAR col in oSeg:OrderList
-                    IF oSeg:Descending
+    access OrderList as List<string>
+        local aList as List<string>
+        if self:Segments:Count > 1
+            aList := List<string>{}
+            foreach var oSeg in self:Segments
+                foreach var col in oSeg:OrderList
+                    if oSeg:Descending
                         aList:Add(col+" DESC")
-                    ELSE
+                    else
                         aList:Add(col+" ASC")
-                    ENDIF
-                NEXT
-            NEXT
-        ELSE
-            var oSeg := SELF:Segments:First()
-            IF SELF:HasFunctions
-                aList := List<String>{} {SELF:SQLKey}
-            ELSE
-                aList := SELF:ColumnList
-            ENDIF
-            IF oSeg:Descending
-                FOR VAR i := 1 to aList:Count
+                    endif
+                next
+            next
+        else
+            var oSeg := self:Segments:First()
+            if self:HasFunctions
+                aList := List<string>{} {self:SQLKey}
+            else
+                aList := self:ColumnList
+            endif
+            if oSeg:Descending
+                for var i := 1 to aList:Count
                     aList[i] += " DESC"
-                NEXT
-            ENDIF
-        ENDIF
-        RETURN aList
+                next
+            endif
+        endif
+        return aList
 
-    ACCESS SQLKey as STRING
-        SELF:CurToken := 1
-        local cSqlKey as STRING
-        cSqlKey 	:= SELF:GetExpression(1):Trim()
-        IF cSqlKey:StartsWith("(") .and. cSqlKey:EndsWith(")")
+    access SQLKey as string
+        self:CurToken := 1
+        local cSqlKey as string
+        cSqlKey 	:= self:GetExpression(1):Trim()
+        if cSqlKey:StartsWith("(") .and. cSqlKey:EndsWith(")")
             cSqlKey := cSqlKey:Substring(1, cSqlKey:Length-2)
-        ENDIF
-        RETURN cSqlKey
-    METHOD AddTokenWhenNotEmpty(token as StringBuilder, symType as TokenType) AS VOID
-        IF token:Length >0
-            SELF:AddToken(symType, token)
-        ENDIF
-    PROTECT METHOD ParseVoKey() AS VOID
-        VAR token    := StringBuilder{SELF:KeyLen}
-        VAR symType  := TokenType.None
-        VAR aPars	  	:= List<TokenType>{}
-        LOCAL cEnd	:= '\0'	AS CHAR
-        SELF:AddToken(TokenType.BoExpr,"")
-        VAR lInString := FALSE
-        FOREACH VAR cChar in SELF:VoKey
-            VAR lClear 	:= FALSE
-            DO CASE
-            CASE lInString
+        endif
+        return cSqlKey
+    method AddTokenWhenNotEmpty(token as StringBuilder, symType as TokenType) as void
+        if token:Length >0
+            self:AddToken(symType, token)
+        endif
+    protect method ParseVoKey() as void
+        var token    := StringBuilder{self:KeyLen}
+        var symType  := TokenType.None
+        var aPars	  	:= List<TokenType>{}
+        local cEnd	:= '\0'	as char
+        self:AddToken(TokenType.BoExpr,"")
+        var lInString := false
+        foreach var cChar in self:VoKey
+            var lClear 	:= false
+            do case
+            case lInString
                 token:Append(cChar)
-                IF cChar == cEnd
-                    SELF:AddToken(symType, token)
-                    lClear 	  := TRUE
-                    lInString := FALSE
-                ENDIF
-            CASE cChar = c' '
-                SELF:AddTokenWhenNotEmpty(token, symType)
-                SELF:AddToken(TokenType.Blank,"")
-                lClear := TRUE
-            CASE cChar = c'!'
-                SELF:AddTokenWhenNotEmpty(token, symType)
-                SELF:AddToken(TokenType.Logic,cChar:ToString())
-                lClear := TRUE
-            CASE cChar == c'\'' .or. cChar == c'\"'
+                if cChar == cEnd
+                    self:AddToken(symType, token)
+                    lClear 	  := true
+                    lInString := false
+                endif
+            case cChar = c' '
+                self:AddTokenWhenNotEmpty(token, symType)
+                self:AddToken(TokenType.Blank,"")
+                lClear := true
+            case cChar = c'!'
+                self:AddTokenWhenNotEmpty(token, symType)
+                self:AddToken(TokenType.Logic,cChar:ToString())
+                lClear := true
+            case cChar == c'\'' .or. cChar == c'\"'
                 // Start of string
-                lInString 	 := TRUE
+                lInString 	 := true
                 token:Clear()
                 token:Append(cChar)
                 symType := TokenType.String
                 cEnd := cChar
-            CASE cChar == c'['
+            case cChar == c'['
                 // Start of string
-                lInString 	:= TRUE
+                lInString 	:= true
                 token:Clear()
                 token:Append(cChar)
                 cEnd	 	:= c']'
 
-            CASE IsOperator(cChar)
-                IF token:Length > 0
-                    IF symType == TokenType.Operator
+            case IsOperator(cChar)
+                if token:Length > 0
+                    if symType == TokenType.Operator
                         token:Append(cChar)
-                        SELF:AddToken(symType, token)
-                        lClear := TRUE
-                    ELSE
-                        SELF:AddToken(symType, token)
+                        self:AddToken(symType, token)
+                        lClear := true
+                    else
+                        self:AddToken(symType, token)
                         token:Clear()
                         token:Append(cChar)
                         symType	    := TokenType.Operator
-                    ENDIF
-                ENDIF
+                    endif
+                endif
                 token:Clear()
                 token:Append(cChar)
                 symType    := TokenType.Operator
-            CASE IsDelimiter(cChar)
-                SELF:AddTokenWhenNotEmpty(token, symType)
-                SELF:AddToken(TokenType.EoExpr,"")
-                SELF:AddToken(TokenType.Delimiter, cChar:ToString())
-                SELF:AddToken(TokenType.BoExpr,"")
-                lClear := TRUE
-            CASE cChar == c'('
-                IF token:Length > 0 .AND. symType == TokenType.Token
+            case IsDelimiter(cChar)
+                self:AddTokenWhenNotEmpty(token, symType)
+                self:AddToken(TokenType.EoExpr,"")
+                self:AddToken(TokenType.Delimiter, cChar:ToString())
+                self:AddToken(TokenType.BoExpr,"")
+                lClear := true
+            case cChar == c'('
+                if token:Length > 0 .and. symType == TokenType.Token
                     token:Append(cChar)
-                    SELF:AddToken(TokenType.BoFunc, token)
-                    SELF:AddToken(TokenType.BoExpr, "")
+                    self:AddToken(TokenType.BoFunc, token)
+                    self:AddToken(TokenType.BoExpr, "")
                     aPars:Add(TokenType.BoFunc)
-                    lClear := TRUE
-                ELSE
-                    SELF:AddTokenWhenNotEmpty(token, symType)
-                    SELF:AddToken(TokenType.BoExpr, cChar:ToString())
+                    lClear := true
+                else
+                    self:AddTokenWhenNotEmpty(token, symType)
+                    self:AddToken(TokenType.BoExpr, cChar:ToString())
                     aPars:Add(TokenType.BoExpr)
-                ENDIF
-            CASE cChar == c')'
-                SELF:AddTokenWhenNotEmpty(token, symType)
-                IF aPars:Count > 0 .and. aPars:Last() = TokenType.BoExpr
-                    SELF:AddToken(TokenType.EoExpr,cChar:ToString())
-                ELSE
-                    SELF:AddToken(TokenType.EoExpr,"")
-                    SELF:AddToken(TokenType.EoFunc,cChar:ToString())
-                ENDIF
+                endif
+            case cChar == c')'
+                self:AddTokenWhenNotEmpty(token, symType)
+                if aPars:Count > 0 .and. aPars:Last() = TokenType.BoExpr
+                    self:AddToken(TokenType.EoExpr,cChar:ToString())
+                else
+                    self:AddToken(TokenType.EoExpr,"")
+                    self:AddToken(TokenType.EoFunc,cChar:ToString())
+                endif
                 aPars:RemoveAt(aPars:Count-1)
-                lClear := TRUE
+                lClear := true
 
-            OTHERWISE
-                IF symType != TokenType.Token .AND. symType != TokenType.None
-                    SELF:AddToken(symType, token)
+            otherwise
+                if symType != TokenType.Token .and. symType != TokenType.None
+                    self:AddToken(symType, token)
                     token:Clear()
-                ENDIF
+                endif
                 token:Append(cChar)
                 symType := TokenType.Token
-            ENDCASE
-            IF lClear
+            endcase
+            if lClear
                 token:Clear()
                 symType    := TokenType.None
-            ENDIF
-        NEXT
-        SELF:AddTokenWhenNotEmpty(token, symType)
-        SELF:AddToken(TokenType.EoExpr,"")
-        RETURN
-    ACCESS SegmentCount AS LONG
-        RETURN SELF:Segments:Count
-    METHOD TranslateFunctions(oDel AS TranslateFunctionDelegate) AS VOID
-        FOREACH var token in SELF:Tokens
-            SWITCH token:Type
-            CASE TokenType.BoFunc
-                IF token:Name:StartsWith("DESCEND",StringComparison.OrdinalIgnoreCase)
+            endif
+        next
+        self:AddTokenWhenNotEmpty(token, symType)
+        self:AddToken(TokenType.EoExpr,"")
+        return
+    access SegmentCount as long
+        return self:Segments:Count
+    method TranslateFunctions(oDel as TranslateFunctionDelegate) as void
+        foreach var token in self:Tokens
+            switch token:Type
+            case TokenType.BoFunc
+                if token:Name:StartsWith("DESCEND",StringComparison.OrdinalIgnoreCase)
                     token:SQLName := "(%1%)"
-                    token:Descend := TRUE
-                ELSE
+                    token:Descend := true
+                else
                     token:SQLName := oDel(token:Name:ToUpper())
-                ENDIF
-            CASE TokenType.Operator
-                IF token:Name:Trim() = "+"
+                endif
+            case TokenType.Operator
+                if token:Name:Trim() = "+"
                     token:SQLName := oDel("+")
-                ENDIF
-            END SWITCH
-        NEXT
-        SELF:Translated := TRUE
-        RETURN
-    STATIC METHOD IsDelimiter(cChar as Char) AS LOGIC
-        RETURN cChar == c',' .or. cChar == c';'
+                endif
+            end switch
+        next
+        self:Translated := true
+        return
+    static method IsDelimiter(cChar as char) as logic
+        return cChar == c',' .or. cChar == c';'
 
-    STATIC METHOD IsOperator(cChar as Char) AS LOGIC
-        SWITCH cChar
-        CASE c'*' ; CASE c'/'
-        CASE c'+' ; CASE c'-'
-        CASE c'>' ; CASE c'<'
-        CASE c'='
-            RETURN TRUE
-        END SWITCH
-        RETURN FALSE
-    STATIC METHOD IsValidToken(cToken AS STRING) AS LOGIC
-        var first := TRUE
-        FOREACH VAR c in cToken
-            VAR lOk := FALSE
-            IF c == c'_'
-                lOk := TRUE
-            ELSEIF first
+    static method IsOperator(cChar as char) as logic
+        switch cChar
+        case c'*' ; case c'/'
+        case c'+' ; case c'-'
+        case c'>' ; case c'<'
+        case c'='
+            return true
+        end switch
+        return false
+    static method IsValidToken(cToken as string) as logic
+        var first := true
+        foreach var c in cToken
+            var lOk := false
+            if c == c'_'
+                lOk := true
+            elseif first
                 lOk := Char.IsLetter(c)
-            ELSE
+            else
                 lOk := Char.IsLetterOrDigit(c)
-            ENDIF
-            IF ! lOk
-                RETURN FALSE
-            ENDIF
-            first := FALSE
-        NEXT
-        RETURN TRUE
-    STATIC METHOD GetSegKey(cK AS STRING) AS STRING
+            endif
+            if ! lOk
+                return false
+            endif
+            first := false
+        next
+        return true
+    static method GetSegKey(cK as string) as string
         cK := cK:Trim()
-        IF cK.StartsWith("+")
+        if cK.StartsWith("+")
             cK := cK:Substring(1)
-        ENDIF
-        IF cK:EndsWith("+")
+        endif
+        if cK:EndsWith("+")
             cK := cK:Substring(0, cK:Length-1)
-        ENDIF
-        RETURN cK
+        endif
+        return cK
 
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+end class
+end namespace // XSharp.RDD.SqlRDD
 
 
-DELEGATE TranslateFunctionDelegate(cName as STRING) AS STRING
+delegate TranslateFunctionDelegate(cName as string) as string

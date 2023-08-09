@@ -6,151 +6,151 @@
 
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Data
-USING System.Data.Common
+using System
+using System.Collections.Generic
+using System.Text
+using System.Data
+using System.Data.Common
 
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD
 
 
 /// <summary>
 /// Connection class.
 /// </summary>
-CLASS SqlDbCommand INHERIT SqlDbEventObject IMPLEMENTS IDisposable
+class SqlDbCommand inherit SqlDbEventObject implements IDisposable
 
 #region Properties
-    PROPERTY Connection     AS SqlDbConnection AUTO
-    PROPERTY DbCommand      as DbCommand AUTO
-    PROPERTY DbTransaction  AS DbTransaction GET DbCommand:Transaction SET DbCommand:Transaction := Value
-    PROPERTY Parameters     AS List<SqlDbParameter> AUTO
-    PROPERTY Provider       AS SqlDbProvider GET IIF(Connection == NULL, NULL, Connection:Provider)
+    property Connection     as SqlDbConnection auto
+    property DbCommand      as DbCommand auto
+    property DbTransaction  as DbTransaction get DbCommand:Transaction set DbCommand:Transaction := value
+    property Parameters     as List<SqlDbParameter> auto
+    property Provider       as SqlDbProvider get iif(Connection == null, null, Connection:Provider)
 #endregion
 
 #region static properties and methods
-    STATIC Commands      AS List<SqlDbCommand>
-    STATIC CONSTRUCTOR
+    static Commands      as List<SqlDbCommand>
+    static constructor
         Commands := List<SqlDbCommand>{}
-    STATIC METHOD FindByHandle(id as IntPtr) AS SqlDbCommand
-        IF SqlDbHandles.FindById(id) IS SqlDbCommand VAR oCmd
+    static method FindByHandle(id as IntPtr) as SqlDbCommand
+        if SqlDbHandles.FindById(id) is SqlDbCommand var oCmd
             return oCmd
         endif
-        RETURN NULL
+        return null
 #endregion
 
-    CONSTRUCTOR(cName AS STRING, oConn as SqlDbConnection)
-        SUPER(cName)
-        SELF:Connection := oConn
-        SELF:DbCommand := oConn:Provider:CreateCommand()
-        SELF:DbCommand:Connection := oConn:DbConnection
-        Commands.Add(SELF)
-        RETURN
-    METHOD Close() AS LOGIC
-        Commands.Remove(SELF)
-        RETURN TRUE
+    constructor(cName as string, oConn as SqlDbConnection)
+        super(cName)
+        self:Connection := oConn
+        self:DbCommand := oConn:Provider:CreateCommand()
+        self:DbCommand:Connection := oConn:DbConnection
+        Commands.Add(self)
+        return
+    method Close() as logic
+        Commands.Remove(self)
+        return true
 
-    PROPERTY CommandText AS STRING GET DbCommand:CommandText SET DbCommand:CommandText := value
+    property CommandText as string get DbCommand:CommandText set DbCommand:CommandText := value
 
-    METHOD GetSchemaTable() AS DataTable
+    method GetSchemaTable() as DataTable
         using var reader := DbCommand:ExecuteReader(CommandBehavior.SchemaOnly)
         var schema := reader:GetSchemaTable()
-        RETURN schema
-    METHOD GetDataTable(cName as STRING) AS DataTable
+        return schema
+    method GetDataTable(cName as string) as DataTable
         local oDataTable as DataTable
         using var reader := DbCommand:ExecuteReader()
-        if SELF:Connection:DbTransaction != NULL
-            SELF:DbTransaction := SELF:Connection:DbTransaction
-        ENDIF
+        if self:Connection:DbTransaction != null
+            self:DbTransaction := self:Connection:DbTransaction
+        endif
         oDataTable := DataTable{cName}
         oDataTable:Load(reader)
         return oDataTable
 
-    METHOD ExecuteScalar() AS OBJECT
-        if SELF:Connection:DbTransaction != NULL
-            SELF:DbTransaction := SELF:Connection:DbTransaction
-        ENDIF
-        RETURN SELF:DbCommand:ExecuteScalar()
+    method ExecuteScalar() as object
+        if self:Connection:DbTransaction != null
+            self:DbTransaction := self:Connection:DbTransaction
+        endif
+        return self:DbCommand:ExecuteScalar()
 
-        #region Parameters
-    PRIVATE METHOD AddParameter(oParam as SqlDbParameter) AS VOID
-        IF SELF:Parameters == NULL
-            SELF:Parameters := List<SqlDbParameter>{}
-        ENDIF
-        oParam:Command := SELF
-        SELF:Parameters:Add(oParam)
-    METHOD AddParameter(nId as LONG, oValue as OBJECT) AS SqlDbParameter
-        VAR oParam := SqlDbParameter{nId, oValue}
-        SELF:AddParameter(oParam)
-        RETURN oParam
+#region Parameters
+    private method AddParameter(oParam as SqlDbParameter) as void
+        if self:Parameters == null
+            self:Parameters := List<SqlDbParameter>{}
+        endif
+        oParam:Command := self
+        self:Parameters:Add(oParam)
+    method AddParameter(nId as long, oValue as object) as SqlDbParameter
+        var oParam := SqlDbParameter{nId, oValue}
+        self:AddParameter(oParam)
+        return oParam
 
-    METHOD AddParameter(cName as STRING, oValue as OBJECT) AS SqlDbParameter
-        VAR oParam := SqlDbParameter{cName, oValue}
-        SELF:AddParameter(oParam)
-        RETURN oParam
+    method AddParameter(cName as string, oValue as object) as SqlDbParameter
+        var oParam := SqlDbParameter{cName, oValue}
+        self:AddParameter(oParam)
+        return oParam
 
-    METHOD ClearParameters() AS LOGIC
-        SELF:DbCommand:Parameters:Clear()
-        IF SELF:Parameters != NULL
-            SELF:Parameters:Clear()
-        ENDIF
-        RETURN SELF:Parameters != NULL
+    method ClearParameters() as logic
+        self:DbCommand:Parameters:Clear()
+        if self:Parameters != null
+            self:Parameters:Clear()
+        endif
+        return self:Parameters != null
 
-    METHOD RemoveParameter(oParam as SqlDbParameter) AS LOGIC
-        IF SELF:Parameters != NULL .and. SELF:Parameters:Contains(oParam)
-            SELF:Parameters:Remove(oParam)
-            RETURN TRUE
-        ENDIF
-        RETURN FALSE
-    METHOD BindParameters() AS LOGIC
-        SELF:DbCommand:Parameters:Clear()
-        IF SELF:Parameters == NULL
-            RETURN FALSE
-        ENDIF
-        FOREACH var oParam in SELF:Parameters
+    method RemoveParameter(oParam as SqlDbParameter) as logic
+        if self:Parameters != null .and. self:Parameters:Contains(oParam)
+            self:Parameters:Remove(oParam)
+            return true
+        endif
+        return false
+    method BindParameters() as logic
+        self:DbCommand:Parameters:Clear()
+        if self:Parameters == null
+            return false
+        endif
+        foreach var oParam in self:Parameters
             var dbParam := Provider:CreateParameter()
             dbParam:Direction := oParam:Direction
             dbParam:Value     := oParam:Value
-            IF oParam:Ordinal == -1
+            if oParam:Ordinal == -1
                 dbParam:ParameterName := oParam:Name
-            ENDIF
+            endif
             oParam:DbParameter:= dbParam
-            SELF:DbCommand:Parameters:Add(dbParam)
-            IF oParam:Ordinal != -1
+            self:DbCommand:Parameters:Add(dbParam)
+            if oParam:Ordinal != -1
                 oParam:SetName(dbParam:ParameterName)
             endif
-        NEXT
-        RETURN TRUE
-    PROPERTY ParameterList as STRING
-        GET
-            if SELF:Parameters == NULL
-                RETURN ""
-            ENDIF
+        next
+        return true
+    property ParameterList as string
+        get
+            if self:Parameters == null
+                return ""
+            endif
             var sb := StringBuilder{}
-            var first := TRUE
-            FOREACH var param in SELF:Parameters
+            var first := true
+            foreach var param in self:Parameters
                 if (first)
-                    first := FALSE
+                    first := false
                 else
                     sb:Append(", ")
                 endif
                 sb:Append(param:Name)
                 sb:Append("=")
                 sb:Append(param:Value)
-            NEXT
-            RETURN sb:ToString()
+            next
+            return sb:ToString()
 
-        END GET
-    END PROPERTY
+        end get
+    end property
 
-        #endregion
+#endregion
 
-    #region Implement IDisposable
+#region Implement IDisposable
 
-    PUBLIC METHOD Dispose() AS VOID
-        SELF:Close()
+    public method Dispose() as void
+        self:Close()
 
-    #endregion
-END CLASS
-END NAMESPACE // XSharp.RDD.SqlRDD
+#endregion
+end class
+end namespace // XSharp.RDD.SqlRDD

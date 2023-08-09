@@ -4,30 +4,30 @@
 // See License.txt in the project root for license information.
 //
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Data
-USING System.Data.Common
+using System
+using System.Collections.Generic
+using System.Text
+using System.Data
+using System.Data.Common
 
-BEGIN NAMESPACE XSharp.RDD.SqlRDD
-ENUM TableMode
-    MEMBER Table
-    MEMBER Query
-END ENUM
-
-
-ENUM SqlRDDEventReason
-    MEMBER ConnectionString
-    MEMBER CommandText
-    MEMBER MaxRecords
-    MEMBER ColumnList
-    MEMBER OrderByClause
-    MEMBER WhereClause
-    MEMBER RecnoColumn
-    MEMBER DeletedColumn
-    MEMBER LongFieldNames
-END ENUM
+begin namespace XSharp.RDD.SqlRDD
+enum TableMode
+    member Table
+    member Query
+end enum
 
 
-END NAMESPACE
+enum SqlRDDEventReason
+    member ConnectionString
+    member CommandText
+    member MaxRecords
+    member ColumnList
+    member OrderByClause
+    member WhereClause
+    member RecnoColumn
+    member DeletedColumn
+    member LongFieldNames
+end enum
+
+
+end namespace

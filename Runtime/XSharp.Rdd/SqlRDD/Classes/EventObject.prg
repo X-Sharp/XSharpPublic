@@ -1,8 +1,9 @@
-﻿// EventObject.prg
-// Created by    : robert
-// Creation Date : 8/9/2023 9:01:29 AM
-// Created for   :
-// WorkStation   : NYX
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 
 
 USING System

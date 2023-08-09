@@ -4,9 +4,11 @@ using MySql.Data.MySqlClient
 using Advantage.Data
 using System.Collections.Generic
 
-global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;TrimTrailingSpaces=True;" as STRING
-global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;TrimTrailingSpaces=True;" as STRING
-global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;TrimTrailingSpaces=True;" as STRING
+global options := "TrimTrailingSpaces=True;UseNulls=False;" as STRING
+
+global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;"+options as STRING
+global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;"+options as STRING
+global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
 
 
 function Start as void
@@ -16,12 +18,101 @@ function Start as void
     //TestOLEDB()
     //     TestRDDODBC()
     //     TestRDDOLEDB()
-    //     TestRDDSql()
-    TestCommandSql()
-    TestCommandODBC()
-    TestCommandOLEDB()
+    //TestRDDSql()
+    //TestCommandSql()
+    //TestCommandODBC()
+    //TestCommandOLEDB()
+    //TestParametersODBC()
+    TestParametersSQL()
     wait
     return
+function TestParametersODBC() AS VOID
+    local conn as SqlDbConnection
+    local cmd  as SqlDbCommand
+    TRY
+        SqlDbSetProvider("ODBC")
+        var handle := SqlDbOpenConnection(OdbcConnStr, EventHandler)
+        conn := SqlDbGetConnection(handle)
+        cmd := SqlDbCommand{"TEST", conn}
+        cmd:CommandText := "Select * from Customers where Country = ?"
+        cmd:AddParameter(1, "Germany1")
+        cmd:BindParameters()
+        var oTable := cmd:GetDataTable("Customers")
+        ? "Command   :",cmd:CommandText
+        ? "Parameters:",cmd:ParameterList
+        ? "Rows      :",oTable:Rows:Count
+        if oTable:Rows:Count > 0
+            var row := oTable:Rows[0]
+            foreach col as DataColumn in oTable:Columns
+                ? col:ColumnName, row[col]
+            next
+        else
+            foreach col as DataColumn in oTable:Columns
+                ? col:ColumnName
+            next
+        endif
+    CATCH e as Exception
+        ? e:Message
+        if e:InnerException != null
+            ? e:InnerException:Message
+        endif
+    FINALLY
+        IF cmd != NULL
+            cmd:Close()
+        ENDIF
+        IF conn != NULL
+            conn:Close()
+        ENDIF
+
+
+    END TRY
+    WAIT
+    RETURN
+
+function TestParametersSQL() AS VOID
+    local conn as SqlDbConnection
+    local cmd  as SqlDbCommand
+    TRY
+        SqlDbSetProvider("SQLServer")
+        var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
+        conn := SqlDbGetConnection(handle)
+        cmd := SqlDbCommand{"TEST", conn}
+        cmd:CommandText := "Select * from Customers where Customerid like @id or Country = @country"
+        cmd:AddParameter("@id", "A%")
+        cmd:AddParameter("@country", "Germany")
+        cmd:BindParameters()
+        var oTable := cmd:GetDataTable("Customers")
+        ? "Command   :",cmd:CommandText
+        ? "Parameters:",cmd:ParameterList
+        ? "Rows      :",oTable:Rows:Count
+        if oTable:Rows:Count > 0
+            var row := oTable:Rows[0]
+            foreach col as DataColumn in oTable:Columns
+                ? col:ColumnName, row[col]
+            next
+        else
+            foreach col as DataColumn in oTable:Columns
+                ? col:ColumnName
+            next
+        endif
+    CATCH e as Exception
+        ? e:Message
+        if e:InnerException != null
+            ? e:InnerException:Message
+        endif
+    FINALLY
+        IF cmd != NULL
+            cmd:Close()
+        ENDIF
+        IF conn != NULL
+            conn:Close()
+        ENDIF
+
+
+    END TRY
+    WAIT
+    RETURN
+
 
 function TestCommandSql() as void
     TestCommand("SqlServer", SqlConnStr)
@@ -72,7 +163,7 @@ function TestRDDOLEDB() as void
     testRDD("OLEDB", OleDbConnStr)
 
 function DumpCustomers() as VOID
-    VoDbUseArea(TRUE, typeof(SQLRDD),"Select * from tblProjecten","tblProjecten",TRUE, TRUE)
+    VoDbUseArea(TRUE, typeof(SQLRDD),"Select * from Customers","Customers",TRUE, TRUE)
     ? FCount(), RecCount()
     local nI as DWORD
     For nI  := 1 to FCount()
@@ -196,6 +287,8 @@ Function DumpExpression(oExpr as SqlDbExpression) AS VOID
     ? "Cols ",oExpr:ColumnListString
     ? "SqlKey", oExpr:SQLKey
     ?
+
+
 
 
 

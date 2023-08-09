@@ -37,8 +37,10 @@ CLASS SqlDbConnection INHERIT SqlDbEventObject IMPLEMENTS IDisposable
     PROPERTY RDDs               AS IList<SQLRDD> AUTO
     PROPERTY KeepOpen           AS LOGIC AUTO
     PROPERTY TimeOut            AS LONG AUTO
-    PROPERTY TrimTrailingSpaces AS LOGIC AUTO
     PROPERTY DbTransaction      AS DbTransaction Auto
+    PROPERTY UseNulls           AS LOGIC AUTO
+    PROPERTY UseLongNames       AS LOGIC AUTO
+    PROPERTY TrimTrailingSpaces AS LOGIC AUTO
 
 #endregion
 
@@ -72,11 +74,16 @@ CLASS SqlDbConnection INHERIT SqlDbEventObject IMPLEMENTS IDisposable
         var builder := Provider:CreateConnectionStringBuilder()
         foreach key as string in options:Keys
             var value := options[key]:ToString()
-            if String.Compare(key, "TrimTrailingSpaces", true) == 0
+            switch key:ToLower()
+            case "trimtrailingspaces"
                 SELF:TrimTrailingSpaces := (value:ToLower() == "true")
-            else
+            case "usenulls"
+                SELF:UseNulls := (value:ToLower() == "true")
+            case "uselongnames"
+                SELF:UseLongNames := (value:ToLower() == "true")
+            otherwise
                 builder:Add(key, value)
-            endif
+            end switch
         next
         RETURN builder:ConnectionString
     CONSTRUCTOR(cName AS STRING, cConnectionString as STRING, @@Callback := NULL as SqlRDDEventHandler)

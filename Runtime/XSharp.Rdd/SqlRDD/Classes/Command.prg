@@ -20,12 +20,13 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD
 /// Connection class.
 /// </summary>
 CLASS SqlDbCommand INHERIT SqlDbEventObject IMPLEMENTS IDisposable
-    PROTECTED _commandBuilder as DbCommandBuilder
 
 #region Properties
     PROPERTY Connection     AS SqlDbConnection AUTO
     PROPERTY DbCommand      as DbCommand AUTO
     PROPERTY DbTransaction  AS DbTransaction GET DbCommand:Transaction SET DbCommand:Transaction := Value
+    PROPERTY Parameters     AS List<SqlDbParameter> AUTO
+    PROPERTY Provider       AS SqlDbProvider GET IIF(Connection == NULL, NULL, Connection:Provider)
 #endregion
 
 #region static properties and methods
@@ -71,6 +72,79 @@ CLASS SqlDbCommand INHERIT SqlDbEventObject IMPLEMENTS IDisposable
             SELF:DbTransaction := SELF:Connection:DbTransaction
         ENDIF
         RETURN SELF:DbCommand:ExecuteScalar()
+
+        #region Parameters
+    PRIVATE METHOD AddParameter(oParam as SqlDbParameter) AS VOID
+        IF SELF:Parameters == NULL
+            SELF:Parameters := List<SqlDbParameter>{}
+        ENDIF
+        oParam:Command := SELF
+        SELF:Parameters:Add(oParam)
+    METHOD AddParameter(nId as LONG, oValue as OBJECT) AS SqlDbParameter
+        VAR oParam := SqlDbParameter{nId, oValue}
+        SELF:AddParameter(oParam)
+        RETURN oParam
+
+    METHOD AddParameter(cName as STRING, oValue as OBJECT) AS SqlDbParameter
+        VAR oParam := SqlDbParameter{cName, oValue}
+        SELF:AddParameter(oParam)
+        RETURN oParam
+
+    METHOD ClearParameters() AS LOGIC
+        SELF:DbCommand:Parameters:Clear()
+        IF SELF:Parameters != NULL
+            SELF:Parameters:Clear()
+        ENDIF
+        RETURN SELF:Parameters != NULL
+
+    METHOD RemoveParameter(oParam as SqlDbParameter) AS LOGIC
+        IF SELF:Parameters != NULL .and. SELF:Parameters:Contains(oParam)
+            SELF:Parameters:Remove(oParam)
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+    METHOD BindParameters() AS LOGIC
+        SELF:DbCommand:Parameters:Clear()
+        IF SELF:Parameters == NULL
+            RETURN FALSE
+        ENDIF
+        FOREACH var oParam in SELF:Parameters
+            var dbParam := Provider:CreateParameter()
+            dbParam:Direction := oParam:Direction
+            dbParam:Value     := oParam:Value
+            IF oParam:Ordinal == -1
+                dbParam:ParameterName := oParam:Name
+            ENDIF
+            oParam:DbParameter:= dbParam
+            SELF:DbCommand:Parameters:Add(dbParam)
+            IF oParam:Ordinal != -1
+                oParam:SetName(dbParam:ParameterName)
+            endif
+        NEXT
+        RETURN TRUE
+    PROPERTY ParameterList as STRING
+        GET
+            if SELF:Parameters == NULL
+                RETURN ""
+            ENDIF
+            var sb := StringBuilder{}
+            var first := TRUE
+            FOREACH var param in SELF:Parameters
+                if (first)
+                    first := FALSE
+                else
+                    sb:Append(", ")
+                endif
+                sb:Append(param:Name)
+                sb:Append("=")
+                sb:Append(param:Value)
+            NEXT
+            RETURN sb:ToString()
+
+        END GET
+    END PROPERTY
+
+        #endregion
 
     #region Implement IDisposable
 

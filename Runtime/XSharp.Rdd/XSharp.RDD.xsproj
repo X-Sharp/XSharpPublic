@@ -120,6 +120,7 @@
     <Compile Include="SqlRDD\Classes\Connection.prg" />
     <Compile Include="SqlRDD\Classes\Command.prg" />
     <Compile Include="SqlRDD\Classes\EventObject.prg" />
+    <Compile Include="SqlRDD\Classes\Parameter.prg" />
     <Compile Include="SqlRDD\Functions\Command.prg" />
     <Compile Include="SqlRDD\Functions\Provider.prg" />
     <Compile Include="SqlRDD\Providers\Advantage.prg" />

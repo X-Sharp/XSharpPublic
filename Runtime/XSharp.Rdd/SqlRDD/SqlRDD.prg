@@ -153,7 +153,9 @@ CLASS SQLRDD INHERIT DBFVFP
 
             IF result == DBNull.Value
                 // The phantom row already is padded with trailing spaces
-                result := _phantomRow[nFldPos]
+                if ! SELF:_connection:UseNulls
+                    result := _phantomRow[nFldPos]
+                endif
             ELSEIF _creatingIndex .AND. result IS STRING VAR strResult
                 result := strResult:PadRight(_Fields[nFldPos]:Length,' ')
             ENDIF

@@ -1,0 +1,2 @@
+FUNCTION FGetFileName(cFullFileName) CLIPPER
+RETURN 123

@@ -1,0 +1,10 @@
+FUNCTION Start() AS VOID STRICT
+
+	LOCAL x := "" AS STRING
+	TestFunc(REF x)
+    ? x
+	RETURN
+
+FUNCTION TestFunc(x OUT STRING) AS VOID STRICT
+	x := "test"
+	RETURN

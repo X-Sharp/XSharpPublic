@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Project System</title>
+  <keywords>
+    <keyword>.xsproj</keyword>
+    <keyword>MsBuild</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Project System</para>
+    </header>
+    <para styleclass="Normal">The X# Visual Studio project system allows you to create X# projects with Visual Studio. It has support for a special kind of project file format for X# (the .xsproj files) and it also recognizes various X# specific file types such as PRG files and several &quot;binary&quot; files for VO compatible Form, Server, Menu and FieldSpec definitions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Part of this project system is the MsBuild support which uses the .xsproj files and creates command lines for the X# compiler based on properties and values in the .xsproj files.</para>
+    <para styleclass="Normal">The following chapters will briefly discuss solutions and projects and will describe the various project property pages for X# inside Visual Studio.</para>
+  </body>
+</topic>

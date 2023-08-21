@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PSZ</title>
+  <keywords>
+    <keyword>PSZ</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PSZ</para>
+    </header>
+    <para styleclass="Normal">The PSZ type is a pointer type that points to a null terminated sequence of zero or more bytes, typically representing a printable character string. This type is for backward compatibility only. Don&apos;t use this type in new code unless you have to.</para>
+    <para styleclass="Heading3">Implementation</para>
+    <para styleclass="Normal">The PSZ type is implemented in the class XSharp.__Psz</para>
+    <para styleclass="Normal">The Usual type of PSZ &#160;is 17.</para>
+  </body>
+</topic>

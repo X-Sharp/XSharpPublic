@@ -1,0 +1,121 @@
+///////////////////////////////////////////////////////////////////////////
+// XSharpDefs.xh
+//
+// XSharp Standard Preprocessor Directives
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+// This file is automatically included in every source file unless /nostddefs is used.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+#ifndef XSHARPDEFS_XH
+#define XSHARPDEFS_XH
+
+#xcommand ENDTEXT => #endtext
+
+// Common TEXT define for all dialects
+
+
+#xcommand  TEXT TO <varname>  ;
+      =>  #text := <varname>, chr(13)+chr(10)
+
+#xcommand  TEXT TO <varname> ADDITIVE ;
+      =>  #text += <varname>, chr(13)+chr(10)
+
+
+#ifndef __DIALECT_CORE_
+
+// The following UDCs require the xBase Runtime
+
+#xcommand QUIT                   		=> _Quit()
+
+#command ACCEPT [<msg>] TO <v>         	=> <v> := _accept( <msg> )
+#xcommand WAIT [<msg>]                  => _wait( <msg> )
+#xcommand WAIT [<msg>] TO <v>           => <v> := _wait( <msg> )
+
+#xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ]  => ;
+          IF <v1> == NIL ; <v1> := <x1> ; END        ;
+          [; IF <vn> == NIL ; <vn> := <xn> ; END ]
+
+#xcommand STORE <value> TO <var1> [, <varN> ]   => ;
+				<var1> := [ <varN> := ] <value>
+
+
+// Special TEXT rules for dialects with the runtime
+
+#ifndef __DIALECT_FOXPRO__
+#xcommand  TEXT ;
+      =>  #text QOut, QQOut
+
+#xcommand  TEXT INTO <varname> ;
+      =>  #text := <varname>
+
+#xcommand  TEXT INTO <varname> WRAP [<lnbreak>] ;
+      =>  #text := <varname>, iif(<.lnbreak.>,(STRING) <!lnbreak!>, CRLF)
+
+#xcommand  TEXT INTO <varname> WRAP [<lnbreak>] TRIMMED ;
+      =>  #text := <varname>, iif(<.lnbreak.>,(STRING) <!lnbreak!>, CRLF) , LTrim
+
+#xcommand  TEXT INTO <varname> TRIMMED ;
+      =>  #text := <varname>,  , LTrim
+
+#xcommand  TEXT TO FILE <(file)> ;
+      =>  _TextSave( <(file)> ) ;;
+          #text QOut, _TextRestore
+
+#xcommand  TEXT TO PRINTER ;
+      =>  _TextSave("PRINTER") ;;
+          #text QOut, _TextRestore
+#endif
+
+
+
+// Allow "garbage" after END <id>
+// Statements
+#xcommand END <kw:IF,DO,WHILE,FOR,CASE,SEQUENCE,TRY,LOCK,SCOPE,SWITCH,USING,UNSAFE,CHECKED,UNCHECKED,FIXED,WITH> <*any*> => END <kw>
+//  Type keywords
+#xcommand END <kw:NAMESPACE,CLASS,INTERFACE,ENUM,STRUCTURE,UNION,VOSTRUCT,DEFINE> <*any*> => END <kw>
+//  Member keywords
+#xcommand END <kw:METHOD,ASSIGN,ACCESS,PROPERTY,EVENT,OPERATOR,FUNCTION,PROCEDURE,CONSTRUCTOR,DESTRUCTOR> <*any*> => END <kw>
+// END accessor keywords followed by "garbage"
+#xcommand END <kw:ADD,REMOVE,GET,SET> <*any*> => END <kw>
+// Specific end keywords
+#xcommand ENDIF <*any*> => ENDIF
+#xcommand ENDCASE <*any*> => ENDCASE
+#xcommand ENDDO <*any*> => ENDDO
+#xcommand NEXT <*any*> => NEXT
+#xcommand ENDDEFINE <*any*> => ENDDEFINE
+#xcommand ENDCLASS <*any*> => ENDCLASS
+
+// Run commands
+// and some rules to fetch assignment to RUN variable
+// Comparisons are not needed, since the rule only matches text at the start of the line
+#command RUN <(cmd)>    => _RUN(<(cmd)>)
+#command RUN = <xpr>    => (run := <xpr>)
+#command RUN := <xpr>   => (run := <xpr>)
+
+#endif
+
+#ifdef __DIALECT_XBASEPP__
+#include "XbasePPCmd.xh"
+#endif
+
+#ifdef __DIALECT_FOXPRO__
+#include "FoxProCmd.xh"
+#endif
+
+// Various SET commands
+#include "set.xh"
+
+// Various DBF related commands
+#include "dbcmd.xh"
+        
+#ifdef __MEMVAR__
+// include memvar commands when memvar options are enabled
+#include "memvar.xh"         
+#endif         
+// Include (optional) custom UDCs
+#include "CustomDefs.xh"
+#endif

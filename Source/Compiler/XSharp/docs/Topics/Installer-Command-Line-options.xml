@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Installer Command Line options</title>
+  <keywords>
+    <keyword>/closeapplications</keyword>
+    <keyword>/components</keyword>
+    <keyword>/dir</keyword>
+    <keyword>/forcecloseapplications</keyword>
+    <keyword>/group</keyword>
+    <keyword>/help</keyword>
+    <keyword>/loadinf</keyword>
+    <keyword>/log</keyword>
+    <keyword>/nocancel</keyword>
+    <keyword>/nocloseapplications</keyword>
+    <keyword>/noforcecloseapplications</keyword>
+    <keyword>/noicons</keyword>
+    <keyword>/norestart</keyword>
+    <keyword>/norestartapplications</keyword>
+    <keyword>/nouninstall</keyword>
+    <keyword>/restartapplications</keyword>
+    <keyword>/restartexitcode</keyword>
+    <keyword>/saveinf</keyword>
+    <keyword>/silent</keyword>
+    <keyword>/suppressmsgboxes</keyword>
+    <keyword>/type</keyword>
+    <keyword>/verysilent</keyword>
+    <keyword>setup component</keyword>
+    <keyword>setup type</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Installer Command Line options</para>
+    </header>
+    <para styleclass="Normal">Our installer was created with the product Inno Setup. We are supporting the &quot;normal&quot; Inno Setup command line options and the following extra options.<br/>Some options are not installed because these are not relevant for our installer, such as /lang and /password.</para>
+    <para styleclass="Heading2">Custom Setup commandline options</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
+          <para styleclass="Body Text"><text style="font-weight:bold;">/nouninstall</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This option exists since X# 2.4.<br/>This suppresses uninstalling the previous version.<br/>When you choose this you can install 2 different versions of X# side by side, assuming you choose different installation folders.<br/>Please note that if both versions install into the same Visual Studio version then the latest installation &quot;wins&quot;.<br/>If you want to switch to another version of the VS integration or MsBuild support files you should run the &quot;deployvs<text style="font-weight:bold;">&lt;num&gt;</text>&quot;.cmd files in the Uninst folder of the installation that you want to activate.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">Standard Inno Setup commandline options</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/help, /?</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Shows a summary of this information. Ignored if the UseSetupLdr [Setup] section directive was set to no.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/silent, /verysilent</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to be silent or very silent. When Setup is silent the wizard and the background window are not displayed but the installation progress window is. When a setup is very silent this installation progress window is not displayed. Everything else is normal so for example error messages during installation are displayed and the startup prompt is (if you haven&apos;t disabled it with DisableStartupPrompt or the &apos;/SP-&apos; command line option explained above).</para>
+          <para styleclass="Body Text">If a restart is necessary and the &apos;/norestart command isn&apos;t used (see below) and Setup is silent, it will display a Reboot now? message box. If it&apos;s very silent it will reboot without asking.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/suppressmsgboxes</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to suppress message boxes. Only has an effect when combined with &apos;/silent or &apos;/verysilent.</para>
+          <para styleclass="Body Text">The default response in situations where there&apos;s a choice is:</para>
+          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Body Text">Yes in a &apos;Keep newer file?&apos; situation. </li>
+            <li styleclass="Body Text">No in a &apos;File exists, confirm overwrite.&apos; situation. </li>
+            <li styleclass="Body Text">Abort in Abort/Retry situations. </li>
+            <li styleclass="Body Text">Cancel in Retry/Cancel situations. </li>
+            <li styleclass="Body Text">Yes (=continue) in a DiskSpaceWarning/DirExists/DirDoesntExist/NoUninstallWarning/ExitSetupMessage/ConfirmUninstall situation. </li>
+            <li styleclass="Body Text">Yes (=restart) in a FinishedRestartMessage/UninstalledAndNeedsRestart situation. </li>
+            <li styleclass="Body Text">The recommended choice in a PrivilegesRequiredOverridesAllowed=dialog situation.</li>
+          </list>
+          <para styleclass="Body Text">5 message boxes are not suppressible:</para>
+          <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+            <li styleclass="Body Text">The About Setup message box. </li>
+            <li styleclass="Body Text">The Exit Setup? message box. </li>
+            <li styleclass="Body Text">The FileNotInDir2 message box displayed when Setup requires a new disk to be inserted and the disk was not found. </li>
+            <li styleclass="Body Text">Any (error) message box displayed before Setup (or Uninstall) could read the command line parameters. </li>
+            <li styleclass="Body Text">Any task dialog or message box displayed by [Code] support functions TaskDialogMsgBox and MsgBox.</li>
+          </list>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/log=&quot;filename&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This allows you to specify a fixed path/filename to use for the log file. If a file with the specified name already exists it will be overwritten. If the file cannot be created, Setup will abort with an error message. If you do not specify this command line option then the installer will log to a file with the name &quot;Setup Log &lt;date&gt;#&lt;number&gt;.txt&quot; in the current users TEMP folder.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/nocancel</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Prevents the user from canceling during the installation process, by disabling the Cancel button and ignoring clicks on the close button. Useful along with &apos;/silent or &apos;/verysilent.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/norestart</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Prevents Setup from restarting the system following a successful installation, or after a Preparing to Install failure that requests a restart. Typically used along with /silent or /verysilent.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/restartexitcode=exit code</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Specifies a custom exit code that Setup is to return when the system needs to be restarted following a successful installation. (By default, 0 is returned in this case.) Typically used along with /norestart. </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/closeapplications</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to close applications using files that need to be updated by Setup if possible.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/nocloseapplications</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Prevents Setup from closing applications using files that need to be updated by Setup. If /closeapplications was also used, this command line parameter is ignored.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/forcecloseapplications</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to force close when closing applications.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/noforcecloseapplications</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Prevents Setup from force closing when closing applications. If /forcecloseapplications was also used, this command line parameter is ignored.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/restartapplications</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to restart applications if possible. Only has an effect when combined with &apos;/closeapplications.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/norestartapplications</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Prevents Setup from restarting applications. If /restartapplications was also used, this command line parameter is ignored.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/loadinf=&quot;filename&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to load the settings from the specified file after having checked the command line. This file can be prepared using the &apos;/saveinf=&apos; command as explained below.Don&apos;t forget to use quotes if the filename contains spaces.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/saveinf=&quot;filename&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to save installation settings to the specified file. Don&apos;t forget to use quotes if the filename contains spaces.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/dir=&quot;x:\dirname&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Overrides the default directory name displayed on the Select Destination Location wizard page. A fully qualified pathname must be specified. May include an &quot;expand:&quot; prefix which instructs Setup to expand any constants in the name. For example: &apos;/dir=expand:{autopf}\My Program&apos;.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/group=&quot;folder name&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Overrides the default folder name displayed on the Select Start Menu Folder wizard page. May include an &quot;expand:&quot; prefix, see &apos;/dir=&apos;. If the [Setup] section directive DisableProgramGroupPage was set to yes, this command line parameter is ignored.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/noicons</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs Setup to initially check the Don&apos;t create a Start Menu folder check box on the Select Start Menu Folder wizard page.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/type=type name</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Overrides the default setup type.</para>
+          <para styleclass="Body Text"><br/>If the specified type exists and isn&apos;t a custom type, then any /components parameter will be ignored.</para>
+          <para styleclass="Body Text"><br/><text style="font-weight:bold; font-style:italic;">The types in the X# installer are: full, compact, custom</text><br/></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/components=<br/>&quot;comma separated list of component names&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Overrides the default component settings. Using this command line parameter causes Setup to automatically select a custom type. If no custom type is defined, this parameter is ignored.</para>
+          <para styleclass="Body Text">Only the specified components will be selected; the rest will be deselected.</para>
+          <para styleclass="Body Text">If a component name is prefixed with a &quot;*&quot; character, any child components will be selected as well (except for those that include the dontinheritcheck flag). If a component name is prefixed with a &quot;!&quot; character, the component will be deselected.</para>
+          <para styleclass="Body Text">This parameter does not change the state of components that include the fixed flag.</para>
+          <para styleclass="Body Text">Example:Deselect all components, then select the &quot;help&quot; and &quot;plugins&quot; components:<br/>/components=&quot;help,plugins&quot; </para>
+          <para styleclass="Body Text">Example:Deselect all components, then select a parent component and all of its children with the exception of one:<br/>/components=&quot;*parent,!parent\child&quot; <br/><br/><text style="font-weight:bold; font-style:italic;">The components in the X# installer are:</text></para>
+          <para styleclass="Body Text"><table styleclass="Default" rowcount="11" colcount="2">
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Component</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Description</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">The XSharp Compiler and Build System</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\script</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Register .prgx as X# Script extension</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\ngen</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Optimize performance by generating native images</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\gac</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Register runtime DLLs in the GAC (recommended !)</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\examples</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Install the Xsharp Examples</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio Integration</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\2015</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 2015</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\2017</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 2017</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\2019</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 2019</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">xide</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Include the XIDE installer</text></para>
+              </td>
+            </tr>
+          </table></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

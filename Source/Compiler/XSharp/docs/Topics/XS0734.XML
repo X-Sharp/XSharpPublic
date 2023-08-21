@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0734</title>
+<keywords>
+<keyword>XS0734</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0734</para>
+  </header>
+  <para styleclass="Normal">The /moduleassemblyname option may only be specified when building a target type of &apos;module&apos;</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

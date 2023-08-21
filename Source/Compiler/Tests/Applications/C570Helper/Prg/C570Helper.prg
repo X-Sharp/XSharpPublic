@@ -1,0 +1,12 @@
+CLASS GrandParent
+	ACCESS Value AS STRING
+		RETURN ""
+END CLASS
+
+CLASS Parent INHERIT GrandParent
+	ASSIGN Value(cValue AS STRING)
+		NOP               
+	ACCESS Value AS STRING
+		RETURN SUPER:Value
+		
+END CLASS

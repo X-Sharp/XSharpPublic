@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-06-29T22:23:13.825+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Calling conventions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Calling conventions</para>
+    </header>
+    <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;">Calling conventions are something from the unmanaged world. They describe how parameters should be passed when you call a function or method and they also describe who is responsible for adjusting the stack when the called function / method returns.</text></para>
+    <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;">Different compilers have different default strategies for passing parameters to functions.</text></para>
+    <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><table styleclass="Default" rowcount="6" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">Convention</para>
+        </td>
+        <td style="width:741px;">
+          <para styleclass="Body Text">Description</para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">STRICT</para>
+        </td>
+        <td style="width:741px;">
+          <para styleclass="Body Text">This is the most common calling convention in the C/C++ world. With this convention parameters are pushed on the stack. Value types are pushed completely and for reference types the address of the variable is pushed. When a method is called then also the address of the “this” object is pushed on the stack.</para>
+          <para styleclass="Body Text">After the function / method returns then the calling method adjusts the stack.</para>
+          <para styleclass="Body Text">This calling convention allows for functions or methods with a variable number of arguments, like printf(). The caller knows the # of parameters that were passed, so the calling is the best candidate for adjusting the stack.</para>
+          <para styleclass="Body Text">In C/C++ this is also called __cdecl</para>
+          <para styleclass="Body Text">In VO (and X#) there is also a synonym “ASPEN” for this.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">PASCAL</para>
+        </td>
+        <td style="width:741px;">
+          <para styleclass="Body Text">This calling convention is used a lot in the Pascal world. It looks a lot like the STRICT calling convention, but now the function / method that gets called adjusts the stack when it returns. Of course, this also means that there cannot be a variable number of arguments. If and when that is necessary, then usually the last parameter becomes an array of values, so there still is some flexibility.</para>
+          <para styleclass="Body Text">In C/C++ this is called the __stdcall calling convention.</para>
+          <para styleclass="Body Text">This calling convention is used by most functions in the windows API.</para>
+          <para styleclass="Body Text">In VO this is also called WINCALL or CALLBACK. In 16bits windows WINCALL was different from PASCAL but 32 bits windows and later dropped that difference.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">THISCALL</para>
+        </td>
+        <td style="width:741px;">
+          <para styleclass="Body Text">This is a special variant of the PASCAL calling convention, where the “this” pointer is not pushed on the stack but passed in a register (usually the ECX register). Passing the “this” in the register can be faster, especially when the register is not used for something else, so repeated calls for the same object to not have to push the “this” pointer. In C/C++ this is called __thisccall</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">FASTCALL</para>
+        </td>
+        <td style="width:741px;">
+          <para styleclass="Body Text">This calling convention tries to pass as many parameters in registers as possible.</para>
+          <para styleclass="Body Text">In C/C++ this is called __fastcall.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">CLIPPER</para>
+        </td>
+        <td style="width:741px;">
+          <para styleclass="Body Text">This is a special calling convention in the Xbase world, where parameters to a function are (technically) all optional and where you can also pass more values than you have declared parameters. Originally in the Xbase languages the calling code would push the values on the stack and would also pass the parameter count, so the function that is called “knows” how many parameters are passed.</para>
+          <para styleclass="Body Text">In .Net there is no real equivalent for that. To emulate the CLIPPER calling convention we generate a special PARAMS parameter that contains an array of USUAL values. Parameters of type PARAMS must be the last (or only) parameter in the list of parameters. The Roslyn compiler (that we use for x#) will automatically wrap all values that are passed to a function / method with clipper calling convention in an array.</para>
+          <para styleclass="Body Text">Of course, when you declare a function like this</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo(a,b,c)</text></para>
+          <para styleclass="Body Text">Then you expect that you will have 3 local variables in your code with the names “a”, “b” and “c”.</para>
+          <para styleclass="Body Text">The compiler however generates a function with a params argument. Something like this:</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo(args </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PARAMS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">[])</text></para>
+          <para styleclass="Body Text">Inside the function we then generate local variables with the name of the parameters that you have declared</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> a := args[1] </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> b := args[2] </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> c := args[3] </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text></para>
+          <para styleclass="Body Text">In reality, the code is a bit more complex, because you may decide to all the function with less parameters than were declared. We have to take that into account.</para>
+          <para styleclass="Body Text">It looks like this then:</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> numParams := args:Length</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> a := </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">iif</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">(numParams &gt; 0, args[1], NIL) </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text></para>
+          <para styleclass="Body Text">The names for “numParams” and “args” are generated by the complier with a special character in them, to make sure that we do not introduce variable names that conflict with names in your code.</para>
+          <para styleclass="Body Text">The X# debugger support layer also hides these special variables.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">For “normal” managed code, you really only have to deal with 2 calling conventions:</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">For untyped methods the compiler uses the CLIPPER calling convention</li>
+      <li styleclass="Body Text">For typed methods the compiler there is no difference between STRICT and PASCAL. They both produce the same code</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Only when you call unmanaged code in other DLLs then you need to use one of the other calling conventions. You have to “know” what the DLL uses. One problem is that quite often the calling convention in C/C++ code is hidden in a compiler macro.</para>
+    <para styleclass="Body Text">As a rule of thumb you should use STRICT for C/C++ code and PASCAL for windows api funtions.</para>
+    <para styleclass="Body Text">If it does not work (for example, the .Net runtime complains about stack problems), then switch to the oher calling convention.</para>
+  </body>
+</topic>

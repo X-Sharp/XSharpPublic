@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CURRENCY</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">CURRENCY</para>
+    </header>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The currency type stored numbers with a precision of 4 decimals. Internally it contains a .Net decimal value, rounded to 4 decimals.</li>
+      <li styleclass="Normal"></li>
+    </list>
+    <para styleclass="Heading3">Implementation</para>
+    <para styleclass="Normal">The CURRENCY type is implemented in the structure &#160;XSharp.__Currency</para>
+    <para styleclass="Normal">The Usual type of CURRENCY is 28.</para>
+  </body>
+</topic>

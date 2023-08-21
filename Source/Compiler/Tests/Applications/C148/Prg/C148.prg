@@ -1,0 +1,23 @@
+// 148. No errors reported on mixing CLIPPER/STRICT members in the same class or inheritance tree
+
+// /dialect:vulcan
+CLASS Parent
+	METHOD Test1() CLIPPER
+	RETURN NIL
+	METHOD Test1() AS VOID STRICT
+
+	VIRTUAL METHOD Test2() AS VOID STRICT
+	VIRTUAL METHOD Test3() CLIPPER
+	RETURN NIL
+	
+END CLASS
+
+CLASS Child INHERIT Parent
+	VIRTUAL METHOD Test2() CLIPPER
+	RETURN NIL
+	VIRTUAL METHOD Test3() AS VOID STRICT
+END CLASS
+
+FUNCTION Start() AS VOID
+
+RETURN

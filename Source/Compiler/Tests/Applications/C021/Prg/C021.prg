@@ -1,0 +1,12 @@
+// 21. lots of errors :-)
+FUNCTION Test123() AS VOID
+TRY
+   NOP
+CATCH
+   NOP
+
+END TRY
+
+FUNCTION Start() AS VOID
+
+RETURN

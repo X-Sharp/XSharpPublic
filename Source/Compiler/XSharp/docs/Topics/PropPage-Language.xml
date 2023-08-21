@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T13:17:41.364+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Language</title>
+  <keywords>
+    <keyword>Additional Include paths</keyword>
+    <keyword>Allow Late Binding</keyword>
+    <keyword>Allow Named Arguments</keyword>
+    <keyword>Allow Unsafe Code</keyword>
+    <keyword>Alternate standard header file</keyword>
+    <keyword>-az</keyword>
+    <keyword>Case Sensitive</keyword>
+    <keyword>-cs</keyword>
+    <keyword>Enable Implicit Namespace lookup</keyword>
+    <keyword>Enable Memvar support</keyword>
+    <keyword>Enable Undeclared variables support</keyword>
+    <keyword>-i</keyword>
+    <keyword>Implicit Namespace lookup</keyword>
+    <keyword>Include paths</keyword>
+    <keyword>Initialize Local variables</keyword>
+    <keyword>-initlocals</keyword>
+    <keyword>-ins</keyword>
+    <keyword>-lb</keyword>
+    <keyword>Local variables</keyword>
+    <keyword>-memvar</keyword>
+    <keyword>Memvar support</keyword>
+    <keyword>-namedargs</keyword>
+    <keyword>NAMESPACE</keyword>
+    <keyword>Namespace lookup</keyword>
+    <keyword>-nostddef</keyword>
+    <keyword>ns</keyword>
+    <keyword>-ns:&lt;Namespace&gt;</keyword>
+    <keyword>Overflow Exceptions</keyword>
+    <keyword>-ovf</keyword>
+    <keyword>Prefix classes</keyword>
+    <keyword>Prefix classes with default Namespace</keyword>
+    <keyword>standard header file</keyword>
+    <keyword>-stddefs</keyword>
+    <keyword>Suppress standard header file</keyword>
+    <keyword>-undeclared</keyword>
+    <keyword>Undeclared variables support</keyword>
+    <keyword>-unsafe</keyword>
+    <keyword>Unsafe Code</keyword>
+    <keyword>Use Zero Based Arrays</keyword>
+    <keyword>Zero Based Arrays</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Language</para>
+    </header>
+    <para styleclass="Body Text">The Language page contains some settings that control X# Language specific options. These settings apply to all dialects.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Image Caption"><image src="ProjectPropertiesLanguage.png" scale="100.00%" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Item</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Description</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Command item</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Allow Late Binding</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Allow property access and method calls on expressions of type OBJECT and USUAL.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">/lb</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Allow Named Arguments</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Allow named arguments (Default = FALSE for the Core dialect and TRUE for the other dialects). Changing the dialect may also automatically change this setting.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">/namedargs</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Allow Unsafe Code</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Allow Unsafe code inside this assembly.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Case Sensitive</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enable/Disable case sensitivity.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">/cs</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Initialize Local variables</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the &apos;Initialize strings&apos; setting from the Dialect page.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-initlocals">/initlocals</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Overflow Exceptions</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Check for Overflow and Underflow for numeric expressions, like the CHECKED keyword.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">/ovf</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Use Zero Based Arrays</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Use Zero Based Arrays.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">/az</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Enforce SELF</para>
+        </td>
+        <td>
+          <para styleclass="Normal">When checked then all references to methods and fields/properties inside a class should be prefixed with SELF (or SUPER)</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Allow DOT for instance members</para>
+        </td>
+        <td>
+          <para styleclass="Normal">When checked then you can also use the DOT (.) operator to access instance fields, properties and methods. Otherwise the COLON (:) operator is needed</para>
+        </td>
+        <td>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Enforce VIRTUAL/OVERRIDE</para>
+        </td>
+        <td>
+          <para styleclass="Normal">When checked then you MUST prefix methods with VIRTUAL and/or OVERRIDE when overriding methods in a parent class or when defining a new method that can be overridden</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceoverride">/enforceoverride</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Allow Old Style assignments</para>
+        </td>
+        <td>
+          <para styleclass="Normal">When checked then allow the use of the single equals operator (=) for assignments. Otherwise the Colon Equals (:=) operator is mandatory</para>
+        </td>
+        <td>
+          <para styleclass="Normal">/allowoldstyleassignments</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Enable Memvar support</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE &amp; PARAMETERS). </para>
+          <para styleclass="Normal">Please note that this is NOT supported for the Core and Vulcan dialects</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Enable Undeclared variables support</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enable support for undeclared variables (these are resolved to MEMVARs).</para>
+          <para styleclass="Normal">Please note that this requires /memvar to be enabled as well.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Enable Implicit Namespace lookup</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ins">/ins</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Prefix classes with default Namespace</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">/ns:&lt;Namespace&gt;</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Additional Include paths</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable).</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">/i</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Alternate standard header file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Name of an alternative standard header file (alternative for XSharpDefs.xh).</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs">/stddefs</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Suppress standard header file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Suppress inclusion of the standard header file (XSharpDefs.xh) in every file.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">/nostddef</link></para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

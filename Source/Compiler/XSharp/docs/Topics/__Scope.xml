@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__Scope</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__Scope</para>
+    </header>
+    <para styleclass="List" style="tabstops:286px left,382px left ;">&lt;Scope&gt;<tab />The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<br/>[NEXT &lt;NEXT&gt;]<tab />Optionally specifies the number of records to process starting <br/><tab /><tab />with the first record of the source file. <br/><text styleclass="Body Text">[RECORD &lt;rec&gt;]</text><tab /><text styleclass="Body Text">An optional record ID If specified, the processing begins </text><br/><tab /><tab /><text styleclass="Body Text">with this data record in the source file. </text><br/>[&lt;rest:REST&gt;]<tab />The option REST specifies whether records are sequentially <br/><tab /><tab />searched only from the current up to the last record. <br/><tab /><tab />If a condition is specified, the option ALL is the default value.<br/>[ALL]<tab /><tab />The option ALL specifies that all records from the source file are imported. <br/><tab /><tab />This is the default setting. </para>
+    <para styleclass="List" style="tabstops:286px left,382px left ;"></para>
+  </body>
+</topic>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Typed Enums</title>
+  <keywords>
+    <keyword>ENUM</keyword>
+    <keyword>Typed Enums</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Typed Enums</para>
+    </header>
+    <para styleclass="Normal">Enums may now be typed in X#. The type indicates the base class for the ENUM. By specifying a AS clause you can determine the size in bytes that the ENUM uses.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENUM</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> BYTE</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">MEMBER</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> One</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">MEMBER</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Two</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENUM</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160;</text></para>
+  </body>
+</topic>

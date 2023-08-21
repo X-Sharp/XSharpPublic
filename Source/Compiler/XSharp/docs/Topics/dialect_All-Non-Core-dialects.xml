@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>All Non Core dialects</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">All Non Core dialects</para>
+    </header>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for any or the non-core dialects </para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows &quot;garbage&quot; after keywords such as NEXT, ENDDO etc.</li>
+    </list>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Does not allows the DOT (&apos;.&apos;) operator to call Instance methods</li>
+    </list>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Requires a reference to the XSharp.Core and XSharp.RT DLLs</li>
+      <li styleclass="Normal">String Comparisons are mapped to a function in the XSharp runtime</li>
+    </list>
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">NULL_STRING is compiled into either &quot;&quot; or NULL depending on the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></li>
+    </list>
+    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Supports literal symbols (#SomeName)</li>
+    </list>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The String &quot;=&quot; operator is mapped to a function in the XSharp runtime</li>
+    </list>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The X# specific types such as DATE, ARRAY, SYMBOL, FLOAT and USUAL are not supported, but required a reference to the runtime</li>
+      <li styleclass="Normal">Adds support for Dynamic Memory Variables and Undeclared variables </li>
+    </list>
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Single quotes are used for String literals (except in Vulcan). Character literals must be prefixed with a c, like this: cChar := c&apos;A&apos;</li>
+      <li styleclass="Normal">Allow the use of ASend() to call methods for each element inside a X# array.</li>
+      <li styleclass="Normal">The &apos;=&apos; operator may be used for assigns but will generate a warning when used.</li>
+      <li styleclass="Normal">Adds support for BEGIN SEQUENCE .. END SEQUENCE</li>
+      <li styleclass="Normal">Adds support for the ALIAS (-&gt;) operator</li>
+      <li styleclass="Normal">Adds support for the FIELD statement</li>
+      <li styleclass="Normal">Adds support for the Macro compiler and &amp;(variable) syntax</li>
+      <li styleclass="Normal">Adds support for the ARRAY OF &lt;type&gt; syntax</li>
+    </list>
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The compiler generated functions class is called <br/><tab />&lt;AssemblyName&gt;.Functions (DLLs) for functions and globals<br/><tab />&lt;AssemblyName&gt;.Exe.Functions (EXEs) for functions and globals</li>
+    </list>
+    <para styleclass="Normal"><tab />&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions &#160;for static functions and globals</para>
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The compiler adds several attributes (defined in XSharp.Core) to describe the default namespace and compiler version</li>
+      <li styleclass="Normal">The compiler generates code for EXE files that set several properties in the Runtimestate to match compiler options and the dialect of the main app.</li>
+    </list>
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Procedures cannot return values</li>
+      <li styleclass="Normal">Adds support for untyped variables and return values</li>
+      <li styleclass="Normal">Adds support for untyped function and method parameters (the so-called Clipper calling convention)</li>
+      <li styleclass="Normal">Adds support for late bound code (requires the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">-lb</link> compiler option)</li>
+      <li styleclass="Normal">Adds support for INIT and EXIT procedures</li>
+      <li styleclass="Normal">Adds support for Codeblocks (untyped Lambda expressions with an array of USUAL parameters and a USUAL return value)</li>
+      <li styleclass="Normal">Allows skipping arguments in method calls. Skipped arguments are assumed to be NIL</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The default RDD all except the FoxPro dialect is DBFNTX</li>
+    </list>
+  </body>
+</topic>

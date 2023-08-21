@@ -1,0 +1,418 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Project Templates</title>
+  <keywords>
+    <keyword>project templates</keyword>
+    <keyword>templates</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Project Templates</para>
+    </header>
+    <para styleclass="Normal">The X# Visual Studio integration comes with the following project templates:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="6">
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Template</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Required Framework</text><br/><text style="font-weight:bold;">version</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Default Dialect</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">References</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">ClassLibrary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Core dialect with no dependencies on the runtime</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ClassLibraryCore.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core ClassLibrary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Core dialect with a dependency on XSharp.Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, X# Core and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ClassLibraryFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">FoxPro ClassLibrary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the FoxPro Dialect</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, X# Core, VFP and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ClassLibraryVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">VO ClassLibrary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the VO Dialect</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, X# Core, VO and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ClassLibraryVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vulcan ClassLibrary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Vulcan Dialect</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, X# Core, Vulcan and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ClassLibraryXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">XPP ClassLibrary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Xbase++ Dialect</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Xbase++</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, X# Core, XPP and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ConsoleApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Console Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# command-line application in the core dialect.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ConsoleApplicationFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">FoxPro Console Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# command-line application in the FoxPro Dialect.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, VFP, and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ConsoleApplicationVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">VO Console Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# command-line application in the VO Dialect.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, VO, and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ConsoleApplicationVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vulcan Console Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, Vulcan, and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="ConsoleApplicationXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">XPP Console Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Xbase++ Dialect</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Xbase++</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, XPP, and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WinFormApp.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Forms Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating an application with a Windows Forms user interface.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5<br/>System.Drawing<br/>System.Windows.Forms</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="WPFApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">WPF Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Windows Presentation Foundation client application.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5<br/>WindowsBase, PresentationCore, PresentationFramework</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="VOMDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">VO MDI Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a VO MDI application in the VO Dialect.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="VOSDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">VO SDI Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a VO SDI application in the VO Dialect.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and some extensions for frameworks &gt; 3.5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="VulcanApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vulcan Application</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A project for creating a Vulcan command-line application.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5<br/>VulcanRT and VulcanRTFuncs</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="MsTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Ms Test Library</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A Library with test support using the MsTest Framework</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and several MsTest related assemblies</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="NUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">NUnitTest Library</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A library with test support using the open source NUnit Framework</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and several NUnit &#160;related assemblies.<br/>The template uses a NuGet package to retrieve the correct assemblies</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><image src="XUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        </td>
+        <td>
+          <para styleclass="Normal">XUnitTest Library</para>
+        </td>
+        <td>
+          <para styleclass="Normal">A library with test support using the open source XUnit Framework</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2.0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">System and several XUnit &#160;related assemblies.<br/>The template uses a NuGet package to retrieve the correct assemblies</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

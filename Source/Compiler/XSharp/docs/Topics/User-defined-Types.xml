@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-05-19T12:45:46.320+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>User defined Types</title>
+  <keywords>
+    <keyword>CLASS</keyword>
+    <keyword>CLASS (FoxPro syntax)</keyword>
+    <keyword>CLASS (Xbase++ syntax)</keyword>
+    <keyword>DELEGATE</keyword>
+    <keyword>ENUM</keyword>
+    <keyword>INTERFACE</keyword>
+    <keyword>STRUCTURE</keyword>
+    <keyword>UNION</keyword>
+    <keyword>VOSTRUCT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">User defined Types</para>
+    </header>
+    <para styleclass="Normal">The X# language allows you to define your own types (in fact the XBase Specific types have all been defined that way).</para>
+    <para styleclass="Normal">The language has the following keywords that define User defined Types.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a class, using a generic syntax that is available in all dialect.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Fox">CLASS (FoxPro syntax)</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a class, using the FoxPro specific syntax.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Xpp">CLASS (Xbase++ syntax)</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a class, using the Xbase++ specific syntax.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELEGATE">DELEGATE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a delegate, a description of a method or a function.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ENUM">ENUM</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines an enum, a list of possible options.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INTERFACE">INTERFACE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines an interface.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE">STRUCTURE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a structure, a value type</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNION">UNION</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a Union, a special kind of structure. Only available in the VO and Vulcan dialects.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Defines a VOStruct, a special kind of structure. Only available in the VO and Vulcan dialects.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

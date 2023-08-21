@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Primary Expressions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Primary Expressions</para>
+    </header>
+    <para styleclass="Body Text">Primary Expressions are the simplest building blocks in the expression rule in X#</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="31" colcount="2" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:middle; width:30%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Primary Expression type</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Self</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">SELF</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Super</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">SUPER</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">LiteralArray</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">{......}</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Anonymous Type</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">CLASS { .... }</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Codeblocks">CodeBlock</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ">LINQ query</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">DelegateConstructor call</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">datatype { expression COMMA, @ Identifier ( ) }</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Constructor call with parameters and optional initializer</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">datatype { argumentlist }( LCURLY initializer }) ?</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Constructor call without parameters and with optional initializer</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">datatype { } (LCURLY initializer }) ?</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Checked </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">CHECKED ( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Unchecked </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">UNCHECKED ( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Typeof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(_typeof | TYPEOF) ( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Sizeof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(_sizeof | SIZEOF) ( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Nameof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(NAMEOF) ( identifier )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Default</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">DEFAULT ( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Name</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">identifier</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Conversion</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">nativetype ( expression ): LONG(1+2)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">XBase Conversion</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">xbasetype ( expression ): FLOAT(1+2)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">VOCast</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">datatype ( _CAST , exprsssion )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">VoCastPtr</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">PTR ( datatype , expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">VOTypeName</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">typeName</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">IIF expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(IIF|IF) ( expression , expression , expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">VOAnd</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">_AND ( expressionlist )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">VOOr</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">_OR ( expressionlist )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AliasedField</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">FIELD -&gt; identifier<br/>| identifier -&gt; identifier</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Aliased Expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">FIELD -&gt; expression<br/>| expression -&gt; expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">MacroExpr</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AMPERSAND ( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">MacroVar</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AMPERSAND identifier</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Parenthesized </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">( expression )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">ArgList</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">_ARGLIST</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8345</title>
+<keywords>
+<keyword>XS8345</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8345</para>
+  </header>
+  <para styleclass="Normal">Field or auto-implemented property cannot be of type '{0}' unless it is an instance member of a ref struct.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Unary</title>
+  <keywords>
+    <keyword>-</keyword>
+    <keyword>--</keyword>
+    <keyword>+</keyword>
+    <keyword>++</keyword>
+    <keyword>operator</keyword>
+    <keyword>unary operator</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Unary</para>
+    </header>
+    <para styleclass="Normal">X# uses the following unary operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">+</para>
+        </td>
+        <td>
+          <para styleclass="Normal">+x</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">returns the value of x.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-x</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">numeric negation.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">++ (prefix)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">++x</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">prefix increment. Returns the value of x after updating the storage location with the value of x that is one greater (typically adds the integer 1).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-- (prefix)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">--x</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">prefix decrement. Returns the value of x after updating the storage location with the value of x that is one greater (typically adds the integer 1).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">~</para>
+        </td>
+        <td>
+          <para styleclass="Normal">~x</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">bitwise complement</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">++ (postfix)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x++</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">postfix increment. Returns the value of x and then updates the storage location with the value of x that is one greater (typically adds the integer 1).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-- (postfix)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x--</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">postfix decrement. Returns the value of x and then updates the storage location with the value of x that is one less (typically subtracts the integer 1).</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that shift operators are only supported on integral numeric types</para>
+  </body>
+</topic>

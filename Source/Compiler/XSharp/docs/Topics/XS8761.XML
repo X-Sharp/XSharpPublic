@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8761</title>
+<keywords>
+<keyword>XS8761</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8761</para>
+  </header>
+  <para styleclass="Normal">Operator '{0}' cannot be applied to 'default' and operand of type '{1}' because it is a type parameter that is not known to be a reference type</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

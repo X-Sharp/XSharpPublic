@@ -1,0 +1,11 @@
+<!-- 
+***********************************************************************************************
+Directory.Build.Targets
+Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+See License.txt in the project root for license information.
+***********************************************************************************************
+. -->
+<Project>
+  <Import Project="Sdk.targets" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+  <Import Project="eng\targets\Imports.targets" />
+</Project>

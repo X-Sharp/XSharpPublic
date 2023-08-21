@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0465</title>
+  <keywords>
+    <keyword>XS0465</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0465</para>
+    </header>
+    <para styleclass="Normal">Introducing a &apos;Finalize&apos; method can interfere with destructor invocation. Did you intend to declare a destructor?</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning occurs when you create a class with a method whose signature is public virtual void Finalize.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If such a class is used as a base class and if the deriving class defines a destructor, the destructor will override the base class Finalize method, not Finalize.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0465.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0465.prg  <br/>// compile with: /target:library  <br/></para>
+  </body>
+</topic>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+***********************************************************************************************
+XSharp.Default.Props
+
+This file is no longer needed. It was included in earlier versions of XSharp but is now replaced by XSharp.Props
+The XSharp.Props file is automatically included by the XSharp.BeforeCommon.Props file. See that file for more comments.
+***********************************************************************************************
+-->
+<Project>
+<Import Condition="'$(XSharpDefaultProps)' == ''" Project="$(MSBuildThisFileDirectory)\XSharp.Props" />
+</Project>

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule Name="SigningPropertyPage"
+      Description="Properties related to producing signing assemblies."
+      DisplayName="Signing"
+      PageTemplate="generic"
+      Order="7"
+      xmlns="http://schemas.microsoft.com/build/2009/properties" >
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="BeforeContext"
+                HasConfigurationCondition="False" />
+  </Rule.DataSource>
+
+  <BoolProperty Name="SignAssembly"
+                Description="Sign the output assembly to give it a strong name."
+                HelpUrl="https://docs.microsoft.com/en-us/dotnet/standard/assembly/strong-named"
+                DisplayName="Sign the assembly" />
+
+  <StringProperty Name="AssemblyOriginatorKeyFile"
+                  DisplayName="Strong name key file"
+                  Subtype="file" />
+
+  <BoolProperty Name="DelaySign"
+                Description="Use delayed signing when access to the private key is restricted. The public key will be used during the build, and addition of the private key information deferred until the assembly is handed off."
+                HelpUrl="https://docs.microsoft.com/en-us/dotnet/standard/assembly/delay-sign"
+                DisplayName="Delay sign only" />
+</Rule>

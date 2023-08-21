@@ -1,0 +1,44 @@
+Steps to create a new XSharp build
+===================================
+- Check in the source code to the Compiler (the Dev Folder). Don't forget to increase the version numbers
+  (COmpiler solution, Solution Items folder). Change the numbers and other relevant info, such as Copyright Year in   
+   x Buildnumber.h
+   x Constants.cs
+- Open an Admin VS command prompt in the Dev\XSharp Folder and run the Rebuild.cmd to build a debug and release version of the compiler 
+  and the other tools in the Compiler solution. This also deploys the CodeAnalysis and CodeGenerator DLLs in the DevPublic\External folder
+  The output for the Release build is in the c:\XSharp\Dev\XSharp\artifacts\bin\xsc\Release\net472 folder. 
+  The debug build in the c:\XSharp\Dev\XSharp\artifacts\bin\xsc\Debug\net472 folder.
+- Check in the source code for the VS Integration (The DevPublic folder). Don't forget to increase the version numbers 
+  (VSIntegration solution, Solution Items folder). Change the numbers and other relevant info such as Copyright in
+  x Buildnumber.h
+  x Constants.cs  
+- Build a release version of this solution and also the tools solution by calling Build Release
+  The output appears in the c:\XSharp\DevPublic\Binaries\Release folder.
+- Check in the files for the VS Integration and Tools
+- Update the documentation and version numbers in Help And Manual (Both a version number and a text variable)
+- Run the publish tasks inside by calling createhelp.cmd in this folder.
+  The output should appear in the c:\XSharp\Dev\XSharp\Binaries\Help folder
+- Adjust the Readme and What's New files for the installer. 
+  You can copy the new items for the What's new page from the helpfile. 
+  You may have to change some styles in the RTF file.
+- Check in the Help Source files 
+- The Installer is in the DevIntern repo. This is an internal repo because it also 
+  has our private keyfiles and the keys to sign the EXE files.
+- Open the c:\XSharp\DevIntern\src\Setup\XSharpSetup.iss file in Inno Setup
+- Adjust version number, dates and times and output exe name in the installer script
+- Build for Fox
+- When needed also build for Public
+- Inno calls 2 command line tools. 1 to add the Help files to a CAB file so they can be signed The other tool 
+  patches the vsixmanifest files so they have the same version as the installer.
+- The output goes to c:\XSharp\DevIntern\Binaries\Setup    
+- Test the installers on a virtual machine. At least test an update from a previous build as well as a complete new install.
+- Test on a machine with VS 2015, VS 2017 and both. Info should display correctly in Help About and Tools - Extensions
+- Try to create a new X# Project and build and debug it.
+- Check in the Setup Source files 
+- If all works, then deploy the setup files to the website in a ZIP
+- Set RsFiles information on the website, including version number, description, image etc
+- Announce new build on website, Facebook, Twitter etc
+- Start Facebook add campaign when needed
+- Create a tag in Github for the private and public repo.
+- Merge the Compiler and VSIntegration branches into their master branches
+- Update the what's new document on the website.

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0304</title>
+  <keywords>
+    <keyword>XS0304</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0304</para>
+    </header>
+    <para styleclass="Normal">Cannot create an instance of the variable type &apos;type&apos; because it does not have the new() constraint</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When you implement a generic class, and you want to use the new keyword to create a new instance of any type that is supplied for a type parameter T, you must apply the new() constraint to T in the class declaration, as shown in the following example.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><br/>class C&lt;T&gt; where T : new()  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The new() constraint enforces type safety by guaranteeing that any concrete type that is supplied for T has a default, parameterless constructor. XS0304 occurs if you attempt to use the new operator in the body of the class to create an instance of type parameter T when T does not specify the new() constraint. On the client side, if code attempts to instantiate the generic class with a type that has no default constructor, that code will generate Compiler Error XS0310.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0304.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0304.prg  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The new operator also is not allowed in methods of the class.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// Compile with: /target:library.  <br/></para>
+    <para styleclass="Normal">  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To avoid the error, declare the class by using the new() constraint, as shown in the following example.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// Compile with: /target:library.  <br/></para>
+    <para styleclass="Normal">  </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

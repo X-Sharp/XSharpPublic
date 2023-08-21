@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
+    <SignAssembly>false</SignAssembly>
+    <StrongNameKeyId />
+    <AssemblyOriginatorKeyFile>$(Solutiondir)src\common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <PublicKeyToken>ed555a0467764586</PublicKeyToken>
+    <PublicKey>
+      0024000004800000940000000602000000240000525341310004000001000100b16a35b62bb33ce476c595e75bcc83fe4566c0a7cb9c093ce23e7add61fe1fc8a6edca2e542f0dc9ce41ec6b4260a73dda598c81f61a6f9522653ebfeae098a3bdb641020e843cbab825afe1c3910d42d17a1dcf211abb1cba4fc5e19569307c67a11c92b848d2df23f454d5ed1ab8b479afa4ece799445292b11012225aee96
+    </PublicKey>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <DevRtDir>$(Solutiondir)..\..\DevRt\</DevRtDir>
+    <RuntimeFilesDir Condition="'$(RuntimeFilesDir)' == '' ">$(DevRtDir)Binaries\Debug\</RuntimeFilesDir>
+    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <BinariesDir>$(Solutiondir)Artifacts\bin\</BinariesDir>
+  </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+  <PropertyGroup>
+    <ProjectGuid>5dc40adc-f250-4611-ad89-b67b150bbc8e</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.MacroCompiler</RootNamespace>
+    <AssemblyName>XSharp.MacroCompiler.Full</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <Name>FullMacroCompiler</Name>
+    <Nologo>true</Nologo>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>VO</Dialect>
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <TargetFrameworkProfile />
+    <SignAssembly>true</SignAssembly>
+    <IncludePaths>$(Solutiondir)src\Common</IncludePaths>
+    <NoStandardDefs>true</NoStandardDefs>
+    <OutputPath>$(Binariesdir)</OutputPath>
+    <StartupObject />
+    <ApplicationIcon />
+    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <AZ>false</AZ>
+    <CS>true</CS>
+    <LB>false</LB>
+    <NamedArgs>false</NamedArgs>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <InitLocals>false</InitLocals>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <OutputPath>$(BinariesDir)$(ProjectName)\$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;RUNTIME</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <DisabledWarnings />
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Collections.Immutable</Name>
+      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\artifacts\bin\XSharpScripting\Debug\net472\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.8.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\artifacts\bin\XSharpCodeAnalysis\Debug\net472\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>$(RuntimeFilesDir)XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>$(RuntimeFilesDir)XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Scripting, Version=2.8.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Scripting</Name>
+      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\artifacts\bin\XSharpScripting\Debug\net472\XSharp.Scripting.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExecScript.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MacroCompiler.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ScriptCache.prg">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
+    <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
+  </Target>
+</Project>

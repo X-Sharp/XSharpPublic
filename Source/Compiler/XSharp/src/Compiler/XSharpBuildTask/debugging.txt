@@ -1,0 +1,16 @@
+To debug a MsBuild script you can use 2 tricks:
+
+1) Create a preprocessed output file
+   msbuild /pp:Preprocessed.xml Project.xsproj
+
+   This shows all included targets files and their paths
+   
+   You can call MsBuild with the preprocessed file if you want: msbuild Preprocessed.Xml
+   This gives a line/column info that may help to determine the problem
+   
+2) MsBuild file logging
+   msbuild Project.xsproj  /fl1 /flp1:Verbosity=Diagnostic
+   
+To open our XSharp.Build assembly in the debugger, set an environment variable:
+
+SET MSBUILDDEBUGONSTART=1

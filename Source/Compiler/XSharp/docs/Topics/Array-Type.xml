@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Array Type</title>
+  <keywords>
+    <keyword>ARRAY</keyword>
+    <keyword>XSharp.__Array</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Array Type</para>
+    </header>
+    <para styleclass="Normal">This implements the so called &quot;ragged&quot; arrays. <br/>The internal typename is XSharp.__Array</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="ARRAY" inline="false"/></para>
+  </body>
+</topic>

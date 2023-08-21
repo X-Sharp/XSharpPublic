@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+    <ContentType
+      Name="XSharpFile"
+      DisplayName="X# file"
+      ItemType="Compile">
+    </ContentType>
+
+    <ContentType
+    Name="XSharpHeader"
+    DisplayName="X# header"
+    ItemType="None">
+    </ContentType>
+
+    <ContentType
+        Name="VOBinary"
+        DisplayName="VOBinary"
+        ItemType="VOBinary">
+    </ContentType>
+
+     <ContentType
+        Name="NativeResource"
+        DisplayName="Native Resource"
+        ItemType="NativeResource">
+    </ContentType>
+
+    <ItemType Name="Compile" DisplayName="Compile"/>
+    <ItemType Name="NativeResource" DisplayName="NativeResource"/>
+    <ItemType Name="VOBinary" DisplayName="VOBinary"/>
+
+    <ItemType Name="AdditionalFiles" DisplayName="C# analyzer additional file"/>
+    <ItemType Name="EditorConfigFiles" DisplayName=".editorconfig file" />
+
+
+    <FileExtension Name=".prg" ContentType="XSharpFile"/>
+    <FileExtension Name=".xs"  ContentType="XSharpFile"/>
+    <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".ch"  ContentType="XSharpHeader"/>
+    <FileExtension Name=".rc"  ContentType="NativeResource"/>
+    <FileExtension Name=".vnfrm"  ContentType="VOBinary"/>
+    <FileExtension Name=".vndbs"  ContentType="VOBinary"/>
+    <FileExtension Name=".vnmnu"  ContentType="VOBinary"/>
+    <FileExtension Name=".vnfs"  ContentType="VOBinary"/>
+    <FileExtension Name=".xsfrm"  ContentType="VOBinary"/>
+    <FileExtension Name=".xsdbs"  ContentType="VOBinary"/>
+    <FileExtension Name=".xsmnu"  ContentType="VOBinary"/>
+    <FileExtension Name=".xsfs "  ContentType="VOBinary"/>
+</ProjectSchemaDefinitions>
+

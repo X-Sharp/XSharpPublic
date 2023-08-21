@@ -1,0 +1,42 @@
+﻿Codeblocks are implemented with Roslyn as a combination of:
+- Generic Delegates in the Root namespace with an invoke method that has the number of declared arguments. 
+  These are named "<>F`2" for a codeblock with 1 argument (the second is the return type)
+- a Lambda expression
+  x this contains the body of the codeblock
+  x it has USUAL parameters for each of the parameters in the codeblock
+  Please note that there is NO USUAL[] in the lambda expression.
+  In code that has a lambda expression or codeblock Roslyn generates:
+  - a static field of the type of one of the generated delegates in a nested class "<>c" where lambdas and codeblocks are used that is a compiler generated type with properties for each lambda / codeblock.
+  - Inside this class there are:
+    - Fields for each codeblock with names like "<><9_0_N" of types "<>F`2", "<>F`3" etc.
+    - Methods for each lambda expression with names like "<ENTITY>_0_N". These contain the IL for the body of the lambda / codeblock
+    - the "_0_N" suffix of the field and methods match
+  - a static field in the class where it is declared
+  - a nested type in the class where it is declared. 
+  - a class constructor 
+
+- An anonymous type in the Root namespace with the following properties & fields. For codeblocks this inherits from the CodeBlock type in the runtime
+  x Cb$Source$ property with backing field, has the codeblock source
+  x Cb$Eval$ property with backing field, which has a lambda expression
+  x Constructor that accepts both fields and calls the base (Codeblock) constructor with the # of codeblock parameters.
+  x Eval() function that calls _BlockArg(..) for each of the declared parameters to get the parameters from the Usual[] and then calls the lambda expression.
+    This makes sure that when parameters are missing in the Usual[] that these will be filled with NIL
+  x ToString() which returns the Cb$Source$ field
+  The type has a DebuggerDisplay() attribute that returns ToString()
+
+- when the codeblock is  created the code:
+  - checks if the Field with the delegate is already initialized.
+  - when not then it creates a new instance of the anonymous type and saves the location of the method containing the IL in the field
+  - then (in all cases) it creates an object of the anonymous type and passes the delegate and the source code for the codeblock
+  - the resulting object is the codeblock
+  
+  To make this work we have added/changed the following:
+  - a new class CodeblockTypePublicSymbol that inherits from AnonymousTypePublicSymbol
+  - this class overrides some properties and has nested classes to implement the eval method that all codeblocks have 
+  - we have added some properties to the AnonymousTypeManager class
+  - AnonymousTypePublicSymbol was sealed. We have changed that and have also changed the visibility of some of its properties and fields
+  - We have added a constructor to AnonymousTypePublicSymbol that takes the codeblock parameters and constructs the Type descriptor from the parameters
+  - 
+
+
+

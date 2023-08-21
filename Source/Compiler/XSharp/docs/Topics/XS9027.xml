@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS9027</title>
+  <keywords>
+    <keyword>XS9027</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9027</para>
+    </header>
+    <para styleclass="Normal">VoStruct member type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float, double, ptr, psz or vostruct</para>
+  </body>
+</topic>

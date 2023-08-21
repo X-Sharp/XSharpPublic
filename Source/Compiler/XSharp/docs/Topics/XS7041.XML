@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS7041</title>
+<keywords>
+<keyword>XS7041</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS7041</para>
+  </header>
+  <para styleclass="Normal">Each linked resource and module must have a unique filename. Filename &apos;{0}&apos; is specified more than once in this assembly</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

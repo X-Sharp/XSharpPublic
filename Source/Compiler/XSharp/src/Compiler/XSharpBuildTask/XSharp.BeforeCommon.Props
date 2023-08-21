@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+   This file goes to the "%LOCALAPPDATA%\Microsoft\MSBuild\Current\Imports\Microsoft.Common.props\ImportBefore" folder 
+   MSBuild automatically includes all files there 
+   It assumes there is an environment variable or property defined in the xsproj file with the name 
+   "XSharpMsBuildDir" that points to the folder with the XSharp MsBuild support files
+   By copying it there it will be automatically included in every build.
+   The \Program Files (x86)\XSharp\Tools folder contains a program DeployMsBuildSupport.exe  that takes care of copying the file.
+   This program can also be called with the /UNINSTALL command line option. That will remove all copies of this file, also the ones
+   that are located inside MsBuild folders of various VS Installations and .Net.
+-->
+<Project>
+
+<PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.xsproj'">
+    <XSharpMsBuildDir Condition="'$(_XSharpTasksDirectory)' != ''">$(_XSharpTasksDirectory)</XSharpMsBuildDir>
+    <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'=='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
+    <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'!='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
+    <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == ''" >$(MSBuildProgramFiles32)\XSharp\MsBuild</XSharpMsBuildDir>
+    <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>  
+</PropertyGroup>
+<Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />
+</Project>

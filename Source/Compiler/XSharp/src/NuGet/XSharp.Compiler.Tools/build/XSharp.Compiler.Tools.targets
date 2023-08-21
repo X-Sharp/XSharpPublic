@@ -1,0 +1,4 @@
+﻿<!-- Copyright (c) XSharp B.V.  All Rights Reserved. See the LICENSE file in the project root for more information. -->
+<Project>
+<Import Project="$(_XSharpTasksDirectory)XSharp.Targets" />
+</Project>

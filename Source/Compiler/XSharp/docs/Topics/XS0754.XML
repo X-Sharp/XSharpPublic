@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0754</title>
+<keywords>
+<keyword>XS0754</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0754</para>
+  </header>
+  <para styleclass="Normal">A partial method may not explicitly implement an interface method</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

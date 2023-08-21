@@ -1,0 +1,11 @@
+// 119. error XS0149: Method name expected
+CLASS Test
+	CONSTRUCTOR(n AS INT)
+	CONSTRUCTOR()
+	SUPER()
+	SELF(1)
+END CLASS
+
+FUNCTION Start() AS VOID
+
+RETURN

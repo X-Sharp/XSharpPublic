@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-05-09T23:23:03.444+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Xbase++</title>
+  <keywords>
+    <keyword>&amp;&amp;</keyword>
+    <keyword>&apos;@&apos;</keyword>
+    <keyword>__XPP__</keyword>
+    <keyword>ENDFOR</keyword>
+    <keyword>Xbase++</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Xbase++</para>
+    </header>
+    <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;</para>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Xbase++&quot; dialect.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows 4 letter abbreviations of those keywords where this is also supported in Xbase++</li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows &quot;&amp;&amp;&quot; as same line comment characters, just like &quot;//&quot;</li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The &apos;@&apos; operator is only used to pass variables by reference.</li>
+      <li styleclass="Normal">The preprocessor adds a define __XPP__ with a value of TRUE</li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows ENDFOR instead of NEXT </li>
+    </list>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Adds the Xbase++ specific CLASS syntax to define classes</li>
+      <li styleclass="Normal">The entry point to the code is the main() function or main() procedure.</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">FieldGet() and FieldPut() will not throw an error when writing to non existing field Positions</li>
+      <li styleclass="Normal">If you use the index operator on a usual which contains a string then you will be receive the 1 based substring of the value.</li>
+    </list>
+  </body>
+</topic>

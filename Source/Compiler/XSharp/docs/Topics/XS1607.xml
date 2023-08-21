@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1607</title>
+  <keywords>
+    <keyword>XS1607</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1607</para>
+    </header>
+    <para styleclass="Normal">Assembly generation -- reason</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A warning was generated from the assembly-creation phase of the compilation.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you are building a 64-bit application on a 32-bit operating system, you must ensure that 64-bit versions of all referenced assemblies are installed on the target operating system.</para>
+    <para styleclass="Normal">All x86-specific common language runtime (CLR) assemblies have 64-bit counterparts (every CLR assembly will exist on all operating systems). Therefore, you can safely ignore XS1607 for CLR assemblies.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can ignore this warning if you encounter it when you create a AssemblyInformationalVersionAttribute. The informational version is a string that attaches additional version information to an assembly; this information is not used at run time. Although you can specify any text, a warning message appears on compilation if the string is not in the format that is used by the assembly version number, or if it is in that format but contains wildcard characters. This warning is harmless.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information, see Al.exe Tool Errors and Warnings.</para>
+  </body>
+</topic>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1700</title>
+  <keywords>
+    <keyword>XS1700</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1700</para>
+    </header>
+    <para styleclass="Normal">Assembly reference Assembly Name is invalid and cannot be resolved</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning indicates that an attribute, such as InternalsVisibleToAttribute, was not specified correctly.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information, see Friend Assemblies.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1700.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1700.prg  <br/>// compile with: /target:library  <br/></para>
+  </body>
+</topic>

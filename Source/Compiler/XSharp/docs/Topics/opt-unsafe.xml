@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-unsafe</title>
+  <keywords>
+    <keyword>-unsafe</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-unsafe</para>
+    </header>
+    <para styleclass="Normal">The -unsafe compiler option allows code that uses the unsafe keyword to compile.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-unsafe &#160;</para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">For more information about unsafe code, see Unsafe Code and Pointers.</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language property page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Set the Allow Unsafe Code property in the General Section</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> for unsafe mode:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">xsc -unsafe in.prg &#160;</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

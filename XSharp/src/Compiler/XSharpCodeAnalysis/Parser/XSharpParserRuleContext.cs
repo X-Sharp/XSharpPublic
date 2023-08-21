@@ -39,8 +39,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var modName = options.CommandLineArguments.CompilationOptions.ModuleName;
                 return ParseTrivia($"/// <summary>This compiler generated class contains all the functions, globals and defines that are defined in the {modName} assembly. </summary>");
             }
-            else if (node is MethodDeclarationSyntax mdecl && mdecl.Identifier.Text.Contains("$"))
+            else if (node is MethodDeclarationSyntax mdecl &&
+                mdecl.Identifier.Text.Contains("$") )
             {
+                if (mdecl.Parent is ClassDeclarationSyntax cds && cds.Identifier.Text.Contains("<"))
+                {
+                    // Suppress comment for <Module>$AppInit and <Module>$AppExit
+                    return default;
+                }
                 var id = mdecl.Identifier.Text;
                 string summary;
                 if (id.Contains("$Init"))

@@ -119,28 +119,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         RETURN oRDD
 
 
-    PRIVATE METHOD _ReturnsRows(cCommand AS STRING) AS LOGIC
-        LOCAL aParts := cCommand:Split(" ()":ToCharArray()) AS STRING[]
-        IF aParts:Length > 0
-            LOCAL cWord := aParts[1]:ToLower() AS STRING
-            SWITCH cWord
-            CASE "select"
-            CASE "execute"
-                RETURN TRUE
-            // dml
-            CASE "insert"
-            CASE "delete"
-            CASE "update"
-            // ddl
-            CASE "create"
-            CASE "drop"
-            CASE "alter"
-                RETURN FALSE
-            OTHERWISE
-                RETURN TRUE  //?
-            END SWITCH
-        ENDIF
-        RETURN FALSE
 
 
     CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
@@ -821,8 +799,8 @@ METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNam
 		IF result:Length > 0
 			result:Append( ';' )
 		ENDIF
-		result:Append( stmt )
-		returns := SELF:_ReturnsRows(stmt)
+        result:Append( stmt )
+		returns := XSharp.SQLHelpers.ReturnsRows(stmt)
 	NEXT
 	//
     SELF:_returnsRows := returns

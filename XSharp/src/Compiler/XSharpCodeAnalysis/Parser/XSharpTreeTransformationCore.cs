@@ -3678,6 +3678,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     thisName = context.Id?.Start.Text;
                     if (XSharpString.Equals(thisName, "Item"))
                         thisName = "";
+                    if (string.Equals(thisName, "SELF", StringComparison.OrdinalIgnoreCase))
+                        thisName = "";
                 }
                 var indexer = _syntaxFactory.IndexerDeclaration(
                     attributeLists: atts,

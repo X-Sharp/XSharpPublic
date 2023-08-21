@@ -1479,7 +1479,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // In that case we change the type from Keyword to ID
                     if (_isValidIdentifier(t) && Expect('.'))
                     {
-                        if (_canBeId(t.Type))
+                        if (t.Type != SELF && t.Type != SUPER && t.Type != FOX_M)
                         {
                             t.Type = ID;
                         }
@@ -1495,10 +1495,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // Check if the current token is a valid Identifier (starts with A..Z or _)
                     if (_isValidIdentifier(t))
                     {
-                        if (_canBeId(t.Type))
-                        {
-                            t.Type = ID;
-                        }
+                        t.Type = ID;
                         // keep _inDottedIdentifier true
                     }
                     else if (type != DOT && type != ID)
@@ -1639,17 +1636,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #region Keywords and Preprocessor Lookup
         private int fixPositionalKeyword(int keyword, int lastToken, string text)
         {
-            // Some keywords are impossible to use as ID, even after a member operator
-            if (!_canBeId(keyword))
-                return keyword;
-            // after the following tokens we treat everything as ID:
-            // DOT, COLON, ALIAS, COLONCOLON
+            // after the following tokens we treat everything as ID
             if (IsMemberOperator(lastToken))
             {
                 return ID;
             }
             switch (keyword)
             {
+                // Some keywords are impossible to use as ID
+                case SELF:
+                case SUPER:
                 case STATIC:
                 case DIM:
                 case CONST:
@@ -1924,18 +1920,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
             return tokens;
-        }
-
-        private static bool _canBeId(int type)
-        {
-            switch (type)
-            {
-                case SELF:
-                case SUPER:
-                case FOX_M:
-                    return false;
-            }
-            return true;
         }
         private static bool _isValidIdentifier(IToken t)
         {

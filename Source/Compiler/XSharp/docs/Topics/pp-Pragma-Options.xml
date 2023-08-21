@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#pragma options</title>
+  <keywords>
+    <keyword>#pragma</keyword>
+    <keyword>#pragma options</keyword>
+    <keyword>-az</keyword>
+    <keyword>-lb</keyword>
+    <keyword>-memvars</keyword>
+    <keyword>-options</keyword>
+    <keyword>-pragma</keyword>
+    <keyword>-undeclared</keyword>
+    <keyword>-vo10</keyword>
+    <keyword>-vo11</keyword>
+    <keyword>-vo12</keyword>
+    <keyword>-vo13</keyword>
+    <keyword>-vo14</keyword>
+    <keyword>-vo15</keyword>
+    <keyword>-vo16</keyword>
+    <keyword>-vo2</keyword>
+    <keyword>-vo4</keyword>
+    <keyword>-vo5</keyword>
+    <keyword>-vo6</keyword>
+    <keyword>-vo7</keyword>
+    <keyword>-vo9</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">#pragma options</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">The #pragma options directive allow you to enable / disable certain compiler options for a range of code.</para>
+    <para styleclass="Heading1">Syntax </para>
+    <para styleclass="Code with box">#pragma options( &quot;option&quot;, <text style="font-style:italic;">state</text> )</para>
+    <para styleclass="NotesBox">Note: #pragma directives must appear between before the first entity or between entities and cannot appear in the middle of an entity</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&quot;option&quot; can be one of the following (please note that not all compiler options can be used)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="30" colcount="2" style="width:auto; page-break-inside:avoid;">
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;az&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Zero based arrays</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;enforceoverride&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Enforce the use of the OVERRIDE keyword</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;enforceself&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Enforce SELF to access fields / properties / methods</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;fovf&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Overflow checking (duplicate of &quot;ovf&quot;)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;initlocals&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Initialize local variables</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;lb&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Allow late binding</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;memvars&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Allow memvars</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;namedargs&quot;</text></para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;ovf&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Overflow checking (duplicate of &quot;fovf&quot;)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;undeclared&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Allow undeclared variables</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;vo1&quot;</text></para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo2&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Initialize string variables with empty strings</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo3&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">All instance members virtual</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo4&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Implicit Signed / Unsigned conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo5&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Implicit Clipper Calling convention</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo6&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Implicit pointer conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo7&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Implicit Casts and Conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;vo8&quot;</text></para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo9&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Allow missing return statements or missing return values</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo10&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Compatible IIF Behavior</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo11&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Compatible numeric conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo12&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Clipper Integer divisions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo13&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Compatible String Comparisons</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo14&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Embed real constants as float</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo15&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Allow untyped locals</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;vo16&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Generate Clipper calling convention constructors</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;fox1&quot;</text></para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal">&quot;fox2&quot;</para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal">Foxpro array syntax</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:126px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">&quot;xpp1&quot;</text></para>
+        </td>
+        <td style="width:1121px;">
+          <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option cannot be set with the #pragma keyword</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-style:italic;">State</text> can be one of the following</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">on </li>
+      <li styleclass="Body Text">off </li>
+      <li styleclass="Body Text">default </li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Body Text">Please note that you can also enable / disable overflow checking with BEGIN CHECKED .. END &#160;/ BEGIN UNCHECKED .. END</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

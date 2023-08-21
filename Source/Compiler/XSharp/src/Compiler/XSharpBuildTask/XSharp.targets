@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+***********************************************************************************************
+XSharp.Targets
+This file is now redirected to the new XSharp.Common.Targets 
+***********************************************************************************************
+-->
+<Project>
+<Import Project="$(MSBuildThisFileDirectory)\XSharp.Common.targets" />
+</Project>

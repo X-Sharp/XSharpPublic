@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Expressions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Expressions</para>
+    </header>
+    <para styleclass="Normal">Expressions are an important element of the language. There are many types of expressions. The expression rule in the compiler is the biggest rule</para>
+    <para styleclass="Normal">The table below lists the various expression types in the order they are recognized by the compiler. Some expression types are covered in a separate topic.</para>
+    <para styleclass="Normal">As you can see most expression types are recursive. They contain one or more references to sub expressions</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Expressions </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><table styleclass="Default" rowcount="26" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Syntax</para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle; width:25%;">
+          <para styleclass="Normal">Member Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (.|:) identifier</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Method Call</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression ( argumentlist? )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Arrayelement Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression [ argumentlist ]</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Conditional Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression ? <link displaytype="text" defaultstyle="true" type="topiclink" href="Bound-Expressions">boundexpression</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Typecast</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">( datatype RPAREN</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Postfix </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (++ | --)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Await</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">AWAIT expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Prefix</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(+|-|~|@|++|--) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Typecheck</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression IS datatype VAR newVariable</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">As Typecheck</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expresion ASTYPE datatype</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Powerof</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (^|**) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">MulDiv</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (*|/|%) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">PlusMinus</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (+|-) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">LShift</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression &lt;&lt; expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">RShift</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression &gt;&gt; expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Comparison</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression OPERATOR expression, <br/>where OPERATOR is <br/>&lt;,&lt;=, &gt;, &gt;=, =, ==, $, !=, &lt;&gt;, #</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Bitwise And</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression &amp; expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Bitwise XOR</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression ~ expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Bitwise OR</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression | expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Not Expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(.NOT. | !) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Logical AND expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (.AND.|&amp;&amp;) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Logical OR expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression (.OR. | ||) expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Default expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression DEFAULT expression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Assignment expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression ASSIGN_OP expression<br/>where ASSIGN_OP is<br/>:=, +=, -=, *=, ^=, /=, %=, &amp;=, |=, &lt;&lt;=, &gt;&gt;=, ~=</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Primary expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Primary-Expressions">See other rule</link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

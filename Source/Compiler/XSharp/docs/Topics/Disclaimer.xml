@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Disclaimer</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Disclaimer</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">At this moment X# supports the following Xbase dialects:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="4">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Dialect</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Syntax</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Classes </text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Functions</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Complete</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Xbase++</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially. </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">(Visual) FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially. </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">(X)Harbour</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially. </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Partially.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">For more info about the dialects see the <link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects">dialects topic </link>in this documentation</para>
+  </body>
+</topic>

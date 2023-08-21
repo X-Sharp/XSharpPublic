@@ -1,0 +1,470 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanVOInternetClasses</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan.VO._THREAD_DATA"></member>
+    <member name="F:Vulcan.VO._THREAD_DATA.abBuffer"></member>
+    <member name="F:Vulcan.VO._THREAD_DATA.nRC"></member>
+    <member name="F:Vulcan.VO._THREAD_DATA.nSize"></member>
+    <member name="F:Vulcan.VO._THREAD_DATA.nSocket"></member>
+    <member name="F:Vulcan.VO._THREAD_DATA.pSin"></member>
+    <member name="F:Vulcan.VO._THREAD_DATA.ServerAddress"></member>
+    <member name="T:Vulcan.VO.CEmail"></member>
+    <member name="M:Vulcan.VO.CEmail.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CEmail</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CEmail.AddAttachment(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CEmail.AttachmentFileList"></member>
+    <member name="P:Vulcan.VO.CEmail.AttachmentInfo"></member>
+    <member name="P:Vulcan.VO.CEmail.BCCList"></member>
+    <member name="P:Vulcan.VO.CEmail.Boundary"></member>
+    <member name="P:Vulcan.VO.CEmail.CCList"></member>
+    <member name="M:Vulcan.VO.CEmail.CloneAttachments"></member>
+    <member name="M:Vulcan.VO.CEmail.CreateHtml(System.String)"></member>
+    <member name="M:Vulcan.VO.CEmail.CreateReplyBody(System.Boolean)"></member>
+    <member name="M:Vulcan.VO.CEmail.Decode(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CEmail.DeleteAttachment(System.UInt32)"></member>
+    <member name="P:Vulcan.VO.CEmail.DestList"></member>
+    <member name="P:Vulcan.VO.CEmail.DispositionNotification"></member>
+    <member name="M:Vulcan.VO.CEmail.GetAttachmentInfo(System.UInt32,System.UInt32)"></member>
+    <member name="M:Vulcan.VO.CEmail.GetHeaderInfo"></member>
+    <member name="P:Vulcan.VO.CEmail.HTMLText"></member>
+    <member name="P:Vulcan.VO.CEmail.MailPriority"></member>
+    <member name="M:Vulcan.VO.CEmail.MimeEncode(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CEmail.MimeHeader(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CEmail.ReturnReceipt"></member>
+    <member name="M:Vulcan.VO.CEmail.SaveAs(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CEmail.SetAttachmentInfo(System.UInt32,System.UInt32,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CEmail.SetHeaderInfo"></member>
+    <member name="P:Vulcan.VO.CEmail.Size"></member>
+    <member name="M:Vulcan.VO.CEmail.StreamIn(System.String)"></member>
+    <member name="M:Vulcan.VO.CEmail.StreamOut"></member>
+    <member name="M:Vulcan.VO.CEmail.StreamStart"></member>
+    <member name="T:Vulcan.VO.CFtp"></member>
+    <member name="M:Vulcan.VO.CFtp.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CFtp</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CFtp.Append(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.ConnectRemote(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.CreateDir(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.DeleteFile(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.Directory(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.GetCurDir"></member>
+    <member name="M:Vulcan.VO.CFtp.GetFile(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.InternetStatus(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.Open(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.OpenFile(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CFtp.Proxy"></member>
+    <member name="M:Vulcan.VO.CFtp.PutFile(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.RemoveDir(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.RenameFile(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CFtp.SetCurDir(Vulcan.__Usual)"></member>
+    <member name="T:Vulcan.VO.CHttp"></member>
+    <member name="M:Vulcan.VO.CHttp.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CHttp</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CHttp.AddRequestHeaders(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.CloseRemote"></member>
+    <member name="M:Vulcan.VO.CHttp.CloseRequest"></member>
+    <member name="M:Vulcan.VO.CHttp.ConnectRemote(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.Directory"></member>
+    <member name="P:Vulcan.VO.CHttp.FtpRequest"></member>
+    <member name="M:Vulcan.VO.CHttp.GetCurDir"></member>
+    <member name="M:Vulcan.VO.CHttp.GetDocumentByURL(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.GetDocumentFromServer(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.GetFile(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.GetResponse"></member>
+    <member name="M:Vulcan.VO.CHttp.GetResponseHeader"></member>
+    <member name="M:Vulcan.VO.CHttp.Open(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.OpenFile(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.OpenRequest(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CHttp.Proxy"></member>
+    <member name="P:Vulcan.VO.CHttp.Response"></member>
+    <member name="P:Vulcan.VO.CHttp.ResponseHeader"></member>
+    <member name="M:Vulcan.VO.CHttp.SendRequest(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CHttp.SetCurDir(Vulcan.__Usual)"></member>
+    <member name="T:Vulcan.VO.CImap"></member>
+    <member name="M:Vulcan.VO.CImap.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CImap</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CImap.CheckReply"></member>
+    <member name="M:Vulcan.VO.CImap.ClientCommand(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CImap.DeleteMail(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CImap.Disconnect"></member>
+    <member name="M:Vulcan.VO.CImap.GetMail(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CImap.GetPrefix"></member>
+    <member name="M:Vulcan.VO.CImap.GetStatus"></member>
+    <member name="M:Vulcan.VO.CImap.LogOn(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CImap.MailBox"></member>
+    <member name="M:Vulcan.VO.CImap.SendRemote(Vulcan.__Usual)"></member>
+    <member name="T:Vulcan.VO.CINetDial"></member>
+    <member name="M:Vulcan.VO.CINetDial.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CINetDial</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CINetDial.AutoDial(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CINetDial.Dial(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CINetDial.DialFlag"></member>
+    <member name="P:Vulcan.VO.CINetDial.Error"></member>
+    <member name="P:Vulcan.VO.CINetDial.ErrorDescription"></member>
+    <member name="M:Vulcan.VO.CINetDial.GetConnectedState"></member>
+    <member name="M:Vulcan.VO.CINetDial.GetConnections"></member>
+    <member name="M:Vulcan.VO.CINetDial.GetDialUpEntries"></member>
+    <member name="M:Vulcan.VO.CINetDial.HangUp(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CINetDial.IsConfigured"></member>
+    <member name="P:Vulcan.VO.CINetDial.IsConnected"></member>
+    <member name="P:Vulcan.VO.CINetDial.IsLan"></member>
+    <member name="P:Vulcan.VO.CINetDial.IsModem"></member>
+    <member name="P:Vulcan.VO.CINetDial.IsOffline"></member>
+    <member name="P:Vulcan.VO.CINetDial.IsProxy"></member>
+    <member name="M:Vulcan.VO.CINetDial.SetOwner(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CINetDial.SetSystemOffline(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CINetDial.VerifyConnection(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="T:Vulcan.VO.CMailAbstract"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CMailAbstract</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CMailAbstract.Close"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.DomainName"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.Error"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.ErrorMsg"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.InternetStatus(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.Open"></member>
+    <member name="F:Vulcan.VO.CMailAbstract.oSocket"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.PassWord"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.RecvRemote"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.RemoteHost"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.RemotePort"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.ReplyCode"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.ReplyString"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.SendData(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.SendRaw(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CMailAbstract.SendRemote(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.Timeout"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.TimeoutRetries"></member>
+    <member name="P:Vulcan.VO.CMailAbstract.UserName"></member>
+    <member name="T:Vulcan.VO.CMessage"></member>
+    <member name="M:Vulcan.VO.CMessage.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CMessage</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.CMessage.AttachmentCount"></member>
+    <member name="P:Vulcan.VO.CMessage.AttachmentFileList"></member>
+    <member name="P:Vulcan.VO.CMessage.AttachmentList"></member>
+    <member name="P:Vulcan.VO.CMessage.Body"></member>
+    <member name="M:Vulcan.VO.CMessage.BodyExtract(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CMessage.BodyHtml"></member>
+    <member name="P:Vulcan.VO.CMessage.Cargo"></member>
+    <member name="P:Vulcan.VO.CMessage.ContentType"></member>
+    <member name="M:Vulcan.VO.CMessage.Decode(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CMessage.DecodeAndSaveAs(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CMessage.Error"></member>
+    <member name="P:Vulcan.VO.CMessage.ErrorMsg"></member>
+    <member name="M:Vulcan.VO.CMessage.FakeAttachmentList"></member>
+    <member name="P:Vulcan.VO.CMessage.From"></member>
+    <member name="P:Vulcan.VO.CMessage.FromAddress"></member>
+    <member name="P:Vulcan.VO.CMessage.FromName"></member>
+    <member name="M:Vulcan.VO.CMessage.GetAttachInfo(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CMessage.GetHeaderInfo"></member>
+    <member name="P:Vulcan.VO.CMessage.HEADER"></member>
+    <member name="P:Vulcan.VO.CMessage.MailBody"></member>
+    <member name="P:Vulcan.VO.CMessage.MailDate"></member>
+    <member name="P:Vulcan.VO.CMessage.MailHeader"></member>
+    <member name="P:Vulcan.VO.CMessage.MailTime"></member>
+    <member name="P:Vulcan.VO.CMessage.MessageID"></member>
+    <member name="P:Vulcan.VO.CMessage.Priority"></member>
+    <member name="P:Vulcan.VO.CMessage.References"></member>
+    <member name="P:Vulcan.VO.CMessage.ReplyTo"></member>
+    <member name="M:Vulcan.VO.CMessage.SaveAs(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CMessage.SetMailTime"></member>
+    <member name="P:Vulcan.VO.CMessage.Subject"></member>
+    <member name="P:Vulcan.VO.CMessage.TimeStamp"></member>
+    <member name="P:Vulcan.VO.CMessage.TransferEncoding"></member>
+    <member name="T:Vulcan.VO.CNews"></member>
+    <member name="M:Vulcan.VO.CNews.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CNews</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.CNews.FollowUpTo"></member>
+    <member name="M:Vulcan.VO.CNews.GetAttachInfo(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNews.GetHeaderInfo"></member>
+    <member name="P:Vulcan.VO.CNews.NewsGroups"></member>
+    <member name="P:Vulcan.VO.CNews.Organization"></member>
+    <member name="P:Vulcan.VO.CNews.Path"></member>
+    <member name="P:Vulcan.VO.CNews.Sender"></member>
+    <member name="P:Vulcan.VO.CNews.Size"></member>
+    <member name="T:Vulcan.VO.CNNTP"></member>
+    <member name="M:Vulcan.VO.CNNTP.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CNNTP</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CNNTP.Authenticate"></member>
+    <member name="M:Vulcan.VO.CNNTP.CheckReply"></member>
+    <member name="M:Vulcan.VO.CNNTP.connect(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CNNTP.CurrentNews"></member>
+    <member name="M:Vulcan.VO.CNNTP.Disconnect"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetArticle(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetBody(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetHeader(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetList(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetNewGroups(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetNewNews(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.GetStatus(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CNNTP.GroupName"></member>
+    <member name="P:Vulcan.VO.CNNTP.Message"></member>
+    <member name="P:Vulcan.VO.CNNTP.MessageCount"></member>
+    <member name="P:Vulcan.VO.CNNTP.MessageFirst"></member>
+    <member name="P:Vulcan.VO.CNNTP.MessageID"></member>
+    <member name="P:Vulcan.VO.CNNTP.MessageLast"></member>
+    <member name="M:Vulcan.VO.CNNTP.Post(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.PrepareCommand(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.RecvData(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.RecvRemote"></member>
+    <member name="P:Vulcan.VO.CNNTP.ReplyString"></member>
+    <member name="M:Vulcan.VO.CNNTP.SendHeader"></member>
+    <member name="M:Vulcan.VO.CNNTP.SendMailBody"></member>
+    <member name="M:Vulcan.VO.CNNTP.SetNewsGroup(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CNNTP.SetReadMode"></member>
+    <member name="M:Vulcan.VO.CNNTP.SkipNext"></member>
+    <member name="M:Vulcan.VO.CNNTP.SkipPrev"></member>
+    <member name="T:Vulcan.VO.CPop"></member>
+    <member name="M:Vulcan.VO.CPop.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CPop</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CPop.CheckReply"></member>
+    <member name="M:Vulcan.VO.CPop.connect(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CPop.DeleteMail(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CPop.Disconnect"></member>
+    <member name="P:Vulcan.VO.CPop.Email"></member>
+    <member name="M:Vulcan.VO.CPop.GetList(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CPop.GetListIDs(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CPop.GetMail(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CPop.GetMailTop(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CPop.GetStatus"></member>
+    <member name="M:Vulcan.VO.CPop.ListMail"></member>
+    <member name="M:Vulcan.VO.CPop.LogOn(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CPop.MailCount"></member>
+    <member name="P:Vulcan.VO.CPop.ReceiveBytes"></member>
+    <member name="M:Vulcan.VO.CPop.RecvRemote"></member>
+    <member name="P:Vulcan.VO.CPop.Storage"></member>
+    <member name="P:Vulcan.VO.CPop.TotalBytes"></member>
+    <member name="T:Vulcan.VO.CSession"></member>
+    <member name="M:Vulcan.VO.CSession.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CSession</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.CSession.AccessType"></member>
+    <member name="M:Vulcan.VO.CSession.CloseFile(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CSession.CloseRemote"></member>
+    <member name="P:Vulcan.VO.CSession.Connected"></member>
+    <member name="P:Vulcan.VO.CSession.ConnectHandle"></member>
+    <member name="M:Vulcan.VO.CSession.ConnectRemote(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CSession.Error"></member>
+    <member name="P:Vulcan.VO.CSession.ErrorMsg"></member>
+    <member name="P:Vulcan.VO.CSession.Handle"></member>
+    <member name="M:Vulcan.VO.CSession.InternetStatus(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="F:Vulcan.VO.CSession.ogStatus"></member>
+    <member name="F:Vulcan.VO.CSession.oLock"></member>
+    <member name="M:Vulcan.VO.CSession.Open(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.CSession.OpenFlags"></member>
+    <member name="P:Vulcan.VO.CSession.PassWord"></member>
+    <member name="P:Vulcan.VO.CSession.Port"></member>
+    <member name="P:Vulcan.VO.CSession.Proxy"></member>
+    <member name="P:Vulcan.VO.CSession.ProxyBypass"></member>
+    <member name="P:Vulcan.VO.CSession.RemoteHost"></member>
+    <member name="M:Vulcan.VO.CSession.SetResponseStatus"></member>
+    <member name="P:Vulcan.VO.CSession.UserName"></member>
+    <member name="T:Vulcan.VO.CSession.INTStatusCallback_Delegate"></member>
+    <member name="T:Vulcan.VO.CSmtp"></member>
+    <member name="M:Vulcan.VO.CSmtp.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CSmtp</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CSmtp.CheckReply"></member>
+    <member name="M:Vulcan.VO.CSmtp.connect(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CSmtp.Disconnect"></member>
+    <member name="P:Vulcan.VO.CSmtp.Email"></member>
+    <member name="P:Vulcan.VO.CSmtp.EmailFormat"></member>
+    <member name="M:Vulcan.VO.CSmtp.Logon"></member>
+    <member name="P:Vulcan.VO.CSmtp.MailApplication"></member>
+    <member name="M:Vulcan.VO.CSmtp.RecvRemote"></member>
+    <member name="P:Vulcan.VO.CSmtp.SecureSMTP"></member>
+    <member name="M:Vulcan.VO.CSmtp.SendHeaderInfo"></member>
+    <member name="M:Vulcan.VO.CSmtp.SendMail"></member>
+    <member name="P:Vulcan.VO.CSmtp.TextEncoding"></member>
+    <member name="T:Vulcan.VO.CSocket"></member>
+    <member name="M:Vulcan.VO.CSocket.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CSocket</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CSocket.accept"></member>
+    <member name="M:Vulcan.VO.CSocket.bind(System.UInt16,System.String,System.Int16)"></member>
+    <member name="M:Vulcan.VO.CSocket.Close"></member>
+    <member name="M:Vulcan.VO.CSocket.connect(System.String,System.UInt16)"></member>
+    <member name="M:Vulcan.VO.CSocket.Destroy"></member>
+    <member name="M:Vulcan.VO.CSocket.DisConnect"></member>
+    <member name="M:Vulcan.VO.CSocket.DisplayError"></member>
+    <member name="P:Vulcan.VO.CSocket.Error"></member>
+    <member name="P:Vulcan.VO.CSocket.ErrorMsg"></member>
+    <member name="M:Vulcan.VO.CSocket.GetLine"></member>
+    <member name="M:Vulcan.VO.CSocket.GetLineFrom(System.String@,System.UInt32@)"></member>
+    <member name="M:Vulcan.VO.CSocket.GetLines(Vulcan.__Array)"></member>
+    <member name="M:Vulcan.VO.CSocket.getpeername(System.String@,System.Int32@)"></member>
+    <member name="M:Vulcan.VO.CSocket.GetRaw"></member>
+    <member name="M:Vulcan.VO.CSocket.GetRawText(System.Boolean,System.Boolean,System.UInt32)"></member>
+    <member name="M:Vulcan.VO.CSocket.getsockname(System.String@,System.Int32@)"></member>
+    <member name="M:Vulcan.VO.CSocket.InternetStatus(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.CSocket.listen(System.Int32)"></member>
+    <member name="P:Vulcan.VO.CSocket.RcvBufSize"></member>
+    <member name="M:Vulcan.VO.CSocket.SendLine(System.String)"></member>
+    <member name="M:Vulcan.VO.CSocket.SendLineTo(System.String,System.String,System.UInt16)"></member>
+    <member name="M:Vulcan.VO.CSocket.SendRaw(System.Void*,System.UInt32)"></member>
+    <member name="M:Vulcan.VO.CSocket.SendRawText(System.String)"></member>
+    <member name="P:Vulcan.VO.CSocket.SndBufSize"></member>
+    <member name="P:Vulcan.VO.CSocket.Status"></member>
+    <member name="P:Vulcan.VO.CSocket.TimeOut"></member>
+    <member name="P:Vulcan.VO.CSocket.TimeOutRetries"></member>
+    <member name="T:Vulcan.VO.CStorage"></member>
+    <member name="M:Vulcan.VO.CStorage.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.CStorage</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentAdd(System.String,System.UInt32)"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentClose"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentDelete(System.String)"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentFullPath(System.String)"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentOpen(System.String,System.UInt32)"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentRead"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentSave(System.String,System.String)"></member>
+    <member name="P:Vulcan.VO.CStorage.AttachmentSize"></member>
+    <member name="M:Vulcan.VO.CStorage.AttachmentWrite(System.String)"></member>
+    <member name="M:Vulcan.VO.CStorage.CreateNewEMail"></member>
+    <member name="M:Vulcan.VO.CStorage.LoadEMail(System.String)"></member>
+    <member name="P:Vulcan.VO.CStorage.NoSave"></member>
+    <member name="M:Vulcan.VO.CStorage.RawClose"></member>
+    <member name="M:Vulcan.VO.CStorage.RawNew(Vulcan.VO.CEmail)"></member>
+    <member name="M:Vulcan.VO.CStorage.RawWrite(System.String)"></member>
+    <member name="M:Vulcan.VO.CStorage.SaveAttachments(Vulcan.VO.CEmail,System.Boolean)"></member>
+    <member name="M:Vulcan.VO.CStorage.SaveEMail(System.String,Vulcan.VO.CEmail)"></member>
+    <member name="T:Vulcan.VO.StdSocket"></member>
+    <member name="M:Vulcan.VO.StdSocket.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.StdSocket</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.StdSocket.InternetStatus(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="T:VulcanVOInternetClasses.Functions">
+      <summary>This is the compiler generated class in which all functions are implemented as static methods.<br />
+				You do not need to use the classname in your code. <br />The compiler will automatically add a USING STATIC for this class so you can call the methods with a function sytax in your code, just like you would do in Visual Objects</summary>
+    </member>
+    <member name="M:VulcanVOInternetClasses.Functions.B64Decode(System.Void*,System.Void*,System.UInt32,System.UInt32@)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.B64DecodeString(System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.B64Encode(System.Void*,System.Void*,System.UInt32,System.UInt32@)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.B64EncodeStream(System.String,System.UInt32@)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.B64EncodeString(System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.CharSetFromContentType(System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.CheckHostIP(System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.ConvertFromCodePageToCodePage(System.String,System.UInt32,System.UInt32)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.DecodeMailTimeStamp(System.String,Vulcan.__VODate@,System.String@)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.GetHostByIP(System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.GetIPAddress(System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.GetMailTimeStamp(System.Boolean)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.GetUseNetMsgID(System.String,System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.HostName"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.IFXFtpFindFirstFile(System.Void*,Vulcan.__Psz,Vulcan.VO._WINWIN32_FIND_DATA,System.UInt32,System.UInt32)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.IFXInternetFindNextFile(System.Void*,Vulcan.VO._WINWIN32_FIND_DATA)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.INTStatusCallback(System.Void*,System.UInt32,System.UInt32,System.Void*,System.UInt32)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.LibInit"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.NNTPSendMail(System.String,System.String,System.String,System.String,System.String,Vulcan.__Usual,System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.POPGetMails(System.String,System.String,System.String,System.Boolean)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.QPDecode(System.String,System.Boolean)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.QPEncode(System.String,System.Boolean)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.SMTPSendMail(System.String,System.String,Vulcan.__Usual,Vulcan.__Usual,System.String,System.String,Vulcan.__Usual,System.String,Vulcan.__Usual,System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.SystemErrorString(System.UInt32,System.String)"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.WinSockExit"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.WinSockInit"></member>
+    <member name="M:VulcanVOInternetClasses.Functions.WSAGetLastError"></member>
+  </members>
+</doc>

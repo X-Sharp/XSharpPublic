@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-07T17:39:38.116+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN (UN)CHECKED</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN CHECKED</keyword>
+    <keyword>BEGIN UNCHECKED</keyword>
+    <keyword>CHECKED</keyword>
+    <keyword>END</keyword>
+    <keyword>END CHECKED</keyword>
+    <keyword>END UNCHECKED</keyword>
+    <keyword>UNCHECKED</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN (UN)CHECKED</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">The <text style="font-weight:bold;">BEGIN</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> and <text style="font-weight:bold;">END</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> keywords mark a block of statements that are compiled with overflow checking enabled or disabled</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">BEGIN CHECKED<br/> &#160; statements<br/>END CHECKED<br/><br/>BEGIN UNCHECKED<br/> &#160; statements<br/>END CHECKED</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List"><text style="font-style:italic;">statements</text>&#32;<tab />One or more statements or expressions that are compiled with the specified overflow checking</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN CHECKED ... END CHECKED</text> ensures that a block of code is compiled with a clear overflow checking option, regardless of the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">-ovf</link>.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> intValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dwordValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; intValue := -1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dwordValue := (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text style="font-weight:normal; font-style:normal; color:#000000;">) intValue &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Overflow error</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CHECKED</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> intValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dwordValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; intValue := -1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dwordValue := (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text style="font-weight:normal; font-style:normal; color:#000000;">) intValue &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// NO Overflow error, dwordValue now has the value UInt32.MaxValue</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">UNCHECKED</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

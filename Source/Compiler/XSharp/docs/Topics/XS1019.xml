@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1019</title>
+  <keywords>
+    <keyword>XS1019</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1019</para>
+    </header>
+    <para styleclass="Normal">Overloadable unary operator expected</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Something that looks like an overloaded unary operator has been declared, but the operator is missing or is in the wrong location in the signature.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A unary operator is an operator that operates on a single operand. For example, ++ is a unary operator. You can overload some unary operators by using the operator keyword and specifying a single parameter of the type that the operator operates on. For example, if you want to overload the operator ++ for a user-defined class <text styleclass="Code Example">Temperature</text> so that you can write <text styleclass="Code Example">Temperature</text>++, you can define it in this way:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When you receive this error, you have declared something that looks like an overloaded unary operator, except that the operator itself is missing or is in the wrong location in the signature. If you remove the ++ from the signature in the previous example, you will generate XS1019.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code generates XS1019:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1019.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

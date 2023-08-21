@@ -1,0 +1,11 @@
+DEFINE ASC_TAB := 9
+DEFINE TEST1 := "Test"
+DEFINE TEST2 := "Test" + _CHR(9) + "123"
+DEFINE TEST3 := _CHR(ASC_TAB)
+DEFINE TEST4 := "Test" + _CHR(ASC_TAB) + "123"		// XS0133 error
+DEFINE TEST5 := ASC_TAB
+DEFINE TEST6 := _CHR(TEST5)
+DEFINE TEST7 := "Test" + _CHR(TEST5) + "123"		// XS0133 error
+function Start() as void
+	? TEST7
+	RETURN	

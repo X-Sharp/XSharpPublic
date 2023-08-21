@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET EXACT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Exact</keyword>
+    <keyword>SET EXACT command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET EXACT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Toggles and exact match for character string comparisons.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">SET EXACT ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">SET EXACT is functionally equivalent to SetExact(). &#160;</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetExact.htm" domain="XSharpRef.chm">SetExact()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

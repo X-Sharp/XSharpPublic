@@ -1,0 +1,10 @@
+/*
+This comment should be written to the PPO file
+*/
+
+FUNCTION FromHeader() AS STRING
+    RETURN "This code comes from the header file"  
+    
+    
+#define INCORRECT_DEFINE  ("abc" + 1)
+

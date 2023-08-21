@@ -1,0 +1,29 @@
+#line 1 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\set.xh"
+#line 111 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\dbcmd.xh"
+#line 114 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\memvar.xh"
+#line 118 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\CustomDefs.xh"
+#line 121 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+#line 1 "C:\XSharp\Dev\Tests\Applications\C455\Prg\C455.prg"
+// 454. error XS9002: Parser: mismatched input 'option'
+
+//PP #command TEST <expr> [OPTION <opt>] => DoTest(<expr> , <opt>)
+FUNCTION DoTest(a,b)
+	? a,b
+RETURN NIL
+
+FUNCTION Start() AS VOID
+DoTest({1,2,3} , )
+
+DoTest({1,2,3} , 4)
+
+DoTest({{1,2,3}} , )
+DoTest({{1,2,3}} , 4)
+
+DoTest({1,2,3} , {4,5,6})
+DoTest({{1,2,3},{4,5,6}} , {{1,2,3},{4,5,6}})
+RETURN
+

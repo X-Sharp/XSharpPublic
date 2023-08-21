@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1112</title>
+  <keywords>
+    <keyword>XS1112</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1112</para>
+    </header>
+    <para styleclass="Normal">Do not use &apos;System.Runtime.CompilerServices.ExtensionAttribute&apos;. Use the &apos;this&apos; keyword instead.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error is generated when the ExtensionAttribute is used on a non-static class that contains extension methods. If this attribute is used on a static class, another error, such as XS0708: &quot;Cannot declare instance members in a static class,&quot; might occur.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In X#, extension methods must be defined in a static class and the first parameter of the method is modified with the this keyword. Do not use the attribute at all in the source code. For more information, see Extension Methods.</para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Remove the attribute and apply the this modifier to the first parameter of the method.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1112:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1112.prg  <br/></para>
+  </body>
+</topic>

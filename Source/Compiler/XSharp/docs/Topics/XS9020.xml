@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9020</title>
+  <keywords>
+    <keyword>XS9020</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9020</para>
+    </header>
+    <para styleclass="Normal">Narrowing conversion from &apos;type 1&apos; to &apos;type 2&apos; may lead to loss of data or overflow errors</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Normal">This warning may occur in code where you assigning a value from a larger type into a smaller type</para>
+    <para styleclass="Normal">The warning will only be shown when you compile with the compiler option<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11"> /vo11</link> (Compatible Numeric Conversions).</para>
+    <para styleclass="Normal">Without this compiler option the error <link displaytype="text" defaultstyle="true" type="topiclink" href="XS0266">XS0266</link> (Cannot implicitly convert type &apos;type 1&apos; to &apos;type 2&apos;. An explicit conversion exists (are you missing a cast?)) will be shown.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Test() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dw </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> b </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">dw := SomeFunctionThatReturnsADword()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">b := dw &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// warning XS9020 Narrowing conversion from &apos;DWORD&apos; to &apos;BYTE&apos; may lead to loss of data or overflow errors</text></para>
+  </body>
+</topic>

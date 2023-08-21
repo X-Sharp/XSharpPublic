@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Differences with VO</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Differences with VO</para>
+    </header>
+    <para styleclass="Heading3">Compiler</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Operation</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Difference</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Adding methods to existing classes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">In X# (actually in .Net) you cannot add methods to classes in other assemblies. As work around you can:</para>
+          <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">write an extension method</li>
+            <li styleclass="Normal">create a subclass</li>
+          </list>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading3">Runtime functions</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Function</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Difference</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

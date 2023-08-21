@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Installation</title>
+  <keywords>
+    <keyword>component</keyword>
+    <keyword>folders</keyword>
+    <keyword>Installation</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Installation</para>
+    </header>
+    <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="26" colcount="3">
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Setup component</text></para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Contents</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">C:\Program Files (x86)\XSharp</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">Main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Main installation folder</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Assemblies</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">Main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. For deploying your apps please use the files in the Redist folder. In a future version this folder may contain so called reference assemblies (assemblies with only meta data and no code).</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Bin</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Debug</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (<text style="font-weight:bold;">FOX only</text>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px; height:86px;">
+          <para styleclass="Normal">Extension</para>
+        </td>
+        <td style="width:143px; height:86px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px; height:86px;">
+          <para styleclass="Normal">The components that must be installed inside Visual Studio for the X# project system and Language support. </para>
+          <para styleclass="Normal">If you want to reinstall the project systems you should run the deployvs&lt;num&gt;.cmd &#160;files in the Uninst folder. These files were created at install time and match your specific configuration of Visual Studio versions.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Help</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The PDF, CHM help files and the Visual Studio help</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Images</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Some images</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Include</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">XSharpDefs.xh and other header files needed by X#</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">MsBuild</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The MsBuild integration for XsProj files</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">NetCore20</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (<text style="font-weight:bold;">FOX only</text>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">ProjectSystem</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">VSIX files to install the project system and debugger inside Visual Studio. <br/>Only use these when the X# support team tells you to do so.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Redist</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Files that you may want to include with your application compiled with X#.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Templates</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Contains the templates for the VO Compatible editors for Windows, Servers and Menus</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Tools</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Tools that are used during installation,</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Uninst</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside VS 2015 and/or VS 2017. <br/>It also contains cmd files created at install time to help generating native images for the X# compiler.<br/>The cmd files containing the number 2015 are used for integration into VS 2015. The cmd files with the number 1-6 are used to install into different versions of VS 2017 and VS 2019.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">VOXPorter</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The VOXPorter</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">XIDE</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">xIde</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The XIDE installer</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">&lt;Global Assembly Cache&gt;</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\gac</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">X# runtime files will be installed in the GAC when this component is selected</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">&lt;Global Assembly Cache&gt;\NativeImages</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\ngen</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The X# compiler files will be precompiled when the option &quot;Optimize performance by generating native images&quot; is selected</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">&lt;Common Documents\XSharp\Examples</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\examples</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">The X# examples will be installed in the common documents folder when this option is selected</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Normal">Visual Studio folders</para>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\vs..</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">X# will be integrated into Visual Studio when this is selected</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2015</text><br/><text styleclass="Normal">Assuming you have installed VS 2015 in the default location:</text></para>
+          <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio 14.0</para>
+          <para styleclass="Normal">then X# will be in the subfolders</para>
+          <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
+          </list>
+          <para styleclass="Normal">and the MSBuild integration will be in the folder</para>
+          <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">c:\Program Files (x86)\MSBuild\XSharp</li>
+          </list>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\vs2015</para>
+        </td>
+        <td style="width:666px;">
+          <para styleclass="Normal">Note:<tab />There can only be one &quot;edition&quot; of VS 2015 on your machine.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2017 and/or 2019</text><br/><text styleclass="Normal">Assuming you have installed VS 2017 in the default location:</text></para>
+          <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\<text style="font-weight:bold;">&lt;number&gt;</text>\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text></para>
+          <para styleclass="Normal">then X# will be in the subfolders</para>
+          <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
+          </list>
+          <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">MSBuild\XSharp</li>
+          </list>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\vs1 .. <br/>main\vs6</para>
+        </td>
+        <td style="width:666px;">
+          <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>is 2017 or 2019.</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. Since X# 2.4 the installer will show all instance that are detected.</li>
+          </list>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Body Text"><text styleclass="Heading3">Registry</text></para>
+          <para styleclass="Normal">The installer will also write some changes to the registry:</para>
+          <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">HKLM\Software\XSharp</li>
+            <li styleclass="Normal">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</li>
+            <li styleclass="Normal">HKCR\.ppo</li>
+            <li styleclass="Normal">HKCR\.prg</li>
+            <li styleclass="Normal">HKCR\.prgx</li>
+            <li styleclass="Normal">HKCR\.vh</li>
+            <li styleclass="Normal">HKCR\.xh</li>
+            <li styleclass="Normal">HKCR\.xs</li>
+            <li styleclass="Normal">HKCR\.xsproj</li>
+            <li styleclass="Normal">HKCR\XSharpScript</li>
+            <li styleclass="Normal">HKCR\XSharp.headerfile</li>
+            <li styleclass="Normal">HKCR\XSharp.ppofile</li>
+            <li styleclass="Normal">HKCR\XSharp.sourcefile</li>
+          </list>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main<br/>main\script</para>
+        </td>
+        <td style="width:666px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Body Text"><text styleclass="Heading3">Environment variables</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">The installer creates / modifies the following environment variables</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">XSHARPPATH</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">XSHARPMSBUILDDIR</text></para>
+        </td>
+        <td style="width:143px;">
+        </td>
+        <td style="width:666px;">
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">See the topic <link displaytype="text" defaultstyle="true" type="topiclink" href="Building-XSharp-apps-with-Visu">Building XSharp apps with Visual Studio and/or MsBuild</link> for a description how the various registry settings and folders are involved with the build process with MsBuild and Visual Studio.</para>
+  </body>
+</topic>

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-vo4</title>
+  <keywords>
+    <keyword>-vo4</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-vo4<tab /><tab />Implicit numeric conversions</para>
+    </header>
+    <para styleclass="Normal">The -vo4 option directs the compiler to implicitly convert numeric types from larger types to smaller types but also from fractional types to integral types.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-vo4[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -vo4, directs the compiler to implicitly convert signed integer values to/from unsigned values, and larger integer types to smaller integer types. This provides compatibility with Visual Objects, which permits such conversions without an explicit cast or conversion operator. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">For safety reasons, this option is off by default. Implicitly converting between signed and unsigned integer types or between larger to smaller integer types can cause numeric overflow errors at runtime or unintended values to be passed depending upon whether overflow checking is enabled or disabled. By default, you must explicitly cast a signed integer to its unsigned counterpart and from larger integer types to smaller integer types and by explicitly doing so, it is assumed that the conversion is known by the programmer to be safe.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When this option is enabled, the compiler will implicitly convert the data types listed in the table below:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">From</para>
+        </td>
+        <td>
+          <para styleclass="Normal">To</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">SByte </para>
+        </td>
+        <td>
+          <para styleclass="Normal">BYTE, WORD, Char, DWORD</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">SHORT </para>
+        </td>
+        <td>
+          <para styleclass="Normal">BYTE, SByte, WORD, Char, DWORD</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">INT </para>
+        </td>
+        <td>
+          <para styleclass="Normal">BYTE, SByte, WORD, SHORT, Char, DWORD</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">BYTE, SByte, WORD, SHORT, Char, INT, DWORD, UINT64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">BYTE</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">WORD</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte, BYTE, SHORT, Char, INT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DWORD</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte, BYTE, WORD, SHORT, INT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">UINT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">SByte, BYTE, WORD, SHORT, Char, INT, DWORD, INT64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">REAL8, REAL4, DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All other numeric types</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">FLOAT, CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All other numeric types</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For each conversion, the compiler will raise an appropriate warning. You may disable the warning with The -wx switch, or insert an explicit cast in the source code to eliminate the warning.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> It is strongly recommended that you do not use this compiler option in new code. All of the conversions listed in the table above have the ability to lose data or return incorrect values, since the range of values in the source data type cannot be represented in the target data type.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For example, an INT containing a negative number cannot be represented in a DWORD. Similarly, an INT greater than 65535 cannot be represeneted in a SHORT. If you must mix signed and unsigned types or pass a larger type to a smaller type, you should always supply an explicit cast rather than using -vo4. This will document the fact that the conversion is known to be safe, and it will not suppress compile time errors if incompatible integer types are unintentionally used. </para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dw := 4294967296 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i := -1 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">DWORD_Function( i ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no error if compiled with /vo4</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">INT_Function( dw ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no error if compiled with /vo4</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DWORD_Function( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? x</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> INT_Function( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? x</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-lb</title>
+  <keywords>
+    <keyword>-lb</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-lb</para>
+    </header>
+    <para styleclass="Normal">The -lb option specifies if the compiler should allow code that uses the Late Binding mechnism to call methods and or get/set properties</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-lb[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -lb, directs the compiler to generate a late-bound call to an instance variable or method when compiler cannot generate code for an early bound call. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">The X# compiler always attempts to generate early bound calls to all class methods, properties and fields. This is true even for methods referred to as &quot;untyped&quot; in Visual Objects. Strictly speaking, nothing is &quot;untyped&quot;. If an early bound call cannot be generated, a compile-time error is raised.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In Visual Objects, it is possible to invoke methods and access instance variables on an object without the compiler knowing the exact type of the object. This is done by using a variable of type OBJECT or USUAL to hold the object reference. The &quot;Only Early&quot; option in the VO Application Options dialog must not be checked in order to allow this.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In addition, it is also possible to invoke a method on each element of an ARRAY. Each array element must contain an object that implements the specified method, or a runtime error will occur.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The -lb option is the exact opposite of the Visual Objects Only Early option.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Late binding incurs considerably more runtime overhead than early binding, and prevents compile-time parameter and return value checking. Any late-bound call has the potential to fail at runtime if the object does not support the field or property that is being accessed, the member being invoked or incorrect parameter types or count. Only use early binding for existing code or when there is no viable alternative. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the Allow Late Binding property. </li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">The following example will compile when The -lb switch is used. Without -lb, errors will be raised.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that using late-bound calls can affect the performance of an application and raises the possibility of runtime errors that would otherwise be caught by the compiler if early binding was used. Late binding should only be used for compatibility with existing VO code.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If The -lb option is enabled, then the above example will be compiled as if it was written:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that while this particular example will compile and execute correctly, if the definition of CLASS foo was changed and INSTANCE i was removed or changed to a method, the example would fail at runtime. Similarly, if METHOD bar was changed or removed, the example may also fail at runtime. For this reason, late-bound programming is strongly discouraged. Consider using subclassing and inheritance instead.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

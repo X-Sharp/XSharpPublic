@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS4028</title>
+<keywords>
+<keyword>XS4028</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS4028</para>
+  </header>
+  <para styleclass="Normal">&apos;await&apos; requires that the type &apos;{0}&apos; have a suitable GetAwaiter method. Are you missing a using directive for &apos;System&apos;?</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

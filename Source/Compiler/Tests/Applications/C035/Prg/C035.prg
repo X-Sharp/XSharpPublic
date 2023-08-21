@@ -1,0 +1,10 @@
+// 35. error XS1031: Type expected
+CLASS TestClass
+	PROTECT o AS OBJECT
+	ACCESS Type AS OBJECT
+	RETURN SELF:o
+	ASSIGN Type (val AS OBJECT)
+		SELF:o := val
+	RETURN
+END CLASS
+

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>YIELD Statement</title>
+  <keywords>
+    <keyword>YIELD</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">YIELD Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">When you use the yield keyword in a statement, you indicate that the method, operator, or get accessor in which it appears is an iterator. <br/></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">YIELD RETURN &lt;<text style="font-style:italic;">expression</text>&gt;<br/>YIELD (EXIT|BREAK) </para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">YIELD RETURN<tab />You use YIELD RETURN &lt;expression&gt; to return each element one at a time.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">YIELD [BREAK|EXIT]<tab />You use YIELD BREAK or YIELD EXIT to end the iteration.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal"><snippet src="YIELD-Example" inline="false"/></para>
+  </body>
+</topic>

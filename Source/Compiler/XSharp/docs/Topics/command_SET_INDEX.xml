@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET INDEX Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Index files<keyword>opening</keyword></keyword>
+    <keyword>Index/order</keyword>
+    <keyword>Opening<keyword>index files</keyword></keyword>
+    <keyword>Orders<keyword>adding to the order list</keyword></keyword>
+    <keyword>SET INDEX command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET INDEX Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Open one or more index files and add their orders to the order list in the current work area.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET INDEX TO [&lt;xcIndexFileList&gt; [ADDITIVE]]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TO &lt;xcIndexFileList&gt;<tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If a file in the list does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in the same mode as the corresponding database file. &#160;If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE. &#160;Otherwise, the file open is successful, the command proceeds to the next file in the list.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />Concurrency conflicts with index files are rare since they should be used with only one database file. &#160;If a concurrency problem arises, it will normally be when you attempt to open the database file. &#160;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />SET INDEX TO with no file name clears the current order list.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ADDITIVE<tab />Adds the orders from the indicated index files to the current order list, leaving the controlling order intact. &#160;If not specified, a new order list is constructed from the indicated index files, replacing the current order list.</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">If no order list exists for the work area or if SET INDEX is replacing the current order list, the type of RDD determines whether or not the controlling order is set. &#160;For RDDs that support only single-order index files (such as DBFNTX), the controlling order is set to the order in the specified index file. &#160;For RDDs that support multi-order index files (such as DBFMDX), you usually need to set the controlling order explicitly (using, for example, SET ORDER or <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetOrder.htm" domain="XSharpRef.chm">DbSetOrder()</link> otherwise, the data file may be processed in natural order even though there is an order list in effect.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">After the new index files are opened, the work area is positioned to the first logical record in the controlling order and all subsequent database operations process the records using the controlling order.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">During database processing, all orders in the order list are updated whenever a key value is added or changed, respecting any for condition or unique flag in the order. &#160;To change the controlling order without affecting the current order list, use SET ORDER or DBSetOrder(). &#160;To find out information about a particular order or index file, use DBOrderInfo().</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SET INDEX TO when specified with an index file list is functionally equivalent to using several DBSetIndex() function calls. &#160;If no ADDITIVE clause is specified, the command calls DBClearFilter() first. &#160;</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example opens a database and several associated index files:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales, sales1, sales2</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example opens an index file without closing any that are already open:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales3 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ADDITIVE</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DBClearIndex.htm" domain="XSharpRef.chm">DBClearIndex()</link>,<link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbOrderInfo.htm" domain="XSharpRef.chm">DbOrderInfo()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetIndex.htm" domain="XSharpRef.chm">DBSetIndex()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetOrder.htm" domain="XSharpRef.chm">DBSetOrder()</link>,<link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

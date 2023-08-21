@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>  
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.CodeGenerator</RootNamespace>
+    <AssemblyName>XSharp.CodeGenerator</AssemblyName>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <NoWarn>;1573;1591;1701;3008;3021;649;1574;NU5105;Nullable;RS0016;3005</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <ErrorReport>prompt</ErrorReport>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;NETSTANDARD20</GenericDefines>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
+    <DefineConstants>$(GenericDefines);TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);NDEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\XSharpCodeAnalysis\CommandLine\Dialect.cs" Link="Dialect.cs" />
+    <Compile Include="..\XSharpCodeAnalysis\Generated\XSharpLexer.cs" Link="XSharpLexer.cs" />
+    <Compile Include="..\XSharpCodeAnalysis\Parser\XSharpToken.cs" Link="XSharpToken.cs" />
+    <Compile Include="..\XSharpCodeAnalysis\Antlr4.Runtime\**\*.cs" Link="Antlr">
+      <Link>Antlr\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+     <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\eng\targets\..\config\BannedSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="..\XSharpCodeAnalysis\Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
+    <Compile Remove="..\XSharpCodeAnalysis\Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
+    <Compile Remove="..\XSharpCodeAnalysis\Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
+    <Compile Remove="..\XSharpCodeAnalysis\Antlr4.Runtime\Misc\TestRig.cs" />
+    <Compile Remove="..\XSharpCodeAnalysis\Antlr4.Runtime\Properties\AssemblyInfo.cs" />
+    <Compile Remove="..\XSharpCodeAnalysis\Antlr4.Runtime\Sharpen\Compat\ConcurrentDictionary`2.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8382</title>
+<keywords>
+<keyword>XS8382</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8382</para>
+  </header>
+  <para styleclass="Normal">An expression tree may not contain a tuple == or != operator</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

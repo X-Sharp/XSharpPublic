@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.Data</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.Data</para>
+    </header>
+    <para styleclass="Normal">This DLL contains support code for .Net SQL based data access and for SQL based cursors (VFP)</para>
+    <para styleclass="Normal">The DLL also has data aware classes and functions that return DataTables or DataSources based on workareas/cursors</para>
+  </body>
+</topic>

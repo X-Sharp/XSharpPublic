@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Logical</title>
+  <keywords>
+    <keyword>!</keyword>
+    <keyword>&amp;&amp;</keyword>
+    <keyword>.AND.</keyword>
+    <keyword>.NOT.</keyword>
+    <keyword>.OR.</keyword>
+    <keyword>.XOR.</keyword>
+    <keyword>||</keyword>
+    <keyword>logical operator</keyword>
+    <keyword>operator</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Logical</para>
+    </header>
+    <para styleclass="Normal">X# uses the following Logical operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">.AND.</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x .AND. y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Returns TRUE when both operands are TRUE, otherwise FALSE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">.OR.</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">x .OR. y</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Returns TRUE with one or both operands are TRUE. Only when both operands are FALSE then FALSE is returned</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">.NOT. or !</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">.NOT. x</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Reverses TRUE and FALSE.</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

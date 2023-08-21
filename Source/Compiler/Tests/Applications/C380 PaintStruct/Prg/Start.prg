@@ -1,0 +1,22 @@
+VOSTRUCT _winPAINTSTRUCT ALIGN 2
+    MEMBER  hdc AS PTR
+    MEMBER  fErase AS LOGIC
+    MEMBER  rcPaint IS _winRECT
+    MEMBER  fRestore AS LOGIC
+    MEMBER  fIncUpdate AS LOGIC
+    MEMBER  DIM rgbReserved[32] AS BYTE
+    
+VOSTRUCT _winRECT
+	MEMBER left AS LONG
+	MEMBER top AS LONG
+	MEMBER right AS LONG
+	MEMBER bottom AS LONG
+UNION Test
+	MEMBER i AS INT
+	MEMBER l AS LONG
+	MEMBER b AS LOGIC	
+	
+FUNCTION Start  AS VOID
+	LOCAL oPs IS _winPaintStruct
+	? @oPs
+	RETURN	    

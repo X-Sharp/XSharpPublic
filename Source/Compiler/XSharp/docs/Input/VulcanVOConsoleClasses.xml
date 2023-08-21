@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanVOConsoleClasses</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan.VO.Console"></member>
+    <member name="M:Vulcan.VO.Console.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.Console</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.Console.Clear"></member>
+    <member name="P:Vulcan.VO.Console.CursorPos"></member>
+    <member name="P:Vulcan.VO.Console.CursorSize"></member>
+    <member name="P:Vulcan.VO.Console.CursorVisible"></member>
+    <member name="M:Vulcan.VO.Console.Destroy"></member>
+    <member name="M:Vulcan.VO.Console.Read"></member>
+    <member name="P:Vulcan.VO.Console.Size"></member>
+    <member name="P:Vulcan.VO.Console.TextAttribute"></member>
+    <member name="P:Vulcan.VO.Console.Title"></member>
+    <member name="M:Vulcan.VO.Console.Wait"></member>
+    <member name="M:Vulcan.VO.Console.Write(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.Console.WriteError(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.Console.WriteLine(Vulcan.__Usual)"></member>
+    <member name="T:Vulcan.VO.ConsoleCoord"></member>
+    <member name="M:Vulcan.VO.ConsoleCoord.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.ConsoleCoord</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.ConsoleCoord.X"></member>
+    <member name="F:Vulcan.VO.ConsoleCoord.Y"></member>
+  </members>
+</doc>

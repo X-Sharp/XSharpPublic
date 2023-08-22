@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
+
+  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <!--The following line controls how the output is copied. Custom says: do not create DLLs or EXes folder-->
+    <OutputType>Exe</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LargeAddressAware>true</LargeAddressAware>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseAppHost>false</UseAppHost>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;COMMITHASH</DefineConstants>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <!--Use the C# compiler created in this solution-->
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\XSCompiler\XSCompiler.csproj" />
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
+    <DefineConstants>$(DefineConstants);TRACE;XSHARP;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);NDEBUG;XSHARP;</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs">
+      <Link>BuildClient.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)BuildServerConnection.cs">
+      <Link>BuildServerConnection.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
+      <Link>ExitingTraceListener.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="xsc.rsp" Condition="'$(TargetFramework)' == 'net472'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(CscSource)*.cs">
+      <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="$(CscSource)Program.cs" />
+  </ItemGroup>
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+  
+  <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
+    <ItemGroup>
+        <FilesToDelete Include="$(OutputPath)\CS*.*" />
+    </ItemGroup> 
+     <Delete Files="@(FilesToDelete)" />
+  </Target>
+</Project>

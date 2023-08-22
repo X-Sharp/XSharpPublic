@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>  
+  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.Build</RootNamespace>
+    <AssemblyName>XSharp.Build</AssemblyName>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <DebugSymbols>true</DebugSymbols>
+    <ErrorReport>prompt</ErrorReport>
+    <Nullable>disable</Nullable>
+    <ApplicationIcon>$(CommonDir)XSharpProject.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
+    <DefineConstants>$(GenericDefines);TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);NDEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
+    <NoWarn>$(NoWarn);1573;1591;1701;RS0016</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
+    <NoWarn>$(NoWarn);1573;1591;1701;RS0016</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Public|net472|AnyCPU'">
+    <NoWarn>$(NoWarn);1573;1591;1701;RS0016</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="$(CommonDir)Constants.cs" Link="Properties\Constants.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\UnicodeCharacterUtilities.cs">
+      <Link>UnicodeCharacterUtilities.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\CompilerOptionParseUtilities.cs">
+      <Link>CompilerOptionParseUtilities.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\RoslynString.cs">
+      <Link>RoslynString.cs</Link>
+    </Compile>
+    <Compile Include="$(CoreSource)InternalUtilities\NullableAttributes.cs">
+      <Link>NullableAttributes.cs</Link>
+    </Compile>
+
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rcdll.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </None>
+    <None Include="rc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </None>
+    <None Include="XSharp.BeforeCommon.Props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.Common.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.CrossTargeting.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.CurrentVersion.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </None>
+    <None Include="XSharp.Default.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xsharp.Net.Sdk.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.Net.Sdk.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.Default.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="debugging.txt" />
+    <Content Include="PublicAPI.Shipped.txt" />
+    <Content Include="PublicAPI.Unshipped.txt" />
+    <Content Include="XSharpProject.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Xaml\PropertyPage_Advanced.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\PropertyPage_Application.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\PropertyPage_Build.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\PropertyPage_Debugger.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\PropertyPage_Language.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\resolvedsdkreference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\sdkreference.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\xsharp.browseobject.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\XSharp.ProjectItemsSchema.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\xsharp.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\NativeResource.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\PropertyPage_Dialect.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Xaml\VoBinary.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime" Version="4.3.1"/>
+    <PackageReference Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildFrameworkVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildTasksCoreVersion)" ExcludeAssets="Runtime" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+     <PackageReference Include="Microsoft.Win32.Registry" Version="4.3.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="$(SystemSecurityAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  </ItemGroup>
+  <Target Name="DeleteMsFiles" AfterTargets="Build">
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)\Microsoft*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <!-- Zip the XSharp.Build output folder-->
+
+  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != ''">
+    <MakeDir Directories="$(ZipsDir)" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+    </Target>
+</Project>

@@ -1,0 +1,94 @@
+﻿<!-- Copyright (c) XSharp B.V.  All Rights Reserved. See the LICENSE file in the project root for more information. -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!--The Arcade SDK overrides all copyrights with CopyrightMicrosoft
+        .. aargh. So we override the CopyRightMicrosoft here.-->
+    <Copyright>XSharp BV. All rights reserved.</Copyright>
+    <CopyrightMicrosoft>$(CopyRight)</CopyrightMicrosoft>
+    <UseXSharpKey>true</UseXSharpKey>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DevelopmentDependency>false</DevelopmentDependency>
+  </PropertyGroup>
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <!-- Many of the properties below are used by the microsoft.dotnet.arcade.sdk  to build the nuget package -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <TargetFrameworks Condition=" '$(Configuration)' == 'Release' ">netcoreapp3.1;net472</TargetFrameworks>
+    <PackageTags>XSharp;Compiler;Build</PackageTags>
+    <IsPackable>true</IsPackable>
+    <NuspecPackageId>XSharp.Compiler.Tools</NuspecPackageId>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <PackageDescription>
+      XSharp Compiler Package.
+      Referencing this package will cause the project to be built using the X# and compiler contained in the package, as opposed to the version installed with MSBuild.
+
+      This package is primarily intended as a method for rapidly shipping hotfixes to customers. Using it as a long term solution for providing newer compilers on older MSBuild installations is explicitly not supported. That can and will break on a regular basis.
+
+      The supported mechanism for providing new compilers in a build enviroment is updating to the newer .NET SDK or Visual Studio Build Tools SKU.
+
+      This package requires either MSBuild 16.3 and .NET Desktop 4.7.2+ or .NET Core 2.1+
+
+    </PackageDescription>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_GetFilesToPackage</TargetsForTfmSpecificContentInPackage>
+    <!-- Remove NU5128 once https://github.com/NuGet/Home/issues/8583 is fixed -->
+    <NoWarn>$(NoWarn);NU5100;NU5128;NU5118</NoWarn>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <_DependsOn Condition="'$(TargetFramework)' == 'net472'">InitializeDesktopCompilerArtifacts</_DependsOn>
+    <_DependsOn Condition="'$(TargetFramework)' == 'netcoreapp3.1'">InitializeCoreClrCompilerArtifacts</_DependsOn>
+    <Authors>XSharp</Authors>
+    <Company>XSharp BV</Company>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://www.xsharp.eu</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>XSharp.png</PackageIcon>
+    <PackageIconUrl />
+  </PropertyGroup>
+
+  <ItemGroup>
+
+    <ProjectReference Update="@(ProjectReference)" Targets="Publish" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" SetTargetFramework="TargetFramework=netcoreapp3.1" />
+  </ItemGroup>
+
+  <!--This defines the contents of the package
+  - The various EXE and DLL files and their dependencies go into the targets folder inside the package
+  -->
+  <Target Name="_GetFilesToPackage" DependsOnTargets="$(_DependsOn)">
+    <ItemGroup>
+      <_File Include="@(DesktopCompilerArtifact)" TargetDir="tasks/net472" />
+      <_File Include="@(CoreClrCompilerBuildArtifact)" TargetDir="tasks/netcoreapp3.1" />
+      <_File Include="@(CoreClrCompilerToolsArtifact)" TargetDir="tasks/netcoreapp3.1" />
+      <_File Include="@(CoreClrCompilerBinArtifact)" TargetDir="tasks/netcoreapp3.1/bincore" />
+      <_File Include="@(CoreClrCompilerBinRuntimesArtifact)" TargetDir="tasks/netcoreapp3.1/bincore/runtimes" />
+     
+      <_File Include="$(MSBuildProjectDirectory)\build\**\*.*" Condition="'$(TargetFramework)' == 'net472'" TargetDir="build" />
+     
+      <TfmSpecificPackageFile Include="@(_File)" PackagePath="%(_File.TargetDir)/%(_File.RecursiveDir)%(_File.FileName)%(_File.Extension)" />
+    </ItemGroup>
+  </Target>
+
+  <Import Project="DesktopCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'net472'" />
+  <Import Project="CoreClrCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  <ItemGroup>
+    <None Include="$(Solutiondir)license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="build\XSharp.Compiler.Tools.props" />
+    <Compile Remove="**/*assemblyinfo.cs" />
+    <None Include="build\XSharp.Compiler.Tools.targets" />
+    <None Include="XSharp.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compiler\XSCompiler\XSCompiler.csproj" />
+    <ProjectReference Include="..\..\Compiler\xsc\xsc.csproj" />
+    <ProjectReference Include="..\..\Compiler\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
+    <ProjectReference Include="..\..\Scripting\xsi\xsi.csproj" />
+  </ItemGroup>
+</Project>

@@ -19,15 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: main
+          ref: ${{ github.ref }}
 #      - uses: actions/setup-dotnet@v1.7.2
 #        with:
 #           dotnet-version: '6.0.402' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
       - name: BuildCompiler
         shell: cmd
         run: |
-          echo "RoslynDir=./Roslyn" >> $GITHUB_ENV
-          echo "XSharpDir=./XSharp" >> $GITHUB_ENV
+          echo "RoslynDir=./src/Roslyn" >> $GITHUB_ENV
+          echo "XSharpDir=./src/Compiler" >> $GITHUB_ENV
           echo "VsVersion=2022" >> $GITHUB_ENV
           echo "VSEDITION=Enterprise" >> $GITHUB_ENV
           call ContinuousIntegrationBuild.cmd
@@ -35,12 +35,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
             name: BuildResults
-            path: ./XSharp/Artifacts/Zips/*.zip
+            path: ./Artifacts/Zips/*.zip
       - name: Upload BuildLogs
         uses: actions/upload-artifact@v3
         with:
             name: BuildLogs
-            path: ./XSharp/build*.Log
+            path: ./src/build*.Log
       - name: RunTests
         shell: cmd
         run: |
@@ -49,5 +49,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
             name: TestLogs
-            path: ./XSharp/artifacts/Tests/*.Log
+            path: ./Artifacts/Tests/*.Log
+      - name: Upload Shared Files
+        uses: actions/upload-artifact@v3
+        with:
+            name: Shared
+            path: |
+              ./Artifacts/Shared/Release/*.*
+              ./Artifacts/Shared/Debug/*.*
+            
+
 

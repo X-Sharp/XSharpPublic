@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+<Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="'$(TargetFramework)' == 'net472' ">
+    <Message Importance="high" Text="Creating folders when needed" />
+    <MakeDir Directories="$(ZipsDir)" /> 
+    <MakeDir Directories="$(VsExternalDir)" />  
+  </Target>
+  <Target Name="CopyFiles" AfterTargets="Build" 
+    Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' == 'net472' ">
+    <ItemGroup>
+      <OurFiles Include="$(OutputPath)\XSharp*.*" />
+    </ItemGroup> 
+    <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
+    <Copy SourceFiles="@(OurFiles)" DestinationFolder="$(VsExternalDir)" />
+  </Target>
+ </Project>

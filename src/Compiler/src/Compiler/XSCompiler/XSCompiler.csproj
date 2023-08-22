@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
+  <Import Project="..\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>XSCompiler</AssemblyName>
+    <LargeAddressAware>true</LargeAddressAware>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
+    <DefineConstants>$(DefineConstants);XSHARP</DefineConstants>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <!--Use the C# compiler created in this solution-->
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;COMMITHASH;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
+    <DefineConstants>$(DefineConstants);TRACE;XSHARP;COMMITHASH;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH;</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs" />
+    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+  <Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
+    <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+  </Compile>
+  </ItemGroup>
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
+</PropertyGroup>
+</Project>

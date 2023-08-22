@@ -50,4 +50,13 @@ jobs:
         with:
             name: TestLogs
             path: ./Artifacts/Tests/*.Log
+      - name: Upload Shared Files
+        uses: actions/upload-artifact@v3
+        with:
+            name: Shared
+            path: |
+              ./Artifacts/Shared/Release/*.*
+              ./Artifacts/Shared/Debug/*.*
+            
+
 

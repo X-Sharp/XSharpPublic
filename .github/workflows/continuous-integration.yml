@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
             name: BuildLogs
-            path: ./src/Compiler/build*.Log
+            path: ./src/build*.Log
       - name: RunTests
         shell: cmd
         run: |

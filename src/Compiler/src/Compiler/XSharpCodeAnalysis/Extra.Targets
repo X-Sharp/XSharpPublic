@@ -6,10 +6,10 @@
 <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="'$(TargetFramework)' == 'net472' ">
     <Message Importance="high" Text="Creating folders when needed" />
     <MakeDir Directories="$(ZipsDir)" /> 
-    <MakeDir Condition="'$(Configuration)' == 'Debug'" Directories="$(VsExternalDir)" />  
+    <MakeDir Directories="$(VsExternalDir)" />  
   </Target>
   <Target Name="CopyFiles" AfterTargets="Build" 
-    Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' == 'net472' and '$(Configuration)' == 'Debug' ">
+    Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' == 'net472' ">
     <ItemGroup>
       <OurFiles Include="$(OutputPath)\XSharp*.*" />
     </ItemGroup> 

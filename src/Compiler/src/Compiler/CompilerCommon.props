@@ -48,7 +48,7 @@ See License.txt in the project root for license information.
     <!--The following depend on Artifacts-->
     
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
-    <ZipsDir>$(ArtifactsDir)\Zips\</ZipsDir>
+    <ZipsDir>$(ArtifactsDir)Zips\</ZipsDir>
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
     <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>

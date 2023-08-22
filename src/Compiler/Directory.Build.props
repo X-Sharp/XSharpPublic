@@ -1,0 +1,21 @@
+<!-- 
+***********************************************************************************************
+Directory.Build.Props
+Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+See License.txt in the project root for license information.
+***********************************************************************************************
+
+. -->
+<Project>
+  <PropertyGroup>
+  <ArtifactsDir>$(SolutionDir)\..\Artifacts\</ArtifactsDir>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" /> 
+  <Import Project="eng\targets\Settings.props" />
+  <PropertyGroup>
+    <!-- The following line fixes a problem The target "GetTargetPath" does not exist for projects that only target one framework
+     like our XSharp.Build project -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+  </PropertyGroup>
+</Project>
+

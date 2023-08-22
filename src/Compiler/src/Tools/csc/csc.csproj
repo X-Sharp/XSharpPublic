@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Microsoft.CodeAnalysis.CSharp.CommandLine</RootNamespace>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LargeAddressAware>true</LargeAddressAware>
+    <StartupObject>Microsoft.CodeAnalysis.CSharp.CommandLine.Program</StartupObject>
+	<TargetFrameworks>net472</TargetFrameworks>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseAppHost>false</UseAppHost>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);XSHARPPRE;NET46;</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net472'">$(DefineConstants);XSHARPPRE;</DefineConstants>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\CSCompiler\CSCompiler.csproj" />
+    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs">
+      <Link>BuildClient.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)BuildServerConnection.cs">
+      <Link>BuildServerConnection.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs">
+      <Link>ExitingTraceListener.cs</Link>
+    </Compile>
+    <Compile Include="$(SharedSource)Csc.cs">
+      <Link>Csc.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="csc.rsp" Condition="'$(TargetFramework)' == 'net472'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(CscSource)*.cs">
+      <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+</Project>

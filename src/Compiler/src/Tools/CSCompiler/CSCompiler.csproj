@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <LargeAddressAware>true</LargeAddressAware>
+<TargetFrameworks>net472</TargetFrameworks>    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <UseAppHost>false</UseAppHost>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARPPRE;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(DefineConstants);XSHARPPRE;</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration" Condition="'$(TargetFramework)' != 'netcoreapp3.1'" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="$(SystemIOPipesAccessControlVersion)" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(SharedSource)RuntimeHostInfo.cs" />
+    <Compile Include="$(SharedSource)NamedPipeUtil.cs" />
+    <Compile Include="$(SharedSource)BuildClient.cs" />
+    <Compile Include="$(SharedSource)BuildServerConnection.cs" />
+    <Compile Include="$(SharedSource)ExitingTraceListener.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+  <Compile Include="$(ServerSource)VBCSCompiler\**\*.cs">
+    <Link>Server\%(RecursiveDir)\%(Filename).%(Extension)</Link>
+  </Compile>
+  </ItemGroup>
+  <Import Project="$(CoreSource)..\CommandLine\CommandLine.projitems" Label="Shared" />
+  <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
+</Project>

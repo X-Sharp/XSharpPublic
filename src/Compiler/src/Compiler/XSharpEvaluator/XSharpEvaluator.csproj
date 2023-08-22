@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
+  <Import Project="..\CompilerCommon.props" />
+  <PropertyGroup>
+    <CoreEvalSource>$(RoslynSrc)\ExpressionEvaluator\Core\Source\</CoreEvalSource>
+    <CSharpEvalSource>$(RoslynSrc)\ExpressionEvaluator\CSharp\Source\</CSharpEvalSource>
+    <OutputType>Library</OutputType>
+    <AssemblyName>XSharp.Evaluator</AssemblyName>
+    <RootNamespace>LanguageService.CodeAnalysis.ExpressionEvaluator</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1591,1573,1701,3021,RS0016</NoWarn> 
+    <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
+    <NoStdLib>true</NoStdLib>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <!-- This is required to prevent downgrade references from CscCore/VbcCode since we must
+         reference Microsoft.NETCore.App to target the shared framework (bug
+         https://github.com/dotnet/sdk/issues/1159) and NETCore.App
+         contains a reference to C# + VB CodeAnalysis. This ensures that the project
+         reference is a higher version than the NuGet reference. -->
+    <Version>$(NuGetPerBuildPreReleaseVersion)</Version>
+    <!--Use the C# compiler created in this solution-->
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH;EXPRESSIONCOMPILER</GenericDefines>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Configurations>Debug;Release;Public</Configurations>
+    <TargetFrameworks>net472</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Public'">
+    <DefineConstants>$(Genericdefines);XSHARP;TRACE;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(CoreEvalSource)ExpressionCompiler\Resources\WindowsProxy.winmd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(Commondir)CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
+    <Compile Include="$(CoreEvalSource)**\*.cs">
+    <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+   </Compile>
+
+    <Compile Remove="$(CoreEvalSource)FunctionResolver\VisualBasic\**\*.cs" />
+    <Compile Remove="$(CoreEvalSource)ResultProvider\NetFX20\**\*.cs" />
+    <Compile Remove="$(CoreEvalSource)ResultProvider\Helpers\ArrayBuilder.cs" />
+    <Compile Remove="$(CoreEvalSource)ResultProvider\SystemHelpers.cs" />
+      <Compile Include="$(CSharpEvalSource)**\*.cs">
+        <Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+      </Compile>
+    <Compile Remove="$(CSharpEvalSource)ResultProvider\NetFX20\AssemblyInfo.cs" />
+  </ItemGroup>
+   <ItemGroup>
+    <PackageReference Include="Microsoft.DiaSymReader" Version="1.4.0" />
+    <PackageReference Include="Microsoft.DiaSymReader.Native" Version="1.7.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine" Version="17.0.2012801" />
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata" Version="17.0.2012801" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace></CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\XSharpCodeAnalysis\Extra.Targets" />
+</Project>

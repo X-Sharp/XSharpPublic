@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
+
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>XSharpInteractive</RootNamespace>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
+    <!--Use the C# compiler created in this solution-->
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+    <CreateZips>true</CreateZips>
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\XSharpScripting\XSharpScripting.csproj" />
+  </ItemGroup>
+ <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(Genericdefines);TRACE;DEBUG;XSHARP;COMMITHASH</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
+    <DefineConstants>$(Genericdefines);TRACE;XSHARP;COMMITHASH</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(Genericdefines);NDEBUG;XSHARP;COMMITHASH;</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="$(SystemValueTupleVersion)" />
+    <PackageReference Include="Microsoft.CSharp" Version="$(MicrosoftCSharpVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="xsi.coreclr.rsp" Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+      <Link>xsi.rsp</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="xsi.desktop.rsp" Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
+      <Link>xsi.rsp</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)\CS*.*" /> 
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <!-- Copy the files from the XSC folder into the XSI folder-->
+  <Target Name="CopyCompilerFiles" AfterTargets="Build" >
+    <ItemGroup>
+      <FilesToCopy Include="$(OutputPath.Replace('xsi','xsc'))X*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(OutputPath)" />
+  </Target>
+  <!-- Zip the XSI output folder -->
+  <Target Name="ZipOutputPath" AfterTargets="CopyCompilerFiles" Condition="'$(TargetFramework)' != '' AND  '$(CreateZips)' != '' ">
+    <MakeDir Directories="$(ZipsDir)" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\Bin.$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+  </Target>
+</Project>

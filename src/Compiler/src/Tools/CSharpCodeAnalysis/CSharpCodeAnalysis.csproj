@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Compiler\CompilerCommon.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.CodeAnalysis.CSharp</RootNamespace>
+    <AssemblyName>CSharp.CodeAnalysis</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<TargetFrameworks>net472</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <DefineConstants>$(DefineConstants);COMPILERCORE;XSHARPPRE</DefineConstants>
+    <CodeAnalysisRuleSet>$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
+    <ApplyNgenOptimization Condition="'$(TargetFramework)' == 'netstandard2.0'">partial</ApplyNgenOptimization>
+    <!-- Enable output of generated files back into our Generated directory -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+<ItemGroup>
+    <!--
+      Analyzers that will be used to analyze projects that references 
+      Microsoft.CodeAnalysis project or Microsoft.CodeAnalysis.Common package.
+      
+      Note: PrivateAssets="ContentFiles" ensures that projects referencing Microsoft.CodeAnalysis.Common package 
+      will import everything but content files from Microsoft.CodeAnalysis.Analyzers, specifically, analyzers.
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />
+    <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableVersion)" />
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafeVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(SystemThreadingTasksExtensionsVersion)" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="$(SystemTextEncodingCodePagesVersion)" />
+  </ItemGroup>  
+  <ItemGroup>
+    <!-- Need to include the PerformanceSensitiveAttribute definition in source build, since we can't get it from the analyzer package. -->
+    <Compile Remove="$(CoreSource)InternalUtilities\PerformanceSensitiveAttribute.cs" Condition="'$(DotNetBuildFromSource)' != 'true'" />
+    <Compile Include="$(CoreSource)..\..\Shared\CoreClrShim.cs" Link="InternalUtilities\CoreClrShim.cs" />
+ 
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(CSharpSource)BoundTree\BoundNodes.xml" />
+    <None Include="$(CSharpSource)BoundTree\BoundNodes.xsd" />
+    <None Include="$(CSharpSource)Generated\CSharp.Generated.g4" />
+    <AdditionalFiles Include="$(CSharpSource)Syntax\Syntax.xml" />
+    <None Include="$(CSharpSource)SSyntax\Syntax.xsd" />
+    <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\BaseLine.txt" />
+    <None Include="$(CSharpSource)UseSiteDiagnosticsCheckEnforcer\Run.bat" />
+    <None Include="$(CSharpSource)FlowAnalysis\Flow Analysis Design.docx" />
+    <None Include="$(CSharpSource)..\CSharpCodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="CSharpResources.resx" GenerateSource="true" />
+    <EmbeddedResource Update="CodeAnalysisResources.resx" GenerateSource="false" />
+    <EmbeddedResource Include="$(CoreSource)Resources\default.win32manifest" />
+  </ItemGroup>
+  <ItemGroup>
+  	<Compile Include="$(CSharpSource)**\*.cs">
+		<Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+	  </Compile>
+    <Compile Include="$(CoreSource)**\*.cs">
+		<Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+      </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(CoreSource)..\CodeAnalysisRules.ruleset">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="$(CoreSource)RuleSet\RuleSetSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
+  <Import Project="$(CoreSource)..\..\..\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Remove="C:\XSharp\Dev\XSharp\build\Targets\..\config\BannedSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="C:\XSharp\Dev\XSharp\..\Roslyn\Src\Compilers\CSharp\Portable\SSyntax\Syntax.xsd" />
+  </ItemGroup>
+</Project>

@@ -30,7 +30,7 @@ See License.txt in the project root for license information.
     <!--Roslyn Source folders-->
     
     <RoslynDir>$(Solutiondir)Roslyn\</RoslynDir>
-    <RoslynBin>$(RoslynDir)Binaries\</RoslynBin>
+    <RoslynBin>$(RoslynDir)Artifacts\Bin\</RoslynBin>
     <RoslynSrc>$(RoslynDir)Src\</RoslynSrc>
     <CoreSource>$(RoslynSrc)Compilers\Core\Portable\</CoreSource>
     <SharedSource>$(RoslynSrc)Compilers\Shared\</SharedSource>

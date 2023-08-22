@@ -1,6 +1,6 @@
 SET ROOT=%~dp0
-SET BINARIESDIR=%ROOT%..\XSharp\Artifacts
-SET TESTDIR=%ROOT%..\XSharp\Artifacts\Tests
+SET BINARIESDIR=%ROOT%..\..\Artifacts\
+SET TESTDIR=%BINARIESDIR%Tests
 SET XSCOMPILER=%BINARIESDIR%\Bin\xsc\Release\net472\xsc.exe 
 SET XSTESTPROJECT=%ROOT%xSharp Tests.viproj
 SET XSRUNTIMEFOLDER=%ROOT%Runtime

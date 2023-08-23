@@ -3947,66 +3947,60 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 
 
  /// <exclude />
-FUNCTION __GetFSDefaultLength(oFS AS USUAL) AS INT
-	LOCAL liRetVal, liExtra AS LONGINT
-	LOCAL uType AS USUAL
-	LOCAL cFunction AS STRING
+FUNCTION __GetFSDefaultLength(uFS AS OBJECT) AS INT
+    LOCAL liRetVal, liExtra AS LONGINT
+    LOCAL uType AS USUAL
+    LOCAL cFunction AS STRING
 
 
+    IF uFS IS FieldSpec VAR oFs
+        liRetVal := oFS:Length
+        uType := oFS:UsualType
 
 
-	IF !IsInstanceOfUsual(oFS, #FieldSpec)
-		liRetVal := 10
-	ELSE
-		liRetVal := oFS:Length
-		uType := oFS:UsualType
+        DO CASE
+        CASE (uType == LOGIC)
+            liRetVal := Max(liRetVal, 3)
+        CASE (uType == DATE)
+            IF (SetCentury() == TRUE)
+                liRetVal := 10
+            ELSE
+                liRetVal := Max(liRetVal, 8)
+            ENDIF
+        CASE (uType == STRING) .AND. oFS:ValType == "M"
+            liRetVal := Max(liRetVal, 40)
+            liRetVal := Min(liRetVal, 120)
+        ENDCASE
+        //RvdH 060608 optimized
+        //IF (NULL_STRING != oFS:Picture) .AND. !Empty(oFS:Picture)
+        IF SLen(oFS:Picture)> 0
+            IF SubStr(oFS:Picture, 1, 1) != "@"
+                //there is no associated function
+                liRetVal := LONGINT(_CAST,SLen(oFS:Picture))
+            ELSE
+                //store the function character
+                cFunction := SubStr(oFS:Picture, 2, 1)
+                IF cFunction == "C" .OR. cFunction == "X"
+                    //"@C" and "@X" functions require a " CR" or a " DB" respectively
+                    //at the end of the string, so tag on three extra bytes
+                    liExtra := 3
+                ENDIF
+                IF At(" ", oFS:Picture) != 0
+                    //the actual picture will now start after the space between the function
+                    //and the template, so calculate the length from this point
+                    liRetVal := LONGINT(_CAST,SLen(SubStr(oFS:Picture, At(" ", oFS:Picture) + 1)))
+                ENDIF
+                liRetVal += liExtra
+            ENDIF
+        ENDIF
+        IF (oFS:Length > liRetVal)
+            RETURN oFS:Length
+        ENDIF
+    ELSE
+        liRetVal := 10
 
-
-		DO CASE
-		CASE (uType == LOGIC)
-			liRetVal := Max(liRetVal, 3)
-		CASE (uType == DATE)
-			IF (SetCentury() == TRUE)
-				liRetVal := 10
-			ELSE
-				liRetVal := Max(liRetVal, 8)
-			ENDIF
-		CASE (uType == STRING) .AND. oFS:ValType == "M"
-			liRetVal := Max(liRetVal, 40)
-			liRetVal := Min(liRetVal, 120)
-		ENDCASE
-		//RvdH 060608 optimized
-		//IF (NULL_STRING != oFS:Picture) .AND. !Empty(oFS:Picture)
-		IF SLen(oFS:Picture)> 0
-			IF SubStr(oFS:Picture, 1, 1) != "@"
-				//there is no associated function
-				liRetVal := LONGINT(_CAST,SLen(oFS:Picture))
-			ELSE
-				//store the function character
-				cFunction := SubStr(oFS:Picture, 2, 1)
-				IF cFunction == "C" .OR. cFunction == "X"
-					//"@C" and "@X" functions require a " CR" or a " DB" respectively
-					//at the end of the string, so tag on three extra bytes
-					liExtra := 3
-				ENDIF
-				IF At(" ", oFS:Picture) != 0
-					//the actual picture will now start after the space between the function
-					//and the template, so calculate the length from this point
-					liRetVal := LONGINT(_CAST,SLen(SubStr(oFS:Picture, At(" ", oFS:Picture) + 1)))
-				ENDIF
-				liRetVal += liExtra
-			ENDIF
-		ENDIF
-	ENDIF
-
-
-	IF (oFS:Length > liRetVal)
-		RETURN oFS:Length
-	ENDIF
-
-
-	RETURN liRetVal
-
+    ENDIF
+    RETURN liRetVal
 
 
 

@@ -55,8 +55,7 @@ jobs:
         with:
             name: Shared
             path: |
-              ./Artifacts/Shared/Release/*.*
-              ./Artifacts/Shared/Debug/*.*
+              ./Artifacts/Shared/Release/*.dll
             
 
 

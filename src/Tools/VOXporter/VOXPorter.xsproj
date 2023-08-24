@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="C:\XSharp\DevPublic\Tools\Common.props" Condition="'$(SolutionDir)'==''" />
   <Import Project="$(SolutionDir)Tools\Common.props" Condition="'$(SolutionDir)'!=''" />
   <PropertyGroup>
     <Name>VOXPorter</Name>
@@ -16,39 +15,14 @@
     <Dialect>Core</Dialect>
     <OutputName>VOXPorter</OutputName>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <AZ>false</AZ>
-    <CS>false</CS>
-    <LB>false</LB>
-    <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
-    <INS>false</INS>
-    <NS>false</NS>
-    <VO1>false</VO1>
-    <VO2>false</VO2>
-    <VO3>false</VO3>
-    <VO4>false</VO4>
-    <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO11>false</VO11>
-    <VO12>false</VO12>
-    <VO13>false</VO13>
-    <VO14>false</VO14>
     <VO15>false</VO15>
-    <VO16>false</VO16>
-    <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>True</Nostandarddefs>
     <Allowdot>True</Allowdot>
+    <DisabledWarnings>9101,165,8002</DisabledWarnings>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
-    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -56,17 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DisabledWarnings>9101,165</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -74,15 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DisabledWarnings>9101,165</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
-    <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -91,7 +49,7 @@
       <AssemblyName>SDK_Defines.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\Dll\SDK_Defines.dll</HintPath>
+      <HintPath>Dll\SDK_Defines.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -104,93 +62,88 @@
       <AssemblyName>XICOMMON.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\Dll\XICOMMON.dll</HintPath>
+      <HintPath>Dll\XICOMMON.dll</HintPath>
     </Reference>
     <Reference Include="XIDED, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <Name>XIDED</Name>
       <AssemblyName>XIDED.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\Dll\XIDED.dll</HintPath>
+      <HintPath>Dll\XIDED.dll</HintPath>
     </Reference>
     <Reference Include="XIRES, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <Name>XIRES</Name>
       <AssemblyName>XIRES.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\Dll\XIRES.dll</HintPath>
+      <HintPath>Dll\XIRES.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binaries.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="UI.prg">
+    <Compile Include="Source\VOXporter\Binaries.prg" />
+    <Compile Include="Source\VOXporter\Properties\AssemblyInfo.prg" />
+    <Compile Include="Source\VOXporter\UI.prg">
     </Compile>
-    <Compile Include="WinFormsConverter.prg" />
-    <Compile Include="xPorter.prg">
+    <Compile Include="Source\VOXporter\WinFormsConverter.prg" />
+    <Compile Include="Source\VOXporter\xPorter.prg">
     </Compile>
-    <Compile Include="$(Solutiondir)Common\commonAssemblyInfo.prg">
+    <Compile Include="$(CommonDir)commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-    <Compile Include="$(Solutiondir)Common\constants.prg">
+    <Compile Include="$(CommonDir)constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\VisualStudio\XSharpVoEditors\VoEditors.xsproj">
+    <ProjectReference Include="..\..\VisualStudio\XSharpVoEditors\VoEditors.xsproj">
       <Name>VoEditors</Name>
       <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Fab_VO_Entities\Fab_VO_Entities.xsproj">
+    <ProjectReference Include="Fab_VO_Entities.xsproj">
       <Name>Fab_VO_Entities</Name>
       <Project>{73c0dca6-bfe5-40cb-9240-3db1c37f5b34}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Source\" />
+    <Folder Include="Source\VOXporter\" />
+    <Folder Include="Source\VOXporter\Properties\" />
+    <Folder Include="Source\VOXporter\Resources\" />
     <Folder Include="Templates" />
     <Folder Include="Resources" />
     <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Designers.resources" />
+    <EmbeddedResource Include="Source\VOXporter\Resources\Designers.resources" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\ReadMe.rtf">
+    <None Include="ReadMe.rtf">
       <Link>ReadMe.rtf</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="..\..\Templates\template_VS.sln">
-      <Link>Templates\template_VS.sln</Link>
+    <Content Include="Templates\template_VS.sln">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Templates\template_VS.xsproj">
-      <Link>Templates\template_VS.xsproj</Link>
+    <Content Include="Templates\template_VS.xsproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Templates\template_XIDE.xiapp">
-      <Link>Templates\template_XIDE.xiapp</Link>
+    <Content Include="Templates\template_XIDE.xiapp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Templates\template_XIDE.xiproj">
-      <Link>Templates\template_XIDE.xiproj</Link>
+    <Content Include="Templates\template_XIDE.xiproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="..\..\Templates\template_VS.sln">
-      <Link>Templates\template_VS.sln</Link>
+    <None Include="Templates\template_VS.sln">
     </None>
-    <None Include="..\..\Templates\template_VS.xsproj">
-      <Link>Templates\template_VS.xsproj</Link>
+    <None Include="Templates\template_VS.xsproj">
     </None>
-    <None Include="..\..\Templates\template_XIDE.xiapp">
-      <Link>Templates\template_XIDE.xiapp</Link>
+    <None Include="Templates\template_XIDE.xiapp">
     </None>
-    <None Include="..\..\Templates\template_XIDE.xiproj">
-      <Link>Templates\template_XIDE.xiproj</Link>
+    <None Include="Templates\template_XIDE.xiproj">
     </None>
-    <None Include="..\..\VOXPorter.ini">
-      <Link>VOXPorter.ini</Link>
+    <None Include="VOXPorter.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -208,14 +161,4 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

@@ -45,16 +45,16 @@
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(CommonDir)Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\ConstantsMethods.cs">
+    <Compile Include="$(CommonDir)ConstantsMethods.cs">
       <Link>ConstantsMethods.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\XSharpConstants.cs">
+    <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="DebuggerUIPackage.cs" />

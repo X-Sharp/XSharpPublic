@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 USING System.Reflection
 using System.Runtime.InteropServices
-#include "constants.prg"
-#include "commonassemblyinfo.prg"
 [assembly: AssemblyTitleAttribute( "XSharp.UDCTester" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp.UDCTester" )]
 

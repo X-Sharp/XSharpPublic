@@ -27,6 +27,7 @@ using static Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.XSharpLanguageP
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using TokenType = System.Int32;
+  
     internal class XSharpPreprocessor
     {
         static Dictionary<string, string> embeddedHeaders = null;
@@ -37,11 +38,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 embeddedHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
+                string nameSpace;
 #if VSPARSER
-                var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
+                nameSpace = ""XSharp.VSParser.";
 #else
-                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.XSharp.Preprocessor.StandardHeaders.resources");
+#if MACROCOMPILER
+                nameSpace = "XSharp.MacroCompiler.";
+#else
+                nameSpace = "LanguageService.CodeAnalysis.XSharp.";
 #endif
+#endif
+
+                var strm = asm.GetManifestResourceStream(nameSpace + "Preprocessor.StandardHeaders.resources");
                 if (strm != null)
                 {
                     var rdr = new System.Resources.ResourceReader(strm);
@@ -74,8 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 foreach (var key in oldkeys)
                 {
-                    PPIncludeFile oldFile;
-                    cache.TryRemove(key, out oldFile);
+                    cache.TryRemove(key, out var _);
                 }
             }
 
@@ -93,7 +100,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             timeStamp = DateTime.MinValue;
                         if (file.LastWritten != timeStamp)
                         {
-                            cache.TryRemove(fileName, out file);
+                            cache.TryRemove(fileName, out _);
                             file = null;
                         }
                         else
@@ -108,16 +115,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal static PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
-                PPIncludeFile file;
-                cache.TryGetValue(fileName, out file);
+                cache.TryGetValue(fileName, out PPIncludeFile file);
                 if (file == null)
                 {
                     newFile = true;
                     file = new PPIncludeFile(fileName, tokens, text, mustBeProcessed);
                     if (!cache.TryAdd(fileName, file))
                     {
-                        PPIncludeFile oldFile;
-                        if (cache.TryGetValue(fileName, out oldFile))
+                        if (cache.TryGetValue(fileName, out PPIncludeFile oldFile))
                         {
                             file = oldFile;
                             newFile = false;
@@ -150,7 +155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     this.LastWritten = DateTime.MinValue;
                 }
-                this.Tokens = tokens.ToImmutableArray();
+                this.Tokens = tokens.ToArray();
                 this.MustBeProcessed = mustBeProcessed;
 
             }
@@ -248,11 +253,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal List<PragmaBase> Pragmas;
 
 
-        void addMacro(string macro, int type)
+        void addMacro(string macro, TokenType type)
         {
             addMacro(macro, type, macro);
         }
-        void addMacro(string macro, int type, string value)
+        void addMacro(string macro, TokenType type, string value)
         {
             if (type == XSharpLexer.STRING_CONST)
                 value = '"' + value + '"';
@@ -643,7 +648,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                         writeToPPO("");
                 }
-                if (t.Channel == Channel.Default)
+                if (t.Channel == Channel.Default && line != null && line.Count > 0)
                     result.Add(t);
             }
             doEOFChecks();
@@ -1030,8 +1035,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             var cmd = udc[0];
-            PPErrorMessages errorMsgs;
-            var rule = new PPRule(cmd, udc, out errorMsgs, _options);
+            var rule = new PPRule(cmd, udc, out var errorMsgs, _options);
             if (rule.Type == PPUDCType.None)
             {
                 if (errorMsgs.Count > 0)
@@ -2473,8 +2477,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = 0; i < line.Count; i++)
                 {
                     var token = line[i];
-                    IList<XSharpToken> deflist = null;
-                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out deflist))
+                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out var deflist))
                     {
                         if (tempResult == null)
                         {
@@ -2503,8 +2506,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else if (token.Type == XSharpLexer.MACRO)
                     {
                         // Macros that cannot be found are changed to ID
-                        Func<XSharpToken, XSharpToken> ft;
-                        if (_macroDefines.TryGetValue(token.Text, out ft))
+                        if (_macroDefines.TryGetValue(token.Text, out var ft))
                         {
                             var nt = ft(token);
                             if (nt != null)
@@ -2537,8 +2539,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private XSharpToken getMacroValue(XSharpToken token)
         {
-            Func<XSharpToken, XSharpToken> ft;
-            if (_macroDefines.TryGetValue(token.Text, out ft))
+            if (_macroDefines.TryGetValue(token.Text, out var ft))
             {
                 var nt = ft(token);
                 if (nt != null)
@@ -2557,8 +2558,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (temp.Count > 0)
             {
-                PPMatchRange[] matchInfo = null;
-                var rule = _transRules.FindMatchingRule(temp, out matchInfo);
+                var rule = _transRules.FindMatchingRule(temp, out var matchInfo);
                 if (rule != null)
                 {
                     temp = doReplace(temp, rule, matchInfo);
@@ -2621,8 +2621,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (true)
             {
-                PPMatchRange[] matchInfo = null;
-                var rule = _cmdRules.FindMatchingRule(result, out matchInfo);
+                var rule = _cmdRules.FindMatchingRule(result, out var matchInfo);
                 if (rule == null)
                 {
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
@@ -2637,8 +2636,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 // the UDC may have introduced a new semi colon and created more than one sub statement
                 // so check to see and then process every statement
-                IList<XSharpToken> separators;
-                var cmds = splitCommands(result, out separators);
+                var cmds = splitCommands(result, out var separators);
                 Debug.Assert(cmds.Count == separators.Count + 1);
                 if (cmds.Count <= 1)
                 {

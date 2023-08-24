@@ -2540,6 +2540,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#WARNING", PP_WARNING},		// #warning [warningMessage]
                 {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+                {"#YCOMMAND", PP_COMMAND},		// #ycommand   <matchPattern> => <resultPattern>  // alias for #xcommand   , case sensitive
+                {"#YTRANSLATE", PP_TRANSLATE},	// #ytranslate <matchPattern> => <resultPattern>  // alias for #ytranslate , case sensitive
                 {"#IF", PP_IF},	                // #if <expression>
                 {"#STDOUT", PP_STDOUT },        // #stdout [Message]
                 {"#TEXT", PP_TEXT },            // #text const [, optionalfunc] or #text linefunc, endfunc

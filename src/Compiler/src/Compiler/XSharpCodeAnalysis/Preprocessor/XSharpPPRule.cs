@@ -42,7 +42,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
-        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand;
+        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand || _type == PPUDCType.YCommand;
 
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
@@ -52,14 +52,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.PP_COMMAND:
                     if (udc.Text.ToLower() == "#command")
                         _type = PPUDCType.Command;
-                    else
+                    else if (udc.Text.ToLower() == "#xcommand")
                         _type = PPUDCType.XCommand;
+                    else 
+                        _type = PPUDCType.YCommand;
                     break;
                 case XSharpLexer.PP_TRANSLATE:
                     if (udc.Text.ToLower().StartsWith("#trans"))
                         _type = PPUDCType.Translate;
-                    else
+                    else if (udc.Text.ToLower() == "#xtranslate")
                         _type = PPUDCType.XTranslate;
+                    else
+                        _type = PPUDCType.YTranslate;
                     break;
                 case XSharpLexer.PP_DEFINE:
                     // define in the form of #define FOO(x) x + 1
@@ -1122,7 +1126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 mode = StringComparison.Ordinal;    // case sensitive
             }
-            if (lhs?.Length <= 4)
+            if (lhs?.Length <= 4 && (type != PPUDCType.YCommand && type != PPUDCType.YTranslate))
             {
                 return string.Equals(lhs, rhs, mode);
             }
@@ -1136,6 +1140,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case PPUDCType.XTranslate:
                 case PPUDCType.Define:
                     return string.Equals(lhs, rhs, mode);
+                case PPUDCType.YCommand:
+                case PPUDCType.YTranslate:
+                    return string.Compare(lhs, rhs, StringComparison.Ordinal) == 0;
                 default:
                     break;
             }

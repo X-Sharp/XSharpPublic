@@ -84,10 +84,10 @@ namespace XSharp.MacroCompiler
                 case TokenType.IF:
                 case TokenType.IIF:
                 case TokenType.FIELD:
-                case TokenType.VO_AND:
-                case TokenType.VO_OR:
-                case TokenType.VO_XOR:
-                case TokenType.VO_NOT:
+                case TokenType.BIT_AND:
+                case TokenType.BIT_OR:
+                case TokenType.BIT_XOR:
+                case TokenType.BIT_NOT:
                     return true;
                 case TokenType.ARGLIST:
                     return _options.ParseStatements;
@@ -222,10 +222,10 @@ namespace XSharp.MacroCompiler
                         throw Error(Lt(), ErrorCode.NotSupported, Lt()?.Value);
                     else
                         goto default;
-                case TokenType.VO_AND:
-                case TokenType.VO_OR:
-                case TokenType.VO_XOR:
-                case TokenType.VO_NOT:
+                case TokenType.BIT_AND:
+                case TokenType.BIT_OR:
+                case TokenType.BIT_XOR:
+                case TokenType.BIT_NOT:
                     return ParseIntrinsicFunction();
                 default:
                     if (TokenAttr.IsSoftKeyword(La()))
@@ -424,9 +424,9 @@ namespace XSharp.MacroCompiler
 
             switch (o.Type)
             {
-                case TokenType.VO_AND:
-                case TokenType.VO_OR:
-                case TokenType.VO_XOR:
+                case TokenType.BIT_AND:
+                case TokenType.BIT_OR:
+                case TokenType.BIT_XOR:
                     {
                         Require(e.Exprs.Count >= 2, ErrorCode.BadNumArgs, "at least 2");
                         var r = new BinaryExpr(e.Exprs[0], o, e.Exprs[1]);
@@ -434,7 +434,7 @@ namespace XSharp.MacroCompiler
                             r = new BinaryExpr(r, o, e.Exprs[i]);
                         return r;
                     }
-                case TokenType.VO_NOT:
+                case TokenType.BIT_NOT:
                     Require(e.Exprs.Count == 1, ErrorCode.BadNumArgs, 1);
                     return new UnaryExpr(e.Exprs[0], o);
                 default:

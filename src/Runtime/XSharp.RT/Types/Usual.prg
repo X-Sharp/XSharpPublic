@@ -10,6 +10,7 @@ USING System.Runtime.Serialization
 USING System.Diagnostics
 USING System.Text
 USING System.Collections
+USING System.Linq
 
 USING XSharp.Internal
 #include "attributes.xh"
@@ -3255,8 +3256,14 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
         VAR indexer := _refData ASTYPE IIndexedProperties
         IF indexer == NULL
+            var pi := SELF:GetIndexedProperty(typeof(INT))
+            if pi != null
+                return pi:GetValue(_refData, <object>{index+1}) // the compiler subtracts 1!
+            endif
             VAR error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
             THROW error
+
+
         ENDIF
         RETURN indexer[index]
     END GET
@@ -3269,7 +3276,13 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         ENDIF
         VAR indexer := _refData ASTYPE IIndexedProperties
         IF indexer == NULL
+            var pi := SELF:GetIndexedProperty(typeof(INT))
+            if pi != null
+                pi:SetValue(_refData, value, <object>{index+1}) // compiler subtracts 1
+                RETURN
+            endif
             THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+
         ENDIF
         indexer[index] := value
     END SET
@@ -3284,6 +3297,10 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     GET
         VAR indexer := _refData ASTYPE IIndexedProperties
         IF indexer == NULL
+            var pi := SELF:GetIndexedProperty(typeof(STRING))
+            if pi != null
+                return pi:GetValue(_refData, <object>{name})
+            endif
             THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
         ENDIF
         RETURN indexer[name]
@@ -3291,11 +3308,31 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     SET
         VAR indexer := _refData ASTYPE IIndexedProperties
         IF indexer == NULL
+            var pi := SELF:GetIndexedProperty(typeof(STRING))
+            if pi != null
+                pi:SetValue(_refData, value, <object>{name})
+                return
+            endif
             THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
         ENDIF
         indexer[name] := value
     END SET
     END PROPERTY
+    private method GetIndexedProperty(parType as System.Type) as System.Reflection.PropertyInfo
+        var obj := _refData
+        var type := obj:GetType()
+        var pi  := type:GetProperty("Item")
+        if (pi != null)
+            var pars := pi:GetIndexParameters()
+            if pars:Length == 1
+                var par := pars:First()
+                if par:ParameterType == parType
+                    return pi
+                endif
+            endif
+        endif
+        return null
+
 #endregion
 
 #region ISerializable

@@ -265,7 +265,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (token == null)
                 return false;
-            return token.Type == XSharpLexer.ID || token.Type == XSharpLexer.KWID;
+            return token.Type == XSharpLexer.ID;
         }
 
         public static bool IsString(this XSharpToken token)

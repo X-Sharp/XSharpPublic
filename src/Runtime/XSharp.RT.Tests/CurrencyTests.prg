@@ -33,6 +33,14 @@ BEGIN NAMESPACE XSharp.RT.Tests
             i := Integer(c2)
             Assert.Equal(4, (INT) i)
 
+            local i64 as int64
+            local u as usual
+            i64 := 1
+            u := i64
+            c1 := $41
+            Assert.Equal($42, c1 + u)
+            Assert.Equal($40, c1 - u)
+
 [Fact, Trait("Category", "Numeric")];
         METHOD Collection_Tests() AS VOID
 

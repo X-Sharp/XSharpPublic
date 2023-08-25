@@ -3325,7 +3325,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         if (pi != null)
             var pars := pi:GetIndexParameters()
             if pars:Length == 1
-                var par := pars:First()
+                var par := pars[1]
                 if par:ParameterType == parType
                     return pi
                 endif

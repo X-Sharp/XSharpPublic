@@ -51,14 +51,18 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case XSharpLexer.PP_COMMAND:
                     if (udc.Text.ToLower() == "#command")
                         _type = PPUDCType.Command;
-                    else
+                    else if (udc.Text.ToLower() == "#xcommand")
                         _type = PPUDCType.XCommand;
+                    else 
+                        _type = PPUDCType.YCommand;
                     break;
                 case XSharpLexer.PP_TRANSLATE:
                     if (udc.Text.ToLower().StartsWith("#trans"))
                         _type = PPUDCType.Translate;
-                    else
+                    else if (udc.Text.ToLower() == "#xtranslate")
                         _type = PPUDCType.XTranslate;
+                    else
+                        _type = PPUDCType.YTranslate;
                     break;
                 case XSharpLexer.PP_DEFINE:
                     // define in the form of #define FOO(x) x + 1
@@ -988,7 +992,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (current != null && lastToken != null && lastToken.Type == XSharpLexer.ID)
                 {
                     // No whitespace after an ID. We will joined IDs when possible
-                    if (lastToken.end == current.Start - 1)
+                    if (lastToken.End == current.Start - 1)
                     {
                         var last = result.LastOrDefault();
                         if (last != null)
@@ -1137,6 +1141,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case PPUDCType.XTranslate:
                 case PPUDCType.Define:
                     return string.Equals(lhs, rhs, mode);
+                case PPUDCType.YCommand:
+                case PPUDCType.YTranslate:
+                    return string.Compare(lhs, rhs, StringComparison.Ordinal) == 0;
                 default:
                     break;
             }
@@ -1150,13 +1157,13 @@ namespace XSharp.MacroCompiler.Preprocessor
             bool found = false;
             for (int iChild = iSource; iChild < tokens.Count; iChild++)
             {
-                bool add = false;
                 var token = tokens[iChild];
                 var stopTokenFound = IsStopToken(mToken, token);
                 if (stopTokenFound)
                 {
                     break;
                 }
+                bool add;
                 switch (token.Type)
                 {
                     case XSharpLexer.COMMA:
@@ -1717,9 +1724,11 @@ namespace XSharp.MacroCompiler.Preprocessor
 #if VSPARSER
             foreach (var token in matchedWithToken)
             {
-                if (!token.IsKeyword())
+                if (!token.IsOperator())
                 {
                     token.Type = XSharpLexer.UDC_KEYWORD;
+                    token.UDCLocation = this._matchtokens[0].Token;
+                    token.UDCType = (byte)this.Type;
                 }
             }
 #endif
@@ -1946,14 +1955,14 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 if (_options.Dialect != XSharpDialect.Core)
                 {
-                    var NilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
-                    result.Add(NilToken);
+                    var nilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
+                    result.Add(nilToken);
                 }
                 else
                 {
                     // in core dialect this generates a NULL
-                    var NullToken = new XSharpToken(XSharpLexer.NULL, "NULL");
-                    result.Add(NullToken);
+                    var nullToken = new XSharpToken(XSharpLexer.NULL, "NULL");
+                    result.Add(nullToken);
                 }
             }
         }
@@ -2160,7 +2169,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 // embedded whitespace exits the loop
                 var token = tokens[current];
-                if (token.Start > last.end)
+                if (token.Start > last.End)
                 {
                     break;
                 }

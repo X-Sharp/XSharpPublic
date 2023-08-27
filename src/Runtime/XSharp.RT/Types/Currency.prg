@@ -13,8 +13,7 @@ USING System.Runtime.Serialization
 #include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
-    // use explicit layout so we can compact the size into 12 bytes
-    // Type is Immutable, so has no settable properties
+// Type is Immutable, so has no settable properties
 /// <summary>Internal type that implements the FoxPro Compatible CURRENCY type.
 /// This type has many operators and implicit converters that normally are never directly called from user code.
 /// The data in this type is stored as a System.Decimal with 4 decimal places
@@ -343,6 +342,8 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
             result := SELF:Add ( rhs:_currencyValue)
         ELSEIF  rhs:IsLong
             result := CURRENCY{ SELF:_value + (LONG) rhs}
+        ELSEIF  rhs:IsInt64
+            result := CURRENCY{ SELF:_value + (INT64) rhs}
         ELSE
             THROW Error.ArgumentError(__FUNCTION__,Nameof(rhs), "Argument is not numeric")
         ENDIF
@@ -364,6 +365,8 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
             result := SELF:Subtract( rhs:_currencyValue)
         ELSEIF  rhs:IsLong
             result := CURRENCY{ SELF:_value - (LONG) rhs}
+        ELSEIF  rhs:IsInt64
+            result := CURRENCY{ SELF:_value - (INT64) rhs}
         ELSE
             THROW Error.ArgumentError(__FUNCTION__,Nameof(rhs), "Argument is not numeric")
         ENDIF

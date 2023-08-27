@@ -86,7 +86,7 @@
           [<.lCur.>], [<.lCus.>], [<.lNop.>] ,      					;
           [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;             ;
        OrdCreate(<(file)>,<(order)>,<(key)>,,IIF(<.u.>,.T., NIL))
-    
+
 #command INDEX ON <key>         										;
      To <(file)>                										;
      [Binary <bin>]                  								    ;
@@ -103,7 +103,7 @@
         , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>],                     ;
         [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;               ;
        dbCreateIndex( <(file)>, <(key)>,, IIF( <.u.>, .T., NIL ))
-    
+
 #command REINDEX                => DbReindex()
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
 #command SET ORDER TO           => DbSetOrder(0)
@@ -205,18 +205,36 @@
                                                                         ;
       => DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
 
-#command SET RELATION TO        => DbClearRelation()
+// Relation commands: Note the order is important !
+// Scoped Relations
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+         [SCOPED] [ADDITIVE]                                            ;
+      => OrdSetRelation( <(alias1)>, <{key1}>, <"key1"> )               ;
+      [; OrdSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
 
 #command SET RELATION                                                   ;
-         [<add:ADDITIVE>]                                               ;
          [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
-                                                                        ;
-      => if ( !<.add.> )                                                ;
-       ;    DbClearRelation()                                           ;
-       ; END                                                            ;
-                                                                        ;
-       ; DbSetRelation( <(alias1)>, <{key1}>, <"key1"> )                ;
+         SCOPED                                                         ;
+      => DbClearRelation()                                              ;
+       ; OrdSetRelation( <(alias1)>, <{key1}>, <"key1"> )               ;
+      [; OrdSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
+
+// Normal Relations
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+         [ADDITIVE]                                                       ;
+      => DbSetRelation( <(alias1)>, <{key1}>, <"key1"> )                ;
       [; DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
+
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+      => DbClearRelation();
+      ;  DbSetRelation( <(alias1)>, <{key1}>, <"key1"> )                ;
+      [; DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
+
+#command SET RELATION TO        => DbClearRelation()
+
 
 #command CREATE <(file1)>           ;
             [FROM <(file2)>]        ;

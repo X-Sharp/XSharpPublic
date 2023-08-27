@@ -25,6 +25,9 @@
             <LanguageId RequiredValue="guidXSharpLanguageId"/>
           </Filter>
           <Interface Name="IDkmClrExpressionCompiler"/>
+          <Interface Name="IDkmClrExpressionCompilerCallback"/>
+          <Interface Name="IDkmLanguageInstructionDecoder"/>
+          <Interface Name="IDkmLanguageFrameDecoder"/>
         </InterfaceGroup>
       </Implements>
     </Class>

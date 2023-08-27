@@ -934,6 +934,38 @@ CLASS UsualTests
         Assert.True ( u == NULL_OBJECT )
 
 
+    #pragma options("lb",on)
+    [Fact, Trait("Category", "Usual")];
+    METHOD UsualDictionary() AS VOID
+        LOCAL u as USUAL
+        local c1 as Container1
+        local c2 as Container2
+        XSharp.RuntimeState.Dialect := XSharpDialect.VO
+        c1 := Container1{}
+        c2 := Container2{}
+        c1:Data:Add("robert",1)
+        u := c1
+        Assert.True(1== u:Data["robert"])
+        u:Data["robert"] := 42
+        Assert.True(42== u:Data["robert"])
+
+        c2:Data:Add(1,42)
+        u := c2
+        Assert.True(42== u:Data[1])
+        u:Data[1] := 43
+        Assert.True(43== u:Data[1])
+
+    #pragma options("lb",restore)
+
+
+
+
+    class Container1
+        public Data := Dictionary<string, int>{} as Dictionary<string, int>
+    end class
+    class Container2
+        public Data := Dictionary<int, int>{} as Dictionary<int, int>
+    end class
 
 END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

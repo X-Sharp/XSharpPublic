@@ -1067,8 +1067,15 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
             IF nWildPos == nWildLen -1
                 RETURN TRUE
             ELSE
-                lAsterisk := TRUE
+                // File*.txt should match with file.txt
+                // so when the character following the wildcard matches the current
+                // source then we ignore the asterisk
                 nWildPos++
+                if sWildCard[nWildPos] != sSource[nSrcPos]
+                    lAsterisk := TRUE
+                else
+                    nWildPos++
+                endif
             ENDIF
         CASE '?'
             nWildPos++

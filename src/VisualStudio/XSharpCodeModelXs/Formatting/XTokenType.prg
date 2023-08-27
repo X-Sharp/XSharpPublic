@@ -347,7 +347,6 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@Macro:= XSharpLexer.MACRO
     MEMBER @@Udcsep:= XSharpLexer.UDCSEP
     MEMBER @@Id:= XSharpLexer.ID
-    MEMBER @@Kwid:= XSharpLexer.KWID
     MEMBER @@Doc_comment:= XSharpLexer.DOC_COMMENT
     MEMBER @@Sl_comment:= XSharpLexer.SL_COMMENT
     MEMBER @@Ml_comment:= XSharpLexer.ML_COMMENT

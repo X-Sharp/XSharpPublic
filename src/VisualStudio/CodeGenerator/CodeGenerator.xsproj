@@ -32,10 +32,10 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+    <Compile Include="$(Commondir)commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-    <Compile Include="..\..\Common\constants.prg">
+    <Compile Include="$(Commondir)constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="Properties\AssembyInfo.prg" />
@@ -46,11 +46,6 @@
     <Compile Include="XIDE_BaseBuffer.prg" />
     <Compile Include="XIDE_WordObject.prg" />
     <Compile Include="XIDE_XSharpBuffer.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Common\BuildNumber.h">
-      <Link>BuildNumber.h</Link>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -65,10 +60,4 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

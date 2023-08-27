@@ -417,7 +417,9 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
             result := SELF:Add ( (System.Decimal) rhs)
         ELSEIF  rhs:IsLong
             result := FLOAT{ SELF:_value + (LONG) rhs, SELF:Digits, SELF:Decimals}
-        ELSE
+        ELSEIF rhs:IsInt64
+            result := FLOAT{ SELF:_value + (INT64) rhs, SELF:Digits, SELF:Decimals}
+       ELSE
             THROW Error.ArgumentError(__FUNCTION__,Nameof(rhs), "Argument is not numeric")
         ENDIF
         RETURN result
@@ -436,8 +438,10 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
             result := SELF:Subtract(  rhs:_floatValue)
         ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
             result := SELF:Subtract( (System.Decimal) rhs)
-        ELSEIF  rhs:IsLong
+        ELSEIF rhs:IsLong
             result := FLOAT{ SELF:_value - (LONG) rhs, SELF:Digits, SELF:Decimals}
+        ELSEIF rhs:IsInt64
+            result := FLOAT{ SELF:_value - (INT64) rhs, SELF:Digits, SELF:Decimals}
         ELSE
             THROW Error.ArgumentError(__FUNCTION__,Nameof(rhs), "Argument is not numeric")
         ENDIF

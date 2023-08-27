@@ -22,6 +22,8 @@ namespace XSharp.MacroCompiler.Preprocessor
         Translate = 3,               // #translate 
         XCommand = 4,                // #xcommand
         XTranslate = 5,              // #xtranslate
+        YCommand = 6,                // #ycommand
+        YTranslate = 7,              // #ytranslate
     }
     enum PPTokenType : byte
     {

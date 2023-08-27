@@ -143,19 +143,6 @@
       => DbCopyStruct( <(file)>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 ** FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
 
-#command SET RELATION                        ;
-         [<add:ADDITIVE>]                    ;
-         [TO <key1> INTO <(alias1)>          ;
-		 [, [TO] <keyn> INTO <(aliasn)>]]    ;
-                                             ;
-      => if ( !<.add.> )                     ;
-       ;    DbClearRelation()                ;
-       ; END                                 ;
-                                             ;
-       ; DbSetRelation( <(alias1)>, <{key1}>, <"key1"> )  ;
-      [; DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
-
-** Todo: Add Tag Clause
 ** Todo: IN <area> which should prefix the calls to DbSetRelation
 
 
@@ -196,9 +183,9 @@
 ** Todo FoxPro [TO ARRAY ArrayName]
 
 */
-        
-/// Index on command with Binary, Collate, Candidate and Compact clauses        
-        
+
+/// Index on command with Binary, Collate, Candidate and Compact clauses
+
 #command SORT  TO <(file)> ON <fields,...>    ;
          [<asc:ASCENDING>]                    ;
          [<desc:DESCENDING>]                  ;

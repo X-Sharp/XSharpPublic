@@ -381,7 +381,27 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal(0U, MemLines(NULL))
 	  Assert.Equal(0U, MLCount1(NULL))
 	  RETURN
-
+   [Fact, Trait("Category", "String")];
+   METHOD LikeTest() AS VOID
+	  LOCAL search AS STRING
+	  search := "file*.txt"
+	  Assert.Equal(true, _Like(search,"file.txt"))
+	  Assert.Equal(true, _Like(search,"file1.txt"))
+	  Assert.Equal(true, _Like(search,"file2a.txt"))
+	  Assert.Equal(true, _Like(search,"file*.txt"))
+	  Assert.Equal(false, _Like(search,"gile.txt")) // first char different
+	  Assert.Equal(false, _Like(search,"File.txt")) // first char case different
+	  Assert.Equal(true, Like(search,"File.txt"))
+	  Assert.Equal(true, Like(search,"File1.txt"))
+	  Assert.Equal(true, Like(search,"File2a.txt"))
+	  Assert.Equal(true, Like(search,"File*.txt"))
+	  Assert.Equal(false, Like(search,"gile.txt"))
+	  search := "file?.txt"
+	  Assert.Equal(false, _Like(search,"file.txt"))  // too short
+	  Assert.Equal(true, _Like(search,"file1.txt"))
+	  Assert.Equal(false, _Like(search,"file2a.txt")) // too long
+	  Assert.Equal(true, _Like(search,"file*.txt"))
+	  RETURN
 
 
    [Fact, Trait("Category", "Memo")];
@@ -405,6 +425,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
         Assert.Equal(cTarget, Ansi2Oem(cSource))
         cSource := "ÄEIÖÜäëïöü"     // there are no E and I with umlaut in codepage 437
         Assert.Equal(cSource, Oem2Ansi(cTarget))
-    Assert.Equal(cSource, Oem2Ansi(Ansi2Oem(cSource)))
+        Assert.Equal(cSource, Oem2Ansi(Ansi2Oem(cSource)))
+
+
 END CLASS
 END NAMESPACE

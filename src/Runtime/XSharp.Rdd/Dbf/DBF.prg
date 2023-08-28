@@ -893,12 +893,12 @@ OVERRIDE METHOD Close() 			AS LOGIC
 			ENDIF
         ENDIF
 		TRY
-			isOK := FClose( SELF:_hFile )
+
+            isOK := SUPER:Close() .AND. isOK
+			FClose( SELF:_hFile )
 			IF SELF:_HasMemo
 				SELF:CloseMemFile()
 			ENDIF
-
-			isOK := SUPER:Close() .AND. isOK
 		CATCH ex AS Exception
 			isOK := FALSE
 			SELF:_dbfError(ex, Subcodes.ERDD_CLOSE_FILE,Gencode.EG_CLOSE,  "DBF.Close")

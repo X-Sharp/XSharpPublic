@@ -87,6 +87,7 @@ BEGIN NAMESPACE XSharp.RDD
         END PROPERTY
         PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
         PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+        PROPERTY HasRelations   AS LOGIC GET _Relations:Count > 0
         #endregion
  	        /// <exclude />
 		CONSTRUCTOR()
@@ -815,10 +816,12 @@ BEGIN NAMESPACE XSharp.RDD
 				//
 				isOk := TRUE
 				//
-				FOREACH info AS DbRelInfo IN SELF:_Relations
-					isOk := isOk .AND. info:Child:ChildEnd( info )
-				NEXT
-				SELF:_Relations:Clear()
+                IF SELF:HasRelations
+				    FOREACH info AS DbRelInfo IN SELF:_Relations
+					    isOk := isOk .AND. info:Child:ChildEnd( info )
+                    NEXT
+    				SELF:_Relations:Clear()
+                ENDIF
 				RETURN isOk
 
 				/// <inheritdoc />
@@ -827,10 +830,12 @@ BEGIN NAMESPACE XSharp.RDD
 
 				/// <inheritdoc />
 			VIRTUAL METHOD RelArea(nRelNum AS DWORD) AS DWORD
-				LOCAL areaNum := 0 AS DWORD
-				IF ( nRelNum < SELF:_Relations:Count )
-					areaNum := SELF:_Relations[ (INT)nRelNum ]:Child:Area
-				ENDIF
+                LOCAL areaNum := 0 AS DWORD
+                IF SELF:HasRelations
+				    IF ( nRelNum < SELF:_Relations:Count )
+					    areaNum := SELF:_Relations[ (INT)nRelNum ]:Child:Area
+                    ENDIF
+                ENDIF
 				RETURN areaNum
 
 				/// <inheritdoc />
@@ -848,10 +853,12 @@ BEGIN NAMESPACE XSharp.RDD
 
 				/// <inheritdoc />
 			VIRTUAL METHOD RelText(nRelNum AS DWORD) AS STRING
-				LOCAL textRelation := "" AS STRING
-				IF nRelNum < SELF:_Relations:Count
-					textRelation := SELF:_Relations[ (INT)nRelNum ]:Key
-				ENDIF
+                LOCAL textRelation := "" AS STRING
+                IF SELF:HasRelations
+				    IF nRelNum < SELF:_Relations:Count
+					    textRelation := SELF:_Relations[ (INT)nRelNum ]:Key
+                    ENDIF
+                ENDIF
 				RETURN textRelation
 
 				/// <inheritdoc />
@@ -859,7 +866,7 @@ BEGIN NAMESPACE XSharp.RDD
 				IF !SELF:_Relations:Contains( info )
 					SELF:_Relations:Add( info )
                     info:Compile()
-				ENDIF
+                ENDIF
 				RETURN info:Child:ChildStart( info )
 
 				/// <inheritdoc />
@@ -868,12 +875,14 @@ BEGIN NAMESPACE XSharp.RDD
 				//
 				isOk := TRUE
 				//
-				FOREACH info AS DbRelInfo IN SELF:_Relations
-					isOk := info:Child:ChildSync( info )
-					IF !isOk
-						EXIT
-					ENDIF
-				NEXT
+                IF SELF:HasRelations
+				    FOREACH info AS DbRelInfo IN SELF:_Relations
+					    isOk := info:Child:ChildSync( info )
+					    IF !isOk
+						    EXIT
+					    ENDIF
+                    NEXT
+                ENDIF
 				RETURN isOk
 
 				#endregion
@@ -888,7 +897,7 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL lQualified:= TRUE AS LOGIC
                 LOCAL lLimit    := TRUE AS LOGIC
                 LOCAL nRecno    := 0    AS LONG
-                IF SELF:_Relations:Count > 0
+                IF SELF:HasRelations
                     SELF:ForceRel()
                 ENDIF
                 IF info:Scope:RecId != NULL

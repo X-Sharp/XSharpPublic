@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex
 #region constants
     INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING
+    INTERNAL CONST MAX_TAGNAME_LEN := 10 AS LONG
 
 #endregion
         PRIVATE  _newPageAllocated := FALSE AS LOGIC
@@ -75,11 +76,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cTag AS STRING
             IF info:Order IS STRING VAR strOrder .and. ! String.IsNullOrWhiteSpace(strOrder)
                 cTag := strOrder
+                IF cTag:Length > MAX_TAGNAME_LEN
+                    SELF:_oRdd:_dbfError(Subcodes.ERDD_CREATE_ORDER,Gencode.EG_LIMIT,;
+                        "DBFCDX.OrderCreate",i"Tag name '{cTag}' is too long. The maximum tag name length is {MAX_TAGNAME_LEN} characters",TRUE)
+                ENDIF
             ELSE
                 cTag := Path.GetFileNameWithoutExtension(info:BagName)
-                IF cTag:Length > 10
-                    cTag := cTag:Substring(0, 10)
-                ENDIF
+                cTag := cTag:Substring(0, 10)
                 info:Order := cTag
             ENDIF
             IF String.IsNullOrEmpty(cTag)

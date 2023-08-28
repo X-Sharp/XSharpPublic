@@ -1456,27 +1456,31 @@ INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS S
 INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
 	LOCAL oError AS RddError
     //
-	IF ex != NULL
-		oError := RddError{ex,iGenCode, iSubCode}
-	ELSE
-		oError := RddError{iGenCode, iSubCode}
-    ENDIF
-    oError:CanDefault := TRUE
-	oError:SubSystem := SELF:Driver
-	oError:Severity := iSeverity
-	oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
-	oError:FileName := SELF:_FileName
-	IF String.IsNullOrEmpty(strMessage)  .AND. ex != NULL
-		strMessage := ex:Message
-    ENDIF
-    IF String.IsNullOrEmpty(strMessage)
-        IF oError:SubCode != 0
-            oError:Description := oError:GenCodeText + " (" + oError:SubCodeText+")"
-        ELSE
-            oError:Description := oError:GenCodeText
-        ENDIF
+    IF ex is RddError VAR oRddError
+        oError := oRddError
     ELSE
-	    oError:Description := strMessage
+	    IF ex != NULL
+		    oError := RddError{ex,iGenCode, iSubCode}
+	    ELSE
+		    oError := RddError{iGenCode, iSubCode}
+        ENDIF
+        oError:CanDefault := TRUE
+	    oError:SubSystem := SELF:Driver
+	    oError:Severity := iSeverity
+	    oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
+	    oError:FileName := SELF:_FileName
+	    IF String.IsNullOrEmpty(strMessage)  .AND. ex != NULL
+		    strMessage := ex:Message
+        ENDIF
+        IF String.IsNullOrEmpty(strMessage)
+            IF oError:SubCode != 0
+                oError:Description := oError:GenCodeText + " (" + oError:SubCodeText+")"
+            ELSE
+                oError:Description := oError:GenCodeText
+            ENDIF
+        ELSE
+	        oError:Description := strMessage
+        ENDIF
     ENDIF
 	RuntimeState.LastRddError := oError
     //

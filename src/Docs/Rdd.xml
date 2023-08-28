@@ -961,8 +961,10 @@
         <param name="lReleaseLocks">Indicates if existing record locks should be released.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyAppend message, if successful.
+          The default behavior is to release existing locks when a new record is appended.<br/>
+          If you want to prevent this, you need to pass a parameter with the value FALSE.<br/>
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyAppend message, if successful.<br/>
         </remarks>
     </DbServer.Append>
     <DbServer.AppendDB>
@@ -976,8 +978,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyFileChange message, if any record was appended.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyFileChange message, if any record was appended.<br/>
         </remarks>
     </DbServer.AppendDB>
     <DbServer.AppendDelimited>
@@ -992,8 +994,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyFileChange message, if any record was appended.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyFileChange message, if any record was appended.<br/>
         </remarks>
     </DbServer.AppendDelimited>
     <DbServer.AppendSDF>
@@ -1007,8 +1009,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyFileChange message, if any record was appended.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyFileChange message, if any record was appended.<br/>
         </remarks>
     </DbServer.AppendSDF>
     <DbServer.Average>
@@ -1021,8 +1023,8 @@
             An array that contains the averages for each field or expression specified. If a single expression was specified, an array length of 1 is returned.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyRecordChange message upon completion.<br/>
             The Average() method allows several averages to be calculated in one pass through the database.
             On successful completion, the current record will be the last file record and EOF will be TRUE.
         </remarks>
@@ -1509,11 +1511,12 @@
         </summary>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyCompletion message, if successful. If using in conjunction with an Unlock() method, then the Commit() method should be executed prior to the Unlock() method call. Using a Commit() when scanning numerous records can be a very slow process, thus you may want to limit your Commit() statements to every 10 or 20 records to speed up your process.
-            Note that DBServer:Commit() can fail for many reasons, ranging from a lack of capability in the server to lock conflicts and technical problems, such as network crashes. Use the DBServer:Status property to determine the exact cause of the failure.
+            Sends a NotifyCompletion message, if successful. <br/>
+        If using in conjunction with an Unlock() method, then the Commit() method should be executed prior to the Unlock() method call. Using a Commit() when scanning numerous records can be a very slow process, thus you may want to limit your Commit() statements to every 10 or 20 records to speed up your process.
+        Note that DBServer:Commit() can fail for many reasons, ranging from a lack of capability in the server to lock conflicts and technical problems, such as network crashes. Use the DBServer:Status property to determine the exact cause of the failure.
 
-            DBCommit() Function
-        </remarks>
+        DBCommit() Function
+      </remarks>
     </DbServer.Commit>
     <DbServer.ConcurrencyControl>
         <summary>
@@ -1580,8 +1583,8 @@
             TRUE if successful; otherwise, FALSE. After the operation, the DBServer:Found access can be used to determine if a record was found.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyRecordChange message upon completion, whether successful or not.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyRecordChange message upon completion, whether successful or not.<br/>
             Continue respects the FOR clause of the original Locate(), but ignores any WHILE clause and scope. If you want to continue searching with the WHILE clause of the original Locate() operation, set the scope to REST and do another Locate().
             If DBServer:Found returns FALSE, the current record will be the last record and DBServer:EOF will be TRUE.
         </remarks>
@@ -1594,8 +1597,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyRecordChange message upon completion.<br/>
             This method does not open the new file, it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly.
         </remarks>
         <example>
@@ -1618,8 +1621,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
-            Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation.<br/>
+            Sends a NotifyRecordChange message upon completion.<br/>
         </remarks>
     </DbServer.CopyDelimited>
     <DbServer.CopySDF>
@@ -1630,7 +1633,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyRecordChange message upon completion.<br/>
         </remarks>
     </DbServer.CopySDF>
     <DbServer.CopyStructure>
@@ -1642,7 +1646,7 @@
         <param name="aFieldList">An array of fields that are to be included in the records to be copied.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyCompletion message, if successful.
+            Sends a NotifyCompletion message, if successful.<br/>
             This method does not open the new file; it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly.
         </remarks>
         <example>
@@ -1665,9 +1669,10 @@
             The number of records that match the scope.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
-            On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
-        </remarks>
+            Sends a NotifyIntentToMove message before the operation. <br/>
+        Sends a NotifyRecordChange message upon completion.<br/>
+        On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
+      </remarks>
         <example>
             Compare with the way the COUNT command is used:
             <code language="X#">
@@ -1686,7 +1691,8 @@
         <param name="lUnique">Whether the index is unique. If not specified, the default is determined by SetUnique().</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+            Sends a NotifyFileChange message upon completion.<br/>
         </remarks>
     </DbServer.CreateIndex>
     <DbServer.CreateOrder>
@@ -1700,10 +1706,11 @@
         <param name="lUnique">Whether the index is unique. If not specified, the default is determined by SetUnique().</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+        Sends a NotifyFileChange message upon completion.<br/>
 
-            This sample shows how to create a single tag order:
-            <code language="X#">
+        This sample shows how to create a single tag order:
+        <code language="X#">
                 // If you want descending order by chance, then include this line first:
                 &lt;oDbServer&gt;:SetOrderCondition(,,,,,,,,,,TRUE)
                 IF &lt;oDbServer&gt;:CREATEORDER( "PlayerName", SELF:cPath + "Players", "Upper(LastName + FirstName + MiddleInit)" )
@@ -1784,7 +1791,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            If called with a scope or if a server scope is active, Delete() sends a NotifyIntentToMove message before the operation, and a NotifyFileChange upon completion (regardless of the number of records actually deleted). If no scope is used and Delete() applies to the current record only, it sends a NotifyRecordChange message, if successful. If a scope is specified, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
+            If called with a scope or if a server scope is active, Delete() sends a NotifyIntentToMove message before the operation, and a NotifyFileChange upon completion (regardless of the number of records actually deleted). If no scope is used and Delete() applies to the current record only, it sends a NotifyRecordChange message, if successful. <br/>
+            If a scope is specified, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
             <br />Important! Since the scope is persistent, a scope left around from processing a method like CopyDB() or Average() could cause Delete() to process too many records. Remember to reset a scope after it has been used.
             Even though the record is marked for deletion, it remains in the file and can be recalled. (The current setting of the SetDeleted() function affects whether deleted records are visible.) If changes have been made to fields, the changes are recorded in the record before it is flagged as deleted; thus, if the field is recalled, it correctly reflects any changes made before the delete operation.
             <note type="tip">DBServer:Delete() does not advance to the next record after the deletion takes place, unlike DataWindow:Delete() which does (if SetDeleted() is TRUE).</note>
@@ -1796,7 +1804,8 @@
         </summary>
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyFileChange message upon completion.<br/>
         </remarks>
     </DbServer.DeleteAll>
     <DbServer.Deleted>
@@ -1948,7 +1957,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion, whether successful or not.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyFileChange message upon completion, whether successful or not.<br/>
             On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
         </remarks>
     </DbServer.Eval>
@@ -2410,7 +2420,9 @@
             Note that the method does not reposition to the beginning before starting to fill the array. Either provide a start value, or explicitly position the server before using the method. (This allows incremental reading, building up an array in pieces.)
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion, and leaves the server positioned at the last record used or at end of file (last file record). One use of this method is to populate validation lists in user interfacing.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyRecordChange message upon completion, and leaves the server positioned at the last record used or at end of file (last file record). <br/>
+          One use of this method is to populate validation lists in user interfacing.
         </remarks>
         <example>
             The following fills an array with product names for use as validation values, beginning at the indicated product number:
@@ -2443,7 +2455,9 @@
             Note that the method does not reposition to the beginning before starting to fill the array. Either provide a start value, or explicitly position the server before using the method. (This allows incremental reading, building up an array in pieces.)
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion, and leaves the server positioned at the last record used or at end of file (last file record). One use of this method is to populate translation lists in user interfacing. The resulting array can be used in ATranslate().
+            Sends a NotifyIntentToMove message before the operation. <br/>
+            Sends a NotifyRecordChange message upon completion, and leaves the server positioned at the last record used or at end of file (last file record). <br/>
+            One use of this method is to populate translation lists in user interfacing. The resulting array can be used in ATranslate().
         </remarks>
         <example>
             The following builds a lookup table, for example to translate product codes into product names and vice versa, beginning at the indicated product number:
@@ -2461,8 +2475,9 @@
         </summary>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyGoBottom message, if successful.
-            If DBServer:RecNo is greater than DBServer:LastRec, the DBServer will be positioned at the last record and DBServer:EOF will be TRUE.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyGoBottom message, if successful.<br/>
+          If DBServer:RecNo is greater than DBServer:LastRec, the DBServer will be positioned at the last record and DBServer:EOF will be TRUE.
         </remarks>
     </DbServer.GoBottom>
     <DbServer.GoTo>
@@ -2472,7 +2487,8 @@
         <param name="nRecordNumber">The record number at which the server should be positioned.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if successful.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyRecordChange message, if successful.<br/>
         </remarks>
     </DbServer.GoTo>
     <DbServer.GoTop>
@@ -2481,7 +2497,8 @@
         </summary>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyGoTop message, if successful.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyGoTop message, if successful.<br/>
         </remarks>
     </DbServer.GoTop>
     <DbServer.Header>
@@ -2726,7 +2743,8 @@
         <param name="cbForBlock">The condition evaluated for each record in the scope; if TRUE, the record is included in the processing. It provides the same functionality as the FOR clause of record processing commands.</param>
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if successful.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+            Sends a NotifyRecordChange message, if successful.<br/>
         </remarks>
     </DbServer.Join>
     <DbServer.LastRec>
@@ -2757,7 +2775,8 @@
             TRUE if a record was found that matches the conditions, FALSE if no match was found or if the operation failed for some other reason. Afterwards, the Found and Status access methods can be used to determine exactly what happened.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion, whether successful or not.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyRecordChange message upon completion, whether successful or not.<br/>
             If no match was found, the current record will be the last file record and DBServer:EOF will be TRUE.
         </remarks>
     </DbServer.Locate>
@@ -2823,7 +2842,7 @@
         <param name="uValue">The value to be assigned to the field. The data type of this value must match the data type of the field.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyFieldChange message if the variable reference was to a valid field of the server, and the assignment was successful.
+            Sends a NotifyFieldChange message if the variable reference was to a valid field of the server, and the assignment was successful.<br/>
             For DBServer, this method is used to intercept references to field names as exported variables, which ordinarily would not be allowed. If the field name is valid, it does a FieldPut() for the corresponding field name with the passed value, in effect turning database fields into assign methods of each DBServer object. See "Objects, Classes, and Methods" in the Programmer's Guide for more information on NoIVarGet().
         </remarks>
     </DbServer.NoIVarPut>
@@ -3283,7 +3302,7 @@
         </returns>
         <remarks>
             DBServer:OrderKeyNo() returns the logical record number of a key in an order. This in contrast to the physical record number (returned using DBServer:RecNo), which is the relative position of the record in the physical database file.
-            DBServer:OrderKeyNo() sends a NotifyIntentToMove message before the operation.
+            DBServer:OrderKeyNo() sends a NotifyIntentToMove message before the operation.<br/>
             Tip: This method can be useful for displaying scroll bars and messages such as "Record 9 of 123" when viewing records in a browser.
             By default, DBServer:OrderKeyNo() operates on the currently selected work area. It will operate on an unselected work area if you specify it as part of an aliased expression.
         </remarks>
@@ -3373,7 +3392,8 @@
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             DBServer:OrderSkipUnique() allows you to make a non-unique order look like a unique order. Each time you use DBServer:OrderSkipUnique(), you are moved to the next (or previous) unique key, exactly as if you were skipping through a unique order. This method eliminates the problems associated with maintaining a unique order, while providing you with fast access to unique keys.
-            DBServer:OrderSkipUnique() sends a NotifyIntentToMove message before the operation.  It also sends a NotifyRecordChange message upon successful completion.
+            DBServer:OrderSkipUnique() sends a NotifyIntentToMove message before the operation.  <br/>
+          It also sends a NotifyRecordChange message upon successful completion.<br/>
         </remarks>
         <example>
             This examples uses DBServer:OrderSkipUnique() to build an array of unique last names beginning with the letter "J:"
@@ -3409,7 +3429,7 @@
         </summary>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyFileChange message, if successful.
+            Sends a NotifyFileChange message, if successful.<br/>
         </remarks>
     </DbServer.Pack>
     <DbServer.PaintedStructure>
@@ -3479,7 +3499,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            If no scope was passed and no scope was active, it sends a NotifyRecordChange, if the operation was successful; if a scope was used, it sends a NotifyFileChange message regardless of the number of records processed.
+          If no scope was passed and no scope was active, it sends a NotifyRecordChange, if the operation was successful.<br/>
+          If a scope was used, it sends a NotifyFileChange message regardless of the number of records processed.<br/>
             If no server scope is set, it recalls the current record. On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
         </remarks>
     </DbServer.Recall>
@@ -3489,7 +3510,8 @@
         </summary>
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
+          Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyFileChange message upon completion.<br/>
             On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
         </remarks>
     </DbServer.RecallAll>
@@ -3622,7 +3644,7 @@
         </summary>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyRecordChange message, if successful.
+            Sends a NotifyRecordChange message, if successful.<br/>
             This command discards all changes to the current record. It is useful as a way of implementing Undo in an application. However, it cannot roll back changes that have been committed with the DBServer:Commit(). Also, note that it applies only to the current record; the data server and the drivers do not buffer changes made to multiple records.
         </remarks>
     </DbServer.Refresh>
@@ -3632,7 +3654,8 @@
         </summary>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyCompletion message upon completion. Obviously all other users should be out of your system prior to executing this method.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+            Sends a NotifyCompletion message upon completion. Obviously all other users should be out of your system prior to executing this method.
         </remarks>
     </DbServer.Reindex>
     <DbServer.Relation>
@@ -3656,7 +3679,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            If the specified scope is active, DBServer:Replace() sends a NotifyIntentToMove message before the operation. It also sends a NotifyFileChange message upon completion, whether successful or not.
+            If the specified scope is active, DBServer:Replace() sends a NotifyIntentToMove message before the operation. <br/>
+            It also sends a NotifyFileChange message upon completion, whether successful or not.<br/>
             If no scope is used, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
         </remarks>
         <example>
@@ -3780,7 +3804,7 @@
             TRUE if the specified key value was found; otherwise, FALSE.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyIntentToMove message before the operation.<br/>
             DBServer:Seek() moves to the first logical record whose key value is equal to <paramref name="uKey" />. If such a record is found, it becomes the current record and DBServer:Seek() returns TRUE. Otherwise, DBServer:Seek() returns FALSE and the positioning of the data server is as follows: for a normal (not soft) seek, the data server is positioned to DBServer:LastRec + 1 and DBServer:EOF returns TRUE; for a soft seek, the data server is positioned to the first record whose key value is greater than the specified key value. If no such record exists, the data server is positioned to DBServer:LastRec + 1 and DBServer:EOF returns TRUE.
             For a data server with no controlling order, DBServer:Seek() has no effect.
             <note type="tip">
@@ -3859,8 +3883,9 @@
 
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message, if successful.
-            If the index file contains more than one order, the first one is set as the controlling order. The server is positioned to the first logical record in the controlling order.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyFileChange message, if successful.<br/>
+          If the index file contains more than one order, the first one is set as the controlling order. The server is positioned to the first logical record in the controlling order.
         </remarks>
         <example>
             The following example opens multiple index files:
@@ -3886,7 +3911,7 @@
         <param name="cIndexFileName">If the order is specified by an order name that is not unique within the order list, the index file name can be specified, either as a FileSpec object or as a file name in string format, with or without file type. File type defaults to the native type for the driver (RDD). Note, however, that SetOrder() does not open the index file, it refers only to orders within already opened files.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyFileChange message, if successful.
+            Sends a NotifyFileChange message, if successful.<br/>
             The server remains positioned on the same record after the controlling order is changed. Note that when a dbServer object is first instantiated, and the CDX index driver is used and auto-open indexes is set to TRUE, then the tag that will be opened will be the first tag identified alphabetically – NOT the sequence that you created the tags in. Thus a SetOrder() should typically be set before performing any sort of Seek() operation to ensure that the proper index tag is set.
         </remarks>
     </DbServer.SetOrder>
@@ -3935,7 +3960,7 @@
         <param name="lSelective">Should this be a selective relation ?</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyRecordChange message to the child server, if successful.
+            Sends a NotifyRecordChange message to the child server, if successful.<br/>
             As always, the child work area should have a controlling index that matches the expression.
         </remarks>
         <example>
@@ -3958,7 +3983,7 @@
         <param name="cRelation">When the relation is specified as a code block, a string version of the code block can be provided as well; it is returned by the Relation() method.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyRecordChange message to the child server, if successful.
+            Sends a NotifyRecordChange message to the child server, if successful.<br/>
             As always, the expression should match or be a partial index of the controlling index of the child's work area.
         </remarks>
         <example>
@@ -4001,7 +4026,8 @@
         <param name="nRecordCount">The number of records to move, relative to the current record. A positive value means to move forward, and a negative value means to move backward. If omitted, +1 is assumed.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if a move was made.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+            Sends a NotifyRecordChange message, if a move was made.<br/>
             If DBServer:Skip() positions the DBServer beyond the last record, DBServer:EOF will be set and the DBServer will be positioned on the last record.
         </remarks>
     </DbServer.Skip>
@@ -4015,7 +4041,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+            Sends a NotifyRecordChange message upon completion.<br/>
             This method does not open the new file, it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly:
             <code language="X#">
                 oDB1:Sort(oFSTarget)
@@ -4051,7 +4078,7 @@
             An array that contains the sums for each expression or field specified.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyIntentToMove message before the operation.<br/>
             On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
         </remarks>
         <example>
@@ -4086,7 +4113,8 @@
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation. <br/>
+          Sends a NotifyRecordChange message upon completion.<br/>
         </remarks>
         <example>
             This method does not open the new file, it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly.
@@ -4117,8 +4145,9 @@
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             <note type="tip">This method requires a file lock or exclusive access.</note>
-            Sends a NotifyFileChange message upon completion.
-            There are two different formulations of the matching relationship between the two servers. If <paramref name="lRandomFlag" /> is TRUE, this server must be indexed on the specified key, but the other server can be in any order; if <paramref name="lRandomFlag" /> is not specified or is FALSE, both servers must be indexed or sorted on the specified key. If there is more than one record in this server with matching key fields, only the first one is updated.
+            Sends a NotifyFileChange message upon completion.<br/>
+            There are two different formulations of the matching relationship between the two servers. If <paramref name="lRandomFlag" /> is TRUE, this server must be indexed on the specified key, but the other server can be in any order; if <paramref name="lRandomFlag" /> is not specified or is FALSE, both servers must be indexed or sorted on the specified key. 
+            If there is more than one record in this server with matching key fields, only the first one is updated.
         </remarks>
     </DbServer.Update>
     <DbServer.Used>
@@ -4163,7 +4192,7 @@
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">This method requires exclusive access.</note>
-            Sends a NotifyFileChange message upon completion.
+            Sends a NotifyFileChange message upon completion.<br/>
         </remarks>
     </DbServer.Zap>
     <OrderSpec>

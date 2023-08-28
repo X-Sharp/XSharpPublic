@@ -57,7 +57,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region RDD Overloads
             /// <inheritdoc />
         OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
-            THROW NotImplementedException{}
+            // Handled at the RDD Level
+            RETURN SELF:_oRdd:OrderCondition(info)
 
         INTERNAL STATIC METHOD GetIndexExtFromDbfExt(cDbfName AS STRING) AS STRING
             SWITCH System.IO.Path.GetExtension(cDbfName:ToLower())
@@ -82,7 +83,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ELSE
                 cTag := Path.GetFileNameWithoutExtension(info:BagName)
-                cTag := cTag:Substring(0, 10)
+                if cTag:Length > MAX_TAGNAME_LEN
+                    cTag := cTag:Substring(0, MAX_TAGNAME_LEN)
+                endif
                 info:Order := cTag
             ENDIF
             IF String.IsNullOrEmpty(cTag)
@@ -137,21 +140,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             /// <inheritdoc />
         OVERRIDE METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
-            THROW NotImplementedException{}
+            // Handled at the RDD Level
+            RETURN SELF:_oRdd:OrderDestroy(info)
             /// <inheritdoc />
         OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
-            THROW NotImplementedException{}
+            // Handled at the RDD Level
+            RETURN SELF:_oRdd:OrderInfo(nOrdinal, info)
             /// <inheritdoc />
         OVERRIDE METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
-            THROW NotImplementedException{}
+            // Handled at the RDD Level
+            RETURN SELF:_oRdd:OrderListAdd(info)
             /// <inheritdoc />
         OVERRIDE METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
-            THROW NotImplementedException{}
+            // Handled at the RDD Level
+            RETURN SELF:_oRdd:OrderListDelete(info)
             /// <inheritdoc />
         OVERRIDE METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
-            THROW NotImplementedException{}
-            /// <inheritdoc />
-
+            // Handled at the RDD Level
+            RETURN SELF:_oRdd:OrderListFocus(info)
+        /// <inheritdoc />
 
         OVERRIDE METHOD OrderListRebuild( ) AS LOGIC
             LOCAL aTags AS CdxTag[]
@@ -180,13 +187,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             /// <inheritdoc />
         OVERRIDE METHOD Seek(info AS DbSeekInfo) AS LOGIC
-            THROW NotImplementedException{}
+            RETURN SELF:_oRdd:Seek(info)
             /// <inheritdoc />
-        OVERRIDE PROPERTY Found AS LOGIC
-            GET
-                THROW NotImplementedException{}
-            END GET
-        END PROPERTY
+        OVERRIDE PROPERTY Found AS LOGIC GET SELF:_oRdd:Found
         #endregion
 
         #region Open and Close etc

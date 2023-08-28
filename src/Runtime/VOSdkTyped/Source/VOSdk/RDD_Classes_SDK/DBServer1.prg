@@ -8,6 +8,10 @@
 
 PARTIAL CLASS DbServer
 
+    /// <include file="Rdd.xml" path="doc/DbServer.Append/*" />
+METHOD Append( ) AS LOGIC
+    RETURN Append(TRUE)
+
 
 /// <include file="Rdd.xml" path="doc/DbServer.Append/*" />
 METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
@@ -707,7 +711,7 @@ METHOD BLOBDirectPut( nPointer AS LONG, uBlob AS USUAL ) AS USUAL
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBExport/*" />
 METHOD BLOBExport( uField AS USUAL, oFSTarget AS FileSpec, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC
         RETURN SELF:BLOBExport(uField, oFSTarget:FullPath, kMode)
- 
+
 
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBExport/*" />
 METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC

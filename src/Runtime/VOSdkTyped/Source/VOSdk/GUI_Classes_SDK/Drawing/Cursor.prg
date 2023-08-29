@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 // The cursor class handles the Windows (textBox) Caret
 // This is not used in Vewa, so the class is empty
 

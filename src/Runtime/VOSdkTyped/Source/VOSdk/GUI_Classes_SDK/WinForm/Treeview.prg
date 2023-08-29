@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Treeview.prg
 // This file contains a subclass of the Windows.Forms.Treeview control
 // Also some On..() methods have been implemented that call the event handles on the VO Window
@@ -42,20 +48,15 @@ CLASS VOTreeNode INHERIT SWF.TreeNode
 
 END CLASS
 
-CLASS VOTreeView INHERIT SWF.TreeView IMPLEMENTS IVOControl
+class VOTreeView inherit SWF.TreeView implements IVOControlProperties
 	PROPERTY TreeView AS VOSDK.TreeView GET (VOSDK.TreeView) oProperties:Control
 
-	#include "PropControl.xh"
+	#include "PropControlStyle.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
 
 	VIRTUAL PROTECTED METHOD OnAfterLabelEdit(e AS SWF.NodeLabelEditEventArgs) AS VOID

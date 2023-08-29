@@ -1,8 +1,9 @@
-﻿// _Factory.prg
-// Created by    : robert
-// Creation Date : 5/5/2020 3:05:54 PM
-// Created for   : 
-// WorkStation   : ARTEMIS
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 
 USING VOSDK := XSharp.VO.SDK
 
@@ -14,28 +15,28 @@ CLASS GuiFactory
     METHOD CreateControl(type AS ControlType, owner AS VOSDK.Control, liStyle AS LONG, liExStyle AS LONG) AS OBJECT
         LOCAL oRes AS Object
         SWITCH type
-            
+
         CASE ControlType.Label
             oRes := VOLabel{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.Mle
             oRes := VOMLETextBox{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.Sle
             oRes := VOTextBox{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.Hotkey
             oRes := VOHotKeyTextBox{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.Button
             oRes := VOButton{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.CheckBox
     		oRes := VOCheckBox{owner, liStyle, liExStyle}
 
         CASE ControlType.RadioButton
     		oRes := VORadioButton{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.DateTimePicker
     		oRes := VODateTimePicker{owner, liStyle, liExStyle}
 
@@ -66,16 +67,16 @@ CLASS GuiFactory
 
         CASE ControlType.HorizontalScrollBar
             oRes := VOHScrollBar{owner, liStyle, liExStyle}
-            
+
         CASE ControlType.VerticalScrollBar
             oRes := VOVScrollBar{owner, liStyle, liExStyle}
 
         CASE ControlType.VerticalSpinner
             oRes := VOVSpinner{owner, liStyle, liExStyle}
-                
+
         CASE ControlType.HorizontalSpinner
             oRes := VOHSpinner{owner, liStyle, liExStyle}
-                
+
         CASE ControlType.Slider
 		    oRes := VOSlider{owner, liStyle, liExStyle}
 
@@ -89,10 +90,10 @@ CLASS GuiFactory
             oRes := VOTabControl{owner, liStyle, liExStyle}
 
         CASE ControlType.TreeView
-            oRes := VOTreeView{owner, liStyle, liExStyle}            
+            oRes := VOTreeView{owner, liStyle, liExStyle}
 
         CASE ControlType.FixedImage
-            oRes := VOImageLabel{owner, liStyle, liExStyle}            
+            oRes := VOImageLabel{owner, liStyle, liExStyle}
 
         CASE ControlType.ToolBar
             oRes := VOToolBar{owner, liStyle, liExStyle}
@@ -155,9 +156,9 @@ CLASS GuiFactory
         METHOD CreateListViewElement(type AS ControlType, owner AS OBJECT) AS OBJECT
             SWITCH type
             CASE ControlType.ListViewItem
-                RETURN VoListViewItem{(ListViewItem) owner}    
+                return VoListViewItem{(ListViewItem) owner}
             CASE ControlType.ListViewColumn
-                RETURN VOColumnHeader{(ListViewColumn) owner}    
+                return VOColumnHeader{(ListViewColumn) owner}
             END SWITCH
             RETURN NULL
 
@@ -205,5 +206,5 @@ ENUM ControlType
     MEMBER MonthCalendar
     MEMBER HyperLink
     MEMBER SplitContainer
-END ENUM    
+end enum
 

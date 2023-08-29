@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // This class emulates the VO Databrowser using the DotNet DataGridView
 // Some remarks that may not be obvious to others
 // The databrowser is attached to a server, but does NOT always include the current record of that server
@@ -32,7 +38,7 @@ USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
 /// <include file="Gui.xml" path="doc/DataBrowser/*" />
-CLASS DataBrowser INHERIT VOSDK.Control
+class DataBrowser inherit VOSDK.Control implements IDataBrowser
 	PROTECT iBufferGranularity AS INT
 	PROTECT iBufferMaximum AS INT
 	PROTECT iDeferPaintCount   AS INT
@@ -1790,11 +1796,11 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 			__DataGridView:SortCompare -= OnSortCompare
 		ENDIF
 		SELF:__Unlink()
-
-		FOREACH oCol AS DataColumn IN aColumn
-			oCol:Destroy()
-		NEXT
-
+        if self:aColumn != null
+		    foreach oCol as DataColumn in self:aColumn
+			    oCol:Destroy()
+		    next
+        endif
 
 		nFocusField   := 0
 		oDataServer := NULL_OBJECT
@@ -2001,17 +2007,15 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		ENDIF
 
 /// <include file="Gui.xml" path="doc/DataBrowser.ctor/*" />
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+	CONSTRUCTOR(oOwner := NULL AS Window, xID:= 1000 AS USUAL, oPoint:= NULL as Point, oDimension := NULL AS Dimension)
 		LOCAL oBB AS BoundingBox
 		LOCAL oWin AS Window
 		LOCAL nHeight AS LONG
-		IF ! (oOwner IS Window)
+		if oOwner == null
 			WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
 		ENDIF
 		oWin := oOwner
 		oRowDict := System.Collections.Generic.Dictionary<int, VODataGridViewRow>{}
-		// Automatically generate id if none is supplied
-		DEFAULT xID TO  1000
 
 		IF oOwner IS DataWindow VAR oDW
 			oBB			:= oDW:CanvasArea
@@ -3514,7 +3518,7 @@ INTERNAL CLASS DataBrowserScrollBarManager
 			// Do nothing
 			//SELF:SyncGrid(nNew)
             NOP
-            
+
 		ENDCASE
 		RETURN
 

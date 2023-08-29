@@ -287,6 +287,7 @@
   <ItemGroup>
     <None Include="ClassMapping.xlsx" />
     <None Include="WinForm\PropControl.xh" />
+    <None Include="WinForm\PropControlStyle.xh" />
     <None Include="_readme.txt" />
   </ItemGroup>
   <ItemGroup>

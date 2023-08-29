@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Properties.prg
 
 
@@ -8,19 +14,19 @@ USING VOSDK := XSharp.VO.SDK
 
 CLASS VOProperties
 	DELEGATE StyleChanged_Delegate() AS VOID STRICT
-	PROPERTY Style AS LONG      AUTO 
-	PROPERTY ExStyle AS  LONG   AUTO 
-	PROPERTY NotStyle AS LONG   AUTO 
-	PROPERTY NotExStyle AS LONG AUTO 
+	PROPERTY Style AS LONG      AUTO
+	PROPERTY ExStyle AS  LONG   AUTO
+	PROPERTY NotStyle AS LONG   AUTO
+	PROPERTY NotExStyle AS LONG AUTO
     EVENT StyleChanged AS StyleChanged_Delegate
 	EVENT ExStyleChanged AS StyleChanged_Delegate
 
 	CONSTRUCTOR() STRICT
-		
+
 	CONSTRUCTOR(liStyle AS LONG, dwExStyle AS LONG)
 		Style	:= liStyle
 		ExStyle := dwExStyle
-	
+
 	METHOD SetStyles(CreateParams AS System.Windows.Forms.CreateParams ) AS VOID
 		CreateParams:Style |= Style
 		CreateParams:Style ~= NotStyle
@@ -38,8 +44,8 @@ CLASS VOProperties
 		IF StyleChanged != NULL
 			SELF:StyleChanged()
 		ENDIF
-		
-		
+
+
 	METHOD SetExStyle(kStyle AS LONG, lEnable AS LOGIC) AS VOID
 		IF lEnable
 			SELF:ExStyle |= kStyle
@@ -79,9 +85,9 @@ CLASS VOProperties
 			ELSE
 				liAlign := ContentAlignment.BottomLeft
 			ENDIF
-		
+
 		ENDIF
-		RETURN liAlign	
+		RETURN liAlign
 
 
 END CLASS
@@ -109,7 +115,7 @@ CLASS VOControlProperties INHERIT VOProperties
 
 	ACCESS ModifierKeys AS Keys
 		RETURN System.Windows.Forms.Control.ModifierKeys
-	
+
 	METHOD LinkTo(oOwner AS VOSDK.Control) AS VOID STRICT
 		Control := oOwner
 		Window := oOwner:Owner
@@ -117,12 +123,12 @@ CLASS VOControlProperties INHERIT VOProperties
 			SELF:StyleChanged += oVOC:SetVisualStyle
 		ENDIF
 
-		
+
 
 	CONSTRUCTOR(oControl AS System.Windows.Forms.Control, oOwner AS VOSDK.Control)
 		SELF(oControl, oOwner, 0, 0)
 
-	
+
 	CONSTRUCTOR(oControl AS System.Windows.Forms.Control, oOwner AS VOSDK.Control, liStyle AS LONG, dwExStyle AS LONG)
 		LOCAL lFlagDoubleClick AS LOGIC
 		SUPER(liStyle, dwExStyle)
@@ -135,7 +141,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		oWFC:MouseUp	+= OnMouseUp
 		oWFC:MouseMove  += OnMouseMove
 		oWFC:HelpRequested += OnHelpRequested
-        
+
 
 		// Handle Treeview and Listbox Doubleclicks through the actual doubleclick-event (and SinglelineEdits)
 		// Because DoubleClicks on Treeviews (allg. Voreinstellungen) and Listviews (Multifelder) weren't responding
@@ -149,7 +155,7 @@ CLASS VOControlProperties INHERIT VOProperties
 			oWFC:Click			+= OnClick
 			oWFC:DoubleClick	+= OnDoubleClick
 		ENDIF
-		SELF:LinkTo(oOwner)		
+		SELF:LinkTo(oOwner)
 
 	PUBLIC METHOD OnClick(sender AS OBJECT, e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
@@ -168,7 +174,7 @@ CLASS VOControlProperties INHERIT VOProperties
 			ENDIF
 		ENDIF
 		RETURN
-	
+
 	PROTECTED METHOD OnDoubleClick(sender AS OBJECT, e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
@@ -181,27 +187,27 @@ CLASS VOControlProperties INHERIT VOProperties
 		ENDIF
 		RETURN
 
-	
-	METHOD OnKeyDown(s AS OBJECT, e AS KeyEventArgs) AS VOID	
+
+	METHOD OnKeyDown(s AS OBJECT, e AS KeyEventArgs) AS VOID
 		IF SELF:Control != NULL_OBJECT
 			LOCAL k AS KeyEvent
 			k := KeyEvent{e}
 			SELF:Control:EventReturnValue := 0
 			SELF:Control:KeyDown(k)
 			IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
-				SELF:Window:KeyDown(k)					
+				SELF:Window:KeyDown(k)
 			ENDIF
 		ENDIF
-		RETURN		
-	
-	METHOD OnKeyUp(s AS OBJECT, e AS KeyEventArgs) AS VOID	
+		RETURN
+
+	METHOD OnKeyUp(s AS OBJECT, e AS KeyEventArgs) AS VOID
 		IF SELF:Control != NULL_OBJECT
 			LOCAL k AS KeyEvent
 			k := KeyEvent{e}
 			SELF:Control:EventReturnValue := 0
 			SELF:Control:KeyUp(k)
 			IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
-				SELF:Window:KeyUp(k)					
+				SELF:Window:KeyUp(k)
 			ENDIF
 			IF SELF:COntrol IS VOSDK.Combobox
 				SELF:Control:__Update()
@@ -235,7 +241,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		RETURN Tuple<LONG,LONG>{nDeltaX, nDeltaY}
 
 
-	METHOD OnMouseDown(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+	METHOD OnMouseDown(s AS OBJECT, e AS MouseEventArgs) AS VOID
 		IF SELF:Control != NULL_OBJECT
 			LOCAL m AS MouseEvent
 			e := SELF:AdjustMouseEventPosition(e)
@@ -248,7 +254,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		ENDIF
 		RETURN
 
-	METHOD OnMouseUp(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+	METHOD OnMouseUp(s AS OBJECT, e AS MouseEventArgs) AS VOID
 		IF SELF:Control != NULL_OBJECT
 			e := SELF:AdjustMouseEventPosition(e)
 			IF SELF:_lHandleDoubleClickThroughMouseUp .AND. e:Clicks == 2
@@ -264,9 +270,9 @@ CLASS VOControlProperties INHERIT VOProperties
 			ENDIF
 		ENDIF
 		RETURN
-	
 
-	METHOD OnMouseDoubleClick(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+
+	METHOD OnMouseDoubleClick(s AS OBJECT, e AS MouseEventArgs) AS VOID
 		IF SELF:Control != NULL_OBJECT
 			LOCAL m AS MouseEvent
 			e := SELF:AdjustMouseEventPosition(e)
@@ -279,7 +285,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		ENDIF
 		RETURN
 
-	METHOD OnMouseMove(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+	METHOD OnMouseMove(s AS OBJECT, e AS MouseEventArgs) AS VOID
 		IF SELF:Control != NULL_OBJECT
 			LOCAL m AS MouseEvent
 			e := SELF:AdjustMouseEventPosition(e)
@@ -293,76 +299,76 @@ CLASS VOControlProperties INHERIT VOProperties
 		ENDIF
 		RETURN
 
-	METHOD OnGotFocus(s AS OBJECT, e AS EventArgs) AS VOID	
+	METHOD OnGotFocus(s AS OBJECT, e AS EventArgs) AS VOID
 		//Debout("ControlProperties:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		IF SELF:Control != NULL_OBJECT
 			SELF:Control:FocusChange(FocusChangeEvent{TRUE})
 		ENDIF
-		RETURN		
+		RETURN
 
-	METHOD OnLostFocus(s AS OBJECT, e AS EventArgs) AS VOID	
+	METHOD OnLostFocus(s AS OBJECT, e AS EventArgs) AS VOID
 		//Debout("ControlProperties:OnLostFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
 		IF SELF:Control != NULL_OBJECT
 			SELF:Control:FocusChange(FocusChangeEvent{FALSE})
 		ENDIF
-		RETURN	
-	
-	METHOD OnHelpRequested(s AS OBJECT, e AS HelpEventArgs ) AS VOID	
+		RETURN
+
+	METHOD OnHelpRequested(s AS OBJECT, e AS HelpEventArgs ) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:HelpRequest(HelpRequestEvent{e, s})
 		ENDIF
-		RETURN			
+		RETURN
 END CLASS
 
 
 CLASS VOFormProperties INHERIT VOProperties
 	PROPERTY Form AS System.Windows.Forms.Form  AUTO
 	PROPERTY Window AS VOSDK.Window         AUTO
-	
+
 	CONSTRUCTOR(oForm AS System.Windows.Forms.Form, oWindow AS VOSDK.Window)
 		SUPER()
 		Window := oWindow
-		Form  := oForm		
+		Form  := oForm
 		oForm:Enter   += OnGotFocus
 		oForm:Leave  += OnLostFocus
-		
+
 		oForm:MenuStart += OnMenuStart
 		oForm:MenuComplete += OnMenuComplete
 		// oForm:HelpRequested += OnHelpRequested
 		oForm:HelpButtonClicked += OnHelpButtonClicked
 		oForm:Activated += OnActivated
 		oForm:Deactivate += OnDeactivate
-	
-	
-	METHOD OnGotFocus(s AS OBJECT, e AS EventArgs) AS VOID	
+
+
+	METHOD OnGotFocus(s AS OBJECT, e AS EventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:FocusChange(FocusChangeEvent{TRUE})
 		ENDIF
-		RETURN		
+		RETURN
 
-	METHOD OnLostFocus(s AS OBJECT, e AS EventArgs) AS VOID	
+	METHOD OnLostFocus(s AS OBJECT, e AS EventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:FocusChange(FocusChangeEvent{FALSE})
 		ENDIF
-		RETURN		
+		RETURN
 
-	METHOD OnMenuComplete(s AS OBJECT, e AS EventArgs) AS VOID	
+	METHOD OnMenuComplete(s AS OBJECT, e AS EventArgs) AS VOID
 		//	SELF:Window:MenuComplete(MenuSelectEvent{})
-		RETURN		
+		RETURN
 
-	METHOD OnMenuStart(s AS OBJECT, e AS EventArgs) AS VOID	
+	METHOD OnMenuStart(s AS OBJECT, e AS EventArgs) AS VOID
 		//	SELF:Window:MenuInit(MenuInitEvent{})
-		RETURN		
+		RETURN
 
-	METHOD OnHelpRequested(s AS OBJECT, e AS HelpEventArgs ) AS VOID	
+	METHOD OnHelpRequested(s AS OBJECT, e AS HelpEventArgs ) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:HelpRequest(HelpRequestEvent{e, s})
 		ENDIF
-		RETURN		
+		RETURN
 
-	METHOD OnHelpButtonClicked(s AS OBJECT, e AS CancelEventArgs ) AS VOID	
+	METHOD OnHelpButtonClicked(s AS OBJECT, e AS CancelEventArgs ) AS VOID
 		//	SELF:Window:MenuInit(MenuInitEvent{})
-		RETURN		
+		RETURN
 	METHOD OnActivated(s AS OBJECT, e AS EventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:Activate(@@Event{})

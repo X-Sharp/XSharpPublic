@@ -1,4 +1,10 @@
-﻿// TabControl.prg
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+// TabControl.prg
 // This file contains subclasses Windows.Forms controls that are used in the VO Compatible
 // Unicode GUI Classes
 // Each control has a reference to the VO control and a VOControlProperties object
@@ -8,11 +14,10 @@ USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOSplitContainer INHERIT SWF.SplitContainer IMPLEMENTS IVOControl, IVOControlInitialize
+class VOSplitContainer inherit SWF.SplitContainer implements IVOControlProperties, IVOControlInitialize
 
     PROPERTY oSplitView		AS VOSDK.SplitView GET (VOSDK.SplitView) SELF:Control
-
-	#include "PropControl.xh"
+	#include "PropControlStyle.xh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:AutoSize			:= FALSE
@@ -24,7 +29,6 @@ CLASS VOSplitContainer INHERIT SWF.SplitContainer IMPLEMENTS IVOControl, IVOCont
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
 
 
 END CLASS

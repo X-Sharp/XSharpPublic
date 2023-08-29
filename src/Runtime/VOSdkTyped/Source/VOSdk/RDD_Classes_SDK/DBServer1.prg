@@ -10,7 +10,7 @@ PARTIAL CLASS DbServer
 
     /// <include file="Rdd.xml" path="doc/DbServer.Append/*" />
 METHOD Append( ) AS LOGIC
-    RETURN Append(TRUE)
+    RETURN SELF:Append(TRUE)
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.Append/*" />

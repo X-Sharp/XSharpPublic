@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Collections
 USING System.Collections.Generic
@@ -46,7 +50,7 @@ CLASS BaseListBox INHERIT TextControl
         // nIndex = 1-based index in collection
         LOCAL nItem AS LONG
         LOCAL cItem AS STRING
-        LOCAL oValue AS OBJECT 
+        local oValue as object
         LOCAL nIndex AS LONG
         IF !IsString(uItem)
             WCError{#AddItem,#BaseListBox,__WCSTypeError,uItem,1}:Throw()

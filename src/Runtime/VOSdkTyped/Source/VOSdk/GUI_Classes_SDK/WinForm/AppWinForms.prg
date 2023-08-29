@@ -1,4 +1,8 @@
-// AppWinForms.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System.Windows.Forms
@@ -8,20 +12,20 @@ CLASS VOAppForm INHERIT VOForm
 	CONSTRUCTOR(oWindow AS Window)
 		SUPER(oWindow)
 		SELF:Text := "AppForm"
-	
+
 	METHOD __ResizeChild() AS VOID STRICT
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:Resize(ResizeEvent{})
 		ENDIF
 		RETURN
-	
+
 	METHOD EnableHorizontalScroll(lEnable AS LOGIC) AS VOID
 		SELF:HScroll := lEnable
-		RETURN 
+		return
 
 	METHOD EnableVerticalScroll(lEnable AS LOGIC) AS VOID
 		SELF:VScroll := lEnable
-		RETURN 
+		return
 
 END CLASS
 

@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // MenuToolbar.prg
 // This file contains subclasses for the Menu and Toolbar Controls
 // Unicode GUI Classes
@@ -153,16 +159,14 @@ CLASS VOToolStripButton INHERIT SWF.ToolStripButton
 END CLASS
 
 
-CLASS VOToolBar INHERIT SWF.ToolBar IMPLEMENTS IVOControl
-	#include "PropControl.xh"
+class VOToolBar inherit SWF.ToolBar implements IVOControlProperties
+    #include "PropControlStyle.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:ButtonSize := System.Drawing.Size{20,20}
 
-	METHOD SetVisualStyle as VOID STRICT
-		// Empty but required
 
 	METHOD GetButton(nID AS LONG, lMenuId AS LOGIC) AS SWF.ToolBarButton
 		if lMenuId

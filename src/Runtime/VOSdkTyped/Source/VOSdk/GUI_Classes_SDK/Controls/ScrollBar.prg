@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/HorizontalScrollBar/*" />
 CLASS HorizontalScrollBar INHERIT ScrollBar
    /// <inheritdoc />
@@ -82,7 +87,7 @@ ABSTRACT CLASS ScrollBar INHERIT Control
 		IF lNotifyOwner
 			//Todo Notify Owner
             NOP
-            
+
 		ENDIF
 		RETURN NIL
 

@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Forms.prg
 // This file contains subclasses of Windows.Form that are used in the VO Compatible
 // Unicode GUI Classes

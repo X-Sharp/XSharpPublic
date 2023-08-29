@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System.Windows.Forms.VisualStyles
@@ -29,7 +34,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     PROTECT aRadioGroups AS ARRAY
 
         //PROTECT oFormFrame AS __FormFrame
-    PROTECT oGBrowse AS DataBrowser
+    protect oGBrowse as IDataBrowser
 
     PROTECT oHLStatus AS HyperLabel
     PROTECT oSurface AS VOSurfacePanel
@@ -98,15 +103,15 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         ENDIF
         DO CASE
         CASE (sCurrentView == #ViewSwitch)
-            Send(oGBrowse, #__NOTIFYChanges, GBNFY_VIEWSWITCH)
+            oGBrowse:__NOTIFYChanges( GBNFY_VIEWSWITCH)
         CASE (sCurrentView == #BrowseView)
-            Send(oGBrowse, #__NOTIFYChanges, GBNFY_VIEWASBROWSER)
+            oGBrowse:__NOTIFYChanges( GBNFY_VIEWASBROWSER)
         CASE (sCurrentView == #FormView)
-            Send(oGBrowse ,#__NOTIFYChanges, GBNFY_VIEWASFORM)
+            oGBrowse:__NOTIFYChanges( GBNFY_VIEWASFORM)
         END CASE
 
         IF (lLinked .and. oAttachedServer != NULL_OBJECT)
-            Send(oGBrowse, #Use, oAttachedServer)
+            oGBrowse:Use(oAttachedServer)
         ENDIF
 
         RETURN SELF
@@ -1782,9 +1787,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
                 lSubForm := (dwDialogStyle = 0)
                 oDwOwner := oOwner
                 SUPER(oOwner, FALSE, FALSE)
-            CASE ChildAppWindow
-            CASE TopAppWindow
-                SUPER(oOwner)
+            case AppWindow
+                super(oOwner)
             CASE Window
                 // <XXX> invalid Owner - throw error
                 WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:Throw()
@@ -1846,7 +1850,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     PROPERTY LastFocus AS Control
         GET
             IF sCurrentView == #BrowseView
-                RETURN oGBrowse
+                return (Control) oGBrowse
             ENDIF
             RETURN oLastFocus
         END GET

@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // TabControl.prg
 // This file contains subclasses Windows.Forms controls that are used in the VO Compatible
 // Unicode GUI Classes
@@ -8,8 +14,8 @@ USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOTabControl INHERIT SWF.TabControl IMPLEMENTS IVOControl,IVOControlInitialize
-	#include "PropControl.xh"
+class VOTabControl inherit SWF.TabControl implements IVOControlProperties,IVOControlInitialize
+	#include "PropControlStyle.xh"
 	PROPERTY BounceFocus AS LOGIC AUTO := FALSE
     PROPERTY VOTab AS VOSDK.TabControl GET (VOSDK.TabControl) SELF:Control
 
@@ -32,8 +38,6 @@ CLASS VOTabControl INHERIT SWF.TabControl IMPLEMENTS IVOControl,IVOControlInitia
 		SELF:SetVisualStyle()
 		SELF:BackColor := System.Drawing.Color.White
 
-	METHOD SetVisualStyle AS VOID STRICT
-		// Empty but required
 
 	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET

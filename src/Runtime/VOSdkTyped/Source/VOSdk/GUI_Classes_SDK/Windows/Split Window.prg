@@ -1,4 +1,10 @@
-USING SWF := System.Windows.Forms
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using SWF := System.Windows.Forms
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow/*" />
@@ -33,8 +39,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
     /// <include file="Gui.xml" path="doc/SplitWindow.Destroy/*" />
     METHOD Destroy() AS USUAL
-        // if not in garbage collection, destroy the split view control
-        IF oSplitView != NULL_OBJECT
+        if oSplitView != null_object
             oSplitView:Destroy()
             oSplitView := NULL_OBJECT
         ENDIF

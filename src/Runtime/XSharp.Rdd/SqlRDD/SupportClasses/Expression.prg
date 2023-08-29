@@ -31,8 +31,8 @@ class SqlDbExpression inherit SqlDbObject
     property Segments	as IList<SqlDbSegment> auto
     property Widths		as IList<long> auto
 
-    property OrderListString as string => List2String(self:OrderList)
-    property ColumnListString as string => List2String(self:ColumnList)
+    property OrderListString as string => SELF:List2String(self:OrderList)
+    property ColumnListString as string => SELF:List2String(self:ColumnList)
 
 
     constructor(oOwner as object, cIndexExpr as string)

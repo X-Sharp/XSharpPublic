@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 STATIC DEFINE __WCMdiFirstChildID := 0x8001
@@ -98,7 +103,7 @@ CLASS ShellWindow INHERIT AppWindow
                 // oChildToolBar:Show()
                 // oToolBar:AddBand(#__CHILDTBBAND, oChildToolBar, 1, 50, 25)
                 NOP
-                
+
             ENDIF
 
         ENDIF

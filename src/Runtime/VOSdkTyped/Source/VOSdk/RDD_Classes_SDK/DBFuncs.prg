@@ -1101,7 +1101,7 @@ FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWOR
 
 
 /// <exclude/>
-FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
+function __DBSRLock( n as long, nTries := 1 as dword) as logic strict
 	 LOCAL lOk := FALSE AS LOGIC
 	DO WHILE nTries > 0
 		NetErr( FALSE )

@@ -821,34 +821,8 @@ METHOD Locate( cbForBlock, cbWhileBlock, uScope )  AS LOGIC CLIPPER
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.LockCurrentRecord/*" />
-METHOD LockCurrentRecord( ) AS LOGIC
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		lRetCode := VoDbRlock( VoDbRecno( ) )
-		IF !lRetCode
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-		SELF:__OptimisticFlushNoLock( )
-		__DBSSetSelect( dwCurrentWorkArea )
-
-
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
-
-
-
-
-	RETURN lRetCode
+method LockCurrentRecord( ) as logic strict
+    return self:RLock( -1 )
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.LockSelection/*" />

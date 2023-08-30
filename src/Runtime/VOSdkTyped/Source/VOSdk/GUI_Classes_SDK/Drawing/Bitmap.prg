@@ -60,7 +60,7 @@ CLASS Bitmap INHERIT VObject IMPLEMENTS IResource
         ELSEIF IsPtr(xResourceID) //
             oImage := System.Drawing.Image.FromHbitmap((IntPtr) xResourceID)
             RETURN
-        ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+        ELSEIF ! (xResourceID IS ResourceID)
             WCError{#Init, #Bitmap, __WCSTypeError, xResourceID, 1}:Throw()
             GC.SuppressFinalize( SELF )
         ELSE

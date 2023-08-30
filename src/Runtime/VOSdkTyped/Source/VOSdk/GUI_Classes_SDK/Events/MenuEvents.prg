@@ -31,11 +31,11 @@ CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	[DebuggerStepThrough];
 	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) STRICT
 		SUPER()
-		IF IsInstanceOf(uMenu, #Menu)
-			oMenu		:= uMenu
+		if uMenu is Menu var oM
+			self:oMenu		:= oM
 		ENDIF
-		IF IsInstanceOf(uWin, #Window)
-			oWindow		:= uWin
+		if uWin is Window var oW
+			oWindow		:= oW
 		ENDIF
 		IF IsLong(uID)
 			SELF:nID := uID

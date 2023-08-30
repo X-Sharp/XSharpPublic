@@ -52,7 +52,7 @@ CLASS SysLink INHERIT TextControl
 		LOCAL lResID AS LOGIC
 
 		DEFAULT( REF lDataAware, TRUE)
-		lResID := IsInstanceOfUsual(xID,#ResourceID)
+		lResID := (xID IS ResourceID)
 		IF !lResID
 			cClass := "SysLink"
 		ENDIF

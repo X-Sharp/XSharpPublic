@@ -31,7 +31,7 @@ CLASS RadioButton INHERIT Button
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, kStyle)
 
 		SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle)
-		IF !IsInstanceOfUsual(xID,#ResourceID)
+		IF ! (xID IS ResourceID)
 			SELF:SetStyle(BS_RADIOBUTTON)
 		ENDIF
 		SELF:ValueChanged := FALSE

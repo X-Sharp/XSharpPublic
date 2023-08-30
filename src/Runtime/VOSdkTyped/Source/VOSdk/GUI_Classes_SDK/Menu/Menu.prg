@@ -69,8 +69,8 @@ CLASS Menu INHERIT VObject
         LOCAL oItem	    AS VOMenuItem
         LOCAL oHl		AS HyperLabel
         LOCAL aItems	AS VOMenuItem[]
-        IF IsInstanceOfUsual(nItemID, #Menu)
-            oSubMenu := nItemID
+        if nItemID is Menu var oMenu
+            oSubMenu := oMenu
             oSubMenu:SetParent(SELF)
             SELF:AddChild(nItemID)
             cNewItem := xNewItem
@@ -86,7 +86,7 @@ CLASS Menu INHERIT VObject
                 oItem := SELF:__CreateMenuItem("-", nItemID)
                 SELF:oMenu:MenuItems:Add(oItem)
             ELSE
-                IF IsInstanceOfUsual(xNewItem, #HyperLabel)
+                if xNewItem is HyperLabel
                     oHl := xNewItem
                     cNewItem := oHl:Caption
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
@@ -95,7 +95,7 @@ CLASS Menu INHERIT VObject
                 ELSEIF IsString(xNewItem)
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
                     SELF:oMenu:MenuItems:Add(oItem)
-                ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
+                elseif xNewItem is Bitmap
                     // todo Menu Bitmaps
                     //lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_BITMAP, MF_ENABLED), nItemID, xNewItem:Handle())
                     NOP
@@ -140,11 +140,9 @@ CLASS Menu INHERIT VObject
         LOCAL retVal AS LOGIC
         LOCAL nItemID AS LONG
         retVal := FALSE
-        IF IsInstanceOfUsual(xItemIdOrMenu, #Menu)
-            LOCAL oSubMenu AS Menu
-            oSubMenu := xItemIdOrMenu
+        if xItemIdOrMenu is Menu var oSubMenu
             nItemID := oSubMenu:GetHashCode()
-            LOCAL IMPLIED oItem := oMenu:GetItemByID(nItemID)
+            local implied oItem := self:oMenu:GetItemByID(nItemID)
             IF oItem != NULL_OBJECT
                 SELF:DeleteChild(xItemIdOrMenu)
                 IF oItem != NULL_OBJECT
@@ -152,9 +150,9 @@ CLASS Menu INHERIT VObject
                     retVal := TRUE
                 ENDIF
             ENDIF
-        ELSE
+        elseif IsNumeric(xItemIdOrMenu)
             nItemID := xItemIdOrMenu
-            LOCAL IMPLIED oItem := oMenu:GetItemByID(nItemID)
+            local implied oItem := self:oMenu:GetItemByID(nItemID)
             IF oItem != NULL_OBJECT
                 oItem:Parent:MenuItems:Remove(oItem)
                 retVal := TRUE
@@ -268,9 +266,9 @@ CLASS Menu INHERIT VObject
         SUPER()
         aChildren := {}
         aItem := {}
-        IF IsInstanceOf(xResourceID, #VoMenu)
+        if xResourceID is VoMenu
             oMenu := xResourceID
-        ELSEIF IsInstanceOf(xResourceID, #VoMenuItem)
+        elseif xResourceID is VoMenuItem
             LOCAL oItem AS VOMenuItem
             oItem := xResourceID
             oMenu := VOMenu{}
@@ -287,7 +285,7 @@ CLASS Menu INHERIT VObject
             ELSE
                 IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
                     oResourceID := ResourceID{xResourceID}
-                ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+                elseif !(xResourceID is ResourceID)
                     WCError{#Init, #Menu, __WCSTypeError}:Throw()
                 ELSE
                     oResourceID := xResourceID
@@ -307,7 +305,7 @@ CLASS Menu INHERIT VObject
         LOCAL aItems	as VOMenuItem[]
         LOCAL oHl		as HyperLabel
 
-        IF IsInstanceOfUsual(nItemID, #Menu)
+        if nItemID is Menu
             oSubMenu := nItemID
             oSubMenu:SetParent(SELF)
             SELF:AddChild(oSubMenu)
@@ -325,7 +323,7 @@ CLASS Menu INHERIT VObject
                 SELF:oMenu:MenuItems:Add(nBeforeID, oItem )
 
             ELSE
-                IF IsInstanceOfUsual(xNewItem, #HyperLabel)
+                if xNewItem is HyperLabel
                     oHl := xNewItem
                     cNewItem := oHl:Caption
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
@@ -334,7 +332,7 @@ CLASS Menu INHERIT VObject
                     cNewItem := xNewItem
                     oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
                     SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
-                ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
+                elseif xNewItem is Bitmap
                     //retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_BITMAP), MF_ENABLED), nItemID, PSZ(_CAST, xNewItem:Handle()))
                     NOP
                 ENDIF

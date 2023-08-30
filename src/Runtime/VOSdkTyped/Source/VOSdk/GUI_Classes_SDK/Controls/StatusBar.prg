@@ -68,7 +68,7 @@ CLASS StatusBar INHERIT Control
 
         iInsertOn := iNumLockOn := iScrollOn := iCapsLockOn := -1
 
-        IF IsInstanceOfUsual(xID, #ResourceID)
+        IF xID IS ResourceID
             // Created by resource
             SUPER(oOwner, xID, oPoint, oDimension, , , FALSE)
         ELSE

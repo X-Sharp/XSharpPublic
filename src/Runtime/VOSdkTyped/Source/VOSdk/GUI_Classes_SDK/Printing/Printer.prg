@@ -390,9 +390,7 @@ METHOD PrinterError(oPerr)
 
 /// <include file="Gui.xml" path="doc/Printer.PrinterExpose/*" />
 METHOD PrinterExpose(oPrinterExposeEvt)
-
-
-	IF !IsNil(oPrinterExposeEvt) .AND. !IsInstanceOfUsual(oPrinterExposeEvt,#PrinterExposeEvent)
+	if !IsNil(oPrinterExposeEvt) .and. !(oPrinterExposeEvt is PrinterExposeEvent)
 		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:Throw()
 	ENDIF
 	RETURN TRUE

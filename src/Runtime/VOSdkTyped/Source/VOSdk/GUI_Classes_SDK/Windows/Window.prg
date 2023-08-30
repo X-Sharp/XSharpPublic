@@ -179,7 +179,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         if !lFound
             // Add Control to the array
             local oRect as System.Drawing.Rectangle
-            if IsInstanceOf(oControl, #Window)
+            if oControl is Window
                 local oForm as System.Windows.Forms.Form
                 oForm 			:= ((VOSDK.Window) oControl):__Form
                 oRect 			:= oForm:ClientRectangle
@@ -338,10 +338,10 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         do while dwI <= dwCount
             element := (VOAlignElement) aAlignes[dwI]
             oResize := element:Control
-            if IsInstanceOf(oResize, #DataWindow)
+            if oResize is DataWindow
                 oCtl	:= ((DataWindow) oResize):__Frame
                 oOwnerOffSet := Point{0,0}
-            elseif IsInstanceOf(oResize, #Window)
+            elseif oResize is Window
                 oCtl	:= ((Window) oResize):__Form
                 oOwnerOffSet := Point{0,0}
             else
@@ -492,8 +492,8 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
 
         symNameSym := oEvent:NameSym
         oWindow := self
-        if oWindow is ShellWindow
-            oWindow := ((ShellWindow) oWindow):GetActiveChild()
+        if oWindow is ShellWindow var oShell
+            oWindow := oShell:GetActiveChild()
             if oWindow == null_object
                 oWindow := self
             endif
@@ -505,8 +505,8 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
                 Send(oWindow, symNameSym)
                 return true
             endif
-            if IsAccess(oWindow, #Owner) .and. IsInstanceOfUsual(IVarGet(oWindow,#Owner), #Window)
-                oWindow := IVarGet(oWindow,#Owner)
+            if oWindow:Owner is Window var oWin
+                oWindow := oWin
             else
                 exit
             endif
@@ -515,8 +515,8 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         if IsClassOf(symNameSym, #Window)
             if self is ChildAppWindow var oChild
                 oWindow:=self
-                do while IsInstanceOf(oWindow:Owner, #Window)
-                    oWindow:=IVarGet(oWindow,#Owner)
+                do while oWindow:Owner is Window
+                    oWindow:= oWindow:Owner
                 enddo
                 o := CreateInstance(symNameSym, oWindow)
                 Send(o,#show)
@@ -1522,7 +1522,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         if cText == "01.01.1753"
             cText := "  .  .    "
         endif
-        if IsInstanceOfUsual(oDTPicker:FieldSpec, #FieldSpec)
+        if oDTPicker:FieldSpec != null_object
             cText := AsString(oDTPicker:FieldSpec:Val(cText))
         endif
         if ! cOldValue == cText
@@ -1661,7 +1661,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         endif
 
         if !IsArray(oDrawObject)
-            if !IsInstanceOfUsual(oDrawObject,#DrawObject)
+            if !(oDrawObject is DrawObject)
                 WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:Throw()
             endif
             oDraw := oDrawObject
@@ -1671,7 +1671,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
             aDraw := oDrawObject
             cnt := ALen(aDraw)
             for i:=1 to cnt
-                if !IsInstanceOfUsual(aDraw[i],#DrawObject)
+                if !(aDraw[i] is DrawObject)
                     WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:Throw()
                 endif
                 oDraw := aDraw[i]

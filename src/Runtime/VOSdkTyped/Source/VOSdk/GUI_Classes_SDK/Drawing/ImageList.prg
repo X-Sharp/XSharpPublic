@@ -154,8 +154,8 @@ CLASS ImageList INHERIT VObject
 			//PP-031115 Allow imagelist without a mask if appropriate wColor specified
 			//hImageList := ImageList_Create(oDimension:Width, oDimension:Height, dwCol, nImages, nGrow)
 			oImageList := System.Windows.Forms.ImageList{}
-			IF IsInstanceOfUsual(oDimension, #DImension)
-				oImageList:ImageSize := (Dimension) oDimension
+			if oDimension is DImension var oDim
+				oImageList:ImageSize := oDim
 			ENDIF
 		ENDIF
 

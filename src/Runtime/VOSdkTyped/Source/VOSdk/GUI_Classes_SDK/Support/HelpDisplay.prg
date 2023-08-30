@@ -112,7 +112,7 @@ CLASS HelpDisplay INHERIT VObject
 		ENDIF
 
 		IF !IsNil(oOwnerWindow)
-			IF !IsInstanceOfUsual(oOwnerWindow, #Window)
+			IF !(oOwnerWindow IS Window)
 				WCError{#Init,#HelpDisplay,__WCSTypeError,oOwnerWindow,2}:Throw()
 			ELSE
 				SELF:oWnd := oOwnerWindow

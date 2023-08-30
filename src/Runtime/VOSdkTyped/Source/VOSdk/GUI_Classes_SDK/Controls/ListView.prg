@@ -31,7 +31,7 @@ CLASS ListView INHERIT TextControl
 			dwStyle := _OR(DWORD(kStyle), DWORD(_CAST, WS_BORDER))
 		ENDIF
 
-		IF IsInstanceOfUsual(xID, #ResourceID)
+		if xID is ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , dwStyle, TRUE)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, "SysListView32", dwStyle, TRUE)
@@ -796,7 +796,7 @@ CLASS ListView INHERIT TextControl
 		ENDIF
 
 		// find the item closest to the given point
-		IF IsInstanceOfUsual(uValue, #Point)
+		if uValue is Point
 			// kSeekType is a usual
 			Default(ref kSeekType, LV_SEEKDOWN)
 
@@ -1009,7 +1009,7 @@ CLASS ListView INHERIT TextControl
 		LOCAL oListViewItem AS ListViewItem
 		IF IsNumeric(uLVI)
 			oListViewItem := SELF:__GetItemAtIndex((LONG) uLVI)
-		ELSEIF IsInstanceOfUsual(uLVI,#ListViewItem)
+		elseif uLVI is ListViewItem
 			oListViewItem := uLVI
 		ENDIF
 		IF oListViewItem != NULL_OBJECT
@@ -1220,9 +1220,9 @@ CLASS ListViewColumn INHERIT VObject
 		SUPER()
 		oHeader := (VOColumnHeader) GUIFactory.Instance:CreateListViewElement(ControlType.ListViewColumn, SELF)
 		// set the width of the column
-		IF IsInstanceOfUsual(nWidth, #FieldSpec)
-			self:nWidth := __GetFSDefaultLength((FieldSpec) nWidth)
-			SELF:FieldSpec := nWidth
+		if nWidth is FieldSpec var oFS
+			self:nWidth := __GetFSDefaultLength(oFS)
+			self:FieldSpec := oFS
 		ELSEIF IsNumeric(nWidth)
 			self:nWidth := nWidth
 		ELSE
@@ -1231,7 +1231,7 @@ CLASS ListViewColumn INHERIT VObject
 		oHeader:Width := nWidth
 
 		// set the HyperLabel object for the column
-		IF IsInstanceOfUsual(xColumnID, #HyperLabel)
+		IF xColumnID IS HyperLabel VAR oHL
 			oHyperLabel := xColumnID
 		ELSEIF IsString(xColumnID)
 			oHyperLabel := HyperLabel{String2Symbol(xColumnID), xColumnID}

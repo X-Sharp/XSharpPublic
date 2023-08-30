@@ -38,7 +38,7 @@ CLASS ChildAppWindow INHERIT AppWindow
         DEFAULT( REF lImpl, TRUE)
         IF (lImpl)
             //IF (oImp == NULL_OBJECT)
-            IF lMng .AND. IsInstanceOf(oParent,#ShellWindow) // create an MDI child
+            IF lMng .AND. oParent IS ShellWindow // create an MDI child
                 SELF:EnableSystemMenu()
                 SELF:EnableBorder()
                 SELF:EnableMinBox()
@@ -52,7 +52,7 @@ CLASS ChildAppWindow INHERIT AppWindow
                 //SELF:EnableBorder(WindowNonSizingBorder)
                 //ENDIF
                     NOP
-                
+
             ENDIF
             //ENDIF
         ENDIF

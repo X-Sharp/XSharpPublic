@@ -48,11 +48,7 @@ CLASS ControlWindow INHERIT Window
     PROPERTY HyperLabel AS HyperLabel GET oCtrl:HyperLabel
 
     /// <include file="Gui.xml" path="doc/ControlWindow.ctor/*" />
-    CONSTRUCTOR(oControl)
-
-        IF !IsInstanceOfUsual(oControl,#Control)
-            WCError{#Init,#ControlWindow,__WCSTypeError,oControl,1}:Throw()
-        ENDIF
+    constructor(oControl as Control)
 
         oCtrl := oControl
         SUPER(oCtrl:Owner)

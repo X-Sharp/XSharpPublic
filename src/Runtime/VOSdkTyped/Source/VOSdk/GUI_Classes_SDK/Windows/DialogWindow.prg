@@ -238,7 +238,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
     /// <include file="Gui.xml" path="doc/DialogWindow.ctor/*" />
     CONSTRUCTOR(oOwner, xResourceID, lModal)
 
-        IF IsInstanceOfUsual(oOwner, #App)
+        IF oOwner IS App
             oOwner := NIL
         ENDIF
 

@@ -85,7 +85,7 @@ CLASS TextControl INHERIT Control
 		IF SELF:Modified
 			cText := SELF:TextValue
 			uOldValue := AsString(uValue)
-			IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+			if self:FieldSpec != null_object
 
 				uValue := SELF:FieldSpec:Val(cText)
 
@@ -182,7 +182,7 @@ CLASS TextControl INHERIT Control
 		cCurrentText := SELF:__SetText(cNewText)
 		cOldValue := AsString(uValue)
 
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+		if self:FieldSpec != null_object
 			uValue := SELF:FieldSpec:Val(cCurrentText)
 			SELF:ValueChanged := !(cOldValue == AsString(uValue))
 		ELSE
@@ -213,7 +213,7 @@ CLASS TextControl INHERIT Control
 		LOCAL hFont AS PTR
 
 		IF !IsNil(oNewFont)
-			IF !IsInstanceOfUsual(oNewFont, #Font)
+			if !(oNewFont is Font)
 				WCError{#Font, #TextControl, __WCSTypeError, oNewFont,1}:Throw()
 			ENDIF
 		ENDIF
@@ -351,7 +351,7 @@ CLASS TextControl INHERIT Control
 		cTextValue := SELF:__SetText(cNewCaption)
 		cOldValue := AsString(uValue)
 
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+		IF SELF:FieldSpec != NULL_OBJECT
 			uValue := SELF:FieldSpec:Val(cTextValue)
 			SELF:ValueChanged := !(cOldValue == AsString(uValue))
 		ELSE

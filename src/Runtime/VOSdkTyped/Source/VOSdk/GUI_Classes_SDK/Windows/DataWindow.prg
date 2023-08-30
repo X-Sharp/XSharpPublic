@@ -587,7 +587,6 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
 
     /// <exclude />
     method __RegisterFieldLinks(oDataServer as DataServer) as logic strict
-        local oDC as Control
         local dwIndex, dwControls as dword
         local siDF as dword
 
@@ -595,7 +594,7 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
         dwControls := ALen(aControls)
         if dwControls > 0
             for dwIndex := 1 upto dwControls
-                if IsInstanceOfUsual(aControls[dwIndex], #Control)
+                if aControls[dwIndex] is Control var oDC
                     oDC := aControls[dwIndex]
                     siDF := oDataServer:FieldPos(oDC:NameSym)
                     if siDF > 0 .and. IsNil(oDC:Server) // Only one datafield per control
@@ -825,7 +824,7 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
     method __UpdateStatus() as logic strict
 
         if oHLStatus != null_object
-            if IsInstanceOfUsual(oHLStatus, #HyperLabel)
+            if oHLStatus is HyperLabel
                 self:__StatusMessage(ResourceString{__WCSError2}:Value + oHLStatus:Description, MESSAGEERROR)
             endif
             return false
@@ -960,12 +959,12 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
 
         oButton := oControlEvent:Control
 
-        if IsInstanceOfUsual((object) oButton:Owner, #Window)
-            oWindow := (Window) oButton:Owner
+        if oButton:Owner is Window var oW
+            oWindow := oW
         else
             oWindow := self
         endif
-        if IsInstanceOf(oButton, #Button)
+        if oButton is Button
             oButton:Modified := true // assume its modified
             if oButton is RadioButton var oRB
                 //SE-060526

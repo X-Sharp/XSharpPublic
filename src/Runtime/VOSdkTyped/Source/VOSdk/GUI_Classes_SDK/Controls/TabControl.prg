@@ -212,15 +212,13 @@ CLASS TabControl INHERIT TextControl
             oTabPage:Margin := System.Windows.Forms.Padding{0}
 
 			oWin := xPage
-			IF IsInstanceOf(oWin, #DataWindow)
-				LOCAL oDw := (DataWindow) oWin AS DataWindow
+			if oWin is DataWindow var oDW
 				oPanel := (VOPanel) oDw:__Frame
 				oPanel:Dock := System.Windows.Forms.DockStyle.Fill
 				oTabPage:Controls:Add(oPanel)
 				oPanel := (VOPanel) (OBJECT) oDw:__Surface
-			ELSEIF IsInstanceOf(oWin, #DialogWindow)
-				LOCAL oDlg := (DialogWindow) oWin AS DialogWindow
-				oPanel := (VOPanel) (OBJECT) oDlg:__Surface
+			elseif oWin is DialogWindow var oDlg
+				oPanel := (VOPanel) (object) oDlg:__Surface
 				oPanel:Dock := System.Windows.Forms.DockStyle.Fill
 				oTabPage:Controls:Add(oPanel)
 			ELSE
@@ -259,12 +257,12 @@ CLASS TabControl INHERIT TextControl
 
 
 		// Fill out the tab structure with the arguments passed in
-		IF IsInstanceOfUsual(xPage,#Window)
+		if xPage is Window var oWin
 			//PP-030909 XP theme background on tab page
-			((Window)xPage):EnableThemeDialogTexture(ETDT_ENABLETAB)
+			oWin:EnableThemeDialogTexture(ETDT_ENABLETAB)
 
-			IF Empty(cCaption) .AND. (((Window)xPage):HyperLabel != NULL_OBJECT)
-				cCaption := ((Window)xPage):HyperLabel:Caption
+			if Empty(cCaption) .and. oWin:HyperLabel != null_object
+				cCaption := oWin:HyperLabel:Caption
 			ENDIF
 		ELSEIF ! IsSymbol(xPage)
 			xPage := symTabName
@@ -331,8 +329,8 @@ CLASS TabControl INHERIT TextControl
 	METHOD CreatePageInstance(symPageClass, symTabName)
 		LOCAL oPage AS OBJECT
 		oPage := CreateInstance(symPageClass, (OBJECT) SELF:Owner)
-		IF IsInstanceOfUsual(oPage, #Window)
-			((Window)oPage):EnableThemeDialogTexture(ETDT_ENABLETAB)
+		if oPage is Window var oWin
+			oWin:EnableThemeDialogTexture(ETDT_ENABLETAB)
 		ENDIF
 
 		IF lAutoSize
@@ -508,7 +506,7 @@ CLASS TabControl INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TabControl.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
-		IF IsInstanceOfUsual(xID, #ResourceID)
+		if xID is ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, FALSE)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, WC_TABCONTROL, kStyle, FALSE)
@@ -584,7 +582,7 @@ CLASS TabControl INHERIT TextControl
 		dwCount := ALen(aPages)
 		for dwI := 1 upto dwCount
 			if aPages[dwI][ TAB_SYMBOL] == symPos
-				if IsInstanceOfUsual(aPages[dwI][ TAB_PAGE], #Window)
+				if aPages[dwI][ TAB_PAGE] IS Window
 					RETURN TRUE
 				ENDIF
 				EXIT

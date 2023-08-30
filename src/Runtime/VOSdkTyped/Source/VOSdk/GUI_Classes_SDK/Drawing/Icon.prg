@@ -61,7 +61,7 @@ CLASS Icon INHERIT VObject IMPLEMENTS IResource
 
 			IF IsSymbol(xResourceID) .or. IsString(xResourceID)
 				oResourceID := ResourceID{xResourceID}
-			ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+			ELSEIF !(xResourceID IS ResourceID)
 				WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:Throw()
 			ELSE
 				oResourceID := xResourceID

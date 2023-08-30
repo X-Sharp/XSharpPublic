@@ -151,7 +151,7 @@ method AddTopic(oIpcTopic as IPCTopic)
 
 
 	IF oIpcTopic != NULL
-		IF !IsInstanceOfUsual(oIpcTopic, #IpcTopic)
+		IF ! (oIpcTopic IS IpcTopic)
 			WCError{#AddItem,#IpcServer,__WCSTypeError,oIpcTopic,1}:Throw()
 		ENDIF
 

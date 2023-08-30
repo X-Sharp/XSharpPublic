@@ -192,7 +192,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
                 IF IsNumeric(uButton) .OR. IsString(uButton)
                     uButton := RadioButton{(OBJECT) SELF:Owner, ResourceID{uButton}}
-                ELSEIF !IsInstanceOfUsual(uButton, #RadioButton)
+                ELSEIF ! (uButton IS RadioButton)
                     WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
                 ENDIF
                 oButton := uButton

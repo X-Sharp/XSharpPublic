@@ -106,8 +106,8 @@ CLASS SplitWindow INHERIT ChildAppWindow
                 SUPER(NIL, FALSE)
             CASE ShellWindow
                 SUPER(oOwner, TRUE)
-            CASE DataWindow
-                SUPER(oObject:__GetFormSurface())
+            case oDW as DataWindow 
+                super(oDW:__GetFormSurface())
             CASE ChildAppWindow
             CASE TopAppWindow
             CASE DialogWindow
@@ -136,9 +136,9 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
         // set up drag and alignment options
 
-        DEFAULT(@lHorizontalDrag,   FALSE)
-        DEFAULT(@lVerticalDrag,     TRUE)
-        Default(@kAlignment, SPLIT_VERTALIGN )
+        DEFAULT( REF lHorizontalDrag,   FALSE)
+        DEFAULT( REF lVerticalDrag,     TRUE)
+        DEFAULT( REF kAlignment, SPLIT_VERTALIGN )
 
         oSplitView := SplitView{SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment}
         oSplitView:Show()

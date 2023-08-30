@@ -5,7 +5,7 @@
 //
 
 /// <include file="Gui.xml" path="doc/Bitmap/*" />
-CLASS Bitmap INHERIT VObject
+CLASS Bitmap INHERIT VObject IMPLEMENTS IResource
     PROTECT oImage AS System.Drawing.Image
 
 
@@ -67,7 +67,7 @@ CLASS Bitmap INHERIT VObject
             oResourceID := xResourceID
         ENDIF
 
-        DEFAULT(@kLoadOption, LR_DEFAULTCOLOR)
+        DEFAULT( REF kLoadOption, LR_DEFAULTCOLOR)
         IF ! IsLong(iWidth)
             iWidth := 0
         ENDIF

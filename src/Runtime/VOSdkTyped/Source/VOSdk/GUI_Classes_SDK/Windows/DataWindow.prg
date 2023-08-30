@@ -5,157 +5,157 @@
 //
 
 
-USING System.Windows.Forms.VisualStyles
-USING VOSDK := XSharp.VO.SDK
+using System.Windows.Forms.VisualStyles
+using VOSDK := XSharp.VO.SDK
 /// <include file="Gui.xml" path="doc/DataWindow/*" />
-CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
-    PROTECT sCurrentView AS SYMBOL
-    PROTECT nCCMode AS INT
-    PROTECT nLastLock AS INT
+class DataWindow inherit ChildAppWindow implements ILastFocus
+    protect sCurrentView as symbol
+    protect nCCMode as int
+    protect nLastLock as int
 
         //PROTECT lKickingTheBucket AS LOGIC
-    PROTECT lChanged AS LOGIC
-    PROTECT lLinked AS LOGIC
-    PROTECT lControlsEnabled AS LOGIC
-    PROTECT lSubForm AS LOGIC
-    PROTECT lTopApp AS LOGIC
-    PROTECT lAlreadyHasFlock AS LOGIC
-    PROTECT lRecordDirty AS LOGIC
-    PROTECT lDeleted AS LOGIC
-    PROTECT lValidFlag AS LOGIC
-    PROTECT lPreventAutoLayout AS LOGIC
-    PROTECT lDeferUse AS LOGIC
-    PROTECT oDeferUseServer AS DataServer
-    PROTECT lAutoScroll AS LOGIC
+    protect lChanged as logic
+    protect lLinked as logic
+    protect lControlsEnabled as logic
+    protect lSubForm as logic
+    protect lTopApp as logic
+    protect lAlreadyHasFlock as logic
+    protect lRecordDirty as logic
+    protect lDeleted as logic
+    protect lValidFlag as logic
+    protect lPreventAutoLayout as logic
+    protect lDeferUse as logic
+    protect oDeferUseServer as DataServer
+    protect lAutoScroll as logic
 
-    PROTECT aSubForms AS ARRAY
-    PROTECT aControls AS ARRAY
-    PROTECT aConditionalControls AS ARRAY
-    PROTECT aRadioGroups AS ARRAY
+    protect aSubForms as array
+    protect aControls as array
+    protect aConditionalControls as array
+    protect aRadioGroups as array
 
         //PROTECT oFormFrame AS __FormFrame
     protect oGBrowse as IDataBrowser
 
-    PROTECT oHLStatus AS HyperLabel
-    PROTECT oSurface AS VOSurfacePanel
-    PROTECT oFrame	 AS IVOFramePanel
-    PROTECT oAttachedServer AS DataServer
-    PROTECT oDCCurrentControl AS OBJECT
-    PROTECT oDCInvalidControl AS Control
-    PROTECT oDCInvalidColumn AS DataColumn
-    PROTECT lPendingToolBarShow AS LOGIC
-    PROTECT lAllowServerClose AS LOGIC
-    PROTECT symBrowserClass AS SYMBOL
-    PROTECT symFormDialog AS SYMBOL
-    PROTECT dwDialogStyle  AS DWORD //SE-070906
-    PROTECT oLastFocus AS Control
-    PROTECT oResourceID 	AS ResourceID
+    protect oHLStatus as HyperLabel
+    protect oSurface as VOSurfacePanel
+    protect oFrame	 as VOFramePanel
+    protect oAttachedServer as DataServer
+    protect oDCCurrentControl as object
+    protect oDCInvalidControl as Control
+    protect oDCInvalidColumn as DataColumn
+    protect lPendingToolBarShow as logic
+    protect lAllowServerClose as logic
+    protect symBrowserClass as symbol
+    protect symFormDialog as symbol
+    protect dwDialogStyle  as dword //SE-070906
+    protect oLastFocus as Control
+    protect oResourceID 	as ResourceID
 
 
-    INTERNAL lInAutoLayout AS LOGIC
-
-    /// <exclude />
-    METHOD __CreateForm() AS VOForm STRICT
-        LOCAL oDw AS VODataForm
-        SELF:__ReadResource(oResourceID, oParent)
-        IF oShell != NULL_OBJECT
-            oDw := GuiFactory.Instance:CreateDataForm(SELF, oShell:__Form, SELF:oResourceDialog)
-        ELSE
-            oDw := GuiFactory.Instance:CreateDataForm(SELF, NULL_OBJECT, SELF:oResourceDialog)
-        ENDIF
-        SELF:oSurface := oDw:Surface
-        SELF:oFrame	  := oDw:Frame
-        RETURN oDw
+    internal lInAutoLayout as logic
 
     /// <exclude />
-    PROPERTY __DataForm AS VODataForm GET (VODataForm) SELF:__Form
+    method __CreateForm() as VOForm strict
+        local oDw as VODataForm
+        self:__ReadResource(oResourceID, oParent)
+        if oShell != null_object
+            oDw := GuiFactory.Instance:CreateDataForm(self, oShell:__Form, self:oResourceDialog)
+        else
+            oDw := GuiFactory.Instance:CreateDataForm(self, null_object, self:oResourceDialog)
+        endif
+        self:oSurface := oDw:Surface
+        self:oFrame	  := oDw:Frame
+        return oDw
 
     /// <exclude />
-    PROPERTY __Frame AS IVOFramePanel GET SELF:oFrame
+    property __DataForm as VODataForm get (VODataForm) self:__Form
 
     /// <exclude />
+    property __Frame as VOFramePanel get self:oFrame
 
-    [Obsolete];
-    METHOD __AdjustForm() AS VOID STRICT
-        //Resizing happens automatically in the DataWinForm class
-        RETURN
     /// <exclude />
 
     [Obsolete];
-    METHOD __AdjustSurface() AS LOGIC STRICT
+    method __AdjustForm() as void strict
         //Resizing happens automatically in the DataWinForm class
-        RETURN TRUE
+        return
+    /// <exclude />
+
+    [Obsolete];
+    method __AdjustSurface() as logic strict
+        //Resizing happens automatically in the DataWinForm class
+        return true
 
     /// <exclude />
-    PROPERTY __aRadioGroups AS ARRAY GET aRadioGroups
+    property __aRadioGroups as array get aRadioGroups
 
     /// <exclude />
-    METHOD __AutoCreateBrowser() AS DataWindow STRICT
-        IF oGBrowse == NULL_OBJECT
-            IF symBrowserClass == #DataBrowser
-                oGBrowse := DataBrowser{SELF}
-                SELF:__DataForm:DataBrowser := (System.Windows.Forms.Control) oGBrowse:__Control
+    method __AutoCreateBrowser() as DataWindow strict
+        if oGBrowse == null_object
+            if symBrowserClass == #DataBrowser
+                oGBrowse := DataBrowser{self}
+                self:__DataForm:DataBrowser := (System.Windows.Forms.Control) oGBrowse:__Control
                 //ELSEIF symBrowserClass == #DataListView
                 //	oGBrowse := DataListView{SELF}
-            ELSE
-                oGBrowse := CreateInstance(symBrowserClass, SELF)
-            ENDIF
-        ENDIF
-        DO CASE
-        CASE (sCurrentView == #ViewSwitch)
+            else
+                oGBrowse := CreateInstance(symBrowserClass, self)
+            endif
+        endif
+        do case
+        case (sCurrentView == #ViewSwitch)
             oGBrowse:__NOTIFYChanges( GBNFY_VIEWSWITCH)
-        CASE (sCurrentView == #BrowseView)
+        case (sCurrentView == #BrowseView)
             oGBrowse:__NOTIFYChanges( GBNFY_VIEWASBROWSER)
-        CASE (sCurrentView == #FormView)
+        case (sCurrentView == #FormView)
             oGBrowse:__NOTIFYChanges( GBNFY_VIEWASFORM)
-        END CASE
+        end case
 
-        IF (lLinked .and. oAttachedServer != NULL_OBJECT)
+        if (lLinked .and. oAttachedServer != null_object)
             oGBrowse:Use(oAttachedServer)
-        ENDIF
+        endif
 
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __AutoLayout() AS DataWindow STRICT
-        LOCAL cField AS STRING
-        LOCAL oDFField AS OBJECT
-        LOCAL liFieldLen AS LONGINT
-        LOCAL liStart AS LONGINT
-        LOCAL liFields, liField, liLines AS LONGINT
-        LOCAL newControl AS Control
-        LOCAL oPoint AS Point
-        LOCAL oDimension AS Dimension
-        LOCAL oLabelDim AS Dimension
-        LOCAL maxLblSize AS INT
-        LOCAL maxFldSize AS INT
-        LOCAL maxEditSize AS INT
-        LOCAL editHeight AS INT
-        LOCAL editGap AS INT
-        LOCAL cType AS STRING
-        LOCAL arUsedKeys AS ARRAY
-        LOCAL lOleAvail := TRUE AS LOGIC
-        LOCAL lMCAvail := TRUE
-        LOCAL lOleWarningShown := FALSE AS LOGIC
-        LOCAL lBidi := IsBiDi() AS LOGIC
-        LOCAL iMaxWidth AS INT
-        LOCAL iNewWidth AS INT
-        LOCAL CoordinateSystem AS LOGIC
-        LOCAL iFontWidth AS INT
+    method __AutoLayout() as DataWindow strict
+        local cField as string
+        local oDFField as DataField
+        local liFieldLen as longint
+        local liStart as longint
+        local liFields, liField, liLines as longint
+        local newControl as Control
+        local oPoint as Point
+        local oDimension as Dimension
+        local oLabelDim as Dimension
+        local maxLblSize as int
+        local maxFldSize as int
+        local maxEditSize as int
+        local editHeight as int
+        local editGap as int
+        local cType as string
+        local arUsedKeys as array
+        local lOleAvail := true as logic
+        local lMCAvail := true
+        local lOleWarningShown := false as logic
+        local lBidi := IsBiDi() as logic
+        local iMaxWidth as int
+        local iNewWidth as int
+        local CoordinateSystem as logic
+        local iFontWidth as int
 
-        IF lPreventAutoLayout
-            RETURN SELF
-        ENDIF
-        lInAutoLayout := TRUE
+        if lPreventAutoLayout
+            return self
+        endif
+        lInAutoLayout := true
         CoordinateSystem := WC.CoordinateSystem
         WC.CoordinateSystem := WC.WindowsCoordinates
-        SELF:oSurface:SuspendLayout()
+        self:oSurface:SuspendLayout()
 
         //RvdH 070415 limited iMMaxWidth to half the width of the desktop (and not two third)
         iMaxWidth := System.Windows.Forms.Screen.GetWorkingArea(__Form):Width /2
 
-        __DataForm:AutoLayout := TRUE
+        __DataForm:AutoLayout := true
         __DataForm:ResetMinSize()
 
         arUsedKeys := {}
@@ -163,1379 +163,1375 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         // get Textmetric through Font
         // approx. - there is no width in font, use of VisualStyle Renderer Crashes in Windows Classic Scheme and getting the textmetrics through handle is not an option
         // since the window is shown when the handle is created
-        iFontWidth := SELF:oSurface:Font:Height
+        iFontWidth := self:oSurface:Font:Height
         editHeight := iFontWidth + 4
         editGap := editHeight + 6
 
         // Find maximum field label size and number of lines
-        liFields := (LONG) oAttachedServer:FCount
-        FOR liField := 1 UPTO liFields
+        liFields := (long) oAttachedServer:FCount
+        for liField := 1 upto liFields
             //DebOut("lifield", lifield)
             oDFField := oAttachedServer:DataField(liField)
-            IF (oDFField == NULL_OBJECT)
-                LOOP
-            ENDIF
+            if (oDFField == null_object)
+                loop
+            endif
 
             cType := oDFField:FieldSpec:ValType
-            IF (cType != "O") .OR. lOleAvail
+            if (cType != "O") .or. lOleAvail
                 liLines++
                 cField 		:= __GetDFCaption(oDFField,{})
-                oDimension := SELF:SizeText(cField)
-                IF (oDimension:Width > maxLblSize)
+                oDimension := self:SizeText(cField)
+                if (oDimension:Width > maxLblSize)
                     maxLblSize := oDimension:Width
                     oLabelDim := oDimension
-                ENDIF
-                IF (cType == "M")
+                endif
+                if (cType == "M")
                     liLines += 1
-                ELSEIF ((cType == "O") .AND. lOleAvail) .OR. (cType == "X")
+                elseif ((cType == "O") .and. lOleAvail) .or. (cType == "X")
                     liLines += 6
-                ELSE
+                else
                     maxFldSize := Max(maxFldSize, oDFField:FieldSpec:Length)
-                ENDIF
-            ELSEIF !lOLEWarningShown
-                TextBox{SELF, ResourceString{__WCSWarning}:Value, ResourceString{__WCSNoOLESupport}:Value, BUTTONOKAY}:Show()
-                lOleWarningShown := TRUE
-            ENDIF
-        NEXT //liStart
+                endif
+            elseif !lOLEWarningShown
+                TextBox{self, ResourceString{__WCSWarning}:Value, ResourceString{__WCSNoOLESupport}:Value, BUTTONOKAY}:Show()
+                lOleWarningShown := true
+            endif
+        next //liStart
 
     //// Add the fields
     liField := 0
     maxEditSize := Math.Min(iMaxWidth, (maxFldSize+1) * iFontWidth)
 
-    oPoint := Point{IIF(lBidi, (25 + maxEditSize), 20), 0}
+    oPoint := Point{iif(lBidi, (25 + maxEditSize), 20), 0}
 
-    FOR liStart:=1 UPTO liLines
+    for liStart:=1 upto liLines
     // get next datafield
-    oDFField := NULL_OBJECT
-    WHILE (oDFField == NULL_OBJECT) .AND. (liField <= liFields)
+    oDFField := null_object
+    while (oDFField == null_object) .and. (liField <= liFields)
     liField++
-    oDFField := SELF:oAttachedServer:DataField(liField)
-    ENDDO
+    oDFField := self:oAttachedServer:DataField(liField)
+    enddo
 
-    IF liField>liFields
-    EXIT
-    ENDIF
+    if liField>liFields
+    exit
+    endif
 
     // Create label
     cType := oDFField:FieldSpec:ValType
 
-    IF (cType != "O") .OR. lOleAvail
+    if (cType != "O") .or. lOleAvail
     cField := __GetDFCaption(oDFField,arUsedKeys)
     oPoint:Y := editGap * (liStart-1)
-    newControl := FixedText{SELF, (100 + liField), oPoint, oLabelDim, cField}
+    newControl := FixedText{self, (100 + liField), oPoint, oLabelDim, cField}
     newControl:Show()
 
     // Create Data control
     liFieldLen := __GetFSDefaultLength(oDFField:FieldSpec)
 
     // get the new width first (we need that for BiDi)
-    DO CASE
-    CASE cType=="L"
+    do case
+    case cType=="L"
     iNewWidth := 4*iFontWidth
-    CASE cType=="M"
+    case cType=="M"
     iNewWidth := (maxFldSize+1)*iFontWidth
-    CASE cType=="O" .OR. cType=="X"
+    case cType=="O" .or. cType=="X"
     iNewWidth := 300
-    CASE cType=="D" .AND. lMCAvail
+    case cType=="D" .and. lMCAvail
     iNewWidth := 190
-    OTHERWISE
-    IF (cType == "C")
+    otherwise
+    if (cType == "C")
     iNewWidth := Max(liFieldLen, 2) * iFontWidth
-    ELSE
+    else
     iNewWidth := (liFieldLen +1 ) * iFontWidth
-    ENDIF
-    ENDCASE
+    endif
+    endcase
 
-    IF (lBidi)
+    if (lBidi)
     // s.b. We have to add this otherwise the "C" type fields overlap the text captions.
     oPoint:X := 20 + maxEditSize - Math.Min(iMaxWidth, iNewWidth)
-    ELSE
+    else
     oPoint:X := 25 + maxLblSize
-    ENDIF
+    endif
 
     oPoint:Y := editGap * (liStart-1)
 
-    DO CASE
-    CASE cType=="L"
-    newControl := CheckBox{SELF, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, " ", BS_AUTOCHECKBOX}
-    CASE cType=="M"
+    do case
+    case cType=="L"
+    newControl := CheckBox{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, " ", BS_AUTOCHECKBOX}
+    case cType=="M"
     liStart += 1
     oPoint:Y := editGap * (liLines - liStart + 1)
-    newControl := MultiLineEdit{SELF, 200+liField, oPoint, Dimension{iNewWidth, editHeight*2}, ES_AUTOVSCROLL}
+    newControl := MultiLineEdit{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight*2}, ES_AUTOVSCROLL}
 #ifdef USE_OLEOBJECT
-    CASE cType=="O"
+    case cType=="O"
     liStart += 6
     oPoint:Y := editGap * (liLines - liStart + 1)
-    oOle := OleObject{ SELF, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}, TRUE}
+    oOle := OleObject{ self, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}, true}
     newControl := oOle
-    oOle:AutoSizeOnCreate := FALSE
-    oOle:AllowInPlace:= !IsInstanceOf(SELF, #DataDialog) /*.and. IsInstanceOf(oParent, #ShellWindow)*/
-    oOle:ActivateOnDblClk:=  TRUE
-    oOle:AllowResize:=  TRUE
+    oOle:AutoSizeOnCreate := false
+    oOle:AllowInPlace:= !IsInstanceOf(self, #DataDialog) /*.and. IsInstanceOf(oParent, #ShellWindow)*/
+    oOle:ActivateOnDblClk:=  true
+    oOle:AllowResize:=  true
 #endif
-    CASE cType=="X"
+    case cType=="X"
     liStart += 6
     oPoint:Y := editGap * (liLines - liStart + 1)
-    newControl := MultiMediaContainer{SELF, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}}
-    CASE cType=="D" .AND. lMCAvail
-    newControl := DateTimePicker{SELF, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, DTS_LONGDATEFORMAT}
-    OTHERWISE
-    IF (iNewWidth < iMaxWidth)
-    newControl := SingleLineEdit{SELF, 200+liField, oPoint, Dimension{iNewWidth, editHeight}}
-    ELSE
-    newControl := SingleLineEdit{SELF, 200+liField, oPoint, Dimension{iMaxWidth, editHeight}, ES_AUTOHSCROLL}
-    ENDIF
-    ENDCASE
+    newControl := MultiMediaContainer{self, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}}
+    case cType=="D" .and. lMCAvail
+    newControl := DateTimePicker{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, DTS_LONGDATEFORMAT}
+    otherwise
+    if (iNewWidth < iMaxWidth)
+    newControl := SingleLineEdit{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}}
+    else
+    newControl := SingleLineEdit{self, 200+liField, oPoint, Dimension{iMaxWidth, editHeight}, ES_AUTOHSCROLL}
+    endif
+    endcase
     // Link the data editor to the Server
     newControl:LinkDF(oAttachedServer, liField)
     // Show it
     newControl:Show()
 
-    oPoint:X := IIF(lBidi, (25 + maxEditSize), 20)
-    ENDIF
-    NEXT
-    SELF:oSurface:ResumeLayout()
-    lInAutoLayout := FALSE
+    oPoint:X := iif(lBidi, (25 + maxEditSize), 20)
+    endif
+    next
+    self:oSurface:ResumeLayout()
+    lInAutoLayout := false
     WC.CoordinateSystem := CoordinateSystem
     __DataForm:AdjustFrameSize()
 
-    RETURN SELF
+    return self
 
 
     /// <exclude />
-    METHOD __CheckConditionalControls() AS DataWindow STRICT
-        LOCAL idx, iLen AS DWORD
-        LOCAL oControl AS Control
+    method __CheckConditionalControls() as DataWindow strict
+        local idx, iLen as dword
+        local oControl as Control
 
         iLen := ALen(aControls)
-        FOR idx :=1 TO iLen
+        for idx :=1 to iLen
             oControl := aControls[idx]
-            IF (oControl:Status != NULL_OBJECT)
-                EXIT
-            ENDIF
-        NEXT
+            if (oControl:Status != null_object)
+                exit
+            endif
+        next
 
-        IF !IsNil(oHLStatus) .OR. (idx != (iLen+1))
-            SELF:DisableConditionalControls()
-        ELSE
-            SELF:EnableConditionalControls()
-        ENDIF
-        RETURN SELF
+        if !IsNil(oHLStatus) .or. (idx != (iLen+1))
+            self:DisableConditionalControls()
+        else
+            self:EnableConditionalControls()
+        endif
+        return self
 
 
     /// <exclude />
-    METHOD __CheckRecordStatus() AS LOGIC STRICT
-        LOCAL oOldStatus AS HyperLabel
-        LOCAL oTempStatus AS HyperLabel
+    method __CheckRecordStatus() as logic strict
+        local oOldStatus as HyperLabel
+        local oTempStatus as HyperLabel
 
         oOldStatus := oHLStatus
 
-        IF (IsNil(oAttachedServer))
+        if (IsNil(oAttachedServer))
             oHLStatus := HyperLabel{#NoAttachedServer, #NoAttachedServer}
-        ELSE
-            SELF:__UpdateCurrent()
-            IF !SELF:StatusOK()
-                IF (sCurrentView == #FormView)
-                    IF (oDCInvalidControl != NULL_OBJECT)
+        else
+            self:__UpdateCurrent()
+            if !self:StatusOK()
+                if (sCurrentView == #FormView)
+                    if (oDCInvalidControl != null_object)
                         oTempStatus:=oHLStatus //Save status accross SetFocus
                         oDCInvalidControl:SetFocus()
                         oHLStatus := oTempStatus
-                    ENDIF
-                ELSEIF (sCurrentView == #BrowseView)
+                    endif
+                elseif (sCurrentView == #BrowseView)
                     // Jump to error column for browse view
-                    IF (oDCInvalidColumn != NULL_OBJECT) .AND. IsMethod(oGBrowse, #SetColumnFocus)
+                    if (oDCInvalidColumn != null_object) .and. IsMethod(oGBrowse, #SetColumnFocus)
                         Send(oGBrowse, #SetColumnFocus, oDCInvalidColumn)
-                    ENDIF
-                ENDIF
-            ELSE
-                IF !SELF:ValidateRecord()	//RH ValidateRecord is defined in our patches
-                    IF IsNil(oHLStatus)
+                    endif
+                endif
+            else
+                if !self:ValidateRecord()	//RH ValidateRecord is defined in our patches
+                    if IsNil(oHLStatus)
                         oHLStatus := HyperLabel{#InvalidRecord, #RecInvalid}
-                    ENDIF
-                ENDIF
-            ENDIF
+                    endif
+                endif
+            endif
             // Prevalidate based on status change
-            IF (oHLStatus != oOldStatus)
-                SELF:PreValidate()
-            ENDIF
-        ENDIF
-        IF (!IsNil(oHLStatus))
-            SELF:__UpdateStatus()
-            RETURN FALSE
-        ENDIF
+            if (oHLStatus != oOldStatus)
+                self:PreValidate()
+            endif
+        endif
+        if (!IsNil(oHLStatus))
+            self:__UpdateStatus()
+            return false
+        endif
 
-        RETURN TRUE
+        return true
 
 
     /// <exclude />
-    METHOD __Delete() AS LOGIC STRICT
+    method __Delete() as logic strict
         // DataWindow : Delete
         // This method deletes the current record.
         // Depending on the setting of SET DELETE, the record may or may not be still
         // available for viewing. If SET DELETE is set to ON, the record will not be shown
         // in subsequent browsing of the DataServer.
 
-        LOCAL lRetCode := FALSE AS LOGIC
+        local lRetCode := false as logic
 
-        oHLStatus:= NULL_OBJECT // assume success
-        IF oAttachedserver!=NULL_OBJECT
-            IF SELF:__CheckRecordStatus()
+        oHLStatus:= null_object // assume success
+        if oAttachedserver!=null_object
+            if self:__CheckRecordStatus()
                 lRetCode := oAttachedServer:@@Delete()
-                IF lRetCode
-                    IF SetDeleted() .OR. IsInstanceOf(oAttachedServer,#SQLSelect)
-                        SELF:Skip(1)
+                if lRetCode
+                    if SetDeleted() .or. IsInstanceOf(oAttachedServer,#SQLSelect)
+                        self:Skip(1)
                         oHLStatus:=oAttachedServer:Status
-                        IF oAttachedServer:EoF
-                            SELF:Skip(-1)
+                        if oAttachedServer:EoF
+                            self:Skip(-1)
                             oHLStatus:=oAttachedServer:Status
-                        ENDIF
-                    ENDIF
-                ELSE
+                        endif
+                    endif
+                else
                     oHLStatus:=oAttachedServer:Status
-                    IF IsNil(oHLStatus) // need default status info
+                    if IsNil(oHLStatus) // need default status info
                         oHLStatus := HyperLabel { #NoDelete, ResourceString{__WCSDeleteFailed}:Value, ResourceString{__WCSDeleteFailedMSG}:Value}
-                    ENDIF
-                ENDIF
-            ELSE
+                    endif
+                endif
+            else
                 oHLStatus:=oAttachedServer:Status
-            ENDIF
-        ENDIF
-        RETURN SELF:__UpdateStatus()
+            endif
+        endif
+        return self:__UpdateStatus()
 
 
 
     /// <exclude />
-    METHOD __DoValidate(oControl AS Control) AS VOID STRICT
+    method __DoValidate(oControl as Control) as void strict
         //RH Check fore Server on control in stead of Server on window
-        LOCAL oServer AS DataServer
-        IF oControl is RadioButton
-            FOREACH oRBG AS RadioButtonGroup IN aRadioGroups
+        local oServer as DataServer
+        if oControl is RadioButton
+            foreach oRBG as RadioButtonGroup in aRadioGroups
 
-                IF oRBG:__IsElement( (RadioButton) oControl)
+                if oRBG:__IsElement( (RadioButton) oControl)
                     oControl:__Update()
                     oControl := oRBG
-                    EXIT
-                ENDIF
-            NEXT //dwI
-        ENDIF
+                    exit
+                endif
+            next //dwI
+        endif
 
-        IF oControl:Modified .or. oControl:ValueChanged
+        if oControl:Modified .or. oControl:ValueChanged
             oControl:__Update()
-            IF oControl:ValueChanged
-                IF !oControl:PerformValidations()
+            if oControl:ValueChanged
+                if !oControl:PerformValidations()
                     oHLStatus := oControl:Status
-                    SELF:__UpdateStatus()
-                ELSE
+                    self:__UpdateStatus()
+                else
                     oHLStatus := oControl:Status
-                    SELF:@@StatusMessage(NULL_STRING, MessageError)
+                    self:@@StatusMessage(null_string, MessageError)
                     oServer := oControl:Server
-                    IF oServer != NULL_OBJECT
-                        IF !oControl:__Gather()
+                    if oServer != null_object
+                        if !oControl:__Gather()
                             oHLStatus := oServer:Status
-                            SELF:__UpdateStatus()
-                        ENDIF
-                    ENDIF
-                ENDIF
-                SELF:PreValidate()
-            ENDIF
-        ENDIF
+                            self:__UpdateStatus()
+                        endif
+                    endif
+                endif
+                self:PreValidate()
+            endif
+        endif
 
-        RETURN
+        return
 
 
     /// <exclude />
-    METHOD __DoValidateColumn(oColumn AS DataColumn) AS VOID STRICT
-        IF oColumn:Modified
+    method __DoValidateColumn(oColumn as DataColumn) as void strict
+        if oColumn:Modified
             oColumn:__Update()
-            IF oColumn:ValueChanged
-                IF !oColumn:PerformValidations()
+            if oColumn:ValueChanged
+                if !oColumn:PerformValidations()
                     oHLStatus := oColumn:Status
-                    SELF:__UpdateStatus()
-                ELSE
+                    self:__UpdateStatus()
+                else
                     oHLStatus := oColumn:Status
-                    SELF:StatusMessage(NULL_STRING, MessageError)
-                    IF !IsNil(oAttachedServer)
+                    self:StatusMessage(null_string, MessageError)
+                    if !IsNil(oAttachedServer)
                         oColumn:__Gather()
-                    ENDIF
-                ENDIF
-                SELF:PreValidate()
-                oColumn:ValueChanged := TRUE
-            ENDIF
-        ENDIF
+                    endif
+                endif
+                self:PreValidate()
+                oColumn:ValueChanged := true
+            endif
+        endif
 
-        RETURN
-
-    /// <exclude />
-    METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT
-        RETURN SUPER:__EnableHelpCursor(lEnabled)
-
+        return
 
     /// <exclude />
-    METHOD __FindControl(symName AS SYMBOL) AS Control STRICT
-        FOREACH oControl  AS Control IN aControls
-            IF oControl:NameSym == symName
-                RETURN oControl
-            ENDIF
-        NEXT  // dwI
-
-        RETURN NULL_OBJECT
+    method __EnableHelpCursor(lEnabled as logic) as Window strict
+        return super:__EnableHelpCursor(lEnabled)
 
 
     /// <exclude />
-    METHOD __FindFieldSpec(SymName AS SYMBOL) AS FieldSpec STRICT
-        LOCAL oControl AS Control
+    method __FindControl(symName as symbol) as Control strict
+        foreach oControl  as Control in aControls
+            if oControl:NameSym == symName
+                return oControl
+            endif
+        next  // dwI
 
-        IF (oControl := SELF:__FindControl(SymName)) != NULL_OBJECT
-            RETURN oControl:FieldSpec
-        ENDIF
-
-        RETURN NULL_OBJECT
-
-
-    /// <exclude />
-    METHOD __FindHyperLabel(SymName AS SYMBOL) AS HyperLabel STRICT
-        LOCAL oControl AS Control
-
-        IF (oControl := SELF:__FindControl(SymName)) != NULL_OBJECT
-            RETURN oControl:HyperLabel
-        ENDIF
-
-        RETURN NULL_OBJECT
+        return null_object
 
 
     /// <exclude />
-    METHOD __Gather() AS LOGIC STRICT
+    method __FindFieldSpec(SymName as symbol) as FieldSpec strict
+        local oControl as Control
 
-        FOREACH oControl AS Control IN aControls
+        if (oControl := self:__FindControl(SymName)) != null_object
+            return oControl:FieldSpec
+        endif
+
+        return null_object
+
+
+    /// <exclude />
+    method __FindHyperLabel(SymName as symbol) as HyperLabel strict
+        local oControl as Control
+
+        if (oControl := self:__FindControl(SymName)) != null_object
+            return oControl:HyperLabel
+        endif
+
+        return null_object
+
+
+    /// <exclude />
+    method __Gather() as logic strict
+
+        foreach oControl as Control in aControls
             oControl:__Gather()
-        NEXT
+        next
 
-        RETURN IsNil(oHLStatus)
-
-
-    /// <exclude />
-    METHOD __GetFormSurface() AS VOSurfacePanel STRICT
-        RETURN oSurface
+        return IsNil(oHLStatus)
 
 
     /// <exclude />
-    METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT
+    method __GetFormSurface() as VOSurfacePanel strict
+        return oSurface
+
+
+    /// <exclude />
+    method __GetOLEObject(symMethod as symbol) as DataWindow strict
 #ifdef USE_OLEOBJECT
         //RvdH 030825 Methods moved from Ole Classes
-        LOCAL hFocus := GetFocus() AS PTR
-        LOCAL oOle AS OleObject
-        LOCAL dwI, dwCount AS DWORD
-        LOCAL oControl AS Control
-        LOCAL lRet AS LOGIC
+        local hFocus := GetFocus() as ptr
+        local oOle as OleObject
+        local dwI, dwCount as dword
+        local oControl as Control
+        local lRet as logic
 
         // neccessary???
         //SE-060526
         dwCount := ALen(aControls)
-        FOR dwI := 1 UPTO dwCount
+        for dwI := 1 upto dwCount
             oControl := aControls[dwI]
-            IF oControl:Handle() == hFocus
+            if oControl:Handle() == hFocus
                 oControl := aControls[dwI]
-                EXIT
-            ENDIF
-        NEXT  // dwI
+                exit
+            endif
+        next  // dwI
 
-        IF IsInstanceOf(oControl, #OleObject)
-            oOle := OBJECT(_CAST, oControl)
+        if IsInstanceOf(oControl, #OleObject)
+            oOle := object(_cast, oControl)
             oOle:DetachFromServer()
             lRet := Send(oOle, symMethod)
-            IF (oAttachedServer != NULL_OBJECT) .AND. (oOle:__GetDataFldPos > 0)
-                IF (lRet)
-                    oOle:ValueChanged :=TRUE
-                    oOle:Modified :=TRUE
+            if (oAttachedServer != null_object) .and. (oOle:__GetDataFldPos > 0)
+                if (lRet)
+                    oOle:ValueChanged :=true
+                    oOle:Modified :=true
                     oAttachedServer:RLOCK()
-                    SELF:FIELDPUT(oOle:__GetDataFldPos, oOle)
+                    self:FIELDPUT(oOle:__GetDataFldPos, oOle)
                     oOle:__Scatter() // ???!!! correct ??
                     oAttachedServer:Unlock()
-                ELSE
+                else
                     oOle:__Scatter() // ???!!! correct ??
-                ENDIF
-            ENDIF
+                endif
+            endif
             oOle:RePaint()
-        ELSE
+        else
             MessageBox(0, String2Psz(ResourceString{IDS_NOINSERT}:VALUE),;
             String2Psz(ResourceString{IDS_OLERUNTIME}:VALUE),;
-            _OR(MB_OK, MB_ICONHAND))
-        ENDIF
+            _or(MB_OK, MB_ICONHAND))
+        endif
 #endif
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __HandleScrolling(oEvent AS Event) AS DataWindow STRICT
-        DO CASE
-        CASE oEvent IS ScrollEvent VAR oScroll
+    method __HandleScrolling(oEvent as Event) as DataWindow strict
+        do case
+        case oEvent is ScrollEvent var oScroll
             oScroll:ScrollBar:ThumbPosition := oScroll:Position
-            SELF:__DoValidate(oScroll:ScrollBar)
+            self:__DoValidate(oScroll:ScrollBar)
 
-        CASE oEvent IS SpinnerEvent VAR oSpin
+        case oEvent is SpinnerEvent var oSpin
             oSpin:Spinner:ThumbPosition := oSpin:Value
-            SELF:__DoValidate(oSpin:Spinner)
+            self:__DoValidate(oSpin:Spinner)
 
-        CASE oEvent IS SliderEvent VAR oSlide
+        case oEvent is SliderEvent var oSlide
             oSlide:Slider:ThumbPosition := oSlide:Position
-            SELF:__DoValidate(oSlide:Slider)
-        ENDCASE
+            self:__DoValidate(oSlide:Slider)
+        endcase
 
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __RegisterFieldLinks(oDataServer AS DataServer) AS LOGIC STRICT
-        LOCAL oDC AS Control
-        LOCAL dwIndex, dwControls AS DWORD
-        LOCAL siDF AS DWORD
+    method __RegisterFieldLinks(oDataServer as DataServer) as logic strict
+        local oDC as Control
+        local dwIndex, dwControls as dword
+        local siDF as dword
 
 
         dwControls := ALen(aControls)
-        IF dwControls > 0
-            FOR dwIndex := 1 UPTO dwControls
-                IF IsInstanceOfUsual(aControls[dwIndex], #Control)
+        if dwControls > 0
+            for dwIndex := 1 upto dwControls
+                if IsInstanceOfUsual(aControls[dwIndex], #Control)
                     oDC := aControls[dwIndex]
                     siDF := oDataServer:FieldPos(oDC:NameSym)
-                    IF siDF > 0 .AND. IsNil(oDC:Server) // Only one datafield per control
+                    if siDF > 0 .and. IsNil(oDC:Server) // Only one datafield per control
                         oDC:LinkDF(oDataServer, siDF) // Exit here, only one control per
-                        lLinked := TRUE
-                    ENDIF
-                ENDIF
-            NEXT
-        ELSE
+                        lLinked := true
+                    endif
+                endif
+            next
+        else
             // Only autolayout if there are _no_ controls
-            IF ALen(SELF:GetAllChildren()) == 0
-                SELF:__AutoLayout()
-                lLinked := TRUE
-            ENDIF
-        ENDIF
+            if ALen(self:GetAllChildren()) == 0
+                self:__AutoLayout()
+                lLinked := true
+            endif
+        endif
 
-        IF lLinked
-            oDataServer:RegisterClient(SELF)
-        ENDIF
+        if lLinked
+            oDataServer:RegisterClient(self)
+        endif
 
-        RETURN lLinked
+        return lLinked
 
 
     /// <exclude />
-    METHOD __RegisterSubform(oSubForm AS DataWindow) AS DataWindow STRICT
+    method __RegisterSubform(oSubForm as DataWindow) as DataWindow strict
         AAdd(aSubForms, oSubForm)
-        SELF:oSurface:AddControl(oSubForm:__Frame)
+        self:oSurface:AddControl(oSubForm:__Frame)
         // Set the parent of the __DataForm of the Subwindow to our parent
-        oSubForm:__DataForm:Owner := SELF:__DataForm:Owner
-        RETURN SELF
+        oSubForm:__DataForm:Owner := self:__DataForm:Owner
+        return self
 
 
     /// <exclude />
-    METHOD __Scatter() AS DataWindow STRICT
+    method __Scatter() as DataWindow strict
 
-        IF (sCurrentView == #FormView)
-            FOREACH oControl AS Control IN aControls
+        if (sCurrentView == #FormView)
+            foreach oControl as Control in aControls
                 oControl:__Scatter()
-            NEXT
-            lRecordDirty := FALSE
-            SELF:PreValidate()
-        ELSEIF (oGBrowse != NULL_OBJECT)
+            next
+            lRecordDirty := false
+            self:PreValidate()
+        elseif (oGBrowse != null_object)
             Send(oGBrowse, #__RefreshData)
-            lRecordDirty := FALSE
-            SELF:PreValidate()
-        ENDIF
+            lRecordDirty := false
+            self:PreValidate()
+        endif
 
-        RETURN SELF
+        return self
 
 
 
     /// <exclude />
-    METHOD __SetupDataControl(oDC AS Control) AS VOID
+    method __SetupDataControl(oDC as Control) as void
         // DebOut(__FUNCTION__)
-        IF oDC IS RadioButtonGroup
+        if oDC is RadioButtonGroup
             AAdd(aRadioGroups, oDC)
-        ENDIF
+        endif
 
-        IF __DataForm:AutoLayout .AND. !(oDC IS FixedText)
+        if __DataForm:AutoLayout .and. !(oDC is FixedText)
             oDC:SetStyle(WS_TabStop)
-        ENDIF
+        endif
         AAdd(aControls, oDC)
 
-        RETURN
+        return
 
 
     /// <exclude />
-    METHOD __SetupNonDataControl(oDC AS Control) AS VOID
+    method __SetupNonDataControl(oDC as Control) as void
         //DebOut(__FUNCTION__)
-        IF __DataForm:AutoLayout .AND. !(oDC IS FixedText)
+        if __DataForm:AutoLayout .and. !(oDC is FixedText)
             oDC:SetStyle(WS_TabStop)
-        ENDIF
+        endif
 
-        RETURN
+        return
 
 
     /// <exclude />
-    METHOD __StatusMessage(uDescription AS USUAL, nMode AS LONGINT) AS DataWindow STRICT
-        LOCAL uTemp AS USUAL
+    method __StatusMessage(uDescription as usual, nMode as longint) as DataWindow strict
+        local uTemp as usual
 
 
-        IF IsInstanceOfUsual(uDescription, #HyperLabel)
-            uTemp := uDescription:Description
-            IF Empty(uTemp) .OR. IsNil(uTemp)
-                uTemp := NULL_STRING
-            ENDIF
-        ELSE
+        if uDescription is HyperLabel var oHL
+            uTemp := oHL:Description
+            if Empty(uTemp) .or. IsNil(uTemp)
+                uTemp := null_string
+            endif
+        else
             uTemp := uDescription
-        ENDIF
+        endif
 
         // sTmp is now a symbol or String
 
-        IF IsSymbol(uTemp)
+        if IsSymbol(uTemp)
             uTemp := Symbol2String(uTemp)
-        ELSEIF IsNil(uTemp)
-            uTemp := NULL_STRING
-        ENDIF
+        elseif IsNil(uTemp)
+            uTemp := null_string
+        endif
 
-        IF !IsString(uTemp)
+        if !IsString(uTemp)
             uTemp := ResourceString{__WCSUnknownStatusMSG}:Value
-        ENDIF
-        SELF:@@StatusMessage(uTemp, nMode)
-        RETURN SELF
+        endif
+        self:@@StatusMessage(uTemp, nMode)
+        return self
 
 
     /// <exclude />
-    PROPERTY __SubForm AS LOGIC GET lSubForm
+    property __SubForm as logic get lSubForm
 
     /// <exclude />
 
-    PROPERTY __HasSurface AS LOGIC GET TRUE
+    property __HasSurface as logic get true
     /// <exclude />
 
-    PROPERTY __Surface AS IVOControlContainer GET oSurface
+    property __Surface as IVOPanel get oSurface
 
     /// <exclude />
-    METHOD __Unlink() AS LOGIC STRICT
+    method __Unlink() as logic strict
 
-        IF oAttachedServer == NULL_OBJECT
-            RETURN FALSE
-        ENDIF
-        FOREACH oControl AS Control IN aControls
+        if oAttachedServer == null_object
+            return false
+        endif
+        foreach oControl as Control in aControls
             oControl:__Unlink()
-        NEXT
+        next
 
-        IF oGBrowse != NULL_OBJECT
+        if oGBrowse != null_object
             oGBrowse:__Unlink()
-        ENDIF
-        oAttachedServer:UnRegisterClient(SELF, lAllowServerClose)
-        oAttachedServer := NULL_OBJECT
-        lLinked := FALSE
+        endif
+        oAttachedServer:UnRegisterClient(self, lAllowServerClose)
+        oAttachedServer := null_object
+        lLinked := false
 
-        RETURN TRUE
+        return true
 
 
     /// <exclude />
-    METHOD __UnRegisterDataControl(oControl AS Control) AS DataWindow STRICT
-        LOCAL dwI, dwCount AS DWORD
+    method __UnRegisterDataControl(oControl as Control) as DataWindow strict
+        local dwI, dwCount as dword
 
 
         // test???
         //RETURN SELF
 
         dwCount := ALen(aControls)
-        FOR dwI := 1 UPTO dwCount
-            IF aControls[dwI] = oControl
+        for dwI := 1 upto dwCount
+            if aControls[dwI] = oControl
                 ADel(aControls, dwI)
                 ASize(aControls, dwCount-1)
-                EXIT
-            ENDIF
-        NEXT  // dwI
+                exit
+            endif
+        next  // dwI
 
         dwCount := ALen(aConditionalControls)
-        FOR dwI := 1 UPTO dwCount
-            IF aConditionalControls[dwI] = oControl
+        for dwI := 1 upto dwCount
+            if aConditionalControls[dwI] = oControl
                 ADel(aConditionalControls, dwI)
                 ASize(aConditionalControls, dwCount-1)
-                EXIT
-            ENDIF
-        NEXT  // dwI
+                exit
+            endif
+        next  // dwI
 
         dwCount := ALen(aRadioGroups)
-        FOR dwI := 1 UPTO dwCount
-            IF aRadioGroups[dwI] = oControl
+        for dwI := 1 upto dwCount
+            if aRadioGroups[dwI] = oControl
                 ADel(aRadioGroups, dwI)
                 ASize(aRadioGroups, dwCount-1)
-                EXIT
-            ENDIF
-        NEXT  // dwI
+                exit
+            endif
+        next  // dwI
 
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __UnRegisterSubform(oSubForm AS OBJECT) AS DataWindow STRICT
-        LOCAL dwI, dwCount AS DWORD
+    method __UnRegisterSubform(oSubForm as object) as DataWindow strict
+        local dwI, dwCount as dword
 
 
 
         dwCount := ALen(aSubForms)
-        FOR dwI := 1 UPTO dwCount
-            IF aSubForms[dwI] == oSubForm
+        for dwI := 1 upto dwCount
+            if aSubForms[dwI] == oSubForm
                 ADel(aSubForms, dwI)
                 ASize(aSubForms, dwCount - 1)
-                EXIT
-            ENDIF
-        NEXT  // dwI
+                exit
+            endif
+        next  // dwI
 
-        RETURN SELF
-
-
-    /// <exclude />
-    METHOD __UpdateActiveObject() AS DataWindow STRICT
-        LOCAL oOle AS OBJECT
-        LOCAL i AS DWORD
-        LOCAL aObjects 	AS ARRAY
-        aObjects := SELF:__GetMyOleObjects()
-        FOR i:= 1 TO ALen(aObjects)
-            oOle := aObjects[i]
-            IF oOle:IsInPlaceActive
-                oOle:UpdateTools()
-            ENDIF
-        NEXT
-        RETURN SELF
-
+        return self
 
 
     /// <exclude />
-    METHOD __UpdateCurrent() AS DataWindow STRICT
-        LOCAL oColumn AS OBJECT
+    method __UpdateActiveObject() as DataWindow strict
+        //         LOCAL oOle AS OBJECT
+        //         LOCAL i AS DWORD
+        //         LOCAL aObjects 	AS ARRAY
+        //         aObjects := SELF:__GetMyOleObjects()
+        //         FOR i:= 1 TO ALen(aObjects)
+        //             oOle := aObjects[i]
+        //             IF oOle:IsInPlaceActive
+        //                 oOle:UpdateTools()
+        //             ENDIF
+        //         NEXT
+        return self
 
 
-        IF (sCurrentView == #FormView)
-            IF oDCCurrentControl IS Control VAR oC  .AND. oC:Modified
-                SELF:__DoValidate(oC)
-            ENDIF
-        ELSEIF (sCurrentView == #BrowseView) .AND. IsAccess(oGBrowse, #CurrentColumn)
+
+    /// <exclude />
+    method __UpdateCurrent() as DataWindow strict
+        local oColumn as object
+
+
+        if (sCurrentView == #FormView)
+            if oDCCurrentControl is Control var oC  .and. oC:Modified
+                self:__DoValidate(oC)
+            endif
+        elseif (sCurrentView == #BrowseView) .and. IsAccess(oGBrowse, #CurrentColumn)
             oColumn := IVarGet(oGBrowse, #CurrentColumn)
-            IF oColumn IS DataColumn VAR oDC .AND. oDC:Modified
-                SELF:__DoValidateColumn(oDC)
-            ENDIF
-        ENDIF
-        RETURN SELF
+            if oColumn is DataColumn var oDC .and. oDC:Modified
+                self:__DoValidateColumn(oDC)
+            endif
+        endif
+        return self
 
 
     /// <exclude />
-    METHOD __UpdateStatus() AS LOGIC STRICT
+    method __UpdateStatus() as logic strict
 
-        IF oHLStatus != NULL_OBJECT
-            IF IsInstanceOfUsual(oHLStatus, #HyperLabel)
-                SELF:__StatusMessage(ResourceString{__WCSError2}:Value + oHLStatus:Description, MESSAGEERROR)
-            ENDIF
-            RETURN FALSE
-        ENDIF
+        if oHLStatus != null_object
+            if IsInstanceOfUsual(oHLStatus, #HyperLabel)
+                self:__StatusMessage(ResourceString{__WCSError2}:Value + oHLStatus:Description, MESSAGEERROR)
+            endif
+            return false
+        endif
         // No error
-        SELF:__StatusMessage(NULL_STRING, MessageError)
+        self:__StatusMessage(null_string, MessageError)
 
-        RETURN TRUE
+        return true
 
 
     /// <exclude />
-    METHOD __VerifyDataServer(oDataServer AS USUAL) AS LOGIC STRICT
-        LOCAL dwParmType AS DWORD
+    method __VerifyDataServer(oDataServer as object) as logic strict
 
-        dwParmType := UsualType(oDataServer)
-        IF dwParmType == STRING
-            oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
+        if oDataServer is string var strServer
+            oAttachedServer := CreateInstance(String2Symbol("DBServer"), strServer)
             oAttachedServer:ConcurrencyControl := nCCMode
-        ELSEIF dwParmType == SYMBOL
-            oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
+        elseif oDataServer is symbol var symServer
+            oAttachedServer := CreateInstance(String2Symbol("DBServer"), symServer)
             oAttachedServer:ConcurrencyControl := nCCMode
-        ELSEIF dwParmType == OBJECT
-            IF IsInstanceOfUsual(oDataServer, #DataServer)
-                oAttachedServer := oDataServer
-            ELSEIF IsInstanceOfUsual(oDataServer, #FileSpec)
-                oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
-                oAttachedServer:ConcurrencyControl := nCCMode
-            ELSE
-                RETURN FALSE
-            ENDIF
-        ELSE
-            RETURN FALSE
-        ENDIF
+        elseif oDataServer is DataServer var oDS
+            oAttachedServer := oDS
+        elseif oDataServer is FileSpec var oFS
+            oAttachedServer := CreateInstance(String2Symbol("DBServer"), oFS)
+            oAttachedServer:ConcurrencyControl := nCCMode
+        else
+            return false
+        endif
 
-        IF IsInstanceOf(oAttachedServer, #DBServer)
+        if IsInstanceOf(oAttachedServer, #DBServer)
             //Use the Used access and not the Status access because the last
             //operation issued before the Use() method may have failed
-            IF !IVarGet(oAttachedServer,#Used)
+            if !IVarGet<logic>(oAttachedServer,#Used)
                 oHLStatus := oAttachedServer:Status
-                IF oHLStatus == NULL_OBJECT
-                    oHLStatus := HyperLabel{#Use, , VO_Sprintf(__WCSDSNotOpen, AsString(oAttachedServer), IVarGet(oAttachedServer,#FileSpec):FullPath)}
-                ENDIF
-                RETURN FALSE
-            ENDIF
-        ELSEIF IsInstanceOf(oAttachedServer, #SQLSelect) .AND. ; //For SQL Server, check for error
-                oAttachedServer:Status != NULL_OBJECT .AND. ; //on the Init method
-                IVarGet(oAttachedServer,#ErrInfo):FuncSym == #INIT
+                if oHLStatus == null_object
+                    oHLStatus := HyperLabel{#Use, , VO_Sprintf(__WCSDSNotOpen, AsString(oAttachedServer), IVarGet(IVarGet(oAttachedServer,#FileSpec),#FullPath))}
+                endif
+                return false
+            endif
+        elseif IsInstanceOf(oAttachedServer, #SQLSelect) .and. ; //For SQL Server, check for error
+                oAttachedServer:Status != null_object .and. ; //on the Init method
+                IVarGet(IVarGet(oAttachedServer,#ErrInfo),#FuncSym) == #INIT
             oHLStatus := oAttachedServer:Status
-            RETURN FALSE
-        ENDIF
+            return false
+        endif
 
-        RETURN TRUE
+        return true
 
     /// <include file="Gui.xml" path="doc/DataWindow.Activate/*" />
-    METHOD Activate (oEvent  AS Event) as USUAL
-        IF (oFrame != NULL_OBJECT)
+    method Activate (oEvent  as Event) as usual
+        if (oFrame != null_object)
             WC.AppSetDialogWindow(oFrame)
-        ENDIF
+        endif
 
-        RETURN SELF:Default(oEvent)
+        return self:Default(oEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.AllowServerClose/*" />
 
-    PROPERTY AllowServerClose AS LOGIC GET lAllowServerClose SET lAllowServerClose := Value
+    property AllowServerClose as logic get lAllowServerClose set lAllowServerClose := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Append/*" />
-    METHOD Append() CLIPPER
+    method Append() as logic clipper
         // Adds new record to DataWindow
-        LOCAL lRetCode := FALSE AS LOGIC
+        local lRetCode := false as logic
 
-        oHLStatus := NULL_OBJECT // assume success
-        IF (oAttachedServer != NULL_OBJECT) .AND. SELF:__CheckRecordStatus()
-            IF !(lRetCode := oAttachedServer:Append(TRUE))
+        oHLStatus := null_object // assume success
+        if (oAttachedServer != null_object) .and. self:__CheckRecordStatus()
+            if !(lRetCode := oAttachedServer:Append(true))
                 oHLStatus := oAttachedServer:Status
-                SELF:__UpdateStatus()
-            ELSE
-                lRecordDirty := TRUE
+                self:__UpdateStatus()
+            else
+                lRecordDirty := true
                 // The notification procedure will set up the controls
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.AutoScroll/*" />
-    PROPERTY AutoScroll  AS LOGIC GET lAutoScroll SET lAutoScroll := value
+    property AutoScroll  as logic get lAutoScroll set lAutoScroll := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Background/*" />
-    PROPERTY Background AS Brush
-        GET
+    property Background as Brush
+        get
             //Only an optimization to avoid unneeded Window:PaintBackground() calls of
             //the DataWindow object itself or the __FormFrame.
-            IF oSurface != NULL_OBJECT
-                RETURN Brush{(Color)oSurface:BackColor}
-            ENDIF
+            if oSurface != null_object
+                return Brush{(Color)oSurface:BackColor}
+            endif
 
-            RETURN NULL_OBJECT
-        END GET
-        SET
+            return null_object
+        end get
+        set
             //Only an optimization to avoid unneeded Window:PaintBackground() calls of
             //the DataWindow object itself or the __FormFrame.
-            IF oSurface != NULL_OBJECT .and. value != NULL_OBJECT
+            if oSurface != null_object .and. value != null_object
                 oSurface:BackColor := value
-            ENDIF
-        END SET
-    END PROPERTY
+            endif
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.Browser/*" />
-    PROPERTY Browser AS DataBrowser
+    property Browser as DataBrowser
         get
-            IF oGBrowse is DataBrowser var oBrow
-                RETURN oBrow
-            ENDIF
-            RETURN NULL_OBJECT
+            if oGBrowse is DataBrowser var oBrow
+                return oBrow
+            endif
+            return null_object
         end get
         set
             oGBrowse := value
             __DataForm:DataBrowser := value:__DataGridView
-            RETURN
+            return
         end set
     end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.BrowserClass/*" />
-    PROPERTY BrowserClass  AS SYMBOL GET symBrowserClass SET symBrowserClass := value
+    property BrowserClass  as symbol get symBrowserClass set symBrowserClass := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ButtonClick/*" />
-    METHOD ButtonClick(oControlEvent AS ControlEvent) as USUAL
-        LOCAL oButton AS Control
-        LOCAL oWindow AS Window
-        LOCAL dwI, dwCount AS DWORD
-        LOCAL oRBG AS RadioButtonGroup
-        LOCAL aRadioGrps AS ARRAY
-        LOCAL lUnchanged AS LOGIC
+    method ButtonClick(oControlEvent as ControlEvent) as usual
+        local oButton as Control
+        local oWindow as Window
+        local dwI, dwCount as dword
+        local oRBG as RadioButtonGroup
+        local aRadioGrps as array
+        local lUnchanged as logic
 
 
         oButton := oControlEvent:Control
 
-        IF IsInstanceOfUsual((OBJECT) oButton:Owner, #Window)
+        if IsInstanceOfUsual((object) oButton:Owner, #Window)
             oWindow := (Window) oButton:Owner
-        ELSE
-            oWindow := SELF
-        ENDIF
-        IF IsInstanceOf(oButton, #Button)
-            oButton:Modified := TRUE // assume its modified
-            IF IsInstanceOf(oButton, #RadioButton)
+        else
+            oWindow := self
+        endif
+        if IsInstanceOf(oButton, #Button)
+            oButton:Modified := true // assume its modified
+            if oButton is RadioButton var oRB
                 //SE-060526
                 aRadioGrps := IVarGet(oWindow, #__aRadioGroups)
                 dwCount := ALen(aRadioGrps)
-                FOR dwI := 1 UPTO dwCount
+                for dwI := 1 upto dwCount
                     oRBG := aRadioGrps[dwI]
-                    IF oRBG:__IsElement(OBJECT(_CAST,oButton))
-                        lUnchanged := oRBG:__AlreadyHasFocus(OBJECT(_CAST,oButton))
-                        oRBG:__SetOn(OBJECT(_CAST,oButton))
-                        EXIT
-                    ENDIF
-                NEXT  // dwI
-            ELSEIF !IsInstanceOf(oButton, #CheckBox)
-                lUnchanged := TRUE
-            ENDIF
+                    if oRBG:__IsElement(oRB)
+                        lUnchanged := oRBG:__AlreadyHasFocus(oRB)
+                        oRBG:__SetOn(oRB)
+                        exit
+                    endif
+                next  // dwI
+            elseif oButton is CheckBox
+                lUnchanged := true
+            endif
             ((DataWindow) oWindow):__DoValidate(oButton)
             oButton:ValueChanged := !lUnchanged
-        ENDIF
-        RETURN SUPER:ButtonClick(oControlEvent)
+        endif
+        return super:ButtonClick(oControlEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Cancel/*" />
-    METHOD Cancel() AS LOGIC STRICT
-        LOCAL lRetCode := FALSE AS LOGIC
-        lRetCode := TRUE
-        IF IsMethod(oAttachedServer,#Refresh)
+    method Cancel() as logic strict
+        local lRetCode := false as logic
+        lRetCode := true
+        if IsMethod(oAttachedServer,#Refresh)
             lRetCode := Send(oAttachedServer,#Refresh)
-        ENDIF
-        SELF:EndWindow()
+        endif
+        self:EndWindow()
 
-        RETURN lRetCode
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.CanvasErase/*" />
-    METHOD CanvasErase() AS VOID
+    method CanvasErase() as void
 
-        IF oSurface != NULL_OBJECT
+        if oSurface != null_object
             oSurface:Invalidate()
-        ENDIF
-        SUPER:CanvasErase()
+        endif
+        super:CanvasErase()
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Caption/*" />
-    PROPERTY Caption AS STRING
-        GET
-            RETURN SUPER:Caption
-        END GET
-        SET
-            IF !lTopApp .AND. (lSubForm)
-                RETURN
-            ENDIF
-            SUPER:Caption := value
-        END SET
-    END PROPERTY
+    property Caption as string
+        get
+            return super:Caption
+        end get
+        set
+            if !lTopApp .and. (lSubForm)
+                return
+            endif
+            super:Caption := value
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.ChangeFont/*" />
-    METHOD ChangeFont(oFont AS Font, lUpdate := FALSE AS LOGIC)
-        SELF:Font := oFont
-        IF oSurface != NULL_OBJECT
+    method ChangeFont(oFont as Font, lUpdate := false as logic)
+        self:Font := oFont
+        if oSurface != null_object
             oSurface:Font := oFont:__Font
-        ENDIF
+        endif
 
-        RETURN oFont
+        return oFont
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.CheckStatus/*" />
-    METHOD CheckStatus()
-        LOCAL oOldStatus AS OBJECT
-
+    method CheckStatus() as logic
+        local oOldStatus as object
 
         oOldStatus := oHLStatus
-        IF !SELF:StatusOK()
-            IF sCurrentView == #FormView
-                IF (oDCInvalidControl != NULL_OBJECT)
+        if !self:StatusOK()
+            if sCurrentView == #FormView
+                if (oDCInvalidControl != null_object)
                     oDCInvalidControl:SetFocus()
-                ENDIF
-            ELSEIF (sCurrentView == #BrowseView)
-                IF (oDCInvalidColumn != NULL_OBJECT) .AND. IsMethod(oGBrowse, #SetColumnFocus)
+                endif
+            elseif (sCurrentView == #BrowseView)
+                if (oDCInvalidColumn != null_object) .and. IsMethod(oGBrowse, #SetColumnFocus)
                     Send(oGBrowse, #SetColumnFocus, oDCInvalidColumn)
-                ENDIF
-            ENDIF
-        ENDIF
+                endif
+            endif
+        endif
 
         // Prevalidate based on status change
-        IF (oHLStatus != oOldStatus)
-            SELF:PreValidate()
-        ENDIF
+        if (oHLStatus != oOldStatus)
+            self:PreValidate()
+        endif
 
-        IF (!IsNil(oHLStatus))
-            SELF:__UpdateStatus()
-            RETURN FALSE
-        ENDIF
+        if (!IsNil(oHLStatus))
+            self:__UpdateStatus()
+            return false
+        endif
 
-        RETURN TRUE
+        return true
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Clear/*" />
-    METHOD Clear()
+    method Clear() as void strict
 
-        IF sCurrentView == #FormView
-            IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #EditWindow)
-                oDCCurrentControl:__SetText(NULL_STRING)
-            ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-                IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Clear)
-                    oDCCurrentControl:Control:__SetText(NULL_STRING)
-                ENDIF
-            ENDIF
-        ELSEIF sCurrentView == #BrowseView
-            IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #Clear)
+        if sCurrentView == #FormView
+            if oDCCurrentControl is SingleLineEdit var oSLE
+                oSlE:__SetText(null_string)
+            elseif oDCCurrentControl is MultiLineEdit var oMLE
+                oMLE:__SetText(null_string)
+            elseif oDCCurrentControl is EditWindow var oEW
+                oEW:Clear()
+            elseif oDCCurrentControl is ControlWindow var oCW
+                if oCW:Control != null_object .and. IsMethod(oDCCurrentControl, #Clear)
+                    Send(oCW:Control,#Clear)
+                endif
+            endif
+        elseif sCurrentView == #BrowseView
+            if (oGBrowse != null_object) .and. IsMethod(oGBrowse, #Clear)
                 Send(oGBrowse, #Clear)
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN SELF
+        return
 
 
-    METHOD ClearRelations
+    method ClearRelations
 
-        IF oAttachedServer!=NULL_OBJECT
-            RETURN Send(oAttachedServer,#ClearRelation)
-        ENDIF
-        RETURN FALSE
+        if oAttachedServer!=null_object .and. IsMethod(oAttachedServer, #ClearRelation)
+            return Send(oAttachedServer,#ClearRelation)
+        endif
+        return false
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ClipperKeys/*" />
     // todo: Implement ClipperKeys
-    PROPERTY ClipperKeys AS LOGIC GET FALSE SET
+    property ClipperKeys as logic get false set
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Close/*" />
-    METHOD Close(oEvent as event)  as USUAL
-        IF (oAttachedServer != NULL_OBJECT)
-            IF lRecordDirty .AND. IsNil(oHLStatus )
-                IF IsMethod (oAttachedServer, #Commit) .AND. oAttachedServer:Commit()
-                    lRecordDirty := FALSE
-                ENDIF
-            ENDIF
-            SELF:__Unlink()
-        ENDIF
+    method Close(oEvent as event)  as usual
+        if (oAttachedServer != null_object)
+            if lRecordDirty .and. IsNil(oHLStatus )
+                if IsMethod (oAttachedServer, #Commit) .and. oAttachedServer:Commit()
+                    lRecordDirty := false
+                endif
+            endif
+            self:__Unlink()
+        endif
         // Workaround for TreeView Control Loosing focus bug
         //SetFocus(GuiWin32.GetParent(SELF:Handle()))
-        RETURN SUPER:Close(oEvent)
+        return super:Close(oEvent)
 
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Commit/*" />
-    METHOD Commit()
-        LOCAL lRetCode := FALSE AS LOGIC
+    method Commit() as logic
+        local lRetCode := false as logic
 
-        oHLStatus:= NULL_OBJECT // assume success
-        IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
-            IF !(lRetCode:=oAttachedServer:Commit())
+        oHLStatus:= null_object // assume success
+        if oAttachedServer!=null_object .and. self:__CheckRecordStatus()
+            if !(lRetCode:=oAttachedServer:Commit())
                 oHLStatus := oAttachedServer:Status
-                SELF:__UpdateStatus()
-            ELSE
-                lRecordDirty := FALSE
-            ENDIF
-        ENDIF
+                self:__UpdateStatus()
+            else
+                lRecordDirty := false
+            endif
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ConcurrencyControl/*" />
-    PROPERTY ConcurrencyControl AS USUAL
-        GET
-            IF IsNil(oAttachedServer)
-                RETURN SELF: nCCMode
-            ENDIF
+    property ConcurrencyControl as usual
+        get
+            if IsNil(oAttachedServer)
+                return self: nCCMode
+            endif
 
-            RETURN oAttachedServer:ConcurrencyControl
-        END GET
-        SET
-            LOCAL newMode AS INT
-            IF IsString(value)
+            return oAttachedServer:ConcurrencyControl
+        end get
+        set
+            local newMode as int
+            if IsString(value)
                 value := String2Symbol(value)
-            ENDIF
+            endif
 
-            IF IsSymbol(value)
-                DO CASE
-                CASE value == #ccNone
+            if IsSymbol(value)
+                do case
+                case value == #ccNone
                     newMode := ccNone
-                CASE value == #ccOptimistic
+                case value == #ccOptimistic
                     newMode := ccOptimistic
-                CASE value == #ccStable
+                case value == #ccStable
                     newMode := ccStable
-                CASE value == #ccRepeatable
+                case value == #ccRepeatable
                     newMode := ccRepeatable
-                CASE value == #ccFile
+                case value == #ccFile
                     newMode := ccFile
-                OTHERWISE
+                otherwise
                     WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,value,1}:Throw()
-                ENDCASE
-            ELSEIF IsNumeric(value)
+                endcase
+            elseif IsNumeric(value)
                 newMode := value
-            ELSE
+            else
                 WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,value,1}:Throw()
-            ENDIF
+            endif
 
-            SELF:nCCMode := newMode
-            IF oAttachedServer!=NULL_OBJECT
+            self:nCCMode := newMode
+            if oAttachedServer!=null_object
                 oAttachedServer:ConcurrencyControl:=nCCMode
-            ENDIF
-            RETURN
-        END SET
-    END PROPERTY
+            endif
+            return
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.ContextMenu/*" />
-    ASSIGN ContextMenu(oNewMenu as Menu)
-        SELF:SetContextMenu(oNewMenu, #Both)
-        RETURN
+    assign ContextMenu(oNewMenu as Menu)
+        self:SetContextMenu(oNewMenu, #Both)
+        return
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.SetContextMenu/*" />
-    METHOD SetContextMenu(oNewMenu as Menu, symView as Symbol) as VOID
-        LOCAL lForm    AS LOGIC
-        LOCAL lBrowser AS LOGIC
+    method SetContextMenu(oNewMenu as Menu, symView as symbol) as void
+        local lForm    as logic
+        local lBrowser as logic
 
-        IF symView = #BrowseView
-            lBrowser := TRUE
-        ELSEIF symView = #FormView
-            lForm := TRUE
-        ELSE
-            lForm := lBrowser := TRUE
-        ENDIF
+        if symView = #BrowseView
+            lBrowser := true
+        elseif symView = #FormView
+            lForm := true
+        else
+            lForm := lBrowser := true
+        endif
 
-        IF lForm
+        if lForm
             //Todo ?
             //IF oSurface != NULL_OBJECT
             //	oSurface:ContextMenu := oNewMenu:__Menu
             //ENDIF
-            SUPER:ContextMenu := oNewMenu
-        ENDIF
+            super:ContextMenu := oNewMenu
+        endif
 
-        IF lBrowser
-            IF oGBrowse != NULL_OBJECT
+        if lBrowser
+            if oGBrowse != null_object
                 oGBrowse:ContextMenu := oNewMenu
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.Controls/*" />
-    PROPERTY Controls AS ARRAY GET SELF:aControls
+    property Controls as array get self:aControls
 
     /// <include file="Gui.xml" path="doc/DataWindow.ControlFocusChange/*" />
-    METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL
-        LOCAL oControl AS Control
-        LOCAL cMessage AS STRING
-        LOCAL dwI, dwCount AS DWORD
-        LOCAL oRBG AS RadioButtonGroup
-        LOCAL oDCHyperLabel AS OBJECT
-        LOCAL oCFCE := oControlFocusChangeEvent AS  ControlFocusChangeEvent
+    method ControlFocusChange(oControlFocusChangeEvent as  ControlFocusChangeEvent) as usual
+        local oControl as Control
+        local cMessage as string
+        local dwI, dwCount as dword
+        local oRBG as RadioButtonGroup
+        local oDCHyperLabel as HyperLabel
+        local oCFCE := oControlFocusChangeEvent as  ControlFocusChangeEvent
 
-
-        IF oSurface != NULL_OBJECT
+        if oSurface != null_object
 
             oControl := oCFCE:Control
 
-            IF oCFCE:GotFocus
+            if oCFCE:GotFocus
 
-                IF SELF:AutoScroll
+                if self:AutoScroll
                     oControl:__EnsureVisibity()
-                ENDIF
-                SELF:LastFocus := oControl
+                endif
+                self:LastFocus := oControl
 
-                WC.AppSetDialogWindow(SELF:oFrame)
-                IF ! oControl == NULL_OBJECT
-                    IF IsInstanceOf(oControl, #RadioButton)
+                WC.AppSetDialogWindow(self:oFrame)
+                if ! oControl == null_object
+                    if oControl is RadioButton var oRB
                         //SE-060526
                         dwCount := ALen(aRadioGroups)
-                        FOR dwI := 1 UPTO dwCount
+                        for dwI := 1 upto dwCount
                             oRBG := aRadioGroups[dwI]
-                            IF oRBG:__IsElement(OBJECT(_CAST, oControl))
+                            if oRBG:__IsElement(oRB)
                                 oControl := oRBG
-                                EXIT
-                            ENDIF
-                        NEXT  // dwI
-                    ENDIF
+                                exit
+                            endif
+                        next  // dwI
+                    endif
 
                     // save active control
                     oDCCurrentControl := oControl
 
                     // if there is an outstanding error on the control - display it
-                    IF oDCCurrentControl:Status != NULL_OBJECT
-                        IF IsString(oDCCurrentControl:Status:Description)
-                            cMessage := oDCCurrentControl:Status:Description
-                        ELSE
+                    if oControl:Status != null_object
+                        if IsString(oControl:Status:Description)
+                            cMessage := oControl:Status:Description
+                        else
                             cMessage := ResourceString{__WCSUnknownStatus}:Value
-                        ENDIF
-                    ENDIF
-                    SELF:__StatusMessage(cMessage, MessageError)
+                        endif
+                    endif
+                    self:__StatusMessage(cMessage, MessageError)
 
                     // Reset message for control
-                    cMessage := NULL_STRING
+                    cMessage := null_string
 
                     // SetUp Prompt
-                    oDCHyperLabel := oDCCurrentControl:HyperLabel
-                    IF oDCHyperLabel != NULL_OBJECT
+                    oDCHyperLabel := oControl:HyperLabel
+                    if oDCHyperLabel != null_object
                         cMessage := oDCHyperLabel:Description
-                    ENDIF
-                    SELF:__StatusMessage(cMessage, MessageControl)
-                ELSE
-                    SELF:__StatusMessage(NULL_STRING, MessageError)
-                    SELF:__StatusMessage(NULL_STRING, MessageControl)
-                    oDCCurrentControl := NULL_OBJECT
-                ENDIF
+                    endif
+                    self:__StatusMessage(cMessage, MessageControl)
+                else
+                    self:__StatusMessage(null_string, MessageError)
+                    self:__StatusMessage(null_string, MessageControl)
+                    oDCCurrentControl := null_object
+                endif
 
-            ELSE
-                SELF:__DoValidate(oControl)
-            ENDIF
-        ENDIF
+            else
+                self:__DoValidate(oControl)
+            endif
+        endif
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Copy/*" />
-    METHOD Copy()   AS VOID STRICT
-        IF (sCurrentView == #FormView)
-            IF oDCCurrentControl IS Edit var oEdit
+    method Copy()   as void strict
+        if (sCurrentView == #FormView)
+            if oDCCurrentControl is Edit var oEdit
                 oEdit:Copy()
-            ELSEIF oDCCurrentControl IS EditWindow var oEditWindow
+            elseif oDCCurrentControl is EditWindow var oEditWindow
                 oEditWindow:Copy()
-            ELSEIF oDCCurrentControl IS ControlWindow var oCW
-                IF oCW:Control != NULL_OBJECT .and. IsMethod(oCW:Control, #Copy)
+            elseif oDCCurrentControl is ControlWindow var oCW
+                if oCW:Control != null_object .and. IsMethod(oCW:Control, #Copy)
                     SEnd(oCW:Control,#Copy)
-                ENDIF
-            ENDIF
-        ELSEIF (sCurrentView == #BrowseView)
-            IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #copy)
+                endif
+            endif
+        elseif (sCurrentView == #BrowseView)
+            if (oGBrowse != null_object) .and. IsMethod(oGBrowse, #copy)
                 Send(oGBrowse, #Copy)
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.CurrentControl/*" />
-    PROPERTY CurrentControl  as Object GET oDCCurrentControl SET oDCCurrentControl := Value
+    property CurrentControl  as object get oDCCurrentControl set oDCCurrentControl := value
 
     /// <include file="Gui.xml" path="doc/DataWindow.CurrentView/*" />
-    PROPERTY CurrentView as Symbol GET SELF:sCurrentView
+    property CurrentView as symbol get self:sCurrentView
 
     /// <include file="Gui.xml" path="doc/DataWindow.Cut/*" />
-    METHOD Cut()   AS VOID STRICT
-        IF (sCurrentView == #FormView)
-            IF oDCCurrentControl IS Edit VAR oEdit
+    method Cut()   as void strict
+        if (sCurrentView == #FormView)
+            if oDCCurrentControl is Edit var oEdit
                 oEdit:Cut()
-            ELSEIF oDCCurrentControl IS EditWindow VAR oEditWindow
+            elseif oDCCurrentControl is EditWindow var oEditWindow
                 oEditWindow:Cut()
-            ELSEIF oDCCurrentControl IS ControlWindow VAR oCW
-                IF oCW:Control != NULL_OBJECT .and. IsMethod(oCW:Control, #Cut)
+            elseif oDCCurrentControl is ControlWindow var oCW
+                if oCW:Control != null_object .and. IsMethod(oCW:Control, #Cut)
                     Send(oCW:Control,#Cut)
-                ENDIF
-            ENDIF
-        ELSEIF (sCurrentView == #BrowseView)
-            IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #cut)
+                endif
+            endif
+        elseif (sCurrentView == #BrowseView)
+            if (oGBrowse != null_object) .and. IsMethod(oGBrowse, #cut)
                 Send(oGBrowse, #Cut)
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeActivate/*" />
-    METHOD DeActivate(oEvent AS Event) AS USUAL
+    method DeActivate(oEvent as Event) as usual
         //RvdH 030825 Call to DeactivateAllOLEObjects moved to Window
-        RETURN SUPER:DeActivate(oEvent)
+        return super:DeActivate(oEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeactivateAllOLEObjects/*" />
-    METHOD DeactivateAllOLEObjects(oExcept)  as USUAL
-        SUPER:DeactivateAllOLEObjects(oExcept)
-        IF !lTopApp .AND. IsMethod(SELF:Owner, #__AdjustClient)
-            SELF:Owner:__AdjustClient()
+    method DeactivateAllOLEObjects(oExcept)  as usual
+        super:DeactivateAllOLEObjects(oExcept)
+        if !lTopApp .and. IsMethod(self:Owner, #__AdjustClient)
+            Send(self:Owner,#__AdjustClient)
             //ELSE
             //	SELF:__AdjustSurface()
-        ENDIF
-        RETURN SELF
+        endif
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeferUse/*" />
-    PROPERTY DeferUse AS LOGIC GET lDeferUse SET lDeferUse := Value
+    property DeferUse as logic get lDeferUse set lDeferUse := value
 
     /// <include file="Gui.xml" path="doc/DataWindow.Delete/*" />
-    METHOD Delete() CLIPPER
-        LOCAL nRecno AS LONGINT
-        LOCAL nLastRec AS LONGINT
-        LOCAL fSQL AS LOGIC
-        LOCAL fBrowse AS LOGIC
-        LOCAL fRet AS LOGIC
+    method Delete() clipper
+        local nRecno as longint
+        local nLastRec as longint
+        local fSQL as logic
+        local fBrowse as logic
+        local fRet as logic
 
-        IF oAttachedServer != NULL_OBJECT
+        if oAttachedServer != null_object
             nRecno := oAttachedServer:Recno
             nLastRec:= oAttachedServer:LASTREC
-            fBrowse := SELF:sCurrentView = #BROWSE
+            fBrowse := self:sCurrentView = #BROWSE
             fSQL := IsInstanceOfUsual( oAttachedServer, #SQLSELECT)
 
-        ENDIF
+        endif
 
-        fRet := SELF:__Delete()
+        fRet := self:__Delete()
 
-        IF fSQL .AND. fRet
+        if fSQL .and. fRet
 
 
-            IF nLastRec < nRecno
-                SELF:GoTop()
-                SELF:GoBottom()
-                RETURN fRet
-            ENDIF
+            if nLastRec < nRecno
+                self:GoTop()
+                self:GoBottom()
+                return fRet
+            endif
 
-            IF oAttachedServer:EOF .AND. oAttachedServer:BOF
-                SELF:GoTop()
-            ELSE
-                IF fBrowse
-                    SELF:Skip()
-                ELSE
-                    IF nRecno = 1
-                        SELF:GoTo(1)
-                    ELSE
-                        SELF:GoTo(nRecno-1)
-                    ENDIF
-                ENDIF
-            ENDIF
-        ENDIF
+            if oAttachedServer:EOF .and. oAttachedServer:BOF
+                self:GoTop()
+            else
+                if fBrowse
+                    self:Skip()
+                else
+                    if nRecno = 1
+                        self:GoTo(1)
+                    else
+                        self:GoTo(nRecno-1)
+                    endif
+                endif
+            endif
+        endif
 
-        RETURN(fRet)
+        return(fRet)
 
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeleteValidated/*" />
-    METHOD DeleteValidated
-        LOCAL lRetCode := FALSE AS LOGIC
+    method DeleteValidated
+        local lRetCode := false as logic
 
-        oHLStatus:= NULL_OBJECT // assume success
-        IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
-            IF !(lRetCode:=SELF:__Delete())
+        oHLStatus:= null_object // assume success
+        if oAttachedServer!=null_object .and. self:__CheckRecordStatus()
+            if !(lRetCode:=self:__Delete())
                 oHLStatus:=oAttachedServer:Status
-                SELF:__UpdateStatus()
-            ENDIF
-        ENDIF
-        RETURN lRetCode
+                self:__UpdateStatus()
+            endif
+        endif
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
-        LOCAL oSubForm AS Window
+    method Destroy() as usual
+        local oSubForm as Window
 
-        IF oAttachedServer != NULL_OBJECT
-            SELF:__Unlink()
-        ENDIF
+        if oAttachedServer != null_object
+            self:__Unlink()
+        endif
 
-        IF lSubForm .and. IsMethod(oParent, #__UnRegisterSubForm)
-            oParent:__UnRegisterSubForm(SELF)
-        ENDIF
+        if lSubForm .and. oParent is DataWindow var oDW
+            oDW:__UnRegisterSubForm(self)
+        endif
 
         // If this window has subforms destroy them first
-        DO WHILE ALen(aSubForms) > 0
+        do while ALen(aSubForms) > 0
             oSubForm := aSubForms[1]
             oSubForm:Close(Event{})
             oSubForm:Destroy()
-        END DO
-        aSubForms := NULL_ARRAY
+        end do
+        aSubForms := null_array
 
-        IF oGBrowse != NULL_OBJECT
+        if oGBrowse != null_object
             oGBrowse:__Unlink()
             oGBrowse:Destroy()
-            oGBrowse:= NULL_OBJECT
-        ENDIF
-        IF WC.AppGetDialogWindow() == oFrame
-            WC.AppSetDialogWindow(NULL_OBJECT)
-        ENDIF
-        IF oFrame != NULL_OBJECT
+            oGBrowse:= null_object
+        endif
+        if WC.AppGetDialogWindow() == oFrame
+            WC.AppSetDialogWindow(null_object)
+        endif
+        if oFrame != null_object
             oFrame:CleanUp()
             oFrame:Dispose()
-            oFrame := NULL_OBJECT
-        ENDIF
-        IF oSurface != NULL_OBJECT
+            oFrame := null_object
+        endif
+        if oSurface != null_object
             oSurface:CleanUp()
             oSurface:Dispose()
-            oSurface := NULL_OBJECT
-        ENDIF
-        aControls := NULL_ARRAY
+            oSurface := null_object
+        endif
+        aControls := null_array
 
-        oDCCurrentControl := NULL_OBJECT
-        SELF:lValidFlag := FALSE
-        SELF:oLastFocus := NULL_OBJECT
+        oDCCurrentControl := null_object
+        self:lValidFlag := false
+        self:oLastFocus := null_object
 
-        SUPER:Destroy()
+        super:Destroy()
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DisableConditionalControls/*" />
-    METHOD DisableConditionalControls()
-        IF lControlsEnabled
-            FOREACH oControl AS Control IN aConditionalControls
+    method DisableConditionalControls()
+        if lControlsEnabled
+            foreach oControl as Control in aConditionalControls
                 oControl:Disable()
-            NEXT
-            lControlsEnabled := FALSE
-        ENDIF
-        RETURN SELF
+            next
+            lControlsEnabled := false
+        endif
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Draw/*" />
-    METHOD Draw(oDrawObject)
+    method Draw(oDrawObject)
         //  Todo Draw
-        IF oSurface != NULL_OBJECT
+        if oSurface != null_object
             //oSurface:Draw(oDrawObject)
-            NOP
-        ENDIF
+            nop
+        endif
 
-        RETURN SELF
+        return self
 
     /// <include file="Gui.xml" path="doc/DataWindow.EditChange/*" />
-    METHOD EditChange(oControlEvent AS ControlEvent) as USUAL
-        LOCAL oCurrentControl := NULL_OBJECT AS OBJECT
+    method EditChange(oControlEvent as ControlEvent) as usual
+        local oCurrentControl := null_object as object
 
         oCurrentControl := oControlEvent:Control
-        IF IsInstanceOfUsual(oCurrentControl, #ListBox) .OR. IsInstanceOfUsual(oCurrentControl, #IPAddress)
-            oCurrentControl:Modified := TRUE // mark it as modified
-        ENDIF
+        if oCurrentControl is ListBox var oLB
+            oLB:Modified := true
+        elseif oCurrentControl is IPAddress var oIP
+            oIP:Modified := true // mark it as modified
+        endif
 
-        IF (oDCCurrentControl == oCurrentControl)
-            SELF:__StatusMessage("", MessageError)
-        ENDIF
-        RETURN SUPER:EditChange(oControlEvent)
+        if (oDCCurrentControl == oCurrentControl)
+            self:__StatusMessage("", MessageError)
+        endif
+        return super:EditChange(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.EditFocusChange/*" />
-    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) as USUAL
-        var result := SUPER:EditFocusChange(oEditFocusChangeEvent)
+    method EditFocusChange(oEditFocusChangeEvent as EditFocusChangeEvent) as usual
+        var result := super:EditFocusChange(oEditFocusChangeEvent)
 
-        IF !oEditFocusChangeEvent:GotFocus
-            IF oEditFocusChangeEvent:Control != NULL_OBJECT
+        if !oEditFocusChangeEvent:GotFocus
+            if oEditFocusChangeEvent:Control != null_object
                 oEditFocusChangeEvent:Control:__Update()
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN result
+        return result
 
     /// <include file="Gui.xml" path="doc/DataWindow.EnableConditionalControls/*" />
-    METHOD EnableConditionalControls()
-        IF !lControlsEnabled
-            FOREACH oControl AS Control IN aConditionalControls
+    method EnableConditionalControls()
+        if !lControlsEnabled
+            foreach oControl as Control in aConditionalControls
                 oControl:Enable()
-            NEXT
-            lControlsEnabled := TRUE
-        ENDIF
-        RETURN SELF
+            next
+            lControlsEnabled := true
+        endif
+        return self
 
     /// <include file="Gui.xml" path="doc/DataWindow.EnableDragDropClient/*" />
-    METHOD EnableDragDropClient(lEnable := TRUE AS LOGIC, lSurfaceOnly := TRUE AS LOGIC) AS VOID
-        SELF:__Surface:AllowDrop := TRUE
+    method EnableDragDropClient(lEnable := true as logic, lSurfaceOnly := true as logic) as void
+        self:oSurface:AllowDrop := true
 
-        SUPER:EnableDragDropClient(lEnable)
+        super:EnableDragDropClient(lEnable)
 
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.EnableStatusBar/*" />
-    METHOD EnableStatusBar(lEnable AS LOGIC) AS StatusBar
-        SUPER:EnableStatusBar(lEnable)
+    method EnableStatusBar(lEnable as logic) as StatusBar
+        super:EnableStatusBar(lEnable)
 
         // No need to resize. __DataForm handles this
-        RETURN SELF:StatusBar
+        return self:StatusBar
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.EnableToolTips/*" />
@@ -1546,449 +1542,456 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Error/*" />
-    METHOD Error(oErrorObj)
-        RETURN SELF
+    method Error(oErrorObj)
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Expose/*" />
-    METHOD Expose(oExposeEvent AS ExposeEvent) as USUAL
-        RETURN SUPER:Expose(oExposeEvent)
+    method Expose(oExposeEvent as ExposeEvent) as usual
+        return super:Expose(oExposeEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.FIELDGET/*" />
-    METHOD FieldGet(uFieldID AS USUAL)  AS USUAL
-        LOCAL oError AS USUAL
-        LOCAL oFieldObject AS OBJECT
-        LOCAL uRetVal := NIL AS USUAL
+    method FieldGet(uFieldID as usual)  as usual
+        local oError as usual
+        local oFieldObject as object
+        local uRetVal := nil as usual
 
-        BEGIN SEQUENCE
+        begin sequence
 
-            IF (sCurrentView == #BrowseView) .AND. IsMethod(oGBrowse, #GetColumn)
+            if (sCurrentView == #BrowseView) .and. IsMethod(oGBrowse, #GetColumn)
                 oFieldObject := Send(oGBrowse, #GetColumn, uFieldID)
-            ELSE
-                IF IsNumeric(uFieldID)
+            else
+                if IsNumeric(uFieldID)
                     oFieldObject := aControls[uFieldID]
-                ELSEIF IsSymbol(uFieldID)
-                    oFieldObject := SELF:__FindControl(uFieldID)
-                ELSEIF IsString(uFieldID)
-                    oFieldObject := SELF:__FindControl(String2Symbol(uFieldID))
-                ENDIF
-            ENDIF
+                elseif IsSymbol(uFieldID)
+                    oFieldObject := self:__FindControl(uFieldID)
+                elseif IsString(uFieldID)
+                    oFieldObject := self:__FindControl(String2Symbol(uFieldID))
+                endif
+            endif
 
-            IF oFieldObject == NULL_OBJECT
-                IF oAttachedServer != NULL_OBJECT
+            if oFieldObject == null_object
+                if oAttachedServer != null_object
                     uRetVal := oAttachedServer:FIELDGET(uFieldID)
-                ELSE
-                    uRetVal := NIL
-                ENDIF
-            ELSEIF oFieldObject IS CheckBox VAR cb
+                else
+                    uRetVal := nil
+                endif
+            elseif oFieldObject is CheckBox var cb
                 uRetVal := cb:Checked
-            ELSEIF oFieldObject IS RadioButton VAR rb
+            elseif oFieldObject is RadioButton var rb
                 uRetVal := rb:Pressed
-            ELSE
-                uRetVal := oFieldObject:Value
-            ENDIF
+            elseif oFieldObject is Control var oC
+                uRetVal := oC:Value
+            else
+                uRetVal := IVarGet(oFieldObject,#Value)
+            endif
 
-        RECOVER USING oError
+        recover using oError
 
-            BREAK oError
+            break oError
 
-        END SEQUENCE
-        RETURN uRetVal
+        end sequence
+        return uRetVal
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.FIELDPUT/*" />
-    METHOD FieldPut(uFieldId AS USUAL, uNewValue AS USUAL) AS USUAL
+    method FieldPut(uFieldId as usual, uNewValue as usual) as usual
         // Retrieves the current value of the indicated string
         // uFieldPosition is numeric, symbol or string: the field position as numeric,
         // or the field name as a symbol or a string
-        LOCAL oError AS USUAL
-        LOCAL oFieldObject AS USUAL
-        LOCAL dwFieldObject AS DWORD
-        LOCAL uRetVal := NIL AS USUAL
+        local oError as usual
+        local oFieldObject as usual
+        local dwFieldObject as dword
+        local uRetVal := nil as usual
 
+        begin sequence
 
-        BEGIN SEQUENCE
-
-            IF (sCurrentView == #BrowseView) .AND. IsMethod(oGBrowse, #GetColumn)
+            if (sCurrentView == #BrowseView) .and. IsMethod(oGBrowse, #GetColumn)
                 oFieldObject := Send(oGBrowse, #GetColumn, uFieldId)
-            ELSE
-                IF IsNumeric(uFieldId)
+            else
+                if IsNumeric(uFieldId)
                     //SE-060526 this was not the same as in method FieldGet()
                     //dwFieldObject := AScan(aControls, {|x| x:__GetDataFldPos == uField})
                     oFieldObject := aControls[uFieldId]
-                ELSEIF IsSymbol(uFieldId)
-                    oFieldObject := SELF:__FindControl(uFieldId)
-                ELSEIF IsString(uFieldId)
-                    oFieldObject := SELF:__FindControl(String2Symbol(uFieldId))
-                ENDIF
+                elseif IsSymbol(uFieldId)
+                    oFieldObject := self:__FindControl(uFieldId)
+                elseif IsString(uFieldId)
+                    oFieldObject := self:__FindControl(String2Symbol(uFieldId))
+                endif
 
-            ENDIF
-            IF dwFieldObject > 0
+            endif
+            if dwFieldObject > 0
                 oFieldObject := aControls[dwFieldObject]
-            ENDIF
+            endif
 
             // Field object should contain control or column
-            IF IsNil(oFieldObject)
-                IF oAttachedServer != NULL_OBJECT
+            if IsNil(oFieldObject)
+                if oAttachedServer != null_object
                     uRetVal := oAttachedServer:FIELDPUT(uFieldId, uNewValue)
-                ELSE
-                    uRetVal := NIL
-                ENDIF
-            ELSE
-                uRetVal := oFieldObject:Value := uNewValue
-            ENDIF
+                else
+                    uRetVal := nil
+                endif
+            else
+                uRetVal := uNewValue
+                IVarPut(oFieldObject,#Value, uNewValue )
+            endif
 
-        RECOVER USING oError
+        recover using oError
 
-            BREAK oError
+            break oError
 
-        END SEQUENCE
-        RETURN uRetVal
+        end sequence
+        return uRetVal
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.FocusChange/*" />
-    METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) AS USUAL
-        IF oFocusChangeEvent:GotFocus  .and. __DataForm != NULL_OBJECT
+    method FocusChange(oFocusChangeEvent as FocusChangeEvent) as usual
+        if oFocusChangeEvent:GotFocus  .and. __DataForm != null_object
             __DataForm:SetFocusToForm()
-        ENDIF
-        RETURN SUPER:FocusChange(oFocusChangeEvent)
+        endif
+        return super:FocusChange(oFocusChangeEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Foreground/*" />
-    ASSIGN Foreground( oBrush AS Brush)
-        SUPER:Foreground := oBrush
-        IF ( oSurface != NULL_OBJECT )
-            oSurface:ForeColor := oBrush:Color
-        ENDIF
-        RETURN
+    property Foreground as Brush
+        get
+            return super:Foreground
+        end get
+        set
+            super:Foreground := value
+            if ( oSurface != null_object )
+                oSurface:ForeColor := value:Color
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.GoBottom/*" />
-    METHOD GoBottom() CLIPPER
-        LOCAL lRetCode := FALSE AS LOGIC
+    method GoBottom() as logic strict
+        local lRetCode := false as logic
 
-        oHLStatus:=NULL_OBJECT // assume success
-        IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus() // send data to Server
-            IF !(lRetCode:=oAttachedServer:GoBottom()) // if Skip is successful...
+        oHLStatus:=null_object // assume success
+        if oAttachedServer!=null_object .and. self:__CheckRecordStatus() // send data to Server
+            if !(lRetCode:=oAttachedServer:GoBottom()) // if Skip is successful...
                 oHLStatus:=oAttachedServer:Status // pick up Server's reason code
-                SELF:__UpdateStatus()
-            ENDIF
-        ENDIF
-        RETURN lRetCode
+                self:__UpdateStatus()
+            endif
+        endif
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.GoTo/*" />
-    METHOD GoTo( nRecNo )
-        LOCAL lRetCode := FALSE AS LOGIC
+    method GoTo( nRecNo as long ) as logic
+        local lRetCode := false as logic
 
-        oHLStatus:=NULL_OBJECT // assume success
-        IF(oAttachedServer!=NULL_OBJECT .AND. SELF:lValidFlag)
-            IF SELF:__CheckRecordStatus()
-                IF !(lRetCode:=oAttachedServer:GoTo( nRecNo ))
+        oHLStatus:=null_object // assume success
+        if(oAttachedServer!=null_object .and. self:lValidFlag)
+            if self:__CheckRecordStatus()
+                if !(lRetCode:=oAttachedServer:GoTo( nRecNo ))
                     oHLStatus:=oAttachedServer:Status
-                    SELF:__UpdateStatus()
-                ENDIF
-            ENDIF
-        ENDIF
-        RETURN lRetCode
+                    self:__UpdateStatus()
+                endif
+            endif
+        endif
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.GoTop/*" />
-    METHOD GoTop() CLIPPER
-        LOCAL lRetCode := FALSE AS LOGIC
+    method GoTop() as logic strict
+        local lRetCode := false as logic
 
-        oHLStatus:=NULL_OBJECT // assume success
-        IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus() // send data to Server
-            IF !(lRetCode:=oAttachedServer:GoTop()) // if Skip is unsuccessful...
+        oHLStatus:=null_object // assume success
+        if oAttachedServer!=null_object .and. self:__CheckRecordStatus() // send data to Server
+            if !(lRetCode:=oAttachedServer:GoTop()) // if Skip is unsuccessful...
                 oHLStatus:=oAttachedServer:Status // pick up Server's reason code
-                SELF:__UpdateStatus()
-            ENDIF
-        ENDIF
-        RETURN lRetCode
+                self:__UpdateStatus()
+            endif
+        endif
+        return lRetCode
 
     /// <include file="Gui.xml" path="doc/DataWindow.Hide/*" />
-    METHOD Hide() AS VOID STRICT
-        IF lSubForm
-            SELF:__DataForm:HideSubForm()
-        ELSE
-            Super:Hide()
-        ENDIF
-        RETURN
+    method Hide() as void strict
+        if lSubForm
+            self:__DataForm:HideSubForm()
+        else
+            super:Hide()
+        endif
+        return
 
-    PROPERTY HyperLabel AS HyperLabel
-        GET
-            RETURN SUPER:HyperLabel
-        END GET
-        SET
-            SUPER:HyperLabel := value
-            IF value != NULL_OBJECT
-                SELF:__Surface:Text := "Surface: "+value:Name
-                SELF:__Frame:Text	:= "Frame: "+value:Name
-            ENDIF
-        END SET
-    END PROPERTY
+    property HyperLabel as HyperLabel
+        get
+            return super:HyperLabel
+        end get
+        set
+            super:HyperLabel := value
+            if value != null_object
+                self:oSurface:Text := "Surface: "+value:Name
+                self:__Frame:Text	:= "Frame: "+value:Name
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalScroll/*" />
-    METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) AS USUAL
-        SELF:__HandleScrolling(oScrollEvent)
-        RETURN SELF:Default(oScrollEvent)
+    method HorizontalScroll(oScrollEvent as ScrollEvent) as usual
+        self:__HandleScrolling(oScrollEvent)
+        return self:Default(oScrollEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalSlide/*" />
-    METHOD HorizontalSlide(oSlideEvent AS SliderEvent) AS USUAL
-        SELF:__HandleScrolling(oSlideEvent)
-        RETURN SELF:Default(oSlideEvent)
+    method HorizontalSlide(oSlideEvent as SliderEvent) as usual
+        self:__HandleScrolling(oSlideEvent)
+        return self:Default(oSlideEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalSpin/*" />
-    METHOD HorizontalSpin(oSpinEvent AS SpinnerEvent) AS USUAL
-        SELF:__HandleScrolling(oSpinEvent)
-        RETURN SELF:Default(oSpinEvent)
+    method HorizontalSpin(oSpinEvent as SpinnerEvent) as usual
+        self:__HandleScrolling(oSpinEvent)
+        return self:Default(oSpinEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.ctor/*" />
-    CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
-        LOCAL oResID AS ResourceID
-        LOCAL oObject AS OBJECT
-        LOCAL oDwOwner AS DataWindow
+    constructor(oOwner, oSource, nResourceID, nDialogStyle)
+        local oResID as ResourceID
+        local oObject as object
+        local oDwOwner as DataWindow
 
-        DEFAULT(@oOwner, GetAppObject())
-        IF IsLong(nDialogStyle)
+        DEFAULT( ref oOwner, GetAppObject())
+        if IsLong(nDialogStyle)
             dwDialogStyle := nDialogStyle
-        ENDIF
+        endif
 
-        IF dwDialogStyle > 0
+        if dwDialogStyle > 0
             oParent := oOwner
             //__DDImp{SELF, TRUE, dwDialogStyle}
-        ENDIF
+        endif
 
-        IF IsNil(oSource)
+        if IsNil(oSource)
             oResID := ResourceID{ -1 }
-        ELSEIF IsString(oSource) .OR. IsLong(oSource)
+        elseif IsString(oSource) .or. IsLong(oSource)
             oResID := ResourceID{oSource}
-        ELSE
+        else
             oResID := oSource
-        ENDIF
-        SELF:oResourceID := oResID
+        endif
+        self:oResourceID := oResID
 
 
-        IF IsObject(oOwner)
+        if IsObject(oOwner)
             oObject := oOwner
-            SWITCH oObject
-            CASE App
-                SUPER(NIL, FALSE)
-                lTopApp := TRUE
+            switch oObject
+            case App
+                super(nil, false)
+                lTopApp := true
                 // lQuitOnClose := true
-            CASE DialogWindow
-                SUPER(oOwner, TRUE)
-            CASE DataWindow
+            case DialogWindow
+                super(oOwner, true)
+            case DataWindow
                 // Create sub form if we're a regular DataWindow
-                Default(@nResourceID, 0)
+                DEFAULT( ref nResourceID, 0)
                 lSubForm := (dwDialogStyle = 0)
                 oDwOwner := oOwner
-                SUPER(oOwner, FALSE, FALSE)
+                super(oOwner, false, false)
             case AppWindow
                 super(oOwner)
-            CASE Window
+            case Window
                 // <XXX> invalid Owner - throw error
                 WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:Throw()
-            OTHERWISE
-                SUPER(oOwner)
-            END SWITCH
-        ELSE
-            SUPER(oOwner)
-        ENDIF
+            otherwise
+                super(oOwner)
+            end switch
+        else
+            super(oOwner)
+        endif
 
-        IF IsObject(oOwner) .AND. IsMethod(oOwner, #HelpDisplay)
-            SELF:oCurrentHelp := oOwner:Helpdisplay
-        ENDIF
+        if IsObject(oOwner) .and. oOwner is Window var oWin
+            self:oCurrentHelp := oWin:Helpdisplay
+        endif
         sCurrentView := #FormView
-        SELF:Caption := ResourceString{__WCSDWUntitled}:Value
+        self:Caption := ResourceString{__WCSDWUntitled}:Value
         aControls		:= {}
         aRadioGroups	:= {}
         aConditionalControls := {}
         nCCMode			:= CCOptimistic
-        SELF:lValidFlag := TRUE
-        lControlsEnabled := TRUE
-        lAutoScroll		:= TRUE
-        lAllowServerClose := TRUE
+        self:lValidFlag := true
+        lControlsEnabled := true
+        lAutoScroll		:= true
+        lAllowServerClose := true
         aSubForms		:= {}
-        symBrowserClass := #DataBrowser
+        symBrowserClass := gsymBrowserDef
 
-        IF lSubForm
+        if lSubForm
             __DataForm:CreateSubForm(nResourceID,oDwOwner:ResourceDialog)
-            oDwOwner:__RegisterSubForm(SELF)
-        ENDIF
-        IF ( SELF:Background != NULL_OBJECT )
-            oSurface:BackColor := SELF:Background:Color
-        ENDIF
+            oDwOwner:__RegisterSubForm(self)
+        endif
+        if ( self:Background != null_object )
+            oSurface:BackColor := self:Background:Color
+        endif
 
         //IF oContextMenu != NULL_OBJECT
         //	oSurface:ContextMenu   := oContextMenu:__Menu
         //ENDIF
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.InsertObject/*" />
-    METHOD InsertObject() STRICT
+    method InsertObject() strict
         //RvdH 030825 Method moved from Ole Classes
-        RETURN SELF:__GetOLEObject(#CreateFromInsertDialog)
+        return self:__GetOLEObject(#CreateFromInsertDialog)
 
     /// <include file="Gui.xml" path="doc/DataWindow.IsDialog/*" />
-    METHOD IsDialog() AS LOGIC STRICT
+    method IsDialog() as logic strict
         //SE-070906
-        RETURN dwDialogStyle > 0
+        return dwDialogStyle > 0
 
-    METHOD IsVisible()  AS LOGIC STRICT
-        IF lSubForm
-            RETURN SELF:oSurface:Visible
-        ENDIF
-        RETURN SUPER:IsVisible()
+    method IsVisible()  as logic strict
+        if lSubForm
+            return self:oSurface:Visible
+        endif
+        return super:IsVisible()
 
     /// <include file="Gui.xml" path="doc/DataWindow.LastFocus/*" />
-    PROPERTY LastFocus AS Control
-        GET
-            IF sCurrentView == #BrowseView
+    property LastFocus as Control
+        get
+            if sCurrentView == #BrowseView
                 return (Control) oGBrowse
-            ENDIF
-            RETURN oLastFocus
-        END GET
-        SET
-            IF ! (value IS DataBrowser)
-                IF lSubForm
-                    IF IsAssign(oParent, #LastFocus)
+            endif
+            return oLastFocus
+        end get
+        set
+            if ! (value is DataBrowser)
+                if lSubForm
+                    if IsAssign(oParent, #LastFocus)
                         IVarPut(oParent, #LastFocus, value)
-                    ENDIF
-                ENDIF
+                    endif
+                endif
                 oLastFocus := value
-            ENDIF
-            RETURN
-        END SET
-    END PROPERTY
+            endif
+            return
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.LineTo/*" />
-    METHOD LineTo(oPoint AS Point) AS USUAL
+    method LineTo(oPoint as Point) as usual
         //Todo	LineTo
 
-        IF (oSurface != NULL_OBJECT)
+        if (oSurface != null_object)
             //oSurface:LineTo(uPoint)
-            NOP
-        ENDIF
-        RETURN oPoint
+            nop
+        endif
+        return oPoint
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ListBoxClick/*" />
-    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS USUAL
-        LOCAL oListBox AS ListBox
+    method ListBoxClick(oControlEvent as ControlEvent) as usual
+        local oListBox as ListBox
         oListBox := (ListBox) oControlEvent:Control
-        oListBox:Modified := TRUE // assume its modified
-        SELF:__DoValidate(oListBox)
-        RETURN SUPER:ListBoxClick(oControlEvent)
+        oListBox:Modified := true // assume its modified
+        self:__DoValidate(oListBox)
+        return super:ListBoxClick(oControlEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ListBoxSelect/*" />
-    METHOD ListBoxSelect(oControlEvent AS ControlEvent) AS USUAL
-        LOCAL oListBox AS BaseListBox
+    method ListBoxSelect(oControlEvent as ControlEvent) as usual
+        local oListBox as BaseListBox
         oListBox := (BaseListBox) oControlEvent:Control
-        oListBox:Modified := TRUE // assume its modified
+        oListBox:Modified := true // assume its modified
         oListBox:__SetText(oListBox:CurrentItem)
-        SELF:__DoValidate(oListBox)
-        RETURN SUPER:ListBoxSelect(oControlEvent)
+        self:__DoValidate(oListBox)
+        return super:ListBoxSelect(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.Menu/*" />
-    PROPERTY Menu AS VOSDK.Menu
-        GET
-            RETURN SUPER:Menu
-        END GET
-        SET
-            SUPER:Menu := value
-            IF oParent IS ShellWindow
+    property Menu as VOSDK.Menu
+        get
+            return super:Menu
+        end get
+        set
+            super:Menu := value
+            if oParent is ShellWindow
                 // No need to resize. __DataForm handles this
                 //__DataForm:ResizeParent()
-                NOP
-            ENDIF
-        end SET
-    END PROPERTY
+                nop
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.MouseButtonDown/*" />
-    METHOD MouseButtonDown(oMouseEvent AS MouseEvent) AS USUAL
+    method MouseButtonDown(oMouseEvent as MouseEvent) as usual
         //RvdH 030825 Method moved from Ole Classes
 
-        SELF:DeactivateAllOLEObjects()
+        self:DeactivateAllOLEObjects()
 
-        RETURN SUPER:MouseButtonDown(oMouseEvent)
+        return super:MouseButtonDown(oMouseEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.MoveTo/*" />
-    METHOD MoveTo(oPoint AS Point)  AS Point
+    method MoveTo(oPoint as Point)  as Point
         //Todo	 MoveTo
 
-        IF (oSurface != NULL_OBJECT)
+        if (oSurface != null_object)
             //oSurface:MoveTo(oPoint)
-            NOP
-        ENDIF
+            nop
+        endif
 
-        RETURN oPoint
+        return oPoint
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Notify/*" />
-    METHOD Notify(kNotification, uDescription)
-        LOCAL oTB AS OBJECT
-        LOCAL i, iLen AS INT
-        LOCAL lThisRecDeleted AS LOGIC
-        LOCAL oDF AS DataField
-        LOCAL oControl AS Control
+    method Notify(kNotification, uDescription)
+        local oTB as TextBox
+        local i, iLen as int
+        local lThisRecDeleted as logic
+        local oDF as DataField
+        local oControl as Control
 
 
-        SWITCH (INT) kNotification
-        CASE NOTIFYCOMPLETION
+        switch (int) kNotification
+        case NOTIFYCOMPLETION
             // Do nothing, __NotifyCompletion had no code in it
 
-        CASE NOTIFYINTENTTOMOVE
+        case NOTIFYINTENTTOMOVE
             //RvdH MOved from OleDataWindow
-            SELF:DeactivateAllOLEObjects()
+            self:DeactivateAllOLEObjects()
 
-            IF (oAttachedServer == NULL_OBJECT)
-                RETURN TRUE
-            ENDIF
-            IF !SELF:CheckStatus()
-                oTB:=TextBox{SELF, ResourceString{__WCSWarning}:Value, ResourceString{__WCSChgDiscard}:Value}
+            if (oAttachedServer == null_object)
+                return true
+            endif
+            if !self:CheckStatus()
+                oTB:=TextBox{self, ResourceString{__WCSWarning}:Value, ResourceString{__WCSChgDiscard}:Value}
                 oTB:Type:=BUTTONOKAYCANCEL+BOXICONHAND
-                IF oTB:Show()!=BOXREPLYOKAY
-                    RETURN FALSE
-                ELSE
+                if oTB:Show()!=BOXREPLYOKAY
+                    return false
+                else
                     //Put original data back if moving to another record
-                    IF (sCurrentView == #BrowseView)
-                        SELF:__Scatter()
+                    if (sCurrentView == #BrowseView)
+                        self:__Scatter()
                         Send(oGBrowse, #__NotifyChanges, GBNFY_FIELDCHANGE)
-                    ENDIF
-                ENDIF
-            ENDIF
-            RETURN TRUE
+                    endif
+                endif
+            endif
+            return true
 
-        CASE NOTIFYFILECHANGE
-            SELF:__Scatter()
+        case NOTIFYFILECHANGE
+            self:__Scatter()
 
-        CASE NOTIFYFIELDCHANGE
-            lRecordDirty := TRUE
-            IF (sCurrentView == #FormView)
-                iLen := INT(ALen(aControls))
-                FOR i:= 1 TO iLen
+        case NOTIFYFIELDCHANGE
+            lRecordDirty := true
+            if (sCurrentView == #FormView)
+                iLen := int(ALen(aControls))
+                for i:= 1 to iLen
                     oControl := aControls[i]
                     oDF := oControl:__DataField
-                    IF (oDF != NULL_OBJECT) .AND. (oDF:NameSym == uDescription)
+                    if (oDF != null_object) .and. (oDF:NameSym == uDescription)
                         oControl:__Scatter()
-                    ENDIF
-                NEXT
+                    endif
+                next
                 // RvdH 060529 This is done in the DataBrowser:Notify as well
                 //ELSEIF (sCurrentView == #BrowseView)
                 //	// Refresh current record and field from data Server
                 //	Send(oGBrowse, #__RefreshField, uDescription)
-            ENDIF
+            endif
 
-        CASE NOTIFYCLOSE
+        case NOTIFYCLOSE
             // Data Server has closed
             // if sCurrentView == #BrowseView
             //
@@ -1999,855 +2002,857 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
             // self:__Unlink()
             // endif
             // Data Server has closed
-            IF !SELF:CheckStatus()
-                oTB:=TextBox{SELF, ResourceString{__WCSWarning}:Value, ResourceString{__WCSChgDiscard}:Value}
+            if !self:CheckStatus()
+                oTB:=TextBox{self, ResourceString{__WCSWarning}:Value, ResourceString{__WCSChgDiscard}:Value}
                 oTB:Type:=BUTTONOKAY+BOXICONHAND
                 oTB:Show()
-            ENDIF
-            SELF:__Unlink()
+            endif
+            self:__Unlink()
 
 
-        CASE NOTIFYRECORDCHANGE
-        CASE NOTIFYGOBOTTOM
-        CASE NOTIFYGOTOP
-        CASE NOTIFYDELETE
-        CASE NOTIFYAPPEND
+        case NOTIFYRECORDCHANGE
+        case NOTIFYGOBOTTOM
+        case NOTIFYGOTOP
+        case NOTIFYDELETE
+        case NOTIFYAPPEND
             // record position has changed
             lThisRecDeleted:=IVarGet(oAttachedServer,#Deleted)
             // Disable or enable controls depending on deletion state
             // this logic only applies if deleted records are included in view
             // Use SET DELETE to exclude / include deleted records in view.
-            IF lThisRecDeleted
+            if lThisRecDeleted
                 // Do we need to disable controls
-                SELF:__StatusMessage(ResourceString{__WCSDeletedRecord}:Value, MESSAGEPERMANENT)
-            ELSE
-                SELF:__StatusMessage("", MESSAGEPERMANENT)
-            ENDIF
+                self:__StatusMessage(ResourceString{__WCSDeletedRecord}:Value, MESSAGEPERMANENT)
+            else
+                self:__StatusMessage("", MESSAGEPERMANENT)
+            endif
             lDeleted := lThisRecDeleted
 
-            oHLStatus := NULL_OBJECT
-            SELF:__Scatter()
+            oHLStatus := null_object
+            self:__Scatter()
 
-            IF (kNotification == NOTIFYAPPEND)
+            if (kNotification == NOTIFYAPPEND)
                 //Set HLStatus for all controls
-                FOREACH oC AS Control IN aControls
+                foreach oC as Control in aControls
                     oC:PerformValidations()
-                NEXT
-            ENDIF
-        END SWITCH
+                next
+            endif
+        end switch
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.OK/*" />
-    METHOD OK() AS LOGIC STRICT
+    method OK() as logic strict
 
-        IF SELF:Commit()
-            SELF:EndWindow()
-            RETURN TRUE
-        ENDIF
-        RETURN FALSE
+        if self:Commit()
+            self:EndWindow()
+            return true
+        endif
+        return false
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.OLEInPlaceActivate/*" />
-    METHOD OLEInPlaceActivate()
+    method OLEInPlaceActivate()
         //RvdH 030825 Method moved from Ole Classes
-        LOCAL oTB AS ToolBar
+        local oTB as ToolBar
 
-        IF IsInstanceOf(oParent, #ShellWindow)
-            oTB := oParent:ToolBar
-        ELSE
-            oTB := SELF:ToolBar
-        ENDIF
+        if oParent is ShellWindow var oShell
+            oTB := oShell:ToolBar
+        else
+            oTB := self:ToolBar
+        endif
 
-        IF (oTB != NULL_OBJECT) .AND. oTB:IsVisible()
+        if (oTB != null_object) .and. oTB:IsVisible()
             oTB:Hide()
-            lPendingToolBarShow := TRUE
-        ENDIF
+            lPendingToolBarShow := true
+        endif
 
-        RETURN SUPER:OLEInPlaceActivate()
+        return super:OLEInPlaceActivate()
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.OLEInPlaceDeactivate/*" />
-    METHOD OLEInPlaceDeactivate()
+    method OLEInPlaceDeactivate()
         //RvdH 030825 Method moved from Ole Classes
-        LOCAL oTB AS ToolBar
+        local oTB as ToolBar
 
-        IF IsInstanceOf(oParent, #ShellWindow)
-            oTB := oParent:ToolBar
-        ELSE
-            oTB := SELF:ToolBar
+        if oParent is ShellWindow var oShell
+            oTB := oShell:ToolBar
+        else
+            oTB := self:ToolBar
             //__DataForm:ResizeParent()
-        ENDIF
+        endif
 
-        IF (oTB != NULL_OBJECT) .AND. !oTB:IsVisible() .AND. lPendingToolBarShow
+        if (oTB != null_object) .and. !oTB:IsVisible() .and. lPendingToolBarShow
             oTB:Show()
-        ENDIF
+        endif
 
-        lPendingToolBarShow := FALSE
+        lPendingToolBarShow := false
 
-        RETURN SUPER:OLEInPlaceDeactivate()
+        return super:OLEInPlaceDeactivate()
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Origin/*" />
-    PROPERTY Origin AS Point
-        GET
-            IF SELF:lSubForm
-                RETURN SELF:__Frame:Location
-            ENDIF
-            RETURN SUPER:Origin
-        END GET
-        SET
-            IF SELF:lSubForm
-                SELF:__Frame:Location := value
-            ELSE
-                SUPER:Origin:=value
-            ENDIF
-        END SET
-    END PROPERTY
+    property Origin as Point
+        get
+            if self:lSubForm
+                return self:__Frame:Location
+            endif
+            return super:Origin
+        end get
+        set
+            if self:lSubForm
+                self:__Frame:Location := value
+            else
+                super:Origin:=value
+            endif
+        end set
+    end property
     /// <include file="Gui.xml" path="doc/Window.OwnerAlignment/*" />
-    ASSIGN OwnerAlignment(iNewVal AS USUAL)
-        LOCAL lDone AS LOGIC
-        IF SELF:lSubForm
+    assign OwnerAlignment(iNewVal as usual)
+        local lDone as logic
+        if self:lSubForm
             lDone := Control.OwnerAlignmentHandledByWinForms(__Frame, iNewVal)
-        ENDIF
-        IF ! lDone
-            oParent:__AddAlign(SELF, iNewVal)
-        ENDIF
-        RETURN
+        endif
+        if ! lDone
+            ((IControlParent) oParent):__AddAlign(self, iNewVal)
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.OwnerServer/*" />
-    PROPERTY OwnerServer AS Object
-        GET
-            IF IsInstanceOf(SELF:Owner, #DataWindow)
-                RETURN SELF:Owner:Server
-            ENDIF
-            RETURN NIL
-        END GET
-    END PROPERTY
+    property OwnerServer as object
+        get
+            if self:Owner is DataWindow var oDW
+                return oDW:Server
+            endif
+            return nil
+        end get
+    end property
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.PaintBoundingBox/*" />
-    METHOD PaintBoundingBox(oBB as BoundingBox,kPM AS LONG) AS VOID
+    method PaintBoundingBox(oBB as BoundingBox,kPM as long) as void
         //Todo	 PaintBoundingBox
-        IF oSurface != NULL_OBJECT
+        if oSurface != null_object
             //oSurface:PaintBackground(oBB,kPM)
-            NOP
-        ENDIF
-        RETURN
+            nop
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Paste/*" />
-    METHOD Paste()   AS VOID STRICT
-        IF sCurrentView == #FormView
-         IF oDCCurrentControl IS Edit VAR oEdit
-            oEdit:Paste(ClipBoard{}:RetrieveString())
-          ELSEIF oDCCurrentControl IS EditWindow VAR oEditWin
-            oEditWin:Paste(ClipBoard{}:RetrieveString())
-         ELSEIF oDCCurrentControl IS ControlWindow var oCW
-            IF oCW:Control != NULL_OBJECT .and. IsMethod(oCW:Control, #Paste)
-                Send(oCW:Control,#Paste, ClipBoard{}:RetrieveString())
-            ENDIF
-            ENDIF
-        ELSEIF sCurrentView == #BrowseView
-            IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #Paste)
+    method Paste()   as void strict
+        if sCurrentView == #FormView
+            if oDCCurrentControl is Edit var oEdit
+                oEdit:Paste(ClipBoard{}:RetrieveString())
+            elseif oDCCurrentControl is EditWindow var oEditWin
+                oEditWin:Paste(ClipBoard{}:RetrieveString())
+            elseif oDCCurrentControl is ControlWindow var oCW
+                if oCW:Control != null_object .and. IsMethod(oCW:Control, #Paste)
+                    Send(oCW:Control,#Paste, ClipBoard{}:RetrieveString())
+                endif
+            endif
+        elseif sCurrentView == #BrowseView
+            if (oGBrowse != null_object) .and. IsMethod(oGBrowse, #Paste)
                 Send(oGBrowse, #Paste,ClipBoard{}:RetrieveString())
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.PasteSpecial/*" />
-    METHOD PasteSpecial()
+    method PasteSpecial()
         //RvdH 030825 Method moved from Ole Classes
-        RETURN SELF:__GetOLEObject(#CreateFromPasteDialog)
+        return self:__GetOLEObject(#CreateFromPasteDialog)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Pen/*" />
-    PROPERTY Pen as Pen
-        GET
-            RETURN SUPER:Pen
-        END GET
-        SET
+    property Pen as Pen
+        get
+            return super:Pen
+        end get
+        set
 
-        SUPER:Pen := value
-        IF oSurface != NULL_OBJECT
-            NOP
-        ENDIF
-        RETURN
-        END SET
-        END PROPERTY
+            super:Pen := value
+            if oSurface != null_object
+                nop
+            endif
+            return
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Pointer/*" />
-    PROPERTY Pointer  AS Pointer
-    GET
-        IF (sCurrentView == #FormView) .OR. !IsAccess(oGBrowse, #pointer)
-            IF (oSurface != NULL_OBJECT)
-                RETURN oSurface:Cursor
-            ENDIF
-        ELSE
-            RETURN IVarGet(oGBrowse, #pointer)
-        ENDIF
+    property Pointer  as Pointer
+        get
+            if (sCurrentView == #FormView) .or. !IsAccess(oGBrowse, #pointer)
+                if (oSurface != null_object)
+                    return oSurface:Cursor
+                endif
+            else
+                return IVarGet(oGBrowse, #pointer)
+            endif
 
-        RETURN SUPER:Pointer
-    END GET
-    SET
-        IF (oSurface != NULL_OBJECT)
-            oSurface:Cursor:=value
-        ENDIF
-        IF IsAssign(oGBrowse, #databrowser)
-            IVarPut(oGBrowse, #pointer, value)
-        ENDIF
-        RETURN
-    END SET
-    END PROPERTY
+            return super:Pointer
+        end get
+        set
+            if (oSurface != null_object)
+                oSurface:Cursor:=value
+            endif
+            if IsAssign(oGBrowse, #databrowser)
+                IVarPut(oGBrowse, #pointer, value)
+            endif
+            return
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.PreValidate/*" />
-    METHOD PreValidate()
+    method PreValidate()
 
         //self:EnableConditionalControls()
-        SELF:__CheckConditionalControls()
-        RETURN SELF
+        self:__CheckConditionalControls()
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.PreventAutoLayout/*" />
-    PROPERTY PreventAutoLayout AS LOGIC GET lPreventAutoLayout SET lPreventAutoLayout := Value
+    property PreventAutoLayout as logic get lPreventAutoLayout set lPreventAutoLayout := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.QueryClose/*" />
-    METHOD QueryClose(oQCE AS Event) AS LOGIC
+    method QueryClose(oQCE as Event) as logic
         // If there are outstanding changes which have not
         // been written to the dataServer - ask the user.
-        LOCAL oTB AS TextBox
+        local oTB as TextBox
 
-        IF oAttachedServer==NULL_OBJECT
-            RETURN TRUE
-        ENDIF
+        if oAttachedServer==null_object
+            return true
+        endif
 
-        SELF:SetFocus()
-        IF !SELF:CheckStatus()
-            oTB := TextBox{ SELF,;
+        self:SetFocus()
+        if !self:CheckStatus()
+            oTB := TextBox{ self,;
                 ResourceString{__WCSWarning}:Value,;
-                VO_Sprintf(__WCSDataWindow,SELF:Caption)+CHR(10)+ResourceString{__WCSChgDiscard}:Value}
+                VO_Sprintf(__WCSDataWindow,self:Caption)+CHR(10)+ResourceString{__WCSChgDiscard}:Value}
             oTB:Type := ButtonOkayCancel + BoxICONHand
-            IF (oTB:Show() != BOXREPLYOkay)
-                RETURN FALSE
-            ENDIF
-        ENDIF
+            if (oTB:Show() != BOXREPLYOkay)
+                return false
+            endif
+        endif
 
-        RETURN TRUE
+        return true
 
     /// <include file="Gui.xml" path="doc/DataWindow.RadioGroups/*" />
-    PROPERTY RadioGroups AS ARRAY GET SELF:aRadioGroups
+    property RadioGroups as array get self:aRadioGroups
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.RegisterConditionalControls/*" />
-    METHOD RegisterConditionalControls(oCC)
+    method RegisterConditionalControls(oCC)
         //SE-060526
-        LOCAL dwI, dwCount AS DWORD
+        local dwI, dwCount as dword
 
         dwCount := ALen(aConditionalControls)
-        FOR dwI := 1 UPTO dwCount
-            IF aConditionalControls[dwI] == oCC
-                RETURN SELF
-            ENDIF
-        NEXT
+        for dwI := 1 upto dwCount
+            if aConditionalControls[dwI] == oCC
+                return self
+            endif
+        next
         AAdd(aConditionalControls,oCC)
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.RePaint/*" />
-    METHOD RePaint() AS VOID STRICT
-        IF oSurface != NULL_OBJECT
+    method RePaint() as void strict
+        if oSurface != null_object
             oSurface:Invalidate()
-        ENDIF
-        RETURN
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.RepaintBoundingBox/*" />
-    METHOD RepaintBoundingBox(oBB AS BoundingBox) AS VOID STRICT
-        IF (oSurface != NULL_OBJECT)
+    method RepaintBoundingBox(oBB as BoundingBox) as void strict
+        if (oSurface != null_object)
             oSurface:Invalidate((System.Drawing.Rectangle) oBB)
-        ENDIF
-        RETURN
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.Seek/*" />
-    METHOD Seek(uValue, lSoftSeek, lLast)
-        LOCAL lRetCode := FALSE AS LOGIC
-        IF oAttachedServer!=NULL_OBJECT
-            oHLStatus := NULL_OBJECT // assume success
-            IF SELF:__CheckRecordStatus()
-                IF !(lRetCode := Send(oAttachedServer,#Seek,uValue, lSoftSeek, lLast))
+    method Seek(uValue, lSoftSeek, lLast)
+        local lRetCode := false as logic
+        if oAttachedServer!=null_object
+            oHLStatus := null_object // assume success
+            if self:__CheckRecordStatus()
+                if !(lRetCode := Send(oAttachedServer,#Seek,uValue, lSoftSeek, lLast))
                     oHLStatus := oAttachedServer:Status
                     //oHLStatus := HyperLabel{#Seek, "Seek Failed, key not found"}
-                    SELF:__UpdateStatus()
-                ENDIF
-            ENDIF
-        ENDIF
+                    self:__UpdateStatus()
+                endif
+            endif
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Server/*" />
-    PROPERTY Server as DataServer GET oAttachedServer
+    property Server as DataServer get oAttachedServer
 
     /// <include file="Gui.xml" path="doc/DataWindow.SetAlignStartSize/*" />
-    METHOD SetAlignStartSize(oSize AS Dimension)  AS VOID
-        Super:SetAlignStartSize(oSize)
-        RETURN
+    method SetAlignStartSize(oSize as Dimension)  as void
+        super:SetAlignStartSize(oSize)
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.SetDialog/*" />
-    METHOD SetDialog(lResizable, lMaximizeBox, lMinimizeBox)
+    method SetDialog(lResizable, lMaximizeBox, lMinimizeBox)
         //can be used in PreInit() method or befor super:init()
-        IF oWnd == NULL_OBJECT
+        if oWnd == null_object
 
-            dwDialogStyle := _OR(dwDialogStyle, WS_DLGFRAME)
+            dwDialogStyle := _or(dwDialogStyle, WS_DLGFRAME)
 
-            IF IsLogic(lResizable) .AND. lResizable
-                dwDialogStyle := _OR(dwDialogStyle, WS_THICKFRAME)
-            ENDIF
-            IF IsLogic(lMaximizeBox) .AND. lMaximizeBox
-                dwDialogStyle := _OR(dwDialogStyle, WS_MAXIMIZEBOX, WS_SYSMENU)
-            ENDIF
-            IF IsLogic(lMinimizeBox) .AND. lMinimizeBox
-                dwDialogStyle := _OR(dwDialogStyle, WS_MINIMIZEBOX, WS_SYSMENU)
-            ENDIF
+            if IsLogic(lResizable) .and. lResizable
+                dwDialogStyle := _or(dwDialogStyle, WS_THICKFRAME)
+            endif
+            if IsLogic(lMaximizeBox) .and. lMaximizeBox
+                dwDialogStyle := _or(dwDialogStyle, WS_MAXIMIZEBOX, WS_SYSMENU)
+            endif
+            if IsLogic(lMinimizeBox) .and. lMinimizeBox
+                dwDialogStyle := _or(dwDialogStyle, WS_MINIMIZEBOX, WS_SYSMENU)
+            endif
 
-        ENDIF
+        endif
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.SetRelation/*" />
-    METHOD SetRelation( oDWChild, uRelation, cRelation )
-        LOCAL lRetCode := FALSE AS LOGIC
+    method SetRelation( oDWChild as DataWindow, uRelation as usual, cRelation  as string)
+        local lRetCode := false as logic
 
-        oHLStatus:=NULL_OBJECT // assume success
-        IF oAttachedServer!=NULL_OBJECT .AND. SELF:lValidFlag
-            IF SELF:__CheckRecordStatus()
-                IF !(lRetCode:=Send(oAttachedServer,#SetRelation,oDWChild:Server, uRelation, cRelation ))
+        oHLStatus:=null_object // assume success
+        if oAttachedServer!=null_object .and. self:lValidFlag
+            if self:__CheckRecordStatus()
+                if !(lRetCode:=Send(oAttachedServer,#SetRelation,oDWChild:Server, uRelation, cRelation ))
                     oHLStatus:=oAttachedServer:Status
-                    SELF:__UpdateStatus()
-                ENDIF
-            ENDIF
-        ENDIF
-        RETURN lRetCode
+                    self:__UpdateStatus()
+                endif
+            endif
+        endif
+        return lRetCode
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.SetSelectiveRelation/*" />
-    METHOD SetSelectiveRelation( oDWChild, uRelation, cRelation )
-        LOCAL lRetCode := FALSE AS LOGIC
+    method SetSelectiveRelation( oDWChild as DataWindow, uRelation as usual, cRelation as string)
+        local lRetCode := false as logic
 
-        oHLStatus := NULL_OBJECT // assume success
-        IF oAttachedServer != NULL_OBJECT .AND. SELF:lValidFlag
-            IF SELF:__CheckRecordStatus()
-                IF !(lRetCode:=Send(oAttachedServer,#SetSelectiveRelation,oDWChild:Server, uRelation, cRelation ))
+        oHLStatus := null_object // assume success
+        if oAttachedServer != null_object .and. self:lValidFlag
+            if self:__CheckRecordStatus()
+                if !(lRetCode:=Send(oAttachedServer,#SetSelectiveRelation,oDWChild:Server, uRelation, cRelation ))
                     oHLStatus:=oAttachedServer:Status
-                    SELF:__UpdateStatus()
-                ENDIF
-            ENDIF
-        ENDIF
+                    self:__UpdateStatus()
+                endif
+            endif
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
     /// <include file="Gui.xml" path="doc/DataWindow.Show/*" />
-    METHOD Show(nShowState AS LONG)  AS VOID
+    method Show(nShowState as long)  as void
 
-        IF lDeferUse .AND. (oDeferUseServer != NULL_OBJECT)
-            lDeferUse := FALSE
-            SELF:Use(oDeferUseServer)
-            oDeferUseServer := NULL_OBJECT
-        ENDIF
+        if lDeferUse .and. (oDeferUseServer != null_object)
+            lDeferUse := false
+            self:Use(oDeferUseServer)
+            oDeferUseServer := null_object
+        endif
 
-        IF (SELF:ToolBar != NULL_OBJECT)
-            SELF:ToolBar:Show()
-        ENDIF
+        if (self:ToolBar != null_object)
+            self:ToolBar:Show()
+        endif
 
-        IF !lSubForm
-            IF SELF:lValidFlag
-                SUPER:Show(nShowState)
-            ELSE
-                SELF:Destroy()
-            ENDIF
-        ELSE
-            SELF:__DataForm:ShowSubForm()
-        ENDIF
+        if !lSubForm
+            if self:lValidFlag
+                super:Show(nShowState)
+            else
+                self:Destroy()
+            endif
+        else
+            self:__DataForm:ShowSubForm()
+        endif
 
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.Size/*" />
-    PROPERTY Size AS Dimension
-    GET
-        IF SELF:lSubForm
-            RETURN SELF:__Frame:Size
-        ENDIF
-        RETURN SUPER:Size
-    END GET
-    SET
-        IF SELF:lSubForm
-            SELF:__Frame:Size := value
-            SELF:__Frame:DefinedSize := SELF:__Frame:Size
-            SELF:__DataForm:AdjustSizes()
-        ELSE
-            SUPER:Size := value
-        ENDIF
-    END SET
-    END PROPERTY
+    property Size as Dimension
+        get
+            if self:lSubForm
+                return self:__Frame:Size
+            endif
+            return super:Size
+        end get
+        set
+            if self:lSubForm
+                self:__Frame:Size := value
+                self:__Frame:DefinedSize := self:__Frame:Size
+                self:__DataForm:AdjustSizes()
+            else
+                super:Size := value
+            endif
+        end set
+    end property
     /// <include file="Gui.xml" path="doc/DataWindow.Skip/*" />
-    METHOD Skip(uRelativePosition)
-        LOCAL lRetCode := FALSE AS LOGIC
+    method Skip(uRelativePosition) as logic
+        local lRetCode := false as logic
 
-        oHLStatus := NULL_OBJECT // assume success
-        IF oAttachedServer != NULL_OBJECT .AND. SELF:__CheckRecordStatus()
-            IF !(lRetCode := oAttachedServer:Skip(uRelativePosition))
+        oHLStatus := null_object // assume success
+        if oAttachedServer != null_object .and. self:__CheckRecordStatus()
+            if !(lRetCode := oAttachedServer:Skip(uRelativePosition))
                 oHLStatus := oAttachedServer:Status
-                SELF:__UpdateStatus()
-            ENDIF
-        ENDIF
+                self:__UpdateStatus()
+            endif
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
     /// <include file="Gui.xml" path="doc/DataWindow.SkipNext/*" />
-    METHOD SkipNext() CLIPPER
-        LOCAL lRetCode := FALSE AS LOGIC
+    method SkipNext() as logic strict
+        local lRetCode := false as logic
 
-        lRetCode := SELF:Skip(1)
+        lRetCode := self:Skip(1)
 
-        IF lRetCode = TRUE .AND. oAttachedServer:EoF
-            SELF:GoBottom()
-        ENDIF
+        if lRetCode = true .and. oAttachedServer:EoF
+            self:GoBottom()
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
     /// <include file="Gui.xml" path="doc/DataWindow.SkipPrevious/*" />
-    METHOD SkipPrevious() CLIPPER
+    method SkipPrevious() as logic strict
 
-        RETURN SELF:Skip(-1)
+        return self:Skip(-1)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Status/*" />
-    PROPERTY Status AS HyperLabel GET SELF:oHLStatus SET oHLStatus := value
+    property Status as HyperLabel get self:oHLStatus set oHLStatus := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.StatusBar/*" />
-    PROPERTY StatusBar AS StatusBar
-    GET
-        IF dwDialogStyle > 0
-            // Support of a StatusBar a DataDialog - Window
-            RETURN oStatusBar
-        ENDIF
-        RETURN SUPER:StatusBar
-    END GET
-    SET
-        //SE-070906
-        IF dwDialogStyle > 0
-            // Support of a StatusBar a DataDialog - Window
-            oStatusBar := value
-        ENDIF
-        SUPER:StatusBar := value
-        IF value != NULL_OBJECT
-            SELF:__DataForm:StatusBar := SELF:StatusBar:__StatusStrip
-        ELSE
-            SELF:__DataForm:StatusBar := NULL_OBJECT
-        ENDIF
+    property StatusBar as StatusBar
+        get
+            if dwDialogStyle > 0
+                // Support of a StatusBar a DataDialog - Window
+                return oStatusBar
+            endif
+            return super:StatusBar
+        end get
+        set
+            //SE-070906
+            if dwDialogStyle > 0
+                // Support of a StatusBar a DataDialog - Window
+                oStatusBar := value
+            endif
+            super:StatusBar := value
+            if value != null_object
+                self:__DataForm:StatusBar := self:StatusBar:__StatusStrip
+            else
+                self:__DataForm:StatusBar := null_object
+            endif
 
-        RETURN
-    END SET
-    END PROPERTY
+            return
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.StatusOK/*" />
-    METHOD StatusOK() AS LOGIC
-        LOCAL dwInvalidControl, iLen AS DWORD
+    method StatusOK() as logic strict
+        local dwInvalidControl, iLen as dword
 
 
-        oDCInvalidControl := NULL_OBJECT
-        oDCInvalidColumn := NULL_OBJECT
-        oHLStatus := NULL_OBJECT
+        oDCInvalidControl := null_object
+        oDCInvalidColumn := null_object
+        oHLStatus := null_object
 
-        IF (oAttachedServer == NULL_OBJECT)
+        if (oAttachedServer == null_object)
             oHLStatus := HyperLabel{#NoAttachedServer, #NoAttachedServer}
-        ELSE
-            SELF:__UpdateCurrent()
-            IF !oAttachedServer:EoF //Don't validate the EOF record
-                IF (sCurrentView == #FormView)
+        else
+            self:__UpdateCurrent()
+            if !oAttachedServer:EoF //Don't validate the EOF record
+                if (sCurrentView == #FormView)
                     iLen := ALen(aControls)
-                    FOR dwInvalidControl := 1 TO iLen
-                        IF (aControls[dwInvalidControl]:Status != NULL_OBJECT)
-                            EXIT
-                        ENDIF
-                    NEXT
+                    for dwInvalidControl := 1 to iLen
+                        var oControl := (Control) aControls[dwInvalidControl]
+                        if (oControl:Status != null_object)
+                            exit
+                        endif
+                    next
                     //dwInvalidControl := AScan(aControls, {|oControl| oControl:Status != NULL_OBJECT})
-                    IF (dwInvalidControl != (iLen+1))
+                    if (dwInvalidControl != (iLen+1))
                         oDCInvalidControl := aControls[dwInvalidControl]
-                        IF (oHLStatus := oDCInvalidControl:Status) == NULL_OBJECT
+                        if (oHLStatus := oDCInvalidControl:Status) == null_object
                             oHLStatus := HyperLabel{#InvalidControl, #RecInvalid}
-                        ENDIF
-                    ENDIF
-                ELSEIF (sCurrentView == #BrowseView)
-                    IF oGBrowse != NULL_OBJECT
-                        IF (oDCInvalidColumn := Send(oGBrowse, #__StatusOK)) != NULL_OBJECT
-                            IF (oHLStatus := oDCInvalidColumn:Status) == NULL_OBJECT
+                        endif
+                    endif
+                elseif (sCurrentView == #BrowseView)
+                    if oGBrowse != null_object
+                        if (oDCInvalidColumn := Send(oGBrowse, #__StatusOK)) != null_object
+                            if (oHLStatus := oDCInvalidColumn:Status) == null_object
                                 oHLStatus := HyperLabel{#InvalidColumn, #RecInvalid}
-                            ENDIF
-                        ENDIF
-                    ENDIF
-                ENDIF
-            ENDIF
-        ENDIF
+                            endif
+                        endif
+                    endif
+                endif
+            endif
+        endif
 
-        RETURN oHLStatus == NULL_OBJECT
+        return oHLStatus == null_object
 
     /// <include file="Gui.xml" path="doc/DataWindow.SubForms/*" />
-    PROPERTY SubForms AS ARRAY GET SELF:aSubForms
+    property SubForms as array get self:aSubForms
 
     /// <include file="Gui.xml" path="doc/DataWindow.Surface/*" />
-    PROPERTY Surface as VOPanel GET SELF:oSurface
+    property Surface as VOPanel get self:oSurface
 
     /// <include file="Gui.xml" path="doc/DataWindow.TextPrint/*" />
-    METHOD TextPrint(cText AS STRING, oPoint AS Point) AS VOID
+    method TextPrint(cText as string, oPoint as Point) as void
         // Todo	 TextPrint
-        IF oSurface != NULL_OBJECT
+        if oSurface != null_object
             //oSurface:TextPrint(cText, oPoint)
-            NOP
-        ENDIF
-        RETURN
+            nop
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.ToolBar/*" />
-    PROPERTY ToolBar AS ToolBar
-        GET
-            RETURN SUPER:ToolBar
-        END GET
-        SET
+    property ToolBar as ToolBar
+        get
+            return super:ToolBar
+        end get
+        set
 
-            SUPER:ToolBar := value
-            IF value != NULL_OBJECT
-                SELF:__DataForm:ToolBar := value:__ToolBar
+            super:ToolBar := value
+            if value != null_object
+                self:__DataForm:ToolBar := value:__ToolBar
                 //ELSE
                 //	SELF:__DataForm:ToolBar := NULL_OBJECT
-            ENDIF
+            endif
             // No need to resize. __DataForm handles this
-            RETURN
-        END SET
-        END PROPERTY
+            return
+        end set
+    end property
     /// <include file="Gui.xml" path="doc/DataWindow.Undo/*" />
-    METHOD Undo() AS VOID
-        IF (sCurrentView == #FormView)
-            IF IsInstanceOf(oDCCurrentControl, #Edit)
-                oDCCurrentControl:Undo()
-            ENDIF
-        ELSEIF (sCurrentView == #BrowseView)
-            IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #Undo)
+    method Undo() as void
+        if (sCurrentView == #FormView)
+            if oDCCurrentControl is Edit var oEdit
+                oEdit:Undo()
+            endif
+        elseif (sCurrentView == #BrowseView)
+            if (oGBrowse != null_object) .and. IsMethod(oGBrowse, #Undo)
                 Send(oGBrowse, #Undo)
-            ENDIF
-        ENDIF
-        RETURN
+            endif
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.UndoAll/*" />
-    METHOD UndoAll() AS VOID
-        IF oAttachedServer!=NULL_OBJECT
+    method UndoAll() as void
+        if oAttachedServer!=null_object
             Send(oAttachedServer,#Refresh)
-        ENDIF
-        RETURN
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/DataWindow.UpdateActiveObject/*" />
-    METHOD UpdateActiveObject() AS VOID
-        SELF:__UpdateActiveObject()
+    method UpdateActiveObject() as void
+        self:__UpdateActiveObject()
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Use/*" />
-    METHOD Use(oDataServer AS DataServer) AS LOGIC
-        LOCAL lRetCode := FALSE AS LOGIC
+    method Use(oDataServer as DataServer) as logic
+        local lRetCode := false as logic
 
-        IF lDeferUse
+        if lDeferUse
             oDeferUseServer := oDataServer
-            RETURN TRUE
-        ENDIF
+            return true
+        endif
 
-        IF (oAttachedServer != oDataServer) .AND. (oAttachedServer != NULL_OBJECT)
-            SELF:__Unlink()
-            IF __DataForm:AutoLayout
-                IF (oSurface != NULL_OBJECT)
+        if (oAttachedServer != oDataServer) .and. (oAttachedServer != null_object)
+            self:__Unlink()
+            if __DataForm:AutoLayout
+                if (oSurface != null_object)
                     oSurface:Controls:Clear()
                     oSurface:Size := Dimension{0, 0}
-                ENDIF
+                endif
                 aControls := {}
                 aRadioGroups := {}
                 aConditionalControls := {}
 
-                IF (oGBrowse != NULL_OBJECT)
+                if (oGBrowse != null_object)
                     oGBrowse:Destroy()
-                    oGBrowse := NULL_OBJECT
-                ENDIF
-            ENDIF
-        ENDIF
+                    oGBrowse := null_object
+                endif
+            endif
+        endif
 
-        IF (oDataServer != NULL_OBJECT)
-            IF SELF:__VerifyDataServer(oDataServer)
-                oDataServer:RegisterClient(SELF)
+        if (oDataServer != null_object)
+            if self:__VerifyDataServer(oDataServer)
+                oDataServer:RegisterClient(self)
 
-                lRetCode := SELF:__RegisterFieldLinks(oDataServer)
-                IF (sCurrentView == #BrowseView)
-                    IF (oGBrowse != NULL_OBJECT)
+                lRetCode := self:__RegisterFieldLinks(oDataServer)
+                if (sCurrentView == #BrowseView)
+                    if (oGBrowse != null_object)
                         Send(oGBrowse, #Use, oDataServer)
-                        SELF:__Scatter() // new insert, since ViewAs already does a Scatter()
-                    ELSE
+                        self:__Scatter() // new insert, since ViewAs already does a Scatter()
+                    else
                         sCurrentView := #ViewSwitch
-                        SELF:ViewAs(#BrowseView)
-                    ENDIF
-                ELSEIF (sCurrentView == #FormView)
+                        self:ViewAs(#BrowseView)
+                    endif
+                elseif (sCurrentView == #FormView)
                     sCurrentView := #ViewSwitch
-                    SELF:ViewAs(#FormView)
-                ENDIF
+                    self:ViewAs(#FormView)
+                endif
                 //self:__Scatter() // removed, see above
-            ELSE
-                IF (oHLStatus != NULL_OBJECT)
+            else
+                if (oHLStatus != null_object)
                     ErrorBox{, oHLStatus}:Show()
-                ELSE
+                else
                     WCError{#oDataServer,#DataWindow,__WCSTypeError,oDataServer,1}:Throw()
-                ENDIF
-                SELF:lValidFlag := FALSE
-            ENDIF
-        ENDIF
+                endif
+                self:lValidFlag := false
+            endif
+        endif
 
-        RETURN lRetCode
+        return lRetCode
 
-    METHOD ValidateRecord() CLIPPER
-        RETURN TRUE
+    method ValidateRecord() clipper
+        return true
 
     /// <include file="Gui.xml" path="doc/DataWindow.VerticalScroll/*" />
-    METHOD VerticalScroll(oScrollEvent AS ScrollEvent)  AS USUAL
-        SELF:__HandleScrolling(oScrollEvent)
-         RETURN SELF:Default(oScrollEvent)
+    method VerticalScroll(oScrollEvent as ScrollEvent)  as usual
+        self:__HandleScrolling(oScrollEvent)
+        return self:Default(oScrollEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.VerticalSlide/*" />
-    METHOD VerticalSlide(oSlideEvent AS SliderEvent)  AS USUAL
-        SELF:__HandleScrolling(oSlideEvent)
-        RETURN  SELF:Default(oSlideEvent)
+    method VerticalSlide(oSlideEvent as SliderEvent)  as usual
+        self:__HandleScrolling(oSlideEvent)
+        return  self:Default(oSlideEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.VerticalSpin/*" />
-    METHOD VerticalSpin(oSpinEvent AS SpinnerEvent)  AS USUAL
-        SELF:__HandleScrolling(oSpinEvent)
-        RETURN SELF:Default(oSpinEvent)
+    method VerticalSpin(oSpinEvent as SpinnerEvent)  as usual
+        self:__HandleScrolling(oSpinEvent)
+        return self:Default(oSpinEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.ViewAs/*" />
-    METHOD ViewAs(symViewType as symbol)
-        LOCAL oTextBox AS TextBox
+    method ViewAs(symViewType as symbol)
+        local oTextBox as TextBox
 #ifdef USE_OLEOBJECT
-        LOCAL oOleObj as OleObject
+        local oOleObj as OleObject
 #endif
-        LOCAL oControl AS Control
+        local oControl as Control
         //RvdH 041123 Added call to __GetMyOleObjects to retrieve the objects
 
-        IF (sCurrentView == symViewType)
+        if (sCurrentView == symViewType)
             // No change in view -> do nothing
-            RETURN SELF
-        ENDIF
-        SELF:DeactivateAllOLEObjects()
+            return self
+        endif
+        self:DeactivateAllOLEObjects()
 
         // Save data in current view
-        IF lLinked
-            IF !SELF:__CheckRecordStatus() // check validation status
+        if lLinked
+            if !self:__CheckRecordStatus() // check validation status
                 // continuing now may lose changes
-                oTextBox := TextBox{SELF, ResourceString{__WCSWarning}:Value, ResourceString{__WCSChangingView}:Value}
+                oTextBox := TextBox{self, ResourceString{__WCSWarning}:Value, ResourceString{__WCSChangingView}:Value}
                 oTextBox:Type := BUTTONOKAYCANCEL + BOXICONHAND
-                IF oTextBox:Show() != BOXREPLYOKAY
-                    RETURN SELF
-                ELSE
+                if oTextBox:Show() != BOXREPLYOKAY
+                    return self
+                else
                     //Put original data back
-                    IF (sCurrentView == #BrowseView)
-                        SELF:__Scatter()
+                    if (sCurrentView == #BrowseView)
+                        self:__Scatter()
                         Send(oGBrowse, #__NotifyChanges, GBNFY_FIELDCHANGE)
-                    ENDIF
-                ENDIF
-            ENDIF
-        ENDIF
+                    endif
+                endif
+            endif
+        endif
 
-        IF (symViewType == #BrowseView)
+        if (symViewType == #BrowseView)
             // Show as browser
             // Hide form frame
             // Check if autocreating browser
             // flush changes to form so they are reflected in browser
-            TRY
+            try
                 sCurrentView := #ViewSwitch
 #ifdef USE_OLEOBJECT
-                FOR i:=1 TO iLen
+                for i:=1 to iLen
                     oOleObj := aObjects[i]
-                    IF oOleObj:Server != NULL_OBJECT
+                    if oOleObj:Server != null_object
 
                         oOleObj:DetachFromServer()
-                    ENDIF
-                NEXT
+                    endif
+                next
 #endif
-                SELF:__AutoCreateBrowser()
-                __DataForm:DataBrowser := oGBrowse:__DataGridView
-            CATCH
-                NOP
-            END TRY
+                self:__AutoCreateBrowser()
+                __DataForm:DataBrowser := (System.Windows.Forms.Control)oGBrowse:__Control
+            catch
+                nop
+            end try
             sCurrentView := #BrowseView
-            IF oGBrowse != NULL_OBJECT
+            if oGBrowse != null_object
                 oGBrowse:SuspendUpdate()
-                __DataForm:ViewAs(TRUE) // view as browse
+                __DataForm:ViewAs(true) // view as browse
                 oGBrowse:RestoreUpdate()
                 Send(oGBrowse, #__NOTIFYChanges, GBNFY_VIEWASBROWSER)
-            ENDIF
-        ELSE
+            endif
+        else
             // Show as form
-            IF (oGBrowse != NULL_OBJECT)
+            if (oGBrowse != null_object)
                 Send(oGBrowse, #__NOTIFYCHANGES, GBNFY_VIEWASFORM)
-            ENDIF
-            IF ALen(SELF:GetAllChildren()) == 0
-                SELF:__AutoLayout()
-            ENDIF
-            __DataForm:ViewAs(FALSE) // view as form
-            IF ALen(aControls) > 0
-                LOCAL nControl AS LONG
+            endif
+            if ALen(self:GetAllChildren()) == 0
+                self:__AutoLayout()
+            endif
+            __DataForm:ViewAs(false) // view as form
+            if ALen(aControls) > 0
+                local nControl as long
                 nControl := 1
-                DO WHILE nControl <= aLen(aControls)
+                do while nControl <= aLen(aControls)
                     oControl := aControls[nControl]
-                    IF ! IsInstanceOf(oControl,#FixedText) .and. ! IsInstanceOf(oControl,#GroupBox) .and. !IsInstanceOf(oControl,#Window)
+                    if ! IsInstanceOf(oControl,#FixedText) .and. ! IsInstanceOf(oControl,#GroupBox) .and. !IsInstanceOf(oControl,#Window)
                         oControl:SetFocus()
-                        IF IsInstanceOf(oControl, #SingleLineEdit) .AND. oControl:IsEnabled()
-                            LOCAL oSle AS SingleLineEdit
+                        if IsInstanceOf(oControl, #SingleLineEdit) .and. oControl:IsEnabled()
+                            local oSle as SingleLineEdit
                             oSle := (SingleLineEdit) oControl
                             oSle:Selection := Selection{0,0}
-                        ENDIF
-                        EXIT
-                    ENDIF
+                        endif
+                        exit
+                    endif
                     nControl += 1
-                ENDDO
-            ENDIF
+                enddo
+            endif
 
             sCurrentView := #FormView
-        ENDIF
-        SELF:__Scatter()
-        RETURN SELF
+        endif
+        self:__Scatter()
+        return self
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ViewForm/*" />
-    METHOD ViewForm() CLIPPER
-        SELF:ViewAs(#FormView)
-        RETURN SELF
+    method ViewForm() clipper
+        self:ViewAs(#FormView)
+        return self
 
     /// <include file="Gui.xml" path="doc/DataWindow.ViewTable/*" />
-    METHOD ViewTable() CLIPPER
-        SELF:ViewAs(#BrowseView)
-        RETURN SELF
+    method ViewTable() clipper
+        self:ViewAs(#BrowseView)
+        return self
 
-    STATIC INTERNAL glUseColonInAutoLayoutCaptions := TRUE AS LOGIC
-END CLASS
+    static internal glUseColonInAutoLayoutCaptions := true as logic
+end class
 
 /// <include file="Gui.xml" path="doc/UseColonInAutoLayoutCaptions/*" />
-FUNCTION UseColonInAutoLayoutCaptions(lUse AS LOGIC) AS VOID
+function UseColonInAutoLayoutCaptions(lUse as logic) as void
     DataWindow.glUseColonInAutoLayoutCaptions := lUse
-    RETURN
+    return
 
 /// <exclude />
-FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
-    LOCAL cText 	AS STRING
-    LOCAL cHotKey 	AS STRING
-    LOCAL dwI, dwCount AS DWORD
-    LOCAL i 			AS DWORD
+function __GetDFCaption (oDF as DataField, arUsedKeys as array)  as string
+    local cText 	as string
+    local cHotKey 	as string
+    local dwI, dwCount as dword
+    local i 			as dword
 
     //	IF (IsInstanceOfUsual(oDF, #DataField) .AND. (!IsNil(oDF:HyperLabel)))
-    IF !IsNil(oDF:HyperLabel)
+    if !IsNil(oDF:HyperLabel)
         cText := oDF:HyperLabel:Caption
         // 	ELSEIF (IsInstanceOfUsual(oDF, #DataServer) .AND. (!IsNil(fldIndex)))
         // 		cText := LTrim(AsString(oDF:FieldName(fldIndex)))
-    ELSE
+    else
         cText := ResourceString{__WCSUnknown}:Value
-    ENDIF
+    endif
 
     cText := Proper(cText) //RTrim(Left(cText, 1) + Lower(SubStr(cText, 2)))
 
     //	IF !IsNil(arUsedKeys)
-    IF (dwCount := ALen(arUsedKeys)) > 0
-        FOR i := 1 TO SLen(cText)
+    if (dwCount := ALen(arUsedKeys)) > 0
+        for i := 1 to SLen(cText)
             cHotKey := Lower(SubStr(cText, i ,1))
             //SE-060526
-            FOR dwI := 1 UPTO dwCount
-                IF arUsedKeys[dwI] = cHotKey
-                    EXIT
-                ENDIF
-            NEXT  // dwI
-            IF dwI > dwCount
+            for dwI := 1 upto dwCount
+                if arUsedKeys[dwI] = cHotKey
+                    exit
+                endif
+            next  // dwI
+            if dwI > dwCount
                 AADD(arUsedKeys, cHotKey)
                 cText := Left(cText, i-1) + "&" + SubStr(cText, i)
-                EXIT
-            ENDIF
-        NEXT
-    ENDIF
+                exit
+            endif
+        next
+    endif
 
-    IF DataWindow.glUseColonInAutoLayoutCaptions
-        IF !IsBiDi()
-            IF !(Right(cText, 1) == ":")
+    if DataWindow.glUseColonInAutoLayoutCaptions
+        if !IsBiDi()
+            if !(Right(cText, 1) == ":")
                 cText := cText +":"
-            ENDIF
-        ELSE
-            IF !(Left(cText, 1) == ":")
+            endif
+        else
+            if !(Left(cText, 1) == ":")
                 cText := ":" + cText
-            ENDIF
-        ENDIF
-    ENDIF
+            endif
+        endif
+    endif
 
-    RETURN cText
+    return cText
 
 /// <exclude />
-FUNCTION __GetFSDefaultLength(uFS AS USUAL) AS INT
-    LOCAL liRetVal, liExtra AS INT
-    LOCAL uType AS USUAL
-    LOCAL cFunction AS STRING
+function __GetFSDefaultLength(uFS as usual) as int
+    local liRetVal, liExtra as int
+    local uType as usual
+    local cFunction as string
 
 
-    IF uFS IS FieldSpec VAR oFs
-        liRetVal := (INT) oFS:Length
+    if uFS is FieldSpec var oFs
+        liRetVal := (int) oFS:Length
         uType := oFS:UsualType
 
-        DO CASE
-        CASE (uType == LOGIC)
+        do case
+        case (uType == logic)
             liRetVal := Max(liRetVal, 3)
-        CASE (uType == DATE)
-            IF (SetCentury() == TRUE)
+        case (uType == date)
+            if (SetCentury() == true)
                 liRetVal := 10
-            ELSE
+            else
                 liRetVal := Max(liRetVal, 8)
-            ENDIF
-        CASE (uType == STRING) .AND. oFS:ValType == "M"
+            endif
+        case (uType == string) .and. oFS:ValType == "M"
             liRetVal := Max(liRetVal, 40)
             liRetVal := Min(liRetVal, 120)
-        ENDCASE
+        endcase
         //RvdH 060608 optimized
         //IF (NULL_STRING != oFS:Picture) .AND. !Empty(oFS:Picture)
-        IF SLen(oFS:Picture)> 0
-            IF SubStr(oFS:Picture, 1, 1) != "@"
+        if SLen(oFS:Picture)> 0
+            if SubStr(oFS:Picture, 1, 1) != "@"
                 //there is no associated function
-                liRetVal := LONGINT(_CAST,SLen(oFS:Picture))
-            ELSE
+                liRetVal := longint(_cast,SLen(oFS:Picture))
+            else
                 //store the function character
                 cFunction := SubStr(oFS:Picture, 2, 1)
-                IF cFunction == "C" .OR. cFunction == "X"
+                if cFunction == "C" .or. cFunction == "X"
                     //"@C" and "@X" functions require a " CR" or a " DB" respectively
                     //at the end of the string, so tag on three extra bytes
                     liExtra := 3
-                ENDIF
-                IF At(" ", oFS:Picture) != 0
+                endif
+                if At(" ", oFS:Picture) != 0
                     //the actual picture will now start after the space between the function
                     //and the template, so calculate the length from this point
-                    liRetVal := LONGINT(_CAST,SLen(SubStr(oFS:Picture, At(" ", oFS:Picture) + 1)))
-                ENDIF
+                    liRetVal := longint(_cast,SLen(SubStr(oFS:Picture, At(" ", oFS:Picture) + 1)))
+                endif
                 liRetVal += liExtra
-            ENDIF
-        ENDIF
-        IF (oFS:Length > liRetVal)
-            RETURN (INT) oFS:Length
-        ENDIF
-    ELSE
+            endif
+        endif
+        if (oFS:Length > liRetVal)
+            return (int) oFS:Length
+        endif
+    else
         liRetVal := 10
 
-    ENDIF
-    RETURN liRetVal
+    endif
+    return liRetVal
+
 
 
 

@@ -54,7 +54,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 			LOCAL oFI AS FieldInfo
 			oFI := _GetFieldInfo()
 			IF oFI != NULL_OBJECT
-				RETURN oFI:GetValue(SELF)
+				return (System.Drawing.Icon) oFI:GetValue(self)
 			ELSE
 				RETURN NULL_OBJECT
 			ENDIF

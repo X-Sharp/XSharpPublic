@@ -34,7 +34,7 @@ CLASS RichEdit INHERIT MultiLineEdit
     PROPERTY __RichEdit AS VORichTextBox GET (VORichTextBox) oCtrl
 
     /// <exclude />
-    property __StreamPos AS PTR GET pStreamPos SET pStreamPos := value
+    property __StreamPos AS BYTE PTR GET pStreamPos SET pStreamPos := value
 
     /// <exclude />
     PROPERTY __Value as usual
@@ -500,10 +500,10 @@ CLASS RichEdit INHERIT MultiLineEdit
         LOCAL liRet   AS LONGINT
         strucFindTextEx := winFindTextEx{}
 
-        Default(@lMatchCase,   FALSE)
-        Default(@lWholeWord,   FALSE)
-        Default(@lReturnRange, FALSE)
-        Default(@lSearchUp,    FALSE)
+        DEFAULT( REF lMatchCase,   FALSE)
+        DEFAULT( REF lWholeWord,   FALSE)
+        DEFAULT( REF lReturnRange, FALSE)
+        DEFAULT( REF lSearchUp,    FALSE)
 
         IF lSearchUp
             dwFlags := 0
@@ -520,8 +520,8 @@ CLASS RichEdit INHERIT MultiLineEdit
         ENDIF
 
         strucFindTextEx:lpstrText  := cText
-        strucFindTextEx:chrg_Min := oRange:Min - 1
-        strucFindTextEx:chrg_Max := oRange:Max - 1
+        strucFindTextEx:chrg_Min := ((Range)oRange):Min - 1
+        strucFindTextEx:chrg_Max := ((Range)oRange):Max - 1
         liRet := GuiWin32.SendMessage(oCtrl:Handle, EM_FINDTEXTEXW, dwFlags, LONGINT(_CAST, @strucFindTextEx))
 
         IF lReturnRange

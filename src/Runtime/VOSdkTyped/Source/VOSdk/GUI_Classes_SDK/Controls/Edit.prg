@@ -789,7 +789,7 @@ CLASS SpinnerEdit INHERIT SingleLineEdit
 		oType    := oSpinner:GetType()
 		oProp    := oType:GetProperty("TextBox", BindingFlags.Instance+ BindingFlags.NonPUBLIC+BindingFlags.IgnoreCase)
 		IF oProp != NULL_OBJECT
-			oTextBox := oProp:GetValue(oSpinner,NULL)
+			oTextBox := (VOTextBox) oProp:GetValue(oSpinner,NULL)
 		ENDIF
 		RETURN
 

@@ -35,7 +35,8 @@ CLASS CheckBox INHERIT Button
             LOCAL oBIL AS ButtonImageList
             oImage := oNewImage
             oBIL := (ButtonImageList) oNewImage
-            SELF:__CheckBox:Image := oBIL:Image:__Image
+            // Todo CheckBox Image
+            //SELF:__CheckBox:Image := oBIL:Image:__Image
             SELF:__CheckBox:Text := ""
             SELF:__CheckBox:FlatStyle := System.Windows.Forms.FlatStyle.Flat
             RETURN TRUE

@@ -191,7 +191,7 @@ METHOD Handle(ServiceID) AS IntPtr Clipper
 	RETURN hDC
 
 	/*
-	Default(@ServiceID, API_WINDOW_HDC)
+	DEFAULT( REF ServiceID, API_WINDOW_HDC)
 
 	if ServiceID = API_WINDOW_HWND
 	return self:hWnd

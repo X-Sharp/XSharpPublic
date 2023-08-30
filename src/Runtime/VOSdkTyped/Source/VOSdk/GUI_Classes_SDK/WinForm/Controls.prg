@@ -207,9 +207,9 @@ class VOGroupBox inherit SWF.GroupBox  implements IVoControlProperties
 						oLocChild  := oC:Location
 						IF oLocChild:X >= oLocParent:X .and. oLocChild:Y >= oLocParent:Y .and. oC:Width+oLocChild:X <= oLocParent:X+SELF:Width .and. oLocChild:Y + oC:Height <= oLocParent:Y+SELF:Height
 							oC:Location := System.Drawing.Point{oLocChild:X, oLocChild:Y + 5 + nOffset}
-							lWasMoved := TRUE
-							IF IsAccess(((OBJECT)oC), #Control) .AND. IsAssign(((OBJECT)oC):Control, #WasMoved)
-								((OBJECT)oC):Control:WasMoved := TRUE
+                            lWasMoved := true
+                            if oC is IVOControlProperties var oVOControl .and. IsAssign(oVOControl, #WasMoved)
+								IVarPut(oVOControl:Control,#WasMoved, true)
 							ENDIF
 						ENDIF
 					ENDIF

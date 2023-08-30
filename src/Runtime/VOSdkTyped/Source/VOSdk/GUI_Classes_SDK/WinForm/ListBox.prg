@@ -211,7 +211,7 @@ class VOListBox inherit SWF.ListBox implements IVOControlProperties
 
 END CLASS
 
-CLASS VOComboBox INHERIT SWF.ComboBox
+class VOComboBox inherit SWF.ComboBox implements IVOControlProperties
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime

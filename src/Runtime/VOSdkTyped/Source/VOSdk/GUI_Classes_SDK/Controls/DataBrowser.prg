@@ -1731,14 +1731,16 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN ALen(aColumn)
 
 /// <include file="Gui.xml" path="doc/DataBrowser.ColumnFocusChange/*" />
-	METHOD ColumnFocusChange(oDataColumn, lHasFocus)
-		LOCAL oHL AS HyperLabel
-		IF oDataColumn != NULL_OBJECT
+	method ColumnFocusChange(oDataColumn as DataColumn, lHasFocus as logic) as object
+        local oHL as HyperLabel
+		if oDataColumn != null_object
+            local oWin := (Window) self:Owner as Window
 			oHL := oDataColumn:Status
 			IF (oHL != NULL_OBJECT)
-				((Window) SELF:Owner):@@StatusMessage(oHL:Description, MESSAGEERROR)
-			ELSEIF lHasFocus .AND. (oDataColumn:HyperLabel != NULL_OBJECT)
-				((Window) SELF:Owner):@@StatusMessage(oDataColumn:HyperLabel:Description, MESSAGECONTROL)
+				oWin:@@StatusMessage(oHL:Description, MESSAGEERROR)
+            elseif lHasFocus .and. (oDataColumn:HyperLabel != null_object)
+                oHL := oDataColumn:HyperLabel
+				oWin:@@StatusMessage(oHL:Description, MESSAGECONTROL)
 			ENDIF
 		ENDIF
 		RETURN SELF
@@ -2007,10 +2009,10 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		ENDIF
 
 /// <include file="Gui.xml" path="doc/DataBrowser.ctor/*" />
-	CONSTRUCTOR(oOwner := NULL AS Window, xID:= 1000 AS USUAL, oPoint:= NULL as Point, oDimension := NULL AS Dimension)
+	constructor(oOwner := null as Window, xID:= 1000 as long, oPoint:= null as Point, oDimension := null as Dimension)
 		LOCAL oBB AS BoundingBox
 		LOCAL oWin AS Window
-		LOCAL nHeight AS LONG
+		local nHeight as long
 		if oOwner == null
 			WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
 		ENDIF
@@ -2020,7 +2022,9 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		IF oOwner IS DataWindow VAR oDW
 			oBB			:= oDW:CanvasArea
 			IF oWin:ToolBar != NULL_OBJECT
-				nHeight := oWin:ToolBar:Size:Height
+                nHeight := oWin:ToolBar:Size:Height
+            else
+                nHeight := 0
 			ENDIF
 			oPoint		:= VOSDK.Point{0,nHeight}
 			oDimension	:= Dimension{oBB:Width,oBB:Height-nHeight}
@@ -2197,9 +2201,6 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		ENDIF
 		RETURN nCol
 
-/// <include file="Gui.xml" path="doc/DataBrowser.Owner/*" />
-	ACCESS Owner AS Object
-		RETURN oParent
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Paste/*" />
 	METHOD Paste ( )   AS VOID STRICT
@@ -2326,7 +2327,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		//Todo
 		//LOCAL iLoc AS DWORD
 
-		//Default(@oPointer, Pointer{PointerArrow})
+		//DEFAULT( REF oPointer, Pointer{PointerArrow})
 
 		//IF !IsInstanceOfUsual(oPointer,#Pointer)
 		//	WCError{#SetPointer,#Pointer,__WCSTypeError,oPointer,1}:Throw()
@@ -3000,7 +3001,8 @@ CLASS DataColumn INHERIT VObject
 /// <include file="Gui.xml" path="doc/DataColumn.GetEditObject/*" />
 	METHOD GetEditObject(oOwner, iID, oPoint, oDim)
 		LOCAL oControl AS TextControl
-
+        local oDb as DataBrowser
+        oDb := oOwner
 		oControl := SingleLineEdit{oOwner, iID, oPoint, oDim, ES_AUTOHSCROLL}
 		IF (oFieldSpec != NULL_OBJECT)
 			oControl:FieldSpec := oFieldSpec
@@ -3008,7 +3010,7 @@ CLASS DataColumn INHERIT VObject
 		IVarPut(oControl, #Overwrite, OVERWRITE_ONKEY)
 
 		oControl:SetExStyle(WS_EX_CLIENTEDGE, FALSE)
-		oControl:Font(oOwner:EditFont, FALSE)
+		oControl:Font(oDb:EditFont, false)
 		oControl:TextValue := RTrim(SELF:TextValue)
 		//SendMessage(oControl:Handle(), EM_SETSEL, 0, -1)
 
@@ -3023,33 +3025,31 @@ CLASS DataColumn INHERIT VObject
 		RETURN cTextValue
 
 /// <include file="Gui.xml" path="doc/DataColumn.HyperLabel/*" />
-	ACCESS HyperLabel AS USUAL
+	access HyperLabel as HyperLabel
 		RETURN oHyperLabel
 
 /// <include file="Gui.xml" path="doc/DataColumn.HyperLabel/*" />
-	ASSIGN HyperLabel(oNewHL AS USUAL)
+	assign HyperLabel(oNewHL as HyperLabel)
 
-		IF oNewHL IS HyperLabel
-			oHyperLabel := oNewHL
-			lExplicitHL := TRUE
-			SELF:Caption := oHyperLabel:Caption
-		ELSEIF IsString(oNewHL)
-			oHyperLabel := HyperLabel{String2Symbol(oNewHL)}
-			lExplicitHL := TRUE
-			SELF:Caption := oHyperLabel:Caption
-		ELSEIF IsSymbol(oNewHL)
-			oHyperLabel := HyperLabel{oNewHL}
-			lExplicitHL := TRUE
-			SELF:Caption := oHyperLabel:Caption
-		ELSEIF IsNil(oNewHL)
-			oHyperLabel := NULL_OBJECT
-			lExplicitHL := FALSE
-			// Should we reset the caption ??
-		ELSE
-			WCError{#HyperLabel,#DataColumn,__WCSTypeError,oNewHL,1}:Throw()
-		ENDIF
-
-		RETURN
+		oHyperLabel := oNewHL
+		lExplicitHL := true
+		self:Caption := oHyperLabel:Caption
+// 		elseif IsString(oNewHL)
+// 			oHyperLabel := HyperLabel{String2Symbol(oNewHL)}
+// 			lExplicitHL := TRUE
+// 			SELF:Caption := oHyperLabel:Caption
+// 		ELSEIF IsSymbol(oNewHL)
+// 			oHyperLabel := HyperLabel{oNewHL}
+// 			lExplicitHL := TRUE
+// 			SELF:Caption := oHyperLabel:Caption
+// 		ELSEIF IsNil(oNewHL)
+// 			oHyperLabel := NULL_OBJECT
+// 			lExplicitHL := FALSE
+// 			// Should we reset the caption ??
+// 		ELSE
+// 			WCError{#HyperLabel,#DataColumn,__WCSTypeError,oNewHL,1}:Throw()
+// 		ENDIF
+		return
 
 /// <include file="Gui.xml" path="doc/DataColumn.ctor/*" />
 	CONSTRUCTOR(nWidth, xColumnID)

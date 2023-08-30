@@ -19,7 +19,7 @@ CLASS TabControl INHERIT TextControl
 	PROTECT nMaxHeight		 AS INT
 	PROTECT nMaxWidth		 AS INT
 	PROTECT lAutoSize        AS LOGIC
-	PROTECT oCurrentPage	 AS OBJECT
+	protect oCurrentPage	 as IGuiObject
     /// <inheritdoc />
     PROPERTY ControlType AS Controltype GET Controltype.TabControl
 
@@ -87,11 +87,10 @@ CLASS TabControl INHERIT TextControl
 			IF oOldPage != NULL_OBJECT
 				oOldPage:Hide()
 			ENDIF
-			IF IsInstanceOf(oCurrentPage, #DataWindow)
-				LOCAL oDw := oCurrentPage AS DataWindow
+			if oCurrentPage is DataWindow var oDW
 				oPanel := oDw:__Frame
-			ELSE
-				oPanel := oCurrentPage:__Surface
+			elseif oCurrentPage is IControlParent var oPar
+				oPanel := oPar:__Surface
 			ENDIF
 			oPanel:Visible := TRUE
 
@@ -229,8 +228,8 @@ CLASS TabControl INHERIT TextControl
 					oPanel		:= VOSurfacePanel{oWin}
 					oPanel:Dock := System.Windows.Forms.DockStyle.Fill
 					oPanel:Visible := TRUE
-					FOREACH IMPLIED oC IN oWin:__Form:Controls
-						oPanel:Controls:AddRange(oC)
+					foreach oC as System.Windows.Forms.Control in oWin:__Form:Controls
+						oPanel:Controls:Add(oC)
 					NEXT
 				ELSE
 					oPanel := (VOPanel) (OBJECT) oWin:__Surface
@@ -256,7 +255,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL cTooltip AS STRING
 		//LOCAL hFirst, hBefore AS PTR
 
-		DEFAULT(@nImage, 0)
+		DEFAULT( ref nImage, 0)
 
 
 		// Fill out the tab structure with the arguments passed in
@@ -530,7 +529,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL iLen, i AS DWORD
 		LOCAL cTooltip AS STRING
 
-		DEFAULT(@nImage, 0)
+		DEFAULT( ref nImage, 0)
 		IF SELF:ValidateControl()
 
 			cTooltip := SELF:GetTipText(symTabName)
@@ -618,7 +617,7 @@ CLASS TabControl INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TabControl.RemoveTabImage/*" />
 	METHOD RemoveTabImage(nImageIndex AS INT)  AS LOGIC
 		IF SELF:oImageList != NULL_OBJECT .and. SELF:oImageList:ImageCount >= nImageIndex
-			SELF:oImageList:__ImageList:Images[(INT) nImageIndex -1] := (OBJECT) System.Drawing.Bitmap{SELF:Size:Width, SELF:Size:Height}
+			self:oImageList:__ImageList:Images[(int) nImageIndex -1] := (System.Drawing.Image)  System.Drawing.Bitmap{self:Size:Width, self:Size:Height}
 			RETURN TRUE
 		ENDIF
 		RETURN  FALSE
@@ -716,8 +715,8 @@ CLASS TabControl INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TabControl.Show/*" />
 	METHOD Show() AS VOID STRICT
 		SUPER:Show()
-		IF (oCurrentPage != NULL_OBJECT)
-			oCurrentPage:Show()
+		if oCurrentPage is Window var oWin
+			oWin:Show()
 		ENDIF
 		RETURN
 

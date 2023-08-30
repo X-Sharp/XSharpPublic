@@ -30,7 +30,7 @@ CLASS Pointer INHERIT VObject
 		LOCAL lOk AS LOGIC
 		SUPER()
 
-		DEFAULT(@xResourceID, POINTERARROW)
+		DEFAULT(REF xResourceID, POINTERARROW)
 
 		IF IsObject(xResourceID)
 			LOCAL oResID := xResourceID AS OBJECT

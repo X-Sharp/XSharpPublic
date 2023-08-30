@@ -73,13 +73,13 @@ STATIC CLASS WC
 		IF CoordinateSystem == WC.CartesianCoordinates
 			IF oWindow == NULL_OBJECT .OR. oWindow IS App
 				yCoord := GuiWin32.GetSystemMetrics(SM_CYSCREEN) - oPoint:Y
-			ELSEIF oWindow IS Window
-				GuiWin32.GetClientRect(oWindow:Handle(4), REF sRect)
+			elseif oWindow is Window var oWin
+				GuiWin32.GetClientRect(oWin:Handle(4), ref sRect)
 				yCoord :=  sRect:bottom - oPoint:Y
-			ELSE // The parent is a control
-				GuiWin32.GetWindowRect(oWindow:Handle(), REF sRect)
-				yCoord := sRect:bottom - sRect:top - oPoint:Y
-			ENDIF
+			elseif oWindow is IGuiObject var OC
+				GuiWin32.GetClientRect(OC:__Handle, ref sRect)
+				yCoord :=  sRect:bottom - oPoint:Y
+			endif
 		ELSE // Windows Coordinate System
 			yCoord := oPoint:Y
 		ENDIF
@@ -243,18 +243,17 @@ STATIC CLASS WC
 		RETURN oMenu
 
 
-	STATIC METHOD GetOrigin(oObject AS OBJECT) AS point STRICT
+	static method GetOrigin(oObject as IGuiObject) as point strict
 		LOCAL hWnd AS PTR
-		LOCAL oParent AS OBJECT
+		LOCAL oParent AS Window
 		LOCAL rect := WINRECT{} AS WinRect
 		LOCAL point := WINPOINT{} AS WinPoint
-		LOCAL oControl AS Control
-		IF WC.CoordinateSystem == WC.WindowsCoordinates
+		if WC.CoordinateSystem == WC.WindowsCoordinates
 			IF oObject IS Control VAR oC
 				RETURN oC:__Control:Location
-			ELSEIF oObject IS Window VAR oWin
+			elseif oObject is Window var oWin1
 				LOCAL oForm AS VOForm
-				oForm := oWin:__Form
+				oForm := oWin1:__Form
 				IF oForm != NULL_OBJECT
 					RETURN oForm:Location
 				ELSE
@@ -262,7 +261,7 @@ STATIC CLASS WC
 				ENDIF
 			ENDIF
 		ENDIF
-		GuiWin32.GetWindowRect(oObject:Handle(), REF rect)
+		GuiWin32.GetWindowRect(oObject:__Handle, ref rect)
 		point:x := rect:left
 		IF WC.CoordinateSystem // Cartesian Coordinate System
 			point:y := rect:bottom
@@ -270,15 +269,14 @@ STATIC CLASS WC
 			point:y := rect:top
 		ENDIF
 
-		IF oObject IS Control
-			oControl := oObject
-			oParent := oControl:__FormSurface
-		ELSE
-			oParent := oObject:__Parent
+		if oObject is Control var oC
+			oParent := oC:__FormSurface
+		elseif oObject is Window var oWin1
+			oParent := oWin1:__Parent
 		ENDIF
 
-		IF oParent != NULL_OBJECT .AND. oParent IS Window
-			hWnd := oParent:Handle(4)
+		if oParent != null_object .and. oParent is Window var oWin
+			hWnd := oWin:Handle(4)
 			GuiWin32.ScreenToClient(hWnd, REF point)
 		ENDIF
 
@@ -344,14 +342,14 @@ STATIC CLASS WC
 	//	//ENDIF
 	//	RETURN
 
-	STATIC METHOD GetTopLeftPoint(oControl AS OBJECT) AS Point STRICT
-		LOCAL oPoint AS Point
-		IF CoordinateSystem // Cartesian Coordinate System
-			oPoint := oControl:Origin
-			RETURN Point{oPoint:X, oPoint:Y + oControl:Size:Height - 1}
-		ENDIF
-		//else Windows Coordinate System
-		RETURN oControl:Origin
+// 	STATIC METHOD GetTopLeftPoint(oControl AS OBJECT) AS Point STRICT
+// 		LOCAL oPoint AS Point
+// 		IF CoordinateSystem // Cartesian Coordinate System
+// 			oPoint := oControl:Origin
+// 			RETURN Point{oPoint:X, oPoint:Y + oControl:Size:Height - 1}
+// 		ENDIF
+// 		//else Windows Coordinate System
+// 		RETURN oControl:Origin
 
 	STATIC METHOD GetWindowByHandle(hWnd AS IntPtr) AS Window STRICT
 		LOCAL oForm AS OBJECT
@@ -541,7 +539,7 @@ STATIC CLASS WC
 
 		RETURN oRet
 
- 	STATIC METHOD AppSetDialogWindow(oSurface AS OBJECT) AS VOID STRICT
+ 	STATIC METHOD AppSetDialogWindow(oSurface AS VOPanel) AS VOID STRICT
 
 		IF (oApp != NULL_OBJECT)
 			oApp:SetDialogWindow(oSurface)

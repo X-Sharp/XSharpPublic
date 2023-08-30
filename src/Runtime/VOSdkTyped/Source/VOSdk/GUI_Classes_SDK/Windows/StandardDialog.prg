@@ -403,9 +403,9 @@ CLASS StandardFolderDialog INHERIT StandardDialog
     /// <include file="Gui.xml" path="doc/StandardFolderDialog.ctor/*" />
     CONSTRUCTOR(oOwner, sCaption, sStartFolder, kType)
         SUPER()
-        Default(@kType, BIF_RETURNONLYFSDIRS)
-        Default(@sCaption, "Browser Folder")
-        Default(@sStartFolder, "")
+        DEFAULT( REF kType, BIF_RETURNONLYFSDIRS)
+        DEFAULT( REF sCaption, "Browser Folder")
+        DEFAULT( REF sStartFolder, "")
 
 
         IF IsInstanceOf(oOwner, #Window)

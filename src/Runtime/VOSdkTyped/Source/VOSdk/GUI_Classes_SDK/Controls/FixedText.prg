@@ -28,7 +28,7 @@ CLASS FixedText INHERIT TextControl
         //PP-040317. Issue 12806. Added DT_EXPANDTABS for default behaviour more like old fixed text
         SELF:_dwDrawStyle := _OR(DT_WORDBREAK,DT_EXPANDTABS)
 
-        DEFAULT(@lDataAware, TRUE)
+        DEFAULT( REF lDataAware, TRUE)
         lResID:=(xID IS ResourceID)
         IF !lResID
             cClass:="Static"

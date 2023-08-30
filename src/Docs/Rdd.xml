@@ -3715,7 +3715,10 @@
         <summary>
             Lock a record for exclusive write access; other users can still make read-only reference to the record.
         </summary>
-        <param name="nRecordNumber">The number of the record number to be locked. The indicated record is locked, and previous record locks are maintained. Note that this can be the current record: explicitly specifying the current record indicates that previous locks should be maintained. If omitted, or NIL, the current record is locked and all previous record locks are released.</param>
+        <param name="nRecordNumber">The number of the record number to be locked. 
+        The indicated record is locked, and previous record locks are maintained. 
+        Note that this can be the current record: explicitly specifying the current record indicates that previous locks should be maintained. 
+        If omitted, or NIL or -1, the current record is locked and all previous record locks are released.</param>
         <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
     </DbServer.RLock>
     <DbServer.RLockList>

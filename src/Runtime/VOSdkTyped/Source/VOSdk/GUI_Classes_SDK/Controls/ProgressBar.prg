@@ -52,7 +52,7 @@ CLASS ProgressBar INHERIT Control
 /// <include file="Gui.xml" path="doc/ProgressBar.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 
-		DEFAULT(@lDataAware, TRUE)
+		DEFAULT( REF lDataAware, TRUE)
 		IF IsInstanceOfUsual(xID, #ResourceID)
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, lDataAware)
 		ELSE

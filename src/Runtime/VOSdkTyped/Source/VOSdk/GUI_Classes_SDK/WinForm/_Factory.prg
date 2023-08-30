@@ -13,7 +13,7 @@ CLASS GuiFactory
         @@Instance := GuiFactory{}
 
     METHOD CreateControl(type AS ControlType, owner AS VOSDK.Control, liStyle AS LONG, liExStyle AS LONG) AS OBJECT
-        LOCAL oRes AS Object
+        local oRes as IVOControl
         SWITCH type
 
         CASE ControlType.Label
@@ -132,7 +132,7 @@ CLASS GuiFactory
             RETURN VOSurfacePanel{Owner, dwStyle, dwExStyle}
 
 
-        METHOD CreateFramePanel(oOwner AS VODataForm, oWindow AS Window) AS IVOFramePanel
+        method CreateFramePanel(oOwner as VODataForm, oWindow as Window) as VOFramePanel
             RETURN VOFramePanel{oOwner, oWindow}
 
         METHOD CreateDialogWindow(oWindow AS Window, oRes AS ResourceDialog) AS VoDialogForm

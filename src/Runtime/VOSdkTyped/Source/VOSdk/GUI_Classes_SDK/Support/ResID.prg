@@ -63,10 +63,10 @@ CLASS ResourceID INHERIT VObject
 			argTypeError := TRUE
 		ENDIF
 
-		IF IsPtr(xResourceFile)
-			hInst := xResourceFile
-		ELSEIF IsInstanceOfUsual(xResourceFile, #ResourceFile)
-			hInst := xResourceFile:Handle()
+		if xResourceFile is Intptr var ip
+			hInst := ip
+		elseif xResourceFile is ResourceFile var oResFile
+			hInst := oResFile:Handle()
 		ELSEIF IsNil(xResourceFile)
 			IF IsNumeric(xID)		// String table
 				hInst := GetNatDllHandle()

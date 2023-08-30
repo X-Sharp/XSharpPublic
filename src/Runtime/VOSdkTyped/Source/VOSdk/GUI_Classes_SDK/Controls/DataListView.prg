@@ -5,562 +5,582 @@
 //
 
 
-USING System.Windows.Forms
-USING VOSDK := XSharp.VO.SDK
-CLASS DataListView INHERIT ListView
-	PROTECT oDLVServer AS DataServer
-	PROTECT iColumns AS INT
-	PROTECT lNoNotifies AS LOGIC
-	PROTECT aCache AS ARRAY
-	PROTECT iCacheMax AS INT
-	PROTECT iCacheStart AS INT
-	PROTECT iCacheEnd AS INT
-	PROTECT lUseOrder AS LOGIC
+using System.Windows.Forms
+using VOSDK := XSharp.VO.SDK
+class DataListView inherit ListView implements IDataBrowser
+    protect oDLVServer as DataServer
+    protect iColumns as int
+    protect lNoNotifies as logic
+    protect aCache as array
+    protect iCacheMax as int
+    protect iCacheStart as int
+    protect iCacheEnd as int
+    protect lUseOrder as logic
 
-    PROPERTY ControlType AS ControlType GET ControlType.DataListView
-
-
- /// <exclude />
-    METHOD OnControlCreated(oC AS IVOControl) AS VOID
-		VAR oGrid := (VODataListView) oC
-		oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
-		oGrid:CacheVirtualItems	    += __CacheVirtualItems
-		oGrid:SearchForVirtualItem  += __SearchForVirtualItems
-		RETURN
+    property ControlType as ControlType get ControlType.DataListView
 
 
     /// <exclude />
-	PROTECTED METHOD __RetrieveVirtualItems(sender AS OBJECT, e AS RetrieveVirtualItemEventArgs) AS VOID
-		// e:Item
-		// e:ItemIndex
-		LOCAL oItem AS VOSDK.ListViewItem
-		LOCAL uValue AS USUAL
-		SELF:__SetServerPos(e:ItemIndex+1, TRUE)
-		oItem := VOSDK.ListViewItem{}
-		FOREACH IMPLIED oCol IN __ListView:Columns
-			LOCAL oColumn AS ListViewColumn
-			LOCAL symCol AS SYMBOL
-			LOCAL oFs AS FieldSpec
-			LOCAL sValue AS STRING
-			oColumn := oCol:Tag
-			symCol := oColumn:NameSym
-			uValue := oDLVServer:FIELDGET(symCol)
-			oFs    := oDLVServer:FieldSpec(symCol)
-			oItem:SetValue(uValue, symCol)
-			sValue := oFs:Transform(uValue)
-			oItem:SetText(sValue, oColumn:NameSym)
-		NEXT
-		e:Item := (VOListViewItem) oItem:__ListViewItem
-		RETURN
+    method OnControlCreated(oC as IVOControl) as void
+        var oGrid := (VODataListView) oC
+        oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
+        oGrid:CacheVirtualItems	    += __CacheVirtualItems
+        oGrid:SearchForVirtualItem  += __SearchForVirtualItems
+        return
+
 
     /// <exclude />
-	PROTECTED METHOD __CacheVirtualItems(sender AS OBJECT, e AS CacheVirtualItemsEventArgs ) AS VOID
-		// e:StartIndex
-		// e:EndIndex
-		RETURN
+    protected method __RetrieveVirtualItems(sender as object, e as RetrieveVirtualItemEventArgs) as void
+        // e:Item
+        // e:ItemIndex
+        local oItem as VOSDK.ListViewItem
+        local uValue as usual
+        local first as logic
+        self:__SetServerPos(e:ItemIndex+1, true)
+        oItem := VOSDK.ListViewItem{}
+        first := true
+        foreach oCol as VOColumnHeader in __ListView:Columns
+            local oColumn as ListViewColumn
+            local symCol as symbol
+            local oFs as FieldSpec
+            local sValue as string
+            oColumn := oCol:Tag
+            symCol := oColumn:NameSym
+            uValue := oDLVServer:FIELDGET(symCol)
+            oFs    := oDLVServer:FieldSpec(symCol)
+            oItem:SetValue(uValue, symCol)
+
+            sValue := oFs:Transform(uValue)
+            if first
+                oItem:__ListViewItem:Text := sValue
+                first := false
+            else
+                oItem:AddSubItem(sValue)
+            endif
+            oItem:SetText(sValue, oColumn:NameSym)
+        next
+        e:Item := (VOListViewItem) oItem:__ListViewItem
+        return
 
     /// <exclude />
-    PROTECTED METHOD __SearchForVirtualItems(sender AS OBJECT, e AS SearchForVirtualItemEventArgs ) AS VOID
+
+
+    protected method __CacheVirtualItems(sender as object, e as CacheVirtualItemsEventArgs ) as void
+        // e:StartIndex
+        // e:EndIndex
+        local i as int
+        local iDel as int
+        local iStart, iEnd
+        local iRecNoSave as long
+        local iFrom, iTo as int
+
+
+        iFrom := e:StartIndex+1
+        iTo 	:= e:EndIndex +1
+        if ((iTo - iFrom) > iCacheMax) .or.;
+        	((iFrom >= iCacheStart) .and. (iTo <= iCacheEnd)) .or.;
+        	(oDLVServer == null_object)
+        	return
+        endif
+
+        oDLVServer:SuspendNotification()
+        iRecNoSave := oDLVServer:RecNo
+
+        if (iCacheMax - (iTo - iFrom + 1) >= 20)
+        	iFrom := Max(1, iFrom - 10)
+        	iTo += 10
+        endif
+
+        iStart := 1
+        iEnd := (iTo - iFrom) + 1
+
+        if (iFrom >= iCacheStart) .and. (iFrom <= iCacheEnd)
+        	// reuse entries at end of cache
+        	iDel := (iFrom - iCacheStart)
+        	for i := 1 to (iDel)
+        		ADel(aCache, 1)
+        	next
+        	self:__SetServerPos(iCacheEnd + 1)
+        	iStart := iCacheEnd - iFrom + 2
+        elseif (iTo >= iCacheStart) .and. (iTo <= iCacheEnd)
+        	// reuse entries as beginning of cache
+        	iDel := (iCacheStart - iFrom)
+        	for i := 1 to iDel
+        		AIns(aCache, 1)
+        	next
+        	self:__SetServerPos(iFrom)
+        	iEnd := iDel
+        else
+        	self:__SetServerPos(iFrom)
+        endif
+
+        iCacheStart := iFrom
+        iCacheEnd := iTo
+
+        for i:= iStart to iEnd
+        	self:__FillCacheItem(i)
+        	oDLVServer:Skip(1)
+        	if oDLVServer:EoF
+        		oDLVServer:Skip(-1)
+        		iCacheEnd := self:__GetServerPos()
+        		exit
+        	endif
+        next
+
+        oDLVServer:GoTo(iRecNoSave)
+        oDLVServer:ResetNotification()
+        return
+
+    /// <exclude />
+    protected method __SearchForVirtualItems(sender as object, e as SearchForVirtualItemEventArgs ) as void
         // Todo: Implement __SearchForVirtualItems
-		// Direction
-		// IncludeSubitemsInSearch
-		// Index
-		// IsPrefixSearc
-		// IsTextSearch
-		// StartIndex
-		// StartingPoint
-		// Text
-		RETURN
+        // Direction
+        // IncludeSubitemsInSearch
+        // Index
+        // IsPrefixSearc
+        // IsTextSearch
+        // StartIndex
+        // StartingPoint
+        // Text
+        return
 
     /// <exclude />
-	PROPERTY __DataListView AS VODataListView GET (VODataListView) oCtrl
+    property __DataListView as VODataListView get (VODataListView) oCtrl
 
     /// <exclude />
-	METHOD __AutoLayout() AS VOID STRICT
-		//PP-030828 Strong typing
-		LOCAL oDF AS DataField
-		LOCAL oLVC AS ListViewColumn
-		LOCAL i AS INT
-		IF (oDLVServer == NULL_OBJECT)
-			RETURN
-		ENDIF
+    method __AutoLayout() as void strict
+        //PP-030828 Strong typing
+        local oDF as DataField
+        local oLVC as ListViewColumn
+        local i as int
+        if (oDLVServer == null_object)
+            return
+        endif
 
-		SELF:DeleteAllColumns()
-		iColumns := (LONG) oDLVServer:FCount
+        self:DeleteAllColumns()
+        iColumns := (long) oDLVServer:FCount
 
-		FOR i:= 1 TO iColumns
-			oDF := oDLVServer:DataField(i)
-			IF (oDF == NULL_OBJECT)
-				LOOP
-			ENDIF
+        for i:= 1 to iColumns
+            oDF := oDLVServer:DataField(i)
+            if (oDF == null_object)
+                loop
+            endif
 
-			oLVC := ListViewColumn{oDF:FieldSpec:Length, oDF:HyperLabel}
-			oLVC:FieldSpec := oDF:FieldSpec
-			oLVC:Caption := oDF:FieldSpec:HyperLabel:Caption
-			SELF:AddColumn(oLVC)
-		NEXT
+            oLVC := ListViewColumn{oDF:FieldSpec:Length, oDF:HyperLabel}
+            oLVC:FieldSpec := oDF:FieldSpec
+            oLVC:Caption := oDF:FieldSpec:HyperLabel:Caption
+            self:AddColumn(oLVC)
+        next
 
-		iColumns := __ListView:Columns:Count
-		RETURN
-
-    /// <exclude />
-	[Obsolete];
-	METHOD __AutoResize() AS VOID STRICT
-		// Handled inside DataForm Class
-		RETURN
-
-	//METHOD __CacheHint(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
-	//	LOCAL lpHint AS _winNMLVCACHEHINT
-	//	LOCAL iRecNoSave, i AS INT
-	//	LOCAL iDel AS INT
-	//	LOCAL iStart, iEnd
-	//	LOCAL iFrom, iTo AS INT
-	//	STATIC LOCAL iCH AS INT
-
-	//	lpHint := PTR(_CAST, oCtrlNotifyEvent:lParam)
-
-	//	iFrom := lpHint:iFrom + 1
-	//	iTo 	:= lpHint:iTo + 1
-	//	IF ((iTo - iFrom) > iCacheMax) .OR.;
-	//		((iFrom >= iCacheStart) .AND. (iTo <= iCacheEnd)) .OR.;
-	//		(oDLVServer == NULL_OBJECT)
-	//		RETURN
-	//	ENDIF
-
-	//	oDLVServer:SuspendNotification()
-	//	iRecNoSave := oDLVServer:RecNo
-
-	//	IF (iCacheMax - (iTo - iFrom + 1) >= 20)
-	//		iFrom := Max(1, iFrom - 10)
-	//		iTo += 10
-	//	ENDIF
-
-	//	iStart := 1
-	//	iEnd := (iTo - iFrom) + 1
-
-	//	IF (iFrom >= iCacheStart) .AND. (iFrom <= iCacheEnd)
-	//		// reuse entries at end of cache
-	//		iDel := (iFrom - iCacheStart)
-	//		FOR i := 1 TO (iDel)
-	//			ADel(aCache, 1)
-	//		NEXT
-	//		SELF:__SetServerPos(iCacheEnd + 1)
-	//		iStart := iCacheEnd - iFrom + 2
-	//	ELSEIF (iTo >= iCacheStart) .AND. (iTo <= iCacheEnd)
-	//		// reuse entries as beginning of cache
-	//		iDel := (iCacheStart - iFrom)
-	//		FOR i := 1 TO iDel
-	//			AIns(aCache, 1)
-	//		NEXT
-	//		SELF:__SetServerPos(iFrom)
-	//		iEnd := iDel
-	//	ELSE
-	//		SELF:__SetServerPos(iFrom)
-	//	ENDIF
-
-	//	iCacheStart := iFrom
-	//	iCacheEnd := iTo
-
-	//	FOR i:= iStart TO iEnd
-	//		SELF:__FillCacheItem(i)
-	//		oDLVServer:Skip(1)
-	//		IF oDLVServer:EoF
-	//			oDLVServer:Skip(-1)
-	//			iCacheEnd := SELF:__GetServerPos()
-	//			EXIT
-	//		ENDIF
-	//	NEXT
-
-	//	oDLVServer:GoTo(iRecNoSave)
-	//	oDLVServer:ResetNotification()
-
-	//  RETURN
+        iColumns := __ListView:Columns:Count
+        return
 
     /// <exclude />
-	PROPERTY __ColumnCount AS LONG GET SELF:__ListView:Columns:Count
-
-	//METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
-	//	LOCAL j, cCols AS DWORD
-	//	LOCAL symCol AS SYMBOL
-	//	LOCAL oFS AS FieldSpec
-	//	LOCAL sVal AS STRING
-	//	LOCAL oCol AS ListViewColumn
-
-
-	//	cCols := (DWORD) SELF:__ColumnCount
-	//	IF IsNil(aCache[iIndex])
-	//		aCache[iIndex] := ArrayCreate(cCols)
-	//	ENDIF
-	//	FOR j := 1 TO cCols
-	//		oCol    := SELF:GetColumn(j)
-	//		symCol  := oCol:NameSym
-	//		oFS     := oCol:FieldSpec
-	//		IF (oFS != NULL_OBJECT)
-	//			sVal := oFS:Transform(SELF:FIELDGET(symCol))
-	//		ELSE
-	//			sVal := AsString(SELF:FIELDGET(symCol))
-	//		ENDIF
-	//		aCache[iIndex, j] := sVal
-	//	NEXT
-	//	RETURN
-
-	//METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT
-	//	//PP-030828 Strong typing
-	//	LOCAL fi AS _winNMLVFINDITEM
-	//	LOCAL iRet := -1 AS INT
-
-	//	IF lUseOrder
-	//		fi := PTR(_CAST, oCtrlNotifyEvent:lParam)
-	//		// self:owner:owner:caption := "searching from "+NTrim(fi.iStart)+" for "+AsString(fi.lvfi._psz)
-	//		oDLVServer:SuspendNotification()
-	//		IF oDLVServer:Seek(AsString(fi:lvfi:_psz), TRUE)
-	//			iRet := SELF:__GetServerPos()-1
-	//		ENDIF
-	//		oDLVServer:ResetNotification()
-	//	ENDIF
-
-	//	RETURN iRet
-
-	//METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
-	//	LOCAL di AS _winLV_DISPINFO
-	//	LOCAL iOrderPos, iCol AS INT
-	//	LOCAL iLen AS DWORD
-	//	LOCAL symCol AS SYMBOL
-	//	LOCAL oFS AS FieldSpec
-	//	LOCAL uVal AS USUAL
-	//	LOCAL sVal AS STRING
-	//	LOCAL iRecNoSave AS INT
-	//	LOCAL oCol AS ListViewColumn
-
-	//	IF (oDLVServer == NULL_OBJECT)
-	//		RETURN
-	//	ENDIF
-
-	//	di := PTR(_CAST, oCtrlNotifyEvent:lParam)
-
-	//	IF !LOGIC(_CAST, _AND(di:item:mask, LVIF_TEXT))
-	//		RETURN
-	//	ENDIF
-
-	//	iOrderPos := di:item:iItem + 1
-
-	//	IF (iOrderPos >= iCacheStart) .AND. (iOrderPos <= iCacheEnd)
-	//		uVal := aCache[iOrderPos - iCacheStart + 1, di:item:iSubItem+1]
-	//		IF IsString(uVal)
-	//			sVal := uVal
-	//		ELSE
-	//			sVal := ""
-	//		ENDIF
-	//	ELSE
-	//		oDLVServer:SuspendNotification()
-	//		iRecNoSave := oDLVServer:RecNo
-
-	//		IF (SELF:__SetServerPos(iOrderPos) != 0)
-	//			iCol := di:item:iSubItem + 1
-	//			oCol := SELF:GetColumn(iCol)
-	//			symCol  := oCol:NameSym
-	//			oFS     := oCol:FieldSpec
-
-	//			IF (oFS != NULL_OBJECT)
-	//				sVal := oFS:Transform(SELF:FIELDGET(symCol))
-	//			ELSE
-	//				sVal := AsString(SELF:FIELDGET(symCol))
-	//			ENDIF
-	//		ENDIF
-
-	//		oDLVServer:GoTo(iRecNoSave)
-	//		oDLVServer:ResetNotification()
-	//	ENDIF
-
-	//	IF !Empty(sVal)
-	//		iLen := SLen(sVal) + 1
-	//		IF (iLen >= DWORD(di:item:cchTextMax))
-	//			sVal :=  Left(sVal, DWORD(di:item:cchTextMax) - 5) + "..."
-	//			iLen :=  SLen(sVal) + 1
-	//		ENDIF
-	//		MemCopy(di:item:pszText, String2Psz(sVal), iLen)
-	//	ENDIF
-
-	//	RETURN
+    [Obsolete];
+    method __AutoResize() as void strict
+        // Handled inside DataForm Class
+        return
 
     /// <exclude />
-	ACCESS __GetServerCount() AS LONG STRICT
-		//PP-030828 Strong typing
-		IF lUseOrder
-			RETURN Send(oDLVServer, #OrderKeyCount)
-		ENDIF
-		RETURN oDLVServer:RecCount
+    property __ColumnCount as long get self:__ListView:Columns:Count
+
+    method __FillCacheItem(iIndex as int) as void strict
+        local j, cCols as dword
+        local symCol as symbol
+        local oFS as FieldSpec
+        local sVal as string
+        local oCol as ListViewColumn
+
+
+        cCols := (dword) self:__ColumnCount
+        if IsNil(aCache[iIndex])
+            aCache[iIndex] := ArrayCreate(cCols)
+        endif
+        for j := 1 to cCols
+            oCol    := self:GetColumn(j)
+            symCol  := oCol:NameSym
+            oFS     := oCol:FieldSpec
+            if (oFS != null_object)
+                sVal := oFS:Transform(self:FIELDGET(symCol))
+            else
+                sVal := AsString(self:FIELDGET(symCol))
+            endif
+            aCache[iIndex, j] := sVal
+        next
+        return
+
+        //METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT
+        //	//PP-030828 Strong typing
+        //	LOCAL fi AS _winNMLVFINDITEM
+        //	LOCAL iRet := -1 AS INT
+
+        //	IF lUseOrder
+        //		fi := PTR(_CAST, oCtrlNotifyEvent:lParam)
+        //		// self:owner:owner:caption := "searching from "+NTrim(fi.iStart)+" for "+AsString(fi.lvfi._psz)
+        //		oDLVServer:SuspendNotification()
+        //		IF oDLVServer:Seek(AsString(fi:lvfi:_psz), TRUE)
+        //			iRet := SELF:__GetServerPos()-1
+        //		ENDIF
+        //		oDLVServer:ResetNotification()
+        //	ENDIF
+
+        //	RETURN iRet
+
+        //METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
+        //	LOCAL di AS _winLV_DISPINFO
+        //	LOCAL iOrderPos, iCol AS INT
+        //	LOCAL iLen AS DWORD
+        //	LOCAL symCol AS SYMBOL
+        //	LOCAL oFS AS FieldSpec
+        //	LOCAL uVal AS USUAL
+        //	LOCAL sVal AS STRING
+        //	LOCAL iRecNoSave AS INT
+        //	LOCAL oCol AS ListViewColumn
+
+        //	IF (oDLVServer == NULL_OBJECT)
+        //		RETURN
+        //	ENDIF
+
+        //	di := PTR(_CAST, oCtrlNotifyEvent:lParam)
+
+        //	IF !LOGIC(_CAST, _AND(di:item:mask, LVIF_TEXT))
+        //		RETURN
+        //	ENDIF
+
+        //	iOrderPos := di:item:iItem + 1
+
+        //	IF (iOrderPos >= iCacheStart) .AND. (iOrderPos <= iCacheEnd)
+        //		uVal := aCache[iOrderPos - iCacheStart + 1, di:item:iSubItem+1]
+        //		IF IsString(uVal)
+        //			sVal := uVal
+        //		ELSE
+        //			sVal := ""
+        //		ENDIF
+        //	ELSE
+        //		oDLVServer:SuspendNotification()
+        //		iRecNoSave := oDLVServer:RecNo
+
+        //		IF (SELF:__SetServerPos(iOrderPos) != 0)
+        //			iCol := di:item:iSubItem + 1
+        //			oCol := SELF:GetColumn(iCol)
+        //			symCol  := oCol:NameSym
+        //			oFS     := oCol:FieldSpec
+
+        //			IF (oFS != NULL_OBJECT)
+        //				sVal := oFS:Transform(SELF:FIELDGET(symCol))
+        //			ELSE
+        //				sVal := AsString(SELF:FIELDGET(symCol))
+        //			ENDIF
+        //		ENDIF
+
+        //		oDLVServer:GoTo(iRecNoSave)
+        //		oDLVServer:ResetNotification()
+        //	ENDIF
+
+        //	IF !Empty(sVal)
+        //		iLen := SLen(sVal) + 1
+        //		IF (iLen >= DWORD(di:item:cchTextMax))
+        //			sVal :=  Left(sVal, DWORD(di:item:cchTextMax) - 5) + "..."
+        //			iLen :=  SLen(sVal) + 1
+        //		ENDIF
+        //		MemCopy(di:item:pszText, String2Psz(sVal), iLen)
+        //	ENDIF
+
+        //	RETURN
 
     /// <exclude />
-	METHOD __GetServerPos() AS INT STRICT
-		//PP-030828 Strong typing
-		LOCAL iRet AS INT
-
-		IF oDLVServer == NULL_OBJECT
-			RETURN 0
-		ENDIF
-
-		IF lUseOrder
-			iRet := Send(oDLVServer, #OrderKeyNo)
-		ELSE
-			iRet := oDLVServer:RecNo
-		ENDIF
-
-		RETURN iRet
-
-	//METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
-	//	//PP-030828 Strong typing
-	//	LOCAL nmlv AS _winNM_LISTVIEW
-
-	//	nmlv := PTR(_CAST, oCtrlNotifyEvent:lParam)
-	//	IF (_AND(nmlv:uChanged, LVIF_STATE) > 0) .AND. (_AND(nmlv:uNewState, LVIS_SELECTED) > 0)
-	//		lNoNotifies := TRUE
-	//		SELF:__SetServerPos(nmlv:iItem + 1)
-	//		lNoNotifies := FALSE
-	//	ENDIF
-	//	RETURN
+    access __GetServerCount() as long strict
+        //PP-030828 Strong typing
+        if lUseOrder
+            return Send(oDLVServer, #OrderKeyCount)
+        endif
+        return oDLVServer:RecCount
 
     /// <exclude />
-	METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT
+    method __GetServerPos() as int strict
+        //PP-030828 Strong typing
+        local iRet as int
 
-		RETURN NIL
+        if oDLVServer == null_object
+            return 0
+        endif
 
-    /// <exclude />
-	METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT
-		LOCAL oLvItem		AS VOListViewItem
-		LOCAL iItem AS INT
-		DEFAULT lDoSelect TO  TRUE
+        if lUseOrder
+            iRet := Send(oDLVServer, #OrderKeyNo)
+        else
+            iRet := oDLVServer:RecNo
+        endif
 
-		IF lDoSelect
-			iItem := SELF:__GetServerPos() - 1
-			oLvItem := __ListView:Items[iItem]
-			oLvItem:Selected := TRUE
-			oLvItem:Focused := TRUE
-			__ListView:EnsureVisible(iItem)
-		ENDIF
-		RETURN
+        return iRet
 
-	METHOD __RefreshData() AS VOID STRICT
-		//LOCAL iOrderPos AS INT
-		//LOCAL iItem AS INT
+        //METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
+        //	//PP-030828 Strong typing
+        //	LOCAL nmlv AS _winNM_LISTVIEW
 
-		//iOrderPos := SELF:__GetServerPos()
-
-		//IF (iOrderPos >= iCacheStart) .AND. (iOrderPos <= iCacheEnd)
-		//	SELF:__FillCacheItem(iOrderPos - iCacheStart + 1)
-		//ENDIF
-
-		//iItem := SELF:__GetServerPos() - 1
-		//SELF:__ListView:RedrawItems(iItem, iItem, FALSE)
-
-		RETURN
+        //	nmlv := PTR(_CAST, oCtrlNotifyEvent:lParam)
+        //	IF (_AND(nmlv:uChanged, LVIF_STATE) > 0) .AND. (_AND(nmlv:uNewState, LVIS_SELECTED) > 0)
+        //		lNoNotifies := TRUE
+        //		SELF:__SetServerPos(nmlv:iItem + 1)
+        //		lNoNotifies := FALSE
+        //	ENDIF
+        //	RETURN
 
     /// <exclude />
-	METHOD __RefreshField(uFieldName AS USUAL) AS VOID STRICT
-		SELF:__RefreshData()
-		RETURN
+    method __NotifyChanges(kNotify as dword) as usual strict
+
+        return nil
 
     /// <exclude />
-	METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT STRICT
-		LOCAL iRet AS INT
+    method __RecordChange(lDoSelect := nil as usual) as void strict
+        local oLvItem		as VOListViewItem
+        local iItem as int
+        DEFAULT lDoSelect TO  true
 
-		IF (oDLVServer == NULL_OBJECT)
-			RETURN 0
-		ENDIF
+        if lDoSelect
+            iItem := self:__GetServerPos() - 1
+            oLvItem := __ListView:Items[iItem]
+            oLvItem:Selected := true
+            oLvItem:Focused := true
+            __ListView:EnsureVisible(iItem)
+        endif
+        return
 
-		DEFAULT lSuspendNotify to  FALSE
-		IF (lSuspendNotify)
-			oDLVServer:SuspendNotification()
-		ENDIF
+    method __RefreshData() as void strict
+        //LOCAL iOrderPos AS INT
+        //LOCAL iItem AS INT
 
-		IF lUseOrder
-			IF Send(oDLVServer, #OrderKeyGoto, nOrderPos)
-				iRet := nOrderPos
-			ENDIF
-		ELSE
-			IF oDLVServer:GoTo(nOrderPos)
-				iRet := nOrderPos
-			ENDIF
-		ENDIF
+        //iOrderPos := SELF:__GetServerPos()
 
-		IF (lSuspendNotify)
-			oDLVServer:ResetNotification()
-		ENDIF
+        //IF (iOrderPos >= iCacheStart) .AND. (iOrderPos <= iCacheEnd)
+        //	SELF:__FillCacheItem(iOrderPos - iCacheStart + 1)
+        //ENDIF
 
-		RETURN iRet
+        //iItem := SELF:__GetServerPos() - 1
+        //SELF:__ListView:RedrawItems(iItem, iItem, FALSE)
 
-    /// <exclude />
-	METHOD __StatusOK() AS OBJECT STRICT
-		RETURN NULL_OBJECT
+        return
 
     /// <exclude />
-	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control  STRICT
-		IF (oDLVServer != NULL_OBJECT)
-			oDLVServer:UnRegisterClient(SELF)
-			oDLVServer := NULL_OBJECT
-		ENDIF
+    method __RefreshField(uFieldName as usual) as void strict
+        self:__RefreshData()
+        return
 
-		RETURN SELF
+    /// <exclude />
+    method __SetServerPos(nOrderPos as int, lSuspendNotify := nil as usual) as int strict
+        local iRet as int
+
+        if (oDLVServer == null_object)
+            return 0
+        endif
+
+        DEFAULT lSuspendNotify to  false
+        if (lSuspendNotify)
+            oDLVServer:SuspendNotification()
+        endif
+
+        if lUseOrder
+            if Send(oDLVServer, #OrderKeyGoto, nOrderPos)
+                iRet := nOrderPos
+            endif
+        else
+            if oDLVServer:GoTo(nOrderPos)
+                iRet := nOrderPos
+            endif
+        endif
+
+        if (lSuspendNotify)
+            oDLVServer:ResetNotification()
+        endif
+
+        return iRet
+
+    /// <exclude />
+    method __StatusOK() as object strict
+        return null_object
+
+    /// <exclude />
+    method __Unlink(oDS := nil as usual) as VOSDK.Control  strict
+        if (oDLVServer != null_object)
+            oDLVServer:UnRegisterClient(self)
+            oDLVServer := null_object
+        endif
+
+        return self
     /// <include file="Gui.xml" path="doc/DataListView.DeleteAll/*" />
-	METHOD DeleteAll() AS LOGIC
+    method DeleteAll() as logic
 
-		iCacheStart := -1
-		iCacheEnd := -1
+        iCacheStart := -1
+        iCacheEnd := -1
 
-		RETURN SUPER:DeleteAll()
+        return super:DeleteAll()
 
     /// <include file="Gui.xml" path="doc/DataListView.Destroy/*" />
-	METHOD Destroy() AS USUAL
-		SELF:__Unlink()
-		RETURN SUPER:Destroy()
+    method Destroy() as usual
+        self:__Unlink()
+        return super:Destroy()
 
     /// <include file="Gui.xml" path="doc/DataListView.FieldGet/*" />
-	METHOD FieldGet(nFieldPos AS LONG) AS USUAL
+    method FieldGet(nFieldPos as usual) as usual
 
 
-		IF (oDLVServer != NULL_OBJECT)
-			RETURN oDLVServer:FIELDGET(nFieldPos)
-		ENDIF
-		RETURN NIL
+        if (oDLVServer != null_object)
+            return oDLVServer:FIELDGET(nFieldPos)
+        endif
+        return nil
 
     /// <include file="Gui.xml" path="doc/DataListView.ctor/*" />
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
-		LOCAL lUsedAsBrowser AS LOGIC
-		LOCAL nStyle			AS LONGINT
+    constructor(oOwner , xID , oPoint , oDimension , kStyle )
+        local lUsedAsBrowser as logic
+        local nStyle			as longint
 
-		// We are used as a browser
-		IF IsInstanceOfUsual(oOwner, #datawindow) .AND. xID = NIL
-			//oOwner 	:= ((DataWindow)oOwner):__FormWindow
-			xID 	:= 99
-			oPoint 	:= Point{0, 0}
-			oDimension := Dimension{100,100}
-			lUsedAsBrowser := TRUE
-		ENDIF
-		IF (IsNumeric(kStyle))
-			nStyle := kStyle
-		ENDIF
-		nStyle := (LONG) (nStyle | WS_HSCROLL | LVS_SINGLESEL | LVS_REPORT | LVS_SHOWSELALWAYS| LVS_OWNERDATA )
-		SUPER(oOwner, xID, oPoint, oDimension, nStyle)
+        // We are used as a browser
+        if oOwner is Datawindow .and. xID == nil
+            //oOwner 	:= ((DataWindow)oOwner):__FormWindow
+            xID 	:= 99
+            oPoint 	:= Point{0, 0}
+            oDimension := Dimension{100,100}
+            lUsedAsBrowser := true
+        endif
+        if IsNumeric(kStyle)
+            nStyle := kStyle
+        endif
+        nStyle := (long) (nStyle| WS_HSCROLL | LVS_SINGLESEL | LVS_REPORT | LVS_SHOWSELALWAYS| LVS_OWNERDATA )
+        super(oOwner, xID, oPoint, oDimension, nStyle)
 
-		SELF:SetExLVStyle(_OR(LVS_EX_FULLROWSELECT, LVS_EX_GRIDLINES, LVS_EX_HEADERDRAGDROP), TRUE)
+        self:SetExLVStyle(_or(LVS_EX_FULLROWSELECT, LVS_EX_GRIDLINES, LVS_EX_HEADERDRAGDROP), true)
 
-		IF lUsedAsBrowser
-			SELF:ControlFont := Font{,9,"MS Sans Serif"}
-		ENDIF
+        if lUsedAsBrowser
+            self:ControlFont := Font{,9,"MS Sans Serif"}
+        endif
 
-		iCacheMax := 100
-		iCacheStart := 0
-		iCacheEnd := 0
-		SELF:__ListView:VirtualMode := TRUE
+        iCacheMax := 100
+        iCacheStart := 0
+        iCacheEnd := 0
+        self:__ListView:VirtualMode := true
 
-		RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/DataListView.Notify/*" />
-	METHOD Notify(kNotification, uDescription)
+    method Notify(kNotification, uDescription)
 
-		IF lNoNotifies
-			IF kNotification == NOTIFYINTENTTOMOVE
-				RETURN TRUE
-			ELSE
-				RETURN NIL
-			ENDIF
-		ENDIF
+        if lNoNotifies
+            if kNotification == NOTIFYINTENTTOMOVE
+                return true
+            else
+                return nil
+            endif
+        endif
 
-		DO CASE
-		CASE kNotification == NOTIFYCOMPLETION
-			// self:__NotifyChanges(GBNFY_COMPLETION)
-			// nOldRecordNum := oDataServer:Recno
-            NOP
+        do case
+        case kNotification == NOTIFYCOMPLETION
+            // self:__NotifyChanges(GBNFY_COMPLETION)
+            // nOldRecordNum := oDataServer:Recno
+            nop
 
-		CASE kNotification == NOTIFYINTENTTOMOVE
-			// return self:__NotifyChanges(GBNFY_INTENTTOMOVE)
-			//self:__refreshdata()
-			RETURN TRUE
-		CASE kNotification == NOTIFYFILECHANGE
-			SELF:Refresh()
-			// ASend(aColumn, #__Scatter)
-			// self:__NotifyChanges(GBNFY_FILECHANGE)
-			// ASend(aColumn, #__Scatter)
-			// nOldRecordNum := oDataServer:Recno
-		CASE kNotification == NOTIFYFIELDCHANGE
-			SELF:__RefreshData()
-			// self:__RefreshField(uDescription)
-			// self:__NotifyChanges(GBNFY_FIELDCHANGE)
-		CASE kNotification == NOTIFYCLOSE
-			SELF:__Unlink()
+        case kNotification == NOTIFYINTENTTOMOVE
+            // return self:__NotifyChanges(GBNFY_INTENTTOMOVE)
+            //self:__refreshdata()
+            return true
+        case kNotification == NOTIFYFILECHANGE
+            self:Refresh()
+            // ASend(aColumn, #__Scatter)
+            // self:__NotifyChanges(GBNFY_FILECHANGE)
+            // ASend(aColumn, #__Scatter)
+            // nOldRecordNum := oDataServer:Recno
+        case kNotification == NOTIFYFIELDCHANGE
+            self:__RefreshData()
+            // self:__RefreshField(uDescription)
+            // self:__NotifyChanges(GBNFY_FIELDCHANGE)
+        case kNotification == NOTIFYCLOSE
+            self:__Unlink()
 
-		CASE (kNotification == NOTIFYRECORDCHANGE) .OR.;
-			(kNotification == NOTIFYGOBOTTOM) .OR. ;
-			(kNotification == NOTIFYGOTOP)
-			// ASend(aColumn, #__Scatter)
+        case (kNotification == NOTIFYRECORDCHANGE) .or.;
+                (kNotification == NOTIFYGOBOTTOM) .or. ;
+                (kNotification == NOTIFYGOTOP)
+            // ASend(aColumn, #__Scatter)
 
-			// if nOldRecordNum != oDataServer:Recno
-			// self:__NotifyChanges(GBNFY_RECORDCHANGE)
-			// ASend(aColumn, #__Scatter)
-			// else
-			// self:__NotifyChanges(GBNFY_FIELDCHANGE)
-			// endif
-			// nOldRecordNum := oDataServer:Recno
-			SELF:__RecordChange()
+            // if nOldRecordNum != oDataServer:Recno
+            // self:__NotifyChanges(GBNFY_RECORDCHANGE)
+            // ASend(aColumn, #__Scatter)
+            // else
+            // self:__NotifyChanges(GBNFY_FIELDCHANGE)
+            // endif
+            // nOldRecordNum := oDataServer:Recno
+            self:__RecordChange()
 
-		CASE (kNotification == NOTIFYDELETE) .OR. (kNotification == NOTIFYAPPEND)
-			SELF:Refresh()
-			// ASend(aColumn, #__Scatter)
-			// self:__NotifyChanges(GBNFY_DODELETE)
-			// ASend(aColumn, #__Scatter)
-			// nOldRecordNum := oDataServer:Recno
-		END CASE
+        case (kNotification == NOTIFYDELETE) .or. (kNotification == NOTIFYAPPEND)
+            self:Refresh()
+            // ASend(aColumn, #__Scatter)
+            // self:__NotifyChanges(GBNFY_DODELETE)
+            // ASend(aColumn, #__Scatter)
+            // nOldRecordNum := oDataServer:Recno
+        end case
 
-		RETURN NIL
+        return nil
 
-    /// <include file="Gui.xml" path="doc/DataListView.Owner/*" />
-	ACCESS Owner as Object
-		RETURN oParent
 
     /// <include file="Gui.xml" path="doc/DataListView.Refresh/*" />
-	METHOD Refresh() AS VOID STRICT
-		LOCAL dwItems AS LONG
-		dwItems := SELF:__GetServerCount
-		SELF:__ListView:VirtualListSize := dwItems
-		IF (dwItems > 0) .AND. (oDLVServer:RecNo > 0)
-			oDLVServer:GoTo(oDLVServer:RecNo)
-		ENDIF
-		SELF:__ListView:RedrawItems(0, dwItems, TRUE)
+    method Refresh() as void strict
+        local dwItems as long
+        dwItems := self:__GetServerCount
+        self:__ListView:VirtualListSize := dwItems
+        if (dwItems > 0) .and. (oDLVServer:RecNo > 0)
+            oDLVServer:GoTo(oDLVServer:RecNo)
+        endif
+        self:__ListView:RedrawItems(0, dwItems-1, true)
 
-		RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/DataListView.Server/*" />
-    PROPERTY Server as DataServer
-    GET
-		RETURN oDLVServer
-    END GET
-    SET
+    property Server as DataServer
+        get
+            return oDLVServer
+        end get
+        set
 
 
-		IF (oDLVServer != value)
-			IF (oDLVServer != NULL_OBJECT)
-				oDLVServer:UnRegisterClient(SELF)
-			ENDIF
+            if (oDLVServer != value)
+                if (oDLVServer != null_object)
+                    oDLVServer:UnRegisterClient(self)
+                endif
 
-			oDLVServer := value
+                oDLVServer := value
 
-			IF (__ListView:Columns:Count == 0)
-				SELF:__AutoLayout()
-			ENDIF
+                if (__ListView:Columns:Count == 0)
+                    self:__AutoLayout()
+                endif
 
-			oDLVServer:RegisterClient(SELF)
-			lUseOrder := IsMethod(oDLVServer, #IndexOrd) .AND. (Send(oDLVServer, #IndexOrd) > 0)
-			aCache := ArrayNew(iCacheMax, __ListView:Columns:Count)
-			SELF:Refresh()
-		ENDIF
+                oDLVServer:RegisterClient(self)
+                lUseOrder := IsMethod(oDLVServer, #IndexOrd) .and. (Send(oDLVServer, #IndexOrd) > 0)
+                aCache := ArrayNew(iCacheMax, __ListView:Columns:Count)
+                self:Refresh()
+            endif
 
-    end set
+        end set
     end property
     /// <include file="Gui.xml" path="doc/DataListView.Use/*" />
 
-	METHOD Use(oNewServer As DataServer) AS LOGIC
-		SELF:Server := oNewServer
-		RETURN (oDLVServer != NULL_OBJECT)
+    method GetSelectedItem() as ListViewItem
+        return null_object
 
-END CLASS
+    method Use(oNewServer as DataServer) as logic
+        self:Server := oNewServer
+        self:ResizeColumns()
+        return (oDLVServer != null_object)
+
+    method ResizeColumns() as void strict
+        local i as long
+        for i := 1 to self:ColumnCount
+            var col := self:GetColumn(i)
+            col:Width := -2
+            var save := col:__Header:Width
+            col:Width := -1
+            if col:__Header:Width < save
+                col:__Header:Width := save
+            endif
+
+        next
+        return
+
+end class
 

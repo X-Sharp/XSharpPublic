@@ -192,7 +192,7 @@ CLASS StatusBar INHERIT Control
     METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
         LOCAL cText AS STRING
         // Lookup message area index by default
-        Default(@symItemName, #MessageArea)
+        DEFAULT( REF symItemName, #MessageArea)
         LOCAL IMPLIED Label := SELF:__GetLabel((STRING) symItemName)
         IF Label != NULL_OBJECT
             cText := Label:Text
@@ -470,7 +470,7 @@ CLASS StatusBar INHERIT Control
     /// <include file="Gui.xml" path="doc/StatusBar.GetItemBoundingBox/*" />
     METHOD GetItemBoundingBox(symItemName)
         LOCAL sName as STRING
-        Default(@symItemName, #MessageArea)
+        DEFAULT( REF symItemName, #MessageArea)
         sName := symItemName
         LOCAL IMPLIED Label := SELF:__GetLabel(sName)
         IF Label != NULL_OBJECT
@@ -487,7 +487,7 @@ CLASS StatusBar INHERIT Control
 
 
 
-        Default(@symItemName, #MessageArea)
+        DEFAULT( REF symItemName, #MessageArea)
 
         IF IsLong(symItemName)
             symName := SELF:__GetSymbolFromItem(symItemName+1)
@@ -561,7 +561,7 @@ CLASS StatusBar INHERIT Control
     /// <include file="Gui.xml" path="doc/StatusBar.RefreshMemoryDisplay/*" />
     METHOD RefreshMemoryDisplay(kMemoryType)
         // Default to SYSTEM_FREE (GetFreeSpace())
-        Default(@kMemoryType, MEMORY_SYSTEM_FREE)
+        DEFAULT( REF kMemoryType, MEMORY_SYSTEM_FREE)
 
 #ifndef __VULCAN__  // Memory() not supported in Vulcan
         SELF:SetText(AllTrim(AsString(Memory(kMemoryType))) + " K", #MemoryArea)
@@ -571,7 +571,7 @@ CLASS StatusBar INHERIT Control
     /// <include file="Gui.xml" path="doc/StatusBar.SetIcon/*" />
     METHOD SetIcon(oIcon, symItemName)
         LOCAL sName as STRING
-        Default(@symItemName, #MessageArea)
+        DEFAULT( REF symItemName, #MessageArea)
         sName := symItemName
         LOCAL IMPLIED Label := SELF:__GetLabel(sName)
         IF Label != NULL_OBJECT

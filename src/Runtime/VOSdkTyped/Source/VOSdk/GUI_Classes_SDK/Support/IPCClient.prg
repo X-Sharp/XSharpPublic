@@ -70,7 +70,7 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.ClientError/*" />
-METHOD ClientError(oIpcClientErrorEvent)
+METHOD ClientError(oIpcClientErrorEvent as IPCClientErrorEvent)
 	LOCAL selected AS DWORD
 	LOCAL __WCSIpcError AS DWORD
 

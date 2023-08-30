@@ -91,8 +91,6 @@ end interface
 
 interface IVOControlContainer inherit IVOUIObject
     property AllowDrop as logic get set
-    property BackColor as SD.Color get set
-    property Controls as SWF.Control.ControlCollection get
     method AddControl(oCtrl as IVOControl) as void
     method SetChildIndex(oCtrl as IVOControl, nIndex as long) as void
 
@@ -151,6 +149,7 @@ interface IControlParent
     method ControlFocusChange(oControlFocusChangeEvent as  ControlFocusChangeEvent) as usual strict
     method __SetupDataControl(oDC as Control) as void
     method GetDlgItem(nID as long) as ResourceDialogItem
+    property __Surface as IVOPanel get
 end interface
 
 interface IDataBrowser
@@ -161,6 +160,12 @@ interface IDataBrowser
     method RestoreUpdate() as void strict
     method SuspendUpdate() as void strict
     property __Control as IVOControl get
-    property __DataGridView as VODataGridView get
     method __Unlink(oDataServer := null_object as DataServer) as Control strict
+end interface
+
+
+interface IResource
+    method Handle() as IntPtr strict
+    method Destroy()	as usual
+        property Size as Dimension get
 end interface

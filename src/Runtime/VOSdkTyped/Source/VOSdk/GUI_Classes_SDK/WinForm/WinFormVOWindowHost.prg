@@ -278,7 +278,7 @@ CLASS WinFormVOWindowHost INHERIT Component
 	METHOD Focus() AS VOID STRICT
 		SELF:hostControl:Focus()
 		SELF:window:SetFocus()
-		RETURN
+		return
 
 
 END CLASS

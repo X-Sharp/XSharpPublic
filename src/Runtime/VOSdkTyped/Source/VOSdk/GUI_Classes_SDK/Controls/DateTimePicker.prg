@@ -16,7 +16,7 @@ CLASS DateTimePicker INHERIT TextControl
     PROPERTY ControlType AS ControlType GET ControlType.DateTimePicker
 
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
-        DEFAULT(@lDataAware, TRUE)
+        DEFAULT( REF lDataAware, TRUE)
         //SELF:cFormat := Vulcan.Runtime.State.DateFormat_Internal
         SUPER(oOwner, xID, oPoint, oDimension, "SysDateTimePick32", dwStyle, lDataAware)
         RETURN

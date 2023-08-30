@@ -6,7 +6,7 @@
 
 DEFINE DEFAULT_STRING_TEMPL_SIZE := 128
 /// <exclude />
-CLASS __FormattedString 
+class __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING
 	PROTECT sTemplate AS STRING
@@ -210,7 +210,7 @@ CLASS __FormattedString
 	CONSTRUCTOR(Owner, PicString, Type, OverWrite, DefTempl, ScrMode)
 
 		SELF:FuncFlags := strucPictureFuncFlags{}
-		DEFAULT(@Type, "C")
+		DEFAULT( REF Type, "C")
 
 		oEditOwner := Owner
 		cType := Type // !!! order dependancy: ASSIGN Picture needs type to be set !!!
@@ -481,9 +481,9 @@ CLASS __FormattedString
 				iCurPos := SELF:NextEditPos(-1)
 			ENDIF
 			IF ((iCurPos > iTemplLen) .OR. (!SELF:IsEditPos(iCurPos)) .AND. cType != "N") .AND. oEditOwner:AutoFocusChange
-				IF oEditOwner:Owner != NULL_OBJECT
-					LOCAL oForm AS VOForm
-					oForm := oEditOwner:Owner:__Form
+				if oEditOwner:Owner is WIndow var oWindow
+                    local oForm as VOForm
+					oForm := oWindow:__Form
 					oForm:NextControl()
 				ENDIF
 			ELSE

@@ -111,9 +111,9 @@ CLASS AnimationControl INHERIT Control
 		LOCAL dwRepeatCount	AS DWORD
 
 
-		DEFAULT(@nFrom, 0)
-		DEFAULT(@nTo, -1)
-		DEFAULT(@nRepeatCount, -1)
+		DEFAULT( REF nFrom, 0)
+		DEFAULT( ref nTo, -1)
+		DEFAULT( ref nRepeatCount, -1)
 
 		wFrom := WORD(_CAST, nFrom)
 		wTo := WORD(_CAST, nTo)

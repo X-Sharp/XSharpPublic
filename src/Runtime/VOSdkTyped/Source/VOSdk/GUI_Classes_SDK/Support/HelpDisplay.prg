@@ -146,7 +146,7 @@ CLASS HelpDisplay INHERIT VObject
 		LOCAL pszKey	AS PSZ
 
 
-		DEFAULT (@symLookupType,#KEYWORD)
+		DEFAULT (REF symLookupType,#KEYWORD)
 
 		IF !IsString(cKeyword)
 			WCError{#Show,#HelpDisplay,__WCSTypeError,cKeyword,1}:Throw()

@@ -55,7 +55,7 @@ ABSTRACT CLASS ScrollBar INHERIT Control
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware)
 
 
-		Default(@lDataAware, TRUE)
+		DEFAULT( REF lDataAware, TRUE)
 		IF !(xID IS ResourceID)
 			SUPER(oOwner,xID,oPoint,oDimension,"ScrollBar",,lDataAware)
 		ELSE

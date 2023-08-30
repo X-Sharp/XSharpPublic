@@ -13,7 +13,7 @@ CLASS IPAddress INHERIT TextControl
 /// <include file="Gui.xml" path="doc/IPAddress.ctor/*" />
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
-		DEFAULT(@lDataAware, TRUE)
+		DEFAULT(REF lDataAware, TRUE)
 
 		SUPER(oOwner, xID, oPoint, oDimension, "SysIPAddress32", dwStyle, lDataAware)
 		RETURN

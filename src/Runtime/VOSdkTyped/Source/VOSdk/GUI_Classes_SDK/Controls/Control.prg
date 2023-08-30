@@ -10,7 +10,7 @@ USING SWF := System.Windows.Forms
 [XSharp.Internal.TypesChanged];
 CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     PROTECT oCtrl                AS IVOControl
-    PROTECT oParent              AS IControlParent
+    protect oParent              as Window
 
         // The surface window that owns the control. This is the same as oParent except
         // when oParent                                   is a data window. Then oFormSurface is the DataWindow's dialog
@@ -57,7 +57,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
     PROPERTY __Handle as IntPtr GET SELF:Handle()
 
-    ASSIGN Parent(oP AS IControlParent)
+    assign Parent(oP as Window)
         SELF:oParent := oP
 
     PROPERTY __ControlWindow AS ControlWindow
@@ -200,7 +200,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <exclude />
-    PROPERTY __Parent AS IControlParent GET oParent
+    property __Parent as Window get oParent
 
 
     /// <exclude />
@@ -849,8 +849,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     /// <include file="Gui.xml" path="doc/Control.ctor/*" />
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
         super()
-        local isNumericId := IsNumeric(xID) as logic
-        IF oOwner != NULL_OBJECT
+        if oOwner != null_object
             local oOwnerObject := oOwner as OBJECT
             IF oOwnerObject IS IVOControl VAR ownerControl
                 SELF:oCtrl    := ownerControl
@@ -886,7 +885,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ENDIF
 
         oFormSurface := oParent
-        if isNumericId
+        if IsLong(xID)
             IF IsString(oPoint) .AND. IsNil(oDimension)
                 xID := ResourceID{ xID }
             ELSE
@@ -901,7 +900,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
         IF (oFormSurface IS DialogWindow .OR. oFormSurface IS DataWindow)  .AND. ;
-                ((xID is ResourceID) .or. (isNumericId .and.;
+                ((xID is ResourceID) .or. (IsLong(xID) .and.;
                 oDimension == null .and. oPoint== null))
 
             IF xID IS ResourceID var resId
@@ -924,7 +923,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             //__lpfnDefaultProc := PTR(_CAST, GetWindowLong(oCtrl, GWL_WNDPROC))
             //SetWindowLong(oCtrl, GWL_WNDPROC, LONGINT(_CAST, Get__WCControlProcPtr()))
 
-        elseif (oFormSurface is Window .or. oFormSurface is Control) .and. isNumericID
+        elseif (oFormSurface is Window .or. oFormSurface is Control) .and. IsLong(xID)
 
             IF !IsNil(cRegClass) .AND. !IsString(cRegClass)
                 WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:Throw()
@@ -1195,8 +1194,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Owner/*" />
-    ACCESS Owner AS OBJECT
-        RETURN SELF:oParent
+    access Owner as Window
+        return self:oParent
 
     STATIC METHOD OwnerAlignmentHandledByWinForms(oC AS IVOControl, iNewType AS USUAL) AS LOGIC
         LOCAL lStandard AS LOGIC

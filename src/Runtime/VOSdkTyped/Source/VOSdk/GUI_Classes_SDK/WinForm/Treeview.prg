@@ -62,7 +62,7 @@ class VOTreeView inherit SWF.TreeView implements IVOControlProperties
 	VIRTUAL PROTECTED METHOD OnAfterLabelEdit(e AS SWF.NodeLabelEditEventArgs) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnAfterLabelEdit(e)
-		oWin := SELF:Control:Owner
+		oWin := self:Control:Owner
 		oWin:TreeViewItemEdit(TreeViewEditEvent{SELF:TreeView, ((VOTreeNode)e:Node):Item,e:Label, FALSE})
 		RETURN
 
@@ -72,7 +72,7 @@ class VOTreeView inherit SWF.TreeView implements IVOControlProperties
 			e:CancelEdit := TRUE
 		ELSE
 			SUPER:OnBeforeLabelEdit(e)
-			oWin := SELF:Control:Owner
+			oWin := self:Control:Owner
 			oWin:TreeViewItemEdit(TreeViewEditEvent{SELF:TreeView, ((VOTreeNode)e:Node):Item,e:Label, TRUE})
 		ENDIF
 		RETURN
@@ -81,28 +81,28 @@ class VOTreeView inherit SWF.TreeView implements IVOControlProperties
 	VIRTUAL PROTECTED METHOD OnKeyDown(e AS SWF.KeyEventArgs) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnKeyDown(e)
-		oWin := SELF:Control:Owner
+		oWin := self:Control:Owner
 		oWin:TreeViewKeyDown(TreeViewKeyEvent{SELF:TreeView, e:KeyCode})
 		RETURN
 
 	VIRTUAL PROTECTED METHOD OnAfterExpand(e AS SWF.TreeViewEventArgs) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnAfterExpand(e)
-		oWin := SELF:Control:Owner
+		oWin := self:Control:Owner
 		oWin:TreeViewItemExpanded(TreeViewExpandedEvent{SELF:TreeView, ((VOTreeNode) e:Node):Item, e:Action})
 		RETURN
 
 	VIRTUAL PROTECTED METHOD OnAfterCollapse(e AS SWF.TreeViewEventArgs) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnAfterCollapse(e)
-		oWin := SELF:Control:Owner
+		oWin := self:Control:Owner
 		oWin:TreeViewItemExpanded(TreeViewExpandedEvent{SELF:TreeView, ((VOTreeNode) e:Node):Item, e:Action})
 		RETURN
 
 	VIRTUAL PROTECTED METHOD OnBeforeCollapse(e AS SWF.TreeViewCancelEventArgs) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnBeforeCollapse(e)
-		oWin := SELF:Control:Owner
+		oWin := self:Control:Owner
 		oWin:TreeViewItemExpanding(TreeViewExpandingEvent{SELF:TreeView, ((VOTreeNode) e:Node):Item})
 		RETURN
 

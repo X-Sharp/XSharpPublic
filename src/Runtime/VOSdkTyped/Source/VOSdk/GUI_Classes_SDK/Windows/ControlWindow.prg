@@ -10,7 +10,7 @@ CLASS ControlWindow INHERIT Window
     PROTECT oCtrl AS Control
     PROTECT oSurface AS VOSurfacePanel
 
-    PROPERTY __Surface AS IVOControlContainer GET oSurface
+    PROPERTY __Surface AS IVOPanel GET oSurface
 
     /// <include file="Gui.xml" path="doc/ControlWindow.Control/*" />
     PROPERTY Control AS Control GET oCtrl

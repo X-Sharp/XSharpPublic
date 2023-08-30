@@ -207,7 +207,7 @@ CLASS TextControl INHERIT Control
 /// <include file="Gui.xml" path="doc/TextControl.EnableAutoComplete/*" />
 	METHOD EnableAutoComplete(dwFlags AS DWORD) AS VOID STRICT
 		// Todo: Implement EnableAutoComplete
-		//DEFAULT(@dwFlags,SHACF_DEFAULT)
+		//DEFAULT( REF dwFlags,SHACF_DEFAULT)
 		//RETURN ShellAutoComplete(SELF:handle(),dwFlags)
 		RETURN
 

@@ -47,12 +47,12 @@ CLASS VOMenu INHERIT SWF.MainMenu
 			// Rest of the items are the real thing
 			LOCAL oFirst AS SWF.MenuItem
 			oFirst := SELF:MenuItems[0]
-			FOREACH IMPLIED oItem IN oFirst:MenuItems
+			foreach oItem as SWF.MenuItem in oFirst:MenuItems
 				oItems:Add(oItem)
 			NEXT
 
 		ELSE
-			FOREACH IMPLIED oItem IN SELF:MenuItems
+			foreach oItem as SWF.MenuItem in self:MenuItems
 				oItems:Add(oItem)
 			NEXT
 		ENDIF
@@ -104,12 +104,12 @@ CLASS VOMenuItem INHERIT SWF.MenuItem
 			// First Item is 'Dummy'
 			// Rest of the items are the real thing
 			VAR oFirst := SELF:MenuItems[0]
-			FOREACH IMPLIED oItem IN oFirst:MenuItems
+			foreach oItem as SWF.MenuItem in oFirst:MenuItems
 				oItems:Add(oItem)
 			NEXT
 
 		ELSE
-			FOREACH IMPLIED oItem IN SELF:MenuItems
+			FOREACH oItem AS SWF.MenuItem IN SELF:MenuItems
 				oItems:Add(oItem)
 			NEXT
 		ENDIF
@@ -206,7 +206,7 @@ class VOToolBar inherit SWF.ToolBar implements IVOControlProperties
             LOCAL nMenuId := 0 as LONG
             LOCAL oWindow as Window
             LOCAL oMenu   as Menu
-            oWindow := SELF:Control:Owner
+            oWindow := self:Control:Owner
             oMenu   := oWindow:Menu
             nMenuId := selectedButton:MenuID
            oWindow:MenuSelect(MenuSelectEvent{oMenu, oWindow, nMenuId})

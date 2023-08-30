@@ -23,8 +23,8 @@ CLASS WCError INHERIT Error
 		FuncSym := String2Symbol(Symbol2String(className) + ":" + Symbol2String(methodName))
 	ENDIF
 
-	Default(@desc, __WCSInterfaceError)
-	Default(@lAllowIgnore, TRUE)
+	DEFAULT( REF desc, __WCSInterfaceError)
+	DEFAULT( REF lAllowIgnore, TRUE)
 
 	IF IsString(desc)
 		SELF:Description := desc

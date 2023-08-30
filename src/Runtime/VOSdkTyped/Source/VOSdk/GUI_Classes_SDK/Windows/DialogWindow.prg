@@ -89,7 +89,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
     /// <exclude />
     PROPERTY __HasSurface AS LOGIC GET TRUE
     /// <exclude />
-    PROPERTY __Surface AS IVOControlContainer GET oSurface
+    property __Surface as IVOPanel get oSurface
     /// <exclude />
     METHOD __SetupDataControl(oDC AS Control) AS VOID
         IF oDC IS RadioButtonGroup
@@ -126,13 +126,13 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
         oButton := oCE:Control
         IF oButton IS Button
             oButton:Modified := TRUE // assume its modified
-            IF oButton IS RadioButton
+            if oButton is RadioButton var oRB
                 //SE-060526
                 dwCount := ALen(aRadioGroups)
                 FOR dwI := 1 UPTO dwCount
                     oRBG := aRadioGroups[dwI]
-                    IF oRBG:__IsElement(OBJECT(_CAST,oButton))
-                        oRBG:__SetOn(OBJECT(_CAST,oButton))
+                    if oRBG:__IsElement(oRB)
+                        oRBG:__SetOn(oRB)
                         oButton:__Update()
                         oButton := oRBG
                         EXIT
@@ -230,7 +230,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
             SUPER:HyperLabel := value
             IF value != NULL_OBJECT
-                SELF:__Surface:Text := "Surface:"+value:Name
+                self:oSurface:Text := "Surface:"+value:Name
             ENDIF
         END SET
     END PROPERTY
@@ -252,7 +252,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
             oResourceID := xResourceID
         ENDIF
         SELF:__ReadResource(oResourceID, oOwner)
-        DEFAULT(@lModal, TRUE)
+        DEFAULT( ref lModal, true)
         bModal := lModal
 
         SUPER(oOwner)

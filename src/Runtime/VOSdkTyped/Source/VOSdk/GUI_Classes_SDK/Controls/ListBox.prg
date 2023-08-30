@@ -402,7 +402,7 @@ CLASS ListBox INHERIT BaseListBox
 		//LOCAL dwFileTypes AS DWORD
 		//LOCAL w AS DWORD
 
-		//DEFAULT(@sStartDir, "*.*")
+		//DEFAULT( REF sStartDir, "*.*")
 
 		//pPath := StringAlloc(sStartDir)
 		//pPath := MemRealloc(pPath, 261)

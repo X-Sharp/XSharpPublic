@@ -207,9 +207,9 @@ CLASS SplitView INHERIT Control
 		ENDIF
 		oWin := oOwner
 
-        DEFAULT(@lHorizontalDrag, FALSE)
-        DEFAULT(@lVerticalDrag , FALSE)
-        DEFAULT(@kAlignment, SPLIT_VERTALIGN)
+        DEFAULT( REF lHorizontalDrag, FALSE)
+        DEFAULT( REF lVerticalDrag , FALSE)
+        DEFAULT( REF kAlignment, SPLIT_VERTALIGN)
 
         SELF:HorizontalDrag    := lHorizontalDrag
         SELF:VerticalDrag      := lVerticalDrag

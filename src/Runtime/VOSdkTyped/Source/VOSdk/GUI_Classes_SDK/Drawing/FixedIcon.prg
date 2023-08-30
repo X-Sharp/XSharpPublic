@@ -5,7 +5,8 @@
 //
 /// <include file="Gui.xml" path="doc/FixedIcon/*" />
 
-CLASS FixedIcon INHERIT FixedImage
+class FixedIcon inherit FixedImage
+    protect _oIcon as Icon
 
  /// <exclude />
 	OVERRIDE METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
@@ -27,8 +28,10 @@ CLASS FixedIcon INHERIT FixedImage
 /// <include file="Gui.xml" path="doc/FixedIcon.SetIcon/*" />
 	METHOD SetIcon(oIcon as Icon) as Icon
 		SELF:SetStyle(SS_ICON)
-		oImage := oIcon
-		SELF:__Label:Image := oImage
+        _oIcon := oIcon
+        self:oImage := oIcon
+        // Todo Lable Image
+		//self:__Label:Image := oIcon:__Icon
         SELF:__Label:FlatStyle := System.Windows.Forms.FlatStyle.Flat
 		RETURN oIcon
 

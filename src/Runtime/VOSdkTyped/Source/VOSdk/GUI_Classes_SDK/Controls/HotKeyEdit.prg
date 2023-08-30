@@ -93,16 +93,16 @@ CLASS HotKeyEdit INHERIT TextControl
 		RETURN
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.ApplyHotKey/*" />
-	METHOD ApplyHotKey(oWindow)
+	method ApplyHotKey(oWindow as IGuiObject)
 		LOCAL dwHotKey			AS DWORD
 
-		IF IsNil(oWindow)
-			oWindow := (Object)SELF:Owner
+		if oWindow == null
+			oWindow := (IGuiObject)self:Owner
 		ENDIF
 
 		dwHotKey := (DWORD)_AND(GuiWin32.SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0XFFFF)
 
-		RETURN GuiWin32.SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)
+		RETURN GuiWin32.SendMessage(oWindow:__Handle, WM_SETHOTKEY, dwHotKey, 0)
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.Create/*" />
 	METHOD Create() AS IVOControl STRICT

@@ -35,7 +35,7 @@ CLASS ChildAppWindow INHERIT AppWindow
                 lMng := lManaged
             ENDIF
         ENDIF
-        Default(@lImpl, TRUE)
+        DEFAULT( REF lImpl, TRUE)
         IF (lImpl)
             //IF (oImp == NULL_OBJECT)
             IF lMng .AND. IsInstanceOf(oParent,#ShellWindow) // create an MDI child

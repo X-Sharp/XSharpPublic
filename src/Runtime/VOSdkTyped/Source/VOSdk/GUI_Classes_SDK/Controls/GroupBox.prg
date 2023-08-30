@@ -42,7 +42,7 @@ CLASS GroupBox INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/GroupBox.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
-		Default(@lDataAware, FALSE)
+		Default(REF lDataAware, FALSE)
 
 		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , , lDataAware)

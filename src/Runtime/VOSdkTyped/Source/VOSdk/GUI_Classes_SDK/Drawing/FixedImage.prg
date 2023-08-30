@@ -6,21 +6,21 @@
 /// <include file="Gui.xml" path="doc/FixedImage/*" />
 
 PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
-	PROTECT oImage AS OBJECT
+	protect oImage as IResource
 
     /// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.FixedImage
 
 /// <include file="Gui.xml" path="doc/FixedImage.ctor/*" />
 	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
-		IF  IsInstanceOfUsual(uID,#ResourceID)
+		if uID is ResourceID
 			SUPER(uOwner,uID,,,,,FALSE)
 		ELSEIF IsLong(uID)
 			SUPER(uOwner, uID,	uPoint, uDimension, "Static", , FALSE)
 
-			IF !IsNil(uResID)
-				SELF:__SetImage(uResID)
-				cWindowName:="#"+LTrim(AsString(uResID:ID))
+			if uResID is ResourceId var oResID
+				self:__SetImage(oResID)
+				cWindowName:="#"+LTrim(AsString(oResID:ID))
 			ENDIF
 		ELSE
 			WCError{#Init,#FixedImage,__WCSTypeError}:Throw()

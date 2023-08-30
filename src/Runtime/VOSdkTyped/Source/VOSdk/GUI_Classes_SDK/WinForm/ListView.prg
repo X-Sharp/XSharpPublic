@@ -35,7 +35,7 @@ class VOListView inherit SWF.ListView  implements IVOControlProperties
         RETURN
 
 
-    NEW PROPERTY Columns AS IList GET SUPER:Columns
+    new property Columns as IList get super:Columns
     NEW PROPERTY Groups AS IList GET SUPER:Groups
 	NEW PROPERTY Items AS IList GET SUPER:Items
     NEW PROPERTY SelectedItems AS IList GET SUPER:SelectedItems
@@ -157,8 +157,8 @@ END CLASS
 
 CLASS VOListViewItem INHERIT SWF.ListViewItem
 	PROPERTY Item AS VOSDK.ListViewItem AUTO
-	PROPERTY SWFItem AS OBJECT GET SELF
-    NEW PROPERTY Group AS OBJECT GET SUPER:Group SET SUPER:Group := VALUE
+	property SWFItem as SWF.ListViewItem get self
+    NEW PROPERTY Group AS SWF.ListViewGroup GET SUPER:Group SET SUPER:Group := VALUE
 	NEW PROPERTY SubItems AS IList GET SUPER:SubItems
 	METHOD LinkTo(oItem AS VOSDK.ListViewItem) AS VOID STRICT
 		SELF:Item  := oItem

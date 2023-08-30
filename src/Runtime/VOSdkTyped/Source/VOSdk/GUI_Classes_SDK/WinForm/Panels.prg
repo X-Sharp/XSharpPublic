@@ -56,7 +56,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
-		SELF:Window := Owner:Owner
+		self:Window := Owner:Owner
 		SELF:Initialize()
 		SELF:RegisterEventHandlers()
 		SELF:AllowDrop := TRUE
@@ -195,7 +195,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 				ELSEIF oc is SWF.TabControl
 					LOCAL oTab AS SWF.TabControl
 					oTab := (SWF.TabControl) oC
-					FOREACH VAR oPage IN oTab:TabPages
+					foreach oPage as SWF.TabPage in oTab:TabPages
 						FOREACH IMPLIED oC2 IN oPage:Controls
 							IF oC2 IS VOPanel VAR panel
 								panel:Prepare()

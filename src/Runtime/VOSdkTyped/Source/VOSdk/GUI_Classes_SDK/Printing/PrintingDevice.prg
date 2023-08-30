@@ -348,11 +348,11 @@ CLASS PrintingDevice INHERIT VObject
 			oType := oSettings:GetType()
 			oPI := oType:GetProperty("DriverName", BindingFlags.NonPublic | BindingFlags.Instance| BindingFlags.IgnoreCase)
 			IF oPI != NULL_OBJECT
-				SELF:cDriver := oPI:GetValue(oSettings, NULL)
+				self:cDriver := (string) oPI:GetValue(oSettings, null)
 			ENDIF
 			oPI := oType:GetProperty("OutputPort", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase)
 			IF oPI != NULL_OBJECT
-				SELF:cPort := oPI:GetValue(oSettings, NULL)
+				SELF:cPort := (STRING) oPI:GetValue(oSettings, NULL)
 			ENDIF
 
 		ENDIF

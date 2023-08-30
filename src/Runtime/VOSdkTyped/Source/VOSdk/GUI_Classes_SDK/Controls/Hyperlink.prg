@@ -37,7 +37,7 @@ CLASS HyperLink INHERIT FixedText
 
 /// <include file="Gui.xml" path="doc/HyperLink.OpenLink/*" />
 	METHOD OpenLink()
-		ShellOpen(SELF:Owner, SELF:Caption)
+		ShellOpen((Window) SELF:Owner, SELF:Caption)
 		RETURN SELF
 END CLASS
 

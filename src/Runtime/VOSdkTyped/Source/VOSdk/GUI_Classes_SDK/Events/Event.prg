@@ -197,9 +197,10 @@ CLASS HelpRequestEvent INHERIT @@Event
 			SELF:oWindow  := oControl:Owner
 			SELF:HyperLabel := oControl:HyperLabel
 			SELF:HelpType	:= HELPCONTROL
-		ELSEIF sender IS IVOForm  VAR oW
-			oWindow := oW:Window
-			SELF:HyperLabel := oWindow:HyperLabel
+        elseif sender is IVOForm  var oW
+            local oWin as Window
+			oWin := oW:Window
+			self:HyperLabel := oWin:HyperLabel
 			SELF:HelpType	:= HELPWINDOW
 		// HELPMENU
 		ELSE

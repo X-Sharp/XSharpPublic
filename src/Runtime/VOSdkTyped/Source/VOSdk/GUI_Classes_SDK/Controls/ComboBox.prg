@@ -235,8 +235,8 @@ PROTECT oImgList AS ImageList
 METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent)
 //SE-060519
 
-Default(@nItemNumber, 0)
-Default(@iSelectedIdx, iImageIdx)
+DEFAULT( REF nItemNumber, 0)
+DEFAULT( REF iSelectedIdx, iImageIdx)
 
 RETURN SELF:InsertItem(ComboBoxExItem{cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent})
 
@@ -356,7 +356,7 @@ RETURN
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 
-Default(@kComboType, BOXDROPDOWN)
+DEFAULT( REF kComboType, BOXDROPDOWN)
 SUPER(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 SELF:__ClassName := "ComboBoxEx32"
 

@@ -30,7 +30,7 @@ CLASS Brush INHERIT VObject
         oColor := NULL_OBJECT
         IF IsInstanceOfUsual(xColor, #Color)
             oColor := xColor
-            Default(@kHatchStyle, HATCHSOLID)
+            DEFAULT( REF kHatchStyle, HATCHSOLID)
 
             IF IsNumeric(kHatchStyle)
                 IF (kHatchStyle == HATCHSOLID)

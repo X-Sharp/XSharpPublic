@@ -188,8 +188,8 @@ CLASS MultiMediaContainer INHERIT Control
 		//	RETURN 0L
 		//ENDIF
 
-		//Default(@wParam, 0)
-		//Default(@lParam, 0)
+		//DEFAULT( REF wParam, 0)
+		//DEFAULT( REF lParam, 0)
 
 		//uMsg := dwMsg
 		//wPar := wParam

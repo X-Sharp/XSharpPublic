@@ -21,7 +21,8 @@ CLASS LineObject INHERIT DrawObject
 
 		RETURN
 /// <include file="Gui.xml" path="doc/LineObject.BoundingBox/*" />
-	ACCESS BoundingBox AS BoundingBox
+    PROPERTY BoundingBox AS BoundingBox
+    GET
 		LOCAL oOrg AS Point
 		LOCAL EndX, EndY, OrgX, OrgY AS LONGINT
 
@@ -31,15 +32,13 @@ CLASS LineObject INHERIT DrawObject
 		OrgX := oOrg:X
 		OrgY := oOrg:Y
 		RETURN BoundingBox{Point{Min(EndX,OrgX), Min(EndY,OrgY)}, Dimension{Abs(EndX-OrgX),Abs(EndY-OrgY)}}
-
+    END GET
+    END PROPERTY
 /// <include file="Gui.xml" path="doc/LineObject.Destroy/*" />
 	METHOD Destroy() AS USUAL CLIPPER
-
 		oPen:=NULL_OBJECT
 		oEnd:=NULL_OBJECT
-
 		SUPER:Destroy()
-
 		RETURN SELF
 
 	#ifdef DONOTINCLUDE
@@ -105,7 +104,7 @@ CLASS LineObject INHERIT DrawObject
 
 		RETURN
 
-	PROPERTY Pen AS Pen AUTO GET SET
+	property Pen as Pen get oPen set oPen := value
 
 	ACCESS Size AS Dimension
 		LOCAL oOrg AS Point

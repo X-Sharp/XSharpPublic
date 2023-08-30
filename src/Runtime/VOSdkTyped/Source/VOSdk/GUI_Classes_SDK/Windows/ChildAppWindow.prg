@@ -51,31 +51,36 @@ CLASS ChildAppWindow INHERIT AppWindow
                 //IF lManaged
                 //SELF:EnableBorder(WindowNonSizingBorder)
                 //ENDIF
-                    NOP
+                NOP
 
             ENDIF
             //ENDIF
         ENDIF
 
     /// <include file="Gui.xml" path="doc/ChildAppWindow.Menu/*" />
-    ASSIGN Menu(oNewMenu AS VOSDK.Menu)
-        LOCAL i as DWORD
-        SUPER:Menu := oNewMenu
-        if oShell != NULL_OBJECT
-            i := 0
-            FOREACH oItem as VOMenuItem in oNewMenu:__Menu:MenuItems
-                if i == oNewMenu:GetAutoUpdate()
-                    oItem:MdiList := TRUE
-                ENDIF
-                ++i
-                oItem:MergeType := System.Windows.Forms.MenuMerge.Add
-            NEXT
-        ENDIF
-        RETURN
-
+    PROPERTY Menu AS VOSDK.Menu
+        GET
+            RETURN SUPER:Menu
+        END GET
+        SET
+            LOCAL i AS DWORD
+            SUPER:Menu := VALUE
+            IF oShell != NULL_OBJECT
+                i := 0
+                FOREACH oItem AS VOMenuItem IN VALUE:__Menu:MenuItems
+                    IF i == VALUE:GetAutoUpdate()
+                        oItem:MdiList := TRUE
+                    ENDIF
+                    ++i
+                    oItem:MergeType := System.Windows.Forms.MenuMerge.Add
+                NEXT
+            ENDIF
+            RETURN
+        END SET
+    END PROPERTY
     /// <inheritdoc />
-    METHOD Close(oEvent as event) as USUAL
-        var res := SUPER:Close(oEvent)
+    METHOD Close(oEvent AS event) AS USUAL
+        VAR res := SUPER:Close(oEvent)
         oShell:Menu := oShell:__ActualMenu
         RETURN res
 

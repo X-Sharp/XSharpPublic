@@ -1053,8 +1053,11 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         return
 
     method __ReadResource(oResourceID as ResourceID, oOwner as object) as logic
-        if oResourceID != null_object
-            oResourceDialog := ResourceDialog{oResourceID:Handle(), oResourceID:Name, oOwner}
+        IF oResourceID != NULL_OBJECT
+            oResourceDialog := ResourceDialog.FromCache(oResourceID:Handle(), oResourceID:Name)
+            IF oResourceDialog == NULL
+                oResourceDialog := ResourceDialog{oResourceID:Handle(), oResourceID:Name, oOwner}
+            ENDIF
         endif
         if oResourceDialog != null_object
             self:Caption	:= oResourceDialog:Caption
@@ -1148,13 +1151,11 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         return 	self
 
     /// <include file="Gui.xml" path="doc/Window.Accelerator/*" />
-    access Accelerator as Accelerator
-        return oAccelerator
+    property Accelerator as Accelerator
+        get => oAccelerator
+        set => oAccelerator := value
+    END PROPERTY
 
-    /// <include file="Gui.xml" path="doc/Window.Accelerator/*" />
-    assign Accelerator(oNewAccelerator as Accelerator)
-        oAccelerator := oNewAccelerator
-        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Activate/*" />
@@ -2388,12 +2389,14 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
 
         return Point{0, 0}
 
-    access NameSym as symbol
+    property NameSym as symbol
+    get
         if self:HyperLabel != null_object
             return self:HyperLabel:NameSym
         endif
         return null_symbol
-
+    end get
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.Origin/*" />
     property Origin as Point
@@ -2427,16 +2430,18 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.OwnerAlignment/*" />
-    assign OwnerAlignment(iNewVal as usual)
+    property OwnerAlignment as usual
+    set
         local oFormWindow  	as object
         local oWindow		as WINDOW
         oFormWindow := self:Owner
         if IsInstanceOf(oFormWindow, #Window)
             oWindow := oFormWindow
-            oWindow:__AddAlign(self, iNewVal)
+            oWindow:__AddAlign(self, value)
         endif
         return
-
+    end set
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.PaintBackground/*" />
     method PaintBackground(hDC) as usual

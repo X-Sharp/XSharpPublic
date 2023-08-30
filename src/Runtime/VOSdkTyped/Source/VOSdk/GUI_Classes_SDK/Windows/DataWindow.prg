@@ -205,63 +205,64 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
     oPoint := Point{iif(lBidi, (25 + maxEditSize), 20), 0}
 
     for liStart:=1 upto liLines
-    // get next datafield
-    oDFField := null_object
-    while (oDFField == null_object) .and. (liField <= liFields)
-    liField++
-    oDFField := self:oAttachedServer:DataField(liField)
-    enddo
+        // get next datafield
+        oDFField := null_object
+        while (oDFField == null_object) .and. (liField <= liFields)
+            liField++
+            oDFField := self:oAttachedServer:DataField(liField)
+        enddo
 
-    if liField>liFields
-    exit
-    endif
+        if liField>liFields
+            exit
+        endif
 
     // Create label
     cType := oDFField:FieldSpec:ValType
 
     if (cType != "O") .or. lOleAvail
-    cField := __GetDFCaption(oDFField,arUsedKeys)
-    oPoint:Y := editGap * (liStart-1)
-    newControl := FixedText{self, (100 + liField), oPoint, oLabelDim, cField}
-    newControl:Show()
+        cField := __GetDFCaption(oDFField,arUsedKeys)
+        oPoint:Y := editGap * (liStart-1)
+        newControl := FixedText{self, (100 + liField), oPoint, oLabelDim, cField}
+        newControl:Show()
 
-    // Create Data control
-    liFieldLen := __GetFSDefaultLength(oDFField:FieldSpec)
+        // Create Data control
+        liFieldLen := __GetFSDefaultLength(oDFField:FieldSpec)
 
-    // get the new width first (we need that for BiDi)
-    do case
-    case cType=="L"
-    iNewWidth := 4*iFontWidth
-    case cType=="M"
-    iNewWidth := (maxFldSize+1)*iFontWidth
-    case cType=="O" .or. cType=="X"
-    iNewWidth := 300
-    case cType=="D" .and. lMCAvail
-    iNewWidth := 190
-    otherwise
-    if (cType == "C")
-    iNewWidth := Max(liFieldLen, 2) * iFontWidth
-    else
-    iNewWidth := (liFieldLen +1 ) * iFontWidth
-    endif
-    endcase
+        // get the new width first (we need that for BiDi)
+        switch cType
+        case  "L"
+            iNewWidth := 4*iFontWidth
+        case "M"
+            iNewWidth := (maxFldSize+1)*iFontWidth
+        case "O"
+        case "X"
+            iNewWidth := 300
+        case "D" when lMCAvail
+            iNewWidth := 190
+        otherwise
+            if (cType == "C")
+                iNewWidth := Max(liFieldLen, 2) * iFontWidth
+            else
+                iNewWidth := (liFieldLen +1 ) * iFontWidth
+            endif
+        end switch
 
     if (lBidi)
     // s.b. We have to add this otherwise the "C" type fields overlap the text captions.
-    oPoint:X := 20 + maxEditSize - Math.Min(iMaxWidth, iNewWidth)
+        oPoint:X := 20 + maxEditSize - Math.Min(iMaxWidth, iNewWidth)
     else
-    oPoint:X := 25 + maxLblSize
+        oPoint:X := 25 + maxLblSize
     endif
 
     oPoint:Y := editGap * (liStart-1)
 
-    do case
-    case cType=="L"
-    newControl := CheckBox{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, " ", BS_AUTOCHECKBOX}
-    case cType=="M"
-    liStart += 1
-    oPoint:Y := editGap * (liLines - liStart + 1)
-    newControl := MultiLineEdit{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight*2}, ES_AUTOVSCROLL}
+    switch cType
+    case  "L"
+        newControl := CheckBox{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, " ", BS_AUTOCHECKBOX}
+    case "M"
+        liStart += 1
+        oPoint:Y := editGap * (liLines - liStart + 1)
+        newControl := MultiLineEdit{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight*2}, ES_AUTOVSCROLL}
 #ifdef USE_OLEOBJECT
     case cType=="O"
     liStart += 6
@@ -273,19 +274,19 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
     oOle:ActivateOnDblClk:=  true
     oOle:AllowResize:=  true
 #endif
-    case cType=="X"
-    liStart += 6
-    oPoint:Y := editGap * (liLines - liStart + 1)
-    newControl := MultiMediaContainer{self, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}}
-    case cType=="D" .and. lMCAvail
-    newControl := DateTimePicker{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, DTS_LONGDATEFORMAT}
+    case "X"
+        liStart += 6
+        oPoint:Y := editGap * (liLines - liStart + 1)
+        newControl := MultiMediaContainer{self, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}}
+    case "D" when  lMCAvail
+        newControl := DateTimePicker{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, DTS_LONGDATEFORMAT}
     otherwise
-    if (iNewWidth < iMaxWidth)
-    newControl := SingleLineEdit{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}}
-    else
-    newControl := SingleLineEdit{self, 200+liField, oPoint, Dimension{iMaxWidth, editHeight}, ES_AUTOHSCROLL}
-    endif
-    endcase
+        if (iNewWidth < iMaxWidth)
+            newControl := SingleLineEdit{self, 200+liField, oPoint, Dimension{iNewWidth, editHeight}}
+        else
+            newControl := SingleLineEdit{self, 200+liField, oPoint, Dimension{iMaxWidth, editHeight}, ES_AUTOHSCROLL}
+        endif
+    end switch
     // Link the data editor to the Server
     newControl:LinkDF(oAttachedServer, liField)
     // Show it
@@ -335,16 +336,16 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
         else
             self:__UpdateCurrent()
             if !self:StatusOK()
-                if (sCurrentView == #FormView)
+                if (self:sCurrentView == #FormView)
                     if (oDCInvalidControl != null_object)
                         oTempStatus:=oHLStatus //Save status accross SetFocus
                         oDCInvalidControl:SetFocus()
                         oHLStatus := oTempStatus
                     endif
-                elseif (sCurrentView == #BrowseView)
+                elseif (self:sCurrentView == #BrowseView)
                     // Jump to error column for browse view
-                    if (oDCInvalidColumn != null_object) .and. IsMethod(oGBrowse, #SetColumnFocus)
-                        Send(oGBrowse, #SetColumnFocus, oDCInvalidColumn)
+                    if (oDCInvalidColumn != null_object) .and. oGBrowse is DataBrowser var oDBr
+                        oDBr:SetColumnFocus(oDCInvalidColumn)
                     endif
                 endif
             else
@@ -838,16 +839,16 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
     /// <exclude />
     method __VerifyDataServer(oDataServer as object) as logic strict
 
-        if oDataServer is string var strServer
-            oAttachedServer := CreateInstance(String2Symbol("DBServer"), strServer)
+        if oDataServer is DataServer var oDS
+            oAttachedServer := oDS
+        elseif oDataServer is string var strServer
+            oAttachedServer := CreateInstance(#DBServer, strServer)
             oAttachedServer:ConcurrencyControl := nCCMode
         elseif oDataServer is symbol var symServer
-            oAttachedServer := CreateInstance(String2Symbol("DBServer"), symServer)
+            oAttachedServer := CreateInstance(#DBServer, symServer)
             oAttachedServer:ConcurrencyControl := nCCMode
-        elseif oDataServer is DataServer var oDS
-            oAttachedServer := oDS
         elseif oDataServer is FileSpec var oFS
-            oAttachedServer := CreateInstance(String2Symbol("DBServer"), oFS)
+            oAttachedServer := CreateInstance(#DBServer, oFS)
             oAttachedServer:ConcurrencyControl := nCCMode
         else
             return false
@@ -856,7 +857,7 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
         if IsInstanceOf(oAttachedServer, #DBServer)
             //Use the Used access and not the Status access because the last
             //operation issued before the Use() method may have failed
-            if !IVarGet<logic>(oAttachedServer,#Used)
+            if !IVarGet(oAttachedServer,#Used)
                 oHLStatus := oAttachedServer:Status
                 if oHLStatus == null_object
                     oHLStatus := HyperLabel{#Use, , VO_Sprintf(__WCSDSNotOpen, AsString(oAttachedServer), IVarGet(IVarGet(oAttachedServer,#FileSpec),#FullPath))}
@@ -1822,9 +1823,9 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
             __DataForm:CreateSubForm(nResourceID,oDwOwner:ResourceDialog)
             oDwOwner:__RegisterSubForm(self)
         endif
-        if ( self:Background != null_object )
-            oSurface:BackColor := self:Background:Color
-        endif
+//         if ( self:Background != null_object )
+//             oSurface:BackColor := self:Background:Color
+//         endif
 
         //IF oContextMenu != NULL_OBJECT
         //	oSurface:ContextMenu   := oContextMenu:__Menu
@@ -2357,7 +2358,7 @@ class DataWindow inherit ChildAppWindow implements ILastFocus
         return lRetCode
 
     /// <include file="Gui.xml" path="doc/DataWindow.Show/*" />
-    method Show(nShowState as long)  as void
+    method Show(nShowState)  as void CLIPPER
 
         if lDeferUse .and. (oDeferUseServer != null_object)
             lDeferUse := false

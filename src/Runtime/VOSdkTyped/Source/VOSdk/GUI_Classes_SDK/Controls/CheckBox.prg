@@ -28,7 +28,7 @@ CLASS CheckBox INHERIT Button
 
 
     /// <exclude />
-    PROPERTY __CheckBox AS VOCheckBox GET (VOCheckBox ) oCtrl
+    property __CheckBox as VOCheckBox get (VOCheckBox) oCtrl
 
     METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
         IF oNewImage IS ButtonImageList

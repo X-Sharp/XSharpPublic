@@ -1412,7 +1412,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
     /// <include file="Gui.xml" path="doc/Control.Show/*" />
-    METHOD Show( ) AS VOID STRICT
+    METHOD Show( ) AS VOID CLIPPER
 
         IF (oCtrl == NULL_OBJECT)
             SELF:Create()

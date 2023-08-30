@@ -328,7 +328,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Show/*" />
-    METHOD Show(kShowState := SHOWCENTERED AS LONG ) AS VOID
+    method Show(kShowState) as void clipper
+        default(ref kShowState, SHOWCENTERED)
         IF bModal
             oWnd:StartPosition := SELF:__GetStartPosFromShowState(kShowState)
             SELF:ShowModal(TRUE)

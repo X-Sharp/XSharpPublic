@@ -90,17 +90,17 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 
 	PROTECT METHOD ActivateWinForm() AS VOID STRICT
 		//Todo ActivateWinForm
-		//PostMessage(SELF:form:Handle,WM_SETFOCUS,0,0)
-
-		//IF SELF:form:Controls:Count > 0
-
-		//	IF currentControl == NULL
-		//		currentControl := SELF:form:Controls[SELF:form:Controls:Count-1]
-		//	ENDIF
-
-		//	SELF:form:ActiveControl := currentControl
-
-		//ENDIF
+// 		PostMessage(self:form:Handle,WM_SETFOCUS,0,0)
+// 
+// 		if self:form:Controls:Count > 0
+// 
+// 		if currentControl == null
+// 			currentControl := self:form:Controls[self:form:Controls:Count-1]
+// 		endif
+// 
+// 		self:form:ActiveControl := currentControl
+// 
+// 		endif
 
 		RETURN
 

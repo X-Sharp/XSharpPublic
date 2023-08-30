@@ -106,7 +106,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
                 SUPER(NIL, FALSE)
             CASE ShellWindow
                 SUPER(oOwner, TRUE)
-            case oDW as DataWindow 
+            case oDW as DataWindow
                 super(oDW:__GetFormSurface())
             CASE ChildAppWindow
             CASE TopAppWindow
@@ -165,11 +165,9 @@ CLASS SplitWindow INHERIT ChildAppWindow
     METHOD SetPaneSize(oDimension AS Dimension, nPane AS LONG) AS VOID => oSplitView:SetPaneSize(oDimension, nPane)
 
     /// <include file="Gui.xml" path="doc/SplitWindow.Show/*" />
-    METHOD Show() AS VOID STRICT
-        SELF:Show(SW_NORMAL, -1)
-
-    /// <include file="Gui.xml" path="doc/SplitWindow.Show/*" />
-    METHOD Show(nShowState AS LONG, nPane AS LONG) AS VOID
+    method Show(nShowState, nPane ) as void clipper
+        default (ref nShowState, SW_NORMAL)
+        default (ref nPane, -1)
         SUPER:Show(nShowState)
         oSplitView:ShowPane(nPane)
         RETURN

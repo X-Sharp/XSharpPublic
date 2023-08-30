@@ -235,7 +235,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
         RETURN
 
     /// <include file="Gui.xml" path="doc/RadioButtonGroup.Show/*" />
-    METHOD Show()  AS VOID STRICT
+    METHOD Show()  AS VOID CLIPPER
         SUPER:Show()
         // No need to show the buttons. They are hidden with their parent
         RETURN

@@ -126,7 +126,7 @@ interface IGuiObject
     property NameSym	as symbol get
     property __Handle   as IntPtr get
     method   Destroy()	as usual
-    method   Show()     as void strict
+    method   Show()     as void clipper
     method   Hide()     as void strict
     method   SetFocus() as void strict
 

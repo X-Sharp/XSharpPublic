@@ -80,7 +80,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 		SELF:Margin         := SWF.Padding{0}
 		SELF:BorderStyle    := SWF.BorderStyle.None
 		SELF:SuppressMovingControls := TRUE
-		SELF:BackColor      := System.Drawing.Color.White
+		self:BackColor := System.Drawing.Color.Transparent
 
 
 	PROTECTED METHOD RegisterEventHandlers() AS VOID STRICT
@@ -334,7 +334,7 @@ CLASS VOSurfacePanel INHERIT VOPanel
 		SELF:TabIndex	:= 0
 		SELF:lShown := FALSE
 		SELF:AutoSizeMode := SWF.AutoSizeMode.GrowAndShrink
-		SELF:AutoSize     := TRUE
+        self:AutoSize     := true
 #ifdef XXDEBUG
         SELF:BackColor := System.Drawing.Color.Bisque
         SELF:Text        := "SurfacePanel"

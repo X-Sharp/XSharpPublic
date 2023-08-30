@@ -11,7 +11,8 @@ CLASS VOAppForm INHERIT VOForm
 
 	CONSTRUCTOR(oWindow AS Window)
 		SUPER(oWindow)
-		SELF:Text := "AppForm"
+        self:Text := "AppForm"
+        SELF:ShowInTaskbar := TRUE
 
 	METHOD __ResizeChild() AS VOID STRICT
 		IF SELF:Window != NULL_OBJECT

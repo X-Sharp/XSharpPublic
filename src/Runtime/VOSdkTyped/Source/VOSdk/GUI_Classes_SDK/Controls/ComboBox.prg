@@ -53,8 +53,8 @@ CLASS ComboBox INHERIT ListBox
     SET
 		LOCAL cCurrentText AS STRING
 		cCurrentText := SELF:__SetText(value)
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-			uValue := ((FieldSpec)SELF:FieldSpec):Val(cCurrentText)
+		if self:FieldSpec != null_object
+			uValue := SELF:FieldSpec:Val(cCurrentText)
 		ELSE
 			uValue := cCurrentText
 		ENDIF

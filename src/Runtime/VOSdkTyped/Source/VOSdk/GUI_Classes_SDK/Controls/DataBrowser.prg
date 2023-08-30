@@ -2383,7 +2383,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Show/*" />
-	METHOD Show() AS VOID STRICT
+	METHOD Show() AS VOID CLIPPER
 		IF oDataServer != NULL_OBJECT
 			IF !lIsShown
 				SELF:__BuildBuffer()

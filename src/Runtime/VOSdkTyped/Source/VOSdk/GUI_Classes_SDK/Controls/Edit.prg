@@ -435,7 +435,7 @@ CLASS SingleLineEdit INHERIT Edit
 					ENDIF
 					cNumText := StrTran(cNumText, " ", "")
 					uValue := Val(cNumText)
-				ELSEIF (IVarGet(oFieldSpec, #Nullable) == TRUE)
+				elseif oFieldSpec:Nullable == true
 					uValue := Unformat(cText, SELF:Picture, oEditString:Type+"0")
 				ELSE
 					uValue := Unformat(cText, SELF:Picture, oEditString:Type)

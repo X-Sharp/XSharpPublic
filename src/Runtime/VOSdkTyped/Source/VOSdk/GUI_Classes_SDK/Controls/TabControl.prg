@@ -713,7 +713,7 @@ CLASS TabControl INHERIT TextControl
 		RETURN SELF:AddTipText(symTabName, cText)
 
 /// <include file="Gui.xml" path="doc/TabControl.Show/*" />
-	METHOD Show() AS VOID STRICT
+	METHOD Show() AS VOID CLIPPER
 		SUPER:Show()
 		if oCurrentPage is Window var oWin
 			oWin:Show()

@@ -281,7 +281,7 @@ CLASS AppWindow INHERIT Window
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/AppWindow.Show/*" />
-    METHOD Show(nShowState AS LONG ) AS VOID
+    METHOD Show(nShowState) AS VOID CLIPPER
         IF oStatusBar != NULL_OBJECT
             oStatusBar:Show()
         ENDIF

@@ -107,7 +107,7 @@ CLASS ControlWindow INHERIT Window
         ENDIF
         RETURN
 
-    METHOD Show(nShowState AS LONG ) AS VOID
+    method Show() as void clipper
         oSurface:Show()
         RETURN
 

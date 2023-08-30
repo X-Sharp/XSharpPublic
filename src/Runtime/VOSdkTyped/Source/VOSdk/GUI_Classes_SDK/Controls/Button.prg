@@ -33,9 +33,9 @@ CLASS Button INHERIT TextControl
     PROPERTY __Button AS VOButton GET (VOButton) oCtrl
 
     /// <exclude />
-    METHOD __GetImage()  AS VObject
-        IF oImage is ButtonImageList
-            RETURN IVarGet(oImage,#Image)
+    METHOD __GetImage()  AS Object
+        if oImage is ButtonImageList var oBIL
+            return oBIL:Image
         ENDIF
         RETURN oImage
 

@@ -699,7 +699,7 @@ CLASS StatusBar INHERIT Control
         RETURN uValue
 
     /// <include file="Gui.xml" path="doc/StatusBar.Show/*" />
-    METHOD Show()  AS VOID STRICT
+    METHOD Show()  AS VOID CLIPPER
         SUPER:Show()
         SELF:RefreshMemoryDisplay()
         SELF:__UpdateKeyStates()

@@ -12,8 +12,7 @@ STATIC DEFINE __WCMdiFirstChildID := 0x8001
 /// <include file="Gui.xml" path="doc/ShellWindow/*" />
 CLASS ShellWindow INHERIT AppWindow
     PROTECT oWndClient	AS System.Windows.Forms.MdiClient
-    PROTECT lOpened		AS LOGIC
-    PROTECT oActualMenu	AS VOSDK.Menu
+    protect oActualMenu	as VOSDK.Menu
     PROTECT oSavedTB	AS VOSDK.ToolBar
 
     /// <include file="Gui.xml" path="doc/ShellWindow.EnableScrollBars/*" />
@@ -29,8 +28,7 @@ CLASS ShellWindow INHERIT AppWindow
     METHOD __CreateForm() AS VOForm STRICT
         LOCAL oShell AS VOShellForm
         oShell := GuiFactory.Instance:CreateShellWindow(SELF)
-        SELF:lOpened := TRUE
-        IF oApp != NULL_OBJECT
+        if oApp != null_object
             oApp:__WindowCount += 1
         ENDIF
         oShell:WindowState := System.Windows.Forms.FormWindowState.Maximized

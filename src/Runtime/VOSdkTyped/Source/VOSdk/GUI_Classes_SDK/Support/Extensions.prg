@@ -1,4 +1,9 @@
-﻿using SWF := System.Windows.Forms
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using SWF := System.Windows.Forms
 using System.Collections.Generic
 STATIC CLASS Extensions
     STATIC METHOD GetAllChildren(SELF oParent AS SWF.Control, addNested := FALSE AS LOGIC) AS List<SWF.Control>

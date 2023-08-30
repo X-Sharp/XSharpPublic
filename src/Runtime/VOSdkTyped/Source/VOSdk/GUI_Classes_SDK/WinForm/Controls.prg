@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Controls.prg
 // This file contains subclasses Windows.Forms controls that are used in the VO Compatible
 // Unicode GUI Classes
@@ -11,9 +17,9 @@ USING System.Drawing
 USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOButton INHERIT SWF.Button IMPLEMENTS IVoControl
+class VOButton inherit SWF.Button implements IVoControlProperties
+    #include "PropControlStyle.xh"
 
-	#include "PropControl.xh"
 #region Properties
     PROPERTY Button AS VOSDK.Button GET (VOSDK.Button) SELF:Control
 #endregion
@@ -35,11 +41,6 @@ CLASS VOButton INHERIT SWF.Button IMPLEMENTS IVoControl
 		SELF:SetVisualStyle()
 
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
 
 
 
@@ -53,8 +54,9 @@ CLASS VOButton INHERIT SWF.Button IMPLEMENTS IVoControl
 	END PROPERTY
 END CLASS
 
-CLASS VOCheckBox INHERIT SWF.CheckBox  IMPLEMENTS IVoControl
-	#include "PropControl.xh"
+class VOCheckBox inherit SWF.CheckBox  implements IVoControlProperties
+    #include "PropControl.xh"
+
 
 	METHOD Initialize() AS VOID STRICT
 			SELF:UseCompatibleTextRendering := FALSE
@@ -93,9 +95,9 @@ CLASS VOCheckBox INHERIT SWF.CheckBox  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VORadioButton INHERIT SWF.RadioButton  IMPLEMENTS IVoControl
+class VORadioButton inherit SWF.RadioButton  implements IVoControlProperties
+    #include "PropControl.xh"
 
-	#include "PropControl.xh"
 	PROPERTY SuppressCheckedChanged AS LOGIC AUTO := FALSE
 
 	METHOD Initialize() AS VOID STRICT
@@ -129,8 +131,8 @@ CLASS VORadioButton INHERIT SWF.RadioButton  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOGroupBox INHERIT SWF.GroupBox  IMPLEMENTS IVoControl
-	#include "PropControl.xh"
+class VOGroupBox inherit SWF.GroupBox  implements IVoControlProperties
+    #include "PropControlStyle.xh"
 	PROPERTY IsRadioGroup AS LOGIC AUTO
 	PROTECTED lFound AS LOGIC
 
@@ -158,12 +160,7 @@ CLASS VOGroupBox INHERIT SWF.GroupBox  IMPLEMENTS IVoControl
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-    METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-	METHOD OnWndProc(m REF Message) AS VOID
+	method OnWndProc(m ref Message) as void
 		IF (m:Msg == WM_NCHITTEST)
 			m:Result := (IntPtr)HTTRANSPARENT
 		ENDIF
@@ -210,9 +207,9 @@ CLASS VOGroupBox INHERIT SWF.GroupBox  IMPLEMENTS IVoControl
 						oLocChild  := oC:Location
 						IF oLocChild:X >= oLocParent:X .and. oLocChild:Y >= oLocParent:Y .and. oC:Width+oLocChild:X <= oLocParent:X+SELF:Width .and. oLocChild:Y + oC:Height <= oLocParent:Y+SELF:Height
 							oC:Location := System.Drawing.Point{oLocChild:X, oLocChild:Y + 5 + nOffset}
-							lWasMoved := TRUE
-							IF IsAccess(((OBJECT)oC), #Control) .AND. IsAssign(((OBJECT)oC):Control, #WasMoved)
-								((OBJECT)oC):Control:WasMoved := TRUE
+                            lWasMoved := true
+                            if oC is IVOControlProperties var oVOControl .and. IsAssign(oVOControl, #WasMoved)
+								IVarPut(oVOControl:Control,#WasMoved, true)
 							ENDIF
 						ENDIF
 					ENDIF
@@ -286,10 +283,10 @@ CLASS VOGroupBox INHERIT SWF.GroupBox  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOLabel INHERIT SWF.Label  IMPLEMENTS IVoControl
+class VOLabel inherit SWF.Label  implements  IVOControlProperties
+    #include "PropControlStyle.xh"
 
-	#include "PropControl.xh"
-	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
+	property FixedText as VOSDK.FixedText get (VOSDK.FixedText) oProperties:Control
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:Margin := Padding{0}
@@ -302,16 +299,9 @@ CLASS VOLabel INHERIT SWF.Label  IMPLEMENTS IVoControl
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 		SELF:ForeColor := System.Drawing.Color.Black
+end class
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-
-END CLASS
-
-CLASS VOOwnerDrawnLabel INHERIT VOLabel  IMPLEMENTS IVoControl
+class VOOwnerDrawnLabel inherit VOLabel  implements  IVOControlProperties, IVOControl
 	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
 	// No need to include because inherits from VOLabel
 
@@ -339,8 +329,7 @@ CLASS VOOwnerDrawnLabel INHERIT VOLabel  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOImageLabel INHERIT SWF.Label  IMPLEMENTS IVoControl
-	#include "PropControl.xh"
+class VOImageLabel inherit VOLabel  implements  IVOControlProperties
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:UseCompatibleTextRendering := FALSE
@@ -352,18 +341,12 @@ CLASS VOImageLabel INHERIT SWF.Label  IMPLEMENTS IVoControl
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-
 END CLASS
 
-CLASS VOLinkLabel INHERIT SWF.LinkLabel  IMPLEMENTS IVoControl
-	#include "PropControl.xh"
+class VOLinkLabel inherit SWF.LinkLabel  implements  IVOControlProperties
+        #include "PropControlStyle.xh"
 
-	METHOD Initialize() AS VOID STRICT
+	method Initialize() as void strict
 		SELF:UseCompatibleTextRendering := FALSE
 		RETURN
 
@@ -373,47 +356,32 @@ CLASS VOLinkLabel INHERIT SWF.LinkLabel  IMPLEMENTS IVoControl
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
 
 END CLASS
 
 
-CLASS VOProgressBar INHERIT SWF.ProgressBar  IMPLEMENTS IVoControl
+class VOProgressBar inherit SWF.ProgressBar  implements  IVOControlProperties
+        #include "PropControlStyle.xh"
 
-	#include "PropControl.xh"
-
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
-		SUPER()
+		super()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
 
 END CLASS
 
 
 
-CLASS VOHScrollBar INHERIT SWF.HScrollBar  IMPLEMENTS IVoControl
+class VOHScrollBar inherit SWF.HScrollBar  implements  IVOControlProperties
     PROPERTY ScrollBar AS ScrollBar GET (ScrollBar) SELF:Control
+    #include "PropControlStyle.xh"
 
-	#include "PropControl.xh"
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+	constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
     PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
 	    LOCAL oWindow AS Window
@@ -429,19 +397,14 @@ CLASS VOHScrollBar INHERIT SWF.HScrollBar  IMPLEMENTS IVoControl
 		RETURN
 END CLASS
 
-CLASS VOHSpinner INHERIT SWF.HScrollBar  IMPLEMENTS IVoControl
+class VOHSpinner inherit SWF.HScrollBar  implements  IVOControlProperties
     PROPERTY Spinner AS Spinner GET (Spinner) SELF:Control
+    #include "PropControlStyle.xh"
 
-	#include "PropControl.xh"
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
     PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
 	    LOCAL oWindow AS Window
@@ -458,21 +421,17 @@ CLASS VOHSpinner INHERIT SWF.HScrollBar  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOVScrollBar INHERIT SWF.VScrollBar  IMPLEMENTS IVoControl
-	#include "PropControl.xh"
-    PROPERTY ScrollBar AS ScrollBar GET (ScrollBar) SELF:Control
+class VOVScrollBar inherit SWF.VScrollBar  implements  IVOControlProperties
+        #include "PropControlStyle.xh"
+
+    property ScrollBar as ScrollBar get (ScrollBar) self:Control
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+    protected method OnValueChanged (e as EventArgs) as void
 	    LOCAL oWindow AS Window
 		LOCAL oEvent AS ScrollEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
@@ -487,21 +446,15 @@ CLASS VOVScrollBar INHERIT SWF.VScrollBar  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOVSpinner INHERIT SWF.NumericUpDown  IMPLEMENTS IVoControl
-	#include "PropControl.xh"
-    PROPERTY Spinner AS Spinner GET (Spinner) SELF:Control
+class VOVSpinner inherit SWF.NumericUpDown  implements  IVOControlProperties
+        #include "PropControlStyle.xh"
+
+    property Spinner as Spinner get (Spinner) self:Control
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-
 
 
     PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
@@ -519,21 +472,17 @@ CLASS VOVSpinner INHERIT SWF.NumericUpDown  IMPLEMENTS IVoControl
 END CLASS
 
 
-CLASS VOSlider INHERIT SWF.TrackBar
-	#include "PropControl.xh"
-    PROPERTY Slider AS Slider GET (Slider) SELF:Control
+class VOSlider inherit SWF.TrackBar  implements IVOControlProperties
+        #include "PropControlStyle.xh"
+
+    property Slider as Slider get (Slider) self:Control
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-    PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
+    protected method OnValueChanged (e as EventArgs) as void
 	    LOCAL oWindow AS Window
 		LOCAL oEvent AS SliderEvent
 		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
@@ -552,10 +501,10 @@ CLASS VOSlider INHERIT SWF.TrackBar
 
 END CLASS
 
-CLASS VOStatusBar INHERIT SWF.StatusStrip  IMPLEMENTS IVOControl
+class VOStatusBar inherit SWF.StatusStrip  implements IVOControlProperties
 	PRIVATE oTm AS SWF.Timer
-	#include "PropControl.xh"
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+    #include "PropControlStyle.xh"
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		oTm := SWF.Timer{}
 		oTm:Tick += Timer_Tick
@@ -563,13 +512,6 @@ CLASS VOStatusBar INHERIT SWF.StatusStrip  IMPLEMENTS IVOControl
 		oTm:Enabled := TRUE
 		SUPER()
 		SELF:SetVisualStyle()
-
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
 
 
 	VIRTUAL METHOD Timer_Tick(sender AS OBJECT, e AS System.EventArgs)  AS VOID
@@ -584,19 +526,12 @@ CLASS VOStatusBar INHERIT SWF.StatusStrip  IMPLEMENTS IVOControl
 
 END CLASS
 
-CLASS VODateTimePicker  INHERIT SWF.DateTimePicker
-	#include "PropControl.xh"
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+class VODateTimePicker  inherit SWF.DateTimePicker implements IVOControlProperties
+    #include "PropControlStyle.xh"
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
-
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
 
 
 	PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
@@ -616,9 +551,9 @@ CLASS VODateTimePicker  INHERIT SWF.DateTimePicker
 
 END CLASS
 
-CLASS VOMonthCalendar  INHERIT SWF.MonthCalendar
-	#include "PropControl.xh"
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
+class VOMonthCalendar  inherit SWF.MonthCalendar implements IVOControlProperties
+    #include "PropControlStyle.xh"
+	constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
 		SELF:SetVisualStyle()
@@ -626,11 +561,6 @@ CLASS VOMonthCalendar  INHERIT SWF.MonthCalendar
 		SELF:TitleBackColor := System.Drawing.Color.DimGray
 		SELF:TrailingForeColor := System.Drawing.Color.LightGray
 		SELF:TitleForeColor := System.Drawing.Color.White
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
 
 	PROTECTED METHOD OnDateChanged(e AS SWF.DateRangeEventArgs) AS VOID

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System.Diagnostics
@@ -24,20 +29,6 @@ CLASS Pair INHERIT VObject
     /// <value></value>
 	ACCESS Empty AS LOGIC
 		RETURN iInt1 == 0 .and. iInt2 == 0
-
-//   OPERATOR ==( lhs AS Pair, rhs AS Pair ) AS LOGIC
-//      RETURN lhs:Equals( rhs )
-
-//   OPERATOR !=( lhs AS Pair, rhs AS Pair ) AS LOGIC
-//      RETURN ! lhs:Equals( rhs )
-
-//	METHOD Equals( p AS Pair ) AS LOGIC
-//      LOCAL ret AS LOGIC
-//	  ret := (p:iInt1 == iInt1 .and. p:iInt2 == iInt2)
-//      RETURN ret
-
-//	METHOD Equals( p AS OBJECT ) AS LOGIC
-//      RETURN SELF:Equals( (Pair) p)
 
 	METHOD GetHashCode AS LONG STRICT
 		return iInt1:GetHashCode() + iInt2:GetHashCode()
@@ -122,11 +113,11 @@ CLASS Point INHERIT Pair
 	METHOD ConvertToScreen(oWindow AS OBJECT) AS LOGIC
 		LOCAL hWnd   AS PTR
 		LOCAL lOk AS LOGIC
-		IF IsInstanceOfUsual(oWindow, #Window)
-			hWnd    := oWindow:Handle(4)
+		if oWindow is Window var oWin
+			hWnd    := oWin:Handle(4)
 			lOk		:= SELF:ConvertToScreen(hWnd, TRUE)
-		ELSEIF IsInstanceOfUsual(oWindow, #Control)
-			hWnd    := oWindow:Handle()
+		elseif oWindow is Control var oC
+			hWnd    := oC:Handle()
 			lOk		:= SELF:ConvertToScreen(hWnd, FALSE)
 		ELSE
 			lOk := FALSE

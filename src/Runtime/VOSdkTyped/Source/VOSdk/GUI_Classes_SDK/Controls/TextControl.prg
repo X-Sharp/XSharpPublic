@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -202,7 +207,7 @@ CLASS TextControl INHERIT Control
 /// <include file="Gui.xml" path="doc/TextControl.EnableAutoComplete/*" />
 	METHOD EnableAutoComplete(dwFlags AS DWORD) AS VOID STRICT
 		// Todo: Implement EnableAutoComplete
-		//DEFAULT(@dwFlags,SHACF_DEFAULT)
+		//DEFAULT( REF dwFlags,SHACF_DEFAULT)
 		//RETURN ShellAutoComplete(SELF:handle(),dwFlags)
 		RETURN
 

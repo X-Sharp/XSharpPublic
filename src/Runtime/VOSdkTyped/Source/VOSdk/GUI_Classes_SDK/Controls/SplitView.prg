@@ -1,4 +1,9 @@
-﻿USING System.Collections.Generic
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using System.Collections.Generic
 
 
 CLASS SplitView INHERIT Control
@@ -202,9 +207,9 @@ CLASS SplitView INHERIT Control
 		ENDIF
 		oWin := oOwner
 
-        DEFAULT(@lHorizontalDrag, FALSE)
-        DEFAULT(@lVerticalDrag , FALSE)
-        DEFAULT(@kAlignment, SPLIT_VERTALIGN)
+        DEFAULT( REF lHorizontalDrag, FALSE)
+        DEFAULT( REF lVerticalDrag , FALSE)
+        DEFAULT( REF kAlignment, SPLIT_VERTALIGN)
 
         SELF:HorizontalDrag    := lHorizontalDrag
         SELF:VerticalDrag      := lVerticalDrag

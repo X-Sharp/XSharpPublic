@@ -1,15 +1,18 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING VOSDK := XSharp.VO.SDK
 
 /// <include file="Gui.xml" path="doc/OpenDialog/*" />
 CLASS OpenDialog INHERIT StandardFileDialog
-
-    PROTECT oOpen AS System.Windows.Forms.OpenFileDialog
+    protect oOpen as System.Windows.Forms.OpenFileDialog
 
     /// <include file="Gui.xml" path="doc/OpenDialog.ctor/*" />
-    CONSTRUCTOR(oOwnWnd,cInitPath)
-        SUPER(oOwnWnd,cInitPath)
+    constructor(oOwnWnd := null as Window, cInitPath := "" as string) strict
+        super(oOwnWnd,cInitPath)
         oDlg := oOpen := System.Windows.Forms.OpenFileDialog{}
 
         IsOpen := TRUE
@@ -37,29 +40,19 @@ END CLASS
 CLASS PaletteDialog INHERIT StandardColorDialog
 
     /// <include file="Gui.xml" path="doc/PaletteDialog.ctor/*" />
-    CONSTRUCTOR(uOwner,oColor)
-        IF !IsNil(uOwner)
-            IF !IsInstanceOfUsual(uOwner,#Window)
-                WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:Throw()
-            ENDIF
-        ENDIF
-        SUPER(oColor)
-
-        IF IsInstanceOfUsual(uOwner, #Window)
-            SELF:oOwner := uOwner
-        ENDIF
-        RETURN
+    constructor(uOwner := null as Window,oColor := null as Color)
+        super(oColor)
+        self:oOwner := uOwner
+        return
 
 END CLASS
 
 /// <include file="Gui.xml" path="doc/SaveAsDialog/*" />
 CLASS SaveAsDialog INHERIT StandardFileDialog
-
-
     PROTECT oSave AS System.Windows.Forms.SaveFileDialog
 
     /// <include file="Gui.xml" path="doc/SaveAsDialog.ctor/*" />
-    CONSTRUCTOR(oOwnWnd, cInitPath)
+    constructor(oOwnWnd:= null as Window, cInitPath := "" as string)
         SUPER(oOwnWnd,cInitPath)
         oDlg := oSave := System.Windows.Forms.SaveFileDialog{}
         SELF:IsOpen := FALSE
@@ -81,18 +74,10 @@ END CLASS
 CLASS SelectDialog INHERIT StandardColorDialog
 
     /// <include file="Gui.xml" path="doc/SelectDialog.ctor/*" />
-    CONSTRUCTOR(uOwner := NIL AS USUAL,oColor := NULL AS OBJECT)
-        IF !IsNil(uOwner)
-            IF !IsInstanceOfUsual(uOwner,#Window)
-                WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:Throw()
-            ENDIF
-        ENDIF
-        SUPER(oColor)
-
-        IF IsInstanceOfUsual(uOwner, #Window)
-            SELF:oOwner := uOwner
-        ENDIF
-        RETURN
+    constructor(uOwner := null as Window,oColor := null as Color)
+        super(oColor)
+        self:oOwner := uOwner
+        return
 
 END CLASS
 
@@ -118,18 +103,13 @@ CLASS StandardColorDialog INHERIT StandardDialog
         //RETURN SELF
 
     /// <include file="Gui.xml" path="doc/StandardColorDialog.ctor/*" />
-    CONSTRUCTOR(oColor)
-        SUPER()
-        oDefColor := Color{COLORBLACK}
-
-        IF !IsNil(oColor)
-            IF !IsInstanceOfUsual(oColor,#Color)
-                WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:Throw()
-            ENDIF
-            oDefColor := oColor
-        ENDIF
-
-        RETURN
+    constructor(oColor := null as Color)
+        if oColor == null
+            oColor := Color{COLORBLACK}
+        endif
+        super()
+        oDefColor := oColor
+        return
 
     /// <include file="Gui.xml" path="doc/StandardColorDialog.Show/*" />
     METHOD Show() AS LOGIC STRICT
@@ -256,16 +236,8 @@ CLASS StandardFileDialog INHERIT StandardDialog
         RETURN
 
     /// <include file="Gui.xml" path="doc/StandardFileDialog.ctor/*" />
-    CONSTRUCTOR() STRICT
-        SELF(NULL_OBJECT,"")
-
-    /// <include file="Gui.xml" path="doc/StandardFileDialog.ctor/*" />
-    CONSTRUCTOR(uOwner as Window) STRICT
-        SELF(uOwner, "")
-
-    /// <include file="Gui.xml" path="doc/StandardFileDialog.ctor/*" />
-    CONSTRUCTOR(uOwner as Window, cInitPath AS STRING) STRICT
-        SUPER()
+    constructor(uOwner := null as Window, cInitPath := "" as string) strict
+        super()
         SELF:cInitPath := cInitPath
         IsOpen := FALSE
 
@@ -431,9 +403,9 @@ CLASS StandardFolderDialog INHERIT StandardDialog
     /// <include file="Gui.xml" path="doc/StandardFolderDialog.ctor/*" />
     CONSTRUCTOR(oOwner, sCaption, sStartFolder, kType)
         SUPER()
-        Default(@kType, BIF_RETURNONLYFSDIRS)
-        Default(@sCaption, "Browser Folder")
-        Default(@sStartFolder, "")
+        DEFAULT( REF kType, BIF_RETURNONLYFSDIRS)
+        DEFAULT( REF sCaption, "Browser Folder")
+        DEFAULT( REF sStartFolder, "")
 
 
         IF IsInstanceOf(oOwner, #Window)

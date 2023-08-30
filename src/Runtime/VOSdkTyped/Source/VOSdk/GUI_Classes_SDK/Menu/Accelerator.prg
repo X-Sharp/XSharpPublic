@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System.Collections.Generic
@@ -175,7 +180,8 @@ CLASS Accelerator INHERIT VObject
     /// <include file="Gui.xml" path="doc/Accelerator.ctor/*" />
     CONSTRUCTOR(xResourceID AS USUAL)
         LOCAL hInst AS PTR
-        LOCAL lpTableName AS PTR
+        local lpTableName as ptr
+        local oResourceId as ResourceId
 
         SUPER()
 
@@ -196,9 +202,9 @@ CLASS Accelerator INHERIT VObject
         ENDIF
 
         aKeys := NULL_OBJECT
-
-        hInst := xResourceID:Handle()
-        lpTableName := xResourceID:Address()
+        oResourceId := xResourceID
+        hInst := oResourceId:Handle()
+        lpTableName := oResourceId:Address()
 
         hAccel := GuiWin32.LoadAccelerators(hInst, lpTableName)
 

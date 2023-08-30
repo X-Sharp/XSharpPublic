@@ -1,5 +1,8 @@
-
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 using System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
@@ -91,9 +94,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
     PROPERTY __IsValid AS LOGIC GET SELF:oWnd != NULL_OBJECT .and. ! SELF:oWnd:IsDisposed
 
-    PROPERTY __HasSurface AS LOGIC GET SELF:__Surface != oWnd
+    property __HasSurface as logic get self:__Surface != null
 
-    PROPERTY __Surface AS IVOControlContainer
+    property __Surface as IVOPanel
         GET
             IF SELF:__IsValid
                 LOCAL IMPLIED aList := oWnd:GetAllControls()
@@ -103,11 +106,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
                     ENDIF
                 NEXT
             ENDIF
-            RETURN oWnd
+            return null
         END GET
     END PROPERTY
     METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
-        RETURN
+        return
+    method __AddControl (oCtrl as IVOControl) as void
+        return
     /// <exclude />
     METHOD __AddAlign(oControl AS IGUIObject, iType AS USUAL) AS LOGIC STRICT
         LOCAL dwI, dwCount AS DWORD
@@ -279,7 +284,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             RETURN  SELF
         ENDIF
 
-        oRect   := SELF:__Surface:ClientRectangle
+        oRect   := self:__Surface:ClientRectangle
         iWinWidth  := oRect:Width
         iWinHeight := oRect:Height
 
@@ -460,7 +465,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     /// <exclude />
     METHOD __CommandFromEvent(oEvent AS INamedEvent) AS LOGIC STRICT
         LOCAL symNameSym AS SYMBOL
-        LOCAL oWindow AS OBJECT
+        local oWindow as Window
         LOCAL oReport AS OBJECT
         LOCAL o AS OBJECT
 
@@ -487,17 +492,17 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         ENDDO
 
         IF IsClassOf(symNameSym, #Window)
-            IF IsInstanceOf(SELF, #ChildAppWindow)
+            if self is ChildAppWindow var oChild
                 oWindow:=SELF
                 DO WHILE IsInstanceOf(oWindow:Owner, #Window)
                     oWindow:=IVarGet(oWindow,#Owner)
                 ENDDO
                 o := CreateInstance(symNameSym, oWindow)
-                o:show()
+                Send(o,#show)
                 // (CreateInstance(symNameSym, oWindow)):Show()
             ELSE
                 o := CreateInstance(symNameSym, SELF)
-                o:Show()
+                Send(o,#Show)
             ENDIF
             RETURN TRUE
         ELSEIF IsClassOf(symNameSym, #ReportQueue)
@@ -975,7 +980,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <exclude />
-    METHOD __ProcessHelpCursor(oWin AS OBJECT, wArea AS LONGINT) AS LOGIC STRICT
+    method __ProcessHelpCursor(oWin as Window, wArea as longint) as logic strict
         LOCAL liTemp AS LONGINT
         LOCAL hTemp AS PTR
 
@@ -1109,20 +1114,16 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <exclude />
-    METHOD __UpdateTrayIcon(dwNIM,oIcon,dwID,sToolTip)
-
-        DEFAULT(@dwID, 1)
-        DEFAULT(@sToolTip,"")
-        DEFAULT(@oIcon,NULL_OBJECT)
+    method __UpdateTrayIcon(dwNIM as dword,oIcon as VOTrayIcon,dwID as dword,sToolTip as string)
 
         IF oTrayIcon == NULL_OBJECT
             oTrayIcon:= VOTrayIcon{SELF, dwID}
 	    ENDIF
-        oIcon:Text := sToolTip
+        oTrayIcon:Text := sToolTip
         IF oIcon != NULL_OBJECT
-            oTrayIcon:Image := ((Icon) oIcon)
+            oTrayIcon:Image := oIcon:Image
         ENDIF
-        oIcon:Show()
+        oTrayIcon:Show()
         RETURN 	SELF
 
     /// <include file="Gui.xml" path="doc/Window.Accelerator/*" />
@@ -1199,7 +1200,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
         oBackground := value
         IF oBackGround != NULL_OBJECT .and. oBackground:Color != NULL_OBJECT
-            SELF:__Surface:BackColor := 	oBackground:Color
+            self:__Surface:BackColor := 	oBackground:Color
         ELSE
             // Need to add a paint handler
                 NOP
@@ -1852,8 +1853,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             NEXT
         ENDIF
         // Add all subwindows on the surface
-        IF SELF:__Surface != NULL_OBJECT
-            FOREACH VAR control IN SELF:__Surface:Controls
+        if self:__Surface != null_object
+            foreach var control in self:__Surface:Controls
                 IF control IS VOForm
                     LOCAL oVoForm AS VOForm
                     oVoForm := (VOForm)  control
@@ -2272,7 +2273,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     PROPERTY MinSize AS Dimension GET oMinSize SET oMinSize := Value
 
     /// <include file="Gui.xml" path="doc/Window.ModifyTrayIcon/*" />
-    METHOD ModifyTrayIcon(oTrayIcon, dwID, sToolTip) AS USUAL
+    method ModifyTrayIcon(oTrayIcon as VOTrayIcon, dwID as dword, sToolTip as string) as usual
         //PP-030902
         RETURN SELF:__UpdateTrayIcon(NIM_MODIFY,oTrayIcon,dwID,sToolTip)
 
@@ -2721,7 +2722,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     /// <include file="Gui.xml" path="doc/Window.SetBackgroundBrush/*" />
     METHOD SetBackgroundBrush(dwNew := COLOR_BTNSHADOW AS DWORD) AS USUAL
         // TOdo SetBackgroundBrush
-        //Default(@dwNew,COLOR_3DSHADOW)
+        //DEFAULT( REF dwNew,COLOR_3DSHADOW)
 
         //SetClassLong(SELF:handle(), GCL_HBRBACKGROUND, dwNew)
         RETURN SELF
@@ -2879,18 +2880,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
     /// <include file="Gui.xml" path="doc/Window.ShowBalloonTrayTip/*" />
 
-    METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo) AS USUAL
-        DEFAULT(@dwID,1)
-        DEFAULT(@sHeading,"")
-        DEFAULT(@sToolTip,"")
-        DEFAULT(@dwInfo,NIIF_NONE)
-        DEFAULT(@oTrayIcon,NULL_OBJECT)
-        DEFAULT(@dwTimeOut,10000)
-
-        IF oTrayIcon == NULL_OBJECT
+    method ShowBalloonTrayTip(oTrayIcon as VOTrayIcon,dwID := 1 as dword,sHeading := "" as string,sToolTip := "" as string,dwTimeOut := 1000 as long,dwInfo := NIIF_NONE as long) as usual
+        if oTrayIcon == null_object
             SELF:__UpdateTrayIcon(0, oTrayIcon, dwID, sToolTip)
         ENDIF
-        IF oTrayIcon != NULL_OBJECT
+        if oTrayIcon != null_object
             oTrayIcon:ShowBalloonTip(dwTimeOut, sHeading, sToolTip, dwInfo)
         ENDIF
         RETURN NIL

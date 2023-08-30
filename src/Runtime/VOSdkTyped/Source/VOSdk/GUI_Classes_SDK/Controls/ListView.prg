@@ -1,4 +1,9 @@
-USING System.Collections.Generic
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using System.Collections.Generic
 USING System.Diagnostics
 USING System.Collections
 USING System.Reflection
@@ -75,8 +80,9 @@ CLASS ListView INHERIT TextControl
 	/// <exclude  />
 	METHOD __GetItemAtIndex(nIndex AS LONG) AS ListViewItem
 		IF SELF:__IsValid
-			IF nIndex > 0 .and. nIndex <= __ListView:Items:Count
-				RETURN __ListView:Items[nIndex-1]:Tag
+            if nIndex > 0 .and. nIndex <= __ListView:Items:Count
+                var oItem := (VOListViewItem) __ListView:Items[nIndex-1]
+				return oItem:Tag
 			ENDIF
 		ENDIF
 		RETURN NULL_OBJECT
@@ -97,15 +103,16 @@ CLASS ListView INHERIT TextControl
 	/// <exclude  />
 	METHOD __GetColumnFromIndex(nColumn AS LONG) AS ListViewColumn
 		IF SELF:__IsValid
-			IF nColumn <= SELF:__ListView:Columns:Count .and. nColumn > 0
-				RETURN SELF:__ListView:Columns[nColumn-1]:Tag
+            if nColumn <= self:__ListView:Columns:Count .and. nColumn > 0
+                var oItem := (VOListViewItem) self:__ListView:Columns[nColumn-1]
+				return oItem:Tag
 			ENDIF
 		ENDIF
 		RETURN NULL_OBJECT
 
 	/// <exclude  />
 	METHOD __GetColumnIndexFromSymbol(symColumnName AS SYMBOL) AS DWORD STRICT
-		FOREACH IMPLIED oCol IN __ListView:Columns
+		foreach oCol as VOColumnHeader in __ListView:Columns
 			LOCAL oColumn AS ListViewColumn
 			oColumn := oCol:Tag
 			IF (oColumn:NameSym == symColumnName)
@@ -195,15 +202,12 @@ CLASS ListView INHERIT TextControl
 		RETURN SELF:InsertColumn(oListViewColumn)
 
 /// <include file="Gui.xml" path="doc/ListView.AddGroup/*" />
-	METHOD AddGroup(iGroupId,cGroupName,dwAlign)
+	method AddGroup(iGroupId as long,cGroupName as string ,dwAlign := 0 as dword)
 		// iGroupId is stored in the Tag
-		LOCAL oGroup AS Swf.ListViewGroup
-		oGroup := Swf.ListViewGroup{(STRING) cGroupName}
-		oGroup:Tag := (LONG) iGroupId
-		IF ! IsNil(dwAlign)
-			oGroup:HeaderAlignment := (	System.Windows.Forms.HorizontalAlignment) dwAlign
-		ENDIF
-		IF SELF:__IsValid
+        var oGroup := Swf.ListViewGroup{cGroupName}
+        oGroup:Tag := iGroupId
+		oGroup:HeaderAlignment := (	System.Windows.Forms.HorizontalAlignment) dwAlign
+		if self:__IsValid
 			__ListView:Groups:Add(oGroup)
 			RETURN TRUE
 		ENDIF
@@ -257,7 +261,7 @@ CLASS ListView INHERIT TextControl
 		LOCAL aRet := {} AS ARRAY
 		IF SELF:__IsValid
 			aRet := ArrayNew(__ListView:Columns:Count)
-			FOREACH IMPLIED oHeader IN __ListView:Columns
+			foreach oHeader as VOColumnHeader in __ListView:Columns
 				aRet[oHeader:Index+1] := oHeader:DisplayIndex+1
 			NEXT
 		ENDIF
@@ -267,7 +271,7 @@ CLASS ListView INHERIT TextControl
 	ASSIGN ColumnOrderArray(aNew AS ARRAY)
 		IF SELF:__IsValid
 			IF ALen(aNew) == __ListView:Columns:Count
-				FOREACH IMPLIED oHeader IN __ListView:Columns
+				foreach oHeader as VOColumnHeader in __ListView:Columns
 					oHeader:DisplayIndex := aNew[oHeader:Index+1] -1
 				NEXT
 			ENDIF
@@ -363,12 +367,12 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.DeleteItem/*" />
 	METHOD DeleteItem(nItem AS LONG)
-		LOCAL IMPLIED oItem := __ListView:Items[nItem-1]
+		var oItem := (VOListViewItem) __ListView:Items[nItem-1]
 		LOCAL oWindow AS Window
 		IF SELF:__IsValid
 			IF oItem != NULL_OBJECT
 				oWindow := (Window) SELF:Owner
-				oWindow:ListViewItemDelete( ListViewDeleteEvent{SELF, oItem:Tag})
+				oWindow:ListViewItemDelete( ListViewDeleteEvent{self, oItem:Item})
 				__ListView:Items:Remove(oItem)
 			ENDIF
 		ENDIF
@@ -392,8 +396,9 @@ CLASS ListView INHERIT TextControl
 	METHOD EditItemLabel(nItem AS LONG)
 		SELF:SetFocus()
 		IF SELF:__IsValid
-			IF nItem > 0 .and. nItem <= __ListView:Items:Count
-				__ListView:Items[nItem]:BeginEdit()
+            if nItem > 0 .and. nItem <= __ListView:Items:Count
+                var item := (VOListViewItem) __ListView:Items[nItem]
+                item:BeginEdit()
 			ENDIF
 		ENDIF
 		RETURN NIL
@@ -415,9 +420,10 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.EnsureVisible/*" />
 	METHOD EnsureVisible(nItem AS LONG, lPartiallyVisible := FALSE AS LOGIC) AS LOGIC
-		IF SELF:__IsValid .and. nItem > 0 .and. nItem <= __ListView:Items:Count
-			__ListView:Items[nItem-1]:EnsureVisible()
-			RETURN TRUE
+        if self:__IsValid .and. nItem > 0 .and. nItem <= __ListView:Items:Count
+            var oItem := (VOListViewItem)__ListView:Items[nItem-1]
+            oItem:EnsureVisible()
+			return true
 		ENDIF
 		RETURN FALSE
 
@@ -466,8 +472,9 @@ CLASS ListView INHERIT TextControl
 			ELSEIF IsLong(xColumnID)
 				dwIndex := xColumnID
 			ENDIF
-			IF dwIndex > 0
-				RETURN __ListView:Columns[(LONG) dwIndex-1]:Tag
+            if dwIndex > 0
+                var oItem := (VOColumnHeader) __ListView:Columns[(long) dwIndex-1]
+				return oItem:Tag
 			ENDIF
 		ENDIF
 		RETURN NULL_OBJECT
@@ -523,7 +530,7 @@ CLASS ListView INHERIT TextControl
 				oListViewItem := ListViewItem{oLvItem}
 
 				nIndex  := 0
-				FOREACH IMPLIED oSubItem IN oLvItem:SubItems
+				foreach oSubItem as Swf.ListViewItem.ListViewSubItem in oLvItem:SubItems
 					++nIndex
 					oListViewColumn := SELF:__GetColumnFromIndex(nIndex)
 					oListViewItem:SetText(oSubItem:Text, oListViewColumn:NameSym)
@@ -554,7 +561,7 @@ CLASS ListView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/ListView.GetItemSpacing/*" />
 	METHOD GetItemSpacing(symView)
 
-		Default(@symView, #IconView)
+		Default(ref symView, #IconView)
 
 		// this only works for IconView and SmallIconView
 		IF symView == #IconView
@@ -571,10 +578,10 @@ CLASS ListView INHERIT TextControl
 		LOCAL nFoundItem AS INT
 		LOCAL oListViewItem AS ListViewItem
 		// handle default values
-		Default(@lDisabled, FALSE)
-		Default(@lDropTarget, FALSE)
-		Default(@lFocused, FALSE)
-		Default(@lSelected, FALSE)
+		Default(ref lDisabled, false)
+		Default(ref lDropTarget, false)
+		Default(ref lFocused, false)
+		Default(ref lSelected, false)
 
 		// create state argument
 		IF lDisabled
@@ -603,8 +610,9 @@ CLASS ListView INHERIT TextControl
 
 		dwState := _OR(dwState, DWORD(kRelationship))
 		nFoundItem := ListView_GetNextItem(SELF:Handle(), nItemStart, WORD(_CAST, dwState))
-		IF (nFoundItem != -1)
-			oListViewItem := __ListView:Items[nFoundItem]:Tag
+        if (nFoundItem != -1)
+            var oItem := (VOListViewItem) __ListView:Items[nFoundItem]
+			oListViewItem := oItem:Tag
 		ENDIF
 
 		RETURN oListViewItem
@@ -615,8 +623,9 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.GetSelectedItem/*" />
 	METHOD GetSelectedItem() AS ListViewItem
-		IF __ListView:SelectedItems:Count > 0
-			RETURN __ListView:SelectedItems[0]:Tag
+        if __ListView:SelectedItems:Count > 0
+            var oItem := (VOListViewItem)  __ListView:SelectedItems[0]
+			return oItem:Tag
 		ENDIF
 		RETURN NULL_OBJECT
 /// <include file="Gui.xml" path="doc/ListView.GridLines/*" />
@@ -631,8 +640,8 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.HasGroup/*" />
 	METHOD HasGroup(iGroupId AS LONG)
-		FOREACH IMPLIED oGroup IN __ListView:Groups
-			IF (LONG) oGroup:Tag == iGroupId
+        foreach oGroup as Swf.ListViewGroup in __ListView:Groups
+			if  (int) oGroup:Tag == iGroupId
 				RETURN TRUE
 			ENDIF
 		NEXT
@@ -684,7 +693,7 @@ CLASS ListView INHERIT TextControl
 			 __ListView:Items:Insert(nInsertAfter,iListViewItem:SWFItem)
 		ENDIF
 		FOR dwIndex := 1 TO __ListView:Columns:Count
-			LOCAL IMPLIED oCol := __ListView:Columns[dwIndex-1]
+			var  oCol := (VOColumnHeader) __ListView:Columns[dwIndex-1]
 			oListViewColumn := oCol:Tag
 			cCaption        := oListViewItem:GetText(oListViewColumn:NameSym)
 			IF String.IsNullOrEmpty(cCaption)
@@ -696,8 +705,9 @@ CLASS ListView INHERIT TextControl
 			IF iListViewItem:SubItems:Count < dwIndex
                 VAR subItem := System.Windows.Forms.ListViewItem.ListViewSubItem{iListViewItem:SWFItem, cCaption}
 				iListViewItem:SubItems:Add(subItem)
-			ELSE
-				iListViewItem:SubItems[dwIndex-1]:Text := cCaption
+            else
+                var subItem := (Swf.ListViewItem.ListViewSubItem )  iListViewItem:SubItems[dwIndex-1]
+                subItem:Text := cCaption
 			ENDIF
 		NEXT
 		iListViewItem:Tag := oListViewItem
@@ -733,7 +743,7 @@ CLASS ListView INHERIT TextControl
 	PROPERTY  LargeImageList  as ImageList GET ImageList{__ListView:LargeImageList} SET __ListView:LargeImageList := value
 
 /// <include file="Gui.xml" path="doc/ListView.RedrawRange/*" />
-	METHOD RedrawRange(oRange)
+	method RedrawRange(oRange as Range) as logic
 		RETURN LOGIC(_CAST, ListView_RedrawItems(SELF:Handle(), oRange:Min, oRange:Max))
 
 /// <include file="Gui.xml" path="doc/ListView.RemoveAllGroups/*" />
@@ -743,7 +753,7 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.RemoveGroup/*" />
 	METHOD RemoveGroup(iGroupId AS LONG)  AS LOGIC
-		FOREACH IMPLIED oGroup IN __ListView:Groups
+		foreach oGroup as Swf.ListViewGroup in __ListView:Groups
 			IF (LONG) oGroup:Tag == iGroupId
 				__ListView:Groups:Remove(oGroup)
 				RETURN TRUE
@@ -752,7 +762,7 @@ CLASS ListView INHERIT TextControl
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/ListView.Scroll/*" />
-	METHOD Scroll(oDimension)
+	method Scroll(oDimension as Dimension)
 
 		RETURN LOGIC(_CAST, ListView_Scroll(SELF:Handle(), oDimension:Width, -oDimension:Height))
 
@@ -788,7 +798,7 @@ CLASS ListView INHERIT TextControl
 		// find the item closest to the given point
 		IF IsInstanceOfUsual(uValue, #Point)
 			// kSeekType is a usual
-			Default(@kSeekType, LV_SEEKDOWN)
+			Default(ref kSeekType, LV_SEEKDOWN)
 
 			IF kSeekType == LV_SEEKUP
 				nDir := System.Windows.Forms.SearchDirectionHint.Up
@@ -803,10 +813,10 @@ CLASS ListView INHERIT TextControl
 
 
 			// set wrap-around (off by default)
-			Default(@lWrap, FALSE)
+			Default(ref lWrap, false)
 
 			// set exact search (on by default)
-			Default(@lPartial, FALSE)
+			Default(ref lPartial, false)
 
 			// do the seek
 			oLVI := __ListView:FindItemWithText((STRING) uValue, FALSE, 0, lPartial)
@@ -814,7 +824,7 @@ CLASS ListView INHERIT TextControl
 			// uValue is the associated usual value, so a usual seek is in order
 
 			// set wrap-around (off by default)
-			Default(@lWrap, FALSE)
+			Default(ref lWrap, false)
 		ENDIF
 		IF oLVI != NULL_OBJECT
 			oLVI:EnsureVisible()
@@ -867,19 +877,19 @@ CLASS ListView INHERIT TextControl
 	//DO CASE
 	//CASE IsObject(uImage)
 	//	hImage := uImage:handle()
-	//	Default(@dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
+	//	DEFAULT( REF dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
 	//CASE IsPtr(uImage)
 	//	hImage := uImage
-	//	Default(@dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
+	//	DEFAULT( REF dwFlags,_OR(LVBKIF_SOURCE_HBITMAP,LVBKIF_STYLE_TILE))
 	//CASE IsString(uImage)
 	//	cURL := uImage
-	//	Default(@dwFlags,_OR(LVBKIF_SOURCE_URL,LVBKIF_STYLE_TILE))
+	//	DEFAULT( REF dwFlags,_OR(LVBKIF_SOURCE_URL,LVBKIF_STYLE_TILE))
 	//	CASE IsNil(uImage)
-	//	Default(@dwFlags,LVBKIF_SOURCE_NONE)
+	//	DEFAULT( REF dwFlags,LVBKIF_SOURCE_NONE)
 	//ENDCASE
 
-	//Default(@xOffSet,0)
-	//Default(@yOffSet,0)
+	//DEFAULT( REF xOffSet,0)
+	//DEFAULT( REF yOffSet,0)
 
 	//pLVBKI:ulFlags := dwFlags
 	//// _or(LVBKIF_TYPE_WATERMARK,LVBKIF_STYLE_NORMAL,LVBKIF_SOURCE_NONE)
@@ -918,10 +928,10 @@ CLASS ListView INHERIT TextControl
 
 	//// HDF_CENTER/HDF_LEFT/HDF_RIGHT, HDF_BITMAP/HDF_BITMAP_ON_RIGHT, HDF_SORTDOWN/HDF_SORTUP
 	//// HDF_SORTDOWN/HDF_SORTUP require XP visual styles
-	//Default(@dwFlag,0)
+	//DEFAULT( REF dwFlag,0)
 
 	//// image list index
-	//Default(@nImage,0)
+	//DEFAULT( REF nImage,0)
 
 	//pHeader := PTR(_CAST,SendMessage(SELF:handle(), LVM_GETHEADER, 0,0))
 	//pItem:mask := _OR(HDI_IMAGE,HDI_FORMAT)
@@ -954,7 +964,7 @@ CLASS ListView INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/ListView.SetGroupName/*" />
 	METHOD SetGroupName(iGroupId AS LONG,cGroupName AS STRING,dwAlign := -1 AS LONG) as LOGIC
-		FOREACH IMPLIED oGroup IN __ListView:Groups
+		foreach oGroup as Swf.ListViewGroup in __ListView:Groups
 			IF (LONG) oGroup:Tag == iGroupId
 				oGroup:Name := cGroupName
 				IF dwAlign != -1
@@ -986,7 +996,7 @@ CLASS ListView INHERIT TextControl
 		IF oListViewItem != NULL_OBJECT
 			oLvItem := oListViewItem:__ListViewItem
 			nIndex  := 0
-			FOREACH IMPLIED oSubItem IN oLvItem:SubItems
+			foreach oSubItem as Swf.ListViewItem.ListViewSubItem  in oLvItem:SubItems
 				++nIndex
 				oListViewColumn := SELF:__GetColumnFromIndex(nIndex)
 				oSubItem:Text := oListViewItem:GetText(oListViewColumn:NameSym)
@@ -1003,7 +1013,7 @@ CLASS ListView INHERIT TextControl
 			oListViewItem := uLVI
 		ENDIF
 		IF oListViewItem != NULL_OBJECT
-			FOREACH IMPLIED oG IN SELF:__ListView:Groups
+			foreach  oG as Swf.ListViewGroup in self:__ListView:Groups
 				IF (LONG) oG:Tag == nId
 					oListViewItem:__ListViewItem:Group :=  oG
 					RETURN TRUE
@@ -1248,15 +1258,14 @@ CLASS ListViewColumn INHERIT VObject
 		oHyperLabel := HyperLabel{symNewNameSym, oOldHL:Caption, oOldHL:Description, oOldHL:HelpContext}
 		RETURN
 
-/// <include file="Gui.xml" path="doc/ListViewColumn.Owner/*" />
-	ACCESS Owner
-		RETURN SELF:oOwner
+    access Owner as ListView
+        return oOwner
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Width/*" />
 	ACCESS Width AS LONG
 		LOCAL nWidth as LONG
 		IF SELF:Owner != NULL_OBJECT
-			nWidth := ListView.ListView_GetStringWidth(SELF:Owner:Handle(), "M")
+			nWidth := ListView.ListView_GetStringWidth(self:Owner:__Handle, "M")
 			nWidth := SELF:__Header:Width / nWidth
 
 			RETURN nWidth
@@ -1295,7 +1304,7 @@ CLASS ListViewItem INHERIT VObject
 	PROTECT lDropTarget AS LOGIC
 	PROTECT dwState AS DWORD
 	PROTECT dwStateMask AS DWORD
-	PROTECT aColumnText AS Dictionary<SYMBOL, Tuple<STRING, LONG > >
+	protect aColumnText as Dictionary<symbol, Tuple<string, long > >
 	PROTECT aColumnValue AS Dictionary<SYMBOL, USUAL>
 	PROTECT lParam AS LONGINT
 	PROTECT oItem AS VOListViewItem
@@ -1438,6 +1447,11 @@ CLASS ListViewItem INHERIT VObject
 		ENDIF
 		RETURN 0
 
+    method AddSubItem(sValue as string) as void
+        var subItem := System.Windows.Forms.ListViewItem.ListViewSubItem{}
+        subItem:Text := sValue
+        self:__ListViewItem:SubItems:Add(subItem)
+        return
 /// <include file="Gui.xml" path="doc/ListViewItem.OverlayImageIndex/*" />
 	ACCESS OverlayImageIndex AS LONG
 		//todo OverlayImageIndex

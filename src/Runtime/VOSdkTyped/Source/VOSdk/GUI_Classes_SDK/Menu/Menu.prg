@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -278,7 +283,7 @@ CLASS Menu INHERIT VObject
             IF IsNil(xResourceID)
                 // Do nothing
             NOP
-                
+
             ELSE
                 IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
                     oResourceID := ResourceID{xResourceID}
@@ -375,7 +380,7 @@ CLASS Menu INHERIT VObject
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/Menu.RegisterItem/*" />
-    METHOD RegisterItem(nItemID, oHyperLabel ,  hParentMenu , nPosition ) AS LOGIC
+    method RegisterItem(nItemID as usual, oHyperLabel := null as HyperLabel,  hParentMenu := null as VOMenu , nPosition := -1 as long) as logic
         // hParentMenu and nPosition are now ignored
         LOCAL lResult AS LOGIC
         LOCAL oItem	AS VOMenuItem
@@ -456,8 +461,8 @@ CLASS Menu INHERIT VObject
         WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:Throw()
         ENDIF
 
-        Default(@kButton, PM_RIGHTBUTTON)
-        Default(@kAlignment, PM_ALIGNLEFT)
+        DEFAULT( REF kButton, PM_RIGHTBUTTON)
+        DEFAULT( REF kAlignment, PM_ALIGNLEFT)
 
         IF IsInstanceOfUsual(oPoint, #Point)
         strucPoint:x := oPoint:X
@@ -581,7 +586,7 @@ CLASS Menu INHERIT VObject
         oMenu := SELF:__GetParent()
 
         IF oMenu:oWindow != NULL_OBJECT
-            oMenuItem := Sender
+            oMenuItem := (VOMenuItem) Sender
             oEvt := MenuCommandEvent{SELF,oMenu:oWindow, oMenuItem:MenuItemID}
             oMenu:oWindow:__PreMenuCommand(oEvt)
         ENDIF
@@ -595,7 +600,7 @@ CLASS Menu INHERIT VObject
         oMenu := SELF:__GetParent()
 
         IF oMenu:oWindow != NULL_OBJECT
-            oMenuItem := Sender
+            oMenuItem := (VOMenuItem) Sender
             oMenu:oWindow:MenuSelect(MenuSelectEvent{SELF,oMenu:oWindow, oMenuItem:MenuItemID})
         ENDIF
         RETURN
@@ -607,7 +612,7 @@ CLASS Menu INHERIT VObject
         oMenu := SELF:__GetParent()
 
         if oMenu:oWindow != NULL_OBJECT
-            oMenuItem := Sender
+            oMenuItem := (VOMenuItem) Sender
             oMenu:oWindow:MenuInit(MenuInitEvent{SELF,oMenu:oWindow, oMenuItem:MenuItemID})
         ENDIF
         RETURN
@@ -633,7 +638,7 @@ CLASS Menu INHERIT VObject
 
     /// <include file="Gui.xml" path="doc/Menu.SetAble/*" />
     METHOD SetAble(nID , lEnable ) AS VOID
-        DEFAULT(@lEnable, TRUE)
+        DEFAULT(ref lEnable, true)
         IF IsSymbol (nID)
             nID := SELF:GetMenuID(nID)
         ENDIF
@@ -648,7 +653,7 @@ CLASS Menu INHERIT VObject
 
     /// <include file="Gui.xml" path="doc/Menu.SetCheck/*" />
     METHOD SetCheck( nID , lCheck) AS VOID
-        DEFAULT(@lCheck, TRUE)
+        DEFAULT(ref lCheck, true)
         IF IsSymbol (nID)
             nID := SELF:GetMenuID(nID)
         ENDIF

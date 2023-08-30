@@ -80,9 +80,9 @@
 
 #command  SET CONSOLE <x:ON,OFF,&>                    =>  Set( Set.Console, <(x)> )
 #command  SET ALTERNATE <x:ON,OFF,&>                  =>  Set( Set.Alternate, <(x)> )
-#command  SET ALTERNATE TO                            =>  SetAltfile( "" , FALSE)
-#command  SET ALTERNATE TO <(file)> [<add: ADDITIVE>] =>  SetAltfile( <(file)>, <.add.> )
-#command  CLOSE ALTERNATE                             =>  SetAltfile( "" , FALSE)
+#command  SET ALTERNATE TO                            =>  SetAltFile( "" , FALSE)
+#command  SET ALTERNATE TO <(file)> [<add: ADDITIVE>] =>  SetAltFile( <(file)>, <.add.> )
+#command  CLOSE ALTERNATE                             =>  SetAltFile( "" , FALSE)
 #command  SET PRINTER <x:ON,OFF,&>                    =>  Set( Set.Printer, <(x)> )
 
 // SET PRINTER TO is not supported yet.

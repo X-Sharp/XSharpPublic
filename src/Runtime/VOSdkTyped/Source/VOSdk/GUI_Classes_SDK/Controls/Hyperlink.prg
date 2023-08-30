@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/CurHand/*" />
 
 CLASS CurHand INHERIT Pointer
@@ -32,7 +37,7 @@ CLASS HyperLink INHERIT FixedText
 
 /// <include file="Gui.xml" path="doc/HyperLink.OpenLink/*" />
 	METHOD OpenLink()
-		ShellOpen(SELF:Owner, SELF:Caption)
+		ShellOpen((Window) SELF:Owner, SELF:Caption)
 		RETURN SELF
 END CLASS
 

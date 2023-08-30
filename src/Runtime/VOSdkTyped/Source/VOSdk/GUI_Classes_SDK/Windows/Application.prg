@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -161,7 +166,7 @@ CLASS App INHERIT VObject
             SELF:oDialogWnd := oSurface
         ENDIF
         RETURN
- 
+
 #region Obsolete Methods
         [Obsolete];
     METHOD GetAccel()  AS IntPtr STRICT
@@ -196,11 +201,8 @@ CLASS App INHERIT VObject
 END CLASS
 
 GLOBAL glCAPaintInit := FALSE AS LOGIC
-
-    //GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
-GLOBAL gsymBrowserDef := #DataBrowser AS SYMBOL
-
-GLOBAL oApp AS App
+global gsymBrowserDef := #DataBrowser as symbol
+global oApp as App
 
 /// <include file="Gui.xml" path="doc/ApplicationExec/*" />
 FUNCTION ApplicationExec(kExecType)

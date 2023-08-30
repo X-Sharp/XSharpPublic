@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Collections.Generic
 USING System.Diagnostics
@@ -63,20 +67,12 @@ CLASS TreeView INHERIT TextControl
 		ENDIF
 		RETURN FALSE
 
-	METHOD __GetNode(symItem AS USUAL) AS VOTreeNode STRICT
-		LOCAL symToLookUp AS SYMBOL
+    method __GetNode(oItem as TreeViewItem) as VOTreeNode strict
+        return self:__GetNode(oItem:NameSym)
 
-		IF IsSymbol(symItem)
-			symToLookUp := symItem
-		ELSEIF IsInstanceOf(symItem, #TreeViewItem)
-			symToLookUp := symItem:NameSym
-		ELSE
-			WCError{#__GetNode,#TreeView,__WCSTypeError,symItem,1}:Throw()
-		ENDIF
-
-		IF aItems:ContainsKey(symToLookUp)
-
-			RETURN aItems[symToLookup]:__Node
+	method __GetNode(symToLookUp as symbol) as VOTreeNode strict
+		if aItems:ContainsKey(symToLookUp)
+			return aItems[symToLookup]:__Node
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -189,7 +185,7 @@ CLASS TreeView INHERIT TextControl
     /// <exclude />
 	METHOD __DeleteItemCore(oItem AS VOTreeNode, lChildrenOnly AS LOGIC) AS LOGIC
 		LOCAL oWin AS Window
-		oWin := SELF:Owner
+		oWin := (Window) SELF:Owner
 		// deleting of array elements is done by __Remove
 		//(called when DeleteItem notification is handled)
 		IF (oItem == NULL_OBJECT)
@@ -746,7 +742,7 @@ CLASS TreeView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TreeView.SelectItem/*" />
 	METHOD SelectItem(symItem, symCode, lSelect)
 		LOCAL oItem AS VOTreeNode
-		DEFAULT(@lSelect, TRUE)
+		DEFAULT( REF lSelect, TRUE)
 		IF ! SELF:__IsValid .or. SELF:ItemCount == 0
 			RETURN FALSE
 		ENDIF
@@ -863,7 +859,7 @@ CLASS TreeViewItem INHERIT VObject
 	PROPERTY ImageIndex			AS LONG		GET oNode:ImageIndex+1			SET oNode:ImageIndex := Value-1
 
 	/// <include file="Gui.xml" path="doc/TreeViewItem.Selected/*" />
-	PROPERTY Selected			AS LOGIC	GET oNode:IsSelected			SET oNode:TreeView:SelectedNode := iif(Value, (OBJECT) oNode, NULL_OBJECT)
+	PROPERTY Selected			AS LOGIC	GET oNode:IsSelected			SET oNode:TreeView:SelectedNode := iif(Value, oNode, NULL_OBJECT)
 
 	/// <include file="Gui.xml" path="doc/TreeViewItem.SelectedImageIndex/*" />
 	PROPERTY SelectedImageIndex AS LONG		GET oNode:SelectedImageIndex+1	SET oNode:SelectedImageIndex := value-1

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 USING VOSDK := XSharp.VO.SDK
 
 /// <include file="Gui.xml" path="doc/Brush/*" />
@@ -25,7 +30,7 @@ CLASS Brush INHERIT VObject
         oColor := NULL_OBJECT
         IF IsInstanceOfUsual(xColor, #Color)
             oColor := xColor
-            Default(@kHatchStyle, HATCHSOLID)
+            DEFAULT( REF kHatchStyle, HATCHSOLID)
 
             IF IsNumeric(kHatchStyle)
                 IF (kHatchStyle == HATCHSOLID)

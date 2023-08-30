@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -139,13 +144,13 @@ METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT
 	RETURN NULL_OBJECT
 
 /// <include file="Gui.xml" path="doc/IpcServer.AddTopic/*" />
-METHOD AddTopic(oIpcTopic)
+method AddTopic(oIpcTopic as IPCTopic)
 	//PP-030828 Strong typing
 	LOCAL cTopicString AS STRING
 
 
 
-	IF !IsNil(oIpcTopic)
+	IF oIpcTopic != NULL
 		IF !IsInstanceOfUsual(oIpcTopic, #IpcTopic)
 			WCError{#AddItem,#IpcServer,__WCSTypeError,oIpcTopic,1}:Throw()
 		ENDIF

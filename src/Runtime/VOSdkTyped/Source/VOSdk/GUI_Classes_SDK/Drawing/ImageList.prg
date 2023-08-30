@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -42,14 +47,14 @@ CLASS ImageList INHERIT VObject
 
 /// <include file="Gui.xml" path="doc/ImageList.BeginDrag/*" />
 	METHOD BeginDrag(nIndex)
-		//DEFAULT(@nIndex, 1)
+		//DEFAULT( REF nIndex, 1)
 		//RETURN ImageList_BeginDrag(hImageList, nIndex - 1, 1, 1)
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/ImageList.CreateOverlayImage/*" />
 	METHOD CreateOverlayImage(nImageIndex, nListIndex)
 		//Todo CreateOverlayImage
-		//Default(@nListIndex, 1)
+		//DEFAULT( REF nListIndex, 1)
 
 		//IF nListIndex < 1 .or. nListIndex > 4
 		//	RETURN FALSE

@@ -1,22 +1,25 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
-
-
-STATIC DEFINE TAB_SYMBOL := 1
-STATIC DEFINE TAB_INDEX  := 2
-STATIC DEFINE TAB_PAGE   := 3
-STATIC DEFINE TIP_SYMBOL := 1
-STATIC DEFINE TIP_TEXT   := 2
+#define TAB_SYMBOL 1
+#define TAB_INDEX  2
+#define TAB_PAGE   3
+#define TIP_SYMBOL 1
+#DEFINE TIP_TEXT   2
 
 
 /// <include file="Gui.xml" path="doc/TabControl/*" />
 CLASS TabControl INHERIT TextControl
 	PROTECT oImageList		 AS ImageList
-	PROTECT aPages			 AS ARRAY
-	PROTECT aTipsText		 AS ARRAY
+	protect aPages			 as array
+	protect aTipsText		 as array
 	PROTECT nMaxHeight		 AS INT
 	PROTECT nMaxWidth		 AS INT
 	PROTECT lAutoSize        AS LOGIC
-	PROTECT oCurrentPage	 AS OBJECT
+	protect oCurrentPage	 as IGuiObject
     /// <inheritdoc />
     PROPERTY ControlType AS Controltype GET Controltype.TabControl
 
@@ -39,21 +42,21 @@ CLASS TabControl INHERIT TextControl
 	METHOD __AdjustIndices() AS VOID STRICT
 		LOCAL dwI, dwCount AS LONG
 		LOCAL nPos AS LONG
-		dwCount := (LONG) Alen(aPages)
-		FOR dwI := dwCount DOWNTO 1
-			LOCAL aElement AS ARRAY
+		dwCount := (long) Alen(aPages)
+		for dwI := dwCount downto 1
+			local aElement as array
 			aElement := aPages[dwI]
-			nPos := __TabControl:TabPages:IndexOfKey( (STRING) aElement[TAB_SYMBOL])
-			IF nPos >= 0
+			nPos := __TabControl:TabPages:IndexOfKey( (string) aElement[TAB_SYMBOL])
+			if nPos >= 0
 				aElement[TAB_INDEX] := nPos
-			ELSE
-				IF IsObject(aElement[TAB_PAGE])
+			else
+				if IsObject(aElement[TAB_PAGE])
 					Send(aElement[TAB_PAGE], #Destroy)
-				ENDIF
-				ADel(aPages, (DWORD) dwI)
+				endif
+				ADel(aPages, (dword) dwI)
 				aSize(aPages, Alen(aPages)-1)
-			ENDIF
-		NEXT
+			endif
+		next
 
 
 	METHOD __AdjustPage() AS VOID STRICT
@@ -84,11 +87,10 @@ CLASS TabControl INHERIT TextControl
 			IF oOldPage != NULL_OBJECT
 				oOldPage:Hide()
 			ENDIF
-			IF IsInstanceOf(oCurrentPage, #DataWindow)
-				LOCAL oDw := oCurrentPage AS DataWindow
+			if oCurrentPage is DataWindow var oDW
 				oPanel := oDw:__Frame
-			ELSE
-				oPanel := oCurrentPage:__Surface
+			elseif oCurrentPage is IControlParent var oPar
+				oPanel := oPar:__Surface
 			ENDIF
 			oPanel:Visible := TRUE
 
@@ -115,11 +117,11 @@ CLASS TabControl INHERIT TextControl
 	METHOD __GetIndexFromPage(oTab)
 		LOCAL dwI, dwCount AS DWORD
 		dwCount := ALen(aPages)
-		FOR dwI := 1 UPTO dwCount
-			IF aPages[dwI][ TAB_PAGE] == oTab
-				LOCAL symName AS SYMBOL
+		for dwI := 1 upto dwCount
+			if aPages[dwI][ TAB_PAGE] == oTab
+				local symName as symbol
 				symName := aPages[dwI][ TAB_SYMBOL]
-				RETURN __TabControl:TabPages:IndexOfKey((STRING) symName)
+				return __TabControl:TabPages:IndexOfKey((string) symName)
 			ENDIF
 		NEXT
 
@@ -139,11 +141,11 @@ CLASS TabControl INHERIT TextControl
 			nIndex  := __TabControl:TabPages:IndexOf(oPage)
 			// Find Page object in aPages
 			FOR dwI := 1 TO alen(aPages)
-				LOCAL aElement := aPages[dwI] AS ARRAY
-				IF aElement[TAB_SYMBOL] == symName
+				local aElement := aPages[dwI] as array
+				if aElement[TAB_SYMBOL] == symName
 					uPage := aElement[TAB_PAGE]
 					IF IsSymbol(uPage)
-						uPage := SELF:CreatePageInstance(uPage, aElement[TAB_SYMBOL])
+						uPage := self:CreatePageInstance(uPage, aElement[TAB_SYMBOL])
 						IF uPage != NULL_OBJECT
 							aElement[TAB_PAGE] := uPage
 							SELF:__SetTabOwner(nIndex, uPage)
@@ -157,15 +159,15 @@ CLASS TabControl INHERIT TextControl
 
  /// <exclude />
 	METHOD __GetPageFromSymbol(symTabName)
-		LOCAL dwI, dwCount AS DWORD
+		local dwI, dwCount as dword
 		dwCount := ALen(aPages)
-		FOR dwI := 1 UPTO dwCount
-			IF aPages[dwI][ TAB_SYMBOL] == symTabName
-				RETURN aPages[dwI][TAB_PAGE]
+		for dwI := 1 upto dwCount
+			if aPages[dwI][ TAB_SYMBOL] == symTabName
+				return aPages[dwI][TAB_PAGE]
 			ENDIF
 		NEXT
 
-		RETURN NULL_OBJECT
+		return null_object
 
  /// <exclude />
 	METHOD __GetSymbolFromIndex(nTabIndex AS LONG) AS SYMBOL STRICT
@@ -179,12 +181,12 @@ CLASS TabControl INHERIT TextControl
 
  /// <exclude />
 	METHOD __GetSymbolFromPage(oTab)
-		LOCAL dwI, dwCount AS DWORD
+		local dwI, dwCount as dword
 
 		dwCount := ALen(aPages)
-		FOR dwI := 1 UPTO dwCount
-			IF aPages[dwI][ TAB_PAGE] == oTab
-				RETURN aPages[dwI][TAB_SYMBOL]
+		for dwI := 1 upto dwCount
+			if aPages[dwI][ TAB_PAGE] == oTab
+				return aPages[dwI][TAB_SYMBOL]
 			ENDIF
 		NEXT
 		RETURN NULL_SYMBOL
@@ -226,8 +228,8 @@ CLASS TabControl INHERIT TextControl
 					oPanel		:= VOSurfacePanel{oWin}
 					oPanel:Dock := System.Windows.Forms.DockStyle.Fill
 					oPanel:Visible := TRUE
-					FOREACH IMPLIED oC IN oWin:__Form:Controls
-						oPanel:Controls:AddRange(oC)
+					foreach oC as System.Windows.Forms.Control in oWin:__Form:Controls
+						oPanel:Controls:Add(oC)
 					NEXT
 				ELSE
 					oPanel := (VOPanel) (OBJECT) oWin:__Surface
@@ -253,7 +255,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL cTooltip AS STRING
 		//LOCAL hFirst, hBefore AS PTR
 
-		DEFAULT(@nImage, 0)
+		DEFAULT( ref nImage, 0)
 
 
 		// Fill out the tab structure with the arguments passed in
@@ -356,10 +358,10 @@ CLASS TabControl INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TabControl.DeleteAllTabs/*" />
 	METHOD DeleteAllTabs() AS LOGIC
-		LOCAL dwI, dwCount AS DWORD
+		local dwI, dwCount as dword
 		dwCount := ALen(aPages)
-		FOR dwI := 1 UPTO dwCount
-			IF IsObject(aPages[dwI][ TAB_PAGE])
+		for dwI := 1 upto dwCount
+			if IsObject(aPages[dwI][ TAB_PAGE])
 				((VObject) aPages[dwI][ TAB_PAGE]):Destroy()
 			ENDIF
 		NEXT
@@ -379,9 +381,9 @@ CLASS TabControl INHERIT TextControl
 		LOCAL lRet AS LOGIC
 		LOCAL oTabPage		  AS System.Windows.Forms.TabPage
 		IF SELF:ValidateControl()
-			FOR iTabIdx := 1 TO alen(SELF:aPages)
-				IF SELF:aPages[iTabIdx][ TAB_SYMBOL] == symTabName
-					oTabPage := SELF:aPages[iTabIdx][ TAB_PAGE]
+			for iTabIdx := 1 to alen(self:aPages)
+				if self:aPages[iTabIdx][ TAB_SYMBOL] == symTabName
+					oTabPage := self:aPages[iTabIdx][ TAB_PAGE]
 					SELF:__TabControl:TabPages:Remove(oTabPage)
 					ADel(SELF:aPages, iTabIdx)
 					Asize(SELF:aPages, Alen(aPages)-1)
@@ -527,7 +529,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL iLen, i AS DWORD
 		LOCAL cTooltip AS STRING
 
-		DEFAULT(@nImage, 0)
+		DEFAULT( ref nImage, 0)
 		IF SELF:ValidateControl()
 
 			cTooltip := SELF:GetTipText(symTabName)
@@ -578,11 +580,11 @@ CLASS TabControl INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/TabControl.IsTabPage/*" />
 	METHOD IsTabPage(symPos AS SYMBOL) AS LOGIC
-		LOCAL dwI, dwCount AS DWORD
+		local dwI, dwCount as dword
 		dwCount := ALen(aPages)
-		FOR dwI := 1 UPTO dwCount
-			IF aPages[dwI][ TAB_SYMBOL] == symPos
-				IF IsInstanceOfUsual(aPages[dwI][ TAB_PAGE], #Window)
+		for dwI := 1 upto dwCount
+			if aPages[dwI][ TAB_SYMBOL] == symPos
+				if IsInstanceOfUsual(aPages[dwI][ TAB_PAGE], #Window)
 					RETURN TRUE
 				ENDIF
 				EXIT
@@ -603,7 +605,7 @@ CLASS TabControl INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TabControl.Move/*" />
 	METHOD Move(oMoveEvent as MoveEvent) AS VOID
 		SELF:__AdjustPage()
-		RETURN 
+		return
 
 /// <include file="Gui.xml" path="doc/TabControl.PadTabs/*" />
 	METHOD PadTabs(dwWidth AS INT, dwHeight AS INT) AS VOID
@@ -615,7 +617,7 @@ CLASS TabControl INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TabControl.RemoveTabImage/*" />
 	METHOD RemoveTabImage(nImageIndex AS INT)  AS LOGIC
 		IF SELF:oImageList != NULL_OBJECT .and. SELF:oImageList:ImageCount >= nImageIndex
-			SELF:oImageList:__ImageList:Images[(INT) nImageIndex -1] := (OBJECT) System.Drawing.Bitmap{SELF:Size:Width, SELF:Size:Height}
+			self:oImageList:__ImageList:Images[(int) nImageIndex -1] := (System.Drawing.Image)  System.Drawing.Bitmap{self:Size:Width, self:Size:Height}
 			RETURN TRUE
 		ENDIF
 		RETURN  FALSE
@@ -650,7 +652,7 @@ CLASS TabControl INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TabControl.Resize/*" />
 	METHOD Resize(oResizeEvent as ResizeEvent) AS VOID
 		SELF:__AdjustPage()
-		RETURN 
+		return
 
 /// <include file="Gui.xml" path="doc/TabControl.RowCount/*" />
 	ACCESS RowCount AS INT
@@ -713,8 +715,8 @@ CLASS TabControl INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TabControl.Show/*" />
 	METHOD Show() AS VOID STRICT
 		SUPER:Show()
-		IF (oCurrentPage != NULL_OBJECT)
-			oCurrentPage:Show()
+		if oCurrentPage is Window var oWin
+			oWin:Show()
 		ENDIF
 		RETURN
 

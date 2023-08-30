@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -65,7 +70,7 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.ClientError/*" />
-METHOD ClientError(oIpcClientErrorEvent)
+METHOD ClientError(oIpcClientErrorEvent as IPCClientErrorEvent)
 	LOCAL selected AS DWORD
 	LOCAL __WCSIpcError AS DWORD
 

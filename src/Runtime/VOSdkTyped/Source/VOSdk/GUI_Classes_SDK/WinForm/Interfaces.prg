@@ -1,131 +1,136 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Interfaces.prg
-// This file defgines a couple of interfaces that are used in the VO Compatible Unicode GUI Classes
+// This file defines a couple of interfaces that are used in the VO Compatible Unicode GUI Classes
 
-USING VOSDK := XSharp.VO.SDK
-USING SWF   := System.Windows.Forms
-USING SD    := System.Drawing
-USING System.Collections
-USING System.Collections.Generic
-
-
-INTERFACE IVOUIObject
-    PROPERTY ClientRectangle AS SD.Rectangle GET
-    PROPERTY DisplayRectangle AS SD.Rectangle GET
-    PROPERTY Dock    AS SWF.DockStyle GET SET
-    PROPERTY Height AS LONG GET SET
-    PROPERTY IsDisposed AS LOGIC GET
-    PROPERTY Location  AS SD.Point GET SET
-    PROPERTY Size AS SD.Size GET SET
-    PROPERTY Text AS STRING GET SET
-    PROPERTY Visible  AS LOGIC GET SET
-    PROPERTY Width AS LONG GET SET
-    METHOD PerformLayout AS VOID STRICT
-    METHOD ResumeLayout AS VOID STRICT
-    METHOD ResumeLayout(performLayout AS LOGIC) AS VOID STRICT
-    METHOD SuspendLayout AS VOID STRICT
-END INTERFACE
+using VOSDK := XSharp.VO.SDK
+using SWF   := System.Windows.Forms
+using SD    := System.Drawing
+using System.Collections
+using System.Collections.Generic
 
 
-INTERFACE IVOControlProperties
-	PROPERTY Control            AS VOSDK.Control GET
-	PROPERTY ControlProperties  AS VOControlProperties GET
-	METHOD SetVisualStyle AS VOID STRICT
-	METHOD SetOwner(Owner AS VOSDK.Control) AS VOID
-END INTERFACE
+interface IVOUIObject
+    property ClientRectangle as SD.Rectangle get
+    property DisplayRectangle as SD.Rectangle get
+    property Dock    as SWF.DockStyle get set
+    property Height as long get set
+    property IsDisposed as logic get
+    property Location  as SD.Point get set
+    property Size as SD.Size get set
+    property Text as string get set
+    property Visible  as logic get set
+    property Width as long get set
+    method PerformLayout as void strict
+    method ResumeLayout as void strict
+    method ResumeLayout(performLayout as logic) as void strict
+    method SuspendLayout as void strict
+end interface
+
+
+interface IVOControlProperties inherit IVOControl
+    property Control            as VOSDK.Control get
+    property ControlProperties  as VOControlProperties get
+    method SetVisualStyle as void strict
+    method SetOwner(Owner as VOSDK.Control) as void
+end interface
 
 /// <summary>
 /// This interface is defined for all VO..Control classes
 /// </summary>
-INTERFACE IVOControl INHERIT IVOUIObject
-	// Properties and methods implemented in SWF.Control that we depend on
-    PROPERTY AccessibleDescription AS STRING GET SET
-    PROPERTY AccessibleName AS STRING GET SET
-    PROPERTY Anchor AS SWF.AnchorStyles GET SET
-    PROPERTY BackColor AS SD.Color GET SET
-    PROPERTY Controls AS SWF.Control.ControlCollection GET
-    PROPERTY Cursor AS SWF.Cursor GET SET
-    PROPERTY Enabled AS LOGIC GET SET
-    PROPERTY Focused AS LOGIC GET
+interface IVOControl inherit IVOUIObject
 
-    PROPERTY Font AS SD.Font GET SET
-    PROPERTY ForeColor AS SD.Color GET SET
-    PROPERTY Handle AS IntPtr GET
-    PROPERTY IsHandleCreated AS LOGIC GET
-    PROPERTY Margin AS SWF.Padding GET SET
-    PROPERTY Parent AS SWF.Control GET SET
-    PROPERTY TabIndex AS LONG GET SET
-    PROPERTY TabStop  AS LOGIC GET SET
-    PROPERTY Tag  AS OBJECT GET SET
+    // Properties and methods implemented in SWF.Control that we depend on
+    property AccessibleDescription as string get set
+    property AccessibleName as string get set
+    property Anchor as SWF.AnchorStyles get set
+    property BackColor as SD.Color get set
+    property Controls as SWF.Control.ControlCollection get
+    property Cursor as SWF.Cursor get set
+    property Enabled as logic get set
+    property Focused as logic get
 
-    METHOD BringToFront() AS VOID STRICT
-    METHOD Focus() AS LOGIC STRICT
-    METHOD Invalidate() AS VOID STRICT
-    METHOD SendToBack() AS VOID STRICT
-    METHOD Show() AS VOID STRICT
+    property Font as SD.Font get set
+    property ForeColor as SD.Color get set
+    property Handle as IntPtr get
+    property IsHandleCreated as logic get
+    property Margin as SWF.Padding get set
+    property Parent as SWF.Control get set
+    property TabIndex as long get set
+    property TabStop  as logic get set
+    property Tag  as object get set
 
-    EVENT Click  AS EventHandler
-    EVENT GotFocus  AS EventHandler
-    EVENT HandleCreated   AS EventHandler
-    EVENT HandleDestroyed AS EventHandler
-    EVENT KeyDown AS SWF.KeyEventHandler
-    EVENT KeyPress AS SWF.KeyPressEventHandler
-    EVENT KeyUp AS SWF.KeyEventHandler
-    EVENT MouseClick AS SWF.MouseEventHandler
-    EVENT PreviewKeyDown AS SWF.PreviewKeyDownEventHandler
-    EVENT Resize AS EventHandler
-    EVENT VisibleChanged AS EventHandler
+    method BringToFront() as void strict
+    method Focus() as logic strict
+    method Invalidate() as void strict
+    method SendToBack() as void strict
+    method Show() as void strict
 
-END INTERFACE
+    event Click  as EventHandler
+    event GotFocus  as EventHandler
+    event HandleCreated   as EventHandler
+    event HandleDestroyed as EventHandler
+    event KeyDown as SWF.KeyEventHandler
+    event KeyPress as SWF.KeyPressEventHandler
+    event KeyUp as SWF.KeyEventHandler
+    event MouseClick as SWF.MouseEventHandler
+    event PreviewKeyDown as SWF.PreviewKeyDownEventHandler
+    event Resize as EventHandler
+    event VisibleChanged as EventHandler
 
-INTERFACE IVOControlInitialize INHERIT IVOControlProperties
-	METHOD Initialize AS VOID STRICT
-END INTERFACE
+end interface
 
-
-INTERFACE IVOControlContainer INHERIT IVOUIObject
-    PROPERTY AllowDrop AS LOGIC GET SET
-    PROPERTY BackColor AS SD.Color GET SET
-    PROPERTY Controls AS SWF.Control.ControlCollection GET
-    METHOD AddControl(oCtrl AS IVOControl) AS VOID
-    METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
-
-END INTERFACE
+interface IVOControlInitialize inherit IVOControlProperties
+    method Initialize as void strict
+end interface
 
 
-INTERFACE IVOPanel INHERIT IVOControl,IVOControlContainer
-    PROPERTY AutoScroll AS LOGIC GET SET
-    METHOD CleanUp() AS VOID STRICT
-    METHOD Dispose() AS VOID STRICT
-    METHOD Prepare() AS VOID STRICT
-END INTERFACE
+interface IVOControlContainer inherit IVOUIObject
+    property AllowDrop as logic get set
+    method AddControl(oCtrl as IVOControl) as void
+    method SetChildIndex(oCtrl as IVOControl, nIndex as long) as void
 
-INTERFACE IVOFramePanel INHERIT IVOPanel
-    PROPERTY DefinedSize    AS SD.Size GET SET
-    PROPERTY IsSubForm      AS LOGIC GET SET
-END INTERFACE
+end interface
 
 
-INTERFACE IVOForm INHERIT IVOControlContainer, IVOUIObject
-	PROPERTY Window		AS VOSDK.Window GET
-	PROPERTY Properties AS VOFormProperties GET
-END INTERFACE
+interface IVOPanel inherit IVOControl,IVOControlContainer
+    property AutoScroll as logic get set
+    method CleanUp() as void strict
+    method Dispose() as void strict
+    method Prepare() as void strict
+end interface
+
+interface IVOFramePanel inherit IVOPanel
+    property DefinedSize    as SD.Size get set
+    property IsSubForm      as logic get set
+end interface
+
+
+interface IVOForm inherit IVOControlContainer, IVOUIObject
+    property Window		as VOSDK.Window get
+    property Properties as VOFormProperties get
+end interface
 
 /// <summary>
 /// This interface defines a couple of common properties and methods  for Controls and Windows
 /// </summary>
-INTERFACE IGuiObject
-	PROPERTY Origin		AS Point GET SET
-	PROPERTY Size		AS Dimension GET SET
-	PROPERTY Caption	AS STRING GET SET
-	PROPERTY HyperLabel AS HyperLabel GET SET
-	PROPERTY NameSym	AS SYMBOL GET
-    PROPERTY __Handle   AS IntPtr GET
-	METHOD   Destroy()	AS USUAL
-    METHOD   Show()     AS VOID STRICT
-    METHOD   Hide()     AS VOID STRICT
-    METHOD   SetFocus() AS VOID STRICT
+interface IGuiObject
+    property Origin		as Point get set
+    property Size		as Dimension get set
+    property Caption	as string get set
+    property HyperLabel as HyperLabel get set
+    property NameSym	as symbol get
+    property __Handle   as IntPtr get
+    method   Destroy()	as usual
+    method   Show()     as void strict
+    method   Hide()     as void strict
+    method   SetFocus() as void strict
 
-END INTERFACE
+end interface
 
 
 
@@ -134,14 +139,33 @@ END INTERFACE
 /// <summary>
 /// This interface defines a couple of properties and methods for 'owners' of Controls, such as the window class
 /// </summary>
-INTERFACE IControlParent
-	PROPERTY __Handle AS IntPtr  GET
-	PROPERTY __Form AS VOForm GET
+interface IControlParent
+    property __Handle as IntPtr  get
+    property __Form as VOForm get
 
-    METHOD __AddTool(oControl AS Control) AS LOGIC STRICT
-	METHOD __ShowToolTip(oControl AS Control) AS VOID STRICT
-	METHOD __AddAlign(oControl AS IGuiObject, iType AS USUAL) AS LOGIC  STRICT
-	METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL STRICT
-	METHOD __SetupDataControl(oDC AS Control) AS VOID
-	METHOD GetDlgItem(nID as LONG) as ResourceDialogItem
-END INTERFACE
+    method __AddTool(oControl as Control) as logic strict
+    method __ShowToolTip(oControl as Control) as void strict
+    method __AddAlign(oControl as IGuiObject, iType as usual) as logic  strict
+    method ControlFocusChange(oControlFocusChangeEvent as  ControlFocusChangeEvent) as usual strict
+    method __SetupDataControl(oDC as Control) as void
+    method GetDlgItem(nID as long) as ResourceDialogItem
+    property __Surface as IVOPanel get
+end interface
+
+interface IDataBrowser
+    method Use(oServer as DataServer) as logic
+    method __NotifyChanges(kNotify as dword) as usual
+    property ContextMenu as Menu get set
+    method   Destroy()	as usual
+    method RestoreUpdate() as void strict
+    method SuspendUpdate() as void strict
+    property __Control as IVOControl get
+    method __Unlink(oDataServer := null_object as DataServer) as Control strict
+end interface
+
+
+interface IResource
+    method Handle() as IntPtr strict
+    method Destroy()	as usual
+        property Size as Dimension get
+end interface

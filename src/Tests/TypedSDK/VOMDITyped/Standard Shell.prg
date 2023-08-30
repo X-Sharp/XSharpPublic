@@ -76,7 +76,7 @@ CONSTRUCTOR( oOwnerApp )
 	
 	return self
 
-METHOD Drop(oDragEvent) 
+METHOD Drop(oDragEvent as DragEvent) 
 LOCAL nNumFiles := oDragEvent:FileCount
 	LOCAL nFile AS INT
 	

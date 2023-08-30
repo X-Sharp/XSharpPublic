@@ -1,8 +1,13 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 /// <include file="Gui.xml" path="doc/Icon/*" />
 
-CLASS Icon INHERIT VObject
+CLASS Icon INHERIT VObject IMPLEMENTS IResource
 	PROTECT oIcon AS System.Drawing.Icon
 
     OPERATOR IMPLICIT ( ico AS Icon) AS System.Drawing.Icon
@@ -10,6 +15,8 @@ CLASS Icon INHERIT VObject
 
     OPERATOR IMPLICIT ( ico AS System.Drawing.Icon) AS Icon
         RETURN Icon{ico}
+
+    property __Icon as System.Drawing.Icon get oIcon
 
 
 /// <include file="Gui.xml" path="doc/Icon.Destroy/*" />
@@ -43,8 +50,8 @@ CLASS Icon INHERIT VObject
 		ELSEIF IsPtr(xResourceID)
 			oIcon := System.Drawing.Icon.FromHandle((IntPtr) xResourceID)
 		ELSE
-			Default(@xResourceID, ICONSTANDARD)
-			Default(@kLoadOption, LR_DEFAULTCOLOR)
+			Default(REF xResourceID, ICONSTANDARD)
+			Default(ref kLoadOption, LR_DEFAULTCOLOR)
 			IF ! IsLong(iWidth)
 				iWidth := 0
 			ENDIF
@@ -83,8 +90,8 @@ CLASS Icon INHERIT VObject
 		RETURN
 
 /// <include file="Gui.xml" path="doc/Icon.Size/*" />
-	ACCESS Size as Dimension
-		RETURN (Dimension) oIcon:Size
+	access Size as Dimension
+		RETURN oIcon:Size
     /// <include file="Gui.xml" path="doc/Icon.FromFile/*" />
 	STATIC METHOD FromFile(cFile AS STRING	) AS Icon
 		IF File(cFile)

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 // ResourceDialog.prg
 // This class contains the code to read a native dialog resource
 // The dialog is also created and destroyed to read the 'real' positions of the controls

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -93,9 +98,9 @@ CLASS ToolBar INHERIT Control
     /// <exclude />
 	METHOD __GetButton(nID, symIDType, symTB) AS System.Windows.Forms.ToolBarButton
 		LOCAL oTB AS VOToolBar
-		Default(@symTB, #MAINTOOLBAR)
+		Default(ref symTB, #MAINTOOLBAR)
 		oTB := SELF:__FindToolBarHandle(symTB)
-		Default(@symIDType, #ButtonID)
+		Default(ref symIDType, #ButtonID)
 
 		IF (oTB != NULL_OBJECT)
 			IF (symIDType == #MenuItemID)
@@ -383,9 +388,9 @@ CLASS ToolBar INHERIT Control
 		RETURN FALSE
 	//ENDIF
 
-	//Default(@iPos, -1)
-	//Default(@iMinWidth, 100)
-	//Default(@lFlat_dwStyle, lFlat)
+	//DEFAULT( REF iPos, -1)
+	//DEFAULT( REF iMinWidth, 100)
+	//DEFAULT( REF lFlat_dwStyle, lFlat)
 
 	//IF (hWnd != NULL_PTR)
 	//	IF IsNumeric(lFlat_dwStyle)
@@ -487,9 +492,9 @@ CLASS ToolBar INHERIT Control
 		LOCAL oButton			as System.Windows.Forms.ToolBarButton
 
 
-		Default(@symTB, #MAINTOOLBAR)
-		Default(@cTitle, "")
-		Default(@nButtonID, 0)
+		Default(ref symTB, #MAINTOOLBAR)
+		Default(ref cTitle, "")
+		Default(ref nButtonID, 0)
 		oTB := SELF:__FindToolBarHandle(symTB)
 
 		IF oCtrl != NULL_OBJECT .AND. oTB = NULL_OBJECT .AND. symTB = #MAINTOOLBAR
@@ -513,7 +518,7 @@ CLASS ToolBar INHERIT Control
 					//strucButton:fsState := TBSTATE_ENABLED
 					//strucButton:fsStyle := TBSTYLE_BUTTON
 					IF oBitmap != NULL_OBJECT .AND. IsObject(oBmp) .AND. oBmp != NULL_OBJECT .AND. SELF:__ButtonStyle != TB_TEXTONLY
-						DEFAULT(@nImgCount, 1)
+						DEFAULT(ref nImgCount, 1)
 						oExtraBitmap := SELF:__FindExtraBitMap(oBmp, symTB)
 						IF oExtraBitmap == NULL_OBJECT
 							oExtraBitmap 				:= ToolBarExtraBitmap{}
@@ -617,8 +622,8 @@ CLASS ToolBar INHERIT Control
 				oUpdate:nImageCount := nImgCount
 			ENDIF
 
-			Default(@bState, TBSTATE_ENABLED)
-			Default(@bStyle, TBSTYLE_BUTTON)
+			Default(ref bState, TBSTATE_ENABLED)
+			Default(ref bStyle, TBSTYLE_BUTTON)
 
 			oUpdate:nButtonID   := nButtonID
 			oUpdate:bState      := bState
@@ -730,7 +735,7 @@ CLASS ToolBar INHERIT Control
 			ELSE
 				nButtonStyle := (DWORD) kButtonStyle
 				IF (nButtonStyle == TB_TEXTONLY)
-					FOREACH IMPLIED oButton IN __ToolBar:Buttons
+					foreach oButton as VOToolBarButton in __ToolBar:Buttons
 						oButton:ImageIndex := -1
 					NEXT
 					//IF oButtonSize:Height > 1
@@ -748,7 +753,7 @@ CLASS ToolBar INHERIT Control
 		//SE-060526
 		//RvdH 070206 Changed to use new ToolBarTipText objects
 		LOCAL oTipText AS ToolBarTipText
-		DEFAULT(@symLookUp, #ButtonID)
+		DEFAULT( ref symLookUp, #ButtonID)
 
 		oTipText := SELF:__FindTipText(nID, symLookUp)
 		IF oTipText != NULL_OBJECT
@@ -957,7 +962,7 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		LOCAL oOwner AS Window
 		oOwner := (OBJECT) oParent
-		IF oOwner != NULL_OBJECT .and. Owner:__Form != NULL_OBJECT
+		IF oOwner != NULL_OBJECT .and. oOwner:__Form != NULL_OBJECT
 			oOwner:__Form:AddControl(oCtrl)
 			oOwner:__Form:SetChildIndex(oCtrl, 0)
 		ENDIF
@@ -968,7 +973,7 @@ CLASS ToolBar INHERIT Control
 		LOCAL liIndex AS LONGINT
 		LOCAL oTB AS VOToolBar
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTB := SELF:__FindToolBarHandle(symTB)
 
 		IF oTB != NULL_OBJECT
@@ -1019,7 +1024,7 @@ CLASS ToolBar INHERIT Control
 
 	METHOD DimItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTb != NULL_OBJECT)
@@ -1073,7 +1078,7 @@ CLASS ToolBar INHERIT Control
 /// <include file="Gui.xml" path="doc/ToolBar.EnableBands/*" />
 	METHOD EnableBands(lEnable)
 
-		Default(@lEnable, TRUE)
+		DEFAULT( ref lEnable, true)
 		lOldStyle := !lEnable
 
 		RETURN lEnable
@@ -1146,7 +1151,7 @@ CLASS ToolBar INHERIT Control
 		LOCAL cDescription AS STRING
 		LOCAL oTB AS VOToolBar
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTB := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTB != NULL_OBJECT)
@@ -1165,7 +1170,7 @@ CLASS ToolBar INHERIT Control
 		LOCAL oTB	  	  AS ToolBarChild
 		LOCAL oImageList AS ImageList
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBar(symTB)
 		IF oTB != NULL_OBJECT
 			oImagelist	:= oTB:ImageList
@@ -1186,7 +1191,7 @@ CLASS ToolBar INHERIT Control
 		LOCAL oTb AS VOToolBar
 
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF oTb != NULL_OBJECT
@@ -1205,7 +1210,7 @@ CLASS ToolBar INHERIT Control
 		LOCAL cResult	AS STRING
 
 
-		DEFAULT(@symLookUp, #ButtonID)
+		DEFAULT( ref symLookUp, #ButtonID)
 
 		oTipText := SELF:__FindTipText(nButtonID, symLookUp)
 		IF oTipText != NULL_OBJECT
@@ -1227,7 +1232,7 @@ CLASS ToolBar INHERIT Control
 	METHOD HideItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTb != NULL_OBJECT)
@@ -1273,13 +1278,14 @@ CLASS ToolBar INHERIT Control
 
 /// <include file="Gui.xml" path="doc/ToolBar.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands, nButtonSize)
-		DEFAULT(@xID, 0)
-		DEFAULT(@oPoint, Point{})
-		DEFAULT(@oDimension, Dimension{})
-		DEFAULT(@lEnableBands, TRUE)
-		Default(@nButtonSize, 16)
+		DEFAULT( ref xID, 0)
+		DEFAULT( ref oPoint, Point{})
+		DEFAULT( ref oDimension, Dimension{})
+		DEFAULT( ref lEnableBands, true)
+		DEFAULT( ref nButtonSize, 16)
 		SELF:cClassName := TOOLBARCLASSNAME
-
+        local oPt := oPoint as Point
+        local oDim := oDimension as Dimension
 
 		aUpdates	:= LIst<ToolBarUpdate>{}
 		aTipsText := List<ToolbarTipText>{}
@@ -1309,8 +1315,8 @@ CLASS ToolBar INHERIT Control
 		IF IsNil(oOwner)
 			// ToolBar is being created without a parent; don't call super:Init()
 
-			oOrigin 	:= Point{oPoint:X, oPoint:Y}
-			oSize 		:= Dimension{oDimension:Width, oDimension:Height}
+			oOrigin 	:= Point{oPt:X, oPt:Y}
+			oSize 		:= Dimension{oDim:Width, oDim:Height}
 		ELSE
 			// ToolBar is being created with a parent, calling super:Init() is safe
 			SUPER(oOwner, xID, oPoint, oDimension, TOOLBARCLASSNAME)
@@ -1326,11 +1332,11 @@ CLASS ToolBar INHERIT Control
 		LOCAL oTB 		AS VOToolBar
 		LOCAL oButton			as System.Windows.Forms.ToolBarButton
 
-		Default(@symTB, #MAINTOOLBAR)
-		Default(@nButtonID, 0)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
+		DEFAULT( ref nButtonID, 0)
 		oTB := SELF:__FindToolBarHandle(symTB)
 
-		Default(@nBeforeID, -1)
+		DEFAULT( ref nBeforeID, -1)
 
 		IF (oTB != NULL_OBJECT)
 			IF IsLong(nButtonID)
@@ -1360,8 +1366,8 @@ CLASS ToolBar INHERIT Control
 			ENDIF
 			oUpdate := SELF:__TryDeferAction(#InsertItem, nMenuItemID, symTB)
 
-			Default(@bState, TBSTATE_ENABLED)
-			Default(@bStyle, TBSTYLE_BUTTON)
+			DEFAULT( ref bState, TBSTATE_ENABLED)
+			DEFAULT( ref bStyle, TBSTYLE_BUTTON)
 
 			oUpdate:nButtonID := nButtonID
 			oUpdate:nBeforeID := nBeforeID
@@ -1419,7 +1425,7 @@ CLASS ToolBar INHERIT Control
 /// <include file="Gui.xml" path="doc/ToolBar.PressItem/*" />
 	METHOD PressItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTb != NULL_OBJECT)
@@ -1439,7 +1445,7 @@ CLASS ToolBar INHERIT Control
 		//SE-060526
 
 
-		DEFAULT(@symLookUp, #ButtonID)
+		DEFAULT( ref symLookUp, #ButtonID)
 
 		LOCAL IMPLIED oText  := SELF:__FindTipText(nButtonID, symLookUp)
 		IF oText != NULL_OBJECT
@@ -1542,7 +1548,7 @@ CLASS ToolBar INHERIT Control
 		//		oImageList := uImageList
 		//	ENDIF
 
-		//	Default(@symTB, #MAINTOOLBAR)
+		//	DEFAULT( REF symTB, #MAINTOOLBAR)
 		//	oTB := SELF:__FindToolBar(symTB)
 		//	IF oTB == NULL_OBJECT
 		//		oTB	:= ToolBarChild{}
@@ -1579,7 +1585,7 @@ CLASS ToolBar INHERIT Control
 	METHOD SetState(nMenuItemID, nState, symTB)
 		LOCAL oTB AS VOToolBar
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTB := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTB != NULL_OBJECT)
@@ -1609,14 +1615,14 @@ CLASS ToolBar INHERIT Control
 		RETURN FALSE
 	//ENDIF
 
-	//Default(@lShow, TRUE)
+	//DEFAULT( REF lShow, TRUE)
 	//RETURN (SendMessage(hWnd, RB_SHOWBAND, DWORD(_CAST, iPos), LONGINT(_CAST, lShow)) > 0)
 
 /// <include file="Gui.xml" path="doc/ToolBar.ShowItem/*" />
 	METHOD ShowItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 
-		Default(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTb != NULL_OBJECT)
@@ -1633,7 +1639,7 @@ CLASS ToolBar INHERIT Control
 /// <include file="Gui.xml" path="doc/ToolBar.UnClickItem/*" />
 	METHOD UnClickItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
-		DEFAULT(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTb != NULL_OBJECT)
@@ -1650,7 +1656,7 @@ CLASS ToolBar INHERIT Control
 	METHOD UnDimItem(nMenuItemID, symTB)
 		//PP-040421 Update from S Ebert
 		LOCAL oTb AS VOToolBar
-		DEFAULT(@symTB, #MAINTOOLBAR)
+		DEFAULT( ref symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
 
 		IF (oTb != NULL_OBJECT)

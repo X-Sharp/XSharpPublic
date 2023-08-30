@@ -12,7 +12,7 @@
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LB>true</LB>
+    <LB>False</LB>
     <unsafe>true</unsafe>
     <CS>false</CS>
     <vo15>true</vo15>
@@ -24,6 +24,7 @@
     <Vo14>False</Vo14>
     <EnforceSelf>True</EnforceSelf>
     <EnforceOverride>False</EnforceOverride>
+    <Vo7>True</Vo7>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -287,6 +288,7 @@
   <ItemGroup>
     <None Include="ClassMapping.xlsx" />
     <None Include="WinForm\PropControl.xh" />
+    <None Include="WinForm\PropControlStyle.xh" />
     <None Include="_readme.txt" />
   </ItemGroup>
   <ItemGroup>

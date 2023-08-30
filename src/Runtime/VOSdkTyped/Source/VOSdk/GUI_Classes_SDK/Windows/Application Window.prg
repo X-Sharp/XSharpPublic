@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Windows.Forms
 /// <include file="Gui.xml" path="doc/AppWindow/*" />
@@ -12,7 +17,7 @@ CLASS AppWindow INHERIT Window
         RETURN GuiFactory.Instance:CreateAppWindow(SELF)
 
     /// <exclude />
-    METHOD __StatusMessageFromEvent(oEvent AS OBJECT, nType AS LONGINT) AS VOID STRICT
+    method __StatusMessageFromEvent(oEvent as MenuSelectEvent, nType as longint) as void strict
         LOCAL oHL AS HyperLabel
 
         oHL := oEvent:HyperLabel
@@ -117,7 +122,7 @@ CLASS AppWindow INHERIT Window
     /// <include file="Gui.xml" path="doc/AppWindow.EnableBorder/*" />
     METHOD EnableBorder(kBorderStyle)
 
-        DEFAULT(@kBorderStyle, WINDOWSIZINGBORDER)
+        DEFAULT( REF kBorderStyle, WINDOWSIZINGBORDER)
         IF SELF:__IsValid
             DO CASE
             CASE kBorderStyle == WINDOWNOBORDER
@@ -292,21 +297,21 @@ CLASS AppWindow INHERIT Window
         LOCAL oStatBar AS StatusBar
         LOCAL oOwner AS OBJECT
 
-        Default(@nType, MESSAGETRANSIENT)
+        DEFAULT( REF nType, MESSAGETRANSIENT)
 
         IF SELF:StatusBar != NULL_OBJECT
             oStatBar := SELF:StatusBar
         ELSE
             oOwner := SELF:Owner
-            IF oOwner != NULL_OBJECT .AND. IsAccess(oOwner, #StatusBar)
-                oStatBar := oOwner:StatusBar
+            if oOwner is AppWindow var oWin
+                oStatBar := oWin:StatusBar
             ENDIF
         ENDIF
 
         IF oStatBar != NULL_OBJECT
             DO CASE
-            CASE IsInstanceOfUsual(oHL, #HyperLabel) .AND. IsString(((HyperLabel)oHL):Description)
-                Message := oHL:Description
+            case oHL is HyperLabel var oHyperLabel
+                Message := oHyperLabel:Description
             CASE IsString(oHL)
                 Message := oHL
             OTHERWISE

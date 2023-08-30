@@ -1,7 +1,13 @@
-USING SWF := System.Windows.Forms
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
-CLASS VOHtmlEditorControl INHERIT SWF.WebBrowser IMPLEMENTS IVOControl
+class VOHtmlEditorControl inherit SWF.WebBrowser implements IVOControlProperties
 	//PRIVATE lBusy		AS LOGIC
 
 	#include "PropControl.xh"

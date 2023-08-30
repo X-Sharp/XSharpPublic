@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
@@ -30,7 +35,7 @@ CLASS ChildAppWindow INHERIT AppWindow
                 lMng := lManaged
             ENDIF
         ENDIF
-        Default(@lImpl, TRUE)
+        DEFAULT( REF lImpl, TRUE)
         IF (lImpl)
             //IF (oImp == NULL_OBJECT)
             IF lMng .AND. IsInstanceOf(oParent,#ShellWindow) // create an MDI child

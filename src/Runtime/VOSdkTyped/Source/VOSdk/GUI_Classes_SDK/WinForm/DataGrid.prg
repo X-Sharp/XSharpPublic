@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // DataGrid.prg
 // This file contains subclasses from classes in System.Windows.Forms for the DataGrid Control
 USING SWF := System.Windows.Forms
@@ -6,14 +12,14 @@ USING System.Windows.Forms
 USING System.Drawing
 USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
-CLASS VODataGridView INHERIT SWF.DataGridView IMPLEMENTS IVOControl
+CLASS VODataGridView INHERIT SWF.DataGridView IMPLEMENTS IVOControlProperties
 	// We will activate the VirtualMode later and will then have to implement the methods
 	// for Virtual Mode
 	// See: http://msdn.microsoft.com/en-us/library/15a31akc%28v=vs.90%29.aspx
 	PROTECT _lLastHScrollVisible AS LOGIC
 	PROPERTY DataBrowser AS VOSDK.DataBrowser GET (VOSDK.DataBrowser) oProperties:Control
 
-	#include "PropControl.xh"
+	#include "PropControlStyle.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -36,9 +42,6 @@ CLASS VODataGridView INHERIT SWF.DataGridView IMPLEMENTS IVOControl
 		SELF:VisibleChanged += BrowserVisibilityChanged
 		SELF:ShowCellToolTips := FALSE
 
-	METHOD SetVisualStyle AS VOID STRICT
-		// Empty but required
-		RETURN
 
 	METHOD BrowserVisibilityChanged(o AS OBJECT, e AS EventArgs) AS VOID
 		IF !SELF:IsDisposed .AND. !SELF:Disposing .AND. SELF:Visible

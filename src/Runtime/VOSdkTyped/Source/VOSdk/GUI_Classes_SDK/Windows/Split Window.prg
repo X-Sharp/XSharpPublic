@@ -1,4 +1,10 @@
-USING SWF := System.Windows.Forms
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using SWF := System.Windows.Forms
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow/*" />
@@ -33,8 +39,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
     /// <include file="Gui.xml" path="doc/SplitWindow.Destroy/*" />
     METHOD Destroy() AS USUAL
-        // if not in garbage collection, destroy the split view control
-        IF oSplitView != NULL_OBJECT
+        if oSplitView != null_object
             oSplitView:Destroy()
             oSplitView := NULL_OBJECT
         ENDIF
@@ -101,8 +106,8 @@ CLASS SplitWindow INHERIT ChildAppWindow
                 SUPER(NIL, FALSE)
             CASE ShellWindow
                 SUPER(oOwner, TRUE)
-            CASE DataWindow
-                SUPER(oObject:__GetFormSurface())
+            case oDW as DataWindow 
+                super(oDW:__GetFormSurface())
             CASE ChildAppWindow
             CASE TopAppWindow
             CASE DialogWindow
@@ -131,9 +136,9 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
         // set up drag and alignment options
 
-        DEFAULT(@lHorizontalDrag,   FALSE)
-        DEFAULT(@lVerticalDrag,     TRUE)
-        Default(@kAlignment, SPLIT_VERTALIGN )
+        DEFAULT( REF lHorizontalDrag,   FALSE)
+        DEFAULT( REF lVerticalDrag,     TRUE)
+        DEFAULT( REF kAlignment, SPLIT_VERTALIGN )
 
         oSplitView := SplitView{SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment}
         oSplitView:Show()

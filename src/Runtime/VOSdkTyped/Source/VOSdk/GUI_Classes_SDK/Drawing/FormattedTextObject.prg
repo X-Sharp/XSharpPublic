@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/FormattedTextObject/*" />
 CLASS FormattedTextObject INHERIT TextObject
 	PROTECT wTabSize:=8 AS LONGINT       //RvdH 070205 changed from WORD to LONG

@@ -12,132 +12,112 @@ using System.Runtime.InteropServices
 #define MB_TOPMOST              0x00040000
 #define MB_ICONEXCLAMATION      0x00000030
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
-FUNCTION _accept() AS STRING STRICT
-    RETURN _accept( "" )
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
-FUNCTION _accept( uValuePrompt AS STRING ) AS STRING
-    LOCAL retval AS STRING
-
-    Console.WriteLine()
-    Console.Write( uValuePrompt )
-
-    TRY
-        retval := Console.ReadLine()
-    CATCH AS System.InvalidOperationException
-        retval := ""
-    END TRY
-
-    RETURN IIF( retval == NULL, "", retval )
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cls/*" />
-FUNCTION cls() AS VOID STRICT
-    Console.Clear()
-    RETURN
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/col/*" />
-FUNCTION Col() AS SHORT STRICT
-    RETURN (SHORT) Console.CursorLeft
+    //INTERNAL FUNCTION PrintFileOpen(lAdditive as LOGIC) AS VOID
+    //    PrintFileClose()
+    //    ConsoleHelpers.PrintFileHandle := ConsoleHelpers.FileOpen(RuntimeState.PrintFile, lAdditive)
+    //    RETURN
+    //
+    //INTERNAL FUNCTION PrintFileClose() AS VOID
+    //    IF PrintFileHandle != IntPtr.Zero
+    //        FClose(PrintFileHandle)
+    //        PrintFileHandle := IntPtr.Zero
+    //    ENDIF
+    //    RETURN
 
 
-//INTERNAL FUNCTION PrintFileOpen(lAdditive as LOGIC) AS VOID
-//    PrintFileClose()
-//    var cPrintFile := RuntimeState.PrintFile
-//    IF ! String.IsNullOrEmpty(cPrintFile)
-//        IF File(cPrintFile)
-//            cPrintFile := FPathName()
-//        ENDIF
-//        IF File(cPrintFile) .and. lAdditive
-//            PrintFileHandle := FOpen2(cPrintFile,FO_WRITE)
-//            FSeek(PrintFileHandle, FS_END, 0)
-//        ELSE
-//           PrintFileHandle := FCreate(cPrintFile)
-//        ENDIF
-//    ENDIF
-//    RETURN
-//
-//INTERNAL FUNCTION PrintFileClose() AS VOID
-//    IF PrintFileHandle != IntPtr.Zero
-//        FClose(PrintFileHandle)
-//        PrintFileHandle := IntPtr.Zero
-//    ENDIF
-//    RETURN
-
+#region SET ALTERNATE
 
 INTERNAL FUNCTION AltFileOpen(lAdditive as LOGIC) AS VOID
-    AltFileClose()
-    var cAltFile := RuntimeState.AltFile
-    IF ! String.IsNullOrEmpty(cAltFile)
-        IF File(cAltFile)
-            cAltFile := FPathName()
-        ENDIF
-        IF File(cAltFile) .and. lAdditive
-            ConsoleHelpers.AltFileHandle := FOpen2(cAltFile,FO_WRITE)
-            FSeek(ConsoleHelpers.AltFileHandle, FS_END, 0)
-        ELSE
-            ConsoleHelpers.AltFileHandle := FCreate(cAltFile)
-        ENDIF
-    ENDIF
-RETURN
+    ConsoleHelpers.FileClose(REF ConsoleHelpers.AltFileHandle)
+    ConsoleHelpers.AltFileHandle := ConsoleHelpers.FileOpen(RuntimeState.AltFile, lAdditive)
+    RETURN
 
 INTERNAL FUNCTION AltFileClose() AS VOID
-    IF ConsoleHelpers.AltFileHandle != IntPtr.Zero
-        FClose(ConsoleHelpers.AltFileHandle)
-        ConsoleHelpers.AltFileHandle := IntPtr.Zero
+    ConsoleHelpers.FileClose(REF ConsoleHelpers.AltFileHandle)
+    RETURN
+
+INTERNAL FUNCTION AltWrite(cText as STRING) AS VOID
+    IF RuntimeState.Alternate
+        ConsoleHelpers.Write(ConsoleHelpers.AltFileHandle, cText)
     ENDIF
-RETURN
+    RETURN
+
+
+INTERNAL FUNCTION AltWriteLine() AS VOID
+    IF RuntimeState.Alternate
+        ConsoleHelpers.WriteLine(ConsoleHelpers.AltFileHandle)
+    ENDIF
+    RETURN
+
+#endregion
+
+#region SET TEXT TO FILE
+
+/// <summary>
+/// This function is used by the TEXT TO FILE UDC
+/// </summary>
+FUNCTION _TextRestore() AS VOID
+    SetTextOutPut(FALSE)
+    SetTextFile( "" , FALSE)
+    RETURN
+/// <summary>
+/// This function is used by the TEXT TO FILE UDC
+/// </summary>
+/// <param name="cFile">FileName specified in the TEXT TO FILE UDC</param>
+FUNCTION _TextSave(cFile AS STRING) AS VOID
+    SetTextFile( cFile , FALSE)
+    SetTextOutPut(TRUE)
+    RETURN
+
+INTERNAL FUNCTION TextFileOpen(lAdditive as LOGIC) AS VOID
+    ConsoleHelpers.FileClose(REF ConsoleHelpers.TextFileHandle)
+    ConsoleHelpers.TextFileHandle := ConsoleHelpers.FileOpen(ConsoleHelpers.TextFile, lAdditive)
+    RETURN
+
+INTERNAL FUNCTION TextFileClose() AS VOID
+    ConsoleHelpers.FileClose(REF ConsoleHelpers.TextFileHandle)
+    RETURN
+
+INTERNAL FUNCTION TextWrite(cText as STRING) AS VOID
+    ConsoleHelpers.Write(ConsoleHelpers.TextFileHandle, cText)
+    RETURN
+
+INTERNAL FUNCTION TextWriteLine() AS VOID
+    ConsoleHelpers.WriteLine(ConsoleHelpers.TextFileHandle)
+    RETURN
+
+#endregion
+
+#region SET CONSOLE
 
 INTERNAL FUNCTION ConsoleWriteLine() AS VOID
     IF RuntimeState.Console
         Console.WriteLine()
     ENDIF
-RETURN
+    RETURN
 
 INTERNAL FUNCTION ConsoleWrite(cText as STRING) AS VOID
     IF RuntimeState.Console
         Console.Write(cText)
     ENDIF
-RETURN
+    RETURN
 
-//INTERNAL FUNCTION PrintWrite(cText as STRING) AS VOID
-//    IF RuntimeState.Printer .and. PrintFileHandle != IntPtr.Zero
-//        FWrite(PrintFileHandle, cText, cText:Length)
-//    ENDIF
-//    RETURN
+#endregion
 
-
-//INTERNAL FUNCTION PrintWriteLine() AS VOID
-//    IF RuntimeState.Printer .and. PrintFileHandle != IntPtr.Zero
-//        FWriteLine(PrintFileHandle,"",0)
-//    ENDIF
-//    RETURN
-
-INTERNAL FUNCTION AltWrite(cText as STRING) AS VOID
-    IF RuntimeState.Alternate .and. ConsoleHelpers.AltFileHandle != IntPtr.Zero
-        FWrite(ConsoleHelpers.AltFileHandle, cText, cText:Length)
-    ENDIF
-RETURN
-
-
-INTERNAL FUNCTION AltWriteLine() AS VOID
-    IF RuntimeState.Alternate .and. ConsoleHelpers.AltFileHandle != IntPtr.Zero
-        FWriteLine(ConsoleHelpers.AltFileHandle,"",0)
-    ENDIF
-RETURN
+#region QOUT
 
 INTERNAL FUNCTION QWriteLine() AS VOID
     ConsoleWriteLine()
-AltWriteLine()
-//PrintWriteLine()
+    AltWriteLine()
+    TextWriteLine()
 
 INTERNAL FUNCTION QWrite(cText as STRING) AS VOID
     IF cText != NULL
         ConsoleWrite(cText)
         AltWrite(cText)
-        //PrintWrite(cText)
+        TextWrite(cText)
     ENDIF
-RETURN
+    RETURN
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
 FUNCTION QOut() AS VOID STRICT
@@ -175,6 +155,20 @@ FUNCTION QQOut( uValueList PARAMS  USUAL[] ) AS VOID
     NEXT
     RETURN
 
+#endregion
+
+#region Positions
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cls/*" />
+FUNCTION cls() AS VOID STRICT
+    Console.Clear()
+    RETURN
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/col/*" />
+FUNCTION Col() AS SHORT STRICT
+    RETURN (SHORT) Console.CursorLeft
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/row/*" />
 FUNCTION Row() AS SHORT
     RETURN (SHORT) Console.CursorTop
@@ -183,6 +177,27 @@ FUNCTION Row() AS SHORT
 FUNCTION SetPos( iRow AS INT, iCol AS INT ) AS VOID
     Console.SetCursorPosition( iCol, iRow )
     RETURN
+#endregion
+#region Input
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
+FUNCTION _accept() AS STRING STRICT
+    RETURN _accept( "" )
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
+FUNCTION _accept( uValuePrompt AS STRING ) AS STRING
+    LOCAL retval AS STRING
+
+    Console.WriteLine()
+    Console.Write( uValuePrompt )
+
+    TRY
+        retval := Console.ReadLine()
+    CATCH AS System.InvalidOperationException
+        retval := ""
+    END TRY
+
+    RETURN IIF( retval == NULL, "", retval )
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
@@ -204,7 +219,7 @@ FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
     END TRY
 
     RETURN retval
-
+#endregion
 /// <exclude/>
 
 FUNCTION DoEvents() AS VOID
@@ -347,6 +362,11 @@ FUNCTION SetColor(cNewColor as STRING) AS STRING
 #pragma options ("az", on)
 INTERNAL STATIC CLASS ConsoleHelpers
     INTERNAL STATIC AltFileHandle := IntPtr.Zero as IntPtr
+    INTERNAL STATIC TextFileHandle := IntPtr.Zero as IntPtr
+    INTERNAL STATIC TextOutPut       AS LOGIC
+    INTERNAL STATIC TextFile         AS STRING
+
+
     //INTERNAL STATIC PrintFileHandle := IntPtr.Zero as IntPtr
 
     INTERNAL STATIC aColors := <STRING> {"N", "B","G","R","BG","RG","W","N+", "B+","G+","R+","BG+","RG+","W+"}  AS STRING[]
@@ -368,38 +388,38 @@ INTERNAL STATIC CLASS ConsoleHelpers
         FOREACH VAR cChar in cColor
             local done := FALSE AS LOGIC
             SWITCH cChar
-                CASE c'N'
-                CASE c'n'
-                    nColor := 0 // never combined
-                CASE c'W'
-                CASE c'w'
-                    nColor := 7 // never combined
-                CASE c'B'
-                CASE c'b'
-                    nColor += 1 // can be combined
-                CASE c'G'
-                CASE c'g'
-                    nColor += 2 // can be combined
-                CASE c'R'
-                CASE c'r'
-                    nColor += 4 // can be combined
-                CASE c'*'
-                    nHigh  := 8 // flashing: not available, so intense
-                CASE c'+'
-                    nHigh  := 8 // intense
-                CASE c'/'
-                    IF lFore
-                        nFore 	:= nColor + nHigh
-                        nColor	:= nHigh := 0
-                        lFore 	:= FALSE
-                    ELSE
-                        done := TRUE
-                    ENDIF
-                CASE c','
+            CASE c'N'
+            CASE c'n'
+                nColor := 0 // never combined
+            CASE c'W'
+            CASE c'w'
+                nColor := 7 // never combined
+            CASE c'B'
+            CASE c'b'
+                nColor += 1 // can be combined
+            CASE c'G'
+            CASE c'g'
+                nColor += 2 // can be combined
+            CASE c'R'
+            CASE c'r'
+                nColor += 4 // can be combined
+            CASE c'*'
+                nHigh  := 8 // flashing: not available, so intense
+            CASE c'+'
+                nHigh  := 8 // intense
+            CASE c'/'
+                IF lFore
+                    nFore 	:= nColor + nHigh
+                    nColor	:= nHigh := 0
+                    lFore 	:= FALSE
+                ELSE
                     done := TRUE
-                OTHERWISE
-                    // Ignore other characters
-                    NOP
+                ENDIF
+            CASE c','
+                done := TRUE
+            OTHERWISE
+                // Ignore other characters
+                NOP
             END SWITCH
             IF done
                 EXIT
@@ -408,6 +428,38 @@ INTERNAL STATIC CLASS ConsoleHelpers
         nBack	   := nColor + nHigh
         nColor := (nBack<< 4) + nFore
         RETURN nColor
+
+    INTERNAL STATIC METHOD FileOpen(cFile as STRING, lAdditive as LOGIC) AS IntPtr
+        LOCAL hFile := IntPtr.Zero as IntPtr
+        IF ! String.IsNullOrEmpty(cFile)
+            IF File(cFile)
+                cFile := FPathName()
+            ENDIF
+            IF File(cFile) .and. lAdditive
+                hFile := FOpen2(cFile,FO_WRITE)
+                FSeek(ConsoleHelpers.AltFileHandle, FS_END, 0)
+            ELSE
+                hFile := FCreate(cFile)
+            ENDIF
+        ENDIF
+        RETURN hFile
+    INTERNAL STATIC METHOD FileClose(hFile REF IntPtr) AS VOID
+        IF hFile != IntPtr.Zero
+            FClose(hFile)
+            hFile := IntPtr.Zero
+        ENDIF
+
+    INTERNAL STATIC METHOD Write(hFile as IntPtr, cText as STRING) AS VOID
+        IF hFile != IntPtr.Zero .AND. cText != NULL
+            FWrite(hFile,cText, cText:Length)
+        ENDIF
+        RETURN
+
+    INTERNAL STATIC METHOD WriteLine(hFile as IntPtr) AS VOID
+        IF hFile != IntPtr.Zero
+            FWriteLine(hFile,"",0)
+        ENDIF
+        RETURN
 
 END CLASS
 
@@ -440,17 +492,21 @@ INTERNAL CLASS UnSafeNativeMethods
     // Private Helper methods
     [DllImport("User32.dll", CharSet := CharSet.Ansi)];
     PRIVATE STATIC METHOD PeekMessage(msg REF xMessage, hwnd as HandleRef, msgMin as INT, msgMax as INT, iremove as Int) AS LOGIC
-    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+        [DllImport("User32.dll", CharSet := CharSet.Unicode)];
     PRIVATE STATIC METHOD PostMessage(msg AS xMessage, hwnd as HandleRef, imsg as INT, wParam AS IntPtr, lParam as IntPtr) AS LOGIC
-    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+        [DllImport("User32.dll", CharSet := CharSet.Unicode)];
     PRIVATE STATIC METHOD GetMessage(msg REF xMessage, hwnd as HandleRef, msgMin as INT, msgMax as INT) AS LOGIC
-    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+        [DllImport("User32.dll", CharSet := CharSet.Unicode)];
     PRIVATE STATIC METHOD TranslateMessage(msg REF xMessage) AS LOGIC
-    [DllImport("User32.dll", CharSet := CharSet.Unicode)];
+        [DllImport("User32.dll", CharSet := CharSet.Unicode)];
     PRIVATE STATIC METHOD DispatchMessage(msg REF xMessage) AS LOGIC
 
 
 END CLASS
+
+
+
+
 
 
 

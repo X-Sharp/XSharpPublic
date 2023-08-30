@@ -1,4 +1,9 @@
-STATIC DEFINE __EXPW_LABEL_HEIGHT	:= 19
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+#define  __EXPW_LABEL_HEIGHT	19
 
  /// <exclude />
 CLASS __ExplorerLV INHERIT ListView
@@ -6,11 +11,10 @@ CLASS __ExplorerLV INHERIT ListView
 
 METHOD DefaultSort(oLVItem1, oLVItem2)
 	LOCAL s1, s2 AS STRING
-
-
-
-	s1 := oLVItem1:GetText(symSortCol)
-	s2 := oLVItem2:GetText(symSortCol)
+    local oLVI1, oLVI2 as ListViewItem
+    
+	s1 := ((ListViewItem) oLVItem1):GetText(symSortCol)
+	s2 := ((ListViewItem) oLVItem2):GetText(symSortCol)
 
 	IF (s1 == s2)
 		RETURN 0
@@ -89,11 +93,11 @@ METHOD Destroy() AS USUAL
 CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 	LOCAL oDimension	AS Dimension
 
-	DEFAULT(@lLabels, TRUE) // by default, add labels
+	DEFAULT( REF lLabels, TRUE) // by default, add labels
 
 	// by default, create view controls from base classes
-	DEFAULT(@symTreeViewClassName, #__ExplorerTV)
-	DEFAULT(@symListViewClassName, #__ExplorerLV)
+	DEFAULT( REF symTreeViewClassName, #__ExplorerTV)
+	DEFAULT( REF symListViewClassName, #__ExplorerLV)
 
 	SUPER(oOwner)
 

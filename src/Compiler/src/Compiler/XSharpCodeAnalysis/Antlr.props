@@ -32,7 +32,7 @@
     <Message Importance="high" Text="Building Lexer" />
     <Exec Command="$(AntlrCall) $(AntlrParams) $(AntlrLexerIn)" />
   </Target>
-  <Target Name="AntlrParser" BeforeTargets="DispatchToInnerBuilds" Condition="$(TicksP1) > $(TicksP2) " >
+  <Target Name="AntlrParser" BeforeTargets="DispatchToInnerBuilds" Condition="$(TicksP1) > $(TicksP2) or $(TicksL1) > $(TicksP2)" >
     <Message Importance="high" Text="Building Parser" /> 
     <Exec Command="$(AntlrCall) $(AntlrParams) $(AntlrParserIn)" />
   </Target> 

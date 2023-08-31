@@ -964,7 +964,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         // we may want to produce an error here in the future
         public override void ExitPropertyParameterList([NotNull] XSharpParser.PropertyParameterListContext context)
         {
-            if (context.L.Type == XSharpLexer.LPAREN)
+            if (context.L.Type == XSharpLexer.LPAREN && context._Params.Count > 0)
             {
                 _parseErrors.Add(new ParseErrorData(context.L, ErrorCode.WRN_PropertyParametersBrackets));
             }
@@ -972,7 +972,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
-            var isInInterface = context.isInInterface();
+            //var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
             bool HasBody = (context.Auto != null || context.Multi != null);

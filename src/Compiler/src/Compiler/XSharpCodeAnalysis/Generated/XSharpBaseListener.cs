@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\XSharp\DevPublic\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
+// Generated from C:\XSharp\Dev\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162

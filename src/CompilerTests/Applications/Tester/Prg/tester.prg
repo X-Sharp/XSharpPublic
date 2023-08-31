@@ -1,14 +1,11 @@
-FUNCTION Start() AS VOID
-    local pBuffer as PSZ
-    local pFormat as PSZ
-    pFormat := String2Psz("Example %s")
-    pBuffer := MemAlloc(1000)
-    wsprintf(pBuffer, pFormat, __arglist("abc"))
-    ? Psz2String(pBuffer)
-    MemFree(pBuffer)
-    wait
-    return
+FUNCTION STart as void
+LOCAL a, b AS FLOAT
 
 
+a := 80.85m
+b := 7.7m
+? a / b
+? Round(a / b, 0)
+? Math.Round( a/b, 0, MidpointRounding.AwayFromZero )
+_wait()
 
-_DLL FUNCTION wsprintf(pszBuffer AS PSZ, pszFormat AS PSZ, ...) AS INT STRICT:USER32.wsprintfA

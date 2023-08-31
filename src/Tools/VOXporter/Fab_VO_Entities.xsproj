@@ -1,23 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="$(SolutionDir)Tools\Common.props" Condition="'$(SolutionDir)'!=''" />
   <PropertyGroup>
-    <ProjectGuid>f6dea3ea-186c-4868-859a-c2ebbee0d981</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <Name>Fab_VO_Entities</Name>
+    <ProjectGuid>73c0dca6-bfe5-40cb-9240-3db1c37f5b34</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DeployMsBuildSupport</RootNamespace>
-    <AssemblyName>DeployMsBuildSupport</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>DeployMsBuildSupport</Name>
+    <RootNamespace>Fab_VO_Entities</RootNamespace>
+    <AssemblyName>Fab_VO_Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
+    <OutputName>Fab_VO_Entities</OutputName>
     <vo15>false</vo15>
-    <OutputName>DeployMsBuildSupport</OutputName>
-    <NoStandardDefs>true</NoStandardDefs>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <StartupObject />
+    <Nostandarddefs>True</Nostandarddefs>
+    <Allowdot>True</Allowdot>
+    <DisabledWarnings>165</DisabledWarnings>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -26,7 +28,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -47,16 +49,35 @@
     <Compile Include="$(CommonDir)constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.prg" />
-   <Compile Include="Program.prg" />
+    <Compile Include="Source\Fab_VO_Entities\AEF File.prg" />
+    <Compile Include="Source\Fab_VO_Entities\Application Abstract.prg" />
+    <Compile Include="Source\Fab_VO_Entities\Base Object.prg" />
+    <Compile Include="Source\Fab_VO_Entities\Definitions.prg" />
+    <Compile Include="Source\Fab_VO_Entities\EntityBase.prg" />
+    <Compile Include="Source\Fab_VO_Entities\FabTools.prg" />
+    <Compile Include="Source\Fab_VO_Entities\MEF Entity.prg" />
+    <Compile Include="Source\Fab_VO_Entities\MEF File.prg" />
+    <Compile Include="Source\Fab_VO_Entities\ModuleBase.prg" />
+    <Compile Include="Source\Fab_VO_Entities\PRG Entity.prg" />
+    <Compile Include="Source\Fab_VO_Entities\PRG File.prg" />
+    <Compile Include="Source\Fab_VO_Entities\Properties\AssemblyInfo.prg" />
+    <Compile Include="Source\Fab_VO_Entities\VN Entity.prg" />
+    <Compile Include="Source\Fab_VO_Entities\VN File.prg" />
+    <Compile Include="Source\Fab_VO_Entities\_xCompatinility.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="Source\" />
+    <Folder Include="Source\Fab_VO_Entities\" />
+    <Folder Include="Source\Fab_VO_Entities\Properties\" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Fab_VO_Entities\Fab_VO_Entities.xsproj" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

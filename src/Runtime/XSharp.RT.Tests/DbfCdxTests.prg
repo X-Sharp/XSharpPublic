@@ -5474,12 +5474,12 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD SetRelation_RLock() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/1226
-		
+
 			LOCAL cChild,cServer AS STRING
 			LOCAL nRecNo AS DWORD
-			
+
 			RddSetDefault( "DBFCDX" )
-			
+
 			cServer := DbfTests.GetTempFileName()
 			DbfTests.CreateDatabase(cServer, {{ "Field1", "N", 8, 0 }, { "Field2", "C", 20, 0 }, { "FieldRecNo", "C", 20, 0 }} )
 			DbUseArea( TRUE,,cServer,,FALSE)
@@ -5490,7 +5490,7 @@ RETURN
 				FieldPut( 3 , NTrim( RecNo() ) )
 			NEXT
 			DbCloseArea()
-			
+
 			cChild := DbfTests.GetTempFileName()
 			DbfTests.CreateDatabase(cChild, {{ "Field1", "N", 8, 0 }, { "Field2", "C", 20, 0 }, { "FieldRecNo", "C", 20, 0 }} )
 			DbUseArea( TRUE,,cChild,,FALSE)
@@ -5504,10 +5504,10 @@ RETURN
 				NEXT
 			NEXT
 			DbCloseArea()
-			
+
 			DbUseArea(TRUE,,cServer,"AliasServer",TRUE)
 			DbUseArea(TRUE,,cChild,"AliasClient",TRUE)
-			
+
 			? AliasClient->DbSetOrder( "ORDER1" )
 			? "Start"
 			Assert.True( AliasServer->DbSetRelation( "AliasClient",  {|| AliasServer->Field1 }, "AliasServer->Field1" ) )
@@ -5528,17 +5528,16 @@ RETURN
 			AliasServer->FieldPut( 2, "55" )
 			AliasServer->DbCommit()
 			AliasServer->DbUnLock()
-
-			IF FALSE
-				? "RecNo after Commit, before Goto"
-				? AliasClient->RecNo()
-			ENDIF
+#if FALSE
+			? "RecNo after Commit, before Goto"
+			? AliasClient->RecNo()
+#endif
 			AliasClient->DbGoto( nRecNo )
 			? "RecNo after Goto. Expected " + NTrim ( nRecNo )
 			Assert.Equal(44U, AliasClient->RecNo())
 			? AliasClient->RecNo()
 			DbCloseAll()
-		
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

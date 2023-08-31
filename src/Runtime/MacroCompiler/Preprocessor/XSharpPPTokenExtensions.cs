@@ -105,7 +105,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var source = token.Source.SourceText;
             if (source == null)
                 return "";
-            var index = token.end;
+            var index = token.End;
             var result = "";
             while (index < source.Length)
             {
@@ -368,9 +368,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case XSharpLexer.LOGIC_AND:
                 case XSharpLexer.LOGIC_XOR:
                 case XSharpLexer.LOGIC_OR:
-                //case XSharpLexer.FOX_AND:
-                //case XSharpLexer.FOX_OR:
-                //case XSharpLexer.FOX_XOR:
                     return true;
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:

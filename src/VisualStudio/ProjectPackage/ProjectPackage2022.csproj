@@ -77,12 +77,12 @@
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
-      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -94,16 +94,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(CommonDir)Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\constantsMethods.cs">
+    <Compile Include="$(CommonDir)constantsMethods.cs">
       <Link>constantsMethods.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\XSharpConstants.cs">
+    <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="Automation\OAXSharpProjectImports.cs" />

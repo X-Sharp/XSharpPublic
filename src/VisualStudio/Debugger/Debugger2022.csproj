@@ -51,13 +51,13 @@
     <ConcordSDKDir>$(VSSDKRoot)VisualStudioIntegration\</ConcordSDKDir>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(CommonDir)Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\constantsMethods.cs">
+    <Compile Include="$(CommonDir)constantsMethods.cs">
       <Link>constantsMethods.cs</Link>
     </Compile>
     <Compile Include="AddressComparer.cs" />
@@ -117,17 +117,17 @@
     <Content Include="XSharp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="XSharp.CodeAnalysis">
+     <Reference Include="XSharp.CodeAnalysis">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Evaluator">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.MonoCecil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

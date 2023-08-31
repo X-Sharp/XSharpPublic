@@ -119,7 +119,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Preprocessor\StandardHeaders.resx" />
+    <EmbeddedResource Include="..\..\Common\StandardHeaders.resx">
+      <Link>Preprocessor\StandardHeaders.resx</Link>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

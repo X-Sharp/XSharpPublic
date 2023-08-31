@@ -46,7 +46,6 @@ namespace XSharp.MacroCompiler.Syntax
         // Expression keywords
         IIF, IF, AS, OF, SELF, SUPER, SIZEOF, TYPEOF, FIELD, CAST, IS, MEMVAR,
 
-
         FIRST_POSITIONAL_KEYWORD,
 
         // New Vulcan Keywords (no 4 letter abbreviations) [entity]
@@ -113,8 +112,8 @@ namespace XSharp.MacroCompiler.Syntax
         // Boolean operators
         AND, OR, NOT,
 
-        // VO Bitwise operators
-        VO_NOT, VO_AND, VO_OR, VO_XOR,
+		// VO Bitwise operators
+		BIT_NOT, BIT_AND, BIT_OR, BIT_XOR,
 
         // Assignments
         ASSIGN_OP, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_EXP, ASSIGN_MUL, ASSIGN_DIV,
@@ -123,7 +122,7 @@ namespace XSharp.MacroCompiler.Syntax
 
 
         // Operators
-        LOGIC_AND, LOGIC_OR, LOGIC_NOT, LOGIC_XOR,
+        LOGIC_AND, LOGIC_OR, LOGIC_NOT, LOGIC_XOR, 
 
         // Symbols
         LPAREN, RPAREN, LCURLY, RCURLY, LBRKT, RBRKT, COLON, COMMA, PIPE, AMP, ADDROF, ALIAS, DOT, COLONCOLON, BACKSLASH, ELLIPSIS,
@@ -134,8 +133,8 @@ namespace XSharp.MacroCompiler.Syntax
         // Logics
         FALSE_CONST, TRUE_CONST,
         // Consts
-        HEX_CONST, BIN_CONST, INT_CONST, DATE_CONST, DATETIME_CONST, REAL_CONST, REAL_CONST_EXP, SYMBOL_CONST, CHAR_CONST, INVALID_NUMBER,
-        STRING_CONST, ESCAPED_STRING_CONST, INTERPOLATED_STRING_CONST, INCOMPLETE_STRING_CONST,
+        HEX_CONST, BIN_CONST, INT_CONST, DATE_CONST, DATETIME_CONST, REAL_CONST, REAL_CONST_EXP, INVALID_NUMBER,
+        SYMBOL_CONST, CHAR_CONST, STRING_CONST, ESCAPED_STRING_CONST, INTERPOLATED_STRING_CONST, INCOMPLETE_STRING_CONST,
         STRING_CONST_SINGLE,
         BINARY_CONST,
         // FoxPro
@@ -156,7 +155,7 @@ namespace XSharp.MacroCompiler.Syntax
         UDCSEP, // =>
 
         // Ids
-        ID, KWID,
+        ID, 
 
         // Comments
         DOC_COMMENT, SL_COMMENT, ML_COMMENT,
@@ -196,7 +195,7 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 if (index == 0)
                     return Tokens[index].Start > 0;
-                return Tokens[index-1].end < Tokens[index].Start;
+                return Tokens[index-1].End < Tokens[index].Start;
             }
             return false;
         }
@@ -208,7 +207,7 @@ namespace XSharp.MacroCompiler.Syntax
                     return SourceText.Substring(0, Tokens[index].Start);
                 var t1 = Tokens[index - 1];
                 var t2 = Tokens[index];
-                return SourceText.Substring(t1.end, t2.Start - t1.end);
+                return SourceText.Substring(t1.End, t2.Start - t1.End);
             }
             return null;
         }
@@ -217,10 +216,10 @@ namespace XSharp.MacroCompiler.Syntax
             if (index >= 0 && index < Tokens.Count)
             {
                 if (index == Tokens.Count-1)
-                    return SourceText.Substring(Tokens[index].end, SourceText.Length - Tokens[index].end);
+                    return SourceText.Substring(Tokens[index].End, SourceText.Length - Tokens[index].End);
                 var t1 = Tokens[index];
                 var t2 = Tokens[index + 1];
-                return SourceText.Substring(t1.end, t2.Start - t1.end);
+                return SourceText.Substring(t1.End, t2.Start - t1.End);
             }
             return null;
         }
@@ -258,7 +257,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Token(Token o, TokenType type, string value) : this(o) { this.Type = type; this.Value = value; }
         internal Token(TokenType type, string value, Token o) : this(o) { this.Type = type; this.Value = value; }
         internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.Default);
-        internal int end => Start + Length;
+        internal int End => Start + Length;
         public override string ToString() => ( !string.IsNullOrEmpty(Value) ? Value : TokenAttr.TokenText(Type) ) ;
         internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(this, e, args);
         internal string SourceText => Source?.SourceText.Substring(Start, Length);
@@ -378,17 +377,17 @@ namespace XSharp.MacroCompiler.Syntax
 
             var VoKeywords = new Dictionary<string, TokenType>
             {
-                {"_AND", TokenType.VO_AND},
+                {"_AND", TokenType.BIT_AND},
                 {"_CAST", TokenType.CAST},
                 {"FIELD", TokenType.FIELD},
                 {"_FIELD", TokenType.FIELD},
                 {"IF", TokenType.IF},
                 {"IIF", TokenType.IIF},
                 {"IS", TokenType.IS},
-                {"_NOT", TokenType.VO_NOT},
-                {"_OR", TokenType.VO_OR},
+                {"_NOT", TokenType.BIT_NOT},
+                {"_OR", TokenType.BIT_OR},
                 {"REF", TokenType.REF},
-                {"_XOR", TokenType.VO_XOR},
+                {"_XOR", TokenType.BIT_XOR},
 
 			    // Predefined types
                 {"ARRAY", TokenType.ARRAY},
@@ -717,7 +716,9 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#UNDEF", TokenType.PP_UNDEF},			// #undef <identifier>
                 { "#WARNING", TokenType.PP_WARNING},		// #warning [warningMessage]
                 { "#XCOMMAND", TokenType.PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
-                { "#XTRANSLATE", TokenType.PP_TRANSLATE},    // #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+                { "#XTRANSLATE", TokenType.PP_TRANSLATE},   // #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+                { "#YCOMMAND", TokenType.PP_COMMAND},		// #ycommand   <matchPattern> => <resultPattern>  // alias for #xcommand   , case sensitive
+                { "#YTRANSLATE", TokenType.PP_TRANSLATE},   // #ytranslate <matchPattern> => <resultPattern>  // alias for #xtranslate , case sensitive
                 { "#PRAGMA", TokenType.PP_PRAGMA},          // #pragma: Not supported
                 { "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#USING", TokenType.USING},

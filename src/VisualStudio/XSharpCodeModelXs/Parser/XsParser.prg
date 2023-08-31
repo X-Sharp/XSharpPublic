@@ -1260,7 +1260,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN SELF:ExpectAny(XSharpLexer.ASSIGN_OP, XSharpLexer.EQ)
 
     PRIVATE METHOD IsId(token AS LONG) AS LOGIC
-        IF token == XSharpLexer.ID .OR. token == XSharpLexer.KWID
+        IF token == XSharpLexer.ID 
             RETURN TRUE
         ENDIF
         // Soft keywords need to be

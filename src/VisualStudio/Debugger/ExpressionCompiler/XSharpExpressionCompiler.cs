@@ -6,7 +6,9 @@
 //#define XDEBUG
 using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
+using Eval=LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
+using Microsoft.VisualStudio.Debugger;
+using Microsoft.VisualStudio.Debugger.CallStack;
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
@@ -33,11 +35,31 @@ namespace XSharpDebugger.ExpressionCompiler
     ///
     /// See the method comments below for more details about each method.
     /// </summary>
-    public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
+    public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler,
+        IDkmLanguageInstructionDecoder,
+        IDkmClrExpressionCompilerCallback,
+        IDkmLanguageFrameDecoder
     {
+        IDkmClrExpressionCompiler compiler;
+        IDkmLanguageFrameDecoder decoder;
+
+        public XSharpExpressionCompiler()
+        {
+            if (!XSettings.IsVs15)
+            {
+                UpdateXSharpParseOptions();
+                compiler = new Eval.XSharpExpressionCompiler();
+                decoder = new Eval.XSharpFrameDecoder();
+            }
+            else
+            {
+                compiler = null;
+                decoder = new FrameDecoder.XSharpFrameDecoder();
+            }
+        }
         static void UpdateXSharpParseOptions()
         {
-            var xoptions = XSyntaxHelpers.XSharpOptions;
+            var xoptions = Eval.XSyntaxHelpers.XSharpOptions;
             xoptions.SetDialect((XSharpDialect)XDebuggerSettings.Dialect);
             xoptions.SetOption(CompilerOption.MemVars, XDebuggerSettings.MemVars);
             xoptions.SetOption(CompilerOption.UndeclaredMemVars, XDebuggerSettings.UndeclaredMemvars);
@@ -52,7 +74,7 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding && !XDebuggerSettings.NoLateBinding);
             xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, true);
             XSharpString.CaseSensitive = XDebuggerSettings.CaseSensitive;
-            XSyntaxHelpers.XSharpOptions = xoptions;
+            Eval.XSyntaxHelpers.XSharpOptions = xoptions;
         }
 
         /// <summary>
@@ -82,7 +104,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("CompileExpression: " + expression.Text);
 #endif
-            if (!XSettings.IsVs15)
+            if (compiler != null)
             {
                 NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
@@ -101,8 +123,7 @@ namespace XSharpDebugger.ExpressionCompiler
             try
             {
                 UpdateXSharpParseOptions();
-                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
-                e.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+                compiler.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
             catch (Exception e)
             {
@@ -177,7 +198,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("GetClrLocalVariableQuery ");
 #endif
-            if (!XSettings.IsVs15)
+            if (compiler != null)
             {
                 result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
@@ -221,8 +242,7 @@ namespace XSharpDebugger.ExpressionCompiler
             try
             {
                 UpdateXSharpParseOptions();
-                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
-                return e.GetClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+                return compiler.GetClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
             catch (Exception e)
             {
@@ -254,7 +274,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("CompileAssignment: "+expression.Text);
 #endif
-            if (!XSettings.IsVs15)
+            if (compiler != null)
             {
                 NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }
@@ -269,8 +289,7 @@ namespace XSharpDebugger.ExpressionCompiler
             try
             {
                 UpdateXSharpParseOptions();
-                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
-                e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
+                compiler.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }
             catch (Exception e)
             {
@@ -283,5 +302,51 @@ namespace XSharpDebugger.ExpressionCompiler
             expression.CompileAssignment(instructionAddress, lValue, out error, out result);
         }
 
+        public string GetMethodName(DkmLanguageInstructionAddress languageInstructionAddress, DkmVariableInfoFlags argumentFlags)
+        {
+            if (compiler != null)
+            {
+                var e = (IDkmLanguageInstructionDecoder)compiler;
+                var result = e.GetMethodName(languageInstructionAddress, argumentFlags);
+                return result;
+            }
+            return languageInstructionAddress.GetMethodName(argumentFlags);
+        }
+
+        public void CompileDisplayAttribute(DkmLanguageExpression expression, DkmClrModuleInstance moduleInstance, int token, out string error, out DkmCompiledClrInspectionQuery result)
+        {
+            if (compiler != null)
+            {
+                var e = (IDkmClrExpressionCompilerCallback)compiler;
+                e.CompileDisplayAttribute(expression, moduleInstance, token, out error, out result);
+            }
+            else
+            {
+                expression.CompileDisplayAttribute(moduleInstance, token, out error, out result);
+            }
+        }
+        public void GetFrameName(DkmInspectionContext inspectionContext, DkmWorkList workList, DkmStackWalkFrame frame, DkmVariableInfoFlags argumentFlags, DkmCompletionRoutine<DkmGetFrameNameAsyncResult> completionRoutine)
+        {
+            if (decoder != null)
+            {
+                decoder.GetFrameName(inspectionContext, workList, frame, argumentFlags, completionRoutine);
+            }
+            else
+            {
+                inspectionContext.GetFrameName(workList, frame, argumentFlags, completionRoutine);
+            }
+        }
+
+        public void GetFrameReturnType(DkmInspectionContext inspectionContext, DkmWorkList workList, DkmStackWalkFrame frame, DkmCompletionRoutine<DkmGetFrameReturnTypeAsyncResult> completionRoutine)
+        {
+            if (decoder != null)
+            {
+                decoder.GetFrameReturnType(inspectionContext, workList, frame, completionRoutine);
+            }
+            else
+            {
+                inspectionContext.GetFrameReturnType(workList, frame, completionRoutine);
+            }
+        }
     }
 }

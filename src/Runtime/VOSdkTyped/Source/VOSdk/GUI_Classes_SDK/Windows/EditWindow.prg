@@ -15,7 +15,7 @@ CLASS EditWindow INHERIT ControlWindow
     METHOD Cut()   AS VOID STRICT => oMle:Cut()
 
     /// <include file="Gui.xml" path="doc/EditWindow.Font/*" />
-    PROPERTY Font(oNewFont AS Font) SET oFont := oNewFont , SELF:__SetFont()
+    PROPERTY Font[oNewFont AS Font] SET oFont := oNewFont , SELF:__SetFont()
 
     /// <include file="Gui.xml" path="doc/EditWindow.GetLine/*" />
     METHOD GetLine(nLineNumber:= 0 as LONG, nMaxLength := 0 as LONG) AS STRING
@@ -58,7 +58,7 @@ CLASS EditWindow INHERIT ControlWindow
     PROPERTY Selection AS Selection GET oMle:Selection SET oMle:Selection:=value
 
     /// <include file="Gui.xml" path="doc/EditWindow.TextLimit/*" />
-    PROPERTY TextLimit(nChars AS LONG) SET oMle:TextLimit:=nChars
+    PROPERTY TextLimit[nChars AS LONG] SET oMle:TextLimit:=nChars
 
     /// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
     PROPERTY TextValue AS STRING GET oMle:TextValue SET oMle:TextValue:=value

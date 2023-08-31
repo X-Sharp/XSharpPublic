@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var asm = typeof(XSharpPreprocessor).GetTypeInfo().Assembly;
                 string nameSpace;
 #if VSPARSER
-                nameSpace = ""XSharp.VSParser.";
+                nameSpace = "XSharp.VSParser.";
 #else
 #if MACROCOMPILER
                 nameSpace = "XSharp.MacroCompiler.";

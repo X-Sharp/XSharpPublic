@@ -58,7 +58,7 @@ FUNCTION Start() AS INT
 
 	// TODO Must fail: "C135"
 
-	FOREACH cTest AS STRING IN aTests
+	FOREACH cTest AS STRING IN aTests:ToArray()
 		TRY
 			IF DoTest(cTest)
 				nSuccess ++
@@ -94,7 +94,7 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	ENDIF
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
 	LOCAL cType := ""  AS STRING
-	FOREACH oCustAtt AS CustomAttributeData IN oAssembly:CustomAttributes
+	FOREACH oCustAtt AS CustomAttributeData IN oAssembly:CustomAttributes:ToArray()
 	    IF oCustAtt:AttributeType:Name == "ClassLibraryAttribute"
 	        cType := (STRING) oCustAtt:ConstructorArguments:First():Value
             EXIT

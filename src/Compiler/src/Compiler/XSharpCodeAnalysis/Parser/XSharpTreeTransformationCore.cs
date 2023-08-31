@@ -6471,7 +6471,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Conditional Statements
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
-            ExitConditionalStatement(context, context._IfBlocks, context.ElseStmtBlk);
+            ExitConditionalStatement(context, context._IfBlocks, context.ElseStmtBlk, context.el);
         }
         public override void ExitCondBlock([NotNull] XP.CondBlockContext context)
         {
@@ -6481,7 +6481,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
         {
-            ExitConditionalStatement(context, context._CaseBlocks, context.OtherwiseStmtBlk);
+            ExitConditionalStatement(context, context._CaseBlocks, context.OtherwiseStmtBlk, context.oth);
         }
 
         private StatementSyntax wrapIfCondition(StatementSyntax stmt, ExpressionSyntax condition)
@@ -6510,7 +6510,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
-        private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions, XP.StatementBlockContext elseBlock)
+        private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions,
+            XP.StatementBlockContext elseBlock, IToken elseToken)
         {
             // Convert CASE blocks and ELSEIF blocks to avoid nesting too deep which may cause a stack error
             // if (condition1)
@@ -6546,6 +6547,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    otherwisestatements
             // }
             //
+            if (elseToken != null && elseBlock != null)
+            {
+                elseBlock.Start = elseToken;
+            }
             if (conditions.Count == 1)
             {
                 CreateSimpleIfStatement(context, conditions.First(), elseBlock);

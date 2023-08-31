@@ -617,12 +617,12 @@ statement           : Decl=localdecl                            #declarationStmt
 
                     | i=IF IfBlocks += condBlock[$i]
                       (e=ELSEIF IfBlocks += condBlock[$e])*
-                      (ELSE eos ElseStmtBlk=statementBlock)? 
+                      (el=ELSE eos ElseStmtBlk=statementBlock)? 
                       (e=END IF? | e=ENDIF)   eos                      #ifStmt
 
                     | DO CASE end=eos
                       (c=CASE CaseBlocks +=condBlock[$c])*
-                      (OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
+                      (oth=OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
                       (e=END CASE? | e=ENDCASE)   eos                   #caseStmt
 
                     | Key=EXIT end=eos                                  #jumpStmt

@@ -286,54 +286,56 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 SELF:_refData  := (STRING)o
 
             OTHERWISE
-                IF vartype == typeof(__Usual)
-                    // boxed __Usual, the __CASTCLASS is a special compiler instruction
-                    // that unboxes the Object into a usual
-                    LOCAL u AS USUAL
-                    u := __CASTCLASS(USUAL, o)
-                    SELF := u
-                ELSEIF vartype == TYPEOF(ARRAY)
-                    SELF:_flags				:= UsualFlags{__UsualType.Array}
-                    SELF:_refData           := (ARRAY) o
-                ELSEIF vartype == TYPEOF(DATE)
-                    SELF:_flags				:= UsualFlags{__UsualType.Date}
-                    SELF:_valueData:d		:= (DATE) o
-                ELSEIF vartype == TYPEOF(SYMBOL)
-                    SELF:_flags				:= UsualFlags{__UsualType.Symbol}
-                    SELF:_valueData:s		:= (SYMBOL) o
-                ELSEIF vartype == TYPEOF(BINARY)
-                    SELF:_flags				:= UsualFlags{__UsualType.Binary}
-                    SELF:_refData           := ((BINARY) o):Value
-                ELSEIF vartype == TYPEOF(CURRENCY)
-                    SELF:_flags				:= UsualFlags{__UsualType.Currency}
-                    SELF:_refData	 	    := ((CURRENCY) o):Value
-                ELSEIF vartype == TYPEOF(IntPtr)
-                    SELF:_flags				:= UsualFlags{__UsualType.Ptr}
-                    SELF:_valueData:p		:= (IntPtr) o
-                ELSEIF vartype == TYPEOF(PSZ)
-                    SELF:_flags				:= UsualFlags{__UsualType.Psz}
-                    SELF:_refData	 	    := o:ToString()
-                ELSEIF vartype == TYPEOF(System.Reflection.Pointer)
-                    SELF:_flags				:= UsualFlags{__UsualType.Ptr}
-                    SELF:_valueData:p		:= IntPtr{System.Reflection.Pointer.Unbox(o)}
-                ELSEIF o IS IDate VAR d
+
+                SWITCH o
+                CASE d AS IDate
                     SELF:_flags				:= UsualFlags{__UsualType.Date}
                     SELF:_valueData:d		:= DATE{d }
-                ELSEIF o IS IFloat VAR f
+                CASE c AS ICurrency
+                    SELF:_flags			    := UsualFlags{__UsualType.Currency}
+                    SELF:_refData	 	    := c:Value
+                CASE f AS IFloat
                     SELF:_flags				:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8		:= f:Value
                     SELF:_flags:Width		:= (SByte) f:Digits
                     SELF:_flags:Decimals	:= (SByte) f:Decimals
-                ELSEIF o IS ICodeblock VAR cb
+                CASE cb AS ICodeblock
                     SELF:_flags				:= UsualFlags{__UsualType.Codeblock}
                     SELF:_refData           := cb
                     //                    ELSEIF o IS OBJECT[]   VAR oArray
                     //                        SELF:_flags				:= UsualFlags{__UsualType.Array}
                     //                        SELF:_refData           := ARRAY{oArray}
-                ELSE
-                    SELF:_flags				:= UsualFlags{__UsualType.Object}
-                    SELF:_refData           := o
-                ENDIF
+                CASE ar AS ARRAY
+                    SELF:_flags				:= UsualFlags{__UsualType.Array}
+                    SELF:_refData           := ar
+                CASE sym AS SYMBOL
+                    SELF:_flags				:= UsualFlags{__UsualType.Symbol}
+                    SELF:_valueData:s		:= sym
+                CASE bin AS BINARY
+                    SELF:_flags				:= UsualFlags{__UsualType.Symbol}
+                    SELF:_refData           := bin:Value
+                CASE ps AS PSZ
+                    SELF:_flags				:= UsualFlags{__UsualType.Psz}
+                    SELF:_refData	 	    := ps:ToString()
+                CASE ip AS IntPtr
+                    SELF:_flags				:= UsualFlags{__UsualType.Ptr}
+                    SELF:_valueData:p		:= ip
+                CASE srp as System.Reflection.Pointer
+                    SELF:_flags				:= UsualFlags{__UsualType.Ptr}
+                    SELF:_valueData:p		:= IntPtr{System.Reflection.Pointer.Unbox(o)}
+
+                OTHERWISE
+                    IF vartype == TYPEOF(__Usual)
+                        // boxed __Usual, the __CASTCLASS is a special compiler instruction
+                        // that unboxes the Object into a usual
+                        LOCAL u AS USUAL
+                        u := __CASTCLASS(USUAL, o)
+                        SELF := u
+                    ELSE
+                        SELF:_flags				:= UsualFlags{__UsualType.Object}
+                        SELF:_refData           := o
+                    ENDIF
+                END SWITCH
             END SWITCH
         ENDIF
         RETURN

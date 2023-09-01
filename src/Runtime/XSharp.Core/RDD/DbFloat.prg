@@ -1,10 +1,10 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary> 
+/// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary>
 /// <seealso cref="T:XSharp.IFloat"/>
 STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
 	/// <inheritdoc />
@@ -27,7 +27,7 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
 		RETURN TypeCode.Object
 
 	METHOD IConvertible.ToBoolean(provider AS IFormatProvider ) AS LOGIC
-		IF(	@@Value != 0.0) 
+		IF(	@@Value != 0.0)
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
@@ -79,8 +79,8 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
 
 	#endregion
 END	STRUCTURE
-		
-/// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary> 
+
+/// <summary>Implementation of the IDate interface that can be used by the RDD system. </summary>
 /// <seealso cref="T:XSharp.IDate"/>
 STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
 	/// <inheritdoc />
@@ -105,4 +105,10 @@ STRUCTURE XSharp.RDD.DbDate IMPLEMENTS IDate
             RETURN "    -  -  "
         ENDIF
         RETURN SELF:Value:ToString("yyyy-MM-dd")
+END STRUCTURE
+
+STRUCTURE XSharp.RDD.DbCurrency IMPLEMENTS ICurrency
+    PROPERTY @@Value AS System.Decimal GET PRIVATE SET
+    CONSTRUCTOR (curValue AS System.Decimal)
+        @@Value := curValue
 END STRUCTURE

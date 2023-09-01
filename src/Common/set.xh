@@ -35,8 +35,7 @@
 
 #command  SET EXACT <x:ON,OFF,&>    =>  Set( Set.Exact, <(x)> )
 #command  SET FIXED <x:ON,OFF,&>    =>  Set( Set.Fixed, <(x)> )
-#command  SET DECIMALS TO [<x>]     =>  Set( Set.Decimals, iif( <.x.>, <!x!>, 0) )
-
+#command  SET DECIMALS TO <x:&>     =>  Set( Set.Decimals, <(x)>)
 
 #command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
 #command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)
@@ -47,15 +46,19 @@
 #command  SET DATE [TO] USA                     =>  SetDateCountry(DateCountry.USA)
 #command  SET DATE [TO] <x:SYSTEM,WINDOWS>      =>  SetDateCountry(DateCountry.System)
 
+// Next one is used to restore the date
+#command  SET DATE [TO] <x:&>                   =>  SetDateFormat(<(x)>)
+
 // The next settings calls a runtime function because they set more than just the format.
 // Date format also sets the DateCountry
 // Time format also sets the AmPm extension and the Time Separator
-#command  SET DATE FORMAT [TO] <c>  =>  SetDateFormat( <c> )
-#command  SET TIME TO <*x*>         =>  SetTimeFormat( <(x)> )
-#command  SET TIME TO SYSTEM        =>  SetTimeFormat( "" )
+#command  SET DATE FORMAT [TO] <c>   =>  SetDateFormat( <c> )
+#command  SET DATE FORMAT [TO] <x:&> =>  SetDateFormat(<(x)>)
+#command  SET TIME TO <*x*>          =>  SetTimeFormat( <(x)> )
+#command  SET TIME TO SYSTEM         =>  SetTimeFormat( "" )
 
-#command  SET CENTURY <x:ON,OFF,&>  =>  Set(Set.Century, <(x)> )
-#command  SET EPOCH TO <year>       =>  Set(Set.Epoch, <year> )
+#command  SET CENTURY <x:ON,OFF,&>   =>  Set(Set.Century, <(x)> )
+#command  SET EPOCH TO <year>        =>  Set(Set.Epoch, <year> )
 
 ///////////////////////////////////////////////////////////////////////////
 //  DB SETs

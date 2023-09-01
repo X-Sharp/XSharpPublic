@@ -137,16 +137,13 @@ FUNCTION __FieldGetNum( fieldpos AS DWORD ) AS USUAL
 
 /// <exclude/>
 FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
-    LOCAL ret := NIL AS USUAL
-    LOCAL curArea AS DWORD
-    curArea := RuntimeState.CurrentWorkarea
+    VAR curArea := RuntimeState.CurrentWorkarea
     TRY
         RuntimeState.CurrentWorkarea := workarea
-        VoDb.FieldGet( fieldpos, REF ret )
+        RETURN __FieldGetNum(fieldpos)
     FINALLY
         RuntimeState.CurrentWorkarea := curArea
     END TRY
-    RETURN ret
 
 
 
@@ -156,15 +153,14 @@ FUNCTION __FieldSetNum( fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
 
 /// <exclude/>
 FUNCTION __FieldSetWaNum( nArea AS DWORD, fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
-    LOCAL curArea AS DWORD
-    curArea := RuntimeState.CurrentWorkarea
+    VAR curArea := RuntimeState.CurrentWorkarea
     TRY
         RuntimeState.CurrentWorkarea := nArea
         _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut( fieldpos, uValue ) )
+        RETURN uValue
     FINALLY
         RuntimeState.CurrentWorkarea := curArea
     END TRY
-    RETURN uValue
 
 
 
@@ -197,17 +193,12 @@ FUNCTION FieldWBlockSym(symFieldname AS SYMBOL,dwWorkArea AS DWORD) AS CODEBLOCK
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetalias/*" />
 FUNCTION FieldGetAlias(symAlias AS SYMBOL,symFieldName AS SYMBOL) AS USUAL
-    RETURN FieldGetSelect(symAlias, symFieldName)
+    RETURN FieldGetArea(@@Select(symAlias ), symFieldName)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetalias/*" />
 FUNCTION FieldGetSelect(symAlias AS USUAL,symFieldName AS SYMBOL) AS USUAL
-    LOCAL nArea := RuntimeState.CurrentWorkarea AS DWORD
-    LOCAL uValue AS USUAL
-    DbSelectArea(symAlias)
-    uValue := FieldGetSym(symFieldName)
-    VoDb.SetSelect((INT) nArea)
-    RETURN uValue
+    RETURN FieldGetArea(@@Select(symAlias ), symFieldName)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetsym/*" />
 FUNCTION FieldGetSym(symField AS SYMBOL) AS USUAL
@@ -225,7 +216,7 @@ FUNCTION FieldPosSym(sFieldName AS SYMBOL) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputalias/*" />
 FUNCTION FieldPutAlias(symAlias AS SYMBOL,symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
-    RETURN FieldPutSelect(symAlias, symField, uNewValue)
+    RETURN FieldPutArea(@@Select(symAlias ), symField, uNewValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputsym/*" />
 FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
@@ -238,9 +229,7 @@ FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputselect/*" />
 FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
-    LOCAL nArea AS DWORD
-    nArea := @@Select(symAlias )
-    RETURN FieldPutArea(nArea, symField, uNewValue)
+    RETURN FieldPutArea(@@Select(symAlias ), symField, uNewValue)
 
 
     *----------------------------------------------------------------------------
@@ -263,14 +252,17 @@ FUNCTION Alias0Sym() AS SYMBOL
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappend/*" />
-FUNCTION DbAppend(lReleaseLocks) AS LOGIC CLIPPER
+FUNCTION DbAppend(lReleaseLocks, uArea) AS LOGIC CLIPPER
     LOCAL lRetCode  AS LOGIC
 
     IF lReleaseLocks:IsNil
         lReleaseLocks := .T.
     ENDIF
-
-    lRetCode := VoDb.Append(lReleaseLocks)
+    IF uArea:IsNil
+        lRetCode := VoDb.Append(lReleaseLocks)
+    ELSE
+        lRetCode := (uArea)->(VoDb.Append(lReleaseLocks))
+    ENDIF
 
     IF !lRetCode
         //    No Error but NetErr gets set for compatibility reasons
@@ -350,6 +342,10 @@ FUNCTION DbCreateOrder  (cOrder, cIndexFile, cKeyValue, cbKeyValue, lUnique) AS 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdelete/*" />
 FUNCTION DbDelete () AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Delete() )
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdelete/*" />
+FUNCTION DbDelete (uArea AS USUAL) AS LOGIC STRICT
+    RETURN (uArea) ->DbDelete()
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdeleteorder/*" />
@@ -669,11 +665,16 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbskip/*" />
-FUNCTION DbSkip (nRecords) AS LOGIC CLIPPER
+FUNCTION DbSkip (nRecords, uArea) AS LOGIC CLIPPER
     IF nRecords:IsNil
         nRecords := 1
     ENDIF
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Skip(nRecords) )
+    IF uArea:IsNil
+        RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Skip(nRecords) )
+    ENDIF
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, (uArea)->(VoDb.Skip(nRecords) ))
+
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbusearea/*" />
 FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aStruct, cDelim,acRDDs ) AS LOGIC CLIPPER
@@ -777,41 +778,32 @@ FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL
     RETURN aBytes
 
 
+FUNCTION __FieldHelper(dwWorkArea AS DWORD, symFieldName AS SYMBOL, cFunction AS STRING, oldArea OUT DWORD) AS DWORD
+    oldArea := VoDbGetSelect()
+    LOCAL dwPos AS DWORD
+    VoDbSetSelect( (INT) dwWorkArea)
+    dwPos := FieldPosSym(symFieldName)
+    IF dwPos == 0
+        VoDbSetSelect( (INT) oldArea)
+        THROW Error.VoDbError(EG_ARG, EDB_FIELDNAME, cFunction, <OBJECT>{symFieldName})
+    ENDIF
+    RETURN dwPos
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetarea/*" />
 FUNCTION FieldGetArea(dwWorkArea AS DWORD, symFieldName AS SYMBOL) AS USUAL
-    LOCAL oldArea := VoDbGetSelect() AS DWORD
-    LOCAL result := NIL  AS USUAL
     LOCAL dwPos AS DWORD
-    TRY
-        VoDbSetSelect( (INT) dwWorkArea)
-        dwPos := FieldPosSym(symFieldName)
-        IF dwPos == 0
-           VoDbSetSelect( (INT) oldArea)
-           THROW Error.VoDbError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, <OBJECT>{symFieldName})
-        ELSE
-            VoDbFieldGet( dwPos, REF result )
-        ENDIF
-    FINALLY
-        VoDbSetSelect( (INT) oldArea)
-    END TRY
+    LOCAL result := NIL AS USUAL
+    dwPos :=__FieldHelper(dwWorkArea, symFieldName, __FUNCTION__, OUT VAR oldArea)
+    VoDbFieldGet( dwPos, REF result )
+    VoDbSetSelect( (INT) oldArea)
     RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputarea/*" />
 FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUAL) AS USUAL
-    LOCAL oldArea := VoDbGetSelect() AS DWORD
     LOCAL dwPos AS DWORD
-    TRY
-        VoDbSetSelect( (INT) dwWorkArea)
-        dwPos := FieldPosSym(symField)
-        IF dwPos == 0
-           VoDbSetSelect( (INT) oldArea)
-           THROW Error.VoDbError(EG_ARG, EDB_FIELDNAME, __FUNCTION__, <OBJECT>{symField})
-        ELSE
-            VoDbFieldPut( dwPos, uNewValue)
-        ENDIF
-    FINALLY
-        VoDbSetSelect( (INT) oldArea)
-    END TRY
+    dwPos :=__FieldHelper(dwWorkArea, symField, __FUNCTION__, OUT VAR oldArea)
+    VoDbFieldPut( dwPos, uNewValue)
+    VoDbSetSelect( (INT) oldArea)
     RETURN uNewValue
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />
@@ -1228,4 +1220,13 @@ FUNCTION DbAutoLock() AS VOID
 FUNCTION DbAutoUnLock() AS VOID
     XSharp.RuntimeState.AutoUnLock()
     RETURN
+/// <summary>Automatically lock a record in the FoxPro dialect </summary>
 
+FUNCTION DbAutoLockArea(area AS STRING) AS USUAL STRICT
+    (area)->(XSharp.RuntimeState.AutoLock())
+    RETURN NIL
+
+/// <summary>Automatically unlock a record in the FoxPro dialect </summary>
+FUNCTION DbAutoUnLockArea(area AS STRING) AS USUAL STRICT
+    (area)->(XSharp.RuntimeState.AutoUnLock())
+    RETURN NIL

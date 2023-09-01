@@ -15,6 +15,11 @@ FUNCTION DbReindex() AS LOGIC
     // Don't call CoreDb because of error handling
 	RETURN OrdListRebuild()
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbreindex/*" />
+FUNCTION DbReindex(uArea AS USUAL) AS LOGIC
+    // Don't call CoreDb because of error handling
+	RETURN (uArea)->(OrdListRebuild())
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbseek/*" />
 FUNCTION DbSeek(uKey, lSoftSeek, lLast) AS LOGIC CLIPPER

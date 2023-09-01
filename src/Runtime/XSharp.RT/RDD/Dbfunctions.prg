@@ -13,17 +13,6 @@ USING System.Reflection
 USING System.Linq
 USING System.Text
 
-#command DOINAREA <uArea> <func>  => ;
-    LOCAL nOld := RuntimeState.CurrentWorkarea AS DWORD ; ;
-    IF ! (_Select(<uArea>) == 0 ) ; ;
-         TRY ;  ;
-            RETURN <FUNC> ;;
-         FINALLY;  ;
-            RuntimeState.CurrentWorkarea := nOld ; ;
-        END TRY; ;
-    ENDIF ; ;
-    THROW _NoAlias( <uArea> )
-
 
 FUNCTION _NoAlias(uArea AS USUAL) AS Error
     VAR oErr := Error{EG_NOTABLE, "uArea", "Alias '"+uArea:ToString()+"' is not found"}
@@ -58,7 +47,7 @@ FUNCTION Bof() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bof/*" />
 FUNCTION Bof(uArea AS USUAL) AS LOGIC
-    DOINAREA uArea VoDb.Bof()
+    RETURN (uArea)->(Bof())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbf/*" />
@@ -67,7 +56,7 @@ FUNCTION DBF() AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbf/*" />
 FUNCTION DBF(uArea AS USUAL) AS STRING
-    DOINAREA uArea VoDb.Dbf()
+    RETURN (uArea)->(DBF())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbpack/*" />
 FUNCTION DbPack() AS LOGIC STRICT
@@ -75,7 +64,7 @@ FUNCTION DbPack() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbpack/*" />
 FUNCTION DbPack(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbPack()
+    RETURN (uArea)->(DbPack())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
 FUNCTION DbRecall() AS LOGIC STRICT
@@ -83,7 +72,7 @@ FUNCTION DbRecall() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
 FUNCTION DbRecall(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbRecall()
+    RETURN (uArea)->(DbRecall())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
 FUNCTION DbUnLock() AS LOGIC STRICT
@@ -93,6 +82,15 @@ FUNCTION DbUnLock() AS LOGIC STRICT
 FUNCTION DbUnLock(nRecord AS LONG) AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(nRecord))
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
+FUNCTION DbUnLock(nRecord AS USUAL, uArea AS USUAL) AS LOGIC STRICT
+    IF nRecord:IsNil
+        RETURN (uArea)->(DbUnLock())
+    ELSE
+        RETURN (uArea)->(DbUnLock(nRecord))
+    ENDIF
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbzap/*" />
 FUNCTION DbZap() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Zap())
@@ -100,7 +98,7 @@ FUNCTION DbZap() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbzap/*" />
 FUNCTION DbZap(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbZap()
+    RETURN (uArea)->(DbZap())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlockall/*" />
@@ -115,7 +113,7 @@ FUNCTION Deleted() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/deleted/*" />
 FUNCTION Deleted(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea VoDb.Deleted()
+    RETURN (uArea)->(Deleted())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/eof/*" />
@@ -124,7 +122,7 @@ FUNCTION Eof() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/eof/*" />
 FUNCTION Eof(uArea AS USUAL) AS LOGIC
-    DOINAREA uArea VoDb.Eof()
+    RETURN (uArea)->(Eof())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/flock/*" />
 FUNCTION Flock() AS LOGIC STRICT
@@ -132,7 +130,7 @@ FUNCTION Flock() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/flock/*" />
 FUNCTION Flock(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea VoDb.Flock()
+    RETURN (uArea)->(Flock())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcount/*" />
 FUNCTION FCount() AS DWORD
@@ -140,7 +138,7 @@ FUNCTION FCount() AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcount/*" />
 FUNCTION FCount(uArea AS USUAL) AS DWORD
-    DOINAREA uArea VoDb.FCount()
+    RETURN (uArea)->(FCount())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldname/*" />
 FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
@@ -152,7 +150,7 @@ FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldname/*" />
 FUNCTION FieldName(dwFieldPos AS DWORD, uArea AS USUAL) AS STRING
-    DOINAREA uArea FieldName(dwFieldPos)
+    RETURN (uArea)->(FieldName(dwFieldPos))
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldsym/*" />
@@ -165,7 +163,7 @@ FUNCTION FieldSym(dwFieldPos AS DWORD) AS SYMBOL
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldsym/*" />
 FUNCTION FieldSym(dwFieldPos AS DWORD, uArea AS USUAL) AS SYMBOL
-    DOINAREA uArea FieldSym(dwFieldPos)
+    RETURN (uArea)->(FieldSym(dwFieldPos))
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldpos/*" />
@@ -188,7 +186,7 @@ FUNCTION Found() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/found/*" />
 FUNCTION Found(uArea AS USUAL) AS LOGIC
-    DOINAREA uArea VoDb.Found()
+   RETURN (uArea)->(Found())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
 FUNCTION Header() AS LONG
@@ -200,7 +198,7 @@ FUNCTION Header() AS LONG
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
 FUNCTION Header(uArea AS USUAL) AS LONG
-    DOINAREA uArea Header()
+    RETURN (uArea)->(Header())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lastrec/*" />
@@ -209,7 +207,7 @@ FUNCTION LastRec() AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lastrec/*" />
 FUNCTION LastRec(uArea AS USUAL) AS DWORD
-    DOINAREA uArea LastRec()
+    RETURN (uArea)->(LastRec())
 
 /// <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
 /// <returns>
@@ -219,7 +217,7 @@ FUNCTION DbBuffRefresh() AS LOGIC STRICT
 
 
 FUNCTION DbBuffRefresh(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbBuffRefresh()
+    RETURN (uArea)->(DbBuffRefresh())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearfilter/*" />
@@ -229,7 +227,7 @@ FUNCTION DbClearFilter() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearfilter/*" />
 FUNCTION DbClearFilter(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbClearFilter()
+    RETURN (uArea)->(DbClearFilter())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearrelation/*" />
@@ -239,7 +237,7 @@ FUNCTION DbClearRelation() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearrelation/*" />
 FUNCTION DbClearRelation(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbClearRelation()
+    RETURN (uArea)->(DbClearRelation())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcloseall/*" />
@@ -254,7 +252,7 @@ FUNCTION DbCloseArea () AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
 FUNCTION DbCloseArea (uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea VoDb.CloseArea()
+    RETURN (uArea)->(DbCloseArea())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
@@ -264,7 +262,7 @@ FUNCTION DbCommit() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
 FUNCTION DbCommit(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea VoDb.Commit()
+     RETURN (uArea)->(DbCommit())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommitall/*" />
 FUNCTION DbCommitAll() AS LOGIC STRICT
@@ -272,7 +270,7 @@ FUNCTION DbCommitAll() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcontinue/*" />
 FUNCTION DbContinue(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbContinue()
+    RETURN (uArea)->(DbContinue())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcontinue/*" />
 FUNCTION DbContinue() AS LOGIC STRICT
@@ -290,7 +288,7 @@ FUNCTION DbFilter() AS STRING STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbfilter/*" />
 FUNCTION DbFilter(uArea AS USUAL) AS STRING STRICT
-    DOINAREA uArea VoDb.Filter()
+     RETURN (uArea)->(DbFilter())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgetselect/*" />
@@ -305,7 +303,7 @@ FUNCTION DbGoBottom() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgobottom/*" />
 FUNCTION DbGoBottom(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbGoBottom()
+     RETURN (uArea)->(DbGoBottom())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgotop/*" />
@@ -314,7 +312,7 @@ FUNCTION DbGoTop() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgotop/*" />
 FUNCTION DbGoTop(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea DbGoTop()
+     RETURN (uArea)->(DbGoTop())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddname/*" />
 FUNCTION RddName        () AS STRING STRICT
@@ -341,7 +339,7 @@ FUNCTION RecCount() AS LONG
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/reccount/*" />
 FUNCTION RecCount(uArea AS USUAL) AS LONG
-    DOINAREA uArea VoDb.LastRec()
+     RETURN (uArea)->(RecCount())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />
@@ -350,7 +348,7 @@ FUNCTION RecNo() AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />
 FUNCTION RecNo(uArea AS USUAL) AS DWORD
-    DOINAREA uArea VoDb.Recno()
+     RETURN (uArea)->(RecNo())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recsize/*" />
@@ -359,7 +357,7 @@ FUNCTION RecSize AS LONG
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recsize/*" />
 FUNCTION RecSize(uArea AS USUAL) AS LONG
-    DOINAREA uArea VoDb.RecSize()
+     RETURN (uArea)->(RecSize())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
 FUNCTION RLock() AS LOGIC STRICT
@@ -367,7 +365,7 @@ FUNCTION RLock() AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
 FUNCTION RLock(uArea AS USUAL) AS LOGIC STRICT
-    DOINAREA uArea VoDb.RLock(NULL)
+     RETURN (uArea)->(RLock())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
 FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT

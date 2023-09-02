@@ -178,7 +178,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR(@@Value AS PSZ)
-        SELF(__UsualType.String)
+        SELF(__UsualType.Psz)
         SELF:_refData			:= Psz2String(@@Value)
         RETURN
 
@@ -312,7 +312,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                     SELF:_flags				:= UsualFlags{__UsualType.Symbol}
                     SELF:_valueData:s		:= sym
                 CASE bin AS BINARY
-                    SELF:_flags				:= UsualFlags{__UsualType.Symbol}
+                    SELF:_flags				:= UsualFlags{__UsualType.Binary}
                     SELF:_refData           := bin:Value
                 CASE ps AS PSZ
                     SELF:_flags				:= UsualFlags{__UsualType.Psz}
@@ -3485,14 +3485,13 @@ INTERNAL STRUCTURE UsualFlags
     [FieldOffset(2)] EXPORT Initialized AS LOGIC
     [FieldOffset(3)] EXPORT IsByRef     AS LOGIC
 
-    [NODEBUG];
-    CONSTRUCTOR(type AS __UsualType)
+    #pragma warnings(171, off) // not all elements are initialzed. Setting Flags sets all other fields
+    [NODEBUG] [INLINE];
+        CONSTRUCTOR(type AS __UsualType)
         Flags       := 0
         UsualType   := type
-        Width	    := 0
-        Decimals    := 0
-        IsByRef     := FALSE
         Initialized := TRUE
+    #pragma warnings(171, default)
 END STRUCTURE
 
 

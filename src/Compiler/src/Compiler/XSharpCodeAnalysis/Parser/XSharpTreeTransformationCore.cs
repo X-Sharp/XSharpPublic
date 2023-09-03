@@ -6471,6 +6471,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Conditional Statements
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
+            if (context.el != null && context.ElseStmtBlk != null)
+            {
+                context.ElseStmtBlk.Start = context.el;
+            }
             ExitConditionalStatement(context, context._IfBlocks, context.ElseStmtBlk);
         }
         public override void ExitCondBlock([NotNull] XP.CondBlockContext context)
@@ -6481,6 +6485,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
         {
+            if (context.oth != null && context.OtherwiseStmtBlk != null)
+            {
+                context.OtherwiseStmtBlk.Start = context.oth;
+            }
             ExitConditionalStatement(context, context._CaseBlocks, context.OtherwiseStmtBlk);
         }
 
@@ -6510,7 +6518,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
-        private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions, XP.StatementBlockContext elseBlock)
+        private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions,
+            XP.StatementBlockContext elseBlock)
         {
             // Convert CASE blocks and ELSEIF blocks to avoid nesting too deep which may cause a stack error
             // if (condition1)
@@ -6546,6 +6555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    otherwisestatements
             // }
             //
+            
             if (conditions.Count == 1)
             {
                 CreateSimpleIfStatement(context, conditions.First(), elseBlock);
@@ -6773,8 +6783,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var trykwd = context.T.SyntaxKeyword();
             var finkwd = context.F?.SyntaxKeyword();
-            StatementSyntax tryStmt =
-            _syntaxFactory.TryStatement(
+            if (context.F != null && context.FinBlock != null)
+            {
+                context.FinBlock.Start = context.F;
+            }
+            StatementSyntax tryStmt = _syntaxFactory.TryStatement(
                 attributeLists: default,
                 trykwd,
                 context.StmtBlk.Get<BlockSyntax>(),

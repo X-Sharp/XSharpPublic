@@ -8,6 +8,7 @@ SET XSCONFIG=Debug
 SET XSFIXEDTESTS=TRUE
 SET XSLOGFILE=%TESTDIR%\LogFixed.Log
 SET INCLUDE=%ROOT%..\Common;%ROOT%Include
+msiexec /i runtime\VulcanRedist.4.0.401.0.msi /qn
 IF NOT EXIST %ROOT%Bin MKDIR %ROOT%Bin
 IF NOT EXIST %ROOT%Bin\Debug MKDIR %ROOT%Bin\Debug
 IF NOT EXIST %ROOT%Bin\Release MKDIR %ROOT%Bin\Release

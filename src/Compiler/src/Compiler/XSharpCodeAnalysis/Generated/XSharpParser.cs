@@ -9757,6 +9757,7 @@ public partial class XSharpParser : Parser {
 		public EosContext end;
 		public StatementBlockContext StmtBlk;
 		public RecoverBlockContext RecoverBlock;
+		public IToken F;
 		public StatementBlockContext FinBlock;
 		public IToken e;
 		public ITerminalNode BEGIN() { return GetToken(XSharpParser.BEGIN, 0); }
@@ -9778,10 +9779,10 @@ public partial class XSharpParser : Parser {
 		}
 		public ITerminalNode END() { return GetToken(XSharpParser.END, 0); }
 		public ITerminalNode RECOVER() { return GetToken(XSharpParser.RECOVER, 0); }
-		public ITerminalNode FINALLY() { return GetToken(XSharpParser.FINALLY, 0); }
 		public RecoverBlockContext recoverBlock() {
 			return GetRuleContext<RecoverBlockContext>(0);
 		}
+		public ITerminalNode FINALLY() { return GetToken(XSharpParser.FINALLY, 0); }
 		public SeqStmtContext(StatementContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IXSharpListener typedListener = listener as IXSharpListener;
@@ -10580,7 +10581,7 @@ public partial class XSharpParser : Parser {
 				_la = _input.La(1);
 				if (_la==FINALLY) {
 					{
-					State = 1800; Match(FINALLY);
+					State = 1800; ((SeqStmtContext)_localctx).F = Match(FINALLY);
 					State = 1801; eos();
 					State = 1802; ((SeqStmtContext)_localctx).FinBlock = statementBlock();
 					}
@@ -13535,7 +13536,7 @@ public partial class XSharpParser : Parser {
 		public IToken _UNSAFE;
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _ASYNC;
-		public IToken _tset6609;
+		public IToken _tset6611;
 		public ITerminalNode[] UNSAFE() { return GetTokens(XSharpParser.UNSAFE); }
 		public ITerminalNode UNSAFE(int i) {
 			return GetToken(XSharpParser.UNSAFE, i);
@@ -13574,10 +13575,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 2503;
-				_localctx._tset6609 = _input.Lt(1);
+				_localctx._tset6611 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==ASYNC || _la==UNSAFE) ) {
-					_localctx._tset6609 = _errHandler.RecoverInline(this);
+					_localctx._tset6611 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -13586,7 +13587,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset6609);
+				_localctx._Tokens.Add(_localctx._tset6611);
 				}
 				}
 				State = 2506;
@@ -20868,7 +20869,7 @@ public partial class XSharpParser : Parser {
 		public IToken _FINAL;
 		public IToken _SEALED;
 		public IToken _ABSTRACT;
-		public IToken _tset10981;
+		public IToken _tset10983;
 		public ITerminalNode[] STATIC() { return GetTokens(XSharpParser.STATIC); }
 		public ITerminalNode STATIC(int i) {
 			return GetToken(XSharpParser.STATIC, i);
@@ -20919,10 +20920,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3410;
-				_localctx._tset10981 = _input.Lt(1);
+				_localctx._tset10983 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(((((_la - 63)) & ~0x3f) == 0 && ((1L << (_la - 63)) & ((1L << (STATIC - 63)) | (1L << (ABSTRACT - 63)) | (1L << (SEALED - 63)))) != 0) || _la==FREEZE || _la==FINAL) ) {
-					_localctx._tset10981 = _errHandler.RecoverInline(this);
+					_localctx._tset10983 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -20931,7 +20932,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset10981);
+				_localctx._Tokens.Add(_localctx._tset10983);
 				}
 				}
 				State = 3413;
@@ -21497,7 +21498,7 @@ public partial class XSharpParser : Parser {
 		public IToken _UNSAFE;
 		public IToken _EXTERN;
 		public IToken _VIRTUAL;
-		public IToken _tset11219;
+		public IToken _tset11221;
 		public ITerminalNode[] DEFERRED() { return GetTokens(XSharpParser.DEFERRED); }
 		public ITerminalNode DEFERRED(int i) {
 			return GetToken(XSharpParser.DEFERRED, i);
@@ -21580,10 +21581,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3475;
-				_localctx._tset11219 = _input.Lt(1);
+				_localctx._tset11221 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==CLASS || _la==STATIC || ((((_la - 79)) & ~0x3f) == 0 && ((1L << (_la - 79)) & ((1L << (ABSTRACT - 79)) | (1L << (NEW - 79)) | (1L << (VIRTUAL - 79)) | (1L << (ASYNC - 79)) | (1L << (EXTERN - 79)) | (1L << (OVERRIDE - 79)))) != 0) || ((((_la - 144)) & ~0x3f) == 0 && ((1L << (_la - 144)) & ((1L << (UNSAFE - 144)) | (1L << (DEFERRED - 144)) | (1L << (FINAL - 144)) | (1L << (INTRODUCE - 144)) | (1L << (SYNC - 144)))) != 0)) ) {
-					_localctx._tset11219 = _errHandler.RecoverInline(this);
+					_localctx._tset11221 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -21592,7 +21593,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11219);
+				_localctx._Tokens.Add(_localctx._tset11221);
 				}
 				}
 				State = 3478;
@@ -21935,7 +21936,7 @@ public partial class XSharpParser : Parser {
 		public IToken _ACCESS;
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _ASSIGN;
-		public IToken _tset11453;
+		public IToken _tset11455;
 		public ITerminalNode[] ACCESS() { return GetTokens(XSharpParser.ACCESS); }
 		public ITerminalNode ACCESS(int i) {
 			return GetToken(XSharpParser.ACCESS, i);
@@ -21974,10 +21975,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3535;
-				_localctx._tset11453 = _input.Lt(1);
+				_localctx._tset11455 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==ACCESS || _la==ASSIGN) ) {
-					_localctx._tset11453 = _errHandler.RecoverInline(this);
+					_localctx._tset11455 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -21986,7 +21987,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11453);
+				_localctx._Tokens.Add(_localctx._tset11455);
 				}
 				}
 				State = 3538;

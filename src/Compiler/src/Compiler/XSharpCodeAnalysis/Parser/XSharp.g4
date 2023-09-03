@@ -636,7 +636,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
-                      (FINALLY eos FinBlock=statementBlock)?
+                      (F=FINALLY eos FinBlock=statementBlock)?
                       e=END (SEQUENCE)? eos                             #seqStmt
                     //
                     // New in Vulcan 

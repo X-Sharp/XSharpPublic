@@ -62,17 +62,7 @@ FUNCTION DBF(uArea AS USUAL) AS STRING
 FUNCTION DbPack() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Pack())
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbpack/*" />
-FUNCTION DbPack(uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea)->(DbPack())
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
-FUNCTION DbRecall() AS LOGIC STRICT
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
-FUNCTION DbRecall(uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea)->(DbRecall())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
 FUNCTION DbUnLock() AS LOGIC STRICT
@@ -82,23 +72,9 @@ FUNCTION DbUnLock() AS LOGIC STRICT
 FUNCTION DbUnLock(nRecord AS LONG) AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(nRecord))
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlock/*" />
-FUNCTION DbUnLock(nRecord AS USUAL, uArea AS USUAL) AS LOGIC STRICT
-    IF nRecord:IsNil
-        RETURN (uArea)->(DbUnLock())
-    ELSE
-        RETURN (uArea)->(DbUnLock(nRecord))
-    ENDIF
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbzap/*" />
 FUNCTION DbZap() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Zap())
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbzap/*" />
-FUNCTION DbZap(uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea)->(DbZap())
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlockall/*" />
@@ -235,10 +211,6 @@ FUNCTION DbClearRelation() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.ClearRelation())
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearrelation/*" />
-FUNCTION DbClearRelation(uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea)->(DbClearRelation())
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcloseall/*" />
 FUNCTION DbCloseAll() AS LOGIC STRICT
@@ -250,27 +222,14 @@ FUNCTION DbCloseArea () AS LOGIC STRICT
     RETURN VoDb.CloseArea()
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
-FUNCTION DbCloseArea (uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea)->(DbCloseArea())
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
 FUNCTION DbCommit() AS LOGIC STRICT
     RETURN VoDb.Commit()
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
-FUNCTION DbCommit(uArea AS USUAL) AS LOGIC STRICT
-     RETURN (uArea)->(DbCommit())
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommitall/*" />
 FUNCTION DbCommitAll() AS LOGIC STRICT
     RETURN VoDb.CommitAll()
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcontinue/*" />
-FUNCTION DbContinue(uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea)->(DbContinue())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcontinue/*" />
 FUNCTION DbContinue() AS LOGIC STRICT
@@ -286,10 +245,6 @@ FUNCTION DbDriver() AS STRING STRICT
 FUNCTION DbFilter() AS STRING STRICT
     RETURN VoDb.Filter()
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbfilter/*" />
-FUNCTION DbFilter(uArea AS USUAL) AS STRING STRICT
-     RETURN (uArea)->(DbFilter())
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgetselect/*" />
 FUNCTION DbGetSelect() AS DWORD STRICT
@@ -301,18 +256,10 @@ FUNCTION DbGetSelect() AS DWORD STRICT
 FUNCTION DbGoBottom() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoBottom())
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgobottom/*" />
-FUNCTION DbGoBottom(uArea AS USUAL) AS LOGIC STRICT
-     RETURN (uArea)->(DbGoBottom())
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgotop/*" />
 FUNCTION DbGoTop() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.GoTop())
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgotop/*" />
-FUNCTION DbGoTop(uArea AS USUAL) AS LOGIC STRICT
-     RETURN (uArea)->(DbGoTop())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddname/*" />
 FUNCTION RddName        () AS STRING STRICT
@@ -340,7 +287,6 @@ FUNCTION RecCount() AS LONG
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/reccount/*" />
 FUNCTION RecCount(uArea AS USUAL) AS LONG
      RETURN (uArea)->(RecCount())
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/recno/*" />
 FUNCTION RecNo() AS DWORD

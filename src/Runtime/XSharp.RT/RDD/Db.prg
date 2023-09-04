@@ -347,6 +347,28 @@ FUNCTION DbDelete () AS LOGIC STRICT
 FUNCTION DbDelete (uArea AS USUAL) AS LOGIC STRICT
     RETURN (uArea) ->DbDelete()
 
+// Delete with AutoLock for FoxPro support
+FUNCTION __DbDelete () AS LOGIC STRICT
+    TRY
+        DbAutoLock()
+        RETURN DbDelete()
+    FINALLY
+        DbAutoUnLock()
+    END TRY
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
+FUNCTION DbRecall() AS LOGIC STRICT
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
+
+// DbRecall with automatic locking for FoxPro support
+FUNCTION __DbRecall() AS LOGIC STRICT
+TRY
+    DbAutoLock()
+    RETURN DbRecall()
+FINALLY
+    DbAutoUnLock()
+END TRY
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdeleteorder/*" />
 FUNCTION DbDeleteOrder(uOrder, cIndexFile) AS LOGIC CLIPPER

@@ -29,25 +29,8 @@ CustomControlsGuid = 91D751CB-030B-4A75-98B9-05D9B82C3067
 DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Recent References]
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.Core.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.RT.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.Rdd.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\VOWin32APILibrary.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.VFP.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.MacroCompiler.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.VO.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.XPP.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\XSharp.Data.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\VOSystemClasses.dll
-RecentReference = Browse:C:\XSharp\DevRt\src\Binaries\Debug\VORDDClasses.dll
-RecentReference = GAC:XSharp.Core,v4,2.6.0.0
-RecentReference = GAC:XSharp.RT,v4,2.6.0.0
-RecentReference = GAC:System.Windows.Forms,v4,4.0.0.0
-RecentReference = GAC:mscorlib,v4,4.0.0.0
-RecentReference = GAC:System.Core,v4,4.0.0.0
-RecentReference = GAC:System.Runtime,v4,4.0.0.0
-RecentReference = GAC:XSharp.VO,v4,2.6.0.0
-RecentReference = GAC:System.Xml.Linq,v4,4.0.0.0
+RecentReference = Browse:C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll
+RecentReference = Browse:C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -87008,7 +86991,7 @@ GalleryDefaultName =
 Target = 0
 Platform = x86
 Language = XSharp
-Runtime = CLR2
+Runtime = CLR4
 Dialect = VO
 Folder = %ProjectPath%\Applications\R733\
 PrgSubFolder = \
@@ -95121,7 +95104,7 @@ GalleryDefaultName =
 Target = 0
 Platform = AnyCPU
 Language = XSharp
-Runtime = CLR2
+Runtime = CLR4
 Dialect = Core
 Folder = %ProjectPath%\Applications\R770\
 PrgSubFolder = \
@@ -115348,9 +115331,8 @@ CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\src\Binaries\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\src\Binaries\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\src\Binaries\Debug\XSharp.XPP.dll,1,1
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
@@ -115385,7 +115367,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0

@@ -1,11 +1,32 @@
-FUNCTION STart as void
-LOCAL a, b AS FLOAT
+// Single record replace
+//#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                     ;
+//      => DbAutoLock(); __FieldSet(<(f1)>,<v1>) [;__FieldSet(<(fN)>,<vN>)]; DbAutoUnLock()
+
+// Single record replace with IN clause
+#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                 ;
+         <x:IN,ALIAS> <(a)>                                             ;
+         => DbAutoLock(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fN)>,<vN>)], DbAutoUnLock(<(a)>)
+#pragma warnings(9043, off) // redefine of runtime functions
+FUNCTION Start as VOID
+//    REPLACE a with "b"
+//    REPLACE c with "d", e with "f"
+    REPLACE a with "b" in X
+    REPLACE c with "d", e with "f" in X
+    REPLACE g with "h", i with "j", k with "l" in X
 
 
-a := 80.85m
-b := 7.7m
-? a / b
-? Round(a / b, 0)
-? Math.Round( a/b, 0, MidpointRounding.AwayFromZero )
-_wait()
+
+FUNCTION DbAutoLock(area) AS LOGIC CLIPPER
+    ?  __FUNCTION__, area
+    RETURN TRUE
+FUNCTION DbAutoUnLock(area) AS LOGIC CLIPPER
+    ?  __FUNCTION__, area
+    RETURN TRUE
+
+FUNCTION __FieldSetWA(area , name , value ) AS USUAL
+    ? __FUNCTION__, area, name, value
+    RETURN value
+FUNCTION __FieldSet(name , value ) AS USUAL
+    ? __FUNCTION__, name, value
+    RETURN value
 

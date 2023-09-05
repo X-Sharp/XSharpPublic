@@ -33,7 +33,7 @@ CLASS ComboBox INHERIT ListBox
 		LOCAL nIndex AS LONG
 		IF SELF:__IsValid .and. SELF:Modified
 			cOldValue := AsString(uValue)
-			IF (nIndex := SELF:__List:SelectedIndex) >= 0
+			IF (nIndex := SELF:__ComboBox:SelectedIndex) >= 0
 				oItem := SELF:__Items[nIndex]
 				uValue := oItem:Value
 			ELSEIF SELF:__ComboBox:DropDownStyle != System.Windows.Forms.ComboBoxStyle.DropDownList

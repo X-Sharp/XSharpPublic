@@ -17,16 +17,12 @@ CLASS BaseListBox INHERIT TextControl
     PROTECT lIsComboBox		AS LOGIC
     PROPERTY  IsBusy         AS LOGIC AUTO
 
-    /// <exclude />
-    PROPERTY __List AS VOListBox GET (VOListBox) oCtrl
+    PROPERTY __List AS IBaseListBox GET (IBaseListBox ) oCtrl
 
     /// <exclude />
     ACCESS __Items AS IList
         IF oCtrl != NULL
-            IF SELF:lIsComboBox
-                RETURN ((VOComboBox) oCtrl):Items
-            ENDIF
-            RETURN ((VOListBox) oCtrl):Items
+            RETURN __List:Items
         ELSE
             RETURN System.Collections.Generic.List<OBJECT>{}
         ENDIF
@@ -83,7 +79,7 @@ CLASS BaseListBox INHERIT TextControl
         // Returns 1-based index in collection
         LOCAL nResult AS LONG
         IF SELF:__IsValid
-            nResult := SELF:__List:SelectedIndex+1
+            nResult := __List:SelectedIndex+1
         ELSE
             nResult :=liSavedCurrentItemNo
         ENDIF
@@ -95,11 +91,7 @@ CLASS BaseListBox INHERIT TextControl
         IF SELF:__IsValid
             SELF:IsBusy := TRUE
             IF SELF:__Items:Count >= nItemNo
-                IF SELF:lIsComboBox
-                    SELF:__ComboBox:SelectedIndex := nItemNo-1
-                ELSE
-                    SELF:__List:SelectedIndex := nItemNo-1
-                ENDIF
+                __List:SelectedIndex := nItemNo-1
             ENDIF
             SELF:IsBusy := FALSE
         ENDIF
@@ -139,26 +131,13 @@ CLASS BaseListBox INHERIT TextControl
         LOCAL liIndex := LB_ERR AS LONGINT
 
         IF SELF:__IsValid
-            IF SELF:lIsComboBox
-                IF lWholeItem
-                    liIndex := SELF:__ComboBox:FindStringExact(cItem, nStart-1)
-                ELSE
-                    IF Len(cItem) == 0
-                        liIndex := -1
-                    ELSE
-                        liIndex := SELF:__ComboBox:FindString(cItem, nStart-1)
-                    ENDIF
-                ENDIF
-
+            IF lWholeItem
+                liIndex := SELF:__List:FindStringExact(cItem, nStart-1)
             ELSE
-                IF lWholeItem
-                    liIndex := SELF:__ListBox:FindStringExact(cItem, nStart-1)
+                IF Len(cItem) == 0
+                    liIndex := -1
                 ELSE
-                    IF Len(cItem) == 0
-                        liIndex := -1
-                    ELSE
-                        liIndex := SELF:__ListBox:FindString(cItem, nStart-1)
-                    ENDIF
+                    liIndex := SELF:__List:FindString(cItem, nStart-1)
                 ENDIF
             ENDIF
         ENDIF
@@ -264,7 +243,6 @@ CLASS ListBoxItemValue IMPLEMENTS IComparable
     PROTECT uValue			AS USUAL
     PROPERTY DisplayValue	AS STRING GET cDisplayValue SET cDisplayValue := Value
     PROPERTY Value			AS USUAL GET uValue	SET uValue := Value
-    PRIVATE CONST NOENTRY := "<No entry" AS STRING
     /// <exclude />
     CONSTRUCTOR(lcDisplayValue AS STRING, luValue AS USUAL)
         cDisplayValue := Rtrim(lcDisplayValue)
@@ -278,19 +256,11 @@ CLASS ListBoxItemValue IMPLEMENTS IComparable
     PUBLIC METHOD CompareTo(obj AS OBJECT) AS INT
         IF obj is ListBoxItemValue
             LOCAL otherVal := (ListBoxItemValue) obj AS ListBoxItemValue
-            IF strtran(SELF:cDisplayValue, chr(255),"") == NOENTRY
-                RETURN 1
-            ELSEIF strtran(otherval:cDisplayValue, chr(255),"") == NOENTRY
-                RETURN -1
-            ELSE
-                RETURN SELF:DisplayValue:CompareTo((OBJECT) otherVal:DisplayValue)
-            ENDIF
+            RETURN SELF:DisplayValue:CompareTo((OBJECT) otherVal:DisplayValue)
         ENDIF
         RETURN -1
 
     /// <exclude />
     PUBLIC METHOD ToString() AS STRING STRICT
-        LOCAL chilf := strtran(SELF:cDisplayValue, chr(255),"") AS STRING
-        // remove specialchar (that was added to <nicht enthaltener Eintrag> to make it the last entry)
-        RETURN strtran(chilf,"&","&&") // escape ampersand
+        RETURN strtran(SELF:cDisplayValue,"&","&&") // escape ampersand
 END CLASS

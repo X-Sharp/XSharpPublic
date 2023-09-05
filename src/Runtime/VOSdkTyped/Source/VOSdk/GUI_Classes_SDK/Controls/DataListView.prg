@@ -4,9 +4,16 @@
 // See License.txt in the project root for license information.
 //
 
-
+// DataListview is a readonly DataBrowser for Now
 using System.Windows.Forms
-using VOSDK := XSharp.VO.SDK
+USING VOSDK := XSharp.VO.SDK
+CLASS DataListView INHERIT DataBrowser
+    CONSTRUCTOR(oOwner := NULL AS Window, xID:= 1000 AS LONG, oPoint:= NULL AS Point, oDimension := NULL AS Dimension)
+        SUPER(oOwner, xID, oPoint, oDimension)
+        SELF:SetStandardStyle(GBSREADONLY)
+END CLASS
+
+/*
 class DataListView inherit ListView implements IDataBrowser
     protect oDLVServer as DataServer
     PROTECT lNoNotifies AS LOGIC
@@ -492,4 +499,4 @@ class DataListView inherit ListView implements IDataBrowser
 
 
 end class
-
+*/

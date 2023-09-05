@@ -12,7 +12,7 @@ USING Swf := System.Windows.Forms
 INTERNAL STATIC CLASS LVWin32
 
     INTERNAL STATIC METHOD GetStringWidth(hwndLV AS IntPtr, _str AS STRING) AS INT
-        RETURN (INT) GuiWin32.SendMessage(hwndLV, LVM_GETSTRINGWIDTH, 0, _str)
+        RETURN GuiWin32.SendMessage(hwndLV, LVM_GETSTRINGWIDTH, 0, _str)
 
     /// <exclude  />
     INTERNAL STATIC METHOD SetColumnWidth(hwndLV AS PTR, iCol AS INT, cx AS SHORTINT) AS LOGIC
@@ -78,7 +78,22 @@ CLASS ListView INHERIT TextControl
         ENDIF
         SELF:SetStyle(LVS_SHAREIMAGELISTS, TRUE)
         oItemComparer := ListViewItemComparer{SELF}
+        SELF:__ListView:VisibleChanged += OnVisibleChanged
         RETURN
+
+
+    METHOD OnVisibleChanged(sender AS OBJECT, e AS EventArgs) AS VOID
+        FOR VAR i := 1 TO SELF:ColumnCount
+            VAR oCol := SELF:GetColumn(i)
+            VAR header := oCol:__Header
+            header:AutoResize(Swf.ColumnHeaderAutoResizeStyle.HeaderSize)
+            VAR nSize := header:Width
+            header:AutoResize(Swf.ColumnHeaderAutoResizeStyle.ColumnContent)
+            IF nSize > header:Width
+                header:Width := nSize
+            ENDIF
+
+        NEXT
 
     #region Static Methods - API calls
     /// <exclude  />
@@ -210,7 +225,7 @@ CLASS ListView INHERIT TextControl
     PROPERTY __SortRoutineName AS SYMBOL GET symSortRoutineName
 
     /// <include file="Gui.xml" path="doc/ListView.AddColumn/*" />
-    METHOD AddColumn(oListViewColumn AS ListViewColumn)
+    METHOD AddColumn(oListViewColumn AS ListViewColumn) AS LOGIC
         RETURN SELF:InsertColumn(oListViewColumn)
 
     /// <include file="Gui.xml" path="doc/ListView.AddGroup/*" />
@@ -674,6 +689,14 @@ CLASS ListView INHERIT TextControl
             RETURN FALSE
         ENDIF
         oHeader := oListViewColumn:__Header
+//
+//         IF (oListViewColumn:Width > 0)
+//             VAR text := Repl("M", (DWORD) oListViewColumn:Width)
+//             VAR pixelWidth := LVWin32.GetStringWidth(SELF:Handle(), text)
+//             oHeader:Header:Width := pixelWidth
+//         ELSE
+             oHeader:Header:Width := oListViewColumn:Width * 8+20
+//         ENDIF
         IF nInsertAfter == -1
             __ListView:Columns:Add(oHeader:Header)
         ELSE
@@ -681,7 +704,6 @@ CLASS ListView INHERIT TextControl
         ENDIF
         oHeader:TextAlign := (System.Windows.Forms.HorizontalAlignment) oListViewColumn:Alignment
         oListViewColumn:__Owner := SELF
-
 
         RETURN TRUE
 
@@ -735,8 +757,6 @@ CLASS ListView INHERIT TextControl
 
     /// <include file="Gui.xml" path="doc/ListView.IsGroupViewEnabled/*" />
     ACCESS IsGroupViewEnabled AS LOGIC
-        // Listview groups require XP visual styles
-        //RETURN LOGIC(_CAST,SendMessage(SELF:handle(),LVM_ISGROUPVIEWENABLED,0,0))
         RETURN __ListView:ShowGroups
 
     /// <include file="Gui.xml" path="doc/ListView.ItemCount/*" />
@@ -780,33 +800,21 @@ CLASS ListView INHERIT TextControl
 
     /// <include file="Gui.xml" path="doc/ListView.SearchString/*" />
     ACCESS SearchString AS STRING
-        //Todo SearchString
-        //LOCAL pszSearchString AS PSZ
-        //LOCAL cSearchString AS STRING
-        //LOCAL DIM aBuf[257] AS BYTE
-        //pszSearchString:= @aBuf[1]
-        //ListView_GetISearchString(SELF:Handle(), pszSearchString)
-        //cSearchString := Psz2String(pszSearchString)
 
-        //RETURN cSearchString
-        RETURN ""
+        RETURN cSearchString
 
+	PRIVATE cSearchString AS STRING
     /// <include file="Gui.xml" path="doc/ListView.Seek/*" />
     METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
-        //Todo Seek
         LOCAL oPoint AS Point
-        //LOCAL aValList AS ARRAY
-        //LOCAL dwIndex, dwCount AS DWORD
         LOCAL nDir AS System.Windows.Forms.SearchDirectionHint
         LOCAL oLVI AS System.Windows.Forms.ListViewItem
-        //LOCAL lParam as LONG
-        // start the seek at the beginning by default
         IF IsNil(nStart)
-            nStart := -1
+            nStart :=0
         ELSE
             nStart--
         ENDIF
-
+        SELF:cSearchString := ""
         // find the item closest to the given point
         IF uValue IS Point
             // kSeekType is a usual
@@ -831,12 +839,20 @@ CLASS ListView INHERIT TextControl
             Default(REF lPartial, FALSE)
 
             // do the seek
-            oLVI := __ListView:FindItemWithText((STRING) uValue, FALSE, 0, lPartial)
+            SELF:cSearchString := uValue:ToString()
+            oLVI := __ListView:FindItemWithText(SELF:cSearchString, FALSE, nStart, lPartial)
         ELSEIF kSeekType == LV_SEEKVALUE
             // uValue is the associated usual value, so a usual seek is in order
-
             // set wrap-around (off by default)
             Default(REF lWrap, FALSE)
+            VAR col := SELF:GetColumn(1)
+            FOREACH item AS VOListViewItem IN SELF:__ListView:Items
+                VAR VoLvItem := item:Item
+                VAR lvValue := VoLvItem:GetValue(col:NameSym)
+                IF lvValue == uValue
+                    RETURN VoLvItem
+                ENDIF
+            NEXT
         ENDIF
         IF oLVI != NULL_OBJECT
             oLVI:EnsureVisible()
@@ -1287,17 +1303,15 @@ CLASS ListViewColumn INHERIT VObject
     ACCESS Width AS LONG
         LOCAL nPixelWidth AS INT
         LOCAL nCharWidth AS INT
-        LOCAL pszChar AS PSZ
         IF SELF:Owner != NULL_OBJECT
             nPixelWidth := LVWin32.GetColumnWidth(oOwner:Handle(), SELF:Index)
             // get the maximum width of a single character
-            nCharWidth := LVWin32.GetStringWidth(oOwner:Handle(), "M")
+            nCharWidth := LVWin32.GetStringWidth(oOwner:Handle(), repl("M", (DWORD) SELF:nWidth))
             // the character width is the pixel width divided by the character width
-            SELF:nWidth := nPixelWidth / nCharWidth
-            RETURN SELF:nWidth
+            RETURN nPixelWidth / nCharWidth
         ENDIF
 
-        RETURN oHeader:Width
+        RETURN nWidth
 
 
     /// <include file="Gui.xml" path="doc/ListViewColumn.Width/*" />
@@ -1318,6 +1332,16 @@ CLASS ListViewColumn INHERIT VObject
         ENDIF
         SELF:nWidth := nNewWidth
         RETURN
+    METHOD SetWidth() AS VOID
+         IF (oOwner != NULL_OBJECT) .AND. (oOwner:CurrentView == #ReportView)
+             // calculate the pixel width of the column using the given character width
+             VAR cStringSize := Replicate("M", (DWORD) SELF:nWidth)
+             // convert the string size into pixel-width
+             VAR nPixelWidth := (SHORT) LVWin32.GetStringWidth(oOwner:Handle(), cStringSize)
+//             LVWin32.SetColumnWidth(oOwner:Handle(), SELF:Index, nPixelWidth)
+         ENDIF
+        RETURN
+
 
 END CLASS
 

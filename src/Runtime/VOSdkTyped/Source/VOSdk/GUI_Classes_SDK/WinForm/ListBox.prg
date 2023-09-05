@@ -15,7 +15,7 @@ USING SWF := System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 USING System.Collections
 
-class VOListBox inherit SWF.ListBox implements IVOControlProperties
+CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBox
 
 #region fields
 	PROTECTED lBusy AS LOGIC
@@ -211,7 +211,7 @@ class VOListBox inherit SWF.ListBox implements IVOControlProperties
 
 END CLASS
 
-class VOComboBox inherit SWF.ComboBox implements IVOControlProperties
+CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseListBox
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
@@ -227,8 +227,7 @@ class VOComboBox inherit SWF.ComboBox implements IVOControlProperties
 		RETURN
 
     NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (SWF.AutoCompleteSource) VALUE
-    NEW PROPERTY Items           AS IList GET SUPER:Items
-
+    NEW Property Items as IList GET SuPER:Items
 	PROPERTY Text AS STRING
 		GET
 			IF SELF:IsDisposed

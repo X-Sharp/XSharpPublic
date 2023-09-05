@@ -13,6 +13,13 @@ using SD    := System.Drawing
 using System.Collections
 using System.Collections.Generic
 
+INTERFACE IBaseListBox
+    PROPERTY SelectedIndex AS LONG GET SET
+    PROPERTY Items AS IList GET
+    METHOD FindStringExact(cSearch AS STRING, nStart AS INT) AS INT
+    METHOD FindString(cSearch AS STRING, nStart AS INT) AS INT
+END INTERFACE
+
 
 interface IVOUIObject
     property ClientRectangle as SD.Rectangle get

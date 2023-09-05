@@ -95,7 +95,11 @@ CLASS BaseListBox INHERIT TextControl
         IF SELF:__IsValid
             SELF:IsBusy := TRUE
             IF SELF:__Items:Count >= nItemNo
-                SELF:__List:SelectedIndex := nItemNo-1
+                IF SELF:lIsComboBox
+                    SELF:__ComboBox:SelectedIndex := nItemNo-1
+                ELSE
+                    SELF:__List:SelectedIndex := nItemNo-1
+                ENDIF
             ENDIF
             SELF:IsBusy := FALSE
         ENDIF

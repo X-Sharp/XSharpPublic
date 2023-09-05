@@ -9,8 +9,7 @@ using System.Windows.Forms
 using VOSDK := XSharp.VO.SDK
 class DataListView inherit ListView implements IDataBrowser
     protect oDLVServer as DataServer
-    protect iColumns as int
-    protect lNoNotifies as logic
+    PROTECT lNoNotifies AS LOGIC
     protect aCache as array
     protect iCacheMax as int
     protect iCacheStart as int
@@ -100,7 +99,7 @@ class DataListView inherit ListView implements IDataBrowser
         	for i := 1 to (iDel)
         		ADel(aCache, 1)
         	next
-        	self:__SetServerPos(iCacheEnd + 1)
+        	SELF:__SetServerPos(iCacheEnd + 1, FALSE)
         	iStart := iCacheEnd - iFrom + 2
         elseif (iTo >= iCacheStart) .and. (iTo <= iCacheEnd)
         	// reuse entries as beginning of cache
@@ -108,10 +107,10 @@ class DataListView inherit ListView implements IDataBrowser
         	for i := 1 to iDel
         		AIns(aCache, 1)
         	next
-        	self:__SetServerPos(iFrom)
+        	SELF:__SetServerPos(iFrom, FALSE)
         	iEnd := iDel
         else
-        	self:__SetServerPos(iFrom)
+        	SELF:__SetServerPos(iFrom, FALSE)
         endif
 
         iCacheStart := iFrom
@@ -158,9 +157,9 @@ class DataListView inherit ListView implements IDataBrowser
         endif
 
         self:DeleteAllColumns()
-        iColumns := (long) oDLVServer:FCount
+        VAR iColumns := (LONG) oDLVServer:FCount
 
-        for i:= 1 to iColumns
+        FOR i:= 1 TO iColumns
             oDF := oDLVServer:DataField(i)
             if (oDF == null_object)
                 loop
@@ -169,11 +168,10 @@ class DataListView inherit ListView implements IDataBrowser
             oLVC := ListViewColumn{oDF:FieldSpec:Length, oDF:HyperLabel}
             oLVC:FieldSpec := oDF:FieldSpec
             oLVC:Caption := oDF:FieldSpec:HyperLabel:Caption
-            self:AddColumn(oLVC)
-        next
+            SELF:AddColumn(oLVC)
+        NEXT
 
-        iColumns := __ListView:Columns:Count
-        return
+        RETURN
 
     /// <exclude />
     [Obsolete];
@@ -226,68 +224,6 @@ class DataListView inherit ListView implements IDataBrowser
 
         //	RETURN iRet
 
-        //METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
-        //	LOCAL di AS _winLV_DISPINFO
-        //	LOCAL iOrderPos, iCol AS INT
-        //	LOCAL iLen AS DWORD
-        //	LOCAL symCol AS SYMBOL
-        //	LOCAL oFS AS FieldSpec
-        //	LOCAL uVal AS USUAL
-        //	LOCAL sVal AS STRING
-        //	LOCAL iRecNoSave AS INT
-        //	LOCAL oCol AS ListViewColumn
-
-        //	IF (oDLVServer == NULL_OBJECT)
-        //		RETURN
-        //	ENDIF
-
-        //	di := PTR(_CAST, oCtrlNotifyEvent:lParam)
-
-        //	IF !LOGIC(_CAST, _AND(di:item:mask, LVIF_TEXT))
-        //		RETURN
-        //	ENDIF
-
-        //	iOrderPos := di:item:iItem + 1
-
-        //	IF (iOrderPos >= iCacheStart) .AND. (iOrderPos <= iCacheEnd)
-        //		uVal := aCache[iOrderPos - iCacheStart + 1, di:item:iSubItem+1]
-        //		IF IsString(uVal)
-        //			sVal := uVal
-        //		ELSE
-        //			sVal := ""
-        //		ENDIF
-        //	ELSE
-        //		oDLVServer:SuspendNotification()
-        //		iRecNoSave := oDLVServer:RecNo
-
-        //		IF (SELF:__SetServerPos(iOrderPos) != 0)
-        //			iCol := di:item:iSubItem + 1
-        //			oCol := SELF:GetColumn(iCol)
-        //			symCol  := oCol:NameSym
-        //			oFS     := oCol:FieldSpec
-
-        //			IF (oFS != NULL_OBJECT)
-        //				sVal := oFS:Transform(SELF:FIELDGET(symCol))
-        //			ELSE
-        //				sVal := AsString(SELF:FIELDGET(symCol))
-        //			ENDIF
-        //		ENDIF
-
-        //		oDLVServer:GoTo(iRecNoSave)
-        //		oDLVServer:ResetNotification()
-        //	ENDIF
-
-        //	IF !Empty(sVal)
-        //		iLen := SLen(sVal) + 1
-        //		IF (iLen >= DWORD(di:item:cchTextMax))
-        //			sVal :=  Left(sVal, DWORD(di:item:cchTextMax) - 5) + "..."
-        //			iLen :=  SLen(sVal) + 1
-        //		ENDIF
-        //		MemCopy(di:item:pszText, String2Psz(sVal), iLen)
-        //	ENDIF
-
-        //	RETURN
-
     /// <exclude />
     access __GetServerCount() as long strict
         //PP-030828 Strong typing
@@ -312,19 +248,6 @@ class DataListView inherit ListView implements IDataBrowser
         endif
 
         return iRet
-
-        //METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
-        //	//PP-030828 Strong typing
-        //	LOCAL nmlv AS _winNM_LISTVIEW
-
-        //	nmlv := PTR(_CAST, oCtrlNotifyEvent:lParam)
-        //	IF (_AND(nmlv:uChanged, LVIF_STATE) > 0) .AND. (_AND(nmlv:uNewState, LVIS_SELECTED) > 0)
-        //		lNoNotifies := TRUE
-        //		SELF:__SetServerPos(nmlv:iItem + 1)
-        //		lNoNotifies := FALSE
-        //	ENDIF
-        //	RETURN
-
     /// <exclude />
     method __NotifyChanges(kNotify as dword) as usual strict
 
@@ -346,17 +269,17 @@ class DataListView inherit ListView implements IDataBrowser
         return
 
     method __RefreshData() as void strict
-        //LOCAL iOrderPos AS INT
-        //LOCAL iItem AS INT
+        LOCAL iPos AS INT
+        LOCAL iItem AS INT
 
-        //iOrderPos := SELF:__GetServerPos()
+        iPos := SELF:__GetServerPos()
 
-        //IF (iOrderPos >= iCacheStart) .AND. (iOrderPos <= iCacheEnd)
-        //	SELF:__FillCacheItem(iOrderPos - iCacheStart + 1)
-        //ENDIF
+        IF (iPos >= iCacheStart) .AND. (iPos <= iCacheEnd)
+        	SELF:__FillCacheItem(iPos - iCacheStart + 1)
+        ENDIF
 
-        //iItem := SELF:__GetServerPos() - 1
-        //SELF:__ListView:RedrawItems(iItem, iItem, FALSE)
+        iItem := iPos - 1
+        SELF:__ListView:RedrawItems(iItem, iItem, FALSE)
 
         return
 
@@ -366,15 +289,14 @@ class DataListView inherit ListView implements IDataBrowser
         return
 
     /// <exclude />
-    method __SetServerPos(nOrderPos as int, lSuspendNotify := nil as usual) as int strict
+    METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify AS LOGIC) AS INT STRICT
         local iRet as int
 
         if (oDLVServer == null_object)
             return 0
         endif
 
-        DEFAULT lSuspendNotify to  false
-        if (lSuspendNotify)
+        IF (lSuspendNotify)
             oDLVServer:SuspendNotification()
         endif
 
@@ -415,7 +337,7 @@ class DataListView inherit ListView implements IDataBrowser
         return super:DeleteAll()
 
     /// <include file="Gui.xml" path="doc/DataListView.Destroy/*" />
-    method Destroy() as usual
+    method Destroy() as usual clipper
         self:__Unlink()
         return super:Destroy()
 
@@ -456,7 +378,8 @@ class DataListView inherit ListView implements IDataBrowser
         iCacheMax := 100
         iCacheStart := 0
         iCacheEnd := 0
-        self:__ListView:VirtualMode := true
+        SELF:__ListView:VirtualMode := TRUE
+        SELF:FullRowSelect := TRUE
 
         return
 
@@ -565,22 +488,8 @@ class DataListView inherit ListView implements IDataBrowser
 
     method Use(oNewServer as DataServer) as logic
         self:Server := oNewServer
-        self:ResizeColumns()
-        return (oDLVServer != null_object)
+        RETURN (oDLVServer != NULL_OBJECT)
 
-    method ResizeColumns() as void strict
-        local i as long
-        for i := 1 to self:ColumnCount
-            var col := self:GetColumn(i)
-            col:Width := -2
-            var save := col:__Header:Width
-            col:Width := -1
-            if col:__Header:Width < save
-                col:__Header:Width := save
-            endif
-
-        next
-        return
 
 end class
 

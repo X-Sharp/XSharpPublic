@@ -143,7 +143,7 @@ CLASS ShellWindow INHERIT AppWindow
 
 
     /// <include file="Gui.xml" path="doc/ShellWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         // was at the end !!!
         SUPER:Destroy()
 

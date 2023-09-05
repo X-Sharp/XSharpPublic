@@ -11,7 +11,7 @@ CLASS Pen INHERIT VObject
 
     /// <inheritdoc />
 
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF (hPen != NULL_OBJECT)
             hPen:Dispose()
             hPen := NULL_OBJECT

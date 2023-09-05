@@ -201,7 +201,7 @@ CLASS App INHERIT VObject
 END CLASS
 
 GLOBAL glCAPaintInit := FALSE AS LOGIC
-global gsymBrowserDef := #DataBrowser as symbol
+global gsymBrowserDef := #DataListView as symbol
 global oApp as App
 
 /// <include file="Gui.xml" path="doc/ApplicationExec/*" />

@@ -71,7 +71,7 @@ CLASS CheckBox INHERIT Button
         END SET
     END PROPERTY
     /// <include file="Gui.xml" path="doc/CheckBox.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF SELF:__IsValid
             lSavedChecked := SELF:Checked
         ENDIF

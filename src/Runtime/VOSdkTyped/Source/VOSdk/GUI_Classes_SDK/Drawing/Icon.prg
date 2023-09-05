@@ -20,7 +20,7 @@ CLASS Icon INHERIT VObject IMPLEMENTS IResource
 
 
 /// <include file="Gui.xml" path="doc/Icon.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		IF ! oIcon == NULL_OBJECT
 			oIcon:Dispose()
 			oIcon := NULL_OBJECT

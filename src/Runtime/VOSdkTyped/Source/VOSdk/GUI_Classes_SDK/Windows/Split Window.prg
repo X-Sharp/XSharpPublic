@@ -38,7 +38,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
        RETURN SELF
 
     /// <include file="Gui.xml" path="doc/SplitWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         if oSplitView != null_object
             oSplitView:Destroy()
             oSplitView := NULL_OBJECT

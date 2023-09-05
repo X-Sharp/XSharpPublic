@@ -60,7 +60,7 @@ CLASS HelpDisplay INHERIT VObject
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL clipper
 
 
 		IF (oWnd != NULL_OBJECT)

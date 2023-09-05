@@ -165,7 +165,7 @@ CLASS Menu INHERIT VObject
 
     /// <include file="Gui.xml" path="doc/Menu.Destroy/*" />
 
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         oMenu			:= NULL_OBJECT
         aItem			:= NULL_ARRAY
         aChildren		:= NULL_ARRAY

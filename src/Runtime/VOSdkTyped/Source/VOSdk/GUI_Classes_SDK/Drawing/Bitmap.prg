@@ -28,7 +28,7 @@ CLASS Bitmap INHERIT VObject IMPLEMENTS IResource
 
 
     /// <include file="Gui.xml" path="doc/Bitmap.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL  CLIPPER
 
         IF (oImage != NULL_OBJECT)
             oImage:Dispose()

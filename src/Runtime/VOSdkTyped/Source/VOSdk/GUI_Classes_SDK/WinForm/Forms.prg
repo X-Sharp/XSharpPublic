@@ -95,7 +95,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	METHOD GetAllControls() AS IList<System.Windows.Forms.Control> STRICT
 		RETURN SELF:GetAllChildren(TRUE)
 
-	METHOD GetFirstEditableControl AS System.Windows.Forms.Control
+	METHOD GetFirstEditableControl AS System.Windows.Forms.Control STRICT
 		return SELF:GetFirstEditableChild()
 
 	PUBLIC METHOD NextControl() AS VOID

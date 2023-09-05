@@ -36,7 +36,7 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
     ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT
 
     /// <exclude />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
 
         IF (oImage != NULL_OBJECT)
             oImage:Destroy()

@@ -175,7 +175,7 @@ METHOD DataUpdate(oIpcDataUpdateEvent)
 	RETURN SELF
 
 /// <include file="Gui.xml" path="doc/IpcServer.Destroy/*" />
-METHOD Destroy() AS USUAL
+METHOD Destroy() AS USUAL clipper
 	//LOCAL i, dwLen AS DWORD
 	//LOCAL hConv AS PTR
 	//LOCAL hHsz AS PTR

@@ -404,7 +404,7 @@ CLASS TabControl INHERIT TextControl
 		RETURN lRet
 
 /// <include file="Gui.xml" path="doc/TabControl.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL clipper
 		aPages := NULL_ARRAY
 		aTipsText := NULL_ARRAY
 		oCurrentPage := NULL_OBJECT

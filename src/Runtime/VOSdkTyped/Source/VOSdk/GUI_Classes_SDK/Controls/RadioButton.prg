@@ -20,7 +20,7 @@ CLASS RadioButton INHERIT Button
 	PROPERTY __RadioButton AS VORadioButton GET (VORadioButton) oCtrl
 
 /// <include file="Gui.xml" path="doc/RadioButton.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL clipper
 		IF oCtrl != NULL_OBJECT .and. !oCtrl:IsDisposed
 			lSavedPressed := SELF:Pressed
 		ENDIF

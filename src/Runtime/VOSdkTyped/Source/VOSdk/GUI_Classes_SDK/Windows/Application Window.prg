@@ -43,7 +43,7 @@ CLASS AppWindow INHERIT Window
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
 
         IF (oVertScroll != NULL_OBJECT)
             oVertScroll:Destroy()

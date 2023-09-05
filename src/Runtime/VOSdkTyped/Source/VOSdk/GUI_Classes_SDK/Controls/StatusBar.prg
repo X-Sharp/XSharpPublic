@@ -316,7 +316,7 @@ CLASS StatusBar INHERIT Control
 
 
     /// <include file="Gui.xml" path="doc/StatusBar.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL clipper
         aMessages := NULL_ARRAY
         aItems := NULL_ARRAY
         RETURN SUPER:Destroy()

@@ -531,7 +531,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
 
         IF oCtrl != NULL_OBJECT
             IF ! oCtrl:IsDisposed

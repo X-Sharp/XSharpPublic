@@ -25,6 +25,7 @@
     <EnforceSelf>True</EnforceSelf>
     <EnforceOverride>False</EnforceOverride>
     <Vo7>True</Vo7>
+    <Vo5>False</Vo5>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

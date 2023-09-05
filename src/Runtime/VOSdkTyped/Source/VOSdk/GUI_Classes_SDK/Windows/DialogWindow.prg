@@ -174,7 +174,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF SELF:oSurface != NULL_OBJECT
             IF (WC.AppGetDialogWindow() == SELF:oSurface)
                 WC.AppSetDialogWindow(NULL_OBJECT)

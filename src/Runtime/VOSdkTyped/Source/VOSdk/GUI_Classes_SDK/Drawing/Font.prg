@@ -203,7 +203,7 @@ CLASS Font INHERIT VObject
 
 
     /// <include file="Gui.xml" path="doc/Font.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL  CLIPPER
 
         SUPER:Destroy()
 

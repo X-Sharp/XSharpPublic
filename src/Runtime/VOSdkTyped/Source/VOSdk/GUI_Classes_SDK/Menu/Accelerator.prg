@@ -158,7 +158,7 @@ class Accelerator inherit VObject
         return nil
 
     /// <include file="Gui.xml" path="doc/Accelerator.Destroy/*" />
-    method Destroy() as usual
+    method Destroy() as usual CLIPPER
         if hAccel != null_ptr
             GuiWin32.DestroyAcceleratorTable(hAccel)
             hAccel := null_ptr

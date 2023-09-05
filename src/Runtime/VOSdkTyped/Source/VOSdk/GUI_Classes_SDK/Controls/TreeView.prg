@@ -266,7 +266,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/TreeView.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		oDragImageList := NULL_OBJECT
 		RETURN SUPER:Destroy()
 

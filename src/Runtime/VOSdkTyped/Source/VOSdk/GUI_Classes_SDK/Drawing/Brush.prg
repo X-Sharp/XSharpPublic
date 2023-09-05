@@ -66,7 +66,7 @@ CLASS Brush INHERIT VObject
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/Brush.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL  CLIPPER
 
         IF (oBrush != NULL_OBJECT)
             oBrush:Dispose()

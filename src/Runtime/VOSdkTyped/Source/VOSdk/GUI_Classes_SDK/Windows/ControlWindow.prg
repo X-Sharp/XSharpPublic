@@ -19,7 +19,7 @@ CLASS ControlWindow INHERIT Window
     PROPERTY ControlID AS LONG GET oCtrl:ControlID
 
     /// <include file="Gui.xml" path="doc/ControlWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF oCtrl:__IsValid
             oCtrl:Destroy()
         ENDIF

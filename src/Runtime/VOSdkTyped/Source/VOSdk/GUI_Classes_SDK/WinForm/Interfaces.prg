@@ -125,7 +125,7 @@ interface IGuiObject
     property HyperLabel as HyperLabel get set
     property NameSym	as symbol get
     property __Handle   as IntPtr get
-    method   Destroy()	as usual
+    METHOD   Destroy()	AS USUAL CLIPPER
     method   Show()     as void clipper
     method   Hide()     as void strict
     method   SetFocus() as void strict
@@ -156,7 +156,7 @@ interface IDataBrowser
     method Use(oServer as DataServer) as logic
     method __NotifyChanges(kNotify as dword) as usual
     property ContextMenu as Menu get set
-    method   Destroy()	as usual
+    METHOD   Destroy()	AS USUAL CLIPPER
     method RestoreUpdate() as void strict
     method SuspendUpdate() as void strict
     property __Control as IVOControl get
@@ -166,6 +166,6 @@ end interface
 
 interface IResource
     method Handle() as IntPtr strict
-    method Destroy()	as usual
+    method Destroy()	as usual clipper
         property Size as Dimension get
 end interface

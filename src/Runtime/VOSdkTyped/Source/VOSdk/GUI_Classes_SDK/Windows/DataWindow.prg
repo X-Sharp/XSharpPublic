@@ -1412,7 +1412,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
         /// <include file="Gui.xml" path="doc/DataWindow.Destroy/*" />
-        METHOD Destroy() AS USUAL
+        METHOD Destroy() AS USUAL CLIPPER
             LOCAL oSubForm AS Window
 
             IF oAttachedServer != NULL_OBJECT

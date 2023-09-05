@@ -16,7 +16,7 @@ CLASS DragDropClient INHERIT VObject
         SELF:oForm:DragDrop  += OnDragDrop
         SELF:oForm:DragLeave += OnDragLeave
 
-    METHOD Destroy() AS USUAL 
+    METHOD Destroy() AS USUAL  CLIPPER
         IF SELF:oForm != NULL_OBJECT
             SELF:oForm:DragEnter -= OnDragEnter
             SELF:oForm:DragOver  -= OnDragOver

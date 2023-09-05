@@ -193,7 +193,7 @@ CLASS TextControl INHERIT Control
 		RETURN
 
 /// <include file="Gui.xml" path="doc/TextControl.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		oFont		:= NULL_OBJECT
 		oToolTip	:= NULL_OBJECT
 		SUPER:Destroy()

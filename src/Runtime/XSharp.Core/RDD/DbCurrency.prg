@@ -4,21 +4,16 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary>
-/// <seealso cref="T:XSharp.IFloat"/>
-/// <seealso cref="T:XSharp.__Float"/>
-STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
+/// <summary>Implementation of the ICurrency interface that can be used by the RDD system. </summary>
+/// <seealso cref="T:XSharp.ICurrency"/>
+/// <seealso cref="T:XSharp.__Currency"/>
+STRUCTURE XSharp.RDD.DbCurrency IMPLEMENTS ICurrency, IConvertible
     /// <inheritdoc />
-    PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
-    /// <inheritdoc />
-    PROPERTY Digits		AS INT AUTO GET PRIVATE SET
-    /// <inheritdoc />
-    PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
+    PROPERTY @@Value AS System.Decimal AUTO GET PRIVATE SET
     /// <summary></summary>
-    CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
-        @@Value := val
-        Digits  := len
-        Decimals := dec
+    CONSTRUCTOR (curValue AS System.Decimal)
+        @@Value := curValue
+
     /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Value:ToString()
@@ -30,7 +25,7 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
 
     /// <inheritdoc/>
     METHOD IConvertible.ToBoolean(provider AS IFormatProvider ) AS LOGIC
-        RETURN @@Value != 0.0
+        RETURN @@Value != Decimal.Zero
 
     /// <inheritdoc/>
     METHOD IConvertible.ToByte(provider AS IFormatProvider ) AS BYTE
@@ -46,11 +41,11 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
 
     /// <inheritdoc/>
     METHOD IConvertible.ToDecimal(provider AS IFormatProvider ) AS DECIMAL
-        RETURN Convert.ToDecimal(@@Value)
+        RETURN @@Value
 
     /// <inheritdoc/>
     METHOD IConvertible.ToDouble(provider AS IFormatProvider ) AS Double
-        RETURN @@Value
+        RETURN Convert.ToDouble(@@Value)
 
     /// <inheritdoc/>
     METHOD IConvertible.ToInt16(provider AS IFormatProvider ) AS SHORT

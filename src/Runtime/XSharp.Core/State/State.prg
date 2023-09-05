@@ -51,8 +51,8 @@ CLASS XSharp.RuntimeState
 	// Static Methods and Constructor
 	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  _initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
 	STATIC CONSTRUCTOR
-        AutoLock        := DoNothing
-        AutoUnLock      := DoNothing
+        AutoLock        := NULL
+        AutoUnLock      := NULL
         detectDialect()
         SWITCH System.Environment.OSVersion:Platform
         CASE System.PlatformID.Win32NT
@@ -932,10 +932,6 @@ CLASS XSharp.RuntimeState
     static AutoUnLock as AutoLockMethod
     /// <summary>Delegate that describes the signature of the AutoLock methods </summary>
     delegate AutoLockMethod() as void
-
-    /// <exclude />
-    STATIC METHOD DoNothing() AS VOID
-        return
 
     /// <summary>Current collation table.</summary>
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]

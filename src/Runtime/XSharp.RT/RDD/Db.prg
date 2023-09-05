@@ -345,7 +345,7 @@ FUNCTION DbDelete () AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdelete/*" />
 FUNCTION DbDelete (uArea AS USUAL) AS LOGIC STRICT
-    RETURN (uArea) ->DbDelete()
+    RETURN (uArea)->DbDelete()
 
 // Delete with AutoLock for FoxPro support
 FUNCTION __DbDelete () AS LOGIC STRICT
@@ -359,6 +359,11 @@ FUNCTION __DbDelete () AS LOGIC STRICT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
 FUNCTION DbRecall() AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Recall())
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecall/*" />
+FUNCTION DbRecall(uArea AS USUAL) AS LOGIC STRICT
+    RETURN (uArea)->DbRecall()
+
 
 // DbRecall with automatic locking for FoxPro support
 FUNCTION __DbRecall() AS LOGIC STRICT
@@ -1235,20 +1240,24 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
 
 /// <summary>Automatically lock a record in the FoxPro dialect </summary>
 FUNCTION DbAutoLock() AS VOID
-    XSharp.RuntimeState.AutoLock()
+    IF XSharp.RuntimeState.AutoLock != NULL
+        XSharp.RuntimeState.AutoLock()
+    ENDIF
     RETURN
 
 /// <summary>Automatically unlock a record in the FoxPro dialect </summary>
 FUNCTION DbAutoUnLock() AS VOID
-    XSharp.RuntimeState.AutoUnLock()
+    IF XSharp.RuntimeState.AutoUnLock != NULL
+        XSharp.RuntimeState.AutoUnLock()
+    ENDIF
     RETURN
 /// <summary>Automatically lock a record in the FoxPro dialect </summary>
 
 FUNCTION DbAutoLockArea(area AS STRING) AS USUAL STRICT
-    (area)->(XSharp.RuntimeState.AutoLock())
+    (area)->(DbAutoLock())
     RETURN NIL
 
 /// <summary>Automatically unlock a record in the FoxPro dialect </summary>
 FUNCTION DbAutoUnLockArea(area AS STRING) AS USUAL STRICT
-    (area)->(XSharp.RuntimeState.AutoUnLock())
+    (area)->(DbAutoUnLock())
     RETURN NIL

@@ -220,7 +220,12 @@ FUNCTION DbCloseAll() AS LOGIC STRICT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
 FUNCTION DbCloseArea () AS LOGIC STRICT
     RETURN VoDb.CloseArea()
-
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclosearea/*" />
+FUNCTION DbCloseArea (uArea AS USUAL) AS LOGIC STRICT
+    RETURN (uArea)->DbCloseArea()
+    
+    
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcommit/*" />
 FUNCTION DbCommit() AS LOGIC STRICT

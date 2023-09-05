@@ -819,7 +819,6 @@ namespace XSharp.LanguageService
                 bool isType = XSharpLexer.IsType(tokenType);
                 var isPseudo = XSharpLexer.IsPseudoFunction(tokenType);
                 var isId = tokenType == XSharpLexer.ID ||
-                                  tokenType == XSharpLexer.KWID ||
                                   tokenType == XSharpLexer.SELF ||
                                   tokenType == XSharpLexer.SUPER ||
                                   tokenType == XSharpLexer.COLONCOLON ||

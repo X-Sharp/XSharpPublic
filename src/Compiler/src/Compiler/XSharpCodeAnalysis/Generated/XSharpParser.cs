@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\XSharp\DevPublic\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
+// Generated from C:\XSharp\Dev\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -87,9 +87,9 @@ public partial class XSharpParser : Parser {
 		PP_ERROR=321, PP_IF=322, PP_IFDEF=323, PP_IFNDEF=324, PP_INCLUDE=325, 
 		PP_LINE=326, PP_REGION=327, PP_STDOUT=328, PP_TRANSLATE=329, PP_UNDEF=330, 
 		PP_WARNING=331, PP_PRAGMA=332, PP_TEXT=333, PP_ENDTEXT=334, PP_LAST=335, 
-		MACRO=336, UDCSEP=337, ID=338, KWID=339, DOC_COMMENT=340, SL_COMMENT=341, 
-		ML_COMMENT=342, LINE_CONT=343, LINE_CONT_OLD=344, SEMI=345, WS=346, NL=347, 
-		EOS=348, UNRECOGNIZED=349, LAST=350;
+		MACRO=336, UDCSEP=337, ID=338, DOC_COMMENT=339, SL_COMMENT=340, ML_COMMENT=341, 
+		LINE_CONT=342, LINE_CONT_OLD=343, SEMI=344, WS=345, NL=346, EOS=347, UNRECOGNIZED=348, 
+		LAST=349;
 	public const int
 		RULE_script = 0, RULE_scriptEntity = 1, RULE_macroScript = 2, RULE_source = 3, 
 		RULE_foxsource = 4, RULE_entity = 5, RULE_eos = 6, RULE_funcproc = 7, 
@@ -242,7 +242,7 @@ public partial class XSharpParser : Parser {
 		"PP_FIRST", "PP_COMMAND", "PP_DEFINE", "PP_ELSE", "PP_ENDIF", "PP_ENDREGION", 
 		"PP_ERROR", "PP_IF", "PP_IFDEF", "PP_IFNDEF", "PP_INCLUDE", "PP_LINE", 
 		"PP_REGION", "PP_STDOUT", "PP_TRANSLATE", "PP_UNDEF", "PP_WARNING", "PP_PRAGMA", 
-		"PP_TEXT", "PP_ENDTEXT", "PP_LAST", "MACRO", "UDCSEP", "ID", "KWID", "DOC_COMMENT", 
+		"PP_TEXT", "PP_ENDTEXT", "PP_LAST", "MACRO", "UDCSEP", "ID", "DOC_COMMENT", 
 		"SL_COMMENT", "ML_COMMENT", "LINE_CONT", "LINE_CONT_OLD", "SEMI", "WS", 
 		"NL", "EOS", "UNRECOGNIZED", "LAST"
 	};
@@ -2109,7 +2109,7 @@ public partial class XSharpParser : Parser {
 			State = 627;
 			_errHandler.Sync(this);
 			_la = _input.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FIRST_KEYWORD) | (1L << ACCESS) | (1L << ALIGN) | (1L << AS) | (1L << ASPEN) | (1L << ASSIGN) | (1L << BEGIN) | (1L << BREAK) | (1L << CALLBACK) | (1L << CASE) | (1L << CAST) | (1L << CLASS) | (1L << CLIPPER) | (1L << DECLARE) | (1L << DEFINE) | (1L << DIM) | (1L << DLL) | (1L << DLLEXPORT) | (1L << DO) | (1L << DOWNTO) | (1L << ELSE) | (1L << ELSEIF) | (1L << END) | (1L << ENDCASE) | (1L << ENDDO) | (1L << ENDIF) | (1L << EXIT) | (1L << EXPORT) | (1L << FASTCALL) | (1L << FIELD) | (1L << FOR) | (1L << FUNCTION) | (1L << GLOBAL) | (1L << HIDDEN) | (1L << IF) | (1L << IIF) | (1L << INHERIT) | (1L << INIT1) | (1L << INIT2) | (1L << INIT3) | (1L << INSTANCE) | (1L << IS) | (1L << IN) | (1L << LOCAL) | (1L << LOOP) | (1L << MEMBER) | (1L << MEMVAR) | (1L << METHOD) | (1L << NAMEOF) | (1L << NEXT) | (1L << OTHERWISE) | (1L << PARAMETERS) | (1L << PASCAL) | (1L << PRIVATE) | (1L << PROCEDURE) | (1L << PROTECTED) | (1L << PUBLIC) | (1L << RECOVER) | (1L << RETURN) | (1L << SELF) | (1L << SEQUENCE) | (1L << SIZEOF) | (1L << STATIC))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (STEP - 64)) | (1L << (STRICT - 64)) | (1L << (SUPER - 64)) | (1L << (THISCALL - 64)) | (1L << (TO - 64)) | (1L << (TYPEOF - 64)) | (1L << (UNION - 64)) | (1L << (UPTO - 64)) | (1L << (USING - 64)) | (1L << (WHILE - 64)) | (1L << (WINCALL - 64)) | (1L << (CATCH - 64)) | (1L << (FINALLY - 64)) | (1L << (THROW - 64)) | (1L << (FIRST_POSITIONAL_KEYWORD - 64)) | (1L << (ABSTRACT - 64)) | (1L << (AUTO - 64)) | (1L << (CASTCLASS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONST - 64)) | (1L << (DEFAULT - 64)) | (1L << (DELEGATE - 64)) | (1L << (DESTRUCTOR - 64)) | (1L << (ENUM - 64)) | (1L << (EVENT - 64)) | (1L << (EXPLICIT - 64)) | (1L << (FOREACH - 64)) | (1L << (GET - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IMPLICIT - 64)) | (1L << (IMPLIED - 64)) | (1L << (INITONLY - 64)) | (1L << (INTERFACE - 64)) | (1L << (INTERNAL - 64)) | (1L << (LOCK - 64)) | (1L << (NAMESPACE - 64)) | (1L << (NEW - 64)) | (1L << (OPERATOR - 64)) | (1L << (OUT - 64)) | (1L << (PARTIAL - 64)) | (1L << (PROPERTY - 64)) | (1L << (REPEAT - 64)) | (1L << (SCOPE - 64)) | (1L << (SEALED - 64)) | (1L << (SET - 64)) | (1L << (STRUCTURE - 64)) | (1L << (TRY - 64)) | (1L << (UNTIL - 64)) | (1L << (VALUE - 64)) | (1L << (VIRTUAL - 64)) | (1L << (VOSTRUCT - 64)) | (1L << (ADD - 64)) | (1L << (ARGLIST - 64)) | (1L << (ASCENDING - 64)) | (1L << (ASYNC - 64)) | (1L << (ASTYPE - 64)) | (1L << (AWAIT - 64)) | (1L << (BY - 64)) | (1L << (CHECKED - 64)) | (1L << (DESCENDING - 64)) | (1L << (EQUALS - 64)) | (1L << (EXTERN - 64)) | (1L << (FIXED - 64)) | (1L << (FROM - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (GROUP - 128)) | (1L << (INIT - 128)) | (1L << (INTO - 128)) | (1L << (JOIN - 128)) | (1L << (LET - 128)) | (1L << (NOP - 128)) | (1L << (OF - 128)) | (1L << (ON - 128)) | (1L << (ORDERBY - 128)) | (1L << (OVERRIDE - 128)) | (1L << (PARAMS - 128)) | (1L << (REMOVE - 128)) | (1L << (SELECT - 128)) | (1L << (STACKALLOC - 128)) | (1L << (SWITCH - 128)) | (1L << (UNCHECKED - 128)) | (1L << (UNSAFE - 128)) | (1L << (VAR - 128)) | (1L << (VOLATILE - 128)) | (1L << (WHEN - 128)) | (1L << (WHERE - 128)) | (1L << (YIELD - 128)) | (1L << (WITH - 128)) | (1L << (LAST_POSITIONAL_KEYWORD - 128)) | (1L << (FIRST_TYPE - 128)) | (1L << (ARRAY - 128)) | (1L << (BYTE - 128)) | (1L << (CODEBLOCK - 128)) | (1L << (DATE - 128)) | (1L << (DWORD - 128)) | (1L << (FLOAT - 128)) | (1L << (INT - 128)) | (1L << (LOGIC - 128)) | (1L << (LONGINT - 128)) | (1L << (OBJECT - 128)) | (1L << (PSZ - 128)) | (1L << (PTR - 128)) | (1L << (REAL4 - 128)) | (1L << (REAL8 - 128)) | (1L << (REF - 128)) | (1L << (SHORTINT - 128)) | (1L << (STRING - 128)) | (1L << (SYMBOL - 128)) | (1L << (USUAL - 128)) | (1L << (VOID - 128)) | (1L << (WORD - 128)) | (1L << (CHAR - 128)) | (1L << (INT64 - 128)) | (1L << (UINT64 - 128)) | (1L << (DYNAMIC - 128)) | (1L << (DECIMAL - 128)) | (1L << (DATETIME - 128)) | (1L << (CURRENCY - 128)) | (1L << (BINARY - 128)) | (1L << (NINT - 128)) | (1L << (NUINT - 128)) | (1L << (LAST_TYPE - 128)) | (1L << (UDC_KEYWORD - 128)) | (1L << (SCRIPT_REF - 128)) | (1L << (SCRIPT_LOAD - 128)) | (1L << (ASSIGNMENT - 128)) | (1L << (DEFERRED - 128)) | (1L << (ENDCLASS - 128)) | (1L << (EXPORTED - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (FREEZE - 192)) | (1L << (FINAL - 192)) | (1L << (INLINE - 192)) | (1L << (INTRODUCE - 192)) | (1L << (NOSAVE - 192)) | (1L << (READONLY - 192)) | (1L << (SHARING - 192)) | (1L << (SHARED - 192)) | (1L << (SYNC - 192)) | (1L << (ENDDEFINE - 192)) | (1L << (LPARAMETERS - 192)) | (1L << (OLEPUBLIC - 192)) | (1L << (EXCLUDE - 192)) | (1L << (THISACCESS - 192)) | (1L << (HELPSTRING - 192)) | (1L << (DIMENSION - 192)) | (1L << (NOINIT - 192)) | (1L << (EACH - 192)) | (1L << (THEN - 192)) | (1L << (FOX_M - 192)) | (1L << (LAST_KEYWORD - 192)) | (1L << (FIRST_NULL - 192)) | (1L << (NIL - 192)) | (1L << (NULL - 192)) | (1L << (NULL_ARRAY - 192)) | (1L << (NULL_CODEBLOCK - 192)) | (1L << (NULL_DATE - 192)) | (1L << (NULL_OBJECT - 192)) | (1L << (NULL_PSZ - 192)) | (1L << (NULL_PTR - 192)) | (1L << (NULL_STRING - 192)) | (1L << (NULL_SYMBOL - 192)) | (1L << (NULL_FOX - 192)) | (1L << (LAST_NULL - 192)) | (1L << (FIRST_OPERATOR - 192)) | (1L << (LT - 192)) | (1L << (LTE - 192)) | (1L << (GT - 192)) | (1L << (GTE - 192)) | (1L << (EQ - 192)) | (1L << (EEQ - 192)) | (1L << (SUBSTR - 192)) | (1L << (NEQ - 192)) | (1L << (NEQ2 - 192)) | (1L << (INC - 192)) | (1L << (DEC - 192)) | (1L << (PLUS - 192)) | (1L << (MINUS - 192)) | (1L << (DIV - 192)) | (1L << (MOD - 192)) | (1L << (EXP - 192)) | (1L << (LSHIFT - 192)) | (1L << (RSHIFT - 192)) | (1L << (TILDE - 192)) | (1L << (MULT - 192)) | (1L << (QQMARK - 192)) | (1L << (QMARK - 192)) | (1L << (AND - 192)) | (1L << (OR - 192)) | (1L << (NOT - 192)) | (1L << (BIT_NOT - 192)) | (1L << (BIT_AND - 192)) | (1L << (BIT_OR - 192)) | (1L << (BIT_XOR - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (ASSIGN_OP - 256)) | (1L << (ASSIGN_ADD - 256)) | (1L << (ASSIGN_SUB - 256)) | (1L << (ASSIGN_EXP - 256)) | (1L << (ASSIGN_MUL - 256)) | (1L << (ASSIGN_DIV - 256)) | (1L << (ASSIGN_MOD - 256)) | (1L << (ASSIGN_BITAND - 256)) | (1L << (ASSIGN_BITOR - 256)) | (1L << (ASSIGN_LSHIFT - 256)) | (1L << (ASSIGN_RSHIFT - 256)) | (1L << (ASSIGN_XOR - 256)) | (1L << (ASSIGN_QQMARK - 256)) | (1L << (LOGIC_AND - 256)) | (1L << (LOGIC_OR - 256)) | (1L << (LOGIC_NOT - 256)) | (1L << (LOGIC_XOR - 256)) | (1L << (FOX_AND - 256)) | (1L << (FOX_OR - 256)) | (1L << (FOX_NOT - 256)) | (1L << (FOX_XOR - 256)) | (1L << (LPAREN - 256)) | (1L << (RPAREN - 256)) | (1L << (LCURLY - 256)) | (1L << (RCURLY - 256)) | (1L << (LBRKT - 256)) | (1L << (RBRKT - 256)) | (1L << (COLON - 256)) | (1L << (COMMA - 256)) | (1L << (PIPE - 256)) | (1L << (AMP - 256)) | (1L << (ADDROF - 256)) | (1L << (ALIAS - 256)) | (1L << (DOT - 256)) | (1L << (COLONCOLON - 256)) | (1L << (BACKSLASH - 256)) | (1L << (ELLIPSIS - 256)) | (1L << (BACKBACKSLASH - 256)) | (1L << (LAST_OPERATOR - 256)) | (1L << (FIRST_CONSTANT - 256)) | (1L << (FALSE_CONST - 256)) | (1L << (TRUE_CONST - 256)) | (1L << (HEX_CONST - 256)) | (1L << (BIN_CONST - 256)) | (1L << (INT_CONST - 256)) | (1L << (DATE_CONST - 256)) | (1L << (DATETIME_CONST - 256)) | (1L << (REAL_CONST - 256)) | (1L << (INVALID_NUMBER - 256)) | (1L << (SYMBOL_CONST - 256)) | (1L << (CHAR_CONST - 256)) | (1L << (STRING_CONST - 256)) | (1L << (ESCAPED_STRING_CONST - 256)) | (1L << (INTERPOLATED_STRING_CONST - 256)) | (1L << (INCOMPLETE_STRING_CONST - 256)) | (1L << (TEXT_STRING_CONST - 256)) | (1L << (BRACKETED_STRING_CONST - 256)) | (1L << (BINARY_CONST - 256)) | (1L << (LAST_CONSTANT - 256)) | (1L << (PP_FIRST - 256)) | (1L << (PP_COMMAND - 256)) | (1L << (PP_DEFINE - 256)) | (1L << (PP_ELSE - 256)) | (1L << (PP_ENDIF - 256)))) != 0) || ((((_la - 320)) & ~0x3f) == 0 && ((1L << (_la - 320)) & ((1L << (PP_ENDREGION - 320)) | (1L << (PP_ERROR - 320)) | (1L << (PP_IF - 320)) | (1L << (PP_IFDEF - 320)) | (1L << (PP_IFNDEF - 320)) | (1L << (PP_INCLUDE - 320)) | (1L << (PP_LINE - 320)) | (1L << (PP_REGION - 320)) | (1L << (PP_STDOUT - 320)) | (1L << (PP_TRANSLATE - 320)) | (1L << (PP_UNDEF - 320)) | (1L << (PP_WARNING - 320)) | (1L << (PP_PRAGMA - 320)) | (1L << (PP_TEXT - 320)) | (1L << (PP_ENDTEXT - 320)) | (1L << (PP_LAST - 320)) | (1L << (MACRO - 320)) | (1L << (UDCSEP - 320)) | (1L << (ID - 320)) | (1L << (KWID - 320)) | (1L << (DOC_COMMENT - 320)) | (1L << (SL_COMMENT - 320)) | (1L << (ML_COMMENT - 320)) | (1L << (LINE_CONT - 320)) | (1L << (LINE_CONT_OLD - 320)) | (1L << (SEMI - 320)) | (1L << (WS - 320)) | (1L << (NL - 320)) | (1L << (UNRECOGNIZED - 320)) | (1L << (LAST - 320)))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FIRST_KEYWORD) | (1L << ACCESS) | (1L << ALIGN) | (1L << AS) | (1L << ASPEN) | (1L << ASSIGN) | (1L << BEGIN) | (1L << BREAK) | (1L << CALLBACK) | (1L << CASE) | (1L << CAST) | (1L << CLASS) | (1L << CLIPPER) | (1L << DECLARE) | (1L << DEFINE) | (1L << DIM) | (1L << DLL) | (1L << DLLEXPORT) | (1L << DO) | (1L << DOWNTO) | (1L << ELSE) | (1L << ELSEIF) | (1L << END) | (1L << ENDCASE) | (1L << ENDDO) | (1L << ENDIF) | (1L << EXIT) | (1L << EXPORT) | (1L << FASTCALL) | (1L << FIELD) | (1L << FOR) | (1L << FUNCTION) | (1L << GLOBAL) | (1L << HIDDEN) | (1L << IF) | (1L << IIF) | (1L << INHERIT) | (1L << INIT1) | (1L << INIT2) | (1L << INIT3) | (1L << INSTANCE) | (1L << IS) | (1L << IN) | (1L << LOCAL) | (1L << LOOP) | (1L << MEMBER) | (1L << MEMVAR) | (1L << METHOD) | (1L << NAMEOF) | (1L << NEXT) | (1L << OTHERWISE) | (1L << PARAMETERS) | (1L << PASCAL) | (1L << PRIVATE) | (1L << PROCEDURE) | (1L << PROTECTED) | (1L << PUBLIC) | (1L << RECOVER) | (1L << RETURN) | (1L << SELF) | (1L << SEQUENCE) | (1L << SIZEOF) | (1L << STATIC))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (STEP - 64)) | (1L << (STRICT - 64)) | (1L << (SUPER - 64)) | (1L << (THISCALL - 64)) | (1L << (TO - 64)) | (1L << (TYPEOF - 64)) | (1L << (UNION - 64)) | (1L << (UPTO - 64)) | (1L << (USING - 64)) | (1L << (WHILE - 64)) | (1L << (WINCALL - 64)) | (1L << (CATCH - 64)) | (1L << (FINALLY - 64)) | (1L << (THROW - 64)) | (1L << (FIRST_POSITIONAL_KEYWORD - 64)) | (1L << (ABSTRACT - 64)) | (1L << (AUTO - 64)) | (1L << (CASTCLASS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONST - 64)) | (1L << (DEFAULT - 64)) | (1L << (DELEGATE - 64)) | (1L << (DESTRUCTOR - 64)) | (1L << (ENUM - 64)) | (1L << (EVENT - 64)) | (1L << (EXPLICIT - 64)) | (1L << (FOREACH - 64)) | (1L << (GET - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IMPLICIT - 64)) | (1L << (IMPLIED - 64)) | (1L << (INITONLY - 64)) | (1L << (INTERFACE - 64)) | (1L << (INTERNAL - 64)) | (1L << (LOCK - 64)) | (1L << (NAMESPACE - 64)) | (1L << (NEW - 64)) | (1L << (OPERATOR - 64)) | (1L << (OUT - 64)) | (1L << (PARTIAL - 64)) | (1L << (PROPERTY - 64)) | (1L << (REPEAT - 64)) | (1L << (SCOPE - 64)) | (1L << (SEALED - 64)) | (1L << (SET - 64)) | (1L << (STRUCTURE - 64)) | (1L << (TRY - 64)) | (1L << (UNTIL - 64)) | (1L << (VALUE - 64)) | (1L << (VIRTUAL - 64)) | (1L << (VOSTRUCT - 64)) | (1L << (ADD - 64)) | (1L << (ARGLIST - 64)) | (1L << (ASCENDING - 64)) | (1L << (ASYNC - 64)) | (1L << (ASTYPE - 64)) | (1L << (AWAIT - 64)) | (1L << (BY - 64)) | (1L << (CHECKED - 64)) | (1L << (DESCENDING - 64)) | (1L << (EQUALS - 64)) | (1L << (EXTERN - 64)) | (1L << (FIXED - 64)) | (1L << (FROM - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (GROUP - 128)) | (1L << (INIT - 128)) | (1L << (INTO - 128)) | (1L << (JOIN - 128)) | (1L << (LET - 128)) | (1L << (NOP - 128)) | (1L << (OF - 128)) | (1L << (ON - 128)) | (1L << (ORDERBY - 128)) | (1L << (OVERRIDE - 128)) | (1L << (PARAMS - 128)) | (1L << (REMOVE - 128)) | (1L << (SELECT - 128)) | (1L << (STACKALLOC - 128)) | (1L << (SWITCH - 128)) | (1L << (UNCHECKED - 128)) | (1L << (UNSAFE - 128)) | (1L << (VAR - 128)) | (1L << (VOLATILE - 128)) | (1L << (WHEN - 128)) | (1L << (WHERE - 128)) | (1L << (YIELD - 128)) | (1L << (WITH - 128)) | (1L << (LAST_POSITIONAL_KEYWORD - 128)) | (1L << (FIRST_TYPE - 128)) | (1L << (ARRAY - 128)) | (1L << (BYTE - 128)) | (1L << (CODEBLOCK - 128)) | (1L << (DATE - 128)) | (1L << (DWORD - 128)) | (1L << (FLOAT - 128)) | (1L << (INT - 128)) | (1L << (LOGIC - 128)) | (1L << (LONGINT - 128)) | (1L << (OBJECT - 128)) | (1L << (PSZ - 128)) | (1L << (PTR - 128)) | (1L << (REAL4 - 128)) | (1L << (REAL8 - 128)) | (1L << (REF - 128)) | (1L << (SHORTINT - 128)) | (1L << (STRING - 128)) | (1L << (SYMBOL - 128)) | (1L << (USUAL - 128)) | (1L << (VOID - 128)) | (1L << (WORD - 128)) | (1L << (CHAR - 128)) | (1L << (INT64 - 128)) | (1L << (UINT64 - 128)) | (1L << (DYNAMIC - 128)) | (1L << (DECIMAL - 128)) | (1L << (DATETIME - 128)) | (1L << (CURRENCY - 128)) | (1L << (BINARY - 128)) | (1L << (NINT - 128)) | (1L << (NUINT - 128)) | (1L << (LAST_TYPE - 128)) | (1L << (UDC_KEYWORD - 128)) | (1L << (SCRIPT_REF - 128)) | (1L << (SCRIPT_LOAD - 128)) | (1L << (ASSIGNMENT - 128)) | (1L << (DEFERRED - 128)) | (1L << (ENDCLASS - 128)) | (1L << (EXPORTED - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (FREEZE - 192)) | (1L << (FINAL - 192)) | (1L << (INLINE - 192)) | (1L << (INTRODUCE - 192)) | (1L << (NOSAVE - 192)) | (1L << (READONLY - 192)) | (1L << (SHARING - 192)) | (1L << (SHARED - 192)) | (1L << (SYNC - 192)) | (1L << (ENDDEFINE - 192)) | (1L << (LPARAMETERS - 192)) | (1L << (OLEPUBLIC - 192)) | (1L << (EXCLUDE - 192)) | (1L << (THISACCESS - 192)) | (1L << (HELPSTRING - 192)) | (1L << (DIMENSION - 192)) | (1L << (NOINIT - 192)) | (1L << (EACH - 192)) | (1L << (THEN - 192)) | (1L << (FOX_M - 192)) | (1L << (LAST_KEYWORD - 192)) | (1L << (FIRST_NULL - 192)) | (1L << (NIL - 192)) | (1L << (NULL - 192)) | (1L << (NULL_ARRAY - 192)) | (1L << (NULL_CODEBLOCK - 192)) | (1L << (NULL_DATE - 192)) | (1L << (NULL_OBJECT - 192)) | (1L << (NULL_PSZ - 192)) | (1L << (NULL_PTR - 192)) | (1L << (NULL_STRING - 192)) | (1L << (NULL_SYMBOL - 192)) | (1L << (NULL_FOX - 192)) | (1L << (LAST_NULL - 192)) | (1L << (FIRST_OPERATOR - 192)) | (1L << (LT - 192)) | (1L << (LTE - 192)) | (1L << (GT - 192)) | (1L << (GTE - 192)) | (1L << (EQ - 192)) | (1L << (EEQ - 192)) | (1L << (SUBSTR - 192)) | (1L << (NEQ - 192)) | (1L << (NEQ2 - 192)) | (1L << (INC - 192)) | (1L << (DEC - 192)) | (1L << (PLUS - 192)) | (1L << (MINUS - 192)) | (1L << (DIV - 192)) | (1L << (MOD - 192)) | (1L << (EXP - 192)) | (1L << (LSHIFT - 192)) | (1L << (RSHIFT - 192)) | (1L << (TILDE - 192)) | (1L << (MULT - 192)) | (1L << (QQMARK - 192)) | (1L << (QMARK - 192)) | (1L << (AND - 192)) | (1L << (OR - 192)) | (1L << (NOT - 192)) | (1L << (BIT_NOT - 192)) | (1L << (BIT_AND - 192)) | (1L << (BIT_OR - 192)) | (1L << (BIT_XOR - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (ASSIGN_OP - 256)) | (1L << (ASSIGN_ADD - 256)) | (1L << (ASSIGN_SUB - 256)) | (1L << (ASSIGN_EXP - 256)) | (1L << (ASSIGN_MUL - 256)) | (1L << (ASSIGN_DIV - 256)) | (1L << (ASSIGN_MOD - 256)) | (1L << (ASSIGN_BITAND - 256)) | (1L << (ASSIGN_BITOR - 256)) | (1L << (ASSIGN_LSHIFT - 256)) | (1L << (ASSIGN_RSHIFT - 256)) | (1L << (ASSIGN_XOR - 256)) | (1L << (ASSIGN_QQMARK - 256)) | (1L << (LOGIC_AND - 256)) | (1L << (LOGIC_OR - 256)) | (1L << (LOGIC_NOT - 256)) | (1L << (LOGIC_XOR - 256)) | (1L << (FOX_AND - 256)) | (1L << (FOX_OR - 256)) | (1L << (FOX_NOT - 256)) | (1L << (FOX_XOR - 256)) | (1L << (LPAREN - 256)) | (1L << (RPAREN - 256)) | (1L << (LCURLY - 256)) | (1L << (RCURLY - 256)) | (1L << (LBRKT - 256)) | (1L << (RBRKT - 256)) | (1L << (COLON - 256)) | (1L << (COMMA - 256)) | (1L << (PIPE - 256)) | (1L << (AMP - 256)) | (1L << (ADDROF - 256)) | (1L << (ALIAS - 256)) | (1L << (DOT - 256)) | (1L << (COLONCOLON - 256)) | (1L << (BACKSLASH - 256)) | (1L << (ELLIPSIS - 256)) | (1L << (BACKBACKSLASH - 256)) | (1L << (LAST_OPERATOR - 256)) | (1L << (FIRST_CONSTANT - 256)) | (1L << (FALSE_CONST - 256)) | (1L << (TRUE_CONST - 256)) | (1L << (HEX_CONST - 256)) | (1L << (BIN_CONST - 256)) | (1L << (INT_CONST - 256)) | (1L << (DATE_CONST - 256)) | (1L << (DATETIME_CONST - 256)) | (1L << (REAL_CONST - 256)) | (1L << (INVALID_NUMBER - 256)) | (1L << (SYMBOL_CONST - 256)) | (1L << (CHAR_CONST - 256)) | (1L << (STRING_CONST - 256)) | (1L << (ESCAPED_STRING_CONST - 256)) | (1L << (INTERPOLATED_STRING_CONST - 256)) | (1L << (INCOMPLETE_STRING_CONST - 256)) | (1L << (TEXT_STRING_CONST - 256)) | (1L << (BRACKETED_STRING_CONST - 256)) | (1L << (BINARY_CONST - 256)) | (1L << (LAST_CONSTANT - 256)) | (1L << (PP_FIRST - 256)) | (1L << (PP_COMMAND - 256)) | (1L << (PP_DEFINE - 256)) | (1L << (PP_ELSE - 256)) | (1L << (PP_ENDIF - 256)))) != 0) || ((((_la - 320)) & ~0x3f) == 0 && ((1L << (_la - 320)) & ((1L << (PP_ENDREGION - 320)) | (1L << (PP_ERROR - 320)) | (1L << (PP_IF - 320)) | (1L << (PP_IFDEF - 320)) | (1L << (PP_IFNDEF - 320)) | (1L << (PP_INCLUDE - 320)) | (1L << (PP_LINE - 320)) | (1L << (PP_REGION - 320)) | (1L << (PP_STDOUT - 320)) | (1L << (PP_TRANSLATE - 320)) | (1L << (PP_UNDEF - 320)) | (1L << (PP_WARNING - 320)) | (1L << (PP_PRAGMA - 320)) | (1L << (PP_TEXT - 320)) | (1L << (PP_ENDTEXT - 320)) | (1L << (PP_LAST - 320)) | (1L << (MACRO - 320)) | (1L << (UDCSEP - 320)) | (1L << (ID - 320)) | (1L << (DOC_COMMENT - 320)) | (1L << (SL_COMMENT - 320)) | (1L << (ML_COMMENT - 320)) | (1L << (LINE_CONT - 320)) | (1L << (LINE_CONT_OLD - 320)) | (1L << (SEMI - 320)) | (1L << (WS - 320)) | (1L << (NL - 320)) | (1L << (UNRECOGNIZED - 320)) | (1L << (LAST - 320)))) != 0)) {
 				{
 				State = 626;
 				_la = _input.La(1);
@@ -7862,7 +7862,7 @@ public partial class XSharpParser : Parser {
 				State = 1468;
 				_errHandler.Sync(this);
 				_la = _input.La(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FIRST_KEYWORD) | (1L << ACCESS) | (1L << ALIGN) | (1L << AS) | (1L << ASPEN) | (1L << ASSIGN) | (1L << BEGIN) | (1L << BREAK) | (1L << CALLBACK) | (1L << CASE) | (1L << CAST) | (1L << CLASS) | (1L << CLIPPER) | (1L << DECLARE) | (1L << DEFINE) | (1L << DIM) | (1L << DLL) | (1L << DLLEXPORT) | (1L << DO) | (1L << DOWNTO) | (1L << ELSE) | (1L << ELSEIF) | (1L << END) | (1L << ENDCASE) | (1L << ENDDO) | (1L << ENDIF) | (1L << EXIT) | (1L << EXPORT) | (1L << FASTCALL) | (1L << FIELD) | (1L << FOR) | (1L << FUNCTION) | (1L << GLOBAL) | (1L << HIDDEN) | (1L << IF) | (1L << IIF) | (1L << INHERIT) | (1L << INIT1) | (1L << INIT2) | (1L << INIT3) | (1L << INSTANCE) | (1L << IS) | (1L << IN) | (1L << LOCAL) | (1L << LOOP) | (1L << MEMBER) | (1L << MEMVAR) | (1L << METHOD) | (1L << NAMEOF) | (1L << NEXT) | (1L << OTHERWISE) | (1L << PARAMETERS) | (1L << PASCAL) | (1L << PRIVATE) | (1L << PROCEDURE) | (1L << PROTECTED) | (1L << PUBLIC) | (1L << RECOVER) | (1L << RETURN) | (1L << SELF) | (1L << SEQUENCE) | (1L << SIZEOF) | (1L << STATIC))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (STEP - 64)) | (1L << (STRICT - 64)) | (1L << (SUPER - 64)) | (1L << (THISCALL - 64)) | (1L << (TO - 64)) | (1L << (TYPEOF - 64)) | (1L << (UNION - 64)) | (1L << (UPTO - 64)) | (1L << (USING - 64)) | (1L << (WHILE - 64)) | (1L << (WINCALL - 64)) | (1L << (CATCH - 64)) | (1L << (FINALLY - 64)) | (1L << (THROW - 64)) | (1L << (FIRST_POSITIONAL_KEYWORD - 64)) | (1L << (ABSTRACT - 64)) | (1L << (AUTO - 64)) | (1L << (CASTCLASS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONST - 64)) | (1L << (DEFAULT - 64)) | (1L << (DELEGATE - 64)) | (1L << (DESTRUCTOR - 64)) | (1L << (ENUM - 64)) | (1L << (EVENT - 64)) | (1L << (EXPLICIT - 64)) | (1L << (FOREACH - 64)) | (1L << (GET - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IMPLICIT - 64)) | (1L << (IMPLIED - 64)) | (1L << (INITONLY - 64)) | (1L << (INTERFACE - 64)) | (1L << (INTERNAL - 64)) | (1L << (LOCK - 64)) | (1L << (NAMESPACE - 64)) | (1L << (NEW - 64)) | (1L << (OPERATOR - 64)) | (1L << (OUT - 64)) | (1L << (PARTIAL - 64)) | (1L << (PROPERTY - 64)) | (1L << (REPEAT - 64)) | (1L << (SCOPE - 64)) | (1L << (SEALED - 64)) | (1L << (SET - 64)) | (1L << (STRUCTURE - 64)) | (1L << (TRY - 64)) | (1L << (UNTIL - 64)) | (1L << (VALUE - 64)) | (1L << (VIRTUAL - 64)) | (1L << (VOSTRUCT - 64)) | (1L << (ADD - 64)) | (1L << (ARGLIST - 64)) | (1L << (ASCENDING - 64)) | (1L << (ASYNC - 64)) | (1L << (ASTYPE - 64)) | (1L << (AWAIT - 64)) | (1L << (BY - 64)) | (1L << (CHECKED - 64)) | (1L << (DESCENDING - 64)) | (1L << (EQUALS - 64)) | (1L << (EXTERN - 64)) | (1L << (FIXED - 64)) | (1L << (FROM - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (GROUP - 128)) | (1L << (INIT - 128)) | (1L << (INTO - 128)) | (1L << (JOIN - 128)) | (1L << (LET - 128)) | (1L << (NOP - 128)) | (1L << (OF - 128)) | (1L << (ON - 128)) | (1L << (ORDERBY - 128)) | (1L << (OVERRIDE - 128)) | (1L << (PARAMS - 128)) | (1L << (REMOVE - 128)) | (1L << (SELECT - 128)) | (1L << (STACKALLOC - 128)) | (1L << (SWITCH - 128)) | (1L << (UNCHECKED - 128)) | (1L << (UNSAFE - 128)) | (1L << (VAR - 128)) | (1L << (VOLATILE - 128)) | (1L << (WHEN - 128)) | (1L << (WHERE - 128)) | (1L << (YIELD - 128)) | (1L << (WITH - 128)) | (1L << (LAST_POSITIONAL_KEYWORD - 128)) | (1L << (FIRST_TYPE - 128)) | (1L << (ARRAY - 128)) | (1L << (BYTE - 128)) | (1L << (CODEBLOCK - 128)) | (1L << (DATE - 128)) | (1L << (DWORD - 128)) | (1L << (FLOAT - 128)) | (1L << (INT - 128)) | (1L << (LOGIC - 128)) | (1L << (LONGINT - 128)) | (1L << (OBJECT - 128)) | (1L << (PSZ - 128)) | (1L << (PTR - 128)) | (1L << (REAL4 - 128)) | (1L << (REAL8 - 128)) | (1L << (REF - 128)) | (1L << (SHORTINT - 128)) | (1L << (STRING - 128)) | (1L << (SYMBOL - 128)) | (1L << (USUAL - 128)) | (1L << (VOID - 128)) | (1L << (WORD - 128)) | (1L << (CHAR - 128)) | (1L << (INT64 - 128)) | (1L << (UINT64 - 128)) | (1L << (DYNAMIC - 128)) | (1L << (DECIMAL - 128)) | (1L << (DATETIME - 128)) | (1L << (CURRENCY - 128)) | (1L << (BINARY - 128)) | (1L << (NINT - 128)) | (1L << (NUINT - 128)) | (1L << (LAST_TYPE - 128)) | (1L << (UDC_KEYWORD - 128)) | (1L << (SCRIPT_REF - 128)) | (1L << (SCRIPT_LOAD - 128)) | (1L << (ASSIGNMENT - 128)) | (1L << (DEFERRED - 128)) | (1L << (ENDCLASS - 128)) | (1L << (EXPORTED - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (FREEZE - 192)) | (1L << (FINAL - 192)) | (1L << (INLINE - 192)) | (1L << (INTRODUCE - 192)) | (1L << (NOSAVE - 192)) | (1L << (READONLY - 192)) | (1L << (SHARING - 192)) | (1L << (SHARED - 192)) | (1L << (SYNC - 192)) | (1L << (ENDDEFINE - 192)) | (1L << (LPARAMETERS - 192)) | (1L << (OLEPUBLIC - 192)) | (1L << (EXCLUDE - 192)) | (1L << (THISACCESS - 192)) | (1L << (HELPSTRING - 192)) | (1L << (DIMENSION - 192)) | (1L << (NOINIT - 192)) | (1L << (EACH - 192)) | (1L << (THEN - 192)) | (1L << (FOX_M - 192)) | (1L << (LAST_KEYWORD - 192)) | (1L << (FIRST_NULL - 192)) | (1L << (NIL - 192)) | (1L << (NULL - 192)) | (1L << (NULL_ARRAY - 192)) | (1L << (NULL_CODEBLOCK - 192)) | (1L << (NULL_DATE - 192)) | (1L << (NULL_OBJECT - 192)) | (1L << (NULL_PSZ - 192)) | (1L << (NULL_PTR - 192)) | (1L << (NULL_STRING - 192)) | (1L << (NULL_SYMBOL - 192)) | (1L << (NULL_FOX - 192)) | (1L << (LAST_NULL - 192)) | (1L << (FIRST_OPERATOR - 192)) | (1L << (LT - 192)) | (1L << (LTE - 192)) | (1L << (GT - 192)) | (1L << (GTE - 192)) | (1L << (EQ - 192)) | (1L << (EEQ - 192)) | (1L << (SUBSTR - 192)) | (1L << (NEQ - 192)) | (1L << (NEQ2 - 192)) | (1L << (INC - 192)) | (1L << (DEC - 192)) | (1L << (PLUS - 192)) | (1L << (MINUS - 192)) | (1L << (DIV - 192)) | (1L << (MOD - 192)) | (1L << (EXP - 192)) | (1L << (LSHIFT - 192)) | (1L << (RSHIFT - 192)) | (1L << (TILDE - 192)) | (1L << (MULT - 192)) | (1L << (QQMARK - 192)) | (1L << (QMARK - 192)) | (1L << (AND - 192)) | (1L << (OR - 192)) | (1L << (NOT - 192)) | (1L << (BIT_NOT - 192)) | (1L << (BIT_AND - 192)) | (1L << (BIT_OR - 192)) | (1L << (BIT_XOR - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (ASSIGN_OP - 256)) | (1L << (ASSIGN_ADD - 256)) | (1L << (ASSIGN_SUB - 256)) | (1L << (ASSIGN_EXP - 256)) | (1L << (ASSIGN_MUL - 256)) | (1L << (ASSIGN_DIV - 256)) | (1L << (ASSIGN_MOD - 256)) | (1L << (ASSIGN_BITAND - 256)) | (1L << (ASSIGN_BITOR - 256)) | (1L << (ASSIGN_LSHIFT - 256)) | (1L << (ASSIGN_RSHIFT - 256)) | (1L << (ASSIGN_XOR - 256)) | (1L << (ASSIGN_QQMARK - 256)) | (1L << (LOGIC_AND - 256)) | (1L << (LOGIC_OR - 256)) | (1L << (LOGIC_NOT - 256)) | (1L << (LOGIC_XOR - 256)) | (1L << (FOX_AND - 256)) | (1L << (FOX_OR - 256)) | (1L << (FOX_NOT - 256)) | (1L << (FOX_XOR - 256)) | (1L << (LPAREN - 256)) | (1L << (RPAREN - 256)) | (1L << (LCURLY - 256)) | (1L << (RCURLY - 256)) | (1L << (LBRKT - 256)) | (1L << (RBRKT - 256)) | (1L << (COLON - 256)) | (1L << (COMMA - 256)) | (1L << (PIPE - 256)) | (1L << (AMP - 256)) | (1L << (ADDROF - 256)) | (1L << (ALIAS - 256)) | (1L << (DOT - 256)) | (1L << (COLONCOLON - 256)) | (1L << (BACKSLASH - 256)) | (1L << (ELLIPSIS - 256)) | (1L << (BACKBACKSLASH - 256)) | (1L << (LAST_OPERATOR - 256)) | (1L << (FIRST_CONSTANT - 256)) | (1L << (FALSE_CONST - 256)) | (1L << (TRUE_CONST - 256)) | (1L << (HEX_CONST - 256)) | (1L << (BIN_CONST - 256)) | (1L << (INT_CONST - 256)) | (1L << (DATE_CONST - 256)) | (1L << (DATETIME_CONST - 256)) | (1L << (REAL_CONST - 256)) | (1L << (INVALID_NUMBER - 256)) | (1L << (SYMBOL_CONST - 256)) | (1L << (CHAR_CONST - 256)) | (1L << (STRING_CONST - 256)) | (1L << (ESCAPED_STRING_CONST - 256)) | (1L << (INTERPOLATED_STRING_CONST - 256)) | (1L << (INCOMPLETE_STRING_CONST - 256)) | (1L << (TEXT_STRING_CONST - 256)) | (1L << (BRACKETED_STRING_CONST - 256)) | (1L << (BINARY_CONST - 256)) | (1L << (LAST_CONSTANT - 256)) | (1L << (PP_FIRST - 256)) | (1L << (PP_COMMAND - 256)) | (1L << (PP_DEFINE - 256)) | (1L << (PP_ELSE - 256)) | (1L << (PP_ENDIF - 256)))) != 0) || ((((_la - 320)) & ~0x3f) == 0 && ((1L << (_la - 320)) & ((1L << (PP_ENDREGION - 320)) | (1L << (PP_ERROR - 320)) | (1L << (PP_IF - 320)) | (1L << (PP_IFDEF - 320)) | (1L << (PP_IFNDEF - 320)) | (1L << (PP_INCLUDE - 320)) | (1L << (PP_LINE - 320)) | (1L << (PP_REGION - 320)) | (1L << (PP_STDOUT - 320)) | (1L << (PP_TRANSLATE - 320)) | (1L << (PP_UNDEF - 320)) | (1L << (PP_WARNING - 320)) | (1L << (PP_PRAGMA - 320)) | (1L << (PP_TEXT - 320)) | (1L << (PP_ENDTEXT - 320)) | (1L << (PP_LAST - 320)) | (1L << (MACRO - 320)) | (1L << (UDCSEP - 320)) | (1L << (ID - 320)) | (1L << (KWID - 320)) | (1L << (DOC_COMMENT - 320)) | (1L << (SL_COMMENT - 320)) | (1L << (ML_COMMENT - 320)) | (1L << (LINE_CONT - 320)) | (1L << (LINE_CONT_OLD - 320)) | (1L << (SEMI - 320)) | (1L << (WS - 320)) | (1L << (NL - 320)) | (1L << (UNRECOGNIZED - 320)) | (1L << (LAST - 320)))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << FIRST_KEYWORD) | (1L << ACCESS) | (1L << ALIGN) | (1L << AS) | (1L << ASPEN) | (1L << ASSIGN) | (1L << BEGIN) | (1L << BREAK) | (1L << CALLBACK) | (1L << CASE) | (1L << CAST) | (1L << CLASS) | (1L << CLIPPER) | (1L << DECLARE) | (1L << DEFINE) | (1L << DIM) | (1L << DLL) | (1L << DLLEXPORT) | (1L << DO) | (1L << DOWNTO) | (1L << ELSE) | (1L << ELSEIF) | (1L << END) | (1L << ENDCASE) | (1L << ENDDO) | (1L << ENDIF) | (1L << EXIT) | (1L << EXPORT) | (1L << FASTCALL) | (1L << FIELD) | (1L << FOR) | (1L << FUNCTION) | (1L << GLOBAL) | (1L << HIDDEN) | (1L << IF) | (1L << IIF) | (1L << INHERIT) | (1L << INIT1) | (1L << INIT2) | (1L << INIT3) | (1L << INSTANCE) | (1L << IS) | (1L << IN) | (1L << LOCAL) | (1L << LOOP) | (1L << MEMBER) | (1L << MEMVAR) | (1L << METHOD) | (1L << NAMEOF) | (1L << NEXT) | (1L << OTHERWISE) | (1L << PARAMETERS) | (1L << PASCAL) | (1L << PRIVATE) | (1L << PROCEDURE) | (1L << PROTECTED) | (1L << PUBLIC) | (1L << RECOVER) | (1L << RETURN) | (1L << SELF) | (1L << SEQUENCE) | (1L << SIZEOF) | (1L << STATIC))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (STEP - 64)) | (1L << (STRICT - 64)) | (1L << (SUPER - 64)) | (1L << (THISCALL - 64)) | (1L << (TO - 64)) | (1L << (TYPEOF - 64)) | (1L << (UNION - 64)) | (1L << (UPTO - 64)) | (1L << (USING - 64)) | (1L << (WHILE - 64)) | (1L << (WINCALL - 64)) | (1L << (CATCH - 64)) | (1L << (FINALLY - 64)) | (1L << (THROW - 64)) | (1L << (FIRST_POSITIONAL_KEYWORD - 64)) | (1L << (ABSTRACT - 64)) | (1L << (AUTO - 64)) | (1L << (CASTCLASS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONST - 64)) | (1L << (DEFAULT - 64)) | (1L << (DELEGATE - 64)) | (1L << (DESTRUCTOR - 64)) | (1L << (ENUM - 64)) | (1L << (EVENT - 64)) | (1L << (EXPLICIT - 64)) | (1L << (FOREACH - 64)) | (1L << (GET - 64)) | (1L << (IMPLEMENTS - 64)) | (1L << (IMPLICIT - 64)) | (1L << (IMPLIED - 64)) | (1L << (INITONLY - 64)) | (1L << (INTERFACE - 64)) | (1L << (INTERNAL - 64)) | (1L << (LOCK - 64)) | (1L << (NAMESPACE - 64)) | (1L << (NEW - 64)) | (1L << (OPERATOR - 64)) | (1L << (OUT - 64)) | (1L << (PARTIAL - 64)) | (1L << (PROPERTY - 64)) | (1L << (REPEAT - 64)) | (1L << (SCOPE - 64)) | (1L << (SEALED - 64)) | (1L << (SET - 64)) | (1L << (STRUCTURE - 64)) | (1L << (TRY - 64)) | (1L << (UNTIL - 64)) | (1L << (VALUE - 64)) | (1L << (VIRTUAL - 64)) | (1L << (VOSTRUCT - 64)) | (1L << (ADD - 64)) | (1L << (ARGLIST - 64)) | (1L << (ASCENDING - 64)) | (1L << (ASYNC - 64)) | (1L << (ASTYPE - 64)) | (1L << (AWAIT - 64)) | (1L << (BY - 64)) | (1L << (CHECKED - 64)) | (1L << (DESCENDING - 64)) | (1L << (EQUALS - 64)) | (1L << (EXTERN - 64)) | (1L << (FIXED - 64)) | (1L << (FROM - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (GROUP - 128)) | (1L << (INIT - 128)) | (1L << (INTO - 128)) | (1L << (JOIN - 128)) | (1L << (LET - 128)) | (1L << (NOP - 128)) | (1L << (OF - 128)) | (1L << (ON - 128)) | (1L << (ORDERBY - 128)) | (1L << (OVERRIDE - 128)) | (1L << (PARAMS - 128)) | (1L << (REMOVE - 128)) | (1L << (SELECT - 128)) | (1L << (STACKALLOC - 128)) | (1L << (SWITCH - 128)) | (1L << (UNCHECKED - 128)) | (1L << (UNSAFE - 128)) | (1L << (VAR - 128)) | (1L << (VOLATILE - 128)) | (1L << (WHEN - 128)) | (1L << (WHERE - 128)) | (1L << (YIELD - 128)) | (1L << (WITH - 128)) | (1L << (LAST_POSITIONAL_KEYWORD - 128)) | (1L << (FIRST_TYPE - 128)) | (1L << (ARRAY - 128)) | (1L << (BYTE - 128)) | (1L << (CODEBLOCK - 128)) | (1L << (DATE - 128)) | (1L << (DWORD - 128)) | (1L << (FLOAT - 128)) | (1L << (INT - 128)) | (1L << (LOGIC - 128)) | (1L << (LONGINT - 128)) | (1L << (OBJECT - 128)) | (1L << (PSZ - 128)) | (1L << (PTR - 128)) | (1L << (REAL4 - 128)) | (1L << (REAL8 - 128)) | (1L << (REF - 128)) | (1L << (SHORTINT - 128)) | (1L << (STRING - 128)) | (1L << (SYMBOL - 128)) | (1L << (USUAL - 128)) | (1L << (VOID - 128)) | (1L << (WORD - 128)) | (1L << (CHAR - 128)) | (1L << (INT64 - 128)) | (1L << (UINT64 - 128)) | (1L << (DYNAMIC - 128)) | (1L << (DECIMAL - 128)) | (1L << (DATETIME - 128)) | (1L << (CURRENCY - 128)) | (1L << (BINARY - 128)) | (1L << (NINT - 128)) | (1L << (NUINT - 128)) | (1L << (LAST_TYPE - 128)) | (1L << (UDC_KEYWORD - 128)) | (1L << (SCRIPT_REF - 128)) | (1L << (SCRIPT_LOAD - 128)) | (1L << (ASSIGNMENT - 128)) | (1L << (DEFERRED - 128)) | (1L << (ENDCLASS - 128)) | (1L << (EXPORTED - 128)))) != 0) || ((((_la - 192)) & ~0x3f) == 0 && ((1L << (_la - 192)) & ((1L << (FREEZE - 192)) | (1L << (FINAL - 192)) | (1L << (INLINE - 192)) | (1L << (INTRODUCE - 192)) | (1L << (NOSAVE - 192)) | (1L << (READONLY - 192)) | (1L << (SHARING - 192)) | (1L << (SHARED - 192)) | (1L << (SYNC - 192)) | (1L << (ENDDEFINE - 192)) | (1L << (LPARAMETERS - 192)) | (1L << (OLEPUBLIC - 192)) | (1L << (EXCLUDE - 192)) | (1L << (THISACCESS - 192)) | (1L << (HELPSTRING - 192)) | (1L << (DIMENSION - 192)) | (1L << (NOINIT - 192)) | (1L << (EACH - 192)) | (1L << (THEN - 192)) | (1L << (FOX_M - 192)) | (1L << (LAST_KEYWORD - 192)) | (1L << (FIRST_NULL - 192)) | (1L << (NIL - 192)) | (1L << (NULL - 192)) | (1L << (NULL_ARRAY - 192)) | (1L << (NULL_CODEBLOCK - 192)) | (1L << (NULL_DATE - 192)) | (1L << (NULL_OBJECT - 192)) | (1L << (NULL_PSZ - 192)) | (1L << (NULL_PTR - 192)) | (1L << (NULL_STRING - 192)) | (1L << (NULL_SYMBOL - 192)) | (1L << (NULL_FOX - 192)) | (1L << (LAST_NULL - 192)) | (1L << (FIRST_OPERATOR - 192)) | (1L << (LT - 192)) | (1L << (LTE - 192)) | (1L << (GT - 192)) | (1L << (GTE - 192)) | (1L << (EQ - 192)) | (1L << (EEQ - 192)) | (1L << (SUBSTR - 192)) | (1L << (NEQ - 192)) | (1L << (NEQ2 - 192)) | (1L << (INC - 192)) | (1L << (DEC - 192)) | (1L << (PLUS - 192)) | (1L << (MINUS - 192)) | (1L << (DIV - 192)) | (1L << (MOD - 192)) | (1L << (EXP - 192)) | (1L << (LSHIFT - 192)) | (1L << (RSHIFT - 192)) | (1L << (TILDE - 192)) | (1L << (MULT - 192)) | (1L << (QQMARK - 192)) | (1L << (QMARK - 192)) | (1L << (AND - 192)) | (1L << (OR - 192)) | (1L << (NOT - 192)) | (1L << (BIT_NOT - 192)) | (1L << (BIT_AND - 192)) | (1L << (BIT_OR - 192)) | (1L << (BIT_XOR - 192)))) != 0) || ((((_la - 256)) & ~0x3f) == 0 && ((1L << (_la - 256)) & ((1L << (ASSIGN_OP - 256)) | (1L << (ASSIGN_ADD - 256)) | (1L << (ASSIGN_SUB - 256)) | (1L << (ASSIGN_EXP - 256)) | (1L << (ASSIGN_MUL - 256)) | (1L << (ASSIGN_DIV - 256)) | (1L << (ASSIGN_MOD - 256)) | (1L << (ASSIGN_BITAND - 256)) | (1L << (ASSIGN_BITOR - 256)) | (1L << (ASSIGN_LSHIFT - 256)) | (1L << (ASSIGN_RSHIFT - 256)) | (1L << (ASSIGN_XOR - 256)) | (1L << (ASSIGN_QQMARK - 256)) | (1L << (LOGIC_AND - 256)) | (1L << (LOGIC_OR - 256)) | (1L << (LOGIC_NOT - 256)) | (1L << (LOGIC_XOR - 256)) | (1L << (FOX_AND - 256)) | (1L << (FOX_OR - 256)) | (1L << (FOX_NOT - 256)) | (1L << (FOX_XOR - 256)) | (1L << (LPAREN - 256)) | (1L << (RPAREN - 256)) | (1L << (LCURLY - 256)) | (1L << (RCURLY - 256)) | (1L << (LBRKT - 256)) | (1L << (RBRKT - 256)) | (1L << (COLON - 256)) | (1L << (COMMA - 256)) | (1L << (PIPE - 256)) | (1L << (AMP - 256)) | (1L << (ADDROF - 256)) | (1L << (ALIAS - 256)) | (1L << (DOT - 256)) | (1L << (COLONCOLON - 256)) | (1L << (BACKSLASH - 256)) | (1L << (ELLIPSIS - 256)) | (1L << (BACKBACKSLASH - 256)) | (1L << (LAST_OPERATOR - 256)) | (1L << (FIRST_CONSTANT - 256)) | (1L << (FALSE_CONST - 256)) | (1L << (TRUE_CONST - 256)) | (1L << (HEX_CONST - 256)) | (1L << (BIN_CONST - 256)) | (1L << (INT_CONST - 256)) | (1L << (DATE_CONST - 256)) | (1L << (DATETIME_CONST - 256)) | (1L << (REAL_CONST - 256)) | (1L << (INVALID_NUMBER - 256)) | (1L << (SYMBOL_CONST - 256)) | (1L << (CHAR_CONST - 256)) | (1L << (STRING_CONST - 256)) | (1L << (ESCAPED_STRING_CONST - 256)) | (1L << (INTERPOLATED_STRING_CONST - 256)) | (1L << (INCOMPLETE_STRING_CONST - 256)) | (1L << (TEXT_STRING_CONST - 256)) | (1L << (BRACKETED_STRING_CONST - 256)) | (1L << (BINARY_CONST - 256)) | (1L << (LAST_CONSTANT - 256)) | (1L << (PP_FIRST - 256)) | (1L << (PP_COMMAND - 256)) | (1L << (PP_DEFINE - 256)) | (1L << (PP_ELSE - 256)) | (1L << (PP_ENDIF - 256)))) != 0) || ((((_la - 320)) & ~0x3f) == 0 && ((1L << (_la - 320)) & ((1L << (PP_ENDREGION - 320)) | (1L << (PP_ERROR - 320)) | (1L << (PP_IF - 320)) | (1L << (PP_IFDEF - 320)) | (1L << (PP_IFNDEF - 320)) | (1L << (PP_INCLUDE - 320)) | (1L << (PP_LINE - 320)) | (1L << (PP_REGION - 320)) | (1L << (PP_STDOUT - 320)) | (1L << (PP_TRANSLATE - 320)) | (1L << (PP_UNDEF - 320)) | (1L << (PP_WARNING - 320)) | (1L << (PP_PRAGMA - 320)) | (1L << (PP_TEXT - 320)) | (1L << (PP_ENDTEXT - 320)) | (1L << (PP_LAST - 320)) | (1L << (MACRO - 320)) | (1L << (UDCSEP - 320)) | (1L << (ID - 320)) | (1L << (DOC_COMMENT - 320)) | (1L << (SL_COMMENT - 320)) | (1L << (ML_COMMENT - 320)) | (1L << (LINE_CONT - 320)) | (1L << (LINE_CONT_OLD - 320)) | (1L << (SEMI - 320)) | (1L << (WS - 320)) | (1L << (NL - 320)) | (1L << (UNRECOGNIZED - 320)) | (1L << (LAST - 320)))) != 0) );
 			State = 1470; eos();
 			}
 		}
@@ -9586,6 +9586,7 @@ public partial class XSharpParser : Parser {
 		public IToken c;
 		public CondBlockContext _condBlock;
 		public IList<CondBlockContext> _CaseBlocks = new List<CondBlockContext>();
+		public IToken oth;
 		public StatementBlockContext OtherwiseStmtBlk;
 		public IToken e;
 		public ITerminalNode DO() { return GetToken(XSharpParser.DO, 0); }
@@ -9599,7 +9600,6 @@ public partial class XSharpParser : Parser {
 		public EosContext eos(int i) {
 			return GetRuleContext<EosContext>(i);
 		}
-		public ITerminalNode OTHERWISE() { return GetToken(XSharpParser.OTHERWISE, 0); }
 		public ITerminalNode END() { return GetToken(XSharpParser.END, 0); }
 		public ITerminalNode ENDCASE() { return GetToken(XSharpParser.ENDCASE, 0); }
 		public CondBlockContext[] condBlock() {
@@ -9608,6 +9608,7 @@ public partial class XSharpParser : Parser {
 		public CondBlockContext condBlock(int i) {
 			return GetRuleContext<CondBlockContext>(i);
 		}
+		public ITerminalNode OTHERWISE() { return GetToken(XSharpParser.OTHERWISE, 0); }
 		public StatementBlockContext statementBlock() {
 			return GetRuleContext<StatementBlockContext>(0);
 		}
@@ -9756,6 +9757,7 @@ public partial class XSharpParser : Parser {
 		public EosContext end;
 		public StatementBlockContext StmtBlk;
 		public RecoverBlockContext RecoverBlock;
+		public IToken F;
 		public StatementBlockContext FinBlock;
 		public IToken e;
 		public ITerminalNode BEGIN() { return GetToken(XSharpParser.BEGIN, 0); }
@@ -9777,10 +9779,10 @@ public partial class XSharpParser : Parser {
 		}
 		public ITerminalNode END() { return GetToken(XSharpParser.END, 0); }
 		public ITerminalNode RECOVER() { return GetToken(XSharpParser.RECOVER, 0); }
-		public ITerminalNode FINALLY() { return GetToken(XSharpParser.FINALLY, 0); }
 		public RecoverBlockContext recoverBlock() {
 			return GetRuleContext<RecoverBlockContext>(0);
 		}
+		public ITerminalNode FINALLY() { return GetToken(XSharpParser.FINALLY, 0); }
 		public SeqStmtContext(StatementContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			IXSharpListener typedListener = listener as IXSharpListener;
@@ -9980,6 +9982,7 @@ public partial class XSharpParser : Parser {
 		public CondBlockContext _condBlock;
 		public IList<CondBlockContext> _IfBlocks = new List<CondBlockContext>();
 		public IToken e;
+		public IToken el;
 		public StatementBlockContext ElseStmtBlk;
 		public EosContext[] eos() {
 			return GetRuleContexts<EosContext>();
@@ -9997,13 +10000,13 @@ public partial class XSharpParser : Parser {
 		public CondBlockContext condBlock(int i) {
 			return GetRuleContext<CondBlockContext>(i);
 		}
-		public ITerminalNode ELSE() { return GetToken(XSharpParser.ELSE, 0); }
 		public ITerminalNode END() { return GetToken(XSharpParser.END, 0); }
 		public ITerminalNode ENDIF() { return GetToken(XSharpParser.ENDIF, 0); }
 		public ITerminalNode[] ELSEIF() { return GetTokens(XSharpParser.ELSEIF); }
 		public ITerminalNode ELSEIF(int i) {
 			return GetToken(XSharpParser.ELSEIF, i);
 		}
+		public ITerminalNode ELSE() { return GetToken(XSharpParser.ELSE, 0); }
 		public StatementBlockContext statementBlock() {
 			return GetRuleContext<StatementBlockContext>(0);
 		}
@@ -10352,7 +10355,7 @@ public partial class XSharpParser : Parser {
 				_la = _input.La(1);
 				if (_la==ELSE) {
 					{
-					State = 1725; Match(ELSE);
+					State = 1725; ((IfStmtContext)_localctx).el = Match(ELSE);
 					State = 1726; eos();
 					State = 1727; ((IfStmtContext)_localctx).ElseStmtBlk = statementBlock();
 					}
@@ -10414,7 +10417,7 @@ public partial class XSharpParser : Parser {
 				_la = _input.La(1);
 				if (_la==OTHERWISE) {
 					{
-					State = 1750; Match(OTHERWISE);
+					State = 1750; ((CaseStmtContext)_localctx).oth = Match(OTHERWISE);
 					State = 1751; ((CaseStmtContext)_localctx).end = eos();
 					State = 1752; ((CaseStmtContext)_localctx).OtherwiseStmtBlk = statementBlock();
 					}
@@ -10578,7 +10581,7 @@ public partial class XSharpParser : Parser {
 				_la = _input.La(1);
 				if (_la==FINALLY) {
 					{
-					State = 1800; Match(FINALLY);
+					State = 1800; ((SeqStmtContext)_localctx).F = Match(FINALLY);
 					State = 1801; eos();
 					State = 1802; ((SeqStmtContext)_localctx).FinBlock = statementBlock();
 					}
@@ -13533,7 +13536,7 @@ public partial class XSharpParser : Parser {
 		public IToken _UNSAFE;
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _ASYNC;
-		public IToken _tset6605;
+		public IToken _tset6611;
 		public ITerminalNode[] UNSAFE() { return GetTokens(XSharpParser.UNSAFE); }
 		public ITerminalNode UNSAFE(int i) {
 			return GetToken(XSharpParser.UNSAFE, i);
@@ -13572,10 +13575,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 2503;
-				_localctx._tset6605 = _input.Lt(1);
+				_localctx._tset6611 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==ASYNC || _la==UNSAFE) ) {
-					_localctx._tset6605 = _errHandler.RecoverInline(this);
+					_localctx._tset6611 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -13584,7 +13587,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset6605);
+				_localctx._Tokens.Add(_localctx._tset6611);
 				}
 				}
 				State = 2506;
@@ -20866,7 +20869,7 @@ public partial class XSharpParser : Parser {
 		public IToken _FINAL;
 		public IToken _SEALED;
 		public IToken _ABSTRACT;
-		public IToken _tset10977;
+		public IToken _tset10983;
 		public ITerminalNode[] STATIC() { return GetTokens(XSharpParser.STATIC); }
 		public ITerminalNode STATIC(int i) {
 			return GetToken(XSharpParser.STATIC, i);
@@ -20917,10 +20920,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3410;
-				_localctx._tset10977 = _input.Lt(1);
+				_localctx._tset10983 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(((((_la - 63)) & ~0x3f) == 0 && ((1L << (_la - 63)) & ((1L << (STATIC - 63)) | (1L << (ABSTRACT - 63)) | (1L << (SEALED - 63)))) != 0) || _la==FREEZE || _la==FINAL) ) {
-					_localctx._tset10977 = _errHandler.RecoverInline(this);
+					_localctx._tset10983 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -20929,7 +20932,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset10977);
+				_localctx._Tokens.Add(_localctx._tset10983);
 				}
 				}
 				State = 3413;
@@ -21495,7 +21498,7 @@ public partial class XSharpParser : Parser {
 		public IToken _UNSAFE;
 		public IToken _EXTERN;
 		public IToken _VIRTUAL;
-		public IToken _tset11215;
+		public IToken _tset11221;
 		public ITerminalNode[] DEFERRED() { return GetTokens(XSharpParser.DEFERRED); }
 		public ITerminalNode DEFERRED(int i) {
 			return GetToken(XSharpParser.DEFERRED, i);
@@ -21578,10 +21581,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3475;
-				_localctx._tset11215 = _input.Lt(1);
+				_localctx._tset11221 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==CLASS || _la==STATIC || ((((_la - 79)) & ~0x3f) == 0 && ((1L << (_la - 79)) & ((1L << (ABSTRACT - 79)) | (1L << (NEW - 79)) | (1L << (VIRTUAL - 79)) | (1L << (ASYNC - 79)) | (1L << (EXTERN - 79)) | (1L << (OVERRIDE - 79)))) != 0) || ((((_la - 144)) & ~0x3f) == 0 && ((1L << (_la - 144)) & ((1L << (UNSAFE - 144)) | (1L << (DEFERRED - 144)) | (1L << (FINAL - 144)) | (1L << (INTRODUCE - 144)) | (1L << (SYNC - 144)))) != 0)) ) {
-					_localctx._tset11215 = _errHandler.RecoverInline(this);
+					_localctx._tset11221 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -21590,7 +21593,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11215);
+				_localctx._Tokens.Add(_localctx._tset11221);
 				}
 				}
 				State = 3478;
@@ -21933,7 +21936,7 @@ public partial class XSharpParser : Parser {
 		public IToken _ACCESS;
 		public IList<IToken> _Tokens = new List<IToken>();
 		public IToken _ASSIGN;
-		public IToken _tset11449;
+		public IToken _tset11455;
 		public ITerminalNode[] ACCESS() { return GetTokens(XSharpParser.ACCESS); }
 		public ITerminalNode ACCESS(int i) {
 			return GetToken(XSharpParser.ACCESS, i);
@@ -21972,10 +21975,10 @@ public partial class XSharpParser : Parser {
 				{
 				{
 				State = 3535;
-				_localctx._tset11449 = _input.Lt(1);
+				_localctx._tset11455 = _input.Lt(1);
 				_la = _input.La(1);
 				if ( !(_la==ACCESS || _la==ASSIGN) ) {
-					_localctx._tset11449 = _errHandler.RecoverInline(this);
+					_localctx._tset11455 = _errHandler.RecoverInline(this);
 				} else {
 					if (_input.La(1) == TokenConstants.Eof) {
 						matchedEOF = true;
@@ -21984,7 +21987,7 @@ public partial class XSharpParser : Parser {
 					_errHandler.ReportMatch(this);
 					Consume();
 				}
-				_localctx._Tokens.Add(_localctx._tset11449);
+				_localctx._Tokens.Add(_localctx._tset11455);
 				}
 				}
 				State = 3538;
@@ -23690,7 +23693,7 @@ public partial class XSharpParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\x160\xEBF\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\x15F\xEBF\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -24025,7 +24028,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x164\x2\x166\x2\x168\x2\x16A\x2\x16C\x2\x16E\x2\x170\x2\x2H\x4\x2"+
 		"\x1D\x1D(*\x4\x2\x1D\x1D\x83\x83\x4\x2\"\"\x39\x39\n\x2\a\a\v\v\xF\xF"+
 		"\x1F\x1F\x37\x37\x43\x43\x45\x45LL\x4\x2RR\x154\x154\a\x2\x4\x4\b\b\x32"+
-		"\x32TTXX\x3\x2\x15E\x15E\a\x2\x6\x6,-hh\x8C\x8C\xA9\xA9\b\x2\x1E\x1E;"+
+		"\x32TTXX\x3\x2\x15D\x15D\a\x2\x6\x6,-hh\x8C\x8C\xA9\xA9\b\x2\x1E\x1E;"+
 		";\x41\x41\x63\x63xx\x92\x92\x5\x2\x4\x4\b\b\x32\x32\x4\x2\x6\x6,,\a\x2"+
 		"\x1E\x1E;;\x41\x41\x63\x63\x92\x92\x4\x2\'\'\x11D\x11D\r\x2\x1E\x1E$$"+
 		"\x38\x38:;\x41\x41QQ\x63\x63\x66\x66iimm\x92\x92\x4\x2--hh\x4\x2\xE\xE"+
@@ -24109,8 +24112,8 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x2\x164\xE3A\x3\x2\x2\x2\x166\xE55\x3\x2\x2\x2\x168\xE6C\x3\x2"+
 		"\x2\x2\x16A\xE74\x3\x2\x2\x2\x16C\xE78\x3\x2\x2\x2\x16E\xE84\x3\x2\x2"+
 		"\x2\x170\xEBC\x3\x2\x2\x2\x172\x173\a\xBD\x2\x2\x173\x174\a\x135\x2\x2"+
-		"\x174\x179\a\x15E\x2\x2\x175\x176\a\xBC\x2\x2\x176\x177\a\x135\x2\x2\x177"+
-		"\x179\a\x15E\x2\x2\x178\x172\x3\x2\x2\x2\x178\x175\x3\x2\x2\x2\x179\x17C"+
+		"\x174\x179\a\x15D\x2\x2\x175\x176\a\xBC\x2\x2\x176\x177\a\x135\x2\x2\x177"+
+		"\x179\a\x15D\x2\x2\x178\x172\x3\x2\x2\x2\x178\x175\x3\x2\x2\x2\x179\x17C"+
 		"\x3\x2\x2\x2\x17A\x178\x3\x2\x2\x2\x17A\x17B\x3\x2\x2\x2\x17B\x180\x3"+
 		"\x2\x2\x2\x17C\x17A\x3\x2\x2\x2\x17D\x17F\x5\x4\x3\x2\x17E\x17D\x3\x2"+
 		"\x2\x2\x17F\x182\x3\x2\x2\x2\x180\x17E\x3\x2\x2\x2\x180\x181\x3\x2\x2"+
@@ -24119,7 +24122,7 @@ public partial class XSharpParser : Parser {
 		"\xCCg\x2\x188\x185\x3\x2\x2\x2\x188\x186\x3\x2\x2\x2\x188\x187\x3\x2\x2"+
 		"\x2\x189\x5\x3\x2\x2\x2\x18A\x18D\x5\x10C\x87\x2\x18B\x18D\x5\x10E\x88"+
 		"\x2\x18C\x18A\x3\x2\x2\x2\x18C\x18B\x3\x2\x2\x2\x18D\x18E\x3\x2\x2\x2"+
-		"\x18E\x18F\a\x15E\x2\x2\x18F\x190\a\x2\x2\x3\x190\a\x3\x2\x2\x2\x191\x193"+
+		"\x18E\x18F\a\x15D\x2\x2\x18F\x190\a\x2\x2\x3\x190\a\x3\x2\x2\x2\x191\x193"+
 		"\x5\f\a\x2\x192\x191\x3\x2\x2\x2\x193\x196\x3\x2\x2\x2\x194\x192\x3\x2"+
 		"\x2\x2\x194\x195\x3\x2\x2\x2\x195\x197\x3\x2\x2\x2\x196\x194\x3\x2\x2"+
 		"\x2\x197\x198\a\x2\x2\x3\x198\t\x3\x2\x2\x2\x199\x19A\x6\x6\x2\x2\x19A"+
@@ -24145,7 +24148,7 @@ public partial class XSharpParser : Parser {
 		"\x3\x2\x2\x2\x1C9\x1BB\x3\x2\x2\x2\x1C9\x1BC\x3\x2\x2\x2\x1C9\x1BD\x3"+
 		"\x2\x2\x2\x1C9\x1BE\x3\x2\x2\x2\x1C9\x1C0\x3\x2\x2\x2\x1C9\x1C2\x3\x2"+
 		"\x2\x2\x1C9\x1C3\x3\x2\x2\x2\x1C9\x1C4\x3\x2\x2\x2\x1C9\x1C6\x3\x2\x2"+
-		"\x2\x1C9\x1C8\x3\x2\x2\x2\x1CA\r\x3\x2\x2\x2\x1CB\x1CD\a\x15E\x2\x2\x1CC"+
+		"\x2\x1C9\x1C8\x3\x2\x2\x2\x1CA\r\x3\x2\x2\x2\x1CB\x1CD\a\x15D\x2\x2\x1CC"+
 		"\x1CB\x3\x2\x2\x2\x1CD\x1CE\x3\x2\x2\x2\x1CE\x1CC\x3\x2\x2\x2\x1CE\x1CF"+
 		"\x3\x2\x2\x2\x1CF\xF\x3\x2\x2\x2\x1D0\x1D2\x5\x8CG\x2\x1D1\x1D0\x3\x2"+
 		"\x2\x2\x1D1\x1D2\x3\x2\x2\x2\x1D2\x1D4\x3\x2\x2\x2\x1D3\x1D5\x5,\x17\x2"+
@@ -24153,12 +24156,12 @@ public partial class XSharpParser : Parser {
 		"\x1D7\x5\x12\n\x2\x1D7\x1D9\x5\x14\v\x2\x1D8\x1DA\t\x2\x2\x2\x1D9\x1D8"+
 		"\x3\x2\x2\x2\x1D9\x1DA\x3\x2\x2\x2\x1DA\x1DB\x3\x2\x2\x2\x1DB\x1DC\x5"+
 		"\x16\f\x2\x1DC\x1DD\x5\xE\b\x2\x1DD\x1E2\x5*\x16\x2\x1DE\x1DF\a\x19\x2"+
-		"\x2\x1DF\x1E0\x5\x12\n\x2\x1E0\x1E1\a\x15E\x2\x2\x1E1\x1E3\x3\x2\x2\x2"+
+		"\x2\x1DF\x1E0\x5\x12\n\x2\x1E0\x1E1\a\x15D\x2\x2\x1E1\x1E3\x3\x2\x2\x2"+
 		"\x1E2\x1DE\x3\x2\x2\x2\x1E2\x1E3\x3\x2\x2\x2\x1E3\x1F3\x3\x2\x2\x2\x1E4"+
 		"\x1E6\x5\x8CG\x2\x1E5\x1E4\x3\x2\x2\x2\x1E5\x1E6\x3\x2\x2\x2\x1E6\x1E7"+
 		"\x3\x2\x2\x2\x1E7\x1E8\t\x3\x2\x2\x1E8\x1E9\x5\x12\n\x2\x1E9\x1EA\x5\x14"+
 		"\v\x2\x1EA\x1EB\x5\xE\b\x2\x1EB\x1F0\x5*\x16\x2\x1EC\x1ED\a\x19\x2\x2"+
-		"\x1ED\x1EE\x5\x12\n\x2\x1EE\x1EF\a\x15E\x2\x2\x1EF\x1F1\x3\x2\x2\x2\x1F0"+
+		"\x1ED\x1EE\x5\x12\n\x2\x1EE\x1EF\a\x15D\x2\x2\x1EF\x1F1\x3\x2\x2\x2\x1F0"+
 		"\x1EC\x3\x2\x2\x2\x1F0\x1F1\x3\x2\x2\x2\x1F1\x1F3\x3\x2\x2\x2\x1F2\x1D1"+
 		"\x3\x2\x2\x2\x1F2\x1E5\x3\x2\x2\x2\x1F3\x11\x3\x2\x2\x2\x1F4\x1F5\t\x4"+
 		"\x2\x2\x1F5\x13\x3\x2\x2\x2\x1F6\x1F8\x5\x12C\x97\x2\x1F7\x1F9\x5H%\x2"+
@@ -24191,7 +24194,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x23B\x23D\a\x12E\x2\x2\x23C\x23A\x3\x2\x2\x2\x23C\x23D\x3\x2\x2"+
 		"\x2\x23D\x23F\x3\x2\x2\x2\x23E\x231\x3\x2\x2\x2\x23E\x232\x3\x2\x2\x2"+
 		"\x23F\x241\x3\x2\x2\x2\x240\x242\t\x6\x2\x2\x241\x240\x3\x2\x2\x2\x241"+
-		"\x242\x3\x2\x2\x2\x242\x243\x3\x2\x2\x2\x243\x244\a\x15E\x2\x2\x244\x1B"+
+		"\x242\x3\x2\x2\x2\x242\x243\x3\x2\x2\x2\x243\x244\a\x15D\x2\x2\x244\x1B"+
 		"\x3\x2\x2\x2\x245\x246\t\x5\x2\x2\x246\x1D\x3\x2\x2\x2\x247\x249\x5\x8C"+
 		"G\x2\x248\x247\x3\x2\x2\x2\x248\x249\x3\x2\x2\x2\x249\x24B\x3\x2\x2\x2"+
 		"\x24A\x24C\x5,\x17\x2\x24B\x24A\x3\x2\x2\x2\x24B\x24C\x3\x2\x2\x2\x24C"+
@@ -24204,14 +24207,14 @@ public partial class XSharpParser : Parser {
 		"\x25C\x261\x5 \x11\x2\x25D\x25E\a\x11E\x2\x2\x25E\x260\x5 \x11\x2\x25F"+
 		"\x25D\x3\x2\x2\x2\x260\x263\x3\x2\x2\x2\x261\x25F\x3\x2\x2\x2\x261\x262"+
 		"\x3\x2\x2\x2\x262\x265\x3\x2\x2\x2\x263\x261\x3\x2\x2\x2\x264\x25C\x3"+
-		"\x2\x2\x2\x264\x265\x3\x2\x2\x2\x265\x266\x3\x2\x2\x2\x266\x267\a\x15E"+
+		"\x2\x2\x2\x264\x265\x3\x2\x2\x2\x265\x266\x3\x2\x2\x2\x266\x267\a\x15D"+
 		"\x2\x2\x267\x1F\x3\x2\x2\x2\x268\x26A\x5\x8CG\x2\x269\x268\x3\x2\x2\x2"+
 		"\x269\x26A\x3\x2\x2\x2\x26A\x26B\x3\x2\x2\x2\x26B\x26D\x5\xFC\x7F\x2\x26C"+
 		"\x26E\a\x121\x2\x2\x26D\x26C\x3\x2\x2\x2\x26D\x26E\x3\x2\x2\x2\x26E\x270"+
 		"\x3\x2\x2\x2\x26F\x271\x5\x12C\x97\x2\x270\x26F\x3\x2\x2\x2\x270\x271"+
 		"\x3\x2\x2\x2\x271!\x3\x2\x2\x2\x272\x273\a\x13\x2\x2\x273\x275\t\a\x2"+
 		"\x2\x274\x276\n\b\x2\x2\x275\x274\x3\x2\x2\x2\x275\x276\x3\x2\x2\x2\x276"+
-		"\x277\x3\x2\x2\x2\x277\x278\a\x15E\x2\x2\x278#\x3\x2\x2\x2\x279\x282\a"+
+		"\x277\x3\x2\x2\x2\x277\x278\a\x15D\x2\x2\x278#\x3\x2\x2\x2\x279\x282\a"+
 		"\x117\x2\x2\x27A\x27F\x5&\x14\x2\x27B\x27C\a\x11E\x2\x2\x27C\x27E\x5&"+
 		"\x14\x2\x27D\x27B\x3\x2\x2\x2\x27E\x281\x3\x2\x2\x2\x27F\x27D\x3\x2\x2"+
 		"\x2\x27F\x280\x3\x2\x2\x2\x280\x283\x3\x2\x2\x2\x281\x27F\x3\x2\x2\x2"+
@@ -24233,7 +24236,7 @@ public partial class XSharpParser : Parser {
 		"\x2AA\x2AC\a\x41\x2\x2\x2AB\x2AA\x3\x2\x2\x2\x2AB\x2AC\x3\x2\x2\x2\x2AC"+
 		"\x2B0\x3\x2\x2\x2\x2AD\x2AE\x5\xF6|\x2\x2AE\x2AF\x5\xCA\x66\x2\x2AF\x2B1"+
 		"\x3\x2\x2\x2\x2B0\x2AD\x3\x2\x2\x2\x2B0\x2B1\x3\x2\x2\x2\x2B1\x2B2\x3"+
-		"\x2\x2\x2\x2B2\x2B3\x5\xEEx\x2\x2B3\x2B4\a\x15E\x2\x2\x2B4/\x3\x2\x2\x2"+
+		"\x2\x2\x2\x2B2\x2B3\x5\xEEx\x2\x2B3\x2B4\a\x15D\x2\x2\x2B4/\x3\x2\x2\x2"+
 		"\x2B5\x2B7\x5\x8CG\x2\x2B6\x2B5\x3\x2\x2\x2\x2B6\x2B7\x3\x2\x2\x2\x2B7"+
 		"\x2B9\x3\x2\x2\x2\x2B8\x2BA\x5,\x17\x2\x2B9\x2B8\x3\x2\x2\x2\x2B9\x2BA"+
 		"\x3\x2\x2\x2\x2BA\x2BB\x3\x2\x2\x2\x2BB\x2BD\a#\x2\x2\x2BC\x2BE\aU\x2"+
@@ -24241,13 +24244,13 @@ public partial class XSharpParser : Parser {
 		"\x2BF\x2C4\x5\x62\x32\x2\x2C0\x2C1\a\x11E\x2\x2\x2C1\x2C3\x5\x62\x32\x2"+
 		"\x2C2\x2C0\x3\x2\x2\x2\x2C3\x2C6\x3\x2\x2\x2\x2C4\x2C2\x3\x2\x2\x2\x2C4"+
 		"\x2C5\x3\x2\x2\x2\x2C5\x2C7\x3\x2\x2\x2\x2C6\x2C4\x3\x2\x2\x2\x2C7\x2C8"+
-		"\a\x15E\x2\x2\x2C8\x2DB\x3\x2\x2\x2\x2C9\x2CB\x5\x8CG\x2\x2CA\x2C9\x3"+
+		"\a\x15D\x2\x2\x2C8\x2DB\x3\x2\x2\x2\x2C9\x2CB\x5\x8CG\x2\x2CA\x2C9\x3"+
 		"\x2\x2\x2\x2CA\x2CB\x3\x2\x2\x2\x2CB\x2CC\x3\x2\x2\x2\x2CC\x2CE\a\x41"+
 		"\x2\x2\x2CD\x2CF\aU\x2\x2\x2CE\x2CD\x3\x2\x2\x2\x2CE\x2CF\x3\x2\x2\x2"+
 		"\x2CF\x2D0\x3\x2\x2\x2\x2D0\x2D5\x5\x62\x32\x2\x2D1\x2D2\a\x11E\x2\x2"+
 		"\x2D2\x2D4\x5\x62\x32\x2\x2D3\x2D1\x3\x2\x2\x2\x2D4\x2D7\x3\x2\x2\x2\x2D5"+
 		"\x2D3\x3\x2\x2\x2\x2D5\x2D6\x3\x2\x2\x2\x2D6\x2D8\x3\x2\x2\x2\x2D7\x2D5"+
-		"\x3\x2\x2\x2\x2D8\x2D9\a\x15E\x2\x2\x2D9\x2DB\x3\x2\x2\x2\x2DA\x2B6\x3"+
+		"\x3\x2\x2\x2\x2D8\x2D9\a\x15D\x2\x2\x2D9\x2DB\x3\x2\x2\x2\x2DA\x2B6\x3"+
 		"\x2\x2\x2\x2DA\x2CA\x3\x2\x2\x2\x2DB\x31\x3\x2\x2\x2\x2DC\x2DE\x5\x8C"+
 		"G\x2\x2DD\x2DC\x3\x2\x2\x2\x2DD\x2DE\x3\x2\x2\x2\x2DE\x2E0\x3\x2\x2\x2"+
 		"\x2DF\x2E1\x5\x8A\x46\x2\x2E0\x2DF\x3\x2\x2\x2\x2E0\x2E1\x3\x2\x2\x2\x2E1"+
@@ -24256,13 +24259,13 @@ public partial class XSharpParser : Parser {
 		"\x14\v\x2\x2E7\x2E8\a\xE\x2\x2\x2E8\x2EA\x5\x12C\x97\x2\x2E9\x2E7\x3\x2"+
 		"\x2\x2\x2E9\x2EA\x3\x2\x2\x2\x2EA\x2EB\x3\x2\x2\x2\x2EB\x2EC\x5\x16\f"+
 		"\x2\x2EC\x2ED\x5\xE\b\x2\x2ED\x2F2\x5*\x16\x2\x2EE\x2EF\a\x19\x2\x2\x2EF"+
-		"\x2F0\x5\x34\x1B\x2\x2F0\x2F1\a\x15E\x2\x2\x2F1\x2F3\x3\x2\x2\x2\x2F2"+
+		"\x2F0\x5\x34\x1B\x2\x2F0\x2F1\a\x15D\x2\x2\x2F1\x2F3\x3\x2\x2\x2\x2F2"+
 		"\x2EE\x3\x2\x2\x2\x2F2\x2F3\x3\x2\x2\x2\x2F3\x33\x3\x2\x2\x2\x2F4\x2F5"+
 		"\t\v\x2\x2\x2F5\x35\x3\x2\x2\x2\x2F6\x2F8\x5,\x17\x2\x2F7\x2F6\x3\x2\x2"+
 		"\x2\x2F7\x2F8\x3\x2\x2\x2\x2F8\x2F9\x3\x2\x2\x2\x2F9\x2FA\a\x11\x2\x2"+
 		"\x2FA\x2FB\x5\x12C\x97\x2\x2FB\x2FC\x5\xCA\x66\x2\x2FC\x2FF\x5\xCCg\x2"+
 		"\x2FD\x2FE\a\x6\x2\x2\x2FE\x300\x5\x100\x81\x2\x2FF\x2FD\x3\x2\x2\x2\x2FF"+
-		"\x300\x3\x2\x2\x2\x300\x301\x3\x2\x2\x2\x301\x302\a\x15E\x2\x2\x302\x37"+
+		"\x300\x3\x2\x2\x2\x300\x301\x3\x2\x2\x2\x301\x302\a\x15D\x2\x2\x302\x37"+
 		"\x3\x2\x2\x2\x303\x305\x5> \x2\x304\x303\x3\x2\x2\x2\x304\x305\x3\x2\x2"+
 		"\x2\x305\x306\x3\x2\x2\x2\x306\x308\at\x2\x2\x307\x309\x5\xECw\x2\x308"+
 		"\x307\x3\x2\x2\x2\x308\x309\x3\x2\x2\x2\x309\x30A\x3\x2\x2\x2\x30A\x30D"+
@@ -24270,7 +24273,7 @@ public partial class XSharpParser : Parser {
 		"\x3\x2\x2\x2\x30D\x30E\x3\x2\x2\x2\x30E\x30F\x3\x2\x2\x2\x30F\x311\x5"+
 		"\xE\b\x2\x310\x312\x5:\x1E\x2\x311\x310\x3\x2\x2\x2\x312\x313\x3\x2\x2"+
 		"\x2\x313\x311\x3\x2\x2\x2\x313\x314\x3\x2\x2\x2\x314\x318\x3\x2\x2\x2"+
-		"\x315\x316\a\x19\x2\x2\x316\x317\at\x2\x2\x317\x319\a\x15E\x2\x2\x318"+
+		"\x315\x316\a\x19\x2\x2\x316\x317\at\x2\x2\x317\x319\a\x15D\x2\x2\x318"+
 		"\x315\x3\x2\x2\x2\x318\x319\x3\x2\x2\x2\x319\x39\x3\x2\x2\x2\x31A\x31B"+
 		"\a\x30\x2\x2\x31B\x31C\a\x12\x2\x2\x31C\x31D\x5\x12C\x97\x2\x31D\x31E"+
 		"\a\x11B\x2\x2\x31E\x31F\x5\x64\x33\x2\x31F\x322\a\x11C\x2\x2\x320\x321"+
@@ -24285,14 +24288,14 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x2\x336\x337\x3\x2\x2\x2\x337\x338\x5\x12C\x97\x2\x338\x33A\x5"+
 		"\xE\b\x2\x339\x33B\x5:\x1E\x2\x33A\x339\x3\x2\x2\x2\x33B\x33C\x3\x2\x2"+
 		"\x2\x33C\x33A\x3\x2\x2\x2\x33C\x33D\x3\x2\x2\x2\x33D\x341\x3\x2\x2\x2"+
-		"\x33E\x33F\a\x19\x2\x2\x33F\x340\aH\x2\x2\x340\x342\a\x15E\x2\x2\x341"+
+		"\x33E\x33F\a\x19\x2\x2\x33F\x340\aH\x2\x2\x340\x342\a\x15D\x2\x2\x341"+
 		"\x33E\x3\x2\x2\x2\x341\x342\x3\x2\x2\x2\x342=\x3\x2\x2\x2\x343\x345\t"+
 		"\r\x2\x2\x344\x343\x3\x2\x2\x2\x345\x346\x3\x2\x2\x2\x346\x344\x3\x2\x2"+
 		"\x2\x346\x347\x3\x2\x2\x2\x347?\x3\x2\x2\x2\x348\x349\a\t\x2\x2\x349\x34A"+
 		"\a\x65\x2\x2\x34A\x34B\x5\xEEx\x2\x34B\x34F\x5\xE\b\x2\x34C\x34E\x5\f"+
 		"\a\x2\x34D\x34C\x3\x2\x2\x2\x34E\x351\x3\x2\x2\x2\x34F\x34D\x3\x2\x2\x2"+
 		"\x34F\x350\x3\x2\x2\x2\x350\x355\x3\x2\x2\x2\x351\x34F\x3\x2\x2\x2\x352"+
-		"\x353\a\x19\x2\x2\x353\x354\a\x65\x2\x2\x354\x356\a\x15E\x2\x2\x355\x352"+
+		"\x353\a\x19\x2\x2\x353\x354\a\x65\x2\x2\x354\x356\a\x15D\x2\x2\x355\x352"+
 		"\x3\x2\x2\x2\x355\x356\x3\x2\x2\x2\x356\x41\x3\x2\x2\x2\x357\x359\x5\x8C"+
 		"G\x2\x358\x357\x3\x2\x2\x2\x358\x359\x3\x2\x2\x2\x359\x35B\x3\x2\x2\x2"+
 		"\x35A\x35C\x5\x46$\x2\x35B\x35A\x3\x2\x2\x2\x35B\x35C\x3\x2\x2\x2\x35C"+
@@ -24308,7 +24311,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x374\x376\x3\x2\x2\x2\x375\x373\x3\x2\x2\x2\x376\x37A\x5\xE\b\x2\x377"+
 		"\x379\x5t;\x2\x378\x377\x3\x2\x2\x2\x379\x37C\x3\x2\x2\x2\x37A\x378\x3"+
 		"\x2\x2\x2\x37A\x37B\x3\x2\x2\x2\x37B\x37D\x3\x2\x2\x2\x37C\x37A\x3\x2"+
-		"\x2\x2\x37D\x37E\a\x19\x2\x2\x37E\x37F\a\x62\x2\x2\x37F\x380\a\x15E\x2"+
+		"\x2\x2\x37D\x37E\a\x19\x2\x2\x37E\x37F\a\x62\x2\x2\x37F\x380\a\x15D\x2"+
 		"\x2\x380\x43\x3\x2\x2\x2\x381\x383\x5\x8CG\x2\x382\x381\x3\x2\x2\x2\x382"+
 		"\x383\x3\x2\x2\x2\x383\x385\x3\x2\x2\x2\x384\x386\x5\x46$\x2\x385\x384"+
 		"\x3\x2\x2\x2\x385\x386\x3\x2\x2\x2\x386\x387\x3\x2\x2\x2\x387\x389\a\xE"+
@@ -24325,7 +24328,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x3A2\x3A4\x3\x2\x2\x2\x3A3\x3A1\x3\x2\x2\x2\x3A4\x3A8\x5\xE\b\x2"+
 		"\x3A5\x3A7\x5t;\x2\x3A6\x3A5\x3\x2\x2\x2\x3A7\x3AA\x3\x2\x2\x2\x3A8\x3A6"+
 		"\x3\x2\x2\x2\x3A8\x3A9\x3\x2\x2\x2\x3A9\x3AB\x3\x2\x2\x2\x3AA\x3A8\x3"+
-		"\x2\x2\x2\x3AB\x3AC\a\x19\x2\x2\x3AC\x3AD\a\xE\x2\x2\x3AD\x3AE\a\x15E"+
+		"\x2\x2\x2\x3AB\x3AC\a\x19\x2\x2\x3AC\x3AD\a\xE\x2\x2\x3AD\x3AE\a\x15D"+
 		"\x2\x2\x3AE\x45\x3\x2\x2\x2\x3AF\x3B1\t\xF\x2\x2\x3B0\x3AF\x3\x2\x2\x2"+
 		"\x3B1\x3B2\x3\x2\x2\x2\x3B2\x3B0\x3\x2\x2\x2\x3B2\x3B3\x3\x2\x2\x2\x3B3"+
 		"G\x3\x2\x2\x2\x3B4\x3B5\a\xE5\x2\x2\x3B5\x3BD\x5J&\x2\x3B6\x3B8\a\x11E"+
@@ -24357,7 +24360,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x2\x3FB\x3FF\x5\xE\b\x2\x3FC\x3FE\x5t;\x2\x3FD\x3FC\x3\x2\x2\x2"+
 		"\x3FE\x401\x3\x2\x2\x2\x3FF\x3FD\x3\x2\x2\x2\x3FF\x400\x3\x2\x2\x2\x400"+
 		"\x402\x3\x2\x2\x2\x401\x3FF\x3\x2\x2\x2\x402\x403\a\x19\x2\x2\x403\x404"+
-		"\ao\x2\x2\x404\x405\a\x15E\x2\x2\x405Q\x3\x2\x2\x2\x406\x408\x5\x8CG\x2"+
+		"\ao\x2\x2\x404\x405\a\x15D\x2\x2\x405Q\x3\x2\x2\x2\x406\x408\x5\x8CG\x2"+
 		"\x407\x406\x3\x2\x2\x2\x407\x408\x3\x2\x2\x2\x408\x40A\x3\x2\x2\x2\x409"+
 		"\x40B\x5\x46$\x2\x40A\x409\x3\x2\x2\x2\x40A\x40B\x3\x2\x2\x2\x40B\x40C"+
 		"\x3\x2\x2\x2\x40C\x40E\aW\x2\x2\x40D\x40F\x5\xECw\x2\x40E\x40D\x3\x2\x2"+
@@ -24369,7 +24372,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x41B\x41D\x5L\'\x2\x41C\x41B\x3\x2\x2\x2\x41D\x420\x3\x2\x2\x2\x41E"+
 		"\x41C\x3\x2\x2\x2\x41E\x41F\x3\x2\x2\x2\x41F\x422\x3\x2\x2\x2\x420\x41E"+
 		"\x3\x2\x2\x2\x421\x423\x5\x18\r\x2\x422\x421\x3\x2\x2\x2\x422\x423\x3"+
-		"\x2\x2\x2\x423\x424\x3\x2\x2\x2\x424\x425\a\x15E\x2\x2\x425S\x3\x2\x2"+
+		"\x2\x2\x2\x423\x424\x3\x2\x2\x2\x424\x425\a\x15D\x2\x2\x425S\x3\x2\x2"+
 		"\x2\x426\x428\x5\x8CG\x2\x427\x426\x3\x2\x2\x2\x427\x428\x3\x2\x2\x2\x428"+
 		"\x42A\x3\x2\x2\x2\x429\x42B\x5\x46$\x2\x42A\x429\x3\x2\x2\x2\x42A\x42B"+
 		"\x3\x2\x2\x2\x42B\x42C\x3\x2\x2\x2\x42C\x42E\aY\x2\x2\x42D\x42F\x5\xEC"+
@@ -24379,7 +24382,7 @@ public partial class XSharpParser : Parser {
 		"\x437\x5\xE\b\x2\x436\x438\x5V,\x2\x437\x436\x3\x2\x2\x2\x438\x439\x3"+
 		"\x2\x2\x2\x439\x437\x3\x2\x2\x2\x439\x43A\x3\x2\x2\x2\x43A\x43B\x3\x2"+
 		"\x2\x2\x43B\x43D\a\x19\x2\x2\x43C\x43E\aY\x2\x2\x43D\x43C\x3\x2\x2\x2"+
-		"\x43D\x43E\x3\x2\x2\x2\x43E\x43F\x3\x2\x2\x2\x43F\x440\a\x15E\x2\x2\x440"+
+		"\x43D\x43E\x3\x2\x2\x2\x43E\x43F\x3\x2\x2\x2\x43F\x440\a\x15D\x2\x2\x440"+
 		"U\x3\x2\x2\x2\x441\x443\x5\x8CG\x2\x442\x441\x3\x2\x2\x2\x442\x443\x3"+
 		"\x2\x2\x2\x443\x445\x3\x2\x2\x2\x444\x446\a\x30\x2\x2\x445\x444\x3\x2"+
 		"\x2\x2\x445\x446\x3\x2\x2\x2\x446\x447\x3\x2\x2\x2\x447\x44B\x5\x12C\x97"+
@@ -24391,14 +24394,14 @@ public partial class XSharpParser : Parser {
 		"\x455\x457\aZ\x2\x2\x456\x458\x5\xECw\x2\x457\x456\x3\x2\x2\x2\x457\x458"+
 		"\x3\x2\x2\x2\x458\x459\x3\x2\x2\x2\x459\x45C\x5\x12C\x97\x2\x45A\x45B"+
 		"\a\x6\x2\x2\x45B\x45D\x5\xFC\x7F\x2\x45C\x45A\x3\x2\x2\x2\x45C\x45D\x3"+
-		"\x2\x2\x2\x45D\x472\x3\x2\x2\x2\x45E\x473\a\x15E\x2\x2\x45F\x461\x5Z."+
+		"\x2\x2\x2\x45D\x472\x3\x2\x2\x2\x45E\x473\a\x15D\x2\x2\x45F\x461\x5Z."+
 		"\x2\x460\x45F\x3\x2\x2\x2\x461\x462\x3\x2\x2\x2\x462\x460\x3\x2\x2\x2"+
-		"\x462\x463\x3\x2\x2\x2\x463\x464\x3\x2\x2\x2\x464\x465\a\x15E\x2\x2\x465"+
+		"\x462\x463\x3\x2\x2\x2\x463\x464\x3\x2\x2\x2\x464\x465\a\x15D\x2\x2\x465"+
 		"\x473\x3\x2\x2\x2\x466\x468\x5\xE\b\x2\x467\x469\x5\\/\x2\x468\x467\x3"+
 		"\x2\x2\x2\x469\x46A\x3\x2\x2\x2\x46A\x468\x3\x2\x2\x2\x46A\x46B\x3\x2"+
 		"\x2\x2\x46B\x46C\x3\x2\x2\x2\x46C\x46E\a\x19\x2\x2\x46D\x46F\aZ\x2\x2"+
 		"\x46E\x46D\x3\x2\x2\x2\x46E\x46F\x3\x2\x2\x2\x46F\x470\x3\x2\x2\x2\x470"+
-		"\x471\a\x15E\x2\x2\x471\x473\x3\x2\x2\x2\x472\x45E\x3\x2\x2\x2\x472\x460"+
+		"\x471\a\x15D\x2\x2\x471\x473\x3\x2\x2\x2\x472\x45E\x3\x2\x2\x2\x472\x460"+
 		"\x3\x2\x2\x2\x472\x466\x3\x2\x2\x2\x473Y\x3\x2\x2\x2\x474\x476\x5\x8C"+
 		"G\x2\x475\x474\x3\x2\x2\x2\x475\x476\x3\x2\x2\x2\x476\x478\x3\x2\x2\x2"+
 		"\x477\x479\x5n\x38\x2\x478\x477\x3\x2\x2\x2\x478\x479\x3\x2\x2\x2\x479"+
@@ -24452,13 +24455,13 @@ public partial class XSharpParser : Parser {
 		"\x3\x2\x2\x2\x4F6\x4F4\x3\x2\x2\x2\x4F6\x4F7\x3\x2\x2\x2\x4F7\x4FC\x3"+
 		"\x2\x2\x2\x4F8\x4F6\x3\x2\x2\x2\x4F9\x4FA\x5\xCA\x66\x2\x4FA\x4FB\x5\xCC"+
 		"g\x2\x4FB\x4FD\x3\x2\x2\x2\x4FC\x4F9\x3\x2\x2\x2\x4FC\x4FD\x3\x2\x2\x2"+
-		"\x4FD\x4FE\x3\x2\x2\x2\x4FE\x513\a\x15E\x2\x2\x4FF\x501\x5l\x37\x2\x500"+
+		"\x4FD\x4FE\x3\x2\x2\x2\x4FE\x513\a\x15D\x2\x2\x4FF\x501\x5l\x37\x2\x500"+
 		"\x4FF\x3\x2\x2\x2\x501\x502\x3\x2\x2\x2\x502\x500\x3\x2\x2\x2\x502\x503"+
-		"\x3\x2\x2\x2\x503\x504\x3\x2\x2\x2\x504\x505\a\x15E\x2\x2\x505\x513\x3"+
+		"\x3\x2\x2\x2\x503\x504\x3\x2\x2\x2\x504\x505\a\x15D\x2\x2\x505\x513\x3"+
 		"\x2\x2\x2\x506\x508\x5\xE\b\x2\x507\x509\x5r:\x2\x508\x507\x3\x2\x2\x2"+
 		"\x509\x50A\x3\x2\x2\x2\x50A\x508\x3\x2\x2\x2\x50A\x50B\x3\x2\x2\x2\x50B"+
 		"\x50C\x3\x2\x2\x2\x50C\x50E\a\x19\x2\x2\x50D\x50F\aj\x2\x2\x50E\x50D\x3"+
-		"\x2\x2\x2\x50E\x50F\x3\x2\x2\x2\x50F\x510\x3\x2\x2\x2\x510\x511\a\x15E"+
+		"\x2\x2\x2\x50E\x50F\x3\x2\x2\x2\x50F\x510\x3\x2\x2\x2\x510\x511\a\x15D"+
 		"\x2\x2\x511\x513\x3\x2\x2\x2\x512\x4F2\x3\x2\x2\x2\x512\x500\x3\x2\x2"+
 		"\x2\x512\x506\x3\x2\x2\x2\x513g\x3\x2\x2\x2\x514\x51D\a\x11B\x2\x2\x515"+
 		"\x51A\x5&\x14\x2\x516\x517\a\x11E\x2\x2\x517\x519\x5&\x14\x2\x518\x516"+
@@ -24518,7 +24521,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x59C\x59E\x5\xCCg\x2\x59D\x59B\x3\x2\x2\x2\x59D\x59E\x3\x2\x2\x2\x59E"+
 		"\x59F\x3\x2\x2\x2\x59F\x5A1\x5\xE\b\x2\x5A0\x5A2\x5x=\x2\x5A1\x5A0\x3"+
 		"\x2\x2\x2\x5A1\x5A2\x3\x2\x2\x2\x5A2\x5A3\x3\x2\x2\x2\x5A3\x5A7\x5*\x16"+
-		"\x2\x5A4\x5A5\a\x19\x2\x2\x5A5\x5A6\aT\x2\x2\x5A6\x5A8\a\x15E\x2\x2\x5A7"+
+		"\x2\x5A4\x5A5\a\x19\x2\x2\x5A5\x5A6\aT\x2\x2\x5A6\x5A8\a\x15D\x2\x2\x5A7"+
 		"\x5A4\x3\x2\x2\x2\x5A7\x5A8\x3\x2\x2\x2\x5A8w\x3\x2\x2\x2\x5A9\x5B0\t"+
 		"\x19\x2\x2\x5AA\x5AB\a\x117\x2\x2\x5AB\x5B1\a\x118\x2\x2\x5AC\x5AD\a\x117"+
 		"\x2\x2\x5AD\x5AE\x5\xE6t\x2\x5AE\x5AF\a\x118\x2\x2\x5AF\x5B1\x3\x2\x2"+
@@ -24537,7 +24540,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x5D0\x5D3\x3\x2\x2\x2\x5D1\x5D2\a\x153\x2\x2\x5D2\x5D4\x5\xCCg"+
 		"\x2\x5D3\x5D1\x3\x2\x2\x2\x5D3\x5D4\x3\x2\x2\x2\x5D4\x5D5\x3\x2\x2\x2"+
 		"\x5D5\x5D6\x5\xE\b\x2\x5D6\x5DA\x5*\x16\x2\x5D7\x5D8\a\x19\x2\x2\x5D8"+
-		"\x5D9\aX\x2\x2\x5D9\x5DB\a\x15E\x2\x2\x5DA\x5D7\x3\x2\x2\x2\x5DA\x5DB"+
+		"\x5D9\aX\x2\x2\x5D9\x5DB\a\x15D\x2\x2\x5DA\x5D7\x3\x2\x2\x2\x5DA\x5DB"+
 		"\x3\x2\x2\x2\x5DB\x7F\x3\x2\x2\x2\x5DC\x5DE\a\x7F\x2\x2\x5DD\x5DC\x3\x2"+
 		"\x2\x2\x5DE\x5DF\x3\x2\x2\x2\x5DF\x5DD\x3\x2\x2\x2\x5DF\x5E0\x3\x2\x2"+
 		"\x2\x5E0\x81\x3\x2\x2\x2\x5E1\x5E2\t\x1B\x2\x2\x5E2\x83\x3\x2\x2\x2\x5E3"+
@@ -24552,7 +24555,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x2\x5F8\x5F9\a\x153\x2\x2\x5F9\x5FB\x5\xCCg\x2\x5FA\x5F8\x3\x2"+
 		"\x2\x2\x5FA\x5FB\x3\x2\x2\x2\x5FB\x5FC\x3\x2\x2\x2\x5FC\x5FD\x5\xE\b\x2"+
 		"\x5FD\x601\x5*\x16\x2\x5FE\x5FF\a\x19\x2\x2\x5FF\x600\ag\x2\x2\x600\x602"+
-		"\a\x15E\x2\x2\x601\x5FE\x3\x2\x2\x2\x601\x602\x3\x2\x2\x2\x602\x87\x3"+
+		"\a\x15D\x2\x2\x601\x5FE\x3\x2\x2\x2\x601\x602\x3\x2\x2\x2\x602\x87\x3"+
 		"\x2\x2\x2\x603\x605\t\x1D\x2\x2\x604\x603\x3\x2\x2\x2\x605\x606\x3\x2"+
 		"\x2\x2\x606\x604\x3\x2\x2\x2\x606\x607\x3\x2\x2\x2\x607\x89\x3\x2\x2\x2"+
 		"\x608\x60A\t\x1E\x2\x2\x609\x608\x3\x2\x2\x2\x60A\x60B\x3\x2\x2\x2\x60B"+
@@ -24577,20 +24580,20 @@ public partial class XSharpParser : Parser {
 		"\a\x11B\x2\x2\x63D\x63E\x5\x98M\x2\x63E\x643\x5\x92J\x2\x63F\x640\a\x11E"+
 		"\x2\x2\x640\x642\x5\x92J\x2\x641\x63F\x3\x2\x2\x2\x642\x645\x3\x2\x2\x2"+
 		"\x643\x641\x3\x2\x2\x2\x643\x644\x3\x2\x2\x2\x644\x646\x3\x2\x2\x2\x645"+
-		"\x643\x3\x2\x2\x2\x646\x647\a\x11C\x2\x2\x647\x648\a\x15E\x2\x2\x648\x97"+
+		"\x643\x3\x2\x2\x2\x646\x647\a\x11C\x2\x2\x647\x648\a\x15D\x2\x2\x648\x97"+
 		"\x3\x2\x2\x2\x649\x64A\a\x154\x2\x2\x64A\x64B\a\x11D\x2\x2\x64B\x99\x3"+
 		"\x2\x2\x2\x64C\x64D\a\x31\x2\x2\x64D\x652\x5\xF6|\x2\x64E\x64F\a\x11E"+
 		"\x2\x2\x64F\x651\x5\xF6|\x2\x650\x64E\x3\x2\x2\x2\x651\x654\x3\x2\x2\x2"+
 		"\x652\x650\x3\x2\x2\x2\x652\x653\x3\x2\x2\x2\x653\x655\x3\x2\x2\x2\x654"+
-		"\x652\x3\x2\x2\x2\x655\x656\a\x15E\x2\x2\x656\x670\x3\x2\x2\x2\x657\x658"+
+		"\x652\x3\x2\x2\x2\x655\x656\a\x15D\x2\x2\x656\x670\x3\x2\x2\x2\x657\x658"+
 		"\x6N\x10\x2\x658\x659\a;\x2\x2\x659\x65E\x5\xB6\\\x2\x65A\x65B\a\x11E"+
 		"\x2\x2\x65B\x65D\x5\xB6\\\x2\x65C\x65A\x3\x2\x2\x2\x65D\x660\x3\x2\x2"+
 		"\x2\x65E\x65C\x3\x2\x2\x2\x65E\x65F\x3\x2\x2\x2\x65F\x661\x3\x2\x2\x2"+
-		"\x660\x65E\x3\x2\x2\x2\x661\x662\a\x15E\x2\x2\x662\x670\x3\x2\x2\x2\x663"+
+		"\x660\x65E\x3\x2\x2\x2\x661\x662\a\x15D\x2\x2\x662\x670\x3\x2\x2\x2\x663"+
 		"\x664\x6N\x11\x2\x664\x665\a;\x2\x2\x665\x66A\x5\xC4\x63\x2\x666\x667"+
 		"\a\x11E\x2\x2\x667\x669\x5\xC4\x63\x2\x668\x666\x3\x2\x2\x2\x669\x66C"+
 		"\x3\x2\x2\x2\x66A\x668\x3\x2\x2\x2\x66A\x66B\x3\x2\x2\x2\x66B\x66D\x3"+
-		"\x2\x2\x2\x66C\x66A\x3\x2\x2\x2\x66D\x66E\a\x15E\x2\x2\x66E\x670\x3\x2"+
+		"\x2\x2\x2\x66C\x66A\x3\x2\x2\x2\x66D\x66E\a\x15D\x2\x2\x66E\x670\x3\x2"+
 		"\x2\x2\x66F\x64C\x3\x2\x2\x2\x66F\x657\x3\x2\x2\x2\x66F\x663\x3\x2\x2"+
 		"\x2\x670\x9B\x3\x2\x2\x2\x671\x7C6\x5\xACW\x2\x672\x673\x6O\x12\x2\x673"+
 		"\x7C6\x5\xBA^\x2\x674\x7C6\x5\xC6\x64\x2\x675\x676\x6O\x13\x2\x676\x7C6"+
@@ -24704,7 +24707,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x7A5\x7A6\x3\x2\x2\x2\x7A6\x7A7\x5\xE\b\x2\x7A7\x7C6\x3\x2\x2\x2"+
 		"\x7A8\x7A9\a\xE9\x2\x2\x7A9\x7AA\x5\xCCg\x2\x7AA\x7AB\x5\xE\b\x2\x7AB"+
 		"\x7C6\x3\x2\x2\x2\x7AC\x7AD\t%\x2\x2\x7AD\x7AE\a\x139\x2\x2\x7AE\x7C6"+
-		"\a\x15E\x2\x2\x7AF\x7B1\a\x15\x2\x2\x7B0\x7B2\a\x120\x2\x2\x7B1\x7B0\x3"+
+		"\a\x15D\x2\x2\x7AF\x7B1\a\x15\x2\x2\x7B0\x7B2\a\x120\x2\x2\x7B1\x7B0\x3"+
 		"\x2\x2\x2\x7B1\x7B2\x3\x2\x2\x2\x7B2\x7B3\x3\x2\x2\x2\x7B3\x7B6\x5\xFA"+
 		"~\x2\x7B4\x7B5\a\x98\x2\x2\x7B5\x7B7\x5\xE6t\x2\x7B6\x7B4\x3\x2\x2\x2"+
 		"\x7B6\x7B7\x3\x2\x2\x2\x7B7\x7B8\x3\x2\x2\x2\x7B8\x7B9\x5\xE\b\x2\x7B9"+
@@ -24910,7 +24913,7 @@ public partial class XSharpParser : Parser {
 		"\x2\x2\x2\x9BE\x9BF\x3\x2\x2\x2\x9BF\x9C0\x3\x2\x2\x2\x9C0\x9C1\a.\x2"+
 		"\x2\x9C1\x9C2\x5\x12\n\x2\x9C2\x9C3\x5\x14\v\x2\x9C3\x9C4\x5\xE\b\x2\x9C4"+
 		"\x9C5\x5*\x16\x2\x9C5\x9C6\a\x19\x2\x2\x9C6\x9C7\x5\x12\n\x2\x9C7\x9C8"+
-		"\a\x15E\x2\x2\x9C8\xC7\x3\x2\x2\x2\x9C9\x9CB\t\'\x2\x2\x9CA\x9C9\x3\x2"+
+		"\a\x15D\x2\x2\x9C8\xC7\x3\x2\x2\x2\x9C9\x9CB\t\'\x2\x2\x9CA\x9C9\x3\x2"+
 		"\x2\x2\x9CB\x9CC\x3\x2\x2\x2\x9CC\x9CA\x3\x2\x2\x2\x9CC\x9CD\x3\x2\x2"+
 		"\x2\x9CD\xC9\x3\x2\x2\x2\x9CE\x9CF\t(\x2\x2\x9CF\xCB\x3\x2\x2\x2\x9D0"+
 		"\x9D1\bg\x1\x2\x9D1\x9D2\t)\x2\x2\x9D2\x9ED\x5\xF2z\x2\x9D3\x9D4\x5\x130"+
@@ -25352,7 +25355,7 @@ public partial class XSharpParser : Parser {
 		"\xE45\xE46\a\xCF\x2\x2\xE46\xE47\a\x117\x2\x2\xE47\xE48\x5\x12C\x97\x2"+
 		"\xE48\xE49\a\x118\x2\x2\xE49\xE4B\x3\x2\x2\x2\xE4A\xE45\x3\x2\x2\x2\xE4A"+
 		"\xE4B\x3\x2\x2\x2\xE4B\xE4C\x3\x2\x2\x2\xE4C\xE4D\x5\xE\b\x2\xE4D\xE52"+
-		"\x5*\x16\x2\xE4E\xE4F\a\x19\x2\x2\xE4F\xE50\x5\x12\n\x2\xE50\xE51\a\x15E"+
+		"\x5*\x16\x2\xE4E\xE4F\a\x19\x2\x2\xE4F\xE50\x5\x12\n\x2\xE50\xE51\a\x15D"+
 		"\x2\x2\xE51\xE53\x3\x2\x2\x2\xE52\xE4E\x3\x2\x2\x2\xE52\xE53\x3\x2\x2"+
 		"\x2\xE53\x165\x3\x2\x2\x2\xE54\xE56\x5\x8CG\x2\xE55\xE54\x3\x2\x2\x2\xE55"+
 		"\xE56\x3\x2\x2\x2\xE56\xE58\x3\x2\x2\x2\xE57\xE59\x5`\x31\x2\xE58\xE57"+

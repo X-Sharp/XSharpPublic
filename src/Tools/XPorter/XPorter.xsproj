@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <PropertyGroup>
+  <Import Project="$(SolutionDir)Tools\Common.props" Condition="'$(SolutionDir)'!=''" />
+   <PropertyGroup>
     <Name>XPorter</Name>
     <ProjectGuid>8a49a47c-ade7-416c-8b28-cd3b401cbc25</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -9,8 +10,6 @@
     <RootNamespace>XPorter</RootNamespace>
     <AssemblyName>XPorter</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -37,57 +36,20 @@
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>True</Prefer32Bit>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <IncludePaths>$(SolutionDir)\Common</IncludePaths>
-    <NoStandardDefs>true</NoStandardDefs>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>True</Prefer32Bit>
     <ErrorReport>prompt</ErrorReport>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
-    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DisabledWarnings>1591</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NamedArgs>True</NamedArgs>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <Optimize>false</Optimize>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <PPO>false</PPO>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <DefineConstants>NDEBUG</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <DisabledWarnings>1591</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk </AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <PPO>false</PPO>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DisabledWarnings>1591</DisabledWarnings>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -117,10 +79,10 @@
     </Compile>
     <Compile Include="SolutionConverter.prg" />
     <Compile Include="Start.prg" />
-    <Compile Include="$(Solutiondir)Common\commonAssemblyInfo.prg">
+    <Compile Include="$(CommonDir)commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-    <Compile Include="$(Solutiondir)Common\constants.prg">
+    <Compile Include="$(CommonDir)constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
     <EmbeddedResource Include="frmXporter.resx">
@@ -155,14 +117,4 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
 </Project>

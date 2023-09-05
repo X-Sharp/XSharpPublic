@@ -30,7 +30,7 @@
     <NoWarn>VSTHRD010;VSSDK006;1762;NU1603</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyReferenceNode.cs" />

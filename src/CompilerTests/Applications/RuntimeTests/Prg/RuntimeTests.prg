@@ -40,7 +40,7 @@ FUNCTION Start() AS INT
 	 "R835", "R836", "R839", "R840", "R842", "R848", "R849", "R850", "R855", "R856", "R858",;
 	 "R861", "R862", "R863", "R864", "R865", "R868", "R870", "R871", "R872", "R873", ;
 	 "R875", "R876", "R878", "R879", "R883", "R884", "R885", "R886", "R888", "R889", ;
-	 "R890", "R892", "R895", "R897", "R899", "R900";
+	 "R890", "R892", "R895", "R897", "R899", "R900", "R902";
 	 }
 
 	#ifdef GUI
@@ -58,7 +58,7 @@ FUNCTION Start() AS INT
 
 	// TODO Must fail: "C135"
 
-	FOREACH cTest AS STRING IN aTests
+	FOREACH cTest AS STRING IN aTests:ToArray()
 		TRY
 			IF DoTest(cTest)
 				nSuccess ++
@@ -94,7 +94,7 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	ENDIF
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
 	LOCAL cType := ""  AS STRING
-	FOREACH oCustAtt AS CustomAttributeData IN oAssembly:CustomAttributes
+	FOREACH oCustAtt AS CustomAttributeData IN oAssembly:CustomAttributes:ToArray()
 	    IF oCustAtt:AttributeType:Name == "ClassLibraryAttribute"
 	        cType := (STRING) oCustAtt:ConstructorArguments:First():Value
             EXIT

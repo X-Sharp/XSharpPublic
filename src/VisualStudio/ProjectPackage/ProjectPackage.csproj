@@ -78,33 +78,33 @@
     <Reference Include="System.Drawing" />
     <Reference Include="WindowsBase" />
     <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
-      <HintPath>$(Solutiondir)External\Debug\XSharp.Evaluator.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(Solutiondir)External\Debug\XSharp.MonoCecil.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.MonoCecil.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(Solutiondir)External\Debug\XSharp.Vsparser.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(CommonDir)Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\constantsMethods.cs">
+    <Compile Include="$(CommonDir)constantsMethods.cs">
       <Link>constantsMethods.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\XSharpConstants.cs">
+    <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="Automation\OAXSharpProjectImports.cs" />
@@ -747,7 +747,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Threading">
       <Version>15.3.20</Version>
     </PackageReference>
-    <Content Include="$(SOlutionDir)\External\Debug\XSharp.MonoCecil.dll">
+    <Content Include="$(VSExternalDir)XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

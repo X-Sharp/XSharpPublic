@@ -3,25 +3,28 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+	<!-- Location of output and intermediate -->
+    <!-- Note: All directories in this list end with a back slash -->
+	<ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
+    <VsExternalDir>$(ArtifactsDir)Shared\Debug\</VsExternalDir>
+	<BinariesDir>$(ArtifactsDir)$(VSTarget)\</BinariesDir>
+    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <CommonDir>$(Solutiondir)Common\</CommonDir>
     <VSTarget Condition=" '$(VSTarget)' == '' ">2019</VSTarget>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <!-- Note: All directories in this list end with a back slash -->
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(CommonDir)XSharp.snk</AssemblyOriginatorKeyFile>
     <Langversion>7.3</Langversion>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
-    <Includepaths>$(SolutionDir)\Common</Includepaths>
+    <Includepaths>$(CommonDir)</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <BinariesDir>$(SolutionDir)Binaries\$(VSTarget)\</BinariesDir>
-    <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
-    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
     <GenerateFullPaths>true</GenerateFullPaths>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Nologo>true</Nologo>

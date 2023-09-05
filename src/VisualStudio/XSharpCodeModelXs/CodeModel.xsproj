@@ -20,10 +20,6 @@
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
-    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <EnforceSelf>True</EnforceSelf>
@@ -66,21 +62,21 @@
       <AssemblyName>XSharp.MonoCecil.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.MonoCecil.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
       <AssemblyName>XSharp.VSParser.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\External\Debug\XSharp.VSParser.dll</HintPath>
+      <HintPath>$(VsExternalDir)XSharp.VSParser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+    <Compile Include="$(CommonDir)commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-    <Compile Include="..\..\Common\constants.prg">
+    <Compile Include="$(CommonDir)constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="Database\XDatabase.prg" />

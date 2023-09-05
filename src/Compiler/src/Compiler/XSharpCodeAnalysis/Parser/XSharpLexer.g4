@@ -145,7 +145,7 @@ MACRO,	  // __term__
 UDCSEP, // =>
 
 // Ids
-ID,KWID,
+ID,
 
 // Comments
 DOC_COMMENT,SL_COMMENT,ML_COMMENT,

@@ -68,7 +68,6 @@ FUNCTION Start() AS VOID
 	Message( "" )
 
 	DoTests(oXide, aGroupsToBuild, cConfigName, lTestTheFixedOnes)
-//	DoRuntimeTests(oXide, cConfigName)
 
 	System.IO.File.WriteAllLines(cLogFilename, gaLog)
 
@@ -117,7 +116,16 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 	oProcess:Start()
 	oProcess:BeginErrorReadLine()
 	oProcess:BeginOutputReadLine()
-	IF oProcess:WaitForExit(30000)
+	local result as LOGIC
+	TRY
+	    result := oProcess:WaitForExit(30000)
+	CATCH e as Exception
+	    Message( "Exception running runtime tests " )
+	    Message( e:ToString() )
+	    result := FALSE
+
+	END TRY
+	IF result
 		nFail := oProcess:ExitCode
 		Message( "Exit code running runtime tests: " + oProcess:ExitCode:ToString() )
 	ELSE
@@ -443,6 +451,7 @@ METHOD LoadProject(oProject AS ProjectClass,oStream AS StreamReader,lInitOnly AS
 	    	CATCH
 	    		oProject:oPrgEncoding := Glo.gaEncodings[1]
 	    	END TRY*/
+            NOP
 
 	    CASE sLine:cParam=="SUPPORTCF"
 	    	oProject:lSupportCF := sLine:lValue
@@ -503,7 +512,7 @@ METHOD LoadProject(oProject AS ProjectClass,oStream AS StreamReader,lInitOnly AS
 	    			oProject:aLayouts:Add(DesignerLayout{Left(cLine , nAt - 1):Trim() , SubStr(cLine , nAt + 1):Trim()})
 	    		END IF
 	    	END TRY*/
-
+            NOP
 	    CASE sLine:cParam == "FILESTATUSGUID"
 	    	oProject:cFileStatusGuid := sLine:cValue
 	    CASE sLine:cParam == "CUSTOMCONTROLSGUID"
@@ -542,9 +551,11 @@ METHOD LoadProject(oProject AS ProjectClass,oStream AS StreamReader,lInitOnly AS
     			lInitWithCF := TRUE
     		ENDIF*/
 
+            NOP
 
 	    CASE sLine:cParam == "OPENFILE" .or. sLine:cParam == "ACTIVEFILE"
 	    	// moved to projectfilestatus
+            NOP
 
 	    OTHERWISE
 
@@ -1254,8 +1265,12 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			DO CASE
 			CASE Left(cRef:ToUpper() , 10) == "%CFFOLDER%"
 //				cRef := Fun.ConnectPathAndFileName(Glo.gcCFDir , SubStr(cRef , 11))
+				            NOP
+
 			CASE Left(cRef:ToUpper() ,  8) == "%CFPATH%"
 //				cRef := Fun.ConnectPathAndFileName(Glo.gcCFDir , SubStr(cRef , 9))
+            NOP
+
 			CASE Left(cRef:ToUpper() , 15) == "%PROJECTFOLDER%"
 				cRef := Fun.ConnectPathAndFileName(oApp:GetProject():FullFolder , SubStr(cRef , 16))
 			CASE Left(cRef:ToUpper() , 13) == "%PROJECTPATH%"

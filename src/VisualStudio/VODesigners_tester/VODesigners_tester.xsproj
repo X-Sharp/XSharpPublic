@@ -17,12 +17,8 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <Includepaths>$(Solutiondir)common</Includepaths>
     <NamedArgs>True</NamedArgs>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
-    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -49,7 +45,7 @@
     <Compile Include="Start.prg">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="..\..\Common\BuildNumber.h">
+    <None Include="$(CommonDir)BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
     <None Include="VOWEDTest.prg" />
@@ -70,14 +66,4 @@
       <ProjectConfigurationsDeclaredAsItems />
     </ProjectCapabilities>
   </ProjectExtensions>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

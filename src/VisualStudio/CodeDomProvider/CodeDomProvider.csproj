@@ -44,17 +44,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
+      <HintPath>$(VSExternalDir)XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Constants.cs">
+    <Compile Include="$(CommonDir)Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\constantsMethods.cs">
+    <Compile Include="$(CommonDir)constantsMethods.cs">
       <Link>constantsMethods.cs</Link>
     </Compile>
     <Compile Include="IProjectTypeHelper.cs" />

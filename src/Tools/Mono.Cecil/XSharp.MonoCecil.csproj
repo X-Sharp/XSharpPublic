@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 	<PropertyGroup>
 		<TargetFrameworks>net46</TargetFrameworks>
-	</PropertyGroup>
+    <ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
+    <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
+    <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
+    <OutputPath>$(BinariesDir)$(MsBuildProjectName)\$(Configuration)</OutputPath>
+  </PropertyGroup> 
 	<ItemGroup>
 		<Compile Include="ProjectInfo.cs" />
 		<Compile Include="Mono\*.cs" />
@@ -23,7 +27,7 @@
 		<ItemGroup>
 			<MonoCecilFiles Include="$(OutputPath)\*.*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(MonoCecilFiles)" DestinationFolder="$(SolutionDir)external\$(ConfigurationName)" />
+		<Copy SourceFiles="@(MonoCecilFiles)" DestinationFolder="$(VsExternalDir)" />
 	</Target>
 
 </Project>

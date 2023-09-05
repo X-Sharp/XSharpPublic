@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -42,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
-        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand;
+        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand || _type == PPUDCType.YCommand;
 
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
@@ -52,14 +51,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.PP_COMMAND:
                     if (udc.Text.ToLower() == "#command")
                         _type = PPUDCType.Command;
-                    else
+                    else if (udc.Text.ToLower() == "#xcommand")
                         _type = PPUDCType.XCommand;
+                    else
+                        _type = PPUDCType.YCommand;
                     break;
                 case XSharpLexer.PP_TRANSLATE:
                     if (udc.Text.ToLower().StartsWith("#trans"))
                         _type = PPUDCType.Translate;
-                    else
+                    else if (udc.Text.ToLower() == "#xtranslate")
                         _type = PPUDCType.XTranslate;
+                    else
+                        _type = PPUDCType.YTranslate;
                     break;
                 case XSharpLexer.PP_DEFINE:
                     // define in the form of #define FOO(x) x + 1
@@ -1122,7 +1125,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 mode = StringComparison.Ordinal;    // case sensitive
             }
-            if (lhs?.Length <= 4)
+            if (lhs?.Length <= 4 && (type != PPUDCType.YCommand && type != PPUDCType.YTranslate))
             {
                 return string.Equals(lhs, rhs, mode);
             }
@@ -1136,6 +1139,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case PPUDCType.XTranslate:
                 case PPUDCType.Define:
                     return string.Equals(lhs, rhs, mode);
+                case PPUDCType.YCommand:
+                case PPUDCType.YTranslate:
+                    return string.Compare(lhs, rhs, StringComparison.Ordinal) == 0;
                 default:
                     break;
             }
@@ -1413,7 +1419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             iCurrent++;
                         }
-                        iEnd = iCurrent-1;
+                        iEnd = iCurrent - 1;
                     }
                     else
                     {
@@ -1858,6 +1864,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
+            // when the repeated result started with a "common" match marker, such as the <(a)> in the example below
+            // we would match it, even when one of more of the repeated match markers were missing
+            /*
+             #command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ] <x:IN,ALIAS> <(a)>                                             ;
+            => DbAutoLock(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fN)>,<vN>)], DbAutoUnLock(<(a)>)
+            */
+            // we now make sure that all the tokens that have a match marker (so also fN and vN ) are matched.
+            if (resultToken.MatchMarker != null && resultToken.OptionalElements?.Length > 0 && resultToken.IsRepeat)
+            {
+                foreach (var token in resultToken.OptionalElements)
+                {
+                    if (token.MatchMarker != null)
+                    {
+                        var index = token.MatchMarker.Index;
+                        var mm = matchInfo[index];
+                        if (mm.MatchCount == 0)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
             if (resultToken.MatchMarker != null)
             {
                 var index = resultToken.MatchMarker.Index;
@@ -1887,7 +1916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo,0, false);
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo, 0, false);
                             result.AddRange(block);
                         }
                     }
@@ -2135,7 +2164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (start < tokens.Count - 4)
                 {
                     var t4 = tokens[start + 3];
-                    if (t4.Type == XSharpLexer.BACKSLASH )
+                    if (t4.Type == XSharpLexer.BACKSLASH)
                     {
                         current = start + 4;
                     }
@@ -2153,7 +2182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return false;
             }
-            end = current-1;
+            end = current - 1;
             bool expectName = true;
             XSharpToken last = tokens[current - 1];
             while (current < tokens.Count)
@@ -2431,7 +2460,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return matchExpression(this.Type, start, tokens, stopToken, VOPreprocessorBehaviour, out lastUsed);
         }
         internal static bool matchExpression(PPUDCType type, int start, IList<XSharpToken> tokens,
-            XSharpToken stopToken, bool voPPBehavior, out int lastUsed)
+        XSharpToken stopToken, bool voPPBehavior, out int lastUsed)
         {
             lastUsed = start;
             if (!tokenCanStartExpression(start, tokens))

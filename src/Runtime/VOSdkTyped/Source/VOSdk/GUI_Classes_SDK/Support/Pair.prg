@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System.Diagnostics
@@ -6,41 +11,26 @@ USING System.Diagnostics
 [DebuggerStepThrough];
 [DebuggerDisplay("{iInt1}, {iInt2}")];
 CLASS Pair INHERIT VObject
-	PROTECT iInt1 AS INT
-	PROTECT iInt2 AS INT
-	CONSTRUCTOR() STRICT
-		SUPER()
+    PROTECT iInt1 AS INT
+    PROTECT iInt2 AS INT
+    CONSTRUCTOR() STRICT
+        SUPER()
 
-/// <include file="Gui.xml" path="doc/Pair.ctor/*" />
-	CONSTRUCTOR(Int1 AS INT, Int2 AS INT)
-		SUPER()
-		iInt1 := Int1
-		iInt2 := Int2
-		RETURN
+    /// <include file="Gui.xml" path="doc/Pair.ctor/*" />
+    CONSTRUCTOR(Int1 AS INT, Int2 AS INT)
+        SUPER()
+        iInt1 := Int1
+        iInt2 := Int2
+        RETURN
 
     /// <summary>
     /// Is the pair empty ?(both values equal to 0)
     /// </summary>
     /// <value></value>
-	ACCESS Empty AS LOGIC
-		RETURN iInt1 == 0 .and. iInt2 == 0
+    PROPERTY Empty AS LOGIC GET iInt1 == 0 .AND. iInt2 == 0
 
-//   OPERATOR ==( lhs AS Pair, rhs AS Pair ) AS LOGIC
-//      RETURN lhs:Equals( rhs )
-
-//   OPERATOR !=( lhs AS Pair, rhs AS Pair ) AS LOGIC
-//      RETURN ! lhs:Equals( rhs )
-
-//	METHOD Equals( p AS Pair ) AS LOGIC
-//      LOCAL ret AS LOGIC
-//	  ret := (p:iInt1 == iInt1 .and. p:iInt2 == iInt2)
-//      RETURN ret
-
-//	METHOD Equals( p AS OBJECT ) AS LOGIC
-//      RETURN SELF:Equals( (Pair) p)
-
-	METHOD GetHashCode AS LONG STRICT
-		return iInt1:GetHashCode() + iInt2:GetHashCode()
+    METHOD GetHashCode AS LONG STRICT
+        RETURN iInt1:GetHashCode() + iInt2:GetHashCode()
 
 END CLASS
 
@@ -49,37 +39,37 @@ END CLASS
 [DebuggerDisplay("Width: {Width}, Height: {Height}")];
 CLASS Dimension INHERIT Pair
 
-/// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
-	CONSTRUCTOR() STRICT
-		SUPER()
+    /// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
+    CONSTRUCTOR() STRICT
+        SUPER()
 
-/// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
-	CONSTRUCTOR(nWidth AS INT, nHeight AS INT)
-		SUPER(nWidth, nHeight)
-		RETURN
-/// <include file="Gui.xml" path="doc/Dimension.Height/*" />
-	PROPERTY Height  AS LONGINT  GET iInt2 SET iInt2 := Value
+    /// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
+    CONSTRUCTOR(nWidth AS INT, nHeight AS INT)
+        SUPER(nWidth, nHeight)
+        RETURN
+    /// <include file="Gui.xml" path="doc/Dimension.Height/*" />
+    PROPERTY Height  AS LONGINT  GET iInt2 SET iInt2 := VALUE
 
-/// <include file="Gui.xml" path="doc/Dimension.Width/*" />
-	PROPERTY Width  AS LONGINT  GET iInt1 SET iInt1 := Value
+    /// <include file="Gui.xml" path="doc/Dimension.Width/*" />
+    PROPERTY Width  AS LONGINT  GET iInt1 SET iInt1 := VALUE
 
-	METHOD Clone() AS Dimension
-		RETURN Dimension{SELF:Width, SELF:Height}
+    METHOD Clone() AS Dimension
+        RETURN Dimension{SELF:Width, SELF:Height}
 
-	OPERATOR IMPLICIT ( s AS System.Drawing.Size) AS Dimension
-		RETURN Dimension{s:Width, s:Height}
+    OPERATOR IMPLICIT ( s AS System.Drawing.Size) AS Dimension
+        RETURN Dimension{s:Width, s:Height}
 
-	OPERATOR IMPLICIT ( p AS System.Windows.Forms.Padding) AS Dimension
-		RETURN Dimension{p:Left, p:Top}
+    OPERATOR IMPLICIT ( p AS System.Windows.Forms.Padding) AS Dimension
+        RETURN Dimension{p:Left, p:Top}
 
-	OPERATOR IMPLICIT ( d AS Dimension ) AS System.Drawing.Size
-		//IF d == NULL_OBJECT
-		//	RETURN System.Drawing.Size.Empty
-		//ENDIF
-		RETURN System.Drawing.Size{d:Width, d:Height}
+    OPERATOR IMPLICIT ( d AS Dimension ) AS System.Drawing.Size
+        //IF d == NULL_OBJECT
+        //	RETURN System.Drawing.Size.Empty
+        //ENDIF
+        RETURN System.Drawing.Size{d:Width, d:Height}
 
-	OPERATOR IMPLICIT ( r AS System.Drawing.Rectangle) AS Dimension
-		RETURN Dimension{r:Width, r:Height}
+    OPERATOR IMPLICIT ( r AS System.Drawing.Rectangle) AS Dimension
+        RETURN Dimension{r:Width, r:Height}
 
 END CLASS
 
@@ -88,90 +78,91 @@ END CLASS
 [DebuggerDisplay("X: {X}, Y: {Y}")];
 CLASS Point INHERIT Pair
 
-/// <include file="Gui.xml" path="doc/Point.ctor/*" />
-	CONSTRUCTOR() STRICT
-		SUPER()
-		RETURN
-/// <include file="Gui.xml" path="doc/Point.ctor/*" />
-	CONSTRUCTOR(nX AS INT, nY AS INT)
-		SUPER(nX, nY)
-		RETURN
-/// <include file="Gui.xml" path="doc/Point.ConvertToScreen/*" />
+    /// <include file="Gui.xml" path="doc/Point.ctor/*" />
+    CONSTRUCTOR() STRICT
+        SUPER()
+        RETURN
+    /// <include file="Gui.xml" path="doc/Point.ctor/*" />
+    CONSTRUCTOR(nX AS INT, nY AS INT)
+        SUPER(nX, nY)
+        RETURN
+    /// <include file="Gui.xml" path="doc/Point.ConvertToScreen/*" />
 
-	METHOD ConvertToScreen(hWnd AS IntPtr) AS LOGIC
-		RETURN SELF:ConvertToScreen(hWnd, TRUE)
+    METHOD ConvertToScreen(hWnd AS IntPtr) AS LOGIC
+        RETURN SELF:ConvertToScreen(hWnd, TRUE)
 
-	METHOD ConvertToScreen(hWnd AS IntPtr, lWinRect AS LOGIC) AS LOGIC
-		//Todo ConvertToScreen
-		LOCAL sPoint := WINPOINT{} AS WINPOINT
+    METHOD ConvertToScreen(hWnd AS IntPtr, lWinRect AS LOGIC) AS LOGIC
+        //Todo ConvertToScreen
+        LOCAL sPoint := WINPOINT{} AS WINPOINT
 
-		IF hWnd = IntPtr.Zero
-			RETURN FALSE
-		ENDIF
+        IF hWnd = IntPtr.Zero
+            RETURN FALSE
+        ENDIF
 
-		sPoint:x := iInt1
-		sPoint:y := iInt2
+        sPoint:x := iInt1
+        sPoint:y := iInt2
 
-		GuiWin32.ClientToScreen(hWnd, REF sPoint)
+        GuiWin32.ClientToScreen(hWnd, REF sPoint)
 
-		iInt1 := sPoint:x
-		iInt2 := sPoint:y
+        iInt1 := sPoint:x
+        iInt2 := sPoint:y
 
-		RETURN TRUE
+        RETURN TRUE
 
-	METHOD ConvertToScreen(oWindow AS OBJECT) AS LOGIC
-		LOCAL hWnd   AS PTR
-		LOCAL lOk AS LOGIC
-		IF IsInstanceOfUsual(oWindow, #Window)
-			hWnd    := oWindow:Handle(4)
-			lOk		:= SELF:ConvertToScreen(hWnd, TRUE)
-		ELSEIF IsInstanceOfUsual(oWindow, #Control)
-			hWnd    := oWindow:Handle()
-			lOk		:= SELF:ConvertToScreen(hWnd, FALSE)
-		ELSE
-			lOk := FALSE
-		ENDIF
-		RETURN lOk
-/// <include file="Gui.xml" path="doc/Point.X/*" />
-	PROPERTY X  AS LONGINT  GET iInt1 SET iInt1 := Value
-/// <include file="Gui.xml" path="doc/Point.Y/*" />
-	PROPERTY Y  AS LONGINT  GET iInt2 SET iInt2 := Value
+    METHOD ConvertToScreen(oWindow AS OBJECT) AS LOGIC
+        LOCAL hWnd   AS PTR
+        LOCAL lOk AS LOGIC
+        IF oWindow IS Window VAR oWin
+            hWnd    := oWin:Handle(4)
+            lOk		:= SELF:ConvertToScreen(hWnd, TRUE)
+        ELSEIF oWindow IS Control VAR oC
+            hWnd    := oC:Handle()
+            lOk		:= SELF:ConvertToScreen(hWnd, FALSE)
+        ELSE
+            lOk := FALSE
+        ENDIF
+        RETURN lOk
 
-	METHOD Clone() AS Point
-		RETURN Point{SELF:X, SELF:Y}
+    /// <include file="Gui.xml" path="doc/Point.X/*" />
+    PROPERTY X  AS LONGINT  GET iInt1 SET iInt1 := VALUE
+    /// <include file="Gui.xml" path="doc/Point.Y/*" />
+    PROPERTY Y  AS LONGINT  GET iInt2 SET iInt2 := VALUE
 
-	OPERATOR IMPLICIT ( p AS System.Drawing.Point) AS Point
-		RETURN Point{p:X, p:Y}
+    /// <exclude />
+    METHOD Clone() AS Point
+        RETURN (Point) SELF:MemberwiseClone()
 
-	OPERATOR IMPLICIT ( p AS Point ) AS System.Drawing.Point
-		//IF p == NULL_OBJECT
-		//	RETURN System.Drawing.Point.Empty
-		//ENDIF
+    /// <exclude />
+    OPERATOR IMPLICIT ( p AS System.Drawing.Point) AS Point
+        RETURN Point{p:X, p:Y}
 
-		RETURN System.Drawing.Point{p:X, p:Y}
+    /// <exclude />
+    OPERATOR IMPLICIT ( p AS Point ) AS System.Drawing.Point
+        RETURN System.Drawing.Point{p:X, p:Y}
 
-	OPERATOR + (p1 AS Point, p2 AS Point) AS Point
-		LOCAL r AS Point
-		IF p2:Empty
-			RETURN p1
-		ELSE
-			r := p1:Clone()
-			r:iInt1 += p2:iInt1
-			r:iInt2 += p2:iInt2
-			RETURN r
-		ENDIF
+    /// <exclude />
+    OPERATOR + (p1 AS Point, p2 AS Point) AS Point
+        LOCAL r AS Point
+        IF p2:Empty
+            RETURN p1:Clone()
+        ELSE
+            r := p1:Clone()
+            r:iInt1 += p2:iInt1
+            r:iInt2 += p2:iInt2
+            RETURN r
+        ENDIF
 
-	OPERATOR - (p1 AS Point, p2 AS Point) AS Point
-		LOCAL r AS Point
-		IF p2:Empty
-			RETURN p1
-		ELSE
-			r := p1:Clone()
-			r:iInt1 -= p2:iInt1
-			r:iInt2 -= p2:iInt2
-			RETURN r
-		ENDIF
-
+    /// <exclude />
+    OPERATOR - (p1 AS Point, p2 AS Point) AS Point
+        LOCAL r AS Point
+        IF p2:Empty
+            RETURN p1:Clone()
+        ELSE
+            r := p1:Clone()
+            r:iInt1 -= p2:iInt1
+            r:iInt2 -= p2:iInt2
+            RETURN r
+        ENDIF
 
 END CLASS
 
@@ -179,25 +170,23 @@ END CLASS
 [DebuggerStepThrough];
 [DebuggerDisplay("Min: {Min}, Max: {Max}")];
 CLASS Range INHERIT Pair
-/// <include file="Gui.xml" path="doc/Range.ctor/*" />
-	CONSTRUCTOR(nMin, nMax)
-		SUPER(nMin, nMax)
-		RETURN
+    /// <include file="Gui.xml" path="doc/Range.ctor/*" />
+    CONSTRUCTOR(nMin, nMax)
+        SUPER(nMin, nMax)
+        RETURN
 
-/// <include file="Gui.xml" path="doc/Range.IsInRange/*" />
-	METHOD IsInRange(nValue AS INT) AS LOGIC
-		LOCAL iVal AS INT
-		iVal := nValue
-		IF iVal >= iInt1 .AND. iVal <= iInt2
-			RETURN TRUE
-		ENDIF
+    /// <include file="Gui.xml" path="doc/Range.IsInRange/*" />
+    METHOD IsInRange(nValue AS INT) AS LOGIC
+        RETURN nValue >= iInt1 .AND. nValue <= iInt2
 
-		RETURN FALSE
+    /// <include file="Gui.xml" path="doc/Range.Min/*" />
+    PROPERTY Min AS LONGINT  GET iInt1
+    /// <include file="Gui.xml" path="doc/Range.Max/*" />
+    PROPERTY Max AS LONGINT  GET iInt2
 
-	/// <include file="Gui.xml" path="doc/Range.Min/*" />
-	PROPERTY Min AS LONGINT  GET iInt1 SET iInt1 := Value
-	/// <include file="Gui.xml" path="doc/Range.Max/*" />
-	PROPERTY Max AS LONGINT  GET iInt2 SET iInt2 := Value
+    /// <exclude />
+    METHOD Clone() AS Range
+        RETURN (Range) SELF:MemberwiseClone()
 
 END CLASS
 
@@ -205,16 +194,18 @@ END CLASS
 [DebuggerStepThrough];
 [DebuggerDisplay("Start: {Start}, Finish: {Finish}")];
 CLASS Selection INHERIT Pair
-/// <include file="Gui.xml" path="doc/Selection.Finish/*" />
-	PROPERTY Start  AS LONGINT  GET iInt1 SET iInt1 := Value
-/// <include file="Gui.xml" path="doc/Selection.Finish/*" />
-	PROPERTY Finish AS LONGINT  GET iInt2 SET iInt2 := Value
+    /// <include file="Gui.xml" path="doc/Selection.Finish/*" />
+    PROPERTY Start  AS LONGINT  GET iInt1
+    /// <include file="Gui.xml" path="doc/Selection.Finish/*" />
+    PROPERTY Finish AS LONGINT  GET iInt2
 
-/// <include file="Gui.xml" path="doc/Selection.ctor/*" />
-	CONSTRUCTOR(nStart, nFinish)
-		SUPER(nStart, nFinish)
-		RETURN
-
+    /// <include file="Gui.xml" path="doc/Selection.ctor/*" />
+    CONSTRUCTOR(nStart, nFinish)
+        SUPER(nStart, nFinish)
+        RETURN
+    /// <exclude />
+    METHOD Clone() AS Selection
+        RETURN (Selection) SELF:MemberwiseClone()
 
 END CLASS
 

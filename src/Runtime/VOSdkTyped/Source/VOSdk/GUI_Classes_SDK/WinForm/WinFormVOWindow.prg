@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // WinFormVOWindow.prg
 //
 // Standard class for Hybrid windows to host a VO Window inside a .NET Shell
@@ -9,7 +15,7 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
     PRIVATE winFormVOWindowHost AS VOSDK.WinFormVOWindowHost
     PROTECT currentFocusHandle AS IntPtr
     STATIC PROTECT oApp AS App
-    
+
     STATIC METHOD Initialize() AS VOID
         // We need an instance of VO's app so that
         // it can handle the messages for modal windows
@@ -17,7 +23,7 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
     	    oApp := App{}
     	ENDIF
     	RETURN
-    	
+
     STATIC METHOD CloseHostForm(window AS Window) AS VOID
         // This method receives a VO window
         // The VO window is normally hosted on a control, which in turn is on a form
@@ -26,10 +32,10 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
         // Then tell the form to close
         LOCAL control AS System.Windows.Forms.Control
         LOCAL hWnd AS IntPtr
-        
+
         hWnd := GuiWin32.GetParent(window:Handle())
         control := System.Windows.Forms.Form.FromHandle(hWnd)
-        
+
         IF ! control == NULL
             LOCAL form AS WinFormVOWindow
             form := (WinFormVOWindow)control:Parent
@@ -42,18 +48,18 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
 
     ACCESS VOWindowHost AS WinFormVOWindowHost
         RETURN winFormVOWindowHost
-        
+
     ASSIGN VOWindowHost(NEW AS VOSDK.WinFormVOWindowHost)
         winFormVOWindowHost := new
         RETURN
-        
+
     PROTECTED METHOD OnActivated(e AS System.EventArgs) AS VOID
         SUPER:OnActivated(e)
         SELF:winFormVOWindowHost:Focus()
         //IF ! currentFocusHandle == NULL
         //    SetFocus(currentFocusHandle)
         //ENDIF
-        
+
         RETURN
 
     PROTECTED METHOD OnClosed(e AS System.EventArgs) AS VOID
@@ -82,7 +88,7 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
             SELF:winFormVOWindowHost:Focus()
         ENDIF
         RETURN
-        
+
     PROTECTED METHOD OnResizeEnd(e AS System.EventArgs) AS VOID
         SUPER:OnResizeEnd(e)
         IF ! SELF:winFormVOWindowHost == NULL
@@ -92,7 +98,7 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
 
     //PROTECTED VIRTUAL METHOD ProcessDialogKey( keyData AS System.Windows.Forms.Keys ) AS LOGIC
     //    LOCAL keyProcessed := false AS LOGIC
-    
+
     //    IF ! SELF:winFormVOWindowHost == NULL
     //        // see if this control is held by a datawindow or directly the hosted window
     //        // note: datawindows are made up of multiple windows (varies with view mode), that's why we need to look at parents
@@ -113,11 +119,11 @@ CLASS WinFormVOWindow INHERIT System.Windows.Forms.Form
     //        ENDIF
 
     //    ENDIF
-        
+
     //    IF ! keyProcessed
     //        keyProcessed := SUPER:ProcessDialogKey(keyData)
     //    ENDIF
-        
+
     //    RETURN keyProcessed
 
 END CLASS

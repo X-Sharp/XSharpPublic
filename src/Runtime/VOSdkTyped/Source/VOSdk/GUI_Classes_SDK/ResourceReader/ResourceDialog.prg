@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 // ResourceDialog.prg
 // This class contains the code to read a native dialog resource
 // The dialog is also created and destroyed to read the 'real' positions of the controls
@@ -34,6 +39,22 @@ CLASS ResourceDialog INHERIT ResourceReader
 	PROPERTY HelpID		    AS DWORD	AUTO
 	PROPERTY Controls       AS List<ResourceDialogItem> AUTO
 	PROPERTY IsValid		AS LOGIC    AUTO
+
+#region Resource Cache
+    STATIC Cache AS Dictionary<STRING, ResourceDialog>
+    STATIC CONSTRUCTOR
+        Cache := Dictionary<STRING, ResourceDialog>{StringComparison.Ordinal}
+        RETURN
+    STATIC METHOD AddToCache(hFile AS IntPtr, cName AS STRING, oDlg AS ResourceDialog) AS VOID
+        VAR cKey := hFile:ToString("X8")+cName
+        Cache[cKey] := oDlg
+    STATIC METHOD FromCache(hFile AS IntPtr, cName AS STRING) AS ResourceDialog
+        VAR cKey := hFile:ToString("X8")+cName
+        IF Cache:ContainsKey(cKey)
+            RETURN Cache[cKey]
+        ENDIF
+        RETURN NULL_OBJECT
+#endregion
 
 #region Properties
 	ACCESS Size as System.Drawing.Size
@@ -93,6 +114,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 						SELF:FontCharSet := oFont:GdiCharSet
 					ENDIF
                 CATCH  AS Exception
+                    // This may happen when the font is not truetype
                     NOP
 				END TRY
 				SELF:Style	 := GuiWin32.GetWindowStyle(hWnd)
@@ -169,7 +191,8 @@ CLASS ResourceDialog INHERIT ResourceReader
 		hResInfo := GuiWin32.FindResource(hDLL, cName, 5)
 		IF SELF:__LoadFromResource(hDLL, hResInfo)
 			SELF:__AdjustSizes(hDLL, cName)
-		ENDIF
+        ENDIF
+        AddToCache(hDLL, cName, SELF)
 		RETURN
 
 

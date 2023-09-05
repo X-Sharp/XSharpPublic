@@ -41,6 +41,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     property UseNulls           as logic auto
     property UseLongNames       as logic auto
     property TrimTrailingSpaces as logic auto
+    private _lastException as Exception
 
 #endregion
 
@@ -138,6 +139,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         try
             self:DbTransaction := self:DbConnection:BeginTransaction()
         catch e as Exception
+            _lastException := e
             self:DbTransaction := null
         end try
         return self:DbTransaction != null
@@ -145,6 +147,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         try
             self:DbTransaction := self:DbConnection:BeginTransaction(isolationLevel)
         catch e as Exception
+            _lastException := e
             self:DbTransaction := null
         end try
         return self:DbTransaction != null
@@ -201,16 +204,18 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             endif
             var list  := RaiseListEvent(self, SqlRDDEventReason.ColumnList, TableName, List<string>{}{"*"})
             var columnList := List2String(list)
-            var query := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table+SqlDbProvider.WhereClause+"0=1"
+            var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
+            var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             query := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, query)
             var oTd := GetStructureForQuery(query,TableName)
+            oTd:SelectStatement := selectStmt
+            oTd:EmptySelectStatement := query
             self:Schema:Add(TableName, oTd)
             return oTd
         catch e as Exception
             ? "Error reading table ",TableName, e:Message
         end try
         return null
-
     method DoesTableExist(cTableName as string) as logic
         local aTableRestrictions := string[]{4} as string[]
         aTableRestrictions[2] := cTableName

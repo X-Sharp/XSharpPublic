@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Windows.Forms
 USING System.Drawing
@@ -29,9 +33,9 @@ CLASS Button INHERIT TextControl
     PROPERTY __Button AS VOButton GET (VOButton) oCtrl
 
     /// <exclude />
-    METHOD __GetImage()  AS VObject
-        IF oImage is ButtonImageList
-            RETURN IVarGet(oImage,#Image)
+    METHOD __GetImage()  AS Object
+        if oImage is ButtonImageList var oBIL
+            return oBIL:Image
         ENDIF
         RETURN oImage
 
@@ -39,7 +43,8 @@ CLASS Button INHERIT TextControl
     METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
         IF oNewImage IS ButtonImageList VAR oBIL
             oImage := oNewImage
-            SELF:__Button:Image := oBIL:Image:__Image
+            // Todo Implement Button Image
+            //SELF:__Button:Image := oBIL:Image:__Image
             SELF:__Button:FlatStyle := FlatStyle.Standard
             SELF:__Button:Text := ""
             RETURN TRUE
@@ -112,13 +117,13 @@ END CLASS
 
 /// <include file="Gui.xml" path="doc/ButtonImageList/*" />
 CLASS ButtonImageList INHERIT ImageList
-    PROTECTED _oImage AS Object
+    protected _oImage as IResource
 
     /// <include file="Gui.xml" path="doc/ButtonImageList.Image/*" />
-    PROPERTY Image AS OBJECT GET _oImage
+    property Image as IResource get _oImage
 
     /// <include file="Gui.xml" path="doc/ButtonImageList.ctor/*" />
-    CONSTRUCTOR(oImage AS OBJECT)
+    constructor(oImage as IResource)
         _oImage := oImage
         SUPER(1, oImage:Size, oImage, _OR(ILC_COLOR32, ILC_MASK))
         RETURN

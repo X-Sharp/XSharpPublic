@@ -17,6 +17,8 @@ begin namespace XSharp.RDD.SqlRDD
 [DebuggerDisplay("{Name,nq}, {Columns.Count}")];
 class SqlDbTableDef inherit SqlDbObject
     property Columns as IList<SqlDbColumnDef> auto get private set
+    property SelectStatement as string auto
+    property EmptySelectStatement as string auto
 
     constructor(cName as string, aColumns as IList<SqlDbColumnDef>)
         super(cName)

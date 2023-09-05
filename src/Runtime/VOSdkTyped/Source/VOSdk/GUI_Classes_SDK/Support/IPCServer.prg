@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -139,14 +144,14 @@ METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT
 	RETURN NULL_OBJECT
 
 /// <include file="Gui.xml" path="doc/IpcServer.AddTopic/*" />
-METHOD AddTopic(oIpcTopic)
+method AddTopic(oIpcTopic as IPCTopic)
 	//PP-030828 Strong typing
 	LOCAL cTopicString AS STRING
 
 
 
-	IF !IsNil(oIpcTopic)
-		IF !IsInstanceOfUsual(oIpcTopic, #IpcTopic)
+	IF oIpcTopic != NULL
+		IF ! (oIpcTopic IS IpcTopic)
 			WCError{#AddItem,#IpcServer,__WCSTypeError,oIpcTopic,1}:Throw()
 		ENDIF
 
@@ -170,7 +175,7 @@ METHOD DataUpdate(oIpcDataUpdateEvent)
 	RETURN SELF
 
 /// <include file="Gui.xml" path="doc/IpcServer.Destroy/*" />
-METHOD Destroy() AS USUAL
+METHOD Destroy() AS USUAL clipper
 	//LOCAL i, dwLen AS DWORD
 	//LOCAL hConv AS PTR
 	//LOCAL hHsz AS PTR

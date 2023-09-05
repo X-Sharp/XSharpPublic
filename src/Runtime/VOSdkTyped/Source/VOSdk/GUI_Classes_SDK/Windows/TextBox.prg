@@ -1,10 +1,16 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 /// <include file="Gui.xml" path="doc/ErrorBox/*" />
 CLASS ErrorBox INHERIT TextBox
 
     /// <include file="Gui.xml" path="doc/ErrorBox.ctor/*" />
     CONSTRUCTOR(uParent, uText)
-        IF IsInstanceOfUsual( uText, #HyperLabel )
-            uText := uText:Description
+        if uText is HyperLabel var oHL
+            uText := oHL:Description
         ENDIF
 
         SUPER(uParent, ResourceString{__WCSError}:value, uText)
@@ -27,7 +33,7 @@ CLASS InfoBox INHERIT TextBox
             uCaption := oHL:Caption
         ENDIF
 
-        Default(@uCaption, ResourceString{__WCSInfoBox}:Value)
+        DEFAULT( REF uCaption, ResourceString{__WCSInfoBox}:Value)
 
         SUPER(uParent,uCaption,uText)
         SELF:Type := BOXICONASTERISK
@@ -151,7 +157,7 @@ CLASS WarningBox INHERIT TextBox
             uCaption := oHL:Caption
         ENDIF
 
-        Default(@uCaption, String.Empty)
+        DEFAULT( REF uCaption, String.Empty)
 
         SUPER(uParent,uCaption,uText)
 

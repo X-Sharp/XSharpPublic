@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -63,9 +68,7 @@ RETURN
 				System.Windows.Forms.Clipboard.SetText( cString)
 			ENDIF
 			lOk := TRUE
-		ELSEIF IsInstanceOfUsual(xType,#Bitmap)
-			LOCAL oBitMap AS BitMap
-			oBitMap := xType
+		elseif xType is Bitmap var oBitMap
 			System.Windows.Forms.Clipboard.SetImage( (System.Drawing.Image) oBitMap)
 			lOk := TRUE
 		ELSE

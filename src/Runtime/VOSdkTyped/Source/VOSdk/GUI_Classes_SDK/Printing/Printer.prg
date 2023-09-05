@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/Printer/*" />
 
 
@@ -186,7 +191,7 @@ METHOD Handle(ServiceID) AS IntPtr Clipper
 	RETURN hDC
 
 	/*
-	Default(@ServiceID, API_WINDOW_HDC)
+	DEFAULT( REF ServiceID, API_WINDOW_HDC)
 
 	if ServiceID = API_WINDOW_HWND
 	return self:hWnd
@@ -385,9 +390,7 @@ METHOD PrinterError(oPerr)
 
 /// <include file="Gui.xml" path="doc/Printer.PrinterExpose/*" />
 METHOD PrinterExpose(oPrinterExposeEvt)
-
-
-	IF !IsNil(oPrinterExposeEvt) .AND. !IsInstanceOfUsual(oPrinterExposeEvt,#PrinterExposeEvent)
+	if !IsNil(oPrinterExposeEvt) .and. !(oPrinterExposeEvt is PrinterExposeEvent)
 		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:Throw()
 	ENDIF
 	RETURN TRUE

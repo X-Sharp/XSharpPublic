@@ -1,8 +1,8 @@
-﻿// Win32Defines.prg
-// Created by    : robert
-// Creation Date : 5/5/2020 4:05:44 PM
-// Created for   :
-// WorkStation   : ARTEMIS
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 #region defines
 DEFINE RC_RT_CURSOR                := 1

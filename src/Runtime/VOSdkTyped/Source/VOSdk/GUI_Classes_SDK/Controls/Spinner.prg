@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Spinner control does not exist in .NET
 // There is a NumericUpdown control that combines an edit and a spinner
 // To make our code happy I have added the classes as subclasses from ScrollBar

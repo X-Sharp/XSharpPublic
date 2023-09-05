@@ -6,7 +6,7 @@
 
 
 /// <summary>
-/// Changes and/or reads a system setting. 
+/// Changes and/or reads a system setting.
 /// </summary>
 /// <param name="nDefine">Is a positive integer identifying a system setting or system variable.
 /// This should match the values from the Set enumerated type.</param>
@@ -15,7 +15,7 @@
 /// <returns>When Set() is called without the argument <paramref name="newValue" /> ,
 /// the function returns the current system setting designated by <paramref name="nDefine" /> .
 /// If <paramref name="newValue" /> is specified, the corresponding system setting is set to <paramref name="newValue" />
-/// and the value of the old setting is returned. 
+/// and the value of the old setting is returned.
 /// </returns>
 /// <seealso cref="T:XSharp.Set" />
 /// <remarks>If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine" />
@@ -27,20 +27,31 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     IF IsString(nDefine)
         local cDefine := nDefine as STRING
         IF ! Enum.TryParse(cDefine, TRUE, OUT nSetting)
-            throw Error.ArgumentError(__FUNCTION__,nameof(nDefine), "Invalid argument: "+cDefine+". This could not be translated to a valid setting in the Set enum")
+            // match start of define ?
+            LOCAL found := FALSE AS LOGIC
+            FOREACH setting AS STRING IN Enum.GetNames(TYPEOF(XSharp.Set))
+                IF setting:StartsWith(cDefine,StringComparison.OrdinalIgnoreCase)
+                    Enum.TryParse(setting, TRUE, OUT nSetting)
+                    found := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF ! found
+                THROW Error.ArgumentError(__FUNCTION__,NAMEOF(nDefine), "Invalid argument: "+cDefine+". This could not be translated to a valid setting in the Set enum")
+            ENDIF
         ENDIF
     ELSEIF ! IsNumeric(nDefine)
         throw Error.ArgumentError(__FUNCTION__, nameof(nDefine), "Invalid argument: "+AsString(nDefine)+". This should be a number, Set Enum value or a string")
     ELSE
         nSetting := nDefine
     ENDIF
-    
+
 
     IF PCount() > 1
         // Some settings are not simply written but have side effects
         // These are handled here
         SWITCH nSetting
-        CASE Set.DateFormat 
+        CASE Set.DateFormat
             // Special handling, because we want to keep DateFormat, DateFormatNet and DateFormatEmpty in sync
             IF IsString(newValue)
                 RETURN SetDateFormat(newValue)
@@ -52,15 +63,15 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             ENDIF
         CASE Set.Path
             // Special handling, clear path array
-            IF IsString(newValue) 
+            IF IsString(newValue)
                 RETURN SetPath(newValue)
             ENDIF
-        CASE Set.CharSet 
+        CASE Set.CharSet
             // Map SET_CHARSET to SetAnsi
             IF IsNumeric(newValue)
                 RETURN SetAnsi(newValue == 0)  // Ansi = 0, Oem == 1
             ENDIF
-        CASE Set.Ansi 
+        CASE Set.Ansi
             // Map SET_CHARSET to SetAnsi
             IF IsLogic(newValue)
                 RETURN SetAnsi(newValue )
@@ -100,8 +111,8 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
             IF IsString(newValue) .OR. IsSymbol(newValue)
                 RETURN SetInternational(newValue)
             ENDIF
-                
-        END SWITCH 
+
+        END SWITCH
     ENDIF
 
 
@@ -116,7 +127,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 // XBase++ uses ON / OFF strings in stead of TRUE and FALSE
                 state:Settings[nSetting] := cNew:ToUpper() == "ON"
             ELSE
-               TRY
+                TRY
                     oNew := System.Convert.ChangeType( oNew, oOld:GetType())
                     state:Settings[nSetting] := oNew
                 CATCH
@@ -124,13 +135,13 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 END TRY
             ENDIF
         ENDIF
-     ENDIF
+    ENDIF
     RETURN oOld
-            
-    
+
+
 
 FUNCTION SetAltFile() AS STRING
-	RETURN RuntimeState.AltFile
+    RETURN RuntimeState.AltFile
 
 FUNCTION SetAltFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
     var old := RuntimeState.AltFile
@@ -138,7 +149,7 @@ FUNCTION SetAltFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
         SetAlternate(FALSE)
         AltFileClose()
     ENDIF
-	RuntimeState.AltFile := cFileName
+    RuntimeState.AltFile := cFileName
     IF ! String.IsNullOrEmpty(cFileName)
         AltFileOpen(lAdditive)
         SetAlternate(TRUE)
@@ -146,43 +157,45 @@ FUNCTION SetAltFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
     RETURN old
 
 FUNCTION SetAlternate(lNewSetting AS LOGIC) AS LOGIC
-	VAR lOld := RuntimeState.Alternate
+    VAR lOld := RuntimeState.Alternate
     RuntimeState.Alternate := lNewSetting
     RETURN lOld
 
 FUNCTION SetAlternate() AS LOGIC
-	RETURN RuntimeState.Alternate
+    RETURN RuntimeState.Alternate
 
 FUNCTION SetConsole() AS LOGIC
-	RETURN RuntimeState.Console
+    RETURN RuntimeState.Console
 
 FUNCTION SetConsole(lNewSetting AS LOGIC) AS LOGIC
-	VAR lOld := RuntimeState.Console
+    VAR lOld := RuntimeState.Console
     RuntimeState.Console := lNewSetting
     RETURN lOld
 
 
-//FUNCTION SetPrintFile() AS STRING
-//	RETURN RuntimeState.PrintFile
-//
-//FUNCTION SetPrintFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
-//    var old := RuntimeState.PrintFile
-//    IF String.IsNullOrEmpty(cFileName)
-//        SetPrinter(FALSE)
-//        PrintFileClose()
-//    ENDIF
-//	RuntimeState.PrintFile := cFileName
-//    IF ! String.IsNullOrEmpty(cFileName)
-//        PrintFileOpen(lAdditive)
-//        SetPrinter(TRUE)
-//    ENDIF
-//    RETURN old
-//
-//FUNCTION SetPrinter(lNewSetting AS LOGIC) AS LOGIC
-//	VAR lOld := RuntimeState.Printer
-//    RuntimeState.Printer := lNewSetting
-//    RETURN lOld
-//
-//
-//FUNCTION SetPrinter() AS LOGIC
-//	RETURN RuntimeState.Printer
+FUNCTION SetTextFile() AS STRING
+    RETURN ConsoleHelpers.TextFile
+
+FUNCTION SetTextFile(cFileName as STRING, lAdditive := FALSE as LOGIC) AS STRING
+    var old := ConsoleHelpers.TextFile
+    IF String.IsNullOrEmpty(cFileName)
+        SetTextOutPut(FALSE)
+        TextFileClose()
+    ENDIF
+    ConsoleHelpers.TextFile := cFileName
+    IF ! String.IsNullOrEmpty(cFileName)
+        TextFileOpen(lAdditive)
+        SetTextOutPut(TRUE)
+    ENDIF
+    RETURN old
+
+FUNCTION SetTextOutPut(lNewSetting AS LOGIC) AS LOGIC
+    VAR lOld := ConsoleHelpers.TextOutPut
+    ConsoleHelpers.TextOutPut := lNewSetting
+    RETURN lOld
+
+
+FUNCTION SetTextOutPut() AS LOGIC
+    RETURN ConsoleHelpers.TextOutPut
+
+

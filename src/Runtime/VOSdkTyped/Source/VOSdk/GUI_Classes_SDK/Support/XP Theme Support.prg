@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 #ifdef DONOTINCLUDE
 
 
@@ -83,46 +88,46 @@ FUNCTION GetWindowTheme(hWnd AS PTR) AS PTR STRICT
    ENDIF
    RETURN Null_Ptr
 
-// dcaton 070625 - added prototypes so PCALL() can work.  
+// dcaton 070625 - added prototypes so PCALL() can work.
 // Somehow this compiles in VO with these typed simply as PTR,
 // but Vulcan needs parameter and return type
 // information in order to generate proper IL code.
 
 STATIC FUNCTION _CloseThemeData( hTheme AS PTR ) AS INT PASCAL
    RETURN 0
-   
+
 STATIC FUNCTION _DrawThemeBackground( hTheme AS PTR, hDC AS PTR, iPartId AS INT, iStateId AS INT, pRect AS PTR, pClipRect AS PTR ) AS INT PASCAL
    RETURN 0
 
 STATIC FUNCTION _DrawThemeEdge( hTheme AS PTR, hDC AS PTR, iPartId AS INT, iStateId AS INT, pDestRect AS PTR, uEdge AS DWORD, uFlags AS DWORD, pContentRect AS PTR ) AS INT PASCAL
    RETURN 0
-   
+
 STATIC FUNCTION _DrawThemeParentBackground( hTheme AS PTR, hDC AS PTR, prc AS PTR ) AS INT PASCAL
    RETURN 0
-   
+
 STATIC FUNCTION _EnableThemeDialogTexture( hwnd AS PTR, dwFlags AS DWORD ) AS INT PASCAL
    RETURN 0
-   
+
 STATIC FUNCTION _GetThemeAppProperties() AS DWORD PASCAL
    RETURN 0
-   
+
 STATIC FUNCTION _GetThemeColor( hTheme AS PTR, iPartId AS INT, iStateId AS INT, iPropId AS INT, pColor AS PTR ) AS INT PASCAL
    RETURN 0
 
 STATIC FUNCTION _GetWindowTheme( hWnd AS PTR ) AS PTR PASCAL
    RETURN 0
-   
+
 STATIC FUNCTION _OpenThemeData( hWnd AS PTR, lpcwstr AS PTR ) AS PTR PASCAL
    RETURN 0
 
 STATIC FUNCTION _SetThemeAppProperties( dwFlags AS DWORD ) AS VOID PASCAL
-   RETURN   
-   
+   return
+
 STATIC FUNCTION _SetWindowTheme( hWnd AS PTR, SubAppName AS PTR, SubIdList AS PTR ) AS PTR PASCAL
-   RETURN 0   
+   return 0
 
 STATIC FUNCTION _IsAppThemed() AS LOGIC PASCAL
-   RETURN FALSE   
+   return false
 
 STATIC GLOBAL gfpCloseThemeData            AS _CloseThemeData PTR
 STATIC GLOBAL gfpDrawThemeBackground       AS _DrawThemeBackground PTR
@@ -211,7 +216,7 @@ FUNCTION DrawThemeBackground(hTheme AS PTR, hdc AS PTR, iPartId AS INT, iStateId
 
 FUNCTION EnableThemeDialogTexture(oWindow AS USUAL, dwStyle AS DWORD) AS LOGIC STRICT
 	//PP-030909
-   LOCAL hwnd AS PTR            
+   local hwnd as ptr
 
    IF ! gfpEnableThemeDialogTexture == NULL_PTR .and. glThemeEnabled
 	IF IsInstanceOfUsual(oWindow, #Window)

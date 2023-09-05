@@ -1,10 +1,15 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/ResourceFile/*" />
 
 CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS IntPtr
 
 /// <include file="Gui.xml" path="doc/ResourceFile.Destroy/*" />
-METHOD Destroy() AS USUAL
+METHOD Destroy() AS USUAL clipper
 	IF ((int) hLib >= 32)
 		GuiWin32.FreeLibrary(hLib)
 	ENDIF

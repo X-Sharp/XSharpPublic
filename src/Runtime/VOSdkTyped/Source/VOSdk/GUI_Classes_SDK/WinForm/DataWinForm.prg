@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // DataForm.prg
 
 USING SWF := System.Windows.Forms
@@ -55,7 +61,7 @@ scrollbars are shown on the framepanel
 CLASS VODataForm INHERIT VOChildAppForm
 #region Fields
     PROTECT oSurfacePanel	AS VoSurfacePanel		// This is the place where the controls are drawn
-    PROTECT oFramePanel		AS IVOFramePanel			// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
+    protect oFramePanel		as VoFramePanel			// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
     PROTECT oToolBar		AS VOToolBar
     PROTECT oStatusBar		AS VOStatusBar
     PROTECT oResDlg			AS ResourceDialog
@@ -65,7 +71,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 #region Properties
     PROPERTY Origin			AS VOSDK.Point      GET SELF:Location SET SELF:Location := Value
     PROPERTY Surface		AS VoSurfacePanel	GET oSurfacePanel
-    PROPERTY Frame          AS IVOFramePanel	GET oFramePanel
+    property Frame          as VOFramePanel	    get oFramePanel
     PROPERTY AutoLayout	    AS LOGIC AUTO       GET SET
 
     PROPERTY DataBrowser AS SWF.Control

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/ProgressBar/*" />
 CLASS ProgressBar INHERIT Control
 	PROTECT dwOldPosition	AS LONG
@@ -47,8 +52,8 @@ CLASS ProgressBar INHERIT Control
 /// <include file="Gui.xml" path="doc/ProgressBar.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 
-		DEFAULT(@lDataAware, TRUE)
-		IF IsInstanceOfUsual(xID, #ResourceID)
+		DEFAULT( REF lDataAware, TRUE)
+		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, lDataAware)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, "msctls_progress32", kStyle, lDataAware)

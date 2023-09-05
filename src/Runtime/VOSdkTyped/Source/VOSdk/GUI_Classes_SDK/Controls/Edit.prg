@@ -1,8 +1,13 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 USING System.Reflection
 /// <include file="Gui.xml" path="doc/Edit/*" />
 
 [XSharp.Internal.TypesChanged];
-CLASS Edit INHERIT TextControl 
+class Edit inherit TextControl
 	PROTECT lNoNotify AS LOGIC
 	PROTECT lForceModFlag2True AS LOGIC
 
@@ -430,7 +435,7 @@ CLASS SingleLineEdit INHERIT Edit
 					ENDIF
 					cNumText := StrTran(cNumText, " ", "")
 					uValue := Val(cNumText)
-				ELSEIF (IVarGet(oFieldSpec, #Nullable) == TRUE)
+				elseif oFieldSpec:Nullable == true
 					uValue := Unformat(cText, SELF:Picture, oEditString:Type+"0")
 				ELSE
 					uValue := Unformat(cText, SELF:Picture, oEditString:Type)
@@ -784,7 +789,7 @@ CLASS SpinnerEdit INHERIT SingleLineEdit
 		oType    := oSpinner:GetType()
 		oProp    := oType:GetProperty("TextBox", BindingFlags.Instance+ BindingFlags.NonPUBLIC+BindingFlags.IgnoreCase)
 		IF oProp != NULL_OBJECT
-			oTextBox := oProp:GetValue(oSpinner,NULL)
+			oTextBox := (VOTextBox) oProp:GetValue(oSpinner,NULL)
 		ENDIF
 		RETURN
 

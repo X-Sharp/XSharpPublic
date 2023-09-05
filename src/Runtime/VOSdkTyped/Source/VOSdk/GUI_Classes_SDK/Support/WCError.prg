@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 /// <exclude />
 CLASS WCError INHERIT Error
@@ -18,8 +23,8 @@ CLASS WCError INHERIT Error
 		FuncSym := String2Symbol(Symbol2String(className) + ":" + Symbol2String(methodName))
 	ENDIF
 
-	Default(@desc, __WCSInterfaceError)
-	Default(@lAllowIgnore, TRUE)
+	DEFAULT( REF desc, __WCSInterfaceError)
+	DEFAULT( REF lAllowIgnore, TRUE)
 
 	IF IsString(desc)
 		SELF:Description := desc

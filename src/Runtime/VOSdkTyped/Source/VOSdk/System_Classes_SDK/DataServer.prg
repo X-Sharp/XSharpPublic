@@ -310,6 +310,8 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 	ACCESS LastRec AS LONG
 		RETURN 0
 
+    method LockCurrentRecord( ) as logic strict
+        return self:RLock(self:RecNo)
 
 /// <include file="System.xml" path="doc/DataServer.Name/*" />
 	ACCESS Name AS STRING

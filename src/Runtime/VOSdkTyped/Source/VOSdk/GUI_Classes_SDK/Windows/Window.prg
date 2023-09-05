@@ -1,182 +1,207 @@
-
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 using System.Collections.Generic
-USING VOSDK := XSharp.VO.SDK
-
+using VOSDK := XSharp.VO.SDK
+using System.Linq
 
 /// <include file="Gui.xml" path="doc/Window/*" />
-PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParent, ITimer
-    PROTECT oParent AS OBJECT
-    PROTECT oWnd AS VOForm
-    PROTECT dwStyle AS LONG
-    PROTECT dwExStyle AS LONG
+partial class Window inherit @@EventContext implements IGuiObject, IControlParent, ITimer
+    protect oParent as object
+    protect oWnd as VOForm
+    protect dwStyle as long
+    protect dwExStyle as long
 
-    PROTECT cCaption AS STRING
-    PROTECT oMenu AS Menu
-    PROTECT oIcon AS Icon
-    PROTECT oIconSmall AS Icon
-    PROTECT oContextMenu AS Menu
-    PROTECT oAccelerator AS Accelerator
-    PROTECT oFont AS Font
-    PROTECT oPointer AS Pointer
-    PROTECT oBackground AS Brush
-    PROTECT oForeground AS Brush
-    PROTECT oHyperLabel AS HyperLabel
-    PROTECT lRetVal AS LOGIC
-    PROTECT oOrigin AS Point
-    PROTECT oPen AS Pen
-    PROTECT oCursor AS VOSDK.Cursor
-    PROTECT oDragDropClient AS DragDropClient
+    protect cCaption as string
+    protect oMenu as Menu
+    protect oIcon as Icon
+    protect oIconSmall as Icon
+    protect oContextMenu as Menu
+    protect oAccelerator as Accelerator
+    protect oFont as Font
+    protect oPointer as Pointer
+    protect oBackground as Brush
+    protect oForeground as Brush
+    protect oHyperLabel as HyperLabel
+    protect lRetVal as logic
+    protect oOrigin as Point
+    protect oPen as Pen
+    protect oCursor as VOSDK.Cursor
+    protect oDragDropClient as DragDropClient
         //PROTECT oDragDropServer AS DragDropServer
-    PROTECT oToolBar AS ToolBar
+    protect oToolBar as ToolBar
 
-    PROTECT DCInitialized AS LOGIC
-    PROTECT DCPenInUse AS LOGIC
-    PROTECT DCPenNeeded AS LOGIC
-    PROTECT DCBrushInUse AS LOGIC
-    PROTECT DCBrushNeeded AS LOGIC
-    PROTECT DCFontInUse AS LOGIC
-    PROTECT DCFontNeeded AS LOGIC
-    PROTECT hDC AS IntPtr
-    PROTECT hDCPaint AS IntPtr
+    protect DCInitialized as logic
+    protect DCPenInUse as logic
+    protect DCPenNeeded as logic
+    protect DCBrushInUse as logic
+    protect DCBrushNeeded as logic
+    protect DCFontInUse as logic
+    protect DCFontNeeded as logic
+    protect hDC as IntPtr
+    protect hDCPaint as IntPtr
 
-    PROTECT oCurrentHelp AS HelpDisplay
-    PROTECT lHelpOn AS LOGIC
-    PROTECT lHelpCursorOn AS LOGIC
-    PROTECT lHelpMenu AS LOGIC
+    protect oCurrentHelp as HelpDisplay
+    protect lHelpOn as logic
+    protect lHelpCursorOn as logic
+    protect lHelpMenu as logic
         //PROTECT lFileDragging AS LOGIC
-    PROTECT dwTimerCount AS INT
-    PROTECT dwTimerInterval AS INT
-    PROTECT lTimerRegistered AS LOGIC
+    protect dwTimerCount as int
+    protect dwTimerInterval as int
+    protect lTimerRegistered as logic
 
         //PROTECT lDragActive AS LOGIC
         //PROTECT oDragImageList AS VOSDK.ImageList
-    PROTECT hDragSingleCursor AS IntPtr
-    PROTECT hDragMultipCursor AS IntPtr
-    PROTECT aAlignes			AS ARRAY
-    PROTECT aDelayedAlignes		AS ARRAY
-    PROTECT lDelayAlignment		as LOGIC
-    PROTECT lAutomated			AS LOGIC
+    protect hDragSingleCursor as IntPtr
+    protect hDragMultipCursor as IntPtr
+    protect aAlignes			as array
+    protect aDelayedAlignes		as List< Tuple <IGUIObject, usual> >
+    protect lDelayAlignment		as logic
+    protect lAutomated			as logic
 
-    PROTECT oMinSize AS Dimension
-    PROTECT oTrayIcon AS VOTrayIcon
-
-
-    PROPERTY EventReturnValue AS LONGINT AUTO
-
-    PROTECT oResourceDialog AS ResourceDialog	// Class that holds the decoded version of the Win32 resource
-    PROPERTY ResourceDialog AS ResourceDialog GET oResourceDialog
-    PROPERTY IsClosing AS LOGIC AUTO
-
-    PROPERTY __Handle as IntPtr GET SELF:Handle()
-
-    METHOD __CreateForm() AS VOForm STRICT
-        RETURN GuiFactory.Instance:CreateWindow(SELF)
-
-    PROPERTY __Form AS VOForm GET oWnd
-
-    PROPERTY TopMost AS LOGIC
-        GET
-            RETURN SELF:__Form:TopMost
-        END GET
-        SET
-            IF value
-                SELF:__Form:mdiParent := NULL
-            ENDIF
-            SELF:__Form:TopMost := Value
-        END SET
-    END PROPERTY
+    protect oMinSize as Dimension
+    protect oTrayIcon as VOTrayIcon
 
 
-    PROPERTY __IsValid AS LOGIC GET SELF:oWnd != NULL_OBJECT .and. ! SELF:oWnd:IsDisposed
+    property EventReturnValue as longint auto
 
-    PROPERTY __HasSurface AS LOGIC GET SELF:__Surface != oWnd
+    protect oResourceDialog as ResourceDialog	// Class that holds the decoded version of the Win32 resource
+    property ResourceDialog as ResourceDialog get oResourceDialog
+    property IsClosing as logic auto
 
-    PROPERTY __Surface AS IVOControlContainer
-        GET
-            IF SELF:__IsValid
-                LOCAL IMPLIED aList := oWnd:GetAllControls()
-                FOREACH oC AS OBJECT IN aList
-                    IF oc IS IVOPanel
-                        RETURN oC
-                    ENDIF
-                NEXT
-            ENDIF
-            RETURN oWnd
-        END GET
-    END PROPERTY
-    METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
-        RETURN
+    property __Handle as IntPtr get self:Handle()
+
+    class VOAlignElement
+        property Control as IGuiObject auto
+        property Type as usual auto
+        property Left as long auto
+        property Top as long auto
+        property Width as long auto
+        property Height as long auto
+        constructor(oC as IGuiObject, uType as usual, nLeft as long, nTop as long, nWidth as long, nHeight as long)
+            Control  := oC
+            Type    := uType
+            Left    := nLeft
+            Top     := nTop
+            Width   := nWidth
+            Height  := nHeight
+            return
+        constructor() strict
+            return
+    end class
+
+    method __CreateForm() as VOForm strict
+        return GuiFactory.Instance:CreateWindow(self)
+
+    property __Form as VOForm get oWnd
+
+    property TopMost as logic
+        get
+            return self:__Form:TopMost
+        end get
+        set
+            if value
+                self:__Form:mdiParent := null
+            endif
+            self:__Form:TopMost := value
+        end set
+    end property
+
+
+    property __IsValid as logic get self:oWnd != null_object .and. ! self:oWnd:IsDisposed
+
+    property __HasSurface as logic get self:__Surface != null
+
+    property __Surface as IVOPanel
+        get
+            if self:__IsValid
+                local implied aList := oWnd:GetAllControls()
+                foreach oC as object in aList
+                    if oc is IVOPanel
+                        return oC
+                    endif
+                next
+            endif
+            return null
+        end get
+    end property
+    method __SetupDataControl(oDC as VOSDK.Control) as void
+        return
+    method __AddControl (oCtrl as IVOControl) as void
+        return
     /// <exclude />
-    METHOD __AddAlign(oControl AS IGUIObject, iType AS USUAL) AS LOGIC STRICT
-        LOCAL dwI, dwCount AS DWORD
-        LOCAL lDelete      AS LOGIC
-        LOCAL lOldAlign    AS LOGIC
-        LOCAL lFound	   AS LOGIC
-        IF IsNil(iType)
+    method __AddAlign(oControl as IGUIObject, iType as usual) as logic strict
+        local dwI, dwCount as dword
+        local lDelete      as logic
+        local lOldAlign    as logic
+        local lFound	   as logic
+        if IsNil(iType)
             iType := OA_TOP
-        ENDIF
-        IF lDelayAlignment
-            aadd(aDelayedAlignes, {(OBJECT)oControl, iType})
-            RETURN TRUE
-        ENDIF
+        endif
+        if self:lDelayAlignment
+            aDelayedAlignes:Add( Tuple<IGUIObject, usual> {oControl, iType})
+            return true
+        endif
 
-        lOldAlign := ! IsPtr(iType) .AND. (INT) iType <= OA_FULL_SIZE
+        lOldAlign := ! IsPtr(iType) .and. (int) iType <= OA_FULL_SIZE
 
         //PP-031129 Additional owner alignment options
-        IF ! lOldAlign
+        if ! lOldAlign
             //Null_Object calls SetAlignStartSize() in init mode,
             //means that only the first call sets the AlignStartSize.
-            SELF:SetAlignStartSize(NULL_OBJECT)
-        ENDIF
+            self:SetAlignStartSize(null_object)
+        endif
 
-        lDelete := (IsLong(iType) .AND. (INT) iType = OA_NO)
+        lDelete := (IsLong(iType) .and. (int) iType = OA_NO)
 
         //SE-060525
         dwCount := ALen(aAlignes)
-        lFound  := FALSE
-        FOR dwI := 1 UPTO dwCount
-            IF ((OBJECT)aAlignes[dwI][ 1]) == oControl
-                lFound  := TRUE
-                IF lDelete
+        lFound  := false
+        for dwI := 1 upto dwCount
+            var element := (VOAlignElement) aAlignes[dwI]
+            if element:Control == oControl
+                lFound  := true
+                if lDelete
                     ADel(aAlignes, dwI)
                     aSize(aAlignes, Alen(aAlignes)-1)
-                ELSE
-                    aAlignes[dwI][ 2] := iType
-                ENDIF
+                else
+                    element:Type := iType
+                endif
                 dwI := 0
-                EXIT //SE-070919 bug fix
-            ENDIF
-        NEXT
+                exit //SE-070919 bug fix
+            endif
+        next
 
 
-        IF !lFound
+        if !lFound
             // Add Control to the array
-            LOCAL oRect AS System.Drawing.Rectangle
-            IF IsInstanceOf(oControl, #Window)
-                LOCAL oForm AS System.Windows.Forms.Form
+            local oRect as System.Drawing.Rectangle
+            if oControl is Window
+                local oForm as System.Windows.Forms.Form
                 oForm 			:= ((VOSDK.Window) oControl):__Form
                 oRect 			:= oForm:ClientRectangle
                 oRect:Location 	:= oControl:Origin
                 oRect:Size     	:= oForm:Size
-            ELSE
-                LOCAL oCtrl AS IVOControl
+            else
+                local oCtrl as IVOControl
                 oCtrl			:= ((VOSDK.Control) oControl):__Control
                 oRect			:= oCtrl:DisplayRectangle
                 oRect:Location  := oCtrl:Location
-            ENDIF
-            AAdd(aAlignes, {(OBJECT)oControl, iType, oRect:left, oRect:top, oRect:Width, oRect:Height})
-        ENDIF
+            endif
+            AAdd(aAlignes,VOAlignElement{oControl, iType, oRect:left, oRect:top, oRect:Width, oRect:Height})
+        endif
 
         //IF lOldAlign
         //	SELF:__AlignControls()
         //ENDIF
 
-        RETURN TRUE
+        return true
 
     /// <exclude />
-    METHOD __AddTool(oControl AS VOSDK.Control) AS LOGIC STRICT
+    method __AddTool(oControl as VOSDK.Control) as logic strict
         //LOCAL cMessage AS STRING
         //SELF:EnableToolTips(TRUE)
         //cMessage := oControl:ToolTipText
@@ -189,28 +214,28 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	((VOPanel) SELF:__Surface):RegisterTooltip(oControl:__Control, cMessage)
         //ENDIF
 
-        RETURN TRUE
+        return true
 
-    METHOD __ShowToolTip(oControl AS VOSDK.Control) AS VOID STRICT
-        LOCAL cMessage AS STRING
+    method __ShowToolTip(oControl as VOSDK.Control) as void strict
+        local cMessage as string
         cMessage := oControl:ToolTipText
-        IF STRING.IsNullOrEmpty(cMessage) .and. oControl:UseHLForToolTip
-            IF oControl:HyperLabel != NULL_OBJECT
+        if STRING.IsNullOrEmpty(cMessage) .and. oControl:UseHLForToolTip
+            if oControl:HyperLabel != null_object
                 cMessage := oControl:HyperLabel:Description
-            ENDIF
-        ENDIF
-        IF SELF:__Surface IS VOPanel VAR oPanel
+            endif
+        endif
+        if self:__Surface is VOPanel var oPanel
             oPanel:ShowToolTip((System.Windows.Forms.Control) oControl:__Control, cMessage)
-        ENDIF
+        endif
 
-    METHOD __AlignControl(	oCtl AS IVOUIObject, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID
+    method __AlignControl(	oCtl as IVOUIObject, nX as long, nY as long, nW as long, nH as long) as void
         oCtl:Location := System.Drawing.Point{nX, nY}
         oCtl:Size     := System.Drawing.Size{nW, nH}
-        RETURN
+        return
 
 
     /// <exclude />
-    METHOD __AlignControls() AS Window STRICT
+    method __AlignControls() as Window strict
 
         //PP-030828 Strong typing
         //PP-031129 Additional owner alignment options
@@ -242,64 +267,63 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //
         //          IF you use the Factor/Divisor-Mode you can't use the proportinal alignment
         //          simultaneously for this control (window).
-        LOCAL oRect		 AS System.Drawing.Rectangle
-        LOCAL oCtl       AS IVOUIObject
-        LOCAL uType      AS USUAL
-        LOCAL dwType     AS DWORD
-        LOCAL liMulDiv   AS LONG
-        LOCAL oOwnerSize AS Dimension
+        local oRect		 as System.Drawing.Rectangle
+        local oCtl       as IVOUIObject
+        local uType      as usual
+        local dwType     as dword
+        local liMulDiv   as long
+        local oOwnerSize as Dimension
         // Original Sizes
-        LOCAL iWinRefWidth		AS INT
-        LOCAL iWinRefHeight		AS INT
-        LOCAL iCtlRefWidth      AS INT
-        LOCAL iCtlRefHeight     AS INT
+        local iWinRefWidth		as int
+        local iWinRefHeight		as int
+        local iCtlRefWidth      as int
+        local iCtlRefHeight     as int
         // New Window Size
-        LOCAL iWinWidth			AS INT
-        LOCAL iWinHeight		AS INT
+        local iWinWidth			as int
+        local iWinHeight		as int
         // New Control Size & Position
-        LOCAL iCtlX				AS INT
-        LOCAL iCtlY				AS INT
-        LOCAL iCtlWidth			AS INT
-        LOCAL iCtlHeight		AS INT
+        local iCtlX				as int
+        local iCtlY				as int
+        local iCtlWidth			as int
+        local iCtlHeight		as int
 
-        LOCAL pB                    AS BYTE PTR
-        LOCAL oOwnerOffSet			AS Point
+        local pB                    as byte ptr
+        local oOwnerOffSet			as Point
 
-        LOCAL dwI, dwCount  AS DWORD
-        LOCAL oResize    AS OBJECT
+        local dwI, dwCount  as dword
+        local oResize    as object
 
-        IF ! lDelayAlignment
-            RETURN SELF
-        ENDIF
+        if self:lDelayAlignment
+            return self
+        endif
 
 
         dwCount := ALen(aAlignes)
 
-        IF dwCount < 1 .OR. oWnd == NULL_OBJECT .or. oWnd:WindowState == system.Windows.Forms.FormWindowState.Minimized
-            RETURN  SELF
-        ENDIF
+        if dwCount < 1 .or. oWnd == null_object .or. oWnd:WindowState == system.Windows.Forms.FormWindowState.Minimized
+            return  self
+        endif
 
-        oRect   := SELF:__Surface:ClientRectangle
+        oRect   := self:__Surface:ClientRectangle
         iWinWidth  := oRect:Width
         iWinHeight := oRect:Height
-
-        IF aAlignes[1][1] == NULL_OBJECT
-            oOwnerSize	:= aAlignes[1][2]
-            IF oOwnerSize != NULL_OBJECT
+        var element := (VOAlignElement) aAlignes[1]
+        if element:Control == null_object
+            oOwnerSize	:= element:Type
+            if oOwnerSize != null_object
                 iWinRefWidth  := oOwnerSize:Width
                 iWinRefHeight := oOwnerSize:Height
-            ELSE
+            else
                 iWinRefWidth  := iWinWidth
                 iWinRefHeight := iWinHeight
-            ENDIF
+            endif
             dwI := 2
-        ELSE
+        else
             dwI := 1
-        ENDIF
-
-        IF iWinRefWidth == iWinWidth .and. iWinRefHeight == iWinHeight
-            RETURN SELF
-        ENDIF
+        endif
+        if iWinRefWidth == iWinWidth .and. iWinRefHeight == iWinHeight
+            return self
+        endif
 
         oWnd:SuspendRedraw()
         // First element in aAlignes has the window and its original size
@@ -310,211 +334,213 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         // 2   = Type, Pointer or LONG
         // 3,4 = Original X,Y
         // 5,6 = Original Width/Height
-        DO WHILE dwI <= dwCount
-            oResize := aAlignes[dwI][1]
-            IF IsInstanceOf(oResize, #DataWindow)
+        // 5,6 = Original Width/Height
+        do while dwI <= dwCount
+            element := (VOAlignElement) aAlignes[dwI]
+            oResize := element:Control
+            if oResize is DataWindow
                 oCtl	:= ((DataWindow) oResize):__Frame
                 oOwnerOffSet := Point{0,0}
-            ELSEIF IsInstanceOf(oResize, #Window)
+            elseif oResize is Window
                 oCtl	:= ((Window) oResize):__Form
                 oOwnerOffSet := Point{0,0}
-            ELSE
+            else
                 oCtl	:= ((Control) oResize):__Control
                 oOwnerOffSet := ((Control) oResize):__OwnerOffSet
-            ENDIF
-            uType   := aAlignes[dwI][2]
-            dwType  := DWORD(_CAST, uType)
-            IF !oCtl:IsDisposed
-                IF IsPtr(uType) .OR. dwType > OA_FULL_SIZE // 10
-                    iCtlX      := aAlignes[dwI][3]
-                    iCtlY      := aAlignes[dwI][4]
-                    iCtlWidth  := iCtlRefWidth  := aAlignes[dwI][5]
-                    iCtlHeight := iCtlRefHeight := aAlignes[dwI][6]
+            endif
+            uType   := element:Type
+            dwType  := dword(_cast, uType)
+            if !oCtl:IsDisposed
+                if IsPtr(uType) .or. dwType > OA_FULL_SIZE // 10
+                    iCtlX      := element:Left
+                    iCtlY      := element:Top
+                    iCtlWidth  := iCtlRefWidth  := element:Width
+                    iCtlHeight := iCtlRefHeight := element:Height
 
-                    IF IsPtr(uType)
-                        pB := (BYTE PTR) @dwType
-                        IF (liMulDiv := pB[1]) > 0
-                            iCtlX := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4, (LONG) _AND(liMulDiv, 0XF))
-                        ENDIF
-                        IF (liMulDiv := pB[2]) > 0
-                            iCtlY := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4, (LONG)  _AND(liMulDiv, 0XF))
-                        ENDIF
-                        IF (liMulDiv := pB[3]) > 0
-                            iCtlWidth := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
-                        ENDIF
-                        IF (liMulDiv := pB[4]) > 0
-                            iCtlHeight := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
-                        ENDIF
-                    ELSE
+                    if IsPtr(uType)
+                        pB := (byte ptr) @dwType
+                        if (liMulDiv := pB[1]) > 0
+                            iCtlX := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4, (long) _and(liMulDiv, 0XF))
+                        endif
+                        if (liMulDiv := pB[2]) > 0
+                            iCtlY := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4, (long)  _and(liMulDiv, 0XF))
+                        endif
+                        if (liMulDiv := pB[3]) > 0
+                            iCtlWidth := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4,  (long) _and(liMulDiv, 0XF))
+                        endif
+                        if (liMulDiv := pB[4]) > 0
+                            iCtlHeight := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4,  (long) _and(liMulDiv, 0XF))
+                        endif
+                    else
                         // Width
-                        IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
+                        if _and(dwType, OA_PWIDTH) = OA_PWIDTH
                             iCtlWidth := GuiWin32.MulDiv(iWinWidth, iCtlRefWidth, iWinRefWidth)
-                        ELSEIF _AND(dwType, OA_WIDTH) = OA_WIDTH
+                        elseif _and(dwType, OA_WIDTH) = OA_WIDTH
                             iCtlWidth += iWinWidth - iWinRefWidth
-                        ENDIF
+                        endif
                         // Height
-                        IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
+                        if _and(dwType, OA_PHEIGHT) = OA_PHEIGHT
                             iCtlHeight := GuiWin32.MulDiv(iWinHeight, iCtlRefHeight, iWinRefHeight)
-                        ELSEIF _AND(dwType, OA_HEIGHT) = OA_HEIGHT
+                        elseif _and(dwType, OA_HEIGHT) = OA_HEIGHT
                             iCtlHeight += iWinHeight - iWinRefHeight
-                        ENDIF
+                        endif
                         // X-Position
-                        IF _AND(dwType, OA_PX) = OA_PX
-                            IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
+                        if _and(dwType, OA_PX) = OA_PX
+                            if _and(dwType, OA_PWIDTH) = OA_PWIDTH
                                 iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX, iWinRefWidth)
-                            ELSE
+                            else
                                 iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX + iCtlRefWidth/2, iWinRefWidth) - iCtlWidth/2
-                            ENDIF
-                        ELSEIF _AND(dwType, OA_X) = OA_X
+                            endif
+                        elseif _and(dwType, OA_X) = OA_X
                             iCtlX += iWinWidth - iWinRefWidth
-                        ENDIF
+                        endif
                         // Y- position
-                        IF _AND(dwType, OA_PY) = OA_PY
-                            IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
+                        if _and(dwType, OA_PY) = OA_PY
+                            if _and(dwType, OA_PHEIGHT) = OA_PHEIGHT
                                 iCtlY := GuiWin32.MulDiv(iWinHeight, iCtlY, iWinRefHeight)
-                            ELSE
+                            else
                                 iCtlY := GuiWin32.MulDiv(iWinHeight, iCtlY + iCtlRefHeight/2, iWinRefHeight) - iCtlHeight/2
-                            ENDIF
-                        ELSEIF _AND(dwType, OA_Y) = OA_Y
+                            endif
+                        elseif _and(dwType, OA_Y) = OA_Y
                             iCtlY += iWinHeight - iWinRefHeight
-                        ENDIF
+                        endif
 
-                    ENDIF
+                    endif
                     // Since we are nesting controls in our GUI Classes we need to subtract the Offset of the owner
                     iCtlX -= oOwnerOffSet:X
                     iCtlY -= oOwnerOffSet:Y
-                    SELF:__AlignControl(oCtl,iCtlX, iCtlY, iCtlWidth, iCtlHeight)
-                ELSE
+                    self:__AlignControl(oCtl,iCtlX, iCtlY, iCtlWidth, iCtlHeight)
+                else
 #region Simple Alignment
                     oRect		:= oCtl:ClientRectangle
                     iCtlWidth	:= oRect:Width
                     iCtlHeight	:= oRect:Height
                     iCtlX		:= oRect:Left
                     iCtlY		:= oRect:Top
-                    SWITCH dwType
-                    CASE OA_TOP
+                    switch dwType
+                    case OA_TOP
                         iCtlY      := 0
-                    CASE OA_LEFT
+                    case OA_LEFT
                         iCtlX      := 0
-                    CASE OA_BOTTOM
+                    case OA_BOTTOM
                         iCtlY      := iWinHeight-iCtlHeight
-                    CASE OA_RIGHT
+                    case OA_RIGHT
                         iCtlX      := iWinWidth-iCtlWidth
-                    CASE OA_TOP_AUTOSIZE
+                    case OA_TOP_AUTOSIZE
                         iCtlX      := 0
                         iCtlY      := 0
                         iCtlWidth  := iWinWidth
-                    CASE OA_LEFT_AUTOSIZE
+                    case OA_LEFT_AUTOSIZE
                         iCtlX      := 0
                         iCtlY      := 0
                         iCtlHeight := iWinHeight
-                    CASE OA_BOTTOM_AUTOSIZE
+                    case OA_BOTTOM_AUTOSIZE
                         iCtlX      := 0
                         iCtlY      := iWinHeight-iCtlHeight
                         iCtlWidth  := iWinWidth
-                    CASE OA_RIGHT_AUTOSIZE
+                    case OA_RIGHT_AUTOSIZE
                         iCtlX      := iWinWidth-iCtlWidth
                         iCtlY      := 0
                         iCtlHeight := iWinHeight
-                    CASE OA_CENTER
+                    case OA_CENTER
                         iCtlX      := (iWinWidth / 2)- (iCtlWidth / 2)
                         iCtlY      := (iWinHeight / 2)- (iCtlHeight / 2)
 
-                    CASE OA_FULL_SIZE
+                    case OA_FULL_SIZE
                         iCtlX      := 0
                         iCtlY      := 0
                         iCtlWidth  := iWinWidth
                         iCtlHeight := iWinHeight
-                    END SWITCH
+                    end switch
                     // Since we are nesting controls in our GUI Classes we need to subtract the Offset of the owner
                     iCtlX -= oOwnerOffSet:X
                     iCtlY -= oOwnerOffSet:Y
-                    SELF:__AlignControl(oCtl,iCtlX, iCtlY, iCtlWidth, iCtlHeight)
+                    self:__AlignControl(oCtl,iCtlX, iCtlY, iCtlWidth, iCtlHeight)
 #endregion
-                ENDIF
-            ENDIF
+                endif
+            endif
             ++dwI
-        ENDDO
+        enddo
         oWnd:ResumeRedraw()
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT
+    method __AssociateAccel(lSwitch as logic) as Window strict
         //IF lSwitch .AND. (oAccelerator != NULL_OBJECT)
         //	SetAccelerator(oWnd, oAccelerator:Handle())
         //ELSE //if !lswitch
         //	SetAccelerator(NULL_PTR, NULL_PTR)
         //ENDIF
 
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __Close(oEvent AS @@Event) AS VOID STRICT
-        SELF:IsClosing := TRUE
-        SELF:Close(oEvent)
-        SELF:Destroy()
-        RETURN
+    method __Close(oEvent as @@Event) as void strict
+        self:IsClosing := true
+        self:Close(oEvent)
+        self:Destroy()
+        return
 
     /// <exclude />
-    METHOD __CommandFromEvent(oEvent AS INamedEvent) AS LOGIC STRICT
-        LOCAL symNameSym AS SYMBOL
-        LOCAL oWindow AS OBJECT
-        LOCAL oReport AS OBJECT
-        LOCAL o AS OBJECT
+    method __CommandFromEvent(oEvent as INamedEvent) as logic strict
+        local symNameSym as symbol
+        local oWindow as Window
+        local oReport as object
+        local o as object
 
         symNameSym := oEvent:NameSym
-        oWindow := SELF
-        IF oWindow IS ShellWindow
-            oWindow := ((ShellWindow) oWindow):GetActiveChild()
-            IF oWindow == NULL_OBJECT
-                oWindow := SELF
-            ENDIF
-        ENDIF
+        oWindow := self
+        if oWindow is ShellWindow var oShell
+            oWindow := oShell:GetActiveChild()
+            if oWindow == null_object
+                oWindow := self
+            endif
+        endif
 
 
-        DO WHILE TRUE
-            IF IsMethod(oWindow, symNameSym)
+        do while true
+            if IsMethod(oWindow, symNameSym)
                 Send(oWindow, symNameSym)
-                RETURN TRUE
-            ENDIF
-            IF IsAccess(oWindow, #Owner) .AND. IsInstanceOfUsual(IVarGet(oWindow,#Owner), #Window)
-                oWindow := IVarGet(oWindow,#Owner)
-            ELSE
-                EXIT
-            ENDIF
-        ENDDO
+                return true
+            endif
+            if oWindow:Owner is Window var oWin
+                oWindow := oWin
+            else
+                exit
+            endif
+        enddo
 
-        IF IsClassOf(symNameSym, #Window)
-            IF IsInstanceOf(SELF, #ChildAppWindow)
-                oWindow:=SELF
-                DO WHILE IsInstanceOf(oWindow:Owner, #Window)
-                    oWindow:=IVarGet(oWindow,#Owner)
-                ENDDO
+        if IsClassOf(symNameSym, #Window)
+            if self is ChildAppWindow var oChild
+                oWindow:=self
+                do while oWindow:Owner is Window
+                    oWindow:= oWindow:Owner
+                enddo
                 o := CreateInstance(symNameSym, oWindow)
-                o:show()
+                Send(o,#show)
                 // (CreateInstance(symNameSym, oWindow)):Show()
-            ELSE
-                o := CreateInstance(symNameSym, SELF)
-                o:Show()
-            ENDIF
-            RETURN TRUE
-        ELSEIF IsClassOf(symNameSym, #ReportQueue)
-            oReport := CreateInstance(symNameSym, SELF)
-            IF (oReport != NULL_OBJECT)
+            else
+                o := CreateInstance(symNameSym, self)
+                Send(o,#Show)
+            endif
+            return true
+        elseif IsClassOf(symNameSym, #ReportQueue)
+            oReport := CreateInstance(symNameSym, self)
+            if (oReport != null_object)
                 Send(oReport,#Show)
-            ENDIF
-            RETURN TRUE
-        ENDIF
+            endif
+            return true
+        endif
 
-        RETURN FALSE
+        return false
 
 
     /// <exclude />
-    METHOD __CreateSelfBitmap() AS IntPtr STRICT
+    method __CreateSelfBitmap() as IntPtr strict
         // Todo __CreateSelfBitmap
-        LOCAL hDIB AS PTR
+        local hDIB as ptr
         //LOCAL hBitmap AS PTR
         //LOCAL hBitmapOld AS PTR
         //LOCAL _hDC AS PTR
@@ -553,22 +579,22 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	DeleteObject(hBitmap)
         //ENDIF
 
-        RETURN hDIB
+        return hDIB
 
 
     /// <exclude />
-    PROPERTY __Cursor AS VOSDK.Cursor GET oCursor SET oCursor := value
+    property __Cursor as VOSDK.Cursor get oCursor set oCursor := value
 
         [Obsolete];
-    METHOD __DestroyChildren() AS VOID STRICT
-        RETURN
+    method __DestroyChildren() as void strict
+        return
 
         [Obsolete];
-    METHOD __DestroyWnd() AS LOGIC STRICT
-        RETURN TRUE
+    method __DestroyWnd() as logic strict
+        return true
 
     /// <exclude />
-    METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT
+    method __EnableHelpCursor(lEnabled as logic) as Window strict
         // Todo __EnableHelpCursor
         //LOCAL strucPoint IS _WinPoint
         //LOCAL x, y AS LONGINT
@@ -616,45 +642,45 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     //		oApp:__SetHelpWind(oWnd, HM_GENERAL)
     //	ENDIF
     //ENDIF
-    RETURN SELF
+    return self
 
 
     /// <exclude />
-    METHOD __FilterHelpCursor(wArea AS LONGINT) AS LOGIC STRICT
-        LOCAL lTemp AS LOGIC
+    method __FilterHelpCursor(wArea as longint) as logic strict
+        local lTemp as logic
 
-        DO CASE
-        CASE wArea==HTCAPTION
-            lTemp := TRUE
-        CASE wArea==HTCLIENT
-            lTemp := TRUE
-        CASE wArea==HTREDUCE
-            lTemp := TRUE
-        CASE wArea==HTZOOM
-            lTemp := TRUE
-        CASE wArea==HTSYSMENU
-            lTemp := TRUE
-        CASE wArea==HTBOTTOM .OR. ;
-                wArea==HTBOTTOMLEFT .OR. ;
-                wArea==HTBOTTOMRIGHT .OR. ;
-                wArea==HTTOP .OR. ;
-                wArea==HTLEFT .OR. ;
-                wArea==HTRIGHT .OR. ;
-                wArea==HTTOPLEFT .OR. ;
+        do case
+        case wArea==HTCAPTION
+            lTemp := true
+        case wArea==HTCLIENT
+            lTemp := true
+        case wArea==HTREDUCE
+            lTemp := true
+        case wArea==HTZOOM
+            lTemp := true
+        case wArea==HTSYSMENU
+            lTemp := true
+        case wArea==HTBOTTOM .or. ;
+                wArea==HTBOTTOMLEFT .or. ;
+                wArea==HTBOTTOMRIGHT .or. ;
+                wArea==HTTOP .or. ;
+                wArea==HTLEFT .or. ;
+                wArea==HTRIGHT .or. ;
+                wArea==HTTOPLEFT .or. ;
                 wArea==HTTOPRIGHT
-            lTemp := TRUE
-        CASE wArea==HTNowhere
-            lTemp := TRUE
-        OTHERWISE
-            lTemp := FALSE
-        ENDCASE
+            lTemp := true
+        case wArea==HTNowhere
+            lTemp := true
+        otherwise
+            lTemp := false
+        endcase
 
-        RETURN lTemp
+        return lTemp
 
 
 
     /// <exclude />
-    METHOD __GetDC() AS IntPtr STRICT
+    method __GetDC() as IntPtr strict
         // Todo ? __GetDC
         //LOCAL hFont AS PTR
         //LOCAL strucLogPen IS _WinLogPen
@@ -737,24 +763,24 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN hDC
+        return hDC
 
 
     /// <exclude />
-    METHOD __GetMyOleObjects AS ARRAY STRICT
-        LOCAL aMyControls AS ARRAY
-        LOCAL aObjects		AS ARRAY
-        LOCAL iLen			AS DWORD
-        LOCAL i				AS DWORD
-        aMyControls := SELF:GetAllChildren()
+    method __GetMyOleObjects as array strict
+        local aMyControls as array
+        local aObjects		as array
+        local iLen			as dword
+        local i				as dword
+        aMyControls := self:GetAllChildren()
         aObjects    := {}
         iLen := ALen(aMyControls)
-        FOR i:=1 TO iLen
-            IF IsInstanceOf(aMyControls[i], #OleObject)
+        for i:=1 to iLen
+            if IsInstanceOf(aMyControls[i], #OleObject)
                 AAdd(aObjects, aMyControls[i])
-            ENDIF
-        NEXT
-        RETURN aObjects
+            endif
+        next
+        return aObjects
 
 
 
@@ -767,7 +793,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <exclude />
-    METHOD __HandleListItemDrag(oEvent AS @@Event) AS Window STRICT
+    method __HandleListItemDrag(oEvent as @@Event) as Window strict
         // needed ?
         //LOCAL dli AS _winDRAGLISTINFO
         //STATIC LOCAL iBeginDragItem AS INT
@@ -801,11 +827,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     //		oLB:CurrentItemNo := iCurItem+1
     //	ENDIF
     //ENDCASE
-    RETURN SELF
+    return self
 
 
     /// <exclude />
-    METHOD __HandlePointer(oEvent AS @@Event, lHelp AS LOGIC, lClient AS LOGIC) AS Window STRICT
+    method __HandlePointer(oEvent as @@Event, lHelp as logic, lClient as logic) as Window strict
         // needed ?
         //LOCAL oObject AS OBJECT
         //LOCAL lParam AS LONG
@@ -855,63 +881,63 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //		SELF:Default(oEvent)
         //	ENDIF
         //ENDIF
-        RETURN SELF
+        return self
 
 
     /// <exclude />
-    METHOD __HelpFilter(oEvent AS @@Event) AS LOGIC STRICT
-        LOCAL wParam AS DWORD
+    method __HelpFilter(oEvent as @@Event) as logic strict
+        local wParam as dword
 
 
 
         wParam := LoWord(oEvent:wParam)
-        IF (wParam >= ID_FIRSTWCHELPID)
-            DO CASE
-            CASE (wParam == ID_WCHELP)
-                SELF:__ProcessHelpCursor(SELF, HTNowhere)
-            CASE (wParam == ID_WCHELPON)
-                SELF:__EnableHelpCursor(TRUE)
-            CASE (wParam == ID_WCHELPOFF)
-                SELF:__EnableHelpCursor(FALSE)
-            ENDCASE
-            RETURN TRUE
-        ENDIF
+        if (wParam >= ID_FIRSTWCHELPID)
+            do case
+            case (wParam == ID_WCHELP)
+                self:__ProcessHelpCursor(self, HTNowhere)
+            case (wParam == ID_WCHELPON)
+                self:__EnableHelpCursor(true)
+            case (wParam == ID_WCHELPOFF)
+                self:__EnableHelpCursor(false)
+            endcase
+            return true
+        endif
 
-        RETURN FALSE
+        return false
 
 
     /// <exclude />
-    METHOD __InCursorHelpMode() AS LOGIC STRICT
+    method __InCursorHelpMode() as logic strict
         //PP-030828 Strong typing
-        RETURN lHelpOn .AND. lHelpCursorOn
+        return lHelpOn .and. lHelpCursorOn
 
 
     /// <exclude />
-    PROPERTY __Parent AS OBJECT GET oParent
+    property __Parent as object get oParent
 
 
-    METHOD PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS LOGIC
-        RETURN FALSE
+    method PreMenuCommand(oMenuCommandEvent as MenuCommandEvent) as logic
+        return false
     /// <exclude />
-    METHOD __PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL
+    method __PreMenuCommand(oMenuCommandEvent as MenuCommandEvent) as usual
 
-        IF SELF:PreMenuCommand( oMenuCommandEvent)
-            RETURN SELF
-        ENDIF
+        if self:PreMenuCommand( oMenuCommandEvent)
+            return self
+        endif
 
-        IF ! SELF:__CommandFromEvent(oMenuCommandEvent)
-            RETURN SELF:MenuCommand(oMenuCommandEvent)
-        ENDIF
-    	RETURN SELF
+        if ! self:__CommandFromEvent(oMenuCommandEvent)
+            return self:MenuCommand(oMenuCommandEvent)
+        endif
+        return self
 
 
         [Obsolete];
-    METHOD __PrePreMenuCommand() AS VOID STRICT
-    RETURN
+    method __PrePreMenuCommand() as void strict
+        return
 
 
     /// <exclude />
-    METHOD __ProcessHelp(oEvent AS @@Event) AS LOGIC STRICT
+    method __ProcessHelp(oEvent as @@Event) as logic strict
         // Todo __ProcessHelp
         //LOCAL oObject AS OBJECT
         //LOCAL oHL AS HyperLabel
@@ -971,210 +997,207 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN FALSE
+        return false
 
 
     /// <exclude />
-    METHOD __ProcessHelpCursor(oWin AS OBJECT, wArea AS LONGINT) AS LOGIC STRICT
-        LOCAL liTemp AS LONGINT
-        LOCAL hTemp AS PTR
+    method __ProcessHelpCursor(oWin as Window, wArea as longint) as logic strict
+        local liTemp as longint
+        local hTemp as ptr
 
         hTemp:=oWin:Handle()
         // is it a window or child window
         // if hTemp==oWnd .or. !IsInstanceOf(oWin,#Printer)
-        IF oWin IS Window
-            DO CASE
-            CASE wArea==HTCAPTION
+        if oWin is Window
+            do case
+            case wArea==HTCAPTION
                 liTemp := RegionCaption
-            CASE wArea==HTCLIENT
+            case wArea==HTCLIENT
                 liTemp := RegionCanvas
-            CASE wArea==HTREDUCE
+            case wArea==HTREDUCE
                 liTemp := RegionMinBox
-            CASE wArea==HTZOOM
+            case wArea==HTZOOM
                 liTemp := RegionMaxBox
-            CASE wArea==HTSYSMENU
+            case wArea==HTSYSMENU
                 liTemp := RegionSystemMenuBox
-            CASE wArea==HTBOTTOM .OR. ;
-                    wArea==HTBOTTOMLEFT .OR. ;
-                    wArea==HTBOTTOMRIGHT .OR. ;
-                    wArea==HTTOP .OR. ;
-                    wArea==HTLEFT .OR. ;
-                    wArea==HTRIGHT .OR. ;
-                    wArea==HTTOPLEFT .OR. ;
+            case wArea==HTBOTTOM .or. ;
+                    wArea==HTBOTTOMLEFT .or. ;
+                    wArea==HTBOTTOMRIGHT .or. ;
+                    wArea==HTTOP .or. ;
+                    wArea==HTLEFT .or. ;
+                    wArea==HTRIGHT .or. ;
+                    wArea==HTTOPLEFT .or. ;
                     wArea==HTTOPRIGHT
                 liTemp := RegionBorder
-            CASE wArea==HTMENU
+            case wArea==HTMENU
                 liTemp := RegionMenuBar
-            CASE wArea == HTCLOSE
+            case wArea == HTCLOSE
                 liTemp := RegionClose
-            CASE wArea==HTNowhere
+            case wArea==HTNowhere
                 liTemp := RegionUnknown
-            OTHERWISE
-                RETURN FALSE
-            ENDCASE
+            otherwise
+                return false
+            endcase
             GuiWin32.PostMessage(hTemp, WM_WCHelp, HelpWindow, liTemp)
-        ELSE
-            GuiWin32.PostMessage(hTemp, WM_WCHELP, HelpControl, LONGINT(_CAST,hTemp))
-        ENDIF
+        else
+            GuiWin32.PostMessage(hTemp, WM_WCHELP, HelpControl, longint(_cast,hTemp))
+        endif
 
-        RETURN TRUE
+        return true
 
     /// <exclude />
 
     [Obsolete];
-    METHOD __ProcessToolTip(oControlNotifyEvent AS OBJECT) AS VOID STRICT
+    method __ProcessToolTip(oControlNotifyEvent as object) as void strict
         // Handled by windows forms
-        RETURN
+        return
 
-    METHOD __ReadResource(oResourceID AS ResourceID, oOwner as OBJECT) AS LOGIC
+    method __ReadResource(oResourceID as ResourceID, oOwner as object) as logic
         IF oResourceID != NULL_OBJECT
-            oResourceDialog := ResourceDialog{oResourceID:Handle(), oResourceID:Name, oOwner}
-        ENDIF
-        IF oResourceDialog != NULL_OBJECT
-            SELF:Caption	:= oResourceDialog:Caption
-            SELF:dwStyle	:= oResourceDialog:Style
-            SELF:dwExStyle  := oResourceDialog:ExStyle
-        ENDIF
-        RETURN oResourceDialog != NULL_OBJECT
+            oResourceDialog := ResourceDialog.FromCache(oResourceID:Handle(), oResourceID:Name)
+            IF oResourceDialog == NULL
+                oResourceDialog := ResourceDialog{oResourceID:Handle(), oResourceID:Name, oOwner}
+            ENDIF
+        endif
+        if oResourceDialog != null_object
+            self:Caption	:= oResourceDialog:Caption
+            self:dwStyle	:= oResourceDialog:Style
+            self:dwExStyle  := oResourceDialog:ExStyle
+        endif
+        return oResourceDialog != null_object
 
     /// <exclude />
-    METHOD __ReleaseDC() AS VOID STRICT
+    method __ReleaseDC() as void strict
         // needed ?
         //IF (hDC != NULL_PTR)
         //	WCDCDelete(SELF)
         //	ReleaseDC(SELF:Handle(4), hDC)
         //	hDC := NULL_PTR
         //ENDIF
-        RETURN
+        return
 
 
     /// <exclude />
-    METHOD __SetBrushNeeded(lNew AS LOGIC) AS LOGIC STRICT
+    method __SetBrushNeeded(lNew as logic) as logic strict
         DCBrushNeeded := lNew
-        RETURN lNew
+        return lNew
 
 
     /// <exclude />
-    METHOD __SetDCInitialized(lNew AS LOGIC) AS LOGIC STRICT
+    method __SetDCInitialized(lNew as logic) as logic strict
         DCInitialized := lNew
-        RETURN lNew
+        return lNew
 
 
     /// <exclude />
-    METHOD __SetFont(oNewFont AS Font) AS Font STRICT
+    method __SetFont(oNewFont as Font) as Font strict
         oFont := oNewFont
-        SELF:__SetFont()
-        RETURN oFont
+        self:__SetFont()
+        return oFont
 
-    METHOD __SetFont() AS VOID STRICT
-        IF SELF:oFont != NULL_OBJECT .and. SELF:oWnd != NULL_OBJECT
-            oWnd:Font := SELF:oFont:__Font
-        ENDIF
-        RETURN
+    method __SetFont() as void strict
+        if self:oFont != null_object .and. self:oWnd != null_object
+            oWnd:Font := self:oFont:__Font
+        endif
+        return
 
     /// <exclude />
-    METHOD __SetPenNeeded(lNew AS LOGIC) AS LOGIC STRICT
+    method __SetPenNeeded(lNew as logic) as logic strict
         DCPenNeeded := lNew
-        RETURN lNew
+        return lNew
 
         [Obsolete];
-    METHOD __SetSelfAssoAccel(lSwitch AS LOGIC) AS VOID STRICT
-        RETURN
+    method __SetSelfAssoAccel(lSwitch as logic) as void strict
+        return
 
         [Obsolete];
-    METHOD __SetSelfMenu() AS VOID STRICT
-        RETURN
+    method __SetSelfMenu() as void strict
+        return
 
     /// <exclude />
-    METHOD __Timer() AS VOID STRICT
+    method __Timer() as void strict
 
         dwTimerCount := dwTimerCount - 1
-        IF (dwTimerCount == 0)
-            SELF:Timer()
+        if (dwTimerCount == 0)
+            self:Timer()
             dwTimerCount := dwTimerInterval
-            IF (dwTimerCount == 0)
-                WC.UnregisterTimer(SELF)
-                lTimerRegistered := FALSE
-            ENDIF
-        ENDIF
+            if (dwTimerCount == 0)
+                WC.UnregisterTimer(self)
+                lTimerRegistered := false
+            endif
+        endif
 
-    RETURN
+        return
 
     /// <exclude />
 
     [Obsolete];
-    METHOD __ToolTipHandle() AS IntPtr STRICT
+    method __ToolTipHandle() as IntPtr strict
         // Tooltips are handled in the Panel class
-        RETURN IntPtr.Zero
+        return IntPtr.Zero
 
 
     /// <exclude />
-    METHOD __UpdateTrayIcon(dwNIM,oIcon,dwID,sToolTip)
+    method __UpdateTrayIcon(dwNIM as dword,oIcon as VOTrayIcon,dwID as dword,sToolTip as string)
 
-        DEFAULT(@dwID, 1)
-        DEFAULT(@sToolTip,"")
-        DEFAULT(@oIcon,NULL_OBJECT)
-
-        IF oTrayIcon == NULL_OBJECT
-            oTrayIcon:= VOTrayIcon{SELF, dwID}
-	    ENDIF
-        oIcon:Text := sToolTip
-        IF oIcon != NULL_OBJECT
-            oTrayIcon:Image := ((Icon) oIcon)
-        ENDIF
-        oIcon:Show()
-        RETURN 	SELF
+        if oTrayIcon == null_object
+            oTrayIcon:= VOTrayIcon{self, dwID}
+        endif
+        oTrayIcon:Text := sToolTip
+        if oIcon != null_object
+            oTrayIcon:Image := oIcon:Image
+        endif
+        oTrayIcon:Show()
+        return 	self
 
     /// <include file="Gui.xml" path="doc/Window.Accelerator/*" />
-    ACCESS Accelerator AS Accelerator
-        RETURN oAccelerator
-
-    /// <include file="Gui.xml" path="doc/Window.Accelerator/*" />
-    ASSIGN Accelerator(oNewAccelerator AS Accelerator)
-        oAccelerator := oNewAccelerator
-        RETURN
+    property Accelerator as Accelerator
+        get => oAccelerator
+        set => oAccelerator := value
+    END PROPERTY
 
 
-   /// <include file="Gui.xml" path="doc/Window.Activate/*" />
-    METHOD Activate(oEvent  AS Event) AS USUAL
-        RETURN SELF:Default(oEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.Activate/*" />
+    method Activate(oEvent  as Event) as usual
+        return self:Default(oEvent)
     /// <include file="Gui.xml" path="doc/Window.AddTrayIcon/*" />
-    METHOD AddTrayIcon(oTrayIcon, dwID, sToolTip)
+    method AddTrayIcon(oTrayIcon, dwID, sToolTip)
         //PP-030902
-        RETURN SELF:__UpdateTrayIcon(NIM_ADD,oTrayIcon,dwID,sToolTip)
+        return self:__UpdateTrayIcon(NIM_ADD,oTrayIcon,dwID,sToolTip)
 
 
     /// <include file="Gui.xml" path="doc/Window.Animate/*" />
-    METHOD Animate(nTime as DWORD,nFlags AS DWORD) AS LOGIC
+    method Animate(nTime as dword,nFlags as dword) as logic
 
-        LOCAL dwTime,dwFlags AS DWORD
+        local dwTime,dwFlags as dword
         // Determine Windows version
         dwTime	:= nTime
         dwFlags := nFlags
-        GuiWin32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
-        RETURN TRUE
+        GuiWin32.AnimateWindow(self:Handle(),dwTime,dwFlags)
+        return true
 
     /// <include file="Gui.xml" path="doc/Window.AnimationStart/*" />
-    METHOD AnimationStart(oControlEvent AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
-   /// <include file="Gui.xml" path="doc/Window.AnimationStop/*" />
-    METHOD AnimationStop(oControlEvent AS ControlEvent)AS USUAL
-        RETURN SELF:Default(oControlEvent)
+    method AnimationStart(oControlEvent as ControlEvent) as usual
+        return self:Default(oControlEvent)
+    /// <include file="Gui.xml" path="doc/Window.AnimationStop/*" />
+    method AnimationStop(oControlEvent as ControlEvent)as usual
+        return self:Default(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/Window.AppCommand/*" />
-    METHOD AppCommand(oACEvent as AppCommandEvent) AS LOGIC
+    method AppCommand(oACEvent as AppCommandEvent) as logic
         // FALSE means the message has not been processed, so it is passed on to windows so other default behaviour can occur
-        RETURN FALSE
+        return false
 
 
     /// <include file="Gui.xml" path="doc/Window.Automated/*" />
-    PROPERTY Automated AS LOGIC
-        GET
-            RETURN lAutomated
-        END GET
-        SET
-            IF value != SELF:lAutomated
-                SELF:lAutomated := value
+    property Automated as logic
+        get
+            return lAutomated
+        end get
+        set
+            if value != self:lAutomated
+                self:lAutomated := value
                 //#ifdef USE_OLEOBJECT
                 //	IF SELF:lAutomated
                 //		_VOOLERegisterAutomationObject(PTR(_CAST, SELF), NULL_PSZ, 1, FALSE)
@@ -1184,122 +1207,122 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
                 //		//PCALL(gpfnOLEUnRegisterAutomationObject, PTR(_CAST, SELF))
                 //	ENDIF
                 //#endif
-            ENDIF
-        END SET
-    END PROPERTY
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.Background/*" />
-    PROPERTY Background  AS Brush
-	GET
-        RETURN oBackground
-	END GET
-	SET
+    property Background  as Brush
+        get
+            return oBackground
+        end get
+        set
 
 
-        oBackground := value
-        IF oBackGround != NULL_OBJECT .and. oBackground:Color != NULL_OBJECT
-            SELF:__Surface:BackColor := 	oBackground:Color
-        ELSE
-            // Need to add a paint handler
-                NOP
-        ENDIF
-        RETURN
-	END SET
-	END PROPERTY
+            oBackground := value
+            if oBackGround != null_object .and. oBackground:Color != null_object
+                self:__Surface:BackColor := 	oBackground:Color
+            else
+                // Need to add a paint handler
+                nop
+            endif
+            return
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.ButtonClick/*" />
-    METHOD ButtonClick(oControlEvent AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
+    method ButtonClick(oControlEvent as ControlEvent) as usual
+        return self:Default(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ButtonDoubleClick/*" />
-    METHOD ButtonDoubleClick(oControlEvent AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
+    method ButtonDoubleClick(oControlEvent as ControlEvent) as usual
+        return self:Default(oControlEvent)
     /// <include file="Gui.xml" path="doc/Window.CanvasArea/*" />
-    PROPERTY CanvasArea  AS BoundingBox GET __Form:ClientRectangle
+    property CanvasArea  as BoundingBox get __Form:ClientRectangle
 
 
     /// <include file="Gui.xml" path="doc/Window.CanvasErase/*" />
-    METHOD CanvasErase() AS VOID
-        RETURN
+    method CanvasErase() as void
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Caption/*" />
-    PROPERTY Caption AS STRING
-    GET
-        RETURN cCaption
-    END GET
-    SET
-        cCaption := value
-        IF SELF:__IsValid
-            oWnd:Text := value
-        ENDIF
-        RETURN
-    end set
+    property Caption as string
+        get
+            return cCaption
+        end get
+        set
+            cCaption := value
+            if self:__IsValid
+                oWnd:Text := value
+            endif
+            return
+        end set
     end property
 
     /// <include file="Gui.xml" path="doc/Window.Center/*" />
-    METHOD Center() AS VOID
-        IF SELF:__IsValid
-            SELF:__Form:Center()
-        ENDIF
-        RETURN
+    method Center() as void
+        if self:__IsValid
+            self:__Form:Center()
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Close/*" />
-    METHOD Close(oEvent as Event) as USUAL
-        IF SELF:__IsValid .and. ! SELF:IsClosing
-            SELF:IsClosing := TRUE
-            IF oWnd:IsAttached
+    method Close(oEvent as Event) as usual
+        if self:__IsValid .and. ! self:IsClosing
+            self:IsClosing := true
+            if oWnd:IsAttached
                 oWnd:Close()
-            ENDIF
-        ENDIF
-        RETURN NIL
+            endif
+        endif
+        return nil
 
-   /// <include file="Gui.xml" path="doc/Window.ComboBoxExEndEdit/*" />
-    METHOD ComboBoxExEndEdit(oComboBoxExEndEditEvent AS ComboBoxExEndEditEvent) AS USUAL
-        RETURN NIL
+    /// <include file="Gui.xml" path="doc/Window.ComboBoxExEndEdit/*" />
+    method ComboBoxExEndEdit(oComboBoxExEndEditEvent as ComboBoxExEndEditEvent) as usual
+        return nil
 
     /// <include file="Gui.xml" path="doc/Window.ComboBoxExNotify/*" />
-    METHOD ComboBoxExNotify(oControlNotifyEvent) AS USUAL
+    method ComboBoxExNotify(oControlNotifyEvent) as usual
         //Todo ComboBoxExNotify
         //LOCAL oCNE AS ControlNotifyEvent
         //oCNE := oControlNotifyEvent
         //IF oCNE:NotifyCode = CBEN_ENDEDIT
         //	SELF:ComboBoxExEndEdit(ComboBoxExEndEditEvent{oCNE})
         //ENDIF
-    RETURN NIL
+        return nil
 
     /// <include file="Gui.xml" path="doc/Window.ContextMenu/*" />
-    PROPERTY ContextMenu AS Menu
-    GET
-        RETURN oContextMenu
-    END GET
-    SET
-        oContextMenu := value
-        IF SELF:__IsValid
-            IF value == NULL_OBJECT
-                oWnd:ContextMenu := NULL_OBJECT
-            ELSE
-                oWnd:ContextMenu := value:__Menu:AsContextMenu()
+    property ContextMenu as Menu
+        get
+            return oContextMenu
+        end get
+        set
+            oContextMenu := value
+            if self:__IsValid
+                if value == null_object
+                    oWnd:ContextMenu := null_object
+                else
+                    oWnd:ContextMenu := value:__Menu:AsContextMenu()
 
-            ENDIF
-        ENDIF
-    end set
+                endif
+            endif
+        end set
     end property
-    METHOD ContextMenuShow(oPos AS Point) AS VOID
-        IF SELF:__IsValid .and. oWnd:ContextMenu != NULL_OBJECT
+    method ContextMenuShow(oPos as Point) as void
+        if self:__IsValid .and. oWnd:ContextMenu != null_object
             oWnd:ContextMenu:Show(oWnd, oPos)
-        ENDIF
-        RETURN
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/Window.ControlFocusChange/*" />
-    METHOD ControlFocusChange(oControlFocusChangeEvent AS ControlFocusChangeEvent) AS USUAL
-        RETURN SELF:Default(oControlFocusChangeEvent)
+    method ControlFocusChange(oControlFocusChangeEvent as ControlFocusChangeEvent) as usual
+        return self:Default(oControlFocusChangeEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.ControlNotify/*" />
-    METHOD ControlNotify(oControlNotifyEvent as ControlNotifyEvent) as USUAL
+    method ControlNotify(oControlNotifyEvent as ControlNotifyEvent) as usual
         // Handling Window
         /*LOCAL oTargetWnd AS Window
         LOCAL nCode AS DWORD
@@ -1480,55 +1503,55 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         IF (SELF:EventReturnValue == 0)
         RETURN SELF:Default(oEvt)
         ENDIF*/
-    RETURN NIL
+        return nil
 
     /// <include file="Gui.xml" path="doc/Window.DateTimeSelectionChanged/*" />
-    METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent as DateTimeSelectionEvent) as USUAL
+    method DateTimeSelectionChanged(oDateTimeSelectionEvent as DateTimeSelectionEvent) as usual
         //Sets the modified flag only, if the DTP-Control becomes changed.
         //In ComCtrl32 DLL below version 6, this eventhandler becomes called twice
         //if you change the date with the calender control.
         //With this change the workaround in the DateTimePicker:__Update() method
         //is not longer needed. The old workaround worked not correct in all cases.
 
-        LOCAL oDTPicker AS DateTimePicker
-        LOCAL cText     AS STRING
-        LOCAL cOldValue  AS STRING
+        local oDTPicker as DateTimePicker
+        local cText     as string
+        local cOldValue  as string
         oDTPicker := (DateTimePicker) oDateTimeSelectionEvent:Control
         cOldValue := oDTPicker:AsString()
         cText := oDTPicker:TextValue
         // Convert the DatePicker empty date to VEWA empty date
-        IF cText == "01.01.1753"
+        if cText == "01.01.1753"
             cText := "  .  .    "
-        ENDIF
-        IF IsInstanceOfUsual(oDTPicker:FieldSpec, #FieldSpec)
+        endif
+        if oDTPicker:FieldSpec != null_object
             cText := AsString(oDTPicker:FieldSpec:Val(cText))
-        ENDIF
-        IF ! cOldValue == cText
-            oDTPicker:Modified := TRUE
-            IF IsInstanceOf(oDTPicker:Owner, #DataWindow)
+        endif
+        if ! cOldValue == cText
+            oDTPicker:Modified := true
+            if IsInstanceOf(oDTPicker:Owner, #DataWindow)
                 ((DataWindow) oDTPicker:Owner):__DoValidate(oDTPicker)
-            ENDIF
-        ENDIF
-        IF oDTPicker:NullFormat .AND. oDTPicker:SelectedDate != NULL_DATE
+            endif
+        endif
+        if oDTPicker:NullFormat .and. oDTPicker:SelectedDate != null_date
             // Re-assign the value so the format gets set
             oDTPicker:SelectedDate := oDTPicker:SelectedDate
-        ELSEIF !oDTPicker:NullFormat .AND. oDTPicker:SelectedDate == NULL_DATE
+        elseif !oDTPicker:NullFormat .and. oDTPicker:SelectedDate == null_date
             // Reassign the selected Date so the format gets set
-            oDTPicker:SelectedDate := NULL_DATE
-        ENDIF
+            oDTPicker:SelectedDate := null_date
+        endif
 
 
 
-    RETURN 0l
+        return 0l
 
     /// <include file="Gui.xml" path="doc/Window.DeActivate/*" />
-    METHOD DeActivate(oEvent AS Event)  AS USUAL
-        SELF:DeactivateAllOLEObjects()
-        RETURN SELF:Default(oEvent)
+    method DeActivate(oEvent as Event)  as usual
+        self:DeactivateAllOLEObjects()
+        return self:Default(oEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.DeactivateAllOLEObjects/*" />
-    METHOD DeactivateAllOLEObjects(oExcept) as USUAL
+    method DeactivateAllOLEObjects(oExcept) as usual
 #ifdef USE_OLEOBJECTS
         //RvdH 041123 Added method at Window Level
         //				  Also removed lNeedUpdate
@@ -1550,70 +1573,70 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //NEXT
 #endif
-        RETURN SELF
+        return self
 
 
 
     /// <include file="Gui.xml" path="doc/Window.Default/*" />
-    METHOD Default(oEvent AS Event) as USUAL
-        SELF:EventReturnValue := 1L
-    RETURN SELF
+    method Default(oEvent as Event) as usual
+        self:EventReturnValue := 1L
+        return self
 
     /// <include file="Gui.xml" path="doc/Window.DeleteTrayIcon/*" />
-    METHOD DeleteTrayIcon(dwID)  AS USUAL
-        DEFAULT(REF dwID, 0)
-        IF oTrayIcon != NULL_OBJECT
-            IF oTrayIcon:ID == dwID
+    method DeleteTrayIcon(dwID)  as usual
+        DEFAULT(ref dwID, 0)
+        if oTrayIcon != null_object
+            if oTrayIcon:ID == dwID
                 oTrayIcon:Destroy()
-            ENDIF
-        ENDIF
-        RETURN TRUE
+            endif
+        endif
+        return true
 
     /// <include file="Gui.xml" path="doc/Window.Destroy/*" />
-    METHOD Destroy() AS USUAL CLIPPER
-        IF lAutomated
-            SELF:Automated := FALSE
-        ENDIF
+    method Destroy() as usual clipper
+        if lAutomated
+            self:Automated := false
+        endif
 
         //__WCUnregisterMenu(oMenu)
         //__WCUnregisterMenu(oContextMenu)
 
-        IF SELF:__IsValid
-            IF oWnd:IsAttached
+        if self:__IsValid
+            if oWnd:IsAttached
                 oWnd:Dispose()
-            ENDIF
+            endif
 
-            IF (oToolBar != NULL_OBJECT)
+            if (oToolBar != null_object)
                 oToolBar:Destroy()
-                oToolBar := NULL_OBJECT
-            ENDIF
+                oToolBar := null_object
+            endif
 
-            oMenu := NULL_OBJECT
-            oIcon := NULL_OBJECT
-            oIconSmall := NULL_OBJECT
-            oContextMenu := NULL_OBJECT
-            oWnd := NULL_OBJECT
-            hDC := NULL_PTR
-            oAccelerator := NULL_OBJECT
-            oFont := NULL_OBJECT
-            oPointer := NULL_OBJECT
-            oBackground := NULL_OBJECT
-            oForeground := NULL_OBJECT
-            lTimerRegistered := FALSE
-        ENDIF
+            oMenu := null_object
+            oIcon := null_object
+            oIconSmall := null_object
+            oContextMenu := null_object
+            oWnd := null_object
+            hDC := null_ptr
+            oAccelerator := null_object
+            oFont := null_object
+            oPointer := null_object
+            oBackground := null_object
+            oForeground := null_object
+            lTimerRegistered := false
+        endif
 
-        SUPER:Destroy()
-        UnregisterAxit(SELF)
+        super:Destroy()
+        UnregisterAxit(self)
         //Gc.Collect()
-        RETURN NIL
+        return nil
 
 
     /// <include file="Gui.xml" path="doc/Window.Disable/*" />
-    METHOD Disable()  AS VOID
-        IF SELF:__IsValid
-            oWnd:Enabled := FALSE
-        ENDIF
-        RETURN
+    method Disable()  as void
+        if self:__IsValid
+            oWnd:Enabled := false
+        endif
+        return
 
 
         //ACCESS DragDropClient AS DragDropClient
@@ -1629,99 +1652,99 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.Draw/*" />
-    METHOD Draw(oDrawObject) AS USUAL
-        LOCAL cnt, i AS DWORD
-        LOCAL oDraw as DrawObject
-        LOCAL aDraw as Array
+    method Draw(oDrawObject) as usual
+        local cnt, i as dword
+        local oDraw as DrawObject
+        local aDraw as array
 
-        IF (oWnd == NULL_OBJECT) .AND. !IsInstanceOf(SELF, #Printer)
-            RETURN SELF
-        ENDIF
+        if (oWnd == null_object) .and. !IsInstanceOf(self, #Printer)
+            return self
+        endif
 
-        IF !IsArray(oDrawObject)
-            IF !IsInstanceOfUsual(oDrawObject,#DrawObject)
+        if !IsArray(oDrawObject)
+            if !(oDrawObject is DrawObject)
                 WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:Throw()
-            ENDIF
+            endif
             oDraw := oDrawObject
-            oDraw:__SetWindow(SELF)
+            oDraw:__SetWindow(self)
             oDraw:Draw()
-        ELSE
+        else
             aDraw := oDrawObject
             cnt := ALen(aDraw)
-            FOR i:=1 TO cnt
-                IF !IsInstanceOfUsual(aDraw[i],#DrawObject)
+            for i:=1 to cnt
+                if !(aDraw[i] is DrawObject)
                     WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:Throw()
-                ENDIF
+                endif
                 oDraw := aDraw[i]
-                oDraw:__SetWindow(SELF)
+                oDraw:__SetWindow(self)
                 oDraw:Draw()
-            NEXT
-        ENDIF
+            next
+        endif
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/Window.DrawBackground/*" />
-    METHOD DrawBackground(hdc, oWindow) AS USUAL
-        RETURN FALSE
+    method DrawBackground(hdc, oWindow) as usual
+        return false
 
 
     /// <include file="Gui.xml" path="doc/Window.Drop/*" />
-    METHOD Drop(oDragEvent as DragEvent ) AS USUAL
-        RETURN NIL
+    method Drop(oDragEvent as DragEvent ) as usual
+        return nil
 
     /// <include file="Gui.xml" path="doc/Window.EditChange/*" />
-    METHOD EditChange(oControlEvent AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
+    method EditChange(oControlEvent as ControlEvent) as usual
+        return self:Default(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/Window.EditFocusChange/*" />
-    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) AS USUAL
-        RETURN SELF:Default(oEditFocusChangeEvent)
+    method EditFocusChange(oEditFocusChangeEvent as EditFocusChangeEvent) as usual
+        return self:Default(oEditFocusChangeEvent)
     /// <include file="Gui.xml" path="doc/Window.EditScroll/*" />
-    METHOD EditScroll(oControlEvent AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
+    method EditScroll(oControlEvent as ControlEvent) as usual
+        return self:Default(oControlEvent)
     /// <include file="Gui.xml" path="doc/Window.Enable/*" />
-    METHOD Enable()  AS VOID
-        IF SELF:__IsValid
-            oWnd:Enabled := TRUE
-        ENDIF
-        RETURN
+    method Enable()  as void
+        if self:__IsValid
+            oWnd:Enabled := true
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/Window.EnableCloseBox/*" />
-    METHOD EnableCloseBox(uValue := TRUE AS LOGIC) AS VOID
-        LOCAL hBox AS IntPtr
-        IF SELF:__IsValid
-            hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE)
-        ENDIF
-        IF hBox != IntPtr.Zero
-            IF uValue
+    method EnableCloseBox(uValue := true as logic) as void
+        local hBox as IntPtr
+        if self:__IsValid
+            hBox := GuiWin32.GetSystemMenu(oWnd:Handle,false)
+        endif
+        if hBox != IntPtr.Zero
+            if uValue
                 GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
-            ELSE
-                GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
-            ENDIF
-        ENDIF
+            else
+                GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_or(MF_GRAYED,MF_BYCOMMAND))
+            endif
+        endif
 
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/Window.EnableDragDropClient/*" />
-    METHOD EnableDragDropClient(lEnable := TRUE AS LOGIC)  AS USUAL
-        IF SELF:__IsValid
-            SELF:__Form:AllowDrop := lEnable
-            IF lEnable
-                SELF:oDragDropClient := DragDropClient{SELF}
-            ELSE
-                IF SELF:oDragDropClient != NULL_OBJECT
-                    SELF:oDragDropClient:Destroy()
-                    SELF:oDragDropClient:= NULL_OBJECT
-                ENDIF
-            ENDIF
-        ENDIF
-        RETURN SELF
+    method EnableDragDropClient(lEnable := true as logic)  as usual
+        if self:__IsValid
+            self:__Form:AllowDrop := lEnable
+            if lEnable
+                self:oDragDropClient := DragDropClient{self}
+            else
+                if self:oDragDropClient != null_object
+                    self:oDragDropClient:Destroy()
+                    self:oDragDropClient:= null_object
+                endif
+            endif
+        endif
+        return self
 
     /// <include file="Gui.xml" path="doc/Window.EnableDragDropServer/*" />
 
     [Obsolete];
-    METHOD EnableDragDropServer(lEnable := TRUE AS LOGIC) AS VOID
+    method EnableDragDropServer(lEnable := true as logic) as void
         //IF lEnable
         //	IF (oDragDropServer == NULL_OBJECT)
         //		oDragDropServer := DragDropServer{SELF}
@@ -1731,408 +1754,408 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	oDragDropServer := NULL_OBJECT
         //ENDIF
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableHelp/*" />
-    METHOD EnableHelp(lEnable AS LOGIC, oHelpDisplay AS HelpDisplay) AS VOID
+    method EnableHelp(lEnable as logic, oHelpDisplay as HelpDisplay) as void
 
-        IF lHelpOn
+        if lHelpOn
             // Disable previous Help
-            lHelpOn := FALSE
-            SELF:__EnableHelpCursor(FALSE)
-            IF (oApp != NULL_OBJECT)
-                oApp:__SetHelpWind(NULL_OBJECT, HM_NONE)
-            ENDIF
-        ENDIF
+            lHelpOn := false
+            self:__EnableHelpCursor(false)
+            if (oApp != null_object)
+                oApp:__SetHelpWind(null_object, HM_NONE)
+            endif
+        endif
 
-        IF lEnable
+        if lEnable
             // Enable New Help
             oCurrentHelp := oHelpDisplay
-            IF oCurrentHelp = NULL_OBJECT .OR. ! oCurrentHelp:Win32Processing
-                lHelpOn := TRUE
+            if oCurrentHelp = null_object .or. ! oCurrentHelp:Win32Processing
+                lHelpOn := true
                 //IF (GuiWin32.GetActiveWindow() == oWnd:Handle) .AND. (oApp != NULL_OBJECT)
-                IF (oApp != NULL_OBJECT)
+                if (oApp != null_object)
                     oApp:__SetHelpWind(oWnd, HM_GENERAL)
-                ENDIF
-            ENDIF
-        ELSE
-            oCurrentHelp := NULL_OBJECT
-        ENDIF
+                endif
+            endif
+        else
+            oCurrentHelp := null_object
+        endif
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableHelpButton/*" />
-    METHOD EnableHelpButton() AS VOID STRICT
-        IF SELF:__IsValid
-            oWnd:HelpButton := TRUE
-        ENDIF
-        RETURN
+    method EnableHelpButton() as void strict
+        if self:__IsValid
+            oWnd:HelpButton := true
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableHelpCursor/*" />
-    METHOD EnableHelpCursor() AS VOID STRICT
-        IF lHelpOn
-            SELF:__EnableHelpCursor(TRUE)
-        ELSE
-            GuiWin32.PostMessage(SELF:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
-        ENDIF
+    method EnableHelpCursor() as void strict
+        if lHelpOn
+            self:__EnableHelpCursor(true)
+        else
+            GuiWin32.PostMessage(self:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
+        endif
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableThemeDialogTexture/*" />
-    METHOD EnableThemeDialogTexture(dwStyle AS DWORD) AS VOID
+    method EnableThemeDialogTexture(dwStyle as dword) as void
         // Todo EnableThemeDialogTexture
 
         //RETURN EnableThemeDialogTexture(SELF,dwStyle)
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/Window.EnableToolTips/*" />
-    METHOD EnableToolTips(lEnable := TRUE AS LOGIC) AS VOID
+    method EnableToolTips(lEnable := true as logic) as void
         // Todo EnableToolTips
 
-        IF lEnable
-            IF SELF:__Surface IS VOPanel VAR panel
+        if lEnable
+            if self:__Surface is VOPanel var panel
                 panel:EnableToolTips(lEnable)
-            ENDIF
-        ENDIF
-        RETURN
+            endif
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Expose/*" />
-    METHOD Expose(oExposeEvent AS ExposeEvent) AS USUAL
-        RETURN SELF:Default(oExposeEvent)
+    method Expose(oExposeEvent as ExposeEvent) as usual
+        return self:Default(oExposeEvent)
 
-   /// <include file="Gui.xml" path="doc/Window.FocusChange/*" />
-    METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) AS USUAL
-        RETURN SELF:Default(oFocusChangeEvent)
+    /// <include file="Gui.xml" path="doc/Window.FocusChange/*" />
+    method FocusChange(oFocusChangeEvent as FocusChangeEvent) as usual
+        return self:Default(oFocusChangeEvent)
     /// <include file="Gui.xml" path="doc/Window.Font/*" />
-    PROPERTY Font AS VOSDK.Font
-	GET
-        RETURN oFont
-	END GET
-	SET
+    property Font as VOSDK.Font
+        get
+            return oFont
+        end get
+        set
 
-        oFont := value
-        SELF:__SetFont()
-	END SET
-	END PROPERTY
+            oFont := value
+            self:__SetFont()
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.Foreground/*" />
-    PROPERTY Foreground AS Brush
-	GET
-        RETURN oForeground
-	END GET
-	SET
-        oForeground := value
-        DCBrushInUse := FALSE
-        DCBrushNeeded := TRUE
-        // this forces the new object to be selected into the current DC and allows proper releasing of the old one
-        SELF:__GetDC()
+    property Foreground as Brush
+        get
+            return oForeground
+        end get
+        set
+            oForeground := value
+            DCBrushInUse := false
+            DCBrushNeeded := true
+            // this forces the new object to be selected into the current DC and allows proper releasing of the old one
+            self:__GetDC()
 
-	END SET
-	END PROPERTY
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.GetAllChildren/*" />
-    METHOD GetAllChildren() AS ARRAY STRICT
-        LOCAL aRet AS ARRAY
+    method GetAllChildren() as array strict
+        local aRet as array
         aRet := {}
         // Add all MDI Children
-        IF SELF:__IsValid .AND. __Form:IsMDIContainer
-            FOREACH form AS System.Windows.Forms.Form IN __Form:MdiChildren
-                IF form IS VOForm
-                    LOCAL oVoForm AS VOForm
+        if self:__IsValid .and. __Form:IsMDIContainer
+            foreach form as System.Windows.Forms.Form in __Form:MdiChildren
+                if form is VOForm
+                    local oVoForm as VOForm
                     oVoForm := (VOForm)  form
                     AADD(aRet,oVoForm:Window)
-                ENDIF
-            NEXT
-        ENDIF
+                endif
+            next
+        endif
         // Add all subwindows on the surface
-        IF SELF:__Surface != NULL_OBJECT
-            FOREACH VAR control IN SELF:__Surface:Controls
-                IF control IS VOForm
-                    LOCAL oVoForm AS VOForm
+        if self:__Surface != null_object
+            foreach var control in self:__Surface:Controls
+                if control is VOForm
+                    local oVoForm as VOForm
                     oVoForm := (VOForm)  control
-                    AADD(aRet,(USUAL) oVoForm:Window)
-                ELSEIF control IS VOMenu
+                    AADD(aRet,(usual) oVoForm:Window)
+                elseif control is VOMenu
                     // Skip
-                    NOP
-                ELSEIF control IS VOToolbar
+                    nop
+                elseif control is VOToolbar
                     // Skip
-                    NOP
-                ELSEIF control IS VOStatusBar
+                    nop
+                elseif control is VOStatusBar
                     // Skip
-                    NOP
-                ELSEIF control IS VOLabel
+                    nop
+                elseif control is VOLabel
                     // Skip
-                    NOP
-                ELSEIF control IS IVOControl
-                    VAR oControl := control ASTYPE IVOControlProperties
+                    nop
+                elseif control is IVOControl
+                    var oControl := control astype IVOControlProperties
                     aRet:Add(oControl:Control)
                     // Get the children of the group boxes also in this list
-                    IF oControl IS VOGroupBox
-                        LOCAL aGroupChildren AS IList<IVOControl>
-                        VAR oGroup :=  control ASTYPE VOGroupBox
-                        aGroupChildren := oGroup:getAllChildren(NULL)
-                        FOREACH oc AS IVOCOntrolProperties IN aGroupChildren
+                    if oControl is VOGroupBox
+                        local aGroupChildren as IList<IVOControl>
+                        var oGroup :=  control astype VOGroupBox
+                        aGroupChildren := oGroup:getAllChildren(null)
+                        foreach oc as IVOCOntrolProperties in aGroupChildren
                             AAdd(aRet,oC:Control)
-                        NEXT
-                    ENDIF
-                ENDIF
-            NEXT
-        ENDIF
-        RETURN aRet
+                        next
+                    endif
+                endif
+            next
+        endif
+        return aRet
 
 
-    METHOD GetDlgItem(nItem AS LONG) AS ResourceDialogItem
+    method GetDlgItem(nItem as long) as ResourceDialogItem
         // For a Window based on a resource, this returns the control from the resource
-        IF oResourceDialog != NULL_OBJECT
-            RETURN oResourceDialog:GetDlgItem(nItem)
-        ENDIF
-        RETURN NULL_OBJECT
+        if oResourceDialog != null_object
+            return oResourceDialog:GetDlgItem(nItem)
+        endif
+        return null_object
 
     /// <include file="Gui.xml" path="doc/Window.GetStyle/*" />
-    METHOD GetStyle() AS LONG
-        IF SELF:__IsValid
-            RETURN GuiWin32.GetWindowStyle(oWnd:Handle)
-        ENDIF
-        RETURN SELF:dwStyle
+    method GetStyle() as long
+        if self:__IsValid
+            return GuiWin32.GetWindowStyle(oWnd:Handle)
+        endif
+        return self:dwStyle
 
     /// <include file="Gui.xml" path="doc/Window.GetExStyle/*" />
-    METHOD GetExStyle AS LONG
-        IF SELF:__IsValid
-            RETURN GuiWin32.GetWindowExStyle(oWnd:Handle)
-        ENDIF
-        RETURN SELF:dwExStyle
+    method GetExStyle as long
+        if self:__IsValid
+            return GuiWin32.GetWindowExStyle(oWnd:Handle)
+        endif
+        return self:dwExStyle
 
 
     /// <include file="Gui.xml" path="doc/Window.Handle/*" />
-    METHOD Handle() AS IntPtr  CLIPPER
-        LOCAL hWin AS Intptr
-        IF SELF:__IsValid
+    method Handle() as IntPtr  clipper
+        local hWin as Intptr
+        if self:__IsValid
             hWin := oWnd:Handle
-            RETURN hWin
-        ENDIF
-        RETURN IntPtr.Zero
+            return hWin
+        endif
+        return IntPtr.Zero
 
     /// <include file="Gui.xml" path="doc/Window.HasExStyle/*" />
-    METHOD HasExStyle(kStyle AS LONG) AS LOGIC
-        LOCAL liStyle	AS LONG
-        liStyle := SELF:GetExStyle()
-        RETURN _AND(liStyle,kStyle) != 0
+    method HasExStyle(kStyle as long) as logic
+        local liStyle	as long
+        liStyle := self:GetExStyle()
+        return _and(liStyle,kStyle) != 0
 
     /// <include file="Gui.xml" path="doc/Window.HasStyle/*" />
-    METHOD HasStyle(kStyle AS LONG) AS LOGIC
-        LOCAL liStyle	AS LONG
-        liStyle := SELF:GetStyle()
-        RETURN _AND(liStyle,kStyle) != 0
+    method HasStyle(kStyle as long) as logic
+        local liStyle	as long
+        liStyle := self:GetStyle()
+        return _and(liStyle,kStyle) != 0
 
     /// <include file="Gui.xml" path="doc/Window.HelpDisplay/*" />
-    PROPERTY HelpDisplay AS HelpDisplay GET oCurrentHelp SET SELF:EnableHelp(TRUE, value)
+    property HelpDisplay as HelpDisplay get oCurrentHelp set self:EnableHelp(true, value)
 
     /// <include file="Gui.xml" path="doc/Window.HelpRequest/*" />
-    METHOD HelpRequest(oHelpRequestEvent AS HelpRequestEvent) AS USUAL
-        LOCAL dwType AS LONG
-        LOCAL oHRE AS HelpRequestEvent
-        LOCAL oP AS OBJECT
+    method HelpRequest(oHelpRequestEvent as HelpRequestEvent) as usual
+        local dwType as long
+        local oHRE as HelpRequestEvent
+        local oP as object
 
-        oP := SELF:Owner
-        DO WHILE IsInstanceOf(oP, #Window)
-            ((Window) oP):__EnableHelpCursor(FALSE)
+        oP := self:Owner
+        do while IsInstanceOf(oP, #Window)
+            ((Window) oP):__EnableHelpCursor(false)
             oP := ((Window) oP):Owner
-        ENDDO
+        enddo
 
-        IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent)
-            IF SELF:HelpDisplay==NULL_OBJECT
-                IF IsMethod(SELF:oParent, #HelpRequest)
-                    Send(SELF:oParent, #HelpRequest, oHelpRequestEvent)
-                ENDIF
-            ELSE
+        if IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent)
+            if self:HelpDisplay==null_object
+                if IsMethod(self:oParent, #HelpRequest)
+                    Send(self:oParent, #HelpRequest, oHelpRequestEvent)
+                endif
+            else
                 oHRE := oHelpRequestEvent
                 dwType := oHRE:HelpType
-                DO CASE
-                CASE dwType == HELPMENU
-                NOP
-                CASE dwType == HELPCONTROL
-                    IF ! empty(oHRE:HelpContext)
+                do case
+                case dwType == HELPMENU
+                    nop
+                case dwType == HELPCONTROL
+                    if ! empty(oHRE:HelpContext)
                         oCurrentHelp:Show(oHRE:HelpContext)
-                    ELSEIF ! empty(oHRE:HyperLabel:Name)
+                    elseif ! empty(oHRE:HyperLabel:Name)
                         oCurrentHelp:Show(oHRE:HyperLabel:Name)
-                    ELSE
+                    else
                         oCurrentHelp:Show("Control_"+AsString(oHRE:Control:ControlID))
-                    ENDIF
-                CASE dwType == HELPWINDOW
-                    IF ! empty(oHRE:HelpContext)
+                    endif
+                case dwType == HELPWINDOW
+                    if ! empty(oHRE:HelpContext)
                         oCurrentHelp:Show(oHRE:HelpContext)
-                    ELSE
+                    else
                         oCurrentHelp:Show("HelpIndex")
-                    ENDIF
-                CASE dwType == HELPINFO
-                    NOP
-                ENDCASE
-            ENDIF
-        ENDIF
+                    endif
+                case dwType == HELPINFO
+                    nop
+                endcase
+            endif
+        endif
 
 
-        RETURN NIL
+        return nil
 
 
     /// <include file="Gui.xml" path="doc/Window.Hide/*" />
-    METHOD Hide() AS VOID STRICT
-        IF SELF:__IsValid
-            oWnd:Visible := FALSE
-        ENDIF
+    method Hide() as void strict
+        if self:__IsValid
+            oWnd:Visible := false
+        endif
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.HorizontalScroll/*" />
-    METHOD HorizontalScroll(oScrollEvent AS ScrollEvent)  AS USUAL
-        LOCAL oScrollBar AS ScrollBar
-        LOCAL oEvt	:= oScrollEvent AS ScrollEvent
+    method HorizontalScroll(oScrollEvent as ScrollEvent)  as usual
+        local oScrollBar as ScrollBar
+        local oEvt	:= oScrollEvent as ScrollEvent
 
         oScrollBar := oEvt:ScrollBar
-        IF (oScrollBar != NULL_OBJECT)
+        if (oScrollBar != null_object)
             oScrollBar:ThumbPosition := oEvt:Position
-        ENDIF
+        endif
 
-        RETURN SELF:Default(oEvt)
+        return self:Default(oEvt)
 
 
     /// <include file="Gui.xml" path="doc/Window.HorizontalSlide/*" />
-    METHOD HorizontalSlide(oSliderEvent AS SliderEvent)  AS USUAL
-        LOCAL oSlider AS Slider
+    method HorizontalSlide(oSliderEvent as SliderEvent)  as usual
+        local oSlider as Slider
         oSlider := oSliderEvent:Slider
-        IF (oSlider != NULL_OBJECT)
+        if (oSlider != null_object)
             oSlider:ThumbPosition := oSliderEvent:Position
-        ENDIF
-        RETURN SELF:Default(oSliderEvent)
+        endif
+        return self:Default(oSliderEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.HorizontalSpin/*" />
-    METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent)  AS USUAL
-        LOCAL oSpinner AS Spinner
+    method HorizontalSpin(oSpinnerEvent as SpinnerEvent)  as usual
+        local oSpinner as Spinner
         oSpinner := oSpinnerEvent:Spinner
-        IF (oSpinner != NULL_OBJECT)
+        if (oSpinner != null_object)
             oSpinner:Position := oSpinnerEvent:Position
-        ENDIF
+        endif
 
-        RETURN SELF:Default(oSpinnerEvent)
+        return self:Default(oSpinnerEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.HyperLabel/*" />
-    PROPERTY HyperLabel AS HyperLabel
-	GET
-        RETURN oHyperLabel
-	END GET
-	SET
-        oHyperLabel := value
-        SELF:@@StatusMessage(value, MESSAGEPERMANENT)
-	END SET
-	END PROPERTY
+    property HyperLabel as HyperLabel
+        get
+            return oHyperLabel
+        end get
+        set
+            oHyperLabel := value
+            self:@@StatusMessage(value, MESSAGEPERMANENT)
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.Icon/*" />
-    PROPERTY Icon AS Icon
-	GET
-        RETURN oIcon
-	END GET
-	SET
-        oIcon := value
-        IF SELF:__IsValid
-            SELF:__Form:Icon := oIcon
-        ENDIF
-	END SET
-	END PROPERTY
+    property Icon as Icon
+        get
+            return oIcon
+        end get
+        set
+            oIcon := value
+            if self:__IsValid
+                self:__Form:Icon := oIcon
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.IconSm/*" />
-    PROPERTY IconSm AS Icon
-	GET
-        RETURN oIconSmall
-	END GET
-	SET
+    property IconSm as Icon
+        get
+            return oIconSmall
+        end get
+        set
 
-        oIconSmall := value
-        IF SELF:__IsValid
-            SELF:__Form:SmallIcon := oIconSmall
-        ENDIF
-	END SET
-	END PROPERTY
+            oIconSmall := value
+            if self:__IsValid
+                self:__Form:SmallIcon := oIconSmall
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.ctor/*" />
-    CONSTRUCTOR(oOwner)
+    constructor(oOwner)
 
 
-        SUPER()
-        IF oOwner != NULL_OBJECT
-            IF oOwner IS System.Windows.Forms.Form
+        super()
+        if oOwner != null_object
+            if oOwner is System.Windows.Forms.Form
                 oParent := __ForeignWindow{oOwner}
-            ELSE
+            else
                 oParent := oOwner
-            ENDIF
-        ENDIF
+            endif
+        endif
         oOrigin := Point{0,0}
 
         aAlignes		:= {}
-        aDelayedAlignes := {}
-        lDelayAlignment := TRUE
+        aDelayedAlignes := List< Tuple <IGUIObject, usual> >{}
+        self:lDelayAlignment := true
         oFont := System.Drawing.SystemFonts.DefaultFont
 
         //PP-030910
-        SELF:SetBackgroundBrush()
-        oWnd  := (VoForm) SELF:__CreateForm()
-        IF oWnd != NULL_OBJECT
-            oWnd:Visible := FALSE
-            SELF:__SetFont()
+        self:SetBackgroundBrush()
+        oWnd  := (VoForm) self:__CreateForm()
+        if oWnd != null_object
+            oWnd:Visible := false
+            self:__SetFont()
 
-        ENDIF
-        RETURN
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.IsEnabled/*" />
-    METHOD IsEnabled()  AS LOGIC STRICT
-        IF oWnd != NULL_OBJECT
-            RETURN oWnd:Enabled
-        ENDIF
-        RETURN FALSE
+    method IsEnabled()  as logic strict
+        if oWnd != null_object
+            return oWnd:Enabled
+        endif
+        return false
 
     /// <include file="Gui.xml" path="doc/Window.IsIconic/*" />
-    METHOD IsIconic() AS LOGIC STRICT
-        IF oWnd != NULL_OBJECT
-            RETURN oWnd:WindowState == System.Windows.Forms.FormWindowState.Minimized
-        ENDIF
-        RETURN FALSE
+    method IsIconic() as logic strict
+        if oWnd != null_object
+            return oWnd:WindowState == System.Windows.Forms.FormWindowState.Minimized
+        endif
+        return false
 
 
     /// <include file="Gui.xml" path="doc/Window.IsVisible/*" />
-    METHOD IsVisible()  AS LOGIC STRICT
-        IF SELF:__IsValid
-            RETURN oWnd:Visible
-        ENDIF
-        RETURN FALSE
+    method IsVisible()  as logic strict
+        if self:__IsValid
+            return oWnd:Visible
+        endif
+        return false
 
     /// <include file="Gui.xml" path="doc/Window.IsZoomed/*" />
-    METHOD IsZoomed() AS LOGIC STRICT
-        IF SELF:__IsValid
-            RETURN oWnd:WindowState == System.Windows.Forms.FormWindowState.Maximized
-        ENDIF
-        RETURN FALSE
+    method IsZoomed() as logic strict
+        if self:__IsValid
+            return oWnd:WindowState == System.Windows.Forms.FormWindowState.Maximized
+        endif
+        return false
 
     /// <include file="Gui.xml" path="doc/Window.KeyDown/*" />
-    METHOD KeyDown(oKeyEvent AS KeyEvent) AS USUAL
-        RETURN SELF:Default(oKeyEvent)
+    method KeyDown(oKeyEvent as KeyEvent) as usual
+        return self:Default(oKeyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.KeyUp/*" />
-    METHOD KeyUp(oKeyEvent AS KeyEvent) AS USUAL
-        RETURN SELF:Default(oKeyEvent)
+    method KeyUp(oKeyEvent as KeyEvent) as usual
+        return self:Default(oKeyEvent)
     /// <include file="Gui.xml" path="doc/Window.LineTo/*" />
-    METHOD LineTo(oPoint AS Point) AS USUAL
+    method LineTo(oPoint as Point) as usual
         //Todo
         //LOCAL dwLen, i AS DWORD
         //LOCAL oPT AS Point
@@ -2154,33 +2177,33 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN oPoint
+        return oPoint
 
 
     /// <include file="Gui.xml" path="doc/Window.ListBoxClick/*" />
-    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
+    method ListBoxClick(oControlEvent as ControlEvent) as usual
+        return self:Default(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ListBoxSelect/*" />
-    METHOD ListBoxSelect(oControlEvent  AS ControlEvent) AS USUAL
-        RETURN SELF:Default(oControlEvent)
-   /// <include file="Gui.xml" path="doc/Window.ListViewColumnClick/*" />
-    METHOD ListViewColumnClick(oListViewColumnClickEvent AS ListViewColumnClickEvent) AS USUAL
-        RETURN SELF:Default(oListViewColumnClickEvent)
+    method ListBoxSelect(oControlEvent  as ControlEvent) as usual
+        return self:Default(oControlEvent)
+    /// <include file="Gui.xml" path="doc/Window.ListViewColumnClick/*" />
+    method ListViewColumnClick(oListViewColumnClickEvent as ListViewColumnClickEvent) as usual
+        return self:Default(oListViewColumnClickEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ListViewItemChanged/*" />
-    METHOD ListViewItemChanged(oListViewItemEvent AS ListViewItemEvent) AS USUAL
-        RETURN SELF:Default(oListViewItemEvent)
+    method ListViewItemChanged(oListViewItemEvent as ListViewItemEvent) as usual
+        return self:Default(oListViewItemEvent)
 
-   /// <include file="Gui.xml" path="doc/Window.ListViewItemChanging/*" />
-    METHOD ListViewItemChanging(oListViewItemEvent AS ListViewItemEvent) AS USUAL
-        RETURN SELF:Default(oListViewItemEvent)
+    /// <include file="Gui.xml" path="doc/Window.ListViewItemChanging/*" />
+    method ListViewItemChanging(oListViewItemEvent as ListViewItemEvent) as usual
+        return self:Default(oListViewItemEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ListViewItemDelete/*" />
-    METHOD ListViewItemDelete(oListViewDeleteEvent AS ListViewDeleteEvent)  AS USUAL
-        RETURN SELF:Default(oListViewDeleteEvent)
+    method ListViewItemDelete(oListViewDeleteEvent as ListViewDeleteEvent)  as usual
+        return self:Default(oListViewDeleteEvent)
     /// <include file="Gui.xml" path="doc/Window.ListViewItemDrag/*" />
-    METHOD ListViewItemDrag(oListViewDragEvent as ListViewDragEvent)  AS USUAL
+    method ListViewItemDrag(oListViewDragEvent as ListViewDragEvent)  as usual
         // Todo
         //LOCAL oControl AS ListView
         //LOCAL oPoint AS Point
@@ -2205,79 +2228,79 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	SetCapture(SELF:Handle())
         //ENDIF
 
-        RETURN SELF:Default(oListViewDragEvent)
+        return self:Default(oListViewDragEvent)
 
-   /// <include file="Gui.xml" path="doc/Window.ListViewItemEdit/*" />
-    METHOD ListViewItemEdit(oListViewEditEvent AS ListViewEditEvent) AS USUAL
-         RETURN SELF:Default(oListViewEditEvent)
+    /// <include file="Gui.xml" path="doc/Window.ListViewItemEdit/*" />
+    method ListViewItemEdit(oListViewEditEvent as ListViewEditEvent) as usual
+        return self:Default(oListViewEditEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ListViewKeyDown/*" />
-    METHOD ListViewKeyDown(oListViewKeyEvent AS ListViewKeyEvent) AS USUAL
-         RETURN SELF:Default(oListViewKeyEvent)
+    method ListViewKeyDown(oListViewKeyEvent as ListViewKeyEvent) as usual
+        return self:Default(oListViewKeyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ListViewMouseButtonDoubleClick/*" />
-    METHOD ListViewMouseButtonDoubleClick(oListViewMouseEvent AS ListViewMouseEvent) AS USUAL
-         RETURN SELF:Default(oListViewMouseEvent)
+    method ListViewMouseButtonDoubleClick(oListViewMouseEvent as ListViewMouseEvent) as usual
+        return self:Default(oListViewMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ListViewMouseButtonDown/*" />
-    METHOD ListViewMouseButtonDown(oListViewMouseEvent AS ListViewMouseEvent) AS USUAL
-         RETURN SELF:Default(oListViewMouseEvent)
+    method ListViewMouseButtonDown(oListViewMouseEvent as ListViewMouseEvent) as usual
+        return self:Default(oListViewMouseEvent)
     /// <include file="Gui.xml" path="doc/Window.Menu/*" />
-    PROPERTY Menu AS Menu
-	GET
-        RETURN oMenu
-	END GET
-	SET
-        oMenu := value
-        oMenu:__Owner := SELF
-        IF SELF:__IsValid
-            SELF:__Form:Menu := oMenu:__Menu
-        ENDIF
-        FOREACH oItem AS VOMenuItem IN value:__Menu:MenuItems
-            oItem:MergeType := System.Windows.Forms.MenuMerge.Remove
-        NEXT
+    property Menu as Menu
+        get
+            return oMenu
+        end get
+        set
+            oMenu := value
+            oMenu:__Owner := self
+            if self:__IsValid
+                self:__Form:Menu := oMenu:__Menu
+            endif
+            foreach oItem as VOMenuItem in value:__Menu:MenuItems
+                oItem:MergeType := System.Windows.Forms.MenuMerge.Remove
+            next
 
-        IF (oMenu == NULL_OBJECT)
-            SELF:Accelerator := NULL_OBJECT
-            SELF:ToolBar := NULL_OBJECT
-        ELSE
-            SELF:Accelerator := oMenu:Accelerator
-            SELF:ToolBar := oMenu:ToolBar
-            oMenu:SetShortCuts(SELF:Accelerator)
-        ENDIF
-	END SET
-	END PROPERTY
+            if (oMenu == null_object)
+                self:Accelerator := null_object
+                self:ToolBar := null_object
+            else
+                self:Accelerator := oMenu:Accelerator
+                self:ToolBar := oMenu:ToolBar
+                oMenu:SetShortCuts(self:Accelerator)
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.MenuCommand/*" />
-    METHOD MenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL
-        RETURN SELF:Default(oMenuCommandEvent)
+    method MenuCommand(oMenuCommandEvent as MenuCommandEvent) as usual
+        return self:Default(oMenuCommandEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MenuInit/*" />
-    METHOD MenuInit(oMenuInitEvent AS MenuInitEvent) AS USUAL
-        RETURN SELF:Default(oMenuInitEvent)
+    method MenuInit(oMenuInitEvent as MenuInitEvent) as usual
+        return self:Default(oMenuInitEvent)
     /// <include file="Gui.xml" path="doc/Window.MenuSelect/*" />
-    METHOD MenuSelect(oMenuSelectEvent AS MenuSelectEvent) AS USUAL
-        RETURN SELF:Default(oMenuSelectEvent)
+    method MenuSelect(oMenuSelectEvent as MenuSelectEvent) as usual
+        return self:Default(oMenuSelectEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MinMaxInfo/*" />
-    METHOD MinMaxInfo(oMinMaxInfoEvent AS MinMaxInfoEvent) AS VOID
-        IF oMinSize != NULL_OBJECT
+    method MinMaxInfo(oMinMaxInfoEvent as MinMaxInfoEvent) as void
+        if oMinSize != null_object
             oMinMaxInfoEvent:MinTrackSize := oMinSize
-        ENDIF
-        RETURN
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.MinSize/*" />
-    PROPERTY MinSize AS Dimension GET oMinSize SET oMinSize := Value
+    property MinSize as Dimension get oMinSize set oMinSize := value
 
     /// <include file="Gui.xml" path="doc/Window.ModifyTrayIcon/*" />
-    METHOD ModifyTrayIcon(oTrayIcon, dwID, sToolTip) AS USUAL
+    method ModifyTrayIcon(oTrayIcon as VOTrayIcon, dwID as dword, sToolTip as string) as usual
         //PP-030902
-        RETURN SELF:__UpdateTrayIcon(NIM_MODIFY,oTrayIcon,dwID,sToolTip)
+        return self:__UpdateTrayIcon(NIM_MODIFY,oTrayIcon,dwID,sToolTip)
 
     /// <include file="Gui.xml" path="doc/Window.MonthCalSelectionChanged/*" />
-    METHOD MonthCalSelectionChanged(oMonthCalSelectionEvent as MonthCalSelectionEvent) AS USUAL
+    method MonthCalSelectionChanged(oMonthCalSelectionEvent as MonthCalSelectionEvent) as usual
         // Todo
         //LOCAL oMonthCal AS MonthCalendar
         //Local oMonthCalSelectionEvent as MonthCalSelectionEvent
@@ -2292,20 +2315,20 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	((DataWindow) oMonthCal:Owner):__DoValidate(oMonthCal)
         //ENDIF
 
-        RETURN SELF:Default(oMonthCalSelectionEvent)
+        return self:Default(oMonthCalSelectionEvent)
 
 
 
     /// <include file="Gui.xml" path="doc/Window.MouseButtonDoubleClick/*" />
-    METHOD MouseButtonDoubleClick(oMouseEvent AS MouseEvent) AS USUAL
-        RETURN SELF:Default(oMouseEvent)
+    method MouseButtonDoubleClick(oMouseEvent as MouseEvent) as usual
+        return self:Default(oMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MouseButtonDown/*" />
-    METHOD MouseButtonDown(oMouseEvent  AS MouseEvent) AS USUAL
-        RETURN SELF:Default(oMouseEvent)
+    method MouseButtonDown(oMouseEvent  as MouseEvent) as usual
+        return self:Default(oMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MouseButtonUp/*" />
-    METHOD MouseButtonUp(oMouseEvent AS MouseEvent)  AS USUAL
+    method MouseButtonUp(oMouseEvent as MouseEvent)  as usual
         // Todo MouseButtonUp
 
         //IF lDragActive
@@ -2317,11 +2340,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //ENDIF
 
 
-        RETURN SELF:Default(oMouseEvent)
+        return self:Default(oMouseEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.MouseDrag/*" />
-    METHOD MouseDrag(oMouseEvent AS MouseEvent)  AS USUAL
+    method MouseDrag(oMouseEvent as MouseEvent)  as usual
         // Todo MouseDrag
         //LOCAL oEvt := oMouseEvent AS MouseEvent
 
@@ -2329,31 +2352,31 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	oDragImageList:DragMove(oEvt:Position)
         //	//ImageList_DragMove(oMouseEvent:Position:Y, oMouseEvent:Position:Y)
         //ENDIF
-        RETURN SELF:Default(oMouseEvent)
+        return self:Default(oMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MouseButtonUp/*" />
-    METHOD MouseMove(oMouseEvent AS MouseEvent) AS USUAL
-        RETURN SELF:Default(oMouseEvent)
+    method MouseMove(oMouseEvent as MouseEvent) as usual
+        return self:Default(oMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MouseTrapOff/*" />
-    METHOD MouseTrapOff() AS VOID STRICT
+    method MouseTrapOff() as void strict
         // Todo MouseTrapOff
         //ReleaseCapture()
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.MouseTrapOn/*" />
-    METHOD MouseTrapOn()  AS VOID STRICT
+    method MouseTrapOn()  as void strict
         // Todo MouseTrapOn
         //SetCapture(SELF:Handle(0))
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Move/*" />
-    METHOD Move(oMoveEvent AS MoveEvent)AS USUAL
-        RETURN SELF:Default(oMoveEvent)
+    method Move(oMoveEvent as MoveEvent)as usual
+        return self:Default(oMoveEvent)
     /// <include file="Gui.xml" path="doc/Window.MoveTo/*" />
-    METHOD MoveTo(oPoint AS Point)  AS Point
+    method MoveTo(oPoint as Point)  as Point
         // Todo
         //LOCAL winPoint IS _winPoint  // dcaton 070316 was _winsize
         //IF (oWnd != NULL_PTR) .OR. IsInstanceOf(SELF, #Printer)
@@ -2364,60 +2387,64 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN Point{0, 0}
+        return Point{0, 0}
 
-    ACCESS NameSym AS SYMBOL
-        IF SELF:HyperLabel != NULL_OBJECT
-            RETURN SELF:HyperLabel:NameSym
-        ENDIF
-        RETURN NULL_SYMBOL
-
+    property NameSym as symbol
+    get
+        if self:HyperLabel != null_object
+            return self:HyperLabel:NameSym
+        endif
+        return null_symbol
+    end get
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.Origin/*" />
-    PROPERTY Origin AS Point
-        GET
-            RETURN WC.GetOrigin(SELF)
-        END GET
-        SET
-            IF SELF:__IsValid
+    property Origin as Point
+        get
+            return WC.GetOrigin(self)
+        end get
+        set
+            if self:__IsValid
                 oWnd:Location := value
-            ELSE
-                WC.MoveWindow(oWnd, value, TRUE)
-            ENDIF
-        END SET
-    END PROPERTY
+            else
+                WC.MoveWindow(oWnd, value, true)
+            endif
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.Owner/*" />
-    PROPERTY Owner AS OBJECT
-        GET
-            RETURN oParent
-        END GET
-        SET
-            IF value IS Window VAR  oWindow
-                SELF:oParent := oWindow
-                IF SELF:__IsValid
+    property Owner as object
+        get
+            return oParent
+        end get
+        set
+            if value is Window var  oWindow
+                self:oParent := oWindow
+                if self:__IsValid
                     oWnd:Owner := ((Window) oWindow):__Form
-                ENDIF
-            ENDIF
-            RETURN
-        END SET
-    END PROPERTY
+                endif
+            endif
+            return
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.OwnerAlignment/*" />
-    ASSIGN OwnerAlignment(iNewVal AS USUAL)
-        LOCAL oFormWindow  	AS OBJECT
-        LOCAL oWindow		AS WINDOW
-        oFormWindow := SELF:Owner
-        IF IsInstanceOf(oFormWindow, #Window)
+    property OwnerAlignment as usual
+    set
+        local oFormWindow  	as object
+        local oWindow		as WINDOW
+        oFormWindow := self:Owner
+        if IsInstanceOf(oFormWindow, #Window)
             oWindow := oFormWindow
-            oWindow:__AddAlign(SELF, iNewVal)
-        ENDIF
-        RETURN
-
+            oWindow:__AddAlign(self, value)
+        endif
+        return
+    end set
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.PaintBackground/*" />
-    METHOD PaintBackground(hDC) AS USUAL
+    method PaintBackground(hDC) as usual
         // Todo PaintBackground
         //LOCAL strRect IS _winRECT
         //LOCAL _hdc AS PTR
@@ -2450,11 +2477,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ReleaseDC(_handle, _hdc)
         //ENDIF
 
-        RETURN NIL
+        return nil
 
 
     /// <include file="Gui.xml" path="doc/Window.PaintBoundingBox/*" />
-    METHOD PaintBoundingBox(oBoundingBox as BoundingBox, kPaintMode AS LONG) AS VOID
+    method PaintBoundingBox(oBoundingBox as BoundingBox, kPaintMode as long) as void
         //Todo PaintBoundingBox
         //LOCAL hBrush AS PTR
         //LOCAL r IS _WinRect
@@ -2484,56 +2511,56 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	FillRect(hdc, @r, hBrush)
         //ENDCASE
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Pen/*" />
-    PROPERTY Pen as Pen
-	GET
-        RETURN oPen
-	END GET
-	SET
-        SELF:oPen := value
-        DCPenNeeded := TRUE
-        DCPenInUse := FALSE
-        // this forces the new object to be selected into the current DC and allows proper releasing of the old one
-        SELF:__GetDC()
-	END SET
-	END PROPERTY
+    property Pen as Pen
+        get
+            return oPen
+        end get
+        set
+            self:oPen := value
+            DCPenNeeded := true
+            DCPenInUse := false
+            // this forces the new object to be selected into the current DC and allows proper releasing of the old one
+            self:__GetDC()
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.Pointer/*" />
-    PROPERTY Pointer AS Pointer
-	GET
-        IF SELF:__Form != NULL_OBJECT
-            oPointer := SELF:__Form:Cursor
-        ENDIF
-        IF oPointer == NULL_OBJECT
-            oPointer := Pointer{}
-        ENDIF
-        RETURN oPointer
-	END GET
-	SET
-        oPointer := value
-        IF SELF:__IsValid
-            SELF:__Form:Cursor := oPointer
-        ENDIF
-	END SET
-	END PROPERTY
+    property Pointer as Pointer
+        get
+            if self:__Form != null_object
+                oPointer := self:__Form:Cursor
+            endif
+            if oPointer == null_object
+                oPointer := Pointer{}
+            endif
+            return oPointer
+        end get
+        set
+            oPointer := value
+            if self:__IsValid
+                self:__Form:Cursor := oPointer
+            endif
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/Window.PostInit/*" />
-    METHOD PostInit() AS USUAL CLIPPER
-        RETURN SELF
+    method PostInit() as usual clipper
+        return self
 
     /// <include file="Gui.xml" path="doc/Window.PreInit/*" />
-    METHOD PreInit() AS USUAL CLIPPER
-        RETURN SELF
+    method PreInit() as usual clipper
+        return self
 
 
 
     /// <include file="Gui.xml" path="doc/Window.Print/*" />
-    METHOD Print(oDevice := NULL_OBJECT as PrintingDevice) AS LOGIC
-        LOCAL lRet AS LOGIC
+    method Print(oDevice := null_object as PrintingDevice) as logic
+        local lRet as logic
         // Todo  Print
         //LOCAL hDIB AS PTR
         //LOCAL cDevice AS STRING
@@ -2583,81 +2610,81 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	GlobalFree(hDIB)
         //ENDIF
 
-        RETURN lRet
+        return lRet
 
 
     /// <include file="Gui.xml" path="doc/Window.QueryClose/*" />
     /// <include file="Gui.xml" path="doc/Window.QueryClose/*" />
-    METHOD QueryClose(oEvent AS Event) AS LOGIC
-        RETURN TRUE
+    method QueryClose(oEvent as Event) as logic
+        return true
     /// <include file="Gui.xml" path="doc/Window.RegisterTimer/*" />
-    METHOD RegisterTimer(nInterval, lOneTime)
+    method RegisterTimer(nInterval, lOneTime)
 
-        IF !IsLong(nInterval)
+        if !IsLong(nInterval)
             WCError{#RegisterTimer,#Window,__WCSTypeError,nInterval,1}:Throw()
-        ENDIF
+        endif
 
-        IF !IsNil(lOneTime)
-            IF !IsLogic(lOneTime)
+        if !IsNil(lOneTime)
+            if !IsLogic(lOneTime)
                 WCError{#RegisterTimer,#Window,__WCSTypeError,lOneTime,2}:Throw()
-            ENDIF
-            IF lOneTime
+            endif
+            if lOneTime
                 dwTimerInterval := 0
-            ELSE
+            else
                 dwTimerInterval := nInterval
-            ENDIF
-        ELSE
+            endif
+        else
             dwTimerInterval := nInterval
-        ENDIF
+        endif
 
-        IF (nInterval > 0)
+        if (nInterval > 0)
             dwTimerCount:=nInterval
-            IF !lTimerRegistered
-                WC.RegisterTimer(SELF)
-                lTimerRegistered := TRUE
-            ENDIF
-        ELSE
-            WC.UnregisterTimer(SELF)
-            lTimerRegistered := FALSE
-        ENDIF
+            if !lTimerRegistered
+                WC.RegisterTimer(self)
+                lTimerRegistered := true
+            endif
+        else
+            WC.UnregisterTimer(self)
+            lTimerRegistered := false
+        endif
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/Window.RePaint/*" />
-    METHOD RePaint() AS VOID STRICT
-        IF SELF:__IsValid
-            SELF:oWnd:Invalidate(TRUE)
-        ENDIF
-        RETURN
+    method RePaint() as void strict
+        if self:__IsValid
+            self:oWnd:Invalidate(true)
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.RepaintBoundingBox/*" />
-    METHOD RepaintBoundingBox(oBoundingBox AS BoundingBox) AS VOID STRICT
-        IF SELF:__IsValid
-            SELF:oWnd:Invalidate( (System.Drawing.Rectangle) oBoundingBox)
-        ENDIF
-        RETURN
+    method RepaintBoundingBox(oBoundingBox as BoundingBox) as void strict
+        if self:__IsValid
+            self:oWnd:Invalidate( (System.Drawing.Rectangle) oBoundingBox)
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/Window.Resize/*" />
-    METHOD Resize(oResizeEvent as ResizeEvent)  AS USUAL
-        VAR uRet := SELF:@@Default(oResizeEvent)
-        SELF:__AlignControls()
+    method Resize(oResizeEvent as ResizeEvent)  as usual
+        var uRet := self:@@Default(oResizeEvent)
+        self:__AlignControls()
 
-    	RETURN uRet
-   /// <include file="Gui.xml" path="doc/Window.RichEditProtected/*" />
-    METHOD RichEditProtected(oRichEditProtectEvent AS RichEditProtectEvent)  AS USUAL
-        RETURN SELF:Default(oRichEditProtectEvent)
+        return uRet
+    /// <include file="Gui.xml" path="doc/Window.RichEditProtected/*" />
+    method RichEditProtected(oRichEditProtectEvent as RichEditProtectEvent)  as usual
+        return self:Default(oRichEditProtectEvent)
 
     /// <include file="Gui.xml" path="doc/Window.RichEditSelectionChange/*" />
-    METHOD RichEditSelectionChange(oRichEditSelectionEvent AS RichEditSelectionEvent)  AS USUAL
-        RETURN SELF:Default(oRichEditSelectionEvent)
+    method RichEditSelectionChange(oRichEditSelectionEvent as RichEditSelectionEvent)  as usual
+        return self:Default(oRichEditSelectionEvent)
 
     /// <include file="Gui.xml" path="doc/Window.RichEditUndoLost/*" />
-    METHOD RichEditUndoLost(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
-        RETURN SELF:Default(oControlNotifyEvent)
+    method RichEditUndoLost(oControlNotifyEvent as ControlNotifyEvent)  as usual
+        return self:Default(oControlNotifyEvent)
     /// <include file="Gui.xml" path="doc/Window.Scroll/*" />
-    METHOD Scroll(oDimension, oBoundingBox, lClip) AS USUAL
+    method Scroll(oDimension, oBoundingBox, lClip) as usual
         // Todo Scroll
         //LOCAL oBB AS BoundingBox
         //LOCAL strucRectScroll IS _WinRect
@@ -2698,239 +2725,231 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
         //ScrollWindow( oWnd, oDimension:Width, - oDimension:Height, @strucRectScroll, strucRectClip )
 
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/Window.SetAlignStartSize/*" />
-    METHOD SetAlignStartSize(oSize AS Dimension) AS VOID
+    method SetAlignStartSize(oSize as Dimension) as void
 
-        IF ALen(aAlignes) = 0 .OR. aAlignes[1][1] != NULL_OBJECT
-            AAdd(aAlignes, NIL)
-            IF ALen(aAlignes) > 1
+        if ALen(aAlignes) = 0 .or. ((VOAlignElement)aAlignes[1]):Control != null_object
+            AAdd(aAlignes, VOAlignElement{})
+            if ALen(aAlignes) > 1
                 AIns(aAlignes, 1)
-            ENDIF
-            aAlignes[1] := {NULL_OBJECT, NIL}
-        ENDIF
-        IF oSize == NULL_OBJECT
+            endif
+            aAlignes[1] := VOAlignElement{}
+        endif
+        if oSize == null_object
             oSize := (Dimension) oWnd:ClientRectangle
-        ENDIF
-        aAlignes[1][2] := oSize
-        RETURN
+        endif
+        ((VOAlignElement)aAlignes[1]):Type := oSize
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.SetBackgroundBrush/*" />
-    METHOD SetBackgroundBrush(dwNew := COLOR_BTNSHADOW AS DWORD) AS USUAL
+    method SetBackgroundBrush(dwNew := COLOR_BTNSHADOW as dword) as usual
         // TOdo SetBackgroundBrush
-        //Default(@dwNew,COLOR_3DSHADOW)
+        //DEFAULT( REF dwNew,COLOR_3DSHADOW)
 
         //SetClassLong(SELF:handle(), GCL_HBRBACKGROUND, dwNew)
-        RETURN SELF
+        return self
 
 
     /// <include file="Gui.xml" path="doc/Window.SetExStyle/*" />
-    METHOD SetExStyle(dwSetStyle as LONG, lEnable:= TRUE AS LOGIC) AS LONG
-        LOCAL iWnd AS IVOForm
+    method SetExStyle(dwSetStyle as long, lEnable:= true as logic) as long
+        local iWnd as IVOForm
 
-        IF (oWnd != NULL_OBJECT)
-            iWnd := (IVOForm) (OBJECT) oWnd
+        if (oWnd != null_object)
+            iWnd := (IVOForm) (object) oWnd
             dwExStyle := GuiWin32.GetWindowExStyle(oWnd:Handle)
 
-            IF lEnable
-                dwExStyle := _OR(dwExStyle, dwSetStyle)
+            if lEnable
+                dwExStyle := _or(dwExStyle, dwSetStyle)
                 iWnd:Properties:ExStyle |= dwSetStyle
-            ELSE
-                dwExStyle := _AND(dwExStyle, _NOT(dwSetStyle))
+            else
+                dwExStyle := _and(dwExStyle, _not(dwSetStyle))
                 iWnd:Properties:NotExStyle |= dwSetStyle
-            ENDIF
+            endif
 
             GuiWin32.SetWindowExStyle(oWnd:Handle, dwSetStyle)
-        ENDIF
+        endif
 
-        RETURN dwExStyle
+        return dwExStyle
 
 
     /// <include file="Gui.xml" path="doc/Window.SetFocus/*" />
-    METHOD SetFocus() AS VOID STRICT
-        IF SELF:__IsValid  .AND. oWnd:Visible
+    method SetFocus() as void strict
+        if self:__IsValid  .and. oWnd:Visible
             oWnd:Focus()
-        ENDIF
-        RETURN
+        endif
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.SetHandle/*" />
-    METHOD SetHandle(hNewWnd AS VOForm) AS OBJECT
+    method SetHandle(hNewWnd as VOForm) as object
         oWnd := hNewWnd
-        RETURN oWnd
+        return oWnd
 
 
     /// <include file="Gui.xml" path="doc/Window.SetStyle/*" />
-    METHOD SetStyle(dwSetStyle as LONG, lEnable := TRUE AS LOGIC) AS LONG
-        IF lEnable
-            dwStyle := _OR(dwStyle, dwSetStyle)
-        ELSE
-            dwStyle := _AND(dwStyle, _NOT(dwSetStyle))
-        ENDIF
-        RETURN dwStyle
+    method SetStyle(dwSetStyle as long, lEnable := true as logic) as long
+        if lEnable
+            dwStyle := _or(dwStyle, dwSetStyle)
+        else
+            dwStyle := _and(dwStyle, _not(dwSetStyle))
+        endif
+        return dwStyle
 
-    METHOD __GetStartPosFromShowState(kSHowState AS LONG) AS System.Windows.Forms.FormStartPosition
-        LOCAL startPos AS System.Windows.Forms.FormStartPosition
-        IF (kSHowState == SHOWZOOMED)
+    method __GetStartPosFromShowState(kSHowState as long) as System.Windows.Forms.FormStartPosition
+        local startPos as System.Windows.Forms.FormStartPosition
+        if (kSHowState == SHOWZOOMED)
             oWnd:WindowState := System.Windows.Forms.FormWindowState.Maximized
-        ELSEIF (kSHowState == SHOWICONIZED)
+        elseif (kSHowState == SHOWICONIZED)
             oWnd:WindowState :=System.Windows.Forms.FormWindowState.Minimized
             //ELSEIF kShowState == SHOWINACTIVE
             //
-        ELSEIF kSHowState == SHOWCENTERED
-            IF  IsInstanceOf(SELF, #dialogWindow)
+        elseif kSHowState == SHOWCENTERED
+            if  IsInstanceOf(self, #dialogWindow)
                 startPos := System.Windows.Forms.FormStartPosition.CenterScreen
-            ELSE
+            else
                 startPos := System.Windows.Forms.FormStartPosition.CenterParent
-            ENDIF
-        ELSE
-            IF SELF:Origin:X != 0 .or. SELF:Origin:Y != 0
+            endif
+        else
+            if self:Origin:X != 0 .or. self:Origin:Y != 0
                 startPos := System.Windows.Forms.FormStartPosition.Manual
-            ELSEIF IsInstanceOf(SELF, #dialogWindow)
+            elseif IsInstanceOf(self, #dialogWindow)
                 startPos := System.Windows.Forms.FormStartPosition.CenterScreen
-            ELSE
+            else
                 startPos := System.Windows.Forms.FormStartPosition.WindowsDefaultLocation
-            ENDIF
-        ENDIF
-        RETURN startPos
+            endif
+        endif
+        return startPos
 
-    METHOD SuspendLayout AS VOID STRICT
-        IF SELF:__IsValid
-            SELF:oWnd:SuspendLayout()
-        ENDIF
-        RETURN
+    method SuspendLayout as void strict
+        if self:__IsValid
+            self:oWnd:SuspendLayout()
+        endif
+        return
 
-    METHOD ResumeLayout AS VOID STRICT
-        IF SELF:__IsValid
-            SELF:oWnd:ResumeLayout()
-        ENDIF
-        RETURN
+    method ResumeLayout as void strict
+        if self:__IsValid
+            self:oWnd:ResumeLayout()
+        endif
+        return
 
-    METHOD OnMdiChildActivated(s AS OBJECT, e AS EventArgs) AS VOID
-        SELF:Activate(@@Event{})
+    method OnMdiChildActivated(s as object, e as EventArgs) as void
+        self:Activate(@@Event{})
 
 
-    METHOD Show() AS VOID STRICT
-        SELF:Show(SHOWNORMAL)
-
-    METHOD Show(kShowState AS LONG ) AS VOID STRICT
-        IF SELF:__IsValid
+    method Show(kShowState ) as void clipper
+        default(ref kShowState, SHOWNORMAL)
+        if self:__IsValid
             oWnd:SuspendLayout()
-            IF (NULL_STRING != cCaption)
+            if (null_string != cCaption)
                 oWnd:Text := cCaption
-            ENDIF
+            endif
             oWnd:WindowState := System.Windows.Forms.FormWindowState.Normal
-            IF SELF:__Form:isMdiChild
-                LOCAL form AS System.Windows.Forms.Form
-                form := SELF:__Form:MdiParent
-                SELF:__Form:MdiChildActivate += OnMdiChildActivated
-                IF form != NULL
+            if self:__Form:isMdiChild
+                local form as System.Windows.Forms.Form
+                form := self:__Form:MdiParent
+                self:__Form:MdiChildActivate += OnMdiChildActivated
+                if form != null
                     form := form:ActiveMdiChild
-                    IF form != NULL .AND. form:WindowState == System.Windows.Forms.FormWindowState.Maximized
+                    if form != null .and. form:WindowState == System.Windows.Forms.FormWindowState.Maximized
                         form:WindowState := System.Windows.Forms.FormWindowState.Normal
-                    ENDIF
-                ENDIF
-            ENDIF
-            oWnd:StartPosition := SELF:__GetStartPosFromShowState(kShowState)
+                    endif
+                endif
+            endif
+            oWnd:StartPosition := self:__GetStartPosFromShowState(kShowState)
             //oWnd:Visible := TRUE
             // check if visible
-            IF oWnd:Parent != NULL_OBJECT
-                LOCAL IMPLIED oPoint := oWnd:Location
-                LOCAL lChanged AS LOGIC
-                IF oWnd:Location:Y + oWnd:Size:Height > oWnd:Parent:Height
+            if oWnd:Parent != null_object
+                local implied oPoint := oWnd:Location
+                local lChanged as logic
+                if oWnd:Location:Y + oWnd:Size:Height > oWnd:Parent:Height
                     oPoint:Y := (oWnd:Parent:Height - oWnd:Height) /2
-                    lChanged := TRUE
-                ENDIF
-                IF oWnd:Location:X + oWnd:Size:Width > oWnd:Parent:Width .or. lChanged
+                    lChanged := true
+                endif
+                if oWnd:Location:X + oWnd:Size:Width > oWnd:Parent:Width .or. lChanged
                     oPoint:X := (oWnd:Parent:Width- oWnd:Width) /2
-                    lChanged := TRUE
-                ENDIF
-                IF oWnd:Location:X < 0 .or. oPoint:X < 0
+                    lChanged := true
+                endif
+                if oWnd:Location:X < 0 .or. oPoint:X < 0
                     oPoint:X := 0
-                    lChanged := TRUE
-                ENDIF
-                IF oWnd:Location:Y < 0 .or. oPoint:Y < 0
+                    lChanged := true
+                endif
+                if oWnd:Location:Y < 0 .or. oPoint:Y < 0
                     oPoint:Y := 0
-                    lChanged := TRUE
-                ENDIF
-                IF lChanged
+                    lChanged := true
+                endif
+                if lChanged
                     oWnd:Location := oPoint
-                ENDIF
-            ENDIF
-            lDelayAlignment := FALSE
-            FOREACH aElement AS ARRAY IN aDelayedAlignes
-                SELF:__AddAlign(aElement[1], aElement[2])
-            NEXT
-            aDelayedAlignes := {}
-            SELF:__AlignControls()
+                endif
+            endif
+            self:lDelayAlignment := false
+            foreach var element in aDelayedAlignes
+                self:__AddAlign(element:Item1, element:Item2)
+            next
+            aDelayedAlignes:Clear()
+            self:__AlignControls()
             // Counters gray areas when first showing a window
             oWnd:SuspendReDraw()
-            IF kShowState == SHOWCENTERED .AND. oWnd:Parent == NULL_OBJECT
+            if kShowState == SHOWCENTERED .and. oWnd:Parent == null_object
                 oWnd:Center()
-            ENDIF
+            endif
             oWnd:ResumeReDraw()
             oWnd:ResumeLayout()
             oWnd:Show()
+            oWnd:Focus()
 
-        ENDIF
-        RETURN
+        endif
+        return
     /// <include file="Gui.xml" path="doc/Window.ShowBalloonTrayTip/*" />
 
-    METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo) AS USUAL
-        DEFAULT(@dwID,1)
-        DEFAULT(@sHeading,"")
-        DEFAULT(@sToolTip,"")
-        DEFAULT(@dwInfo,NIIF_NONE)
-        DEFAULT(@oTrayIcon,NULL_OBJECT)
-        DEFAULT(@dwTimeOut,10000)
-
-        IF oTrayIcon == NULL_OBJECT
-            SELF:__UpdateTrayIcon(0, oTrayIcon, dwID, sToolTip)
-        ENDIF
-        IF oTrayIcon != NULL_OBJECT
+    method ShowBalloonTrayTip(oTrayIcon as VOTrayIcon,dwID := 1 as dword,sHeading := "" as string,sToolTip := "" as string,dwTimeOut := 1000 as long,dwInfo := NIIF_NONE as long) as usual
+        if oTrayIcon == null_object
+            self:__UpdateTrayIcon(0, oTrayIcon, dwID, sToolTip)
+        endif
+        if oTrayIcon != null_object
             oTrayIcon:ShowBalloonTip(dwTimeOut, sHeading, sToolTip, dwInfo)
-        ENDIF
-        RETURN NIL
+        endif
+        return nil
 
     /// <include file="Gui.xml" path="doc/Window.Size/*" />
-    PROPERTY Size AS Dimension
-	GET
-        LOCAL oSize AS Dimension
-        IF SELF:__IsValid
-            oSize := oWnd:Size
-        ELSE
-            oSize := Dimension{}
-        ENDIF
-        RETURN oSize
-	END GET
-	SET
-        IF SELF:__IsValid
-            oWnd:Size := value
-        ENDIF
-	END SET
-	END PROPERTY
+    property Size as Dimension
+        get
+            local oSize as Dimension
+            if self:__IsValid
+                oSize := oWnd:Size
+            else
+                oSize := Dimension{}
+            endif
+            return oSize
+        end get
+        set
+            if self:__IsValid
+                oWnd:Size := value
+            endif
+        end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Window.SizeText/*" />
-    METHOD SizeText(cTextToSize AS STRING) AS Dimension
-        LOCAL oDim AS Dimension
-        IF SELF:oFont != NULL_OBJECT
-            oDim := System.Windows.Forms.TextRenderer.MeasureText(cTextToSize, SELF:oFont)
-        ELSE
+    method SizeText(cTextToSize as string) as Dimension
+        local oDim as Dimension
+        if self:oFont != null_object
+            oDim := System.Windows.Forms.TextRenderer.MeasureText(cTextToSize, self:oFont)
+        else
             oDim := System.Windows.Forms.TextRenderer.MeasureText(cTextToSize, System.Drawing.SystemFonts.DefaultFont)
-        ENDIF
-        RETURN oDim
+        endif
+        return oDim
 
 
     /// <include file="Gui.xml" path="doc/Window.StatusMessage/*" />
-    METHOD StatusMessage(oHL, ntype)
-        RETURN NIL
+    method StatusMessage(oHL, ntype)
+        return nil
 
     /// <include file="Gui.xml" path="doc/Window.SysLinkSelect/*" />
-    METHOD SysLinkSelect(oSysLinkSelectEvent as SysLinkSelectEvent)  AS USUAL
+    method SysLinkSelect(oSysLinkSelectEvent as SysLinkSelectEvent)  as usual
         // TOdo SysLinkSelect
         //LOCAL li IS _winLITEM
         //LOCAL i AS INT
@@ -2945,26 +2964,26 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	li:state := LIS_VISITED
         //	i:=SendMessage(oEvt:Control:Handle(), LM_SETITEM, 0, LONGINT(_CAST, @li))
         //ENDIF
-        RETURN SELF:Default(oSysLinkSelectEvent)
+        return self:Default(oSysLinkSelectEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TabKeyDown/*" />
-    METHOD TabKeyDown(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
-        RETURN SELF:Default(oControlNotifyEvent)
+    method TabKeyDown(oControlNotifyEvent as ControlNotifyEvent)  as usual
+        return self:Default(oControlNotifyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TabSelect/*" />
-    METHOD TabSelect(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
-        RETURN SELF:Default(oControlNotifyEvent)
+    method TabSelect(oControlNotifyEvent as ControlNotifyEvent)  as usual
+        return self:Default(oControlNotifyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TabSelectionChanging/*" />
-    METHOD TabSelectionChanging(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
-        RETURN SELF:Default(oControlNotifyEvent)
+    method TabSelectionChanging(oControlNotifyEvent as ControlNotifyEvent)  as usual
+        return self:Default(oControlNotifyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TextColor/*" />
-    PROPERTY TextColor as Pen GET oPen SET SELF:Pen:= Value
+    property TextColor as Pen get oPen set self:Pen:= value
 
 
     /// <include file="Gui.xml" path="doc/Window.TextPrint/*" />
-    METHOD TextPrint(cText AS STRING, oPoint AS Point) AS VOID
+    method TextPrint(cText as string, oPoint as Point) as void
         // Todo TextPrint
         //LOCAL strucLogBrush IS _WinLogBrush
         //LOCAL iOldMode, iNewMode AS INT
@@ -2973,7 +2992,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 
-          //DCFontNeeded := TRUE
+        //DCFontNeeded := TRUE
         //DCPenNeeded := TRUE
 
         //IF (SELF:__GetDC() != NULL_PTR)
@@ -2995,75 +3014,75 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN
+        return
 
 
     /// <include file="Gui.xml" path="doc/Window.Timer/*" />
-    METHOD Timer() AS USUAL CLIPPER
-        RETURN SELF
+    method Timer() as usual clipper
+        return self
 
 
     /// <include file="Gui.xml" path="doc/Window.ToolBar/*" />
-    PROPERTY ToolBar AS ToolBar
-	GET
-        RETURN oToolBar
-	END GET
-	SET
+    property ToolBar as ToolBar
+        get
+            return oToolBar
+        end get
+        set
 
-		 IF value != NULL_OBJECT
-            IF (SELF:Menu != NULL_OBJECT) .AND. (SELF:Menu:ToolBar != value)
-                SELF:Menu:ToolBar := NULL_OBJECT
-            ENDIF
+            if value != null_object
+                if (self:Menu != null_object) .and. (self:Menu:ToolBar != value)
+                    self:Menu:ToolBar := null_object
+                endif
 
-            IF (oToolBar != NULL_OBJECT) .AND. (oToolBar != value)
-                oToolBar:Destroy()
-            ENDIF
+                if (oToolBar != null_object) .and. (oToolBar != value)
+                    oToolBar:Destroy()
+                endif
 
-            oToolBar := value
+                oToolBar := value
 
-            IF oToolBar != NULL_OBJECT
-                oToolBar:__SetParent(SELF)
-                oToolBar:Show()
-            ENDIF
-        ENDIF
-        END SET
-		END PROPERTY
+                if oToolBar != null_object
+                    oToolBar:__SetParent(self)
+                    oToolBar:Show()
+                endif
+            endif
+        end set
+    end property
 
 
 
     /// <include file="Gui.xml" path="doc/Window.ToolBarHeightChanged/*" />
-    METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
-        RETURN SELF:Default(oControlNotifyEvent)
+    method ToolBarHeightChanged(oControlNotifyEvent as ControlNotifyEvent)  as usual
+        return self:Default(oControlNotifyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ToTop/*" />
-    METHOD ToTop() AS VOID
-        IF SELF:__IsValid
+    method ToTop() as void
+        if self:__IsValid
             oWnd:BringToFront()
-        ENDIF
-        RETURN
+        endif
+        return
 
     /// <include file="Gui.xml" path="doc/Window.TrayIconBalloonClicked/*" />
-    METHOD TrayIconBalloonClicked(dwID AS DWORD) AS USUAL
-        RETURN SELF
+    method TrayIconBalloonClicked(dwID as dword) as usual
+        return self
 
     /// <include file="Gui.xml" path="doc/Window.TrayIconBalloonShown/*" />
-    METHOD TrayIconBalloonShown(dwID AS DWORD) AS USUAL
-        RETURN SELF
+    method TrayIconBalloonShown(dwID as dword) as usual
+        return self
 
 
 
     /// <include file="Gui.xml" path="doc/Window.TrayIconBalloonTimeOut/*" />
-    METHOD TrayIconBalloonTimeOut(dwID AS DWORD) AS USUAL
-        RETURN SELF
+    method TrayIconBalloonTimeOut(dwID as dword) as usual
+        return self
 
     /// <include file="Gui.xml" path="doc/Window.TrayIconClicked/*" />
-    METHOD TrayIconClicked(dwID AS DWORD, lRightButton AS LOGIC, lDoubleClick AS LOGIC)  AS USUAL
-        RETURN SELF
+    method TrayIconClicked(dwID as dword, lRightButton as logic, lDoubleClick as logic)  as usual
+        return self
     /// <include file="Gui.xml" path="doc/Window.TreeViewItemDelete/*" />
-    METHOD TreeViewItemDelete(oTreeViewDeleteEvent AS TreeViewDeleteEvent)  AS USUAL
-         RETURN SELF:Default(oTreeViewDeleteEvent)
+    method TreeViewItemDelete(oTreeViewDeleteEvent as TreeViewDeleteEvent)  as usual
+        return self:Default(oTreeViewDeleteEvent)
     /// <include file="Gui.xml" path="doc/Window.TreeViewItemDrag/*" />
-    METHOD TreeViewItemDrag(oTreeViewDragEvent AS TreeViewDragEvent) AS USUAL
+    method TreeViewItemDrag(oTreeViewDragEvent as TreeViewDragEvent) as usual
         //LOCAL oControl AS TreeView
         //LOCAL oPoint AS Point
         //LOCAL oEvt := oTreeViewDragEvent AS TreeViewDragEvent
@@ -3088,162 +3107,163 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	lDragActive := TRUE
         //	ShowCursor(FALSE)
         //	SetCapture(SELF:Handle())
-        RETURN SELF:Default(oTreeViewDragEvent)
-   /// <include file="Gui.xml" path="doc/Window.TreeViewItemEdit/*" />
-    METHOD TreeViewItemEdit(oTreeViewEditEvent AS TreeViewEditEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewEditEvent)
+        return self:Default(oTreeViewDragEvent)
+    /// <include file="Gui.xml" path="doc/Window.TreeViewItemEdit/*" />
+    method TreeViewItemEdit(oTreeViewEditEvent as TreeViewEditEvent) as usual
+        return self:Default(oTreeViewEditEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.TreeViewItemExpanded/*" />
-    METHOD TreeViewItemExpanded(oTreeViewExpandedEvent AS TreeViewExpandedEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewExpandedEvent)
+    method TreeViewItemExpanded(oTreeViewExpandedEvent as TreeViewExpandedEvent) as usual
+        return self:Default(oTreeViewExpandedEvent)
     /// <include file="Gui.xml" path="doc/Window.TreeViewItemExpanding/*" />
-    METHOD TreeViewItemExpanding(oTreeViewExpandingEvent AS TreeViewExpandingEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewExpandingEvent)
+    method TreeViewItemExpanding(oTreeViewExpandingEvent as TreeViewExpandingEvent) as usual
+        return self:Default(oTreeViewExpandingEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TreeViewKeyDown/*" />
-    METHOD TreeViewKeyDown(oTreeViewKeyEvent AS TreeViewKeyEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewKeyEvent)
+    method TreeViewKeyDown(oTreeViewKeyEvent as TreeViewKeyEvent) as usual
+        return self:Default(oTreeViewKeyEvent)
     /// <include file="Gui.xml" path="doc/Window.TreeViewMouseButtonDoubleClick/*" />
-    METHOD TreeViewMouseButtonDoubleClick(oTreeViewMouseEvent AS TreeViewMouseEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewMouseEvent)
+    method TreeViewMouseButtonDoubleClick(oTreeViewMouseEvent as TreeViewMouseEvent) as usual
+        return self:Default(oTreeViewMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TreeViewMouseButtonDown/*" />
-    METHOD TreeViewMouseButtonDown(oTreeViewMouseEvent AS TreeViewMouseEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewMouseEvent)
+    method TreeViewMouseButtonDown(oTreeViewMouseEvent as TreeViewMouseEvent) as usual
+        return self:Default(oTreeViewMouseEvent)
         //ENDIF
 
 
-   /// <include file="Gui.xml" path="doc/Window.TreeViewSelectionChanged/*" />
-    METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent AS TreeViewSelectionEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewSelectionEvent)
+    /// <include file="Gui.xml" path="doc/Window.TreeViewSelectionChanged/*" />
+    method TreeViewSelectionChanged(oTreeViewSelectionEvent as TreeViewSelectionEvent) as usual
+        return self:Default(oTreeViewSelectionEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.TreeViewSelectionChanging/*" />
-    METHOD TreeViewSelectionChanging(oTreeViewSelectionEvent AS TreeViewSelectionEvent) AS USUAL
-         RETURN SELF:Default(oTreeViewSelectionEvent)
+    method TreeViewSelectionChanging(oTreeViewSelectionEvent as TreeViewSelectionEvent) as usual
+        return self:Default(oTreeViewSelectionEvent)
     /// <include file="Gui.xml" path="doc/Window.Update/*" />
-    METHOD Update()  AS VOID STRICT
-        IF SELF:__IsValid
-            SELF:oWnd:Update()
-        ENDIF
+    method Update()  as void strict
+        if self:__IsValid
+            self:oWnd:Update()
+        endif
 
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/Window.VerticalScroll/*" />
-    METHOD VerticalScroll(oScrollEvent AS ScrollEvent) AS USUAL
-        LOCAL oScrollBar AS ScrollBar
+    method VerticalScroll(oScrollEvent as ScrollEvent) as usual
+        local oScrollBar as ScrollBar
 
         oScrollBar := oScrollEvent:ScrollBar
-        IF (oScrollBar != NULL_OBJECT)
+        if (oScrollBar != null_object)
             oScrollBar:ThumbPosition:=oScrollEvent:Position
-        ENDIF
+        endif
 
-        RETURN SELF:Default(oScrollEvent)
+        return self:Default(oScrollEvent)
 
     /// <include file="Gui.xml" path="doc/Window.VerticalSlide/*" />
-    METHOD VerticalSlide(oSliderEvent AS SliderEvent) AS USUAL
-        LOCAL oSlider AS Slider
+    method VerticalSlide(oSliderEvent as SliderEvent) as usual
+        local oSlider as Slider
         oSlider := oSliderEvent:Slider
-        IF (oSlider != NULL_OBJECT)
+        if (oSlider != null_object)
             oSlider:ThumbPosition := oSliderEvent:Position
-        ENDIF
-        RETURN SELF:Default(oSliderEvent)
+        endif
+        return self:Default(oSliderEvent)
 
     /// <include file="Gui.xml" path="doc/Window.VerticalSpin/*" />
-    METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent) AS USUAL
-        LOCAL oSpinner AS Spinner
+    method VerticalSpin(oSpinnerEvent as SpinnerEvent) as usual
+        local oSpinner as Spinner
 
         oSpinner := oSpinnerEvent:Spinner
-        IF (oSpinner != NULL_OBJECT)
+        if (oSpinner != null_object)
             oSpinner:Position:=oSpinnerEvent:Position
-        ENDIF
+        endif
 
-        RETURN SELF:Default(oSpinnerEvent)
+        return self:Default(oSpinnerEvent)
 
     /// <include file="Gui.xml" path="doc/Window.WindowArea/*" />
-    PROPERTY WindowArea AS BoundingBox GET (BoundingBox) __Form:Bounds
+    property WindowArea as BoundingBox get (BoundingBox) __Form:Bounds
 
-END CLASS
+end class
 
 
 /// <exclude/>
 
-CLASS __ForeignWindow INHERIT Window
+class __ForeignWindow inherit Window
 
-    CONSTRUCTOR(oWndSelf)
-        SUPER()
+    constructor(oWndSelf)
+        super()
         oWnd := oWndSelf
-        RETURN
+        return
 
-END CLASS
+end class
 
 
 
 #region defines
-DEFINE OA_LEFT          := 1
-DEFINE OA_LEFT_AUTOSIZE     := 5
-DEFINE OA_NO            := 0
-DEFINE OA_RIGHT         := 3
-DEFINE OA_RIGHT_AUTOSIZE    := 7
-DEFINE OA_TOP           := 2
-DEFINE OA_TOP_AUTOSIZE      := 6
-DEFINE OA_BOTTOM        := 4
-DEFINE OA_BOTTOM_AUTOSIZE   := 8
-DEFINE OA_CENTER        := 9
-DEFINE OA_FULL_SIZE         := 10
-DEFINE OA_Height                := 0b0000000110000000
-DEFINE OA_PHeight               := 0b0000001110000000
-DEFINE OA_Width                 := 0b0000010010000000
-DEFINE OA_PWidth                := 0b0000110010000000
-DEFINE OA_WIDTH_HEIGHT          := OA_Width | OA_HEIGHT
-DEFINE OA_WIDTH_PHEIGHT         := OA_Width | OA_PHEIGHT
-DEFINE OA_PWIDTH_HEIGHT         := OA_PWidth | OA_HEIGHT
-DEFINE OA_PWIDTH_PHEIGHT        := OA_PWidth | OA_PHEIGHT
-DEFINE OA_HEIGHT_WIDTH          := OA_WIDTH_HEIGHT
-DEFINE OA_HEIGHT_PWIDTH         := OA_PWIDTH_HEIGHT
-DEFINE OA_PHEIGHT_WIDTH         := OA_WIDTH_PHEIGHT
-DEFINE OA_PHEIGHT_PWIDTH        := OA_PWIDTH_PHEIGHT
-DEFINE OA_X                     := 0b0100000010000000
-DEFINE OA_PX                    := 0b1100000010000000
-DEFINE OA_Y                     := 0b0001000010000000
-DEFINE OA_PY                    := 0b0011000010000000
-DEFINE OA_PX_HEIGHT             := OA_PX | OA_Height
-DEFINE OA_PX_PHEIGHT            := OA_PX | OA_PHeight
-DEFINE OA_PX_WIDTH              := OA_PX | OA_Width
-DEFINE OA_PX_PWIDTH             := OA_PX | OA_PWidth
-DEFINE OA_PX_PWIDTH_HEIGHT      := OA_PX | OA_PWidth | OA_HEIGHT
-DEFINE OA_PX_WIDTH_HEIGHT       := OA_PX | OA_Width | OA_HEIGHT
-DEFINE OA_PX_PWIDTH_PHEIGHT     := OA_PX | OA_PWidth | OA_PHEIGHT
-DEFINE OA_PY_HEIGHT             := OA_PY | OA_Height
-DEFINE OA_PY_PHEIGHT            := OA_PY | OA_PHeight
-DEFINE OA_PY_WIDTH          	:= OA_PY | OA_Width
-DEFINE OA_PY_PWIDTH             := OA_PY | OA_PWidth
-DEFINE OA_PY_WIDTH_HEIGHT       := OA_PY | OA_Width  | OA_HEIGHT
-DEFINE OA_PY_WIDTH_PHEIGHT      := OA_PY | OA_Width  | OA_PHEIGHT
-DEFINE OA_PY_PWIDTH_HEIGHT      := OA_PY | OA_PWidth | OA_HEIGHT
-DEFINE OA_PY_PWIDTH_PHEIGHT     := OA_PY | OA_PWidth | OA_PHEIGHT
-DEFINE OA_PX_PY         		:= OA_PX | OA_PY
-DEFINE OA_PX_PY_HEIGHT          := OA_PX | OA_PY | OA_Height
-DEFINE OA_PX_PY_PHEIGHT         := OA_PX | OA_PY | OA_PHeight
-DEFINE OA_PX_PY_PWIDTH          := OA_PX | OA_PY | OA_PWidth
-DEFINE OA_PX_PY_PWIDTH_PHEIGHT  := OA_PX | OA_PY | OA_PWidth | OA_PHEIGHT
-DEFINE OA_PX_PY_WIDTH           := OA_PX | OA_PY | OA_Width
-DEFINE OA_PX_PY_WIDTH_HEIGHT    := OA_PX | OA_PY | OA_WIDTH | OA_HEIGHT
-DEFINE OA_PX_Y                  := OA_PX | OA_Y
-DEFINE OA_PX_Y_PWIDTH           := OA_PX | OA_Y | OA_PWidth
-DEFINE OA_PX_Y_PHEIGHT          := OA_PX | OA_Y | OA_PHeight
-DEFINE OA_X_Y                   := OA_X | OA_Y
-DEFINE OA_X_HEIGHT              := OA_X | OA_Height
-DEFINE OA_X_PHEIGHT             := OA_X | OA_PHeight
-DEFINE OA_X_WIDTH               := OA_X | OA_Width
-DEFINE OA_X_PWIDTH              := OA_X | OA_PWidth
-DEFINE OA_X_PY          		:= OA_X | OA_PY
-DEFINE OA_X_PY_PHEIGHT          := OA_X | OA_PY | OA_PHeight
-DEFINE OA_Y_PWIDTH              := OA_Y | OA_PWidth
-DEFINE OA_Y_WIDTH               := OA_Y | OA_Width
-DEFINE TRAY_ICON_MSG := WM_APP + 1
-DEFINE TRAYTIP_LENGTH_SHELLORIGINAL := 64
-DEFINE TRAYTIP_LENGTH_SHELL5 := 128
+define OA_LEFT          := 1
+define OA_LEFT_AUTOSIZE     := 5
+define OA_NO            := 0
+define OA_RIGHT         := 3
+define OA_RIGHT_AUTOSIZE    := 7
+define OA_TOP           := 2
+define OA_TOP_AUTOSIZE      := 6
+define OA_BOTTOM        := 4
+define OA_BOTTOM_AUTOSIZE   := 8
+define OA_CENTER        := 9
+define OA_FULL_SIZE         := 10
+define OA_Height                := 0b0000000110000000
+define OA_PHeight               := 0b0000001110000000
+define OA_Width                 := 0b0000010010000000
+define OA_PWidth                := 0b0000110010000000
+define OA_WIDTH_HEIGHT          := OA_Width | OA_HEIGHT
+define OA_WIDTH_PHEIGHT         := OA_Width | OA_PHEIGHT
+define OA_PWIDTH_HEIGHT         := OA_PWidth | OA_HEIGHT
+define OA_PWIDTH_PHEIGHT        := OA_PWidth | OA_PHEIGHT
+define OA_HEIGHT_WIDTH          := OA_WIDTH_HEIGHT
+define OA_HEIGHT_PWIDTH         := OA_PWIDTH_HEIGHT
+define OA_PHEIGHT_WIDTH         := OA_WIDTH_PHEIGHT
+define OA_PHEIGHT_PWIDTH        := OA_PWIDTH_PHEIGHT
+define OA_X                     := 0b0100000010000000
+define OA_PX                    := 0b1100000010000000
+define OA_Y                     := 0b0001000010000000
+define OA_PY                    := 0b0011000010000000
+define OA_PX_HEIGHT             := OA_PX | OA_Height
+define OA_PX_PHEIGHT            := OA_PX | OA_PHeight
+define OA_PX_WIDTH              := OA_PX | OA_Width
+define OA_PX_PWIDTH             := OA_PX | OA_PWidth
+define OA_PX_PWIDTH_HEIGHT      := OA_PX | OA_PWidth | OA_HEIGHT
+define OA_PX_WIDTH_HEIGHT       := OA_PX | OA_Width | OA_HEIGHT
+define OA_PX_PWIDTH_PHEIGHT     := OA_PX | OA_PWidth | OA_PHEIGHT
+define OA_PY_HEIGHT             := OA_PY | OA_Height
+define OA_PY_PHEIGHT            := OA_PY | OA_PHeight
+define OA_PY_WIDTH          	:= OA_PY | OA_Width
+define OA_PY_PWIDTH             := OA_PY | OA_PWidth
+define OA_PY_WIDTH_HEIGHT       := OA_PY | OA_Width  | OA_HEIGHT
+define OA_PY_WIDTH_PHEIGHT      := OA_PY | OA_Width  | OA_PHEIGHT
+define OA_PY_PWIDTH_HEIGHT      := OA_PY | OA_PWidth | OA_HEIGHT
+define OA_PY_PWIDTH_PHEIGHT     := OA_PY | OA_PWidth | OA_PHEIGHT
+define OA_PX_PY         		:= OA_PX | OA_PY
+define OA_PX_PY_HEIGHT          := OA_PX | OA_PY | OA_Height
+define OA_PX_PY_PHEIGHT         := OA_PX | OA_PY | OA_PHeight
+define OA_PX_PY_PWIDTH          := OA_PX | OA_PY | OA_PWidth
+define OA_PX_PY_PWIDTH_PHEIGHT  := OA_PX | OA_PY | OA_PWidth | OA_PHEIGHT
+define OA_PX_PY_WIDTH           := OA_PX | OA_PY | OA_Width
+define OA_PX_PY_WIDTH_HEIGHT    := OA_PX | OA_PY | OA_WIDTH | OA_HEIGHT
+define OA_PX_Y                  := OA_PX | OA_Y
+define OA_PX_Y_PWIDTH           := OA_PX | OA_Y | OA_PWidth
+define OA_PX_Y_PHEIGHT          := OA_PX | OA_Y | OA_PHeight
+define OA_X_Y                   := OA_X | OA_Y
+define OA_X_HEIGHT              := OA_X | OA_Height
+define OA_X_PHEIGHT             := OA_X | OA_PHeight
+define OA_X_WIDTH               := OA_X | OA_Width
+define OA_X_PWIDTH              := OA_X | OA_PWidth
+define OA_X_PY          		:= OA_X | OA_PY
+define OA_X_PY_PHEIGHT          := OA_X | OA_PY | OA_PHeight
+define OA_Y_PWIDTH              := OA_Y | OA_PWidth
+define OA_Y_WIDTH               := OA_Y | OA_Width
+define TRAY_ICON_MSG := WM_APP + 1
+define TRAYTIP_LENGTH_SHELLORIGINAL := 64
+define TRAYTIP_LENGTH_SHELL5 := 128
 #endregion
+
 

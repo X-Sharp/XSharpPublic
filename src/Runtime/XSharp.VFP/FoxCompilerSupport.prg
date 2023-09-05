@@ -39,8 +39,8 @@ RETURN
 
 INTERNAL FUNCTION ClearFoxState as VOID
     XSharp.MemVar.Initialize()
-    XSharp.RuntimeState.AutoLock    := XSharp.RuntimeState.DoNothing
-    XSharp.RuntimeState.AutoUnLock  := XSharp.RuntimeState.DoNothing
+    XSharp.RuntimeState.AutoLock    := NULL
+    XSharp.RuntimeState.AutoUnLock  := NULL
 
     XSharp.__Array.FoxArrayHelpers.Reset()
 

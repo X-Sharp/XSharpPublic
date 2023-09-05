@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/ComboBox/*" />
 [XSharp.Internal.TypesChanged];
 CLASS ComboBox INHERIT ListBox
@@ -28,7 +33,7 @@ CLASS ComboBox INHERIT ListBox
 		LOCAL nIndex AS LONG
 		IF SELF:__IsValid .and. SELF:Modified
 			cOldValue := AsString(uValue)
-			IF (nIndex := SELF:__List:SelectedIndex) >= 0
+			IF (nIndex := SELF:__ComboBox:SelectedIndex) >= 0
 				oItem := SELF:__Items[nIndex]
 				uValue := oItem:Value
 			ELSEIF SELF:__ComboBox:DropDownStyle != System.Windows.Forms.ComboBoxStyle.DropDownList
@@ -48,8 +53,8 @@ CLASS ComboBox INHERIT ListBox
     SET
 		LOCAL cCurrentText AS STRING
 		cCurrentText := SELF:__SetText(value)
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-			uValue := ((FieldSpec)SELF:FieldSpec):Val(cCurrentText)
+		if self:FieldSpec != null_object
+			uValue := SELF:FieldSpec:Val(cCurrentText)
 		ELSE
 			uValue := cCurrentText
 		ENDIF
@@ -230,8 +235,8 @@ PROTECT oImgList AS ImageList
 METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent)
 //SE-060519
 
-Default(@nItemNumber, 0)
-Default(@iSelectedIdx, iImageIdx)
+DEFAULT( REF nItemNumber, 0)
+DEFAULT( REF iSelectedIdx, iImageIdx)
 
 RETURN SELF:InsertItem(ComboBoxExItem{cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent})
 
@@ -351,7 +356,7 @@ RETURN
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 
-Default(@kComboType, BOXDROPDOWN)
+DEFAULT( REF kComboType, BOXDROPDOWN)
 SUPER(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 SELF:__ClassName := "ComboBoxEx32"
 

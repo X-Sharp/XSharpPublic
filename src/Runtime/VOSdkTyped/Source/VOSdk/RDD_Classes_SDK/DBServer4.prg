@@ -560,7 +560,7 @@ METHOD ResetNotification() AS LONG
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.RLock/*" />
-METHOD RLock( nRecordNumber AS LONG ) AS LOGIC
+method RLock( nRecordNumber := -1L as long ) as logic
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -573,8 +573,9 @@ METHOD RLock( nRecordNumber AS LONG ) AS LOGIC
 
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-
-
+        if nRecordNumber == -1
+            nRecordNumber := (int) VoDbRecno( )
+        endif
 		lRetCode := __DBSRLock( nRecordNumber, nTries )
 		SELF:__OptimisticFlushNoLock()
 		__DBSSetSelect( dwCurrentWorkArea )

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 /// <include file="Gui.xml" path="doc/ControlWindow/*" />
@@ -5,7 +10,7 @@ CLASS ControlWindow INHERIT Window
     PROTECT oCtrl AS Control
     PROTECT oSurface AS VOSurfacePanel
 
-    PROPERTY __Surface AS IVOControlContainer GET oSurface
+    PROPERTY __Surface AS IVOPanel GET oSurface
 
     /// <include file="Gui.xml" path="doc/ControlWindow.Control/*" />
     PROPERTY Control AS Control GET oCtrl
@@ -14,7 +19,7 @@ CLASS ControlWindow INHERIT Window
     PROPERTY ControlID AS LONG GET oCtrl:ControlID
 
     /// <include file="Gui.xml" path="doc/ControlWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF oCtrl:__IsValid
             oCtrl:Destroy()
         ENDIF
@@ -43,11 +48,7 @@ CLASS ControlWindow INHERIT Window
     PROPERTY HyperLabel AS HyperLabel GET oCtrl:HyperLabel
 
     /// <include file="Gui.xml" path="doc/ControlWindow.ctor/*" />
-    CONSTRUCTOR(oControl)
-
-        IF !IsInstanceOfUsual(oControl,#Control)
-            WCError{#Init,#ControlWindow,__WCSTypeError,oControl,1}:Throw()
-        ENDIF
+    constructor(oControl as Control)
 
         oCtrl := oControl
         SUPER(oCtrl:Owner)
@@ -102,7 +103,7 @@ CLASS ControlWindow INHERIT Window
         ENDIF
         RETURN
 
-    METHOD Show(nShowState AS LONG ) AS VOID
+    method Show() as void clipper
         oSurface:Show()
         RETURN
 

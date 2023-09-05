@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/RadioButtonGroup/*" />
 
 using System.Collections.Generic
@@ -187,7 +192,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
                 IF IsNumeric(uButton) .OR. IsString(uButton)
                     uButton := RadioButton{(OBJECT) SELF:Owner, ResourceID{uButton}}
-                ELSEIF !IsInstanceOfUsual(uButton, #RadioButton)
+                ELSEIF ! (uButton IS RadioButton)
                     WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
                 ENDIF
                 oButton := uButton
@@ -230,7 +235,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
         RETURN
 
     /// <include file="Gui.xml" path="doc/RadioButtonGroup.Show/*" />
-    METHOD Show()  AS VOID STRICT
+    METHOD Show()  AS VOID CLIPPER
         SUPER:Show()
         // No need to show the buttons. They are hidden with their parent
         RETURN

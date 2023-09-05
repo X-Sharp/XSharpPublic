@@ -1,15 +1,20 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 // ResourceMenu.prg
 USING System.Collections.Generic
-#define    M_GRAYED         0x0001   // 'GRAYED' keyword 
-#define    M_INACTIVE       0x0002   // 'INACTIVE' keyword 
-#define    M_BITMAP         0x0004   // 'BITMAP' keyword 
-#define    M_OWNERDRAW      0x0100   // 'OWNERDRAW' keyword 
-#define    M_CHECKED        0x0008   // 'CHECKED' keyword 
-#define    M_POPUP          0x0010   // Used internally 
-#define    M_MENUBARBREAK   0x0020   // 'MENUBARBREAK' keyword 
-#define    M_MENUBREAK      0x0040   // 'MENUBREAK' keyword 
-#define    M_ENDMENU        0x0080   // Used internally 
+#define    M_GRAYED         0x0001   // 'GRAYED' keyword
+#define    M_INACTIVE       0x0002   // 'INACTIVE' keyword
+#define    M_BITMAP         0x0004   // 'BITMAP' keyword
+#define    M_OWNERDRAW      0x0100   // 'OWNERDRAW' keyword
+#define    M_CHECKED        0x0008   // 'CHECKED' keyword
+#define    M_POPUP          0x0010   // Used internally
+#define    M_MENUBARBREAK   0x0020   // 'MENUBARBREAK' keyword
+#define    M_MENUBREAK      0x0040   // 'MENUBREAK' keyword
+#define    M_ENDMENU        0x0080   // Used internally
 
 USING System.Diagnostics
 
@@ -18,7 +23,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 	PROPERTY MenuItems  AS List<ResourceMenuItem>   AUTO
 	PROPERTY IsValid	AS LOGIC    AUTO
 	PROPERTY HelpID		AS DWORD	AUTO
-	PROTECT nLevel	    AS DWORD	
+	protect nLevel	    as dword
 	METHOD __LoadFromResource(hDLL as IntPtr, hResInfo as IntPtr) as LOGIC
 		LOCAL lpBuffer AS IntPtr
 		LOCAL uiResSize AS DWORD
@@ -35,7 +40,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 					SELF:IsValid := TRUE
 					GuiWin32.FreeResource(hResource)
 				ENDIF
-			ENDIF	
+			endif
 		ENDIF
 		RETURN SELF:IsValid
 
@@ -44,23 +49,25 @@ CLASS ResourceMenu INHERIT ResourceReader
 		SUPER()
 		hResInfo := GuiWin32.FindResource(hDLL, cName, 4)
 		SELF:__LoadFromResource(hDLL, hResInfo)
-		RETURN 
+		return
 
 	METHOD ReadData(lpBuffer AS IntPtr) AS VOID
-		LOCAL pMenuEx	AS MENUEX_TEMPLATE_HEADER
+        local pMenuEx	as MENUEX_TEMPLATE_HEADER
+        local pMenu	    as MENU_TEMPLATE_HEADER
 
 		pMenuEx	:= (MENUEX_TEMPLATE_HEADER PTR) lpBuffer
-		IF pMenuEx:wVersion == 01 
+		if pMenuEx:wVersion == 01
 			// this is indeed a DialogEx
 			SELF:ReadMenuEx(pMenuEx)
-		ELSE
-			SELF:ReadMenu( (PTR) lpBuffer)
+        else
+            pMenu	:= (MENU_TEMPLATE_HEADER ptr) lpBuffer
+			self:ReadMenu(pMenu)
 		ENDIF
 		RETURN
-		
-	
+
+
 	INTERNAL METHOD ReadMenuEx(pMenuEx as MENUEX_TEMPLATE_HEADER) as VOID
-		LOCAL pWord     as WORD PTR	
+		local pWord     as word ptr
 		SELF:HelpID := pMenuEx:dwHelpID
 		pWord := (WORD PTR) pMenuEx
 		pWord += pMenuEx:wOffSet/2
@@ -72,10 +79,10 @@ CLASS ResourceMenu INHERIT ResourceReader
 			pWord:= SELF:ReadMenuItemEx(pWord)
 		ENDDO
 		RETURN
-	
-	
+
+
 	INTERNAL METHOD ReadMenu(pMenu as MENU_TEMPLATE_HEADER) AS VOID
-		LOCAL pWord     as WORD PTR	
+		local pWord     as word ptr
 		SELF:HelpID := 0
 		pWord := (WORD PTR) pMenu
 		pWord += sizeof(MENU_TEMPLATE_HEADER) / sizeof(WORD)
@@ -87,7 +94,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 			//ENDIF
 			pWord := SELF:ReadMenuItem(pWord)
 		ENDDO
-		RETURN 
+		return
 
 	METHOD ReadMenuItem(pWord as WORD PTR) as WORD PTR
 		LOCAL pItem as NormalMenuItem
@@ -130,10 +137,10 @@ CLASS ResourceMenu INHERIT ResourceReader
 		oItem:Caption := ReadText(pWord)
 		pWord += oItem:Caption:Length+1
 		oItem:HelpID := pWord[1] << 16 + pWord[2]
-		pWord += 2		
+		pWord += 2
 		SELF:MenuItems:Add(oItem)
 		RETURN pWord
-		
+
 	METHOD AsString() AS STRING STRICT
 		LOCAL cResult as STRING
 		LOCAL cPrefix as STRING
@@ -156,7 +163,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 			ENDIF
 		NEXT
 		RETURN cResult
-		
+
 	METHOD AddItemsTo(oMenu as Menu) AS VOID
 		LOCAL aStack as List<System.Windows.Forms.Menu>
 		LOCAL oCurrent	as System.Windows.Forms.Menu
@@ -164,7 +171,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 		aStack := List<System.Windows.Forms.Menu>{}
 		oCurrent := oMenu:__Menu
 		FOREACH oItem as ResourceMenuItem in MenuItems
-			oNew := oMenu:__CreateMenuItem(oItem:Caption, oItem:ItemID) 
+			oNew := oMenu:__CreateMenuItem(oItem:Caption, oItem:ItemID)
 			oCurrent:MenuItems:Add(oNew)
 			oNew:Enabled	:= !oItem:IsDisabled
 			oNew:Checked	:= oItem:IsChecked
@@ -179,7 +186,7 @@ CLASS ResourceMenu INHERIT ResourceReader
 				endif
 			endif
 		NEXT
-		RETURN 
+		return
 
 END CLASS
 
@@ -206,9 +213,9 @@ INTERNAL VOSTRUCT NormalMenuItem ALIGN 2
 	MEMBER fItemFlags	as WORD
 	MEMBER wMenuID		as WORD
 	// MEMBER szItemText   as WCHAR[]
-	// Seperator has fItemFlags = 0 and wMenuID = 0 and an empty string 
+	// Seperator has fItemFlags = 0 and wMenuID = 0 and an empty string
 
-//INTERNAL VOSTRUCT PopupMenuItem 
+//INTERNAL VOSTRUCT PopupMenuItem
 //	MEMBER fItemFlags AS WORD
 // MEMBER szItemText AS WCHAR[]
 
@@ -218,7 +225,7 @@ CLASS ResourceMenuItem INHERIT ResourceReader
 	PROPERTY HelpID	    AS DWORD AUTO
 	PROPERTY ItemID	    AS LONG AUTO
 	PROPERTY Flags	    AS LONG AUTO
-	PROPERTY Type		AS DWORD AUTO	
+	property Type		as dword auto
 	PROPERTY IsPopup  as LOGIC GET _AND(Flags, M_POPUP) == M_POPUP
 	PROPERTY IsLast   as LOGIC GET _AND(Flags, M_ENDMENU) == M_ENDMENU
 	PROPERTY IsChecked as LOGIC GET _AND(Flags, M_CHECKED) == M_CHECKED

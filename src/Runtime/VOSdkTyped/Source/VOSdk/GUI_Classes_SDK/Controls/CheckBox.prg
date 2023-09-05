@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/CheckBox/*" />
 [XSharp.Internal.TypesChanged];
 CLASS CheckBox INHERIT Button
@@ -23,14 +28,15 @@ CLASS CheckBox INHERIT Button
 
 
     /// <exclude />
-    PROPERTY __CheckBox AS VOCheckBox GET (VOCheckBox ) oCtrl
+    property __CheckBox as VOCheckBox get (VOCheckBox) oCtrl
 
     METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
         IF oNewImage IS ButtonImageList
             LOCAL oBIL AS ButtonImageList
             oImage := oNewImage
             oBIL := (ButtonImageList) oNewImage
-            SELF:__CheckBox:Image := oBIL:Image:__Image
+            // Todo CheckBox Image
+            //SELF:__CheckBox:Image := oBIL:Image:__Image
             SELF:__CheckBox:Text := ""
             SELF:__CheckBox:FlatStyle := System.Windows.Forms.FlatStyle.Flat
             RETURN TRUE
@@ -65,7 +71,7 @@ CLASS CheckBox INHERIT Button
         END SET
     END PROPERTY
     /// <include file="Gui.xml" path="doc/CheckBox.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF SELF:__IsValid
             lSavedChecked := SELF:Checked
         ENDIF

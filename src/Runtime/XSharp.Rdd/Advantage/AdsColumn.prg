@@ -84,9 +84,10 @@ BEGIN NAMESPACE XSharp.ADS
             SELF:RDD:ADSERROR(ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos),EG_WRITE)
             RETURN TRUE
 
-   OVERRIDE METHOD ToString() AS STRING
-        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:AdsType:ToString()+")"
-
+       OVERRIDE METHOD ToString() AS STRING
+            RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:AdsType:ToString()+")"
+       INTERNAL METHOD TypeError(cType AS STRING, oValue AS OBJECT) AS STRING
+            RETURN i"{cType} value expected for column '{ColumnName}' but received the value ({oValue}) of type {oValue.GetType()}"
     END CLASS
 
     /// <summary>Class for reading / writing String Columns</summary>
@@ -118,7 +119,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.NVARCHAR
             CASE AdsFieldType.GUID
                 IF tc != TypeCode.String
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,SELF:TypeError("String", oValue))
                 ENDIF
                 strValue := (STRING) oValue
                 slength  := (DWORD) strValue:Length
@@ -138,7 +139,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.ROWVERSION
             CASE AdsFieldType.MODTIME
                 IF tc != TypeCode.String
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,SELF:TypeError("String", oValue))
                 ENDIF
                 strValue := (STRING) oValue
                 slength  := (DWORD) strValue:Length
@@ -268,7 +269,7 @@ BEGIN NAMESPACE XSharp.ADS
                 tc := TypeCode.DateTime
             ENDIF
             IF tc != TypeCode.DateTime
-                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Date or DateTime value expected")
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,SELF:TypeError("Date or DateTime", oValue))
             ENDIF
 
             LOCAL dt := (DateTime) oValue AS DateTime
@@ -313,7 +314,7 @@ BEGIN NAMESPACE XSharp.ADS
             ENDIF
             VAR tc := Type.GetTypeCode(oValue:GetType())
             IF tc != TypeCode.Boolean
-                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Logic value expected")
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,SELF:TypeError("Logic", oValue))
             ENDIF
             SELF:RDD:_CheckError(ACE.AdsSetLogical(SELF:_Table, SELF:FieldPos, (WORD)  IIF( (LOGIC) oValue, 1, 0)),EG_WRITE)
             RETURN TRUE
@@ -381,7 +382,7 @@ BEGIN NAMESPACE XSharp.ADS
                     SELF:RDD:_CheckError(ACE.AdsSetDouble(SELF:_Table, SELF:FieldPos, r8),EG_WRITE)
                 ENDIF
             CATCH
-                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Numeric value expected")
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__, SELF:TypeError("Numeric", oValue))
                 RETURN FALSE
             END TRY
         ELSE
@@ -500,7 +501,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.MEMO
             CASE AdsFieldType.NMEMO
                 IF tc != TypeCode.String
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,SELF:TypeError("String", oValue))
                 ENDIF
                 strValue := (STRING) oValue
                 slength  := (DWORD) strValue:Length
@@ -518,7 +519,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.RAW
             CASE AdsFieldType.VARBINARY_FOX
                 IF tc != TypeCode.String .AND. tc != TypeCode.Object
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String or Object expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,SELF:TypeError("String or Object", oValue))
                 ENDIF
                 IF tc != TypeCode.String
                     strValue := (STRING) oValue

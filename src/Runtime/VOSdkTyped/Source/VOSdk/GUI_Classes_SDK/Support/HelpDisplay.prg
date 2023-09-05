@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/HelpDisplay/*" />
 
 
@@ -55,7 +60,7 @@ CLASS HelpDisplay INHERIT VObject
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL clipper
 
 
 		IF (oWnd != NULL_OBJECT)
@@ -107,7 +112,7 @@ CLASS HelpDisplay INHERIT VObject
 		ENDIF
 
 		IF !IsNil(oOwnerWindow)
-			IF !IsInstanceOfUsual(oOwnerWindow, #Window)
+			IF !(oOwnerWindow IS Window)
 				WCError{#Init,#HelpDisplay,__WCSTypeError,oOwnerWindow,2}:Throw()
 			ELSE
 				SELF:oWnd := oOwnerWindow
@@ -141,7 +146,7 @@ CLASS HelpDisplay INHERIT VObject
 		LOCAL pszKey	AS PSZ
 
 
-		DEFAULT (@symLookupType,#KEYWORD)
+		DEFAULT (REF symLookupType,#KEYWORD)
 
 		IF !IsString(cKeyword)
 			WCError{#Show,#HelpDisplay,__WCSTypeError,cKeyword,1}:Throw()

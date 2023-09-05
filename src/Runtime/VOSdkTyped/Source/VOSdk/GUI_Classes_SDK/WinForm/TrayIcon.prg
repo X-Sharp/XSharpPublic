@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Windows.Forms
 CLASS VOTrayIcon INHERIT VObject
@@ -21,7 +25,7 @@ CLASS VOTrayIcon INHERIT VObject
 		oIcon:BalloonTipShown   += OnBalloonShown
 		oIcon:BalloonTipClosed  += OnBalloonClosed
 
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		oIcon:Visible := FALSE
 		oIcon:Dispose()
 		RETURN SELF

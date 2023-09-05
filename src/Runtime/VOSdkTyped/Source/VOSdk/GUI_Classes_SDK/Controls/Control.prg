@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Reflection
 USING SWF := System.Windows.Forms
@@ -5,7 +10,7 @@ USING SWF := System.Windows.Forms
 [XSharp.Internal.TypesChanged];
 CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     PROTECT oCtrl                AS IVOControl
-    PROTECT oParent              AS IControlParent
+    protect oParent              as Window
 
         // The surface window that owns the control. This is the same as oParent except
         // when oParent                                   is a data window. Then oFormSurface is the DataWindow's dialog
@@ -52,7 +57,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
     PROPERTY __Handle as IntPtr GET SELF:Handle()
 
-    ASSIGN Parent(oP AS IControlParent)
+    assign Parent(oP as Window)
         SELF:oParent := oP
 
     PROPERTY __ControlWindow AS ControlWindow
@@ -195,7 +200,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <exclude />
-    PROPERTY __Parent AS IControlParent GET oParent
+    property __Parent as Window get oParent
 
 
     /// <exclude />
@@ -526,7 +531,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
 
         IF oCtrl != NULL_OBJECT
             IF ! oCtrl:IsDisposed
@@ -843,8 +848,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
     /// <include file="Gui.xml" path="doc/Control.ctor/*" />
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
-        SUPER()
-        IF oOwner != NULL_OBJECT
+        super()
+        if oOwner != null_object
             local oOwnerObject := oOwner as OBJECT
             IF oOwnerObject IS IVOControl VAR ownerControl
                 SELF:oCtrl    := ownerControl
@@ -857,11 +862,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ENDIF
 
-        IF !IsNil(oPoint)
-            SELF:oOrigin 	:= Point{oPoint:x, oPoint:y}
+        if oPoint is Point var oPt
+            self:oOrigin 	:= Point{oPt:x, oPt:y}
         ENDIF
-        IF !IsNil(oDimension)
-            SELF:oSize 		:= Dimension{oDimension:Width, oDimension:Height}
+        if oDimension is Dimension var oDim
+            self:oSize 		:= Dimension{oDim:Width, oDim:Height}
         ENDIF
         dwStyle := WS_CHILD
         IF !IsNil(kStyle)
@@ -880,7 +885,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ENDIF
 
         oFormSurface := oParent
-        IF IsLong(xID)
+        if IsLong(xID)
             IF IsString(oPoint) .AND. IsNil(oDimension)
                 xID := ResourceID{ xID }
             ELSE
@@ -895,8 +900,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
         IF (oFormSurface IS DialogWindow .OR. oFormSurface IS DataWindow)  .AND. ;
-                ((xID IS ResourceID) .OR. (IsLong(xID) .AND.;
-                IsNil(oDimension) .AND. IsNil(oPoint)))
+                ((xID is ResourceID) .or. (IsLong(xID) .and.;
+                oDimension == null .and. oPoint== null))
 
             IF xID IS ResourceID var resId
                 wId 		:= resId:ID
@@ -918,13 +923,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             //__lpfnDefaultProc := PTR(_CAST, GetWindowLong(oCtrl, GWL_WNDPROC))
             //SetWindowLong(oCtrl, GWL_WNDPROC, LONGINT(_CAST, Get__WCControlProcPtr()))
 
-        ELSEIF (oFormSurface IS Window .OR. oFormSurface IS Control) .AND. IsLong(xID)
-            IF ! (oPoint  is Point)
-                WCError{#Init,#Control,__WCSTypeError,oPoint,3}:Throw()
-            ENDIF
-            IF ! (oDimension IS Dimension)
-                WCError{#Init,#Control,__WCSTypeError,oDimension,4}:Throw()
-            ENDIF
+        elseif (oFormSurface is Window .or. oFormSurface is Control) .and. IsLong(xID)
 
             IF !IsNil(cRegClass) .AND. !IsString(cRegClass)
                 WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:Throw()
@@ -1089,7 +1088,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         uGetSetOwner := NIL
         cbGetSetBlock := NULL_CODEBLOCK
 
-        RETURN 
+        return
 
 
     /// <include file="Gui.xml" path="doc/Control.MenuInit/*" />
@@ -1195,8 +1194,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Owner/*" />
-    ACCESS Owner AS OBJECT
-        RETURN SELF:oParent
+    access Owner as Window
+        return self:oParent
 
     STATIC METHOD OwnerAlignmentHandledByWinForms(oC AS IVOControl, iNewType AS USUAL) AS LOGIC
         LOCAL lStandard AS LOGIC
@@ -1397,11 +1396,9 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ELSE
                 dwStyle := _AND(dwStyle, _NOT(kStyle))
             ENDIF
-        ELSE
-            LOCAL iCtrl AS IVOControlProperties
-            iCtrl := (IVOControlProperties) (OBJECT) oCtrl
-            liTemp := GuiWin32.GetWindowStyle(SELF:hWnd)
-            iCtrl:ControlProperties:SetStyle(kStyle, lEnable)
+        elseif oCtrl is IVOControlProperties var oProps
+            liTemp := GuiWin32.GetWindowStyle(self:hWnd)
+            oProps:ControlProperties:SetStyle(kStyle, lEnable)
             IF lEnable
                 liTemp := _OR(kStyle, liTemp)
             ELSE
@@ -1415,7 +1412,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
     /// <include file="Gui.xml" path="doc/Control.Show/*" />
-    METHOD Show( ) AS VOID STRICT
+    METHOD Show( ) AS VOID CLIPPER
 
         IF (oCtrl == NULL_OBJECT)
             SELF:Create()

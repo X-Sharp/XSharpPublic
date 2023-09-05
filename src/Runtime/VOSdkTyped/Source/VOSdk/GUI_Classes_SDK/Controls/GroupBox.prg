@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/GroupBox/*" />
 [XSharp.Internal.TypesChanged];
 CLASS GroupBox INHERIT TextControl
@@ -37,7 +42,7 @@ CLASS GroupBox INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/GroupBox.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
-		Default(@lDataAware, FALSE)
+		Default(REF lDataAware, FALSE)
 
 		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , , lDataAware)

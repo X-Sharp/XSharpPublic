@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Forms.prg
 // This file contains subclasses of Windows.Form that are used in the VO Compatible
 // Unicode GUI Classes
@@ -48,7 +54,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 			LOCAL oFI AS FieldInfo
 			oFI := _GetFieldInfo()
 			IF oFI != NULL_OBJECT
-				RETURN oFI:GetValue(SELF)
+				return (System.Drawing.Icon) oFI:GetValue(self)
 			ELSE
 				RETURN NULL_OBJECT
 			ENDIF
@@ -89,7 +95,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	METHOD GetAllControls() AS IList<System.Windows.Forms.Control> STRICT
 		RETURN SELF:GetAllChildren(TRUE)
 
-	METHOD GetFirstEditableControl AS System.Windows.Forms.Control
+	METHOD GetFirstEditableControl AS System.Windows.Forms.Control STRICT
 		return SELF:GetFirstEditableChild()
 
 	PUBLIC METHOD NextControl() AS VOID

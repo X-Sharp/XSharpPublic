@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 /// <include file="Gui.xml" path="doc/DateRange/*" />
 
 CLASS DateRange INHERIT VObject
@@ -81,7 +87,7 @@ CLASS MonthCalendar INHERIT TextControl
 
 /// <include file="Gui.xml" path="doc/MonthCalendar.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
-		DEFAULT(@lDataAware, TRUE)
+		DEFAULT(REF lDataAware, TRUE)
 		SUPER(oOwner, xID, oPoint, oDimension, "SysMonthCal32", dwStyle, lDataAware)
 		RETURN
 

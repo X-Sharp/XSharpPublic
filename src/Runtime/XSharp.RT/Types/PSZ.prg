@@ -160,13 +160,12 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
     /// <exclude />
     PROPERTY IsEmpty AS LOGIC
     GET
-        LOCAL empty := TRUE AS LOGIC
         IF IsValid
             LOCAL b AS BYTE
             LOCAL x := 1 AS INT
             IF _value != NULL_PTR
                 b := _value[x]
-                DO WHILE b != 0 .AND. empty
+                DO WHILE b != 0
                     SWITCH b
                     CASE 32
                     CASE 13
@@ -174,14 +173,14 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
                     CASE 9
                         NOP
                     OTHERWISE
-                        empty := FALSE
+                        RETURN FALSE
                     END SWITCH
                     x += 1
                     b := _value[x]
                 ENDDO
             ENDIF
         ENDIF
-        RETURN empty
+        RETURN TRUE
 
 
     END GET

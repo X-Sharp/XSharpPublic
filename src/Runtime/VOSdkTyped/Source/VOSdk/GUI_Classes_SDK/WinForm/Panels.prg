@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // Panel.prg
 USING SWF := System.Windows.Forms
 USING System.Windows.Forms
@@ -11,7 +17,8 @@ USING VOSDK := XSharp.VO.SDK
 CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 	PROPERTY Window AS VOSDK.Window AUTO
 	PROPERTY SuppressMovingControls AS LOGIC AUTO
-	PROPERTY ReturnAllKeys	AS LOGIC AUTO
+    PROPERTY ReturnAllKeys	AS LOGIC AUTO 
+    PROPERTY Pen AS Pen AUTO
 	PROTECT oToolTip AS VOToolTip
 	PROTECT lToolTipsEnabled AS LOGIC
 	PROTECT oLastControl AS OBJECT
@@ -50,7 +57,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
-		SELF:Window := Owner:Owner
+		self:Window := Owner:Owner
 		SELF:Initialize()
 		SELF:RegisterEventHandlers()
 		SELF:AllowDrop := TRUE
@@ -58,7 +65,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 		SELF:DragDrop += Panel_DragDrop
 
 	METHOD Panel_DragEnter(Sender AS OBJECT, e AS SWF.DragEventArgs) AS VOID
-		IF (e:Data:GetDataPresent(SWF.DataFormats.FileDrop))
+		IF e:Data:GetDataPresent(SWF.DataFormats.FileDrop)
 			e:Effect := SWF.DragDropEffects.Copy
 		ENDIF
 	RETURN
@@ -74,7 +81,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 		SELF:Margin         := SWF.Padding{0}
 		SELF:BorderStyle    := SWF.BorderStyle.None
 		SELF:SuppressMovingControls := TRUE
-		SELF:BackColor      := System.Drawing.Color.White
+		self:BackColor := System.Drawing.Color.Transparent
 
 
 	PROTECTED METHOD RegisterEventHandlers() AS VOID STRICT
@@ -124,7 +131,6 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 			// Make sure the position is relative to the form
 			e := SELF:AdjustMouseEventPosition(e)
 			IF e:Clicks == 2
-
 				SELF:Window:MouseButtonDoubleClick(MouseEvent{(SWF.MouseEventArgs) e, SWF.Control.ModifierKeys})
 			ELSE
 				SELF:Window:MouseButtonDown(MouseEvent{e, SWF.Control.ModifierKeys})
@@ -189,7 +195,7 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 				ELSEIF oc is SWF.TabControl
 					LOCAL oTab AS SWF.TabControl
 					oTab := (SWF.TabControl) oC
-					FOREACH VAR oPage IN oTab:TabPages
+					FOREACH oPage AS SWF.TabPage IN oTab:TabPages
 						FOREACH IMPLIED oC2 IN oPage:Controls
 							IF oC2 IS VOPanel VAR panel
 								panel:Prepare()
@@ -298,15 +304,15 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 		lToolTipsEnabled := lEnable
 		RETURN
 
-	METHOD IsParentOf(oC AS SWF.Control)
+	METHOD IsParentOf(oC AS System.Windows.Forms.Control)
 		IF oC == SELF
 			RETURN FALSE
 		ENDIF
 		DO WHILE oC != NULL_OBJECT
+			oC := oC:Parent
 			IF oC == SELF
 				RETURN TRUE
 			ENDIF
-			oC := oC:Parent
 		ENDDO
 		RETURN FALSE
 
@@ -328,7 +334,7 @@ CLASS VOSurfacePanel INHERIT VOPanel
 		SELF:TabIndex	:= 0
 		SELF:lShown := FALSE
 		SELF:AutoSizeMode := SWF.AutoSizeMode.GrowAndShrink
-		SELF:AutoSize     := TRUE
+        self:AutoSize     := true
 #ifdef XXDEBUG
         SELF:BackColor := System.Drawing.Color.Bisque
         SELF:Text        := "SurfacePanel"
@@ -372,8 +378,9 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 
 	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
-			LOCAL IMPLIED result := SUPER:CreateParams
-			result:Style := 0X56000000 // kommt in 0x56010000 -> WS_TABSTOP entfernt sonst gibts unschöne scrollbars
+            LOCAL IMPLIED result := SUPER:CreateParams
+            // default = 0x56010000 -> WS_TABSTOP creates scrollbars that we do not want
+			result:Style := _AND(result:Style , _NOT(WS_TABSTOP))
 			RETURN result
 		END GET
 	END PROPERTY

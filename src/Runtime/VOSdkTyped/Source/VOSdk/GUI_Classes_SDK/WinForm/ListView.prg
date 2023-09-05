@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // ListViewprg.prg
 
 // This file contains a subclass of the Windows.Forms.ListView control
@@ -8,9 +14,9 @@ USING System.Collections
 USING System.Collections.Generic
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
-CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
-	PROPERTY ListView     AS VOSDK.ListView GET (VOSDK.ListView) oProperties:Control
-	#include "PropControl.xh"
+class VOListView inherit SWF.ListView  implements IVOControlProperties
+    property ListView     as VOSDK.ListView get (VOSDK.ListView) oProperties:Control
+	#include "PropControlStyle.xh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:View := SWF.View.Details
@@ -21,13 +27,7 @@ CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-    METHOD ContainsColumn(sName AS STRING) AS LOGIC
+    method ContainsColumn(sName as string) as logic
         RETURN SUPER:Columns:ContainsKey(sName)
 
     METHOD RemoveColumn(sName AS STRING) AS VOID
@@ -35,7 +35,7 @@ CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
         RETURN
 
 
-    NEW PROPERTY Columns AS IList GET SUPER:Columns
+    new property Columns as IList get super:Columns
     NEW PROPERTY Groups AS IList GET SUPER:Groups
 	NEW PROPERTY Items AS IList GET SUPER:Items
     NEW PROPERTY SelectedItems AS IList GET SUPER:SelectedItems
@@ -157,8 +157,8 @@ END CLASS
 
 CLASS VOListViewItem INHERIT SWF.ListViewItem
 	PROPERTY Item AS VOSDK.ListViewItem AUTO
-	PROPERTY SWFItem AS OBJECT GET SELF
-    NEW PROPERTY Group AS OBJECT GET SUPER:Group SET SUPER:Group := VALUE
+	property SWFItem as SWF.ListViewItem get self
+    NEW PROPERTY Group AS SWF.ListViewGroup GET SUPER:Group SET SUPER:Group := VALUE
 	NEW PROPERTY SubItems AS IList GET SUPER:SubItems
 	METHOD LinkTo(oItem AS VOSDK.ListViewItem) AS VOID STRICT
 		SELF:Item  := oItem

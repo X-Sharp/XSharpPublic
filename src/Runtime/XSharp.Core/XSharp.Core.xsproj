@@ -83,6 +83,8 @@
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
+    <Compile Include="RDD\DbDate.prg" />
+    <Compile Include="RDD\DbCurrency.prg" />
     <Compile Include="RDD\DataSession.prg" />
     <Compile Include="RDD\CursorProperties.prg" />
     <Compile Include="RDD\DbColumnInfo.prg" />

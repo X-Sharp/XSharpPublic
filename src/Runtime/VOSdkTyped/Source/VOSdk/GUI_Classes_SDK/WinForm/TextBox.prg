@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // textBox.prg
 // This file contains subclasses Windows.Forms controls that are used in the
 // XSharp GUI Classes, in particular several TextBox subclasses
@@ -8,12 +14,11 @@ USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOTextBox INHERIT SWF.TextBox   IMPLEMENTS IVoControl
+class VOTextBox inherit SWF.TextBox   implements IVOControlProperties
 	PROPERTY oEdit		AS VOSDK.Edit GET (VOSDK.Edit) SELF:Control
-
+#undef DEFAULTVISUALSTYLE
 	#include "PropControl.xh"
-
-	METHOD Initialize() AS VOID STRICT
+	method Initialize() as void strict
 		SELF:AutoSize			:= FALSE
         SELF:oProperties:OnWndProc += OnWndProc
 		RETURN
@@ -146,10 +151,9 @@ CLASS VOIPAddressTextBox INHERIT VOTextBox
 END CLASS
 
 
-CLASS VORichTextBox INHERIT SWF.RichTextBox IMPLEMENTS IVOControl, IVOControlInitialize
-	#include "PropControl.xh"
-
-	METHOD Initialize() AS VOID STRICT
+class VORichTextBox inherit SWF.RichTextBox implements IVOControlInitialize
+    #include "PropControlStyle.xh"
+	method Initialize() as void strict
 		SELF:AutoSize			:= FALSE
 		RETURN
 
@@ -160,18 +164,14 @@ CLASS VORichTextBox INHERIT SWF.RichTextBox IMPLEMENTS IVOControl, IVOControlIni
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF SELF:oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
 
 END CLASS
 
 
-CLASS VOSpinnerTextBox INHERIT SWF.NumericUpDown
+class VOSpinnerTextBox inherit SWF.NumericUpDown implements IVOControlProperties
 	PROPERTY oEdit		AS VOSDK.SpinnerEdit GET (VOSDK.SpinnerEdit) SELF:Control
-	#include "PropControl.xh"
+    #include "PropControlStyle.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -180,10 +180,6 @@ CLASS VOSpinnerTextBox INHERIT SWF.NumericUpDown
 		SELF:Maximum := System.Int32.MaxValue
 		SELF:SetVisualStyle()
 
-	METHOD SetVisualStyle AS VOID STRICT
-		IF SELF:oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
 
 	VIRTUAL PROTECT METHOD OnTextChanged(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window

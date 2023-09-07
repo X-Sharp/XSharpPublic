@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -198,7 +203,7 @@ CLASS Font INHERIT VObject
 
 
     /// <include file="Gui.xml" path="doc/Font.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL  CLIPPER
 
         SUPER:Destroy()
 
@@ -282,12 +287,12 @@ CLASS Font INHERIT VObject
         ELSE
             IF IsNumeric(oDimension)
                 iPointSize := oDimension
-            ELSE
-                oLogFont:Height := oDimension:Height
-                oLogFont:Width := oDimension:Width
+            elseif oDimension is Dimension var oDim
+                oLogFont:Height := oDim:Height
+                oLogFont:Width := oDim:Width
             ENDIF
 
-            DEFAULT(@kFont, FONTANY)
+            DEFAULT( REF kFont, FONTANY)
 
             IF !IsNil(sTypeFace)
                 oLogFont:FaceName := sTypeFace

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 
@@ -84,7 +89,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
     /// <exclude />
     PROPERTY __HasSurface AS LOGIC GET TRUE
     /// <exclude />
-    PROPERTY __Surface AS IVOControlContainer GET oSurface
+    property __Surface as IVOPanel get oSurface
     /// <exclude />
     METHOD __SetupDataControl(oDC AS Control) AS VOID
         IF oDC IS RadioButtonGroup
@@ -121,13 +126,13 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
         oButton := oCE:Control
         IF oButton IS Button
             oButton:Modified := TRUE // assume its modified
-            IF oButton IS RadioButton
+            if oButton is RadioButton var oRB
                 //SE-060526
                 dwCount := ALen(aRadioGroups)
                 FOR dwI := 1 UPTO dwCount
                     oRBG := aRadioGroups[dwI]
-                    IF oRBG:__IsElement(OBJECT(_CAST,oButton))
-                        oRBG:__SetOn(OBJECT(_CAST,oButton))
+                    if oRBG:__IsElement(oRB)
+                        oRBG:__SetOn(oRB)
                         oButton:__Update()
                         oButton := oRBG
                         EXIT
@@ -169,7 +174,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF SELF:oSurface != NULL_OBJECT
             IF (WC.AppGetDialogWindow() == SELF:oSurface)
                 WC.AppSetDialogWindow(NULL_OBJECT)
@@ -225,7 +230,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
             SUPER:HyperLabel := value
             IF value != NULL_OBJECT
-                SELF:__Surface:Text := "Surface:"+value:Name
+                self:oSurface:Text := "Surface:"+value:Name
             ENDIF
         END SET
     END PROPERTY
@@ -233,7 +238,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
     /// <include file="Gui.xml" path="doc/DialogWindow.ctor/*" />
     CONSTRUCTOR(oOwner, xResourceID, lModal)
 
-        IF IsInstanceOfUsual(oOwner, #App)
+        IF oOwner IS App
             oOwner := NIL
         ENDIF
 
@@ -247,7 +252,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
             oResourceID := xResourceID
         ENDIF
         SELF:__ReadResource(oResourceID, oOwner)
-        DEFAULT(@lModal, TRUE)
+        DEFAULT( ref lModal, true)
         bModal := lModal
 
         SUPER(oOwner)
@@ -323,7 +328,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Show/*" />
-    METHOD Show(kShowState := SHOWCENTERED AS LONG ) AS VOID
+    method Show(kShowState) as void clipper
+        default(ref kShowState, SHOWCENTERED)
         IF bModal
             oWnd:StartPosition := SELF:__GetStartPosFromShowState(kShowState)
             SELF:ShowModal(TRUE)

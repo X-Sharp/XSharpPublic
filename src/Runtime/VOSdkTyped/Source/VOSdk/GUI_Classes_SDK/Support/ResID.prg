@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/ResourceID/*" />
 CLASS ResourceID INHERIT VObject
 	PROTECT hInst AS IntPtr
@@ -58,10 +63,10 @@ CLASS ResourceID INHERIT VObject
 			argTypeError := TRUE
 		ENDIF
 
-		IF IsPtr(xResourceFile)
-			hInst := xResourceFile
-		ELSEIF IsInstanceOfUsual(xResourceFile, #ResourceFile)
-			hInst := xResourceFile:Handle()
+		if xResourceFile is Intptr var ip
+			hInst := ip
+		elseif xResourceFile is ResourceFile var oResFile
+			hInst := oResFile:Handle()
 		ELSEIF IsNil(xResourceFile)
 			IF IsNumeric(xID)		// String table
 				hInst := GetNatDllHandle()

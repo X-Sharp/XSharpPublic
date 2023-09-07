@@ -252,7 +252,7 @@ PUBLIC CLASS XSharp.MemoHelpers
 			nIndex :=  dOffset
 			nLineNum --
 			nTempLen := 1
-			DO WHILE nLineNum != 0 .AND. nTempLen != 0
+			DO WHILE nLineNum > 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				dOffset += nTempLen

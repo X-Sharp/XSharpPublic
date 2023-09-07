@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 /// <include file="Gui.xml" path="doc/MultiMediaContainer/*" />
 CLASS MultiMediaContainer INHERIT Control
 	PROTECT pBitmap AS IntPtr
@@ -182,8 +188,8 @@ CLASS MultiMediaContainer INHERIT Control
 		//	RETURN 0L
 		//ENDIF
 
-		//Default(@wParam, 0)
-		//Default(@lParam, 0)
+		//DEFAULT( REF wParam, 0)
+		//DEFAULT( REF lParam, 0)
 
 		//uMsg := dwMsg
 		//wPar := wParam

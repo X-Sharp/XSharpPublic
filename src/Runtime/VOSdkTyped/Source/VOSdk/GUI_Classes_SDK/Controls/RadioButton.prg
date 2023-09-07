@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/RadioButton/*" />
 CLASS RadioButton INHERIT Button
 	PROTECT lSavedPressed AS LOGIC
@@ -15,7 +20,7 @@ CLASS RadioButton INHERIT Button
 	PROPERTY __RadioButton AS VORadioButton GET (VORadioButton) oCtrl
 
 /// <include file="Gui.xml" path="doc/RadioButton.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL clipper
 		IF oCtrl != NULL_OBJECT .and. !oCtrl:IsDisposed
 			lSavedPressed := SELF:Pressed
 		ENDIF
@@ -26,7 +31,7 @@ CLASS RadioButton INHERIT Button
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, kStyle)
 
 		SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle)
-		IF !IsInstanceOfUsual(xID,#ResourceID)
+		IF ! (xID IS ResourceID)
 			SELF:SetStyle(BS_RADIOBUTTON)
 		ENDIF
 		SELF:ValueChanged := FALSE

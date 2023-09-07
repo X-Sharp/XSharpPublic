@@ -144,6 +144,7 @@
     <Compile Include="SqlRDD\Functions\Connection.prg" />
     <Compile Include="SqlRDD\SqlRDD.prg" />
     <Compile Include="SqlRDD\SupportClasses\TableDef.prg" />
+    <Compile Include="SqlRDD\SupportClasses\TableInfo.prg" />
     <Compile Include="SqlRDD\SupportClasses\Token.prg" />
     <Compile Include="SqlRDD\SupportClasses\TokenType.prg" />
     <Compile Include="Support.prg" />

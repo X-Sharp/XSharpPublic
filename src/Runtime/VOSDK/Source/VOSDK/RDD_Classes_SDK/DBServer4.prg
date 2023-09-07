@@ -660,7 +660,9 @@ METHOD RLOCK( nRecordNumber )
 // 		IF ! IsNumeric(nRecordNumber)
 // 			nRecordNumber := VODBRecno()
 // 		ENDIF
-
+        if IsNumeric(nRecordNumber) .and. nRecordNumber == -1
+            nRecordNumber := VODBRecno()
+        endif
 
 		lRetCode := __DBSRLock( nRecordNumber, nTries )
 		SELF:__OptimisticFlushNoLock()
@@ -905,7 +907,7 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 		ELSEIF __CanEval( cbFilterBlock )
 			// Ok
             NOP
-            
+
 		ELSEIF IsString( cbFilterBlock )
 			cFilter := cbFilterBlock
 			IF SLen(AllTrim(cFilter)) == 0
@@ -1327,7 +1329,7 @@ METHOD Skip( nRecordCount )
 							IF VODBEof() .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONEOF
 								IF ! VODBEof()
-									wLastSelectionRec := (INT) VODBRecno() - 1 
+									wLastSelectionRec := (int) VODBRecno() - 1
 									__DBSGoBottom(nTries)
 									__DBSSkip(1, nTries)
 								ENDIF

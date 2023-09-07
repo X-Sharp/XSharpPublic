@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 [XSharp.Internal.TypesChanged];
 CLASS CustomControl INHERIT Control
@@ -6,11 +10,11 @@ CLASS CustomControl INHERIT Control
 
     PROPERTY ControlType AS ControlType GET ControlType.Panel
 
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
+constructor(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 
 	SUPER(oOwner, xID, oPoint, oDimension, __WCCustomControlClass, kStyle, lDataAware)
 
-	RETURN 
+	return
 
 END CLASS
 

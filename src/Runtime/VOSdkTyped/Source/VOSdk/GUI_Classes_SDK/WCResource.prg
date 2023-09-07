@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 #region defines
 DEFINE ID_FIRSTWCHELPID := 0xFFFD
 DEFINE ID_WCHELP := 0xFFFF

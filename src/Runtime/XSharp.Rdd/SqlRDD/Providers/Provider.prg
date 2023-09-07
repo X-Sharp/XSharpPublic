@@ -23,6 +23,7 @@ abstract class SqlDbProvider inherit SqlDbObject
 #region Static fields and methods
     static _ProviderClasses as IDictionary<string, System.Type>
     static _ProviderObjects as IDictionary<string, SqlDbProvider>
+    static _lastException as Exception
     static property Current as SqlDbProvider auto
 
     static constructor()
@@ -70,7 +71,6 @@ abstract class SqlDbProvider inherit SqlDbObject
         next
         return null
     static protected method _LoadFactoryFromDllAndType(DllName as string, TypeName as string) as DbProviderFactory
-        local assembly := null as Assembly
         local type     := null as System.Type
         foreach var asm in AppDomain.CurrentDomain.GetAssemblies()
             type := asm:GetType(TypeName, false)
@@ -108,6 +108,7 @@ abstract class SqlDbProvider inherit SqlDbObject
                 endif
             endif
         catch e as Exception
+            _lastException := e
             nop
         end try
         return null

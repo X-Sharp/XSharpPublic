@@ -1,0 +1,13 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+// Common Members for Controls + a default SetVisualStyle implementation
+
+#include "PropControl.xh"
+	METHOD SetVisualStyle AS VOID STRICT
+		IF oProperties != NULL_OBJECT
+			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
+		ENDIF

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/FixedBitmap/*" />
 CLASS FixedBitmap INHERIT FixedImage
 	PROTECT hInst AS IntPtr
@@ -13,13 +18,11 @@ CLASS FixedBitmap INHERIT FixedImage
 /// <include file="Gui.xml" path="doc/FixedBitmap.ctor/*" />
 	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 		SUPER(uOwner, uID, uPoint, uDimension, uResID)
-		IF IsInstanceOfUsual(uID , #ResourceID)
-			LOCAL oResID AS ResourceID
-			oResID := uID
+		if uID  is ResourceID var oResID
 			hInst := oResID:Handle()
 		ENDIF
-		IF IsInstanceOfUsual(uResID , #ResourceID)
-			SELF:__SetImage(uResID)
+		if uResID is ResourceID var oResID2
+			self:__SetImage(oResID2)
 		ENDIF
 		RETURN
 

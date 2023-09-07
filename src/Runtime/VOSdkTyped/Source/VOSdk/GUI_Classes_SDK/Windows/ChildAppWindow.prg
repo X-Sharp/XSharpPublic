@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
@@ -30,10 +35,10 @@ CLASS ChildAppWindow INHERIT AppWindow
                 lMng := lManaged
             ENDIF
         ENDIF
-        Default(@lImpl, TRUE)
+        DEFAULT( REF lImpl, TRUE)
         IF (lImpl)
             //IF (oImp == NULL_OBJECT)
-            IF lMng .AND. IsInstanceOf(oParent,#ShellWindow) // create an MDI child
+            IF lMng .AND. oParent IS ShellWindow // create an MDI child
                 SELF:EnableSystemMenu()
                 SELF:EnableBorder()
                 SELF:EnableMinBox()
@@ -46,31 +51,36 @@ CLASS ChildAppWindow INHERIT AppWindow
                 //IF lManaged
                 //SELF:EnableBorder(WindowNonSizingBorder)
                 //ENDIF
-                    NOP
-                
+                NOP
+
             ENDIF
             //ENDIF
         ENDIF
 
     /// <include file="Gui.xml" path="doc/ChildAppWindow.Menu/*" />
-    ASSIGN Menu(oNewMenu AS VOSDK.Menu)
-        LOCAL i as DWORD
-        SUPER:Menu := oNewMenu
-        if oShell != NULL_OBJECT
-            i := 0
-            FOREACH oItem as VOMenuItem in oNewMenu:__Menu:MenuItems
-                if i == oNewMenu:GetAutoUpdate()
-                    oItem:MdiList := TRUE
-                ENDIF
-                ++i
-                oItem:MergeType := System.Windows.Forms.MenuMerge.Add
-            NEXT
-        ENDIF
-        RETURN
-
+    PROPERTY Menu AS VOSDK.Menu
+        GET
+            RETURN SUPER:Menu
+        END GET
+        SET
+            LOCAL i AS DWORD
+            SUPER:Menu := VALUE
+            IF oShell != NULL_OBJECT
+                i := 0
+                FOREACH oItem AS VOMenuItem IN VALUE:__Menu:MenuItems
+                    IF i == VALUE:GetAutoUpdate()
+                        oItem:MdiList := TRUE
+                    ENDIF
+                    ++i
+                    oItem:MergeType := System.Windows.Forms.MenuMerge.Add
+                NEXT
+            ENDIF
+            RETURN
+        END SET
+    END PROPERTY
     /// <inheritdoc />
-    METHOD Close(oEvent as event) as USUAL
-        var res := SUPER:Close(oEvent)
+    METHOD Close(oEvent AS event) AS USUAL
+        VAR res := SUPER:Close(oEvent)
         oShell:Menu := oShell:__ActualMenu
         RETURN res
 

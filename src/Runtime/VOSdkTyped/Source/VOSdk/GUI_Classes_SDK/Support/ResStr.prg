@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Text
 /// <include file="Gui.xml" path="doc/ResourceString/*" />
@@ -20,7 +25,7 @@ CLASS ResourceString INHERIT VObject
 
         IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID)
             oResourceID := ResourceID{xResourceID} // , GetNatDLLHandle()}
-        ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
+        ELSEIF xResourceID IS ResourceID
             oResourceID := xResourceID
         ELSE
             WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:Throw()

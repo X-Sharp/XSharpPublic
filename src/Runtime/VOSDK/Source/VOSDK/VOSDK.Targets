@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <PropertyGroup>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <BinariesDir>$(SolutionDir)..\Artifacts\</BinariesDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
+    <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputType>Library</OutputType>
@@ -15,12 +15,13 @@
     <Nologo>true</Nologo>
     <Nostandarddefs>true</Nostandarddefs>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)Runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <Prefer32Bit>False</Prefer32Bit>
     <CommandLineOption />
     <PPO>false</PPO>
+    <CommonInclude>$(Solutiondir)Common</CommonInclude>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>

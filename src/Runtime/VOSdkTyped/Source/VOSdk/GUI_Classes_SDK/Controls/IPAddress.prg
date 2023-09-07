@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/IPAddress/*" />
 
 [XSharp.Internal.TypesChanged];
@@ -8,7 +13,7 @@ CLASS IPAddress INHERIT TextControl
 /// <include file="Gui.xml" path="doc/IPAddress.ctor/*" />
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
-		DEFAULT(@lDataAware, TRUE)
+		DEFAULT(REF lDataAware, TRUE)
 
 		SUPER(oOwner, xID, oPoint, oDimension, "SysIPAddress32", dwStyle, lDataAware)
 		RETURN

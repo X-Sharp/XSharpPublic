@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // GuiWin32.prg
 // Static class with some Win32 API functions that are used inside the Unicode GUI Classes
 
@@ -215,6 +221,7 @@ INTERNAL STATIC CLASS GuiWin32
     STATIC METHOD GetClassName(hwnd AS IntPtr, lpClassName AS StringBuilder, nMaxCount AS INT) AS INT
     [DllImport("User32.dll")];
     STATIC METHOD LoadString(hInstance AS IntPtr, uId AS LONG, lpBuffer AS StringBuilder, nBufferMax AS INT) AS INT
+
     [DllImport("User32.dll", CharSet:=CharSet.Unicode,  EntryPoint := "SendMessageW")];
     STATIC METHOD SendMessage(hwnd AS IntPtr, Msg AS DWORD, wParam AS DWORD, lParam AS STRING) AS LONG
 

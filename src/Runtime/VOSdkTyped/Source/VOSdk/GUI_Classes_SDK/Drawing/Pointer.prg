@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/Pointer/*" />
 
 
@@ -25,7 +30,7 @@ CLASS Pointer INHERIT VObject
 		LOCAL lOk AS LOGIC
 		SUPER()
 
-		DEFAULT(@xResourceID, POINTERARROW)
+		DEFAULT(REF xResourceID, POINTERARROW)
 
 		IF IsObject(xResourceID)
 			LOCAL oResID := xResourceID AS OBJECT

@@ -205,36 +205,12 @@
                  , Iif(<.asc.> .or. <.desc.>, <.desc.>, Nil),           ;
                    Iif( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
-#command USE IN <(area)> => DbCloseArea(<(area)>)
 
-** Commands with an IN/ALIAS clause
 
-#command APPEND BLANK <x:IN,ALIAS> <(a)>        =>  (<(a)>) -> (DbAppend())
-#command PACK <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbPack())
-#command ZAP  <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbZap())
-#command UNLOCK [RECORD <rcd>]  <x:IN,ALIAS> <(a)> => (<(a)>) -> (DbUnlock(<rcd>))
-#command COMMIT <x:IN,ALIAS> <(a)>              => (<(a)>) -> (DbCommit())
 
-#command GOTO <n>  		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoto(<n>))
-#command GO <n>   		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoto(<n>))
-#command GOTO TOP  		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoTop())
-#command GO TOP   		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoTop())
-#command GOTO BOTTOM 	<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoBottom())
-#command GO BOTTOM  	<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoBottom())
-#command SKIP 			<x:IN,ALIAS> <(a)>     => (<(a)>) -> ( DbSkip(1) )
-#command SKIP <n> 		<x:IN,ALIAS> <(a)>     => (<(a)>) -> ( DbSkip(<n>) )
 
-#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>] <x:IN,ALIAS> <(a)>  => (<(a)>) -> (DbSeek( <xpr> , <.soft.>, <.lst.>))
 ** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
 
-#command SET FILTER TO  <x:IN,ALIAS> <(a)>        => (<(a)>) -> (DbClearFilter())
-#command SET FILTER TO <xpr> <x:IN,ALIAS> <(a)>   => (<(a)>) -> (DbSetFilter( <{xpr}>, <"xpr"> ))
-#command SET FILTER TO <x:&>  <y:IN,ALIAS> <a>   ;
-      => IF ( Empty(<(x)>) )                     ;
-       ;    (<(a)>) -> (DbClearFilter())         ;
-       ; ELSE                                    ;
-       ;    (<(a)>) -> (DbSetFilter( <{x}>, <(x)> )) ;
-       ; END
 
 ** Commands without IN/ALIAS clause
 
@@ -448,6 +424,16 @@
 #command CHDIR <(dir)> => _cmdDirChange (<(dir)>)
 #command RD <(dir)>    => _cmdDirRemove (<(dir)>)
 #command RMDIR <(dir)> => _cmdDirRemove (<(dir)>)
+
+// CAST AS Expression
+// types in the order of the FoxPro docs!
+
+#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>)                   => __FoxCast(<expression>,<(type)>, -1, -1)
+#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
+#translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
+
+
+
 
 #include "FoxProSql.xh"
 #endif

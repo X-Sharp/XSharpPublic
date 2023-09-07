@@ -84,7 +84,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             return oColumn
 
-
+        INTERNAL METHOD TypeError(cType AS STRING, oValue AS OBJECT) AS STRING
+            RETURN i"{cType} value expected for column '{ColumnName}' but received the value ({oValue}) of type {oValue.GetType()}"
 
         PROTECTED CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo)
@@ -218,8 +219,18 @@ BEGIN NAMESPACE XSharp.RDD
                     oResult := (T) Convert.ChangeType(oValue, typeof(T) )
                     RETURN TRUE
                 CASE TypeCode.Object
-                    oResult := (T) Convert.ChangeType((((IFloat) oValue):Value), typeof(T) )
-                    RETURN TRUE
+                    TRY
+                        IF oValue IS IFloat VAR fl
+                            oValue := fl:Value
+                        ELSEIF oValue IS ICurrency VAR cur
+                            oValue := cur:Value
+                        ENDIF
+                        oResult := (T) Convert.ChangeType(oValue, TYPEOF(T) )
+                        RETURN TRUE
+                    CATCH
+                        oResult := T{}
+                        RETURN FALSE
+                    END TRY
                 END SWITCH
             ENDIF
             oResult :=  T{}
@@ -268,7 +279,7 @@ BEGIN NAMESPACE XSharp.RDD
             ELSEIF oValue IS STRING
                 str := (STRING) oValue
             ELSE
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("String",oValue))
                 RETURN FALSE
             ENDIF
             IF str:Length < SELF:Length .AND. ! SELF:IsVarLength
@@ -400,7 +411,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_PutString(buffer, str)
                 RETURN TRUE
             ENDIF
-            SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+            SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Date",oValue))
             RETURN FALSE
 
         /// <inheritdoc/>
@@ -446,7 +457,7 @@ BEGIN NAMESPACE XSharp.RDD
                 buffer[SELF:Offset] := IIF( logicValue, (BYTE)'T', (BYTE)'F' )
                 RETURN TRUE
             ENDIF
-            SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+            SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Logic",oValue))
             RETURN FALSE
         /// <inheritdoc/>
        OVERRIDE METHOD EmptyValue() AS OBJECT
@@ -555,7 +566,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT r8Value)
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Numeric",oValue))
                 RETURN FALSE
             ENDIF
             VAR numformat := SELF:RDD:_numformat
@@ -571,7 +582,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             SELF:_PutString(buffer, str)
             IF lDataWidthError
-                SELF:RDD:_dbfError(ERDD_DATAWIDTH, EG_DATAWIDTH)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATAWIDTH, EG_DATAWIDTH,__ENTITY__, i"Numeric value for column '{ColumnName}' ({oValue}) is too large")
             ENDIF
             RETURN TRUE
         /// <inheritdoc/>
@@ -633,7 +644,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT intValue)
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, i"Memo block number expected for column '{ColumnName}' but received the value ({oValue}) of type {oValue.GetType()}")
                 RETURN FALSE
             ENDIF
             IF SELF:Length == 4
@@ -707,7 +718,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT intValue)
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Integer",oValue))
                 RETURN FALSE
             ENDIF
             IF SELF:Length == 4
@@ -814,7 +825,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT r8Value)
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Double",oValue))
                 RETURN FALSE
             ENDIF
             VAR data := BitConverter.GetBytes(r8Value)
@@ -844,7 +855,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             tmp := BitConverter.ToInt64(buffer, SELF:Offset)
             result := (decimal) (tmp/ (10 ^ SELF:Decimals))
-            RETURN result
+            RETURN DbCurrency{result}
 
         /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
@@ -856,7 +867,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT currValue)
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("Currency",oValue))
                 RETURN FALSE
             ENDIF
             i64Value := (INT64) (currValue * (System.Decimal) (10^ SELF:Decimals))
@@ -978,7 +989,7 @@ BEGIN NAMESPACE XSharp.RDD
                 dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
                 empty := oDate:IsEmpty
             ELSE
-                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE,__ENTITY__, SELF:TypeError("DateTime",oValue))
                 RETURN FALSE
             ENDIF
             IF empty

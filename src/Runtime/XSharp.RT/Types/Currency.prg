@@ -27,7 +27,8 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         IComparable<__Currency>, ;
         IEquatable<__Currency>, ;
         IComparable,            ;
-        ISerializable
+        ISerializable,          ;
+        ICurrency
 
     [NOSHOW] PRIVATE INITONLY _value AS System.Decimal
 
@@ -46,6 +47,11 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
     [NODEBUG] [INLINE];
     CONSTRUCTOR (f AS IFloat)
         SELF:_value		:= Math.Round((Decimal)f:Value,4)
+
+    /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    [NODEBUG] [INLINE];
+    CONSTRUCTOR (c AS ICurrency)
+        SELF:_value		:= c:Value
 
 #endregion
 #region Properties

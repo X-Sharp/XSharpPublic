@@ -33,6 +33,9 @@
 #command SELECT &<whatever>             => DbSelectArea( <whatever> )
 
 #command USE                            => DbCloseArea()
+#command USE IN <(area)>                => (area)->(DbCloseArea())
+
+
 
 #command USE <(db)>                                                     ;
              [VIA <rdd>]                                                ;
@@ -107,25 +110,48 @@
 #command REINDEX                => DbReindex()
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
 #command SET ORDER TO           => DbSetOrder(0)
+#command APPEND BLANK           => DbAppend()
+#command PACK                   => DbPack()
+#command ZAP                    => DbZap()
+#command COMMIT                 => DbCommitAll()
+#command UNLOCK [RECORD <rcd>]  => DbUnlock(<rcd>)
 
-#command APPEND BLANK           				=> DbAppend()
-#command PACK                   				=> DbPack()
-#command ZAP                    				=> DbZap()
-#command UNLOCK [RECORD <rcd>]  				=> DbUnlock(<rcd>)
+// Commands with IN clause
+#command REINDEX          <x:IN,ALIAS> <(a)>          => (<(a)>) -> (DbReindex())
+#command SET ORDER TO <n> <x:IN,ALIAS> <(a)>          => (<(a)>) -> (DbSetOrder( <n> ))  // No overload with area param
+#command SET ORDER TO     <x:IN,ALIAS> <(a)>          => (<(a)>) -> (DbSetOrder(0))      // No overload with area param
+#command APPEND BLANK <x:IN,ALIAS> <(a)>              => (<(a)>) -> (DbAppend())
+#command PACK <x:IN,ALIAS> <(a)>                      => (<(a)>) -> (DbPack())
+#command ZAP  <x:IN,ALIAS> <(a)>                      => (<(a)>) -> (DbZap())
+#command COMMIT <x:IN,ALIAS> <(a)>                    => (<(a)>) -> (DbCommit())
+#command UNLOCK [RECORD <rcd>]  <x:IN,ALIAS> <(a)>    => (<(a)>) -> (DbUnLock(<rcd>))
+
+// UNLOCK ALL has no IN clause
 #command UNLOCK ALL             				=> DbUnlockAll()
-#command COMMIT                 				=> DbCommitAll()
 
+// Goto and Skip
 #command GOTO <n>               => DbGoto(<n>)
-#command GO <n>                 => DbGoto(<n>)
+#command GO [RECORD] <n>        => DbGoto(<n>)
 #command GOTO TOP               => DbGoTop()
 #command GO TOP                 => DbGoTop()
 #command GOTO BOTTOM            => DbGoBottom()
 #command GO BOTTOM              => DbGoBottom()
-
 #command SKIP                   => DbSkip(1)
 #command SKIP <n>               => DbSkip( <n> )
 
-#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
+// GOTO and SKIP with IN clause
+
+#command GOTO <n>  		   <x:IN,ALIAS> <(a)>     => (<a>)->(DbGoto(<n>))
+#command GO [RECORD] <n>   <x:IN,ALIAS> <(a)>     => (<a>)->(DbGoto(<n>))
+#command GOTO TOP  		   <x:IN,ALIAS> <(a)>     => (<a>)->(DbGoTop())
+#command GO TOP   		   <x:IN,ALIAS> <(a)>     => (<a>)->(DbGoTop())
+#command GOTO BOTTOM 	   <x:IN,ALIAS> <(a)>     => (<a>)->(DbGoBottom())
+#command GO BOTTOM  	      <x:IN,ALIAS> <(a)>     => (<a>)->(DbGoBottom())
+#command SKIP 			      <x:IN,ALIAS> <(a)>     => (<a>)->(DbSkip(1))
+#command SKIP <n> 		   <x:IN,ALIAS> <(a)>     => (<a>)->(DbSkip(<n>))
+
+#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]                     => DbSeek( <xpr> , <.soft.>, <.lst.>)
+#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>] <x:IN,ALIAS> <(a)>  => (<(a)>) -> (DbSeek( <xpr> , <.soft.>, <.lst.>))
 
 #command SET FILTER TO          => dbClearFilter()
 #command SET FILTER TO <xpr>    => dbSetFilter( <{xpr}>, <"xpr"> )
@@ -137,7 +163,19 @@
        ;    DbSetFilter( <{x}>, <(x)> )                                 ;
        ; END
 
-#command REPLACE <f1> WITH <x1> [, <fn> WITH <xn>]                      ;
+// SET FILTER with IN clause
+#command SET FILTER TO  <x:IN,ALIAS> <(a)>        => (<(a)>) -> (DbClearFilter())
+#command SET FILTER TO <xpr> <x:IN,ALIAS> <(a)>   => (<(a)>) -> (DbSetFilter( <{xpr}>, <"xpr"> ))
+#command SET FILTER TO <x:&>  <y:IN,ALIAS> <a>   ;
+      => IF ( Empty(<(x)>) )                     ;
+       ;    (<(a)>) -> (DbClearFilter())           ;
+       ; ELSE                                    ;
+       ;    (<(a)>) -> (DbSetFilter( <{x}>, <(x)> )) ;
+       ; END
+
+
+
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                      ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -147,14 +185,37 @@
          [ALL]                                                          ;
                                                                         ;
       => DbEval(                                                        ;
-                 {||DbAutoLock(), _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>], DbAutoUnLock()},    ;
+                 {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
+// Replace with IN clause: Run DbEval in the area
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                             ;
+                                                                        ;
+      => (<(a)>)->(DbEval(                                              ;
+                 {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               ))
 
-#command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]                     ;
-      => DbAutoLock(); _FIELD-><f1> := <v1> [; _FIELD-><fN> := <vN>]; DbAutoUnLock()
 
+// Single record replace
+#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                     ;
+      => DbAutoLock(); __FieldSet(<(f1)>,<v1>) [;__FieldSet(<(fN)>,<vN>)]; DbAutoUnLock()
+
+// Single record replace with IN clause
+#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                 ;
+         <x:IN,ALIAS> <(a)>                                             ;
+         => DbAutoLockArea(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fN)>,<vN>)], DbAutoUnLockArea(<(a)>)
+
+// Normal Delete
 #command DELETE                                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -169,8 +230,27 @@
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command DELETE                 =>  DbAutoLock(); DbDelete(); DbAutoUnLock()
+// Delete with IN clause: Run DbEval in the area
+#command DELETE                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                             ;
+                                                                        ;
+      => (<(a)>)->(DbEval(                                              ;
+                 {|| __DbDelete()},                                       ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               ))
 
+// Single Record Delete
+#command DELETE                     =>  __DbDelete()
+#command DELETE  <x:IN,ALIAS> <(a)> =>  (<(a)>)->(__DbDelete())
+
+// Normal RECALL
 #command RECALL                                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -181,19 +261,38 @@
          [ALL]                                                          ;
                                                                         ;
       => DBEval(                                                        ;
-                 {|| DbAutoLock(), DbRecall(), DbAutoUnLock()},                                       ;
+                 {|| __DbRecall()},                                       ;
                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
+// RECALL with IN Clause: Run DbEval in the area
+#command RECALL                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                             ;
+                                                                        ;
+      => (<(a)>)->(DBEval(                                              ;
+                 {|| __DbRecall()},                                     ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               ))
 
+// Single record RECALL
+#command RECALL                     =>  __DbRecall()
+#command RECALL  <x:IN,ALIAS> <(a)> =>  (a)->(__DbRecall())
 
-#command RECALL                 =>  DbAutoLock(); DbRecall(); DbAutoUnLock()
-
+// Find command has no IN clause !
 #command FIND <*text*>          => DbSeek( <(text)> )
 #command FIND := <xpr>          => ( find := <xpr> )
 #command FIND = <xpr>           => ( find := <xpr> )
 
-#command CONTINUE               => DbContinue()
+#command CONTINUE                      => DbContinue()
+#command CONTINUE <x:IN,ALIAS> <(a)>   => (a)->(DbContinue())
 
+// Normal Locate command
 #command LOCATE                                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -204,6 +303,20 @@
          [ALL]                                                          ;
                                                                         ;
       => DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+// Locate command with IN clause:
+#command LOCATE                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                             ;
+                                                                        ;
+      => (<(a)>)->(DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ))
+
 
 // Relation commands: Note the order is important !
 // Scoped Relations
@@ -235,6 +348,24 @@
 
 #command SET RELATION TO        => DbClearRelation()
 
+// Set Relation command with IN clause
+
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+         <x:IN,ALIAS> <(a)>                                             ;
+         [ADDITIVE]                                                     ;
+      => (<(a)>)->(DbSetRelation( <(alias1)>, <{key1}>, <"key1"> ))     ;
+      [; (<(a)>)->(DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> ))]
+
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+         <x:IN,ALIAS> <(a)>                                             ;
+      => (<(a)>)->(DbClearRelation())                              ;
+      ;  (<(a)>)->(DbSetRelation( <(alias1)>, <{key1}>, <"key1"> ))     ;
+      [; (<(a)>)->(DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> ))]
+
+#command SET RELATION TO        <x:IN,ALIAS> <(a)>                      ;
+         => (<(a)>)->(DbClearRelation())
 
 #command CREATE <(file1)>           ;
             [FROM <(file2)>]        ;
@@ -389,14 +520,13 @@
 
 
 
-
 #command UPDATE  FROM <(alias)>  [ON <key>]                             ;
-         [REPLACE <f1> WITH <x1> [, <fn> WITH <xn>]]                    ;
+         [REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                    ;
          [<rand:RANDOM>]                                                ;
                                                                         ;
       => DbUpdate(                                                      ;
                      <(alias)>, <{key}>, <.rand.>,                      ;
-                     {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]} ;
+                     {|| __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>,<xn>)]} ;
                    )
 
 
@@ -465,9 +595,10 @@
 #command CLOSE <alias>                 => <alias>->( DbCloseArea() )
 #command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
 
-#command CLOSE [<al: DATABASES,ALL>] => DbCloseAll()
-#command CLOSE INDEXES                 => DbClearIndex()
-#command CLOSE                         => DbCloseArea()
+#command CLOSE [<al: DATABASES,ALL>] [ALL]   => DbCloseAll()
+#command CLOSE INDEXES                       => DbClearIndex()
+#command CLOSE <x:IN,ALIAS> <(a)>            => (<(a)>)->(DbCloseArea())
+#command CLOSE                               => DbCloseArea()
 
 #endif
 

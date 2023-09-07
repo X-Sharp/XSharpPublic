@@ -21,11 +21,13 @@
     <VO13>true</VO13>
     <VO14>true</VO14>
     <VO15>true</VO15>
-    <Nostandarddefs>true</Nostandarddefs>
+    <Nostandarddefs>False</Nostandarddefs>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DisabledWarnings>165,169,219,618,168</DisabledWarnings>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>false</EmitDebugInformation>
@@ -60,6 +62,7 @@
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="ClipperCallingTests.prg" />
     <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="TerminalTests.prg" />
     <Compile Include="DbfNtxTests.prg" />
     <Compile Include="DbfBlobTests.prg" />
     <Compile Include="EmptyTests.prg" />

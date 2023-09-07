@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 /// <include file="Gui.xml" path="doc/FixedText/*" />
 [XSharp.Internal.TypesChanged];
 CLASS FixedText INHERIT TextControl
@@ -23,7 +28,7 @@ CLASS FixedText INHERIT TextControl
         //PP-040317. Issue 12806. Added DT_EXPANDTABS for default behaviour more like old fixed text
         SELF:_dwDrawStyle := _OR(DT_WORDBREAK,DT_EXPANDTABS)
 
-        DEFAULT(@lDataAware, TRUE)
+        DEFAULT( REF lDataAware, TRUE)
         lResID:=(xID IS ResourceID)
         IF !lResID
             cClass:="Static"

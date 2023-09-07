@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 // ListBox.prg
 // This file contains subclasses Windows.Forms controls that are used in the VO Compatible
 // Unicode GUI Classes, in particular several TextBox subclasses
@@ -9,7 +15,7 @@ USING SWF := System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 USING System.Collections
 
-CLASS VOListBox INHERIT SWF.ListBox
+CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBox
 
 #region fields
 	PROTECTED lBusy AS LOGIC
@@ -205,13 +211,13 @@ CLASS VOListBox INHERIT SWF.ListBox
 
 END CLASS
 
-CLASS VOComboBox INHERIT SWF.ComboBox
+CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseListBox
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
 	PROTECTED lBusy AS LOGIC
-	PROTECTED cSavedString AS STRING
-	#include "PropControl.xh"
+    protected cSavedString as string
+	#include "PropControlStyle.xh"
 
 	METHOD Initialize AS VOID STRICT
 		SELF:DisplayMember	:= "DisplayValue"
@@ -221,8 +227,7 @@ CLASS VOComboBox INHERIT SWF.ComboBox
 		RETURN
 
     NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (SWF.AutoCompleteSource) VALUE
-    NEW PROPERTY Items           AS IList GET SUPER:Items
-
+    NEW Property Items as IList GET SuPER:Items
 	PROPERTY Text AS STRING
 		GET
 			IF SELF:IsDisposed
@@ -267,15 +272,7 @@ CLASS VOComboBox INHERIT SWF.ComboBox
 		//SELF:DrawItem += SupportFunctions.comboBox_DrawItem
 
 
-	METHOD SetVisualStyle	 AS VOID STRICT
-		IF SELF:oProperties != NULL_OBJECT
-			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
-		ENDIF
-
-
-
-
-	METHOD IncrementalSearch( ch AS Char) AS LOGIC
+	method IncrementalSearch( ch as char) as logic
 		LOCAL nItem AS INT
 		IF (DateTime.Now - lastKeyPressTime > TimeSpan{0, 0, 1})
 			searchString := ch:ToString()

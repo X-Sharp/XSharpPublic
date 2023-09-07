@@ -55,12 +55,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
             DbCreate(cDbf,{{"FLD","N",5,0}})
 
-            DbUseArea(TRUE,,cDbf)
+            DbUseArea(TRUE,,cDbf,"Test")
             DbAppend()
             FieldPut(1,1)
             DbAppend()
             FieldPut(1,2)
-            DbCloseArea()
+            DbCloseArea("test")
             System.IO.File.Copy(cDbf, cCopy, true)
             DbUseArea(TRUE,,cDbf)
             Assert.Equal(1, (int) FieldGet(1))
@@ -82,12 +82,14 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			cFileName := "DBAppend_Exclusive"
 
 			Assert.True(  DbCreate(cFileName , aFields , "DBFNTX")  )
-			Assert.True(  DbUseArea(,"DBFNTX",cFileName,,FALSE) )
+			Assert.True(  DbUseArea(,"DBFNTX",cFileName,"test",FALSE) )
 			Assert.True(  RecCount() == 0 )
 			Assert.True(  DbAppend() )
 			FieldPut(1 , "test")
-			Assert.True(  AllTrim(FieldGet(1)) == "test" )
-			Assert.True(  DbCloseArea() )
+            Assert.True(  AllTrim(FieldGet(1)) == "test" )
+            Assert.True(  DbAppend(TRUE,"test") )
+			__FieldSetWa("test", "test","test")
+			Assert.True(  DbCloseArea("test") )
 		RETURN
 
 		[Fact, Trait("Category", "DBFFuncs")];

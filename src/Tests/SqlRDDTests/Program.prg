@@ -23,12 +23,25 @@ function Start as void
     //TestCommandODBC()
     //TestCommandOLEDB()
     //TestParametersODBC()
-    TestParametersSQL()
+    //TestParametersSQL()
+    TestTable()
     wait
     return
+
+function TestTable() as void
+        SqlDbSetProvider("SQLSERVER")
+        var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
+        VoDbUseArea(true, typeof(SQLRDD),"Customers","Customers",true, true)
+        dbGoTop()
+        do while ! Eof()
+            ? Recno(), FieldGet(1)
+            DbSkip(1)
+        enddo
+        VODbCloseArea()
+
 function TestParametersODBC() AS VOID
-    local conn as SqlDbConnection
-    local cmd  as SqlDbCommand
+    local conn := null as SqlDbConnection
+    local cmd  := null as SqlDbCommand
     TRY
         SqlDbSetProvider("ODBC")
         var handle := SqlDbOpenConnection(OdbcConnStr, EventHandler)

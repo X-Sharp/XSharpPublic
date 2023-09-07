@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 // Event_Listview.prg
 
 
@@ -33,9 +38,10 @@ CLASS ListViewDragEvent INHERIT ListViewItemEvent
 	[DebuggerStepThrough];	
 	CONSTRUCTOR(oLV AS ListView, e AS System.Windows.Forms.ItemDragEventArgs)
 		SUPER(oLV)
-		nButton := e:Button
-		SELF:oLVI := e:Item:Tag
-		oPoint := Point{e:Item:Position:X, e:Item:Position:Y}
+        nButton := e:Button
+        var oItem := (VOListViewItem) e:Item
+        self:oLVI := oItem:Tag
+		oPoint := Point{oItem:Position:X, oItem:Position:Y}
 
 	ACCESS IsLeftButton AS LOGIC STRICT 
 		RETURN nButton == System.Windows.Forms.MouseButtons.Left

@@ -1,6 +1,6 @@
 [General]
 PROJECT = Runtime
-IDEVersion = 1.33
+IDEVersion = 2.17
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
@@ -29,9 +29,6 @@ CustomControlsGuid = 2E6221E6-9470-415B-B277-57892CA28BDA
 DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
 
 [Recent References]
-RecentReference = GAC:System,v4,4.0.0.0
-RecentReference = GAC:System.Core,v4,4.0.0.0
-RecentReference = Browse:C:\xSharp\DevRt\Binaries\Release\Newtonsoft.Json.dll
 
 [Application Groups]
 
@@ -39,7 +36,7 @@ RecentReference = Browse:C:\xSharp\DevRt\Binaries\Release\Newtonsoft.Json.dll
 
 ; ************** APPLICATION XSharp.Core *************
 Application = XSharp.Core
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -420,87 +417,87 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
 [XSharp.Core Resources]
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Collations.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Collations.resources
 ResourceFileGuid = D0E4D7C0-F40B-4043-8C2F-05570E74DEC5
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Croatia.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Croatia.resources
 ResourceFileGuid = B23ABB1D-6A9F-4E7A-BA64-6DBC3D36A60D
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Czech852.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Czech852.resources
 ResourceFileGuid = C50B1EAB-F43A-45EF-AEE7-F7DB5B21DDD3
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Danish.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Danish.resources
 ResourceFileGuid = EBCA0F4F-C10F-4ACB-A44F-D5E53C016E19
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Dutch.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Dutch.resources
 ResourceFileGuid = CDF7AF63-8452-4710-B314-DBEBB3C5296F
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Finnish.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Finnish.resources
 ResourceFileGuid = C378D0D1-49F1-4B77-A164-822F19C57013
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.French.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.French.resources
 ResourceFileGuid = 46883BCA-88D2-4707-A4FE-374F525619C6
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Generic.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Generic.resources
 ResourceFileGuid = 7395EDC4-C691-4213-A50F-F44CF7C867F6
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.German.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.German.resources
 ResourceFileGuid = AD1B3A9B-36D5-45C5-AF1B-517DD678DE97
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Hung852.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Hung852.resources
 ResourceFileGuid = B13F62FD-5BA4-4763-8A5D-E2D5E9A25393
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Italian.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Italian.resources
 ResourceFileGuid = 02EE1FB1-3B2B-43A7-8AB9-3F6329BF58C5
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Norwegn.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Norwegn.resources
 ResourceFileGuid = 60F746B1-520D-4544-BE06-10289F740863
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Pol852.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Pol852.resources
 ResourceFileGuid = 35A3392C-3F07-4C8E-AFF1-20363AA0D40B
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Port850.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Port850.resources
 ResourceFileGuid = 40448B15-D4AD-4C47-9785-D3ED3B39FE7C
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Romania.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Romania.resources
 ResourceFileGuid = E913A83F-2285-4DF4-809E-5E6B63DB47FE
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Russian.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Russian.resources
 ResourceFileGuid = E6A534BD-68C4-4B45-8CD4-684ED58BB55A
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Serbia.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Serbia.resources
 ResourceFileGuid = E462B391-7CAC-4EEF-80D8-A053F5A19E34
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Slov852.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Slov852.resources
 ResourceFileGuid = FA96DA47-8BB7-437C-B7F8-0163EC48B37C
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.SL-W-EE.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.SL-W-EE.resources
 ResourceFileGuid = DF281420-CFD2-4F86-94F9-0ACFE935FFA8
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Spanish.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Spanish.resources
 ResourceFileGuid = C9873979-1F14-4AC0-9A02-A36DE940E257
 Linked = 1
 Modified = 0
-ResourceFile = External , %ProjectPath%\Binaries\Obj\Debug\XSharp.Core\XSharp.Language.Swedish.resources
+ResourceFile = External , %ProjectPath%\..\Artifacts\Obj\XSharp.Core\Debug\XSharp.Language.Swedish.resources
 ResourceFileGuid = 33200956-EC39-4CDD-952A-F7004AFDB1E5
 Linked = 1
 Modified = 0
@@ -574,7 +571,7 @@ ENDApplication = XSharp.Core
 
 ; ************** APPLICATION XSharp.VO *************
 Application = XSharp.VO
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -770,7 +767,7 @@ ENDApplication = XSharp.VO
 
 ; ************** APPLICATION Xide.Tests *************
 Application = Xide.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -894,7 +891,7 @@ ENDApplication = Xide.Tests
 
 ; ************** APPLICATION Xide.Unit *************
 Application = Xide.Unit
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1016,7 +1013,7 @@ ENDApplication = Xide.Unit
 
 ; ************** APPLICATION XSharp.Core.Tests *************
 Application = XSharp.Core.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1184,7 +1181,7 @@ ENDApplication = XSharp.Core.Tests
 
 ; ************** APPLICATION XSharp.VO.Tests *************
 Application = XSharp.VO.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1324,7 +1321,7 @@ ENDApplication = XSharp.VO.Tests
 
 ; ************** APPLICATION XSharp.Rdd *************
 Application = XSharp.Rdd
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1843,6 +1840,11 @@ FileGUID = 04E79686-9E94-49DF-AF16-04E36FF3A710
 FileFileGroup = 01F81BAF-05D1-46AA-ABF5-62658E79C911
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Dbf\RecordList.prg
+FileGUID = 6E42F8A7-1AE2-45F8-A6A5-727B7B4A4191
+FileFileGroup = 2CF631F8-F0BD-4A28-AAFD-D0EE88900B07
+FileType = Code
+CopyToBin = 0
 [XSharp.Rdd References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
@@ -1919,7 +1921,7 @@ ENDApplication = XSharp.Rdd
 
 ; ************** APPLICATION XSharp.Rdd.Tests *************
 Application = XSharp.Rdd.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2048,7 +2050,7 @@ ENDApplication = XSharp.Rdd.Tests
 
 ; ************** APPLICATION XSharp.RT *************
 Application = XSharp.RT
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2450,7 +2452,7 @@ ENDApplication = XSharp.RT
 
 ; ************** APPLICATION XSharp.XPP *************
 Application = XSharp.XPP
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2487,30 +2489,20 @@ FileGroup = Properties
 FileGroupGUID = 33903A9B-D4FE-4D0B-8F5A-DC4AAD436651
 FileGroup = Defines
 FileGroupGUID = 224EC525-CA40-4CCE-8460-5290070FBC06
+FileGroup = Types
+FileGroupGUID = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
 [XSharp.XPP Files]
 File = %AppPath%\Properties\AssemblyInfo.prg
 FileGUID = 2E3F524A-8166-4B29-B381-CAF611C1A95E
 FileFileGroup = 33903A9B-D4FE-4D0B-8F5A-DC4AAD436651
 FileType = Code
 CopyToBin = 0
-File = %AppPath%\Abstract.prg
-FileGUID = FE6BC7A6-C285-4660-9B0F-9C495567DB80
-FileType = Code
-CopyToBin = 0
 File = %AppPath%\Defines.prg
 FileGUID = BBAE4A7E-E21A-4315-900B-40E79C984FD8
 FileType = Code
 CopyToBin = 0
-File = %AppPath%\DataObject.prg
-FileGUID = A2E775F4-464C-40B0-A71E-7AC542F23BE8
-FileType = Code
-CopyToBin = 0
 File = %AppPath%\RuntimeClasses.prg
 FileGUID = 071ACB61-76C4-4785-8FD1-C2B7ABCFE67A
-FileType = Code
-CopyToBin = 0
-File = %AppPath%\XMLDocument.prg
-FileGUID = E7C2BA6F-0D4C-4A98-963C-3133E5261F45
 FileType = Code
 CopyToBin = 0
 File = %AppPath%\XMLFunctions.prg
@@ -2569,6 +2561,46 @@ FileType = Code
 CopyToBin = 0
 File = %AppPath%\XPPCollations.Designer.prg
 FileGUID = E42356DF-A2C7-4D8B-B0A4-0E91EBA0DCE1
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\Abstract.prg
+FileGUID = E90D6B63-DABF-49D9-BFA1-0664FA57E860
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\ClassObject.prg
+FileGUID = 01202FDC-C180-47CB-BF66-01265EE07303
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\Collations.prg
+FileGUID = CC3A011A-AAD2-40BD-A426-C8564A26072A
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\DataObject.prg
+FileGUID = B8032369-4F3E-44CF-BB94-1A2388836700
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\RuntimeClasses.prg
+FileGUID = 21DF998D-BE09-492E-9AE3-DFED67476D52
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\XAction.prg
+FileGUID = 999A615F-7299-4F56-B35D-A652416D6BD3
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\XDocument.prg
+FileGUID = 7012D276-6BC5-4C0B-B0EF-967B2A69AA11
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\XError.prg
+FileGUID = A2053613-430B-4513-99D4-88BC8949B6AA
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
 FileType = Code
 CopyToBin = 0
 [XSharp.XPP References]
@@ -2648,7 +2680,7 @@ ENDApplication = XSharp.XPP
 
 ; ************** APPLICATION MacroCompiler *************
 Application = MacroCompiler
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3007,7 +3039,7 @@ ENDApplication = MacroCompiler
 
 ; ************** APPLICATION XSharp.Data *************
 Application = XSharp.Data
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3190,7 +3222,7 @@ ENDApplication = XSharp.Data
 
 ; ************** APPLICATION XSharp.VFP *************
 Application = XSharp.VFP
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3525,7 +3557,7 @@ ENDApplication = XSharp.VFP
 
 ; ************** APPLICATION XSharp.VFP.Tests *************
 Application = XSharp.VFP.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3672,7 +3704,7 @@ ENDApplication = XSharp.VFP.Tests
 
 ; ************** APPLICATION XSharp.RT.Tests *************
 Application = XSharp.RT.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3815,7 +3847,7 @@ ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
 ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
-ReferenceBrowse = C:\xSharp\DevRt\Binaries\Release\Newtonsoft.Json.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\Artifacts\Debug\Newtonsoft.Json.dll,1,1
 [XSharp.RT.Tests Resources]
 [XSharp.RT.Tests Native Resources]
 [XSharp.RT.Tests License files]
@@ -3887,7 +3919,7 @@ ENDApplication = XSharp.RT.Tests
 
 ; ************** APPLICATION XSharp.XPP.Tests *************
 Application = XSharp.XPP.Tests
-IDEVersion = 1.33
+IDEVersion = 2.17
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3895,8 +3927,8 @@ Target = 2
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
-Folder = C:\xSharp\DevRt\Runtime\XSharp.XPP.Tests\
+Dialect = XBasePP
+Folder = %ProjectPath%\Runtime\XSharp.XPP.Tests\
 PrgSubFolder = 
 ResourcesSubFolder = 
 Description = 
@@ -3921,8 +3953,16 @@ ExportResources = 0
 ExportImages = 0
 [XSharp.XPP.Tests FileGroups]
 [XSharp.XPP.Tests Files]
+File = %AppPath%\ClassCreateTests.prg
+FileGUID = F7F81A7C-F0B9-44D4-8102-D77FBF55CE75
+FileType = Code
+CopyToBin = 0
 File = %AppPath%\MiscTests.prg
-FileGUID = C648B0C3-C949-476C-9F2E-B00282793623
+FileGUID = AE4808BB-EE34-4B7B-9BAF-353D63BD711A
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\StringTests.prg
+FileGUID = BBDABCB8-72E8-4B6C-8D3B-A91480294020
 FileType = Code
 CopyToBin = 0
 [XSharp.XPP.Tests References]
@@ -3960,7 +4000,7 @@ VO17=0
 FOX1=0
 FOX2=0
 XPP1=0
-LateBound=0
+LateBound=1
 Unsafe=1
 Undeclared=0
 EnforceSelf=0

@@ -405,7 +405,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 
    [Fact, Trait("Category", "Memo")];
-	METHOD MemoTest() AS VOID
+	METHOD MemoReadWriteTest() AS VOID
 		LOCAL sToWrite := "test" AS STRING
         LOCAL cFileName :=TempFile("txt") AS STRING
 		MemoWrit(cFileName, sToWrite)

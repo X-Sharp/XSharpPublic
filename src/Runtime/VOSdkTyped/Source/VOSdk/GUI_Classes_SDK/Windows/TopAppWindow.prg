@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 USING System.Windows.Forms
@@ -36,7 +40,7 @@ CLASS TopAppWindow INHERIT AppWindow
         RETURN
 
     /// <inheritdoc />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         SUPER:Destroy()
         // Tests if this is the last TopAppWindow
         IF (oApp != NULL_OBJECT)

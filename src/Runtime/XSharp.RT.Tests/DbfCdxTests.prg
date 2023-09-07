@@ -2623,8 +2623,16 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbGoTop()
 			Assert.Equal(3, (INT) OrdKeyCount())
 			DbGoBottom()
-			Assert.True( DbDelete() )
-			DbGoTop()
+            Assert.True( DbDelete() )
+            XSharp.RuntimeState.AutoLock    := AutoLock
+            XSharp.RuntimeState.AutoUnLock  := AutoUnLock
+
+            DELETE IN (cDbf)
+            XSharp.RuntimeState.AutoLock    := NULL
+            XSharp.RuntimeState.AutoUnLock  := NULL
+            DELETE IN (cDbf)
+
+            DbGoTop()
 			Assert.Equal(2, (INT) OrdKeyCount())
 
 			DO WHILE ! Eof()
@@ -2635,7 +2643,10 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 			DbCloseArea()
 		RETURN
-
+        METHOD AutoLock() AS VOID
+            RETURN
+        METHOD AutoUnLock() AS VOID
+            RETURN
 
         [Fact, Trait("Category", "DBF")];
 		METHOD CDX_DeletedScope() AS VOID

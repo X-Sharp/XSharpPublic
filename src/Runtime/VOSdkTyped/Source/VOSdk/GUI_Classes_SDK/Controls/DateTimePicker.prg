@@ -1,4 +1,8 @@
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System.Windows.Forms
 USING System.Runtime.InteropServices
@@ -12,7 +16,7 @@ CLASS DateTimePicker INHERIT TextControl
     PROPERTY ControlType AS ControlType GET ControlType.DateTimePicker
 
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
-        DEFAULT(@lDataAware, TRUE)
+        DEFAULT( REF lDataAware, TRUE)
         //SELF:cFormat := Vulcan.Runtime.State.DateFormat_Internal
         SUPER(oOwner, xID, oPoint, oDimension, "SysDateTimePick32", dwStyle, lDataAware)
         RETURN

@@ -301,7 +301,7 @@ STATIC CLASS SQLHelpers
     PUBLIC STATIC METHOD ReturnsRows(cCommand AS STRING) AS LOGIC
         LOCAL aParts := cCommand:Split(" ()":ToCharArray()) AS STRING[]
         IF aParts:Length > 0
-            LOCAL cWord := aParts[1]:ToLower() AS STRING
+            local cWord := aParts[0]:ToLower() as string
             SWITCH cWord
             CASE "select"
             CASE "execute"
@@ -316,7 +316,7 @@ STATIC CLASS SQLHelpers
             CASE "alter"
                 RETURN FALSE
             OTHERWISE
-                RETURN TRUE  //?
+                RETURN false  //?
             END SWITCH
         ENDIF
         RETURN FALSE

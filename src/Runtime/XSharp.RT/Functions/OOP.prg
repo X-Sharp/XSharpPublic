@@ -1414,6 +1414,7 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     endif
     return OOPHelpers.IVarGet(oObject, symInstanceVar, false)
 
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
 
 function IVarGetInfo(oObject as object,symInstanceVar as string) as dword

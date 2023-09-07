@@ -682,19 +682,6 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitStackAllocExpression([NotNull] XSharpParser.StackAllocExpressionContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>accessMemberLateName</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>accessMemberLateName</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>binaryExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.expression"/>.
 	/// </summary>

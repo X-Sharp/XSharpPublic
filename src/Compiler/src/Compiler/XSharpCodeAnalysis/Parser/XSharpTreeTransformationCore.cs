@@ -8584,6 +8584,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitArgumentList([NotNull] XP.ArgumentListContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
+            if (context._Args.Count == 0 ||
+                (context._Args.Count == 1 && context._Args[0].IsMissing))
+            {
+                context.Put(EmptyArgumentList());
+                return;
+            }
             var openParen = SyntaxFactory.OpenParenToken;
             var closeParen = SyntaxFactory.CloseParenToken;
             foreach (var argCtx in context._Args)
@@ -8627,6 +8633,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Expr == null)
             {
+                context.missing = true;
                 context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }
@@ -8645,7 +8652,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             context.Put(_syntaxFactory.Argument(
-                context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.ColonToken),
+                context.Name == null ? null :
+                _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.ColonToken),
                 refKeyword, expr));
         }
 

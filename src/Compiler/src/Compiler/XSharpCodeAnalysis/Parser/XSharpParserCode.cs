@@ -1130,10 +1130,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public string ShortName => Id.GetText();
 
         }
-
         public partial class NamedArgumentContext
         {
-            internal bool IsMissing => Expr == null && Id == null && Null == null;
+            internal bool missing;
+            internal bool IsMissing => missing;
         }
         public partial class UnnamedArgumentContext
         {

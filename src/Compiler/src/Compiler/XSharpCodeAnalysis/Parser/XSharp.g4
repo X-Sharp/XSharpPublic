@@ -504,10 +504,7 @@ constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)
                       (END c2=CONSTRUCTOR End=EOS)?
                     ;
 
-constructorchain    : (SELF | SUPER)
-                        ( (LPAREN RPAREN)
-                        | (LPAREN ArgList=argumentList RPAREN)
-                        ) eos
+constructorchain    : (SELF | SUPER) LPAREN ArgList=argumentList RPAREN eos
                     ;
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
@@ -876,14 +873,15 @@ localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #accessMember           // member access.
-                    |    Op=(DOT|COLON|COLONCOLON)   Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
-                    | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
-                                                                                                        // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
-                    | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName   // aa:&Name  Expr must evaluate to a string which is the ivar name
-                    | Expr=expression LPAREN                      RPAREN        #methodCall             // method call, no params
+expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
+                    | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
+                    // Latebound member access with a ampersand and a name or an expression that evaluates to a string
+                    | Left=expression Op=(DOT|COLON) AMP 
+                      ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
+                    | Op=(DOT|COLON|COLONCOLON) AMP 
+                        ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
+  
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
-                    | XFunc=xbaseFunc LPAREN RPAREN                             #xFunctionExpression    // Array() or Date() no params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
@@ -934,7 +932,6 @@ primary             : Key=SELF                                                  
                     | Query=linqQuery                                           #queryExpression        // LINQ
                     | {ExpectToken(LCURLY)}? Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
-                    | {ExpectToken(LCURLY)}? Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | {ExpectToken(LCURLY)}? Type=datatype LCURLY ArgList=argumentList  RCURLY
                                                    Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
@@ -962,7 +959,6 @@ primary             : Key=SELF                                                  
                     ;
 
 boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName             #boundAccessMember	// member access The ? is new
-                    | Expr=boundExpression LPAREN                      RPAREN           #boundMethodCall	// method call, no params
                     | Expr=boundExpression LPAREN ArgList=argumentList RPAREN           #boundMethodCall	// method call, with params
                     | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT    #boundArrayAccess	// Array element access
                     | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression #boundCondAccessExpr	// expr ? expr

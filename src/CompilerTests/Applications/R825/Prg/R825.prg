@@ -1,3 +1,4 @@
+#pragma options("lb",on)
 PROCEDURE main()
     LOCAL oD := Days():NEW() as days
     ? oD:Date

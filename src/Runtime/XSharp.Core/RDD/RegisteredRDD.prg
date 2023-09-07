@@ -1,10 +1,10 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp
-USING System.Collections.Generic
+USING System.Collections.Concurrent
 USING System.Reflection
 #define XSHARPRDD "XSharp.Rdd"  // Make sure this is the same as the file name for XSharp.Rdd (includin the case)
 BEGIN NAMESPACE XSharp.RDD
@@ -20,8 +20,8 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY RddType        AS System.Type AUTO
         /// <summary>Fully qualified type name of the RDD</summary>
         PROPERTY TypeName       AS STRING AUTO
-        STATIC PRIVATE RDDs     AS Dictionary<STRING, RegisteredRDD>
-        
+        STATIC PRIVATE RDDs     AS ConcurrentDictionary<STRING, RegisteredRDD>
+
         CONSTRUCTOR(cRDDName AS STRING, oType AS System.Type)
             SELF:RddName        := cRDDName
             SELF:RddType        := oType
@@ -33,10 +33,10 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:AssemblyName := cAssemblyName
             SELF:RddName      := cRddName
             SELF:TypeName     := cTypeName
-            RETURN    
-            
+            RETURN
+
         STATIC CONSTRUCTOR()
-            RDDs    := Dictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
+            RDDs := ConcurrentDictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "CAVODBF", "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBF",     "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFDBT",  "XSharp.RDD.DBFDBT"})       // DBF + DBT
@@ -54,12 +54,12 @@ BEGIN NAMESPACE XSharp.RDD
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFNSX",  "XSharp.RDD.DBFNSX"})       // DBF + SMT + NSX
-            
+
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "ADSADT",    "Advantage.ADSADT"})       // ADSADT
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFCDX",  "Advantage.AXDBFCDX"})       // ADS DBFCDX
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFNTX",  "Advantage.AXDBFNTX"})       // ADS DBFNTX
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFVFP",  "Advantage.AXDBFVFP"})       // ADS AXDBFVFP
-            
+
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLCDX",  "Advantage.AXSQLCDX"})       // SQL CDX
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLNTX",  "Advantage.AXSQLNTX"})       // SQL NTX
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLVFP",  "Advantage.AXSQLVFP"})       // SQL VFP
@@ -74,32 +74,31 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLNTX",  "Advantage.AXSQLNTX"})       // ADS DBFNTX
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLVFP",  "Advantage.AXSQLVFP"})       // ADS AXDBFVFP
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLADT",  "Advantage.AXSQLADT"})       // ADS AXDBFVFP
-            
-            
+
+
             RETURN
 
         /// <summary>Locate an entry for a particular RDD name</summary>
         /// <returns>NULL when no RDD registration found.</returns>
         STATIC METHOD Find(cRddName AS STRING) AS RegisteredRDD
-            IF RDDs:ContainsKey(cRddName)
-                RETURN (RegisteredRDD) RDDs:Item[cRddName]
+            IF RDDs:TryGetValue(cRddName, OUT oRdd AS RegisteredRDD)
+                RETURN oRdd
             ENDIF
             RETURN NULL
-            
+
         /// <summary>Add a registration for a new RDD.</summary>
         /// <returns>FALSE when the RDD name is already registered, TRUE when the registration succeeded.</returns>
-        STATIC METHOD Add(oRDD AS RegisteredRDD) AS LOGIC
+        STATIC METHOD Add(oRdd AS RegisteredRDD) AS LOGIC
             LOCAL cRddName AS STRING
-            cRddName := oRDD:RddName
-            IF RDDs:ContainsKey(cRddName)
-                RETURN FALSE
+            cRddName := oRdd:RddName
+            IF RDDs:TryAdd(cRddName, oRdd)
+                RETURN TRUE
             ENDIF
-            RDDs:Add(cRddName, oRDD)
-            RETURN TRUE
-            
+            RETURN FALSE
+
         /// <summary> try to resolve the RDD </summary>
         METHOD Load() AS VOID
-            IF SELF:RddType == NULL 
+            IF SELF:RddType == NULL
                 IF SELF:Assembly == NULL
                     SELF:Assembly := AssemblyHelper.Load(SELF:AssemblyName)
                 ENDIF
@@ -107,9 +106,9 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:RddType := SELF:Assembly:GetType(SELF:TypeName)
                 ENDIF
             ENDIF
-            
+
     END CLASS
-            
+
 END NAMESPACE
 
 

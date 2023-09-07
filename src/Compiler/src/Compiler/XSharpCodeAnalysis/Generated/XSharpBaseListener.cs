@@ -786,21 +786,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitStackAllocExpression([NotNull] XSharpParser.StackAllocExpressionContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>accessMemberLateName</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>accessMemberLateName</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>binaryExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>

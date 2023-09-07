@@ -857,11 +857,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             NotInCore(context, "Late bound member access");
             return;
         }
-        public override void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context)
-        {
-            NotInCore(context, "Late bound member access");
-            return;
-        }
+        //public override void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context)
+        //{
+        //    NotInCore(context, "Late bound member access");
+        //    return;
+        //}
         public override void ExitMemvardecl([NotNull] XSharpParser.MemvardeclContext context)
         {
 

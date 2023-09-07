@@ -811,7 +811,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // check to see if the LHS is Late bound access
                             // because we need to generate a IVarPut() then
                             var left = LHS.XNode;
-                            if (left is XP.AccessMemberLateContext || left is XP.AccessMemberLateNameContext)
+                            if (left is XP.AccessMemberLateContext)
                             {
                                 // lhs is then an InvocationExpression
                                 var invoke = LHS as InvocationExpressionSyntax;
@@ -2158,8 +2158,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     field = MakeMemVarField(fieldInfo);
                 }
                 context.Left.Put(field);
-            }
-            if (left.XNode is XP.AccessMemberLateContext || left.XNode is XP.AccessMemberLateNameContext)
+            } 
+            if (left.XNode is XP.AccessMemberLateContext)
             {
                 var mcall = left as InvocationExpressionSyntax;
                 var obj = mcall.ArgumentList.Arguments[0].Expression;
@@ -4613,35 +4613,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
         {
             // expression:&(expression)
+            // or expression:&name
             // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
             if (_options.SupportsMemvars)
             {
                 CurrentMember.Data.HasMemVars = true;
             }
-            var left = context.Left.Get<ExpressionSyntax>();
-            var right = context.Right.Get<ExpressionSyntax>();
-            var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
-            string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
-            var ivarget = GenerateMethodCall(methodName, args, true);
-            context.Put(ivarget);
-        }
-        public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
-        {
-            // expression:&identifierName
-            // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
-            /*
-            | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate
-                // aa:&(Expr). Expr must evaluate to a string which is the ivar name
-                // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
-            | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName
-                // aa:&Name  Expr must evaluate to a string which is the ivar name
-            */
-            if (_options.SupportsMemvars)
+            ExpressionSyntax left;
+            if (context.Op.Type == XP.COLONCOLON)
             {
-                CurrentMember.Data.HasMemVars = true;
+                left = GenerateSelf();
             }
-            var left = context.Left.Get<ExpressionSyntax>();
-            var right = getMacroNameExpression(context.Name);
+            else if (context.Left != null)
+            {
+                left = context.Left.Get<ExpressionSyntax>();
+            }
+            else
+            {
+                // in with block?
+                var parent = FindWithBlock(context);
+                if (parent is XP.WithBlockContext wb)
+                {
+                    left = GenerateSimpleName(wb.VarName);
+                }
+                else if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.LateBinding, context, PragmaOptions))
+                {
+                    // replace the lhs with a call to a special runtime function
+                    left = GenerateMethodCall(ReservedNames.FoxGetWithExpression, true);
+                }
+                else
+                {
+                    left = GenerateLiteral(0);
+                    left = left.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                }
+            }
+            ExpressionSyntax right; 
+            // we either have a simple name or an expression between parens
+            if (context.Name != null)
+            {
+                right = getMacroNameExpression(context.Name);
+            }
+            else
+            {
+               right = context.Right.Get<ExpressionSyntax>();
+            }
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
             string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
             var ivarget = GenerateMethodCall(methodName, args, true);

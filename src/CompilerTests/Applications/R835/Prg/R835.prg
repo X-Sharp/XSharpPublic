@@ -1,3 +1,4 @@
+#pragma options("lb", on)
 // https://github.com/X-Sharp/XSharpPublic/issues/963
 #xtranslate new <Exp> ( [<args,...>] ) => <Exp>():new([<args>])
 
@@ -13,15 +14,15 @@
 
 
 
-class Example  
-exported:    
+class Example
+exported:
     Inline Method Init (arg)
-    return     
+    return
 endclass
 
 procedure main()
     testEpsilon()
-    local o := new Example(2)       
+    local o := new Example(2)
     xassert(ISOBJECT(o))
     o := NIL
     xassert(ISNIL(o))
@@ -37,25 +38,25 @@ procedure main()
     xassert( ISLOGICAL(o))
     o := 10
     xassert( ISNUMBER(o) )
-    local r := {1 .. 5}     
+    local r := {1 .. 5}
     xassert( r != null)
     datetest()
 return
 
 
-CLASS Range         
+CLASS Range
     PROPERTY x as long auto
     PROPERTY y as long auto
     CONSTRUCTOR(lx,ly)
         x := lx
         y := ly
-END CLASS    
+END CLASS
 
 
 #translate $<d>/<m>/<y> => ntod((<y>)*10000+(<m>)*100+(<d>))
 
 function datetest  as void
-local d := $ 18/02/2022 
+local d := $ 18/02/2022
 xassert(d == 2022.02.18)
 
 
@@ -73,17 +74,17 @@ function testEpsilon
     c := 10.000
     xAssert((a.eq.b-c) == true)
     return nil
-    
+
 #define EPSILON 0.005
 function isZero(n)
 return (n <= EPSILON .and. n >= -EPSILON)
 
-    
-    
-    
+
+
+
 PROC xAssert(l AS LOGIC)
 IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN      
+RETURN

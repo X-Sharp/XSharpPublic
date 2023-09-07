@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="GraphShellWindow">
+    <Window Name="GraphShellWindow">
+      <Name>GraphShellWindow</Name>
+      <Class>SHELLWINDOW</Class>
+      <Caption>Business Graphics</Caption>
+      <Order>0</Order>
+      <Left>24</Left>
+      <Top>24</Top>
+      <Width>640</Width>
+      <Height>480</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>13565952</Styles>
+      <ExStyles>256</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Business Graphics",,</HyperLabel>
+        <HyperLabel>#GraphShellWindow,,,</HyperLabel>
+        <Menu>ShellMenu</Menu>
+      </ExProperties>
+    </Window>
+  </VOWindow>
+</Designers>

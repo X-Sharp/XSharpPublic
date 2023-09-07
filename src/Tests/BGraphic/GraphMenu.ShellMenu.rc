@@ -1,0 +1,16 @@
+ShellMenu MENU
+Begin
+	POPUP "&File"
+	BEGIN
+		MENUITEM "&New\tCtrl+N", 32000
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit\tAlt+F4", 20596
+	END
+	POPUP "&Window"
+	BEGIN
+		MENUITEM "&Cascade\tF4", 20598
+		MENUITEM "&Tile\tShift+F4", 20599
+		MENUITEM "Close &All", 20600
+	END
+End
+ 

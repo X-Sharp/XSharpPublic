@@ -1,0 +1,25 @@
+DESIGNERSTART = VOWindowEditor,SHELLWINDOW,GraphShellWindow
+GUID=51D7A5A8-1CC5-4D04-BF7A-B5F32CC22386
+  Name=GraphShellWindow
+  Class=SHELLWINDOW
+  Caption=Business Graphics
+  Order=0
+  Left=24
+  Width=640
+  Top=24
+  Height=480
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=13565952
+  Exstyles=256
+  Property=HyperLabel=,"Business Graphics",,
+  Property=HyperLabel=#GraphShellWindow,,,
+  Property=Menu=ShellMenu
+
+SUBCONTROLSSTART
+SUBCONTROLSEND
+DESIGNEREND = GraphShellWindow
+

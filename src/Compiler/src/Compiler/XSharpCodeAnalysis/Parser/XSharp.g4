@@ -882,7 +882,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP 
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
-  
+                    | VAR LPAREN Ids+=varidentifier (COMMA Ids+=varidentifier)* RPAREN #varDesignationExpression // VAR ( ID[,ID,...] )
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
@@ -929,6 +929,7 @@ primary             : Key=SELF                                                  
                     | Literal=parserLiteralValue                                #parserLiteralExpression		// literals created by the preprocessor
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
                     | AnonType=anonType                                         #anonTypeExpression		// CLASS { id := expr [, id := expr] }
+                    | TupleExpr=tupleExpr                                       #tupleExpression      // TUPLE { id := expr [, id := expr] }
                     | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | AnoExpr=anonymousMethodExpression                         #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery                                           #queryExpression        // LINQ
@@ -957,6 +958,7 @@ primary             : Key=SELF                                                  
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
                     | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | LPAREN Locals+=localDesignation (COMMA Locals+=localDesignation)* RPAREN #localDesignationExpression // ( ID AS TYPE[,ID AS TYPE,...] )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 
@@ -1070,6 +1072,7 @@ datatype            : ARRAY OF TypeName=typeName                                
                     | TypeName=typeName (Ranks+=arrayRank)+                         #arrayDatatype
                     | TypeName=typeName                                             #simpleDatatype
                     | TypeName=typeName QMARK                                       #nullableDatatype
+                    | TupleType=tupleType                                           #tupleDatatype
                     ;
 
 arrayRank           : LBRKT (Commas+=COMMA)* RBRKT
@@ -1101,6 +1104,24 @@ anonType            : CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMemb
 
 anonMember          : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
+                    ;
+
+// Tuples
+
+tupleType           : TUPLE LCURLY (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RCURLY
+                    ;
+
+tupleTypeElement    : (identifierName AS)? datatype
+                    ;
+
+tupleExpr           : TUPLE LCURLY (Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)*)? RCURLY
+                    ;
+
+tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression
+                    | Expr=expression
+                    ;
+
+localDesignation    : Id=varidentifier AS Type=datatype
                     ;
 
 
@@ -1296,7 +1317,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE
-                    | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL
+                    | STEP | STRICT | TO | THISCALL | TUPLE |  UPTO | USING | WINCALL
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
                     // but when they code event->(DoSomething()) we still need them in this rule...
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP

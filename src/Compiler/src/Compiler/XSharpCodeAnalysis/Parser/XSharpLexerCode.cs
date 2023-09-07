@@ -2371,6 +2371,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "STRUCT", STRUCTURE},
                     { "THROW", THROW},
                     { "TRY", TRY},
+                    { "TUPLE", TUPLE},
                     { "TYPEOF", TYPEOF},
                     { "UNTIL", UNTIL},
                     { "VALUE", VALUE},

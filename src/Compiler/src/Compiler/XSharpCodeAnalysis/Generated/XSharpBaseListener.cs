@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\XSharp\Dev\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
+// Generated from C:\Projects\Xsharp\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -201,6 +201,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitParenExpression([NotNull] XSharpParser.ParenExpressionContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>localDesignationExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLocalDesignationExpression([NotNull] XSharpParser.LocalDesignationExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>localDesignationExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLocalDesignationExpression([NotNull] XSharpParser.LocalDesignationExpressionContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>superExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.primary"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -214,6 +229,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSuperExpression([NotNull] XSharpParser.SuperExpressionContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleExpression([NotNull] XSharpParser.TupleExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleExpression([NotNull] XSharpParser.TupleExpressionContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>sizeOfExpression</c>
@@ -666,6 +696,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitPtrDatatype([NotNull] XSharpParser.PtrDatatypeContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>tupleDatatype</c>
+	/// labeled alternative in <see cref="XSharpParser.datatype"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleDatatype([NotNull] XSharpParser.TupleDatatypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>tupleDatatype</c>
+	/// labeled alternative in <see cref="XSharpParser.datatype"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleDatatype([NotNull] XSharpParser.TupleDatatypeContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>arrayDatatype</c>
 	/// labeled alternative in <see cref="XSharpParser.datatype"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -709,6 +754,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPrimaryExpression([NotNull] XSharpParser.PrimaryExpressionContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>varDesignationExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVarDesignationExpression([NotNull] XSharpParser.VarDesignationExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>varDesignationExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVarDesignationExpression([NotNull] XSharpParser.VarDesignationExpressionContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>condAccessExpr</c>
@@ -3771,6 +3831,71 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAnonMember([NotNull] XSharpParser.AnonMemberContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleType([NotNull] XSharpParser.TupleTypeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleType"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleType([NotNull] XSharpParser.TupleTypeContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleTypeElement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleTypeElement([NotNull] XSharpParser.TupleTypeElementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleTypeElement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleTypeElement([NotNull] XSharpParser.TupleTypeElementContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleExpr([NotNull] XSharpParser.TupleExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleExpr([NotNull] XSharpParser.TupleExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleExprArgument"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleExprArgument([NotNull] XSharpParser.TupleExprArgumentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleExprArgument"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleExprArgument([NotNull] XSharpParser.TupleExprArgumentContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.localDesignation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLocalDesignation([NotNull] XSharpParser.LocalDesignationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.localDesignation"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLocalDesignation([NotNull] XSharpParser.LocalDesignationContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.codeblock"/>.

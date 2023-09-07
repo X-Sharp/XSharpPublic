@@ -6550,7 +6550,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    otherwisestatements
             // }
             //
-            
+
             if (conditions.Count == 1)
             {
                 CreateSimpleIfStatement(context, conditions.First(), elseBlock);
@@ -8774,6 +8774,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.NullableType(context.TypeName.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.QuestionToken)));
         }
 
+        public override void ExitTupleDatatype([NotNull] XP.TupleDatatypeContext context)
+        {
+            context.Put(context.TupleType.Get<TupleTypeSyntax>());
+        }
+
         public override void ExitTypeName([NotNull] XP.TypeNameContext context)
         {
             if (context.NativeType != null)
@@ -9489,6 +9494,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
+        #region Tuples
+        public override void ExitTupleExpression([NotNull] XP.TupleExpressionContext context)
+        {
+            context.Put(context.TupleExpr.Get<TupleExpressionSyntax>());
+        }
+
+        public override void ExitTupleType([NotNull] XP.TupleTypeContext context)
+        {
+            var openParen = SyntaxFactory.OpenParenToken;
+            var closeParen = SyntaxFactory.CloseParenToken;
+            var elements = MakeSeparatedList<TupleElementSyntax>(context._Elements);
+            context.Put(_syntaxFactory.TupleType(openParen, elements, closeParen));
+        }
+
+        public override void ExitTupleTypeElement([NotNull] XP.TupleTypeElementContext context)
+        {
+            var type = context.datatype().Get<TypeSyntax>();
+            var ident = context.identifierName()?.Get<IdentifierNameSyntax>().Identifier;
+            context.Put(_syntaxFactory.TupleElement(type, ident));
+        }
+
+        public override void ExitTupleExpr([NotNull] XP.TupleExprContext context)
+        {
+            var openParen = SyntaxFactory.OpenParenToken;
+            var closeParen = SyntaxFactory.CloseParenToken;
+            var args = MakeSeparatedList<ArgumentSyntax>(context._Args);
+            context.Put(_syntaxFactory.TupleExpression(openParen, args, closeParen));
+        }
+
+        public override void ExitTupleExprArgument([NotNull] XP.TupleExprArgumentContext context)
+        {
+            NameColonSyntax nameOpt = null;
+            if (context.Name != null)
+                nameOpt = _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.ColonToken);
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            context.Put(_syntaxFactory.Argument(nameOpt, null, expr));
+        }
+        #endregion
+
         #region Codeblocks
         public override void ExitCodeblockExpression([NotNull] XP.CodeblockExpressionContext context)
         {
@@ -10084,6 +10128,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Init.Get<ExpressionSyntax>());
         }
         #endregion
+
+        public override void ExitVarDesignationExpression([NotNull] XP.VarDesignationExpressionContext context)
+        {
+            var variables = _pool.AllocateSeparated<VariableDesignationSyntax>();
+            foreach (var id in context._Ids)
+            {
+                if (variables.Count > 0)
+                    variables.AddSeparator(SyntaxFactory.CommaToken);
+                variables.Add(_syntaxFactory.SingleVariableDesignation(id.Get<SyntaxToken>()));
+            }
+            var vardes = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
+            _pool.Free(variables);
+            context.Put(_syntaxFactory.DeclarationExpression(_impliedType, vardes));
+        }
+
+        public override void ExitLocalDesignationExpression([NotNull] XP.LocalDesignationExpressionContext context)
+        {
+            var args = _pool.AllocateSeparated<ArgumentSyntax>();
+            foreach (var loc in context._Locals)
+            {
+                if (args.Count > 0)
+                    args.AddSeparator(SyntaxFactory.CommaToken);
+                var locdes = _syntaxFactory.SingleVariableDesignation(loc.Id.Get<SyntaxToken>());
+                args.Add(MakeArgument(_syntaxFactory.DeclarationExpression(loc.Type.Get<TypeSyntax>(), locdes)));
+            }
+            context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
+            _pool.Free(args);
+        }
         #endregion
 
         #region ExpressionParser

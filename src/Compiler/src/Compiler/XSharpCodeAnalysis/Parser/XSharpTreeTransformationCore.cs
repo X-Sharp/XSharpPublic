@@ -6395,7 +6395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             StatementSyntax forStmt = _syntaxFactory.ForEachStatement(
                 attributeLists: default,
-                awaitKeyword: null,
+                awaitKeyword: context.a?.SyntaxKeyword(),
                 foreachKwd,
                 SyntaxFactory.OpenParenToken,
                 dt,

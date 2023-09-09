@@ -650,7 +650,8 @@ statement           : Decl=localdecl                            #declarationStmt
                       UNTIL Expr=expression
                       eos                                               #repeatStmt
 
-                    | (f=FOREACH | f=FOR EACH)
+                    | ( f=FOREACH | f=FOR EACH )
+                      a=AWAIT?
                       ( V=IMPLIED Id=varidentifier
                       | Id=varidentifier (AS Type=datatype)?
                       | V=VAR Id=varidentifier

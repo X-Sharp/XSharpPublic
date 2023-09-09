@@ -949,6 +949,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
+                case XSharpParser.EXP:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
+                    break;
                 default:
                     // return a valid operator with an error message prevents a crash in the compiler
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken).WithAdditionalDiagnostics(
@@ -1662,6 +1665,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.LOGIC_XOR:
                 case XSharpParser.FOX_XOR:
                     r = SyntaxKind.LogicalNotExpression;
+                    break;
+                case XSharpParser.EXP:
+                    r = SyntaxKind.IndexExpression;
                     break;
                 default:
                     throw new InvalidOperationException();

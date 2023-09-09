@@ -15,6 +15,8 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CommandLine;
 
+//#define DUMP_TRACE
+
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
     internal sealed partial class Xsc : CSharpCompiler
@@ -39,6 +41,9 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 
         internal static int Run(string[] args, BuildPaths buildPaths, TextWriter textWriter, IAnalyzerAssemblyLoader analyzerLoader)
         {
+#if DEBUG && DUMP_TRACE
+            Trace.Listeners.Add(new ConsoleTraceListener());
+#endif
             FatalError.Handler = FailFast.OnFatalException;
             string[] paths = GetPaths(); 
             XSharpSpecificCompilationOptions.SetDefaultIncludeDir(paths[0]);

@@ -392,7 +392,6 @@ arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression
                       // Accessors
                     END PROPERTY
 
-
                     2) Single Line
                     PROPERTY Foo as STRING GET "42"
                     // You can specify Accessors with single expression.
@@ -401,6 +400,13 @@ arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression
                     PROPERTY Foo AS STRING AUTO
                     - You can specify GET/SET/INIT accessor on the same line
                     PROPERTY Foo AS STRING AUTO GET SET
+
+                    They all start with [attributes] [modifiers] PROPERTY (SELF|Id) [params] AS [Type]
+                    The variation is after as TYPE:
+                    1) AUTO ... (on the same line)
+                    2) GET/SET LineAccessorsSingle (on the same line)
+                    3) Multi Line Accessors (recognized by an EOS after the type clause)
+                    We have merged this in one rule.
                     */
 
 property            : (Attributes=attributes)? (Modifiers=memberModifiers)?

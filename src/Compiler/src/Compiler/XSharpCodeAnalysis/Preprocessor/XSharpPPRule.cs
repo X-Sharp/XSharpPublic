@@ -764,6 +764,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (onlyFirstNonOptional)
                                 done = true;
                         }
+                        else
+                        {
+                            done = true;
+                        }
                         break;
                 }
             }

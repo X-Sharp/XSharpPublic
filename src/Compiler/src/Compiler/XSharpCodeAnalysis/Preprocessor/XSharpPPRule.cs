@@ -750,7 +750,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.MatchRestricted:
                         foreach (var token in next.Tokens)
                         {
-                            if (canAddStopToken(stoptokens, token))
+                            if (canAddStopToken(stoptokens, token, out var _))
                             {
                                 stoptokens.Add(token);
                             }
@@ -758,13 +758,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case PPTokenType.MatchSingle:
                     case PPTokenType.Token:
-                        if (canAddStopToken(stoptokens, next.Token))
+                        if (canAddStopToken(stoptokens, next.Token, out var found))
                         {
                             stoptokens.Add(next.Token);
                             if (onlyFirstNonOptional)
                                 done = true;
                         }
-                        else
+                        else if (found && onlyFirstNonOptional)
                         {
                             done = true;
                         }
@@ -772,8 +772,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-        bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token)
+        bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token, out bool found)
         {
+            found = false;
             if (token.Type == XSharpLexer.COMMA)
                 return false;
             foreach (var element in stoptokens)
@@ -781,6 +782,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // do not add tokens that are already in the list.
                 if (tokenEquals(element, token))
                 {
+                    found = true;
                     return false;
                 }
             }

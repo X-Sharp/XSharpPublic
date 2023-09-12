@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices
 using System.Diagnostics
 
 internal static class OOPHelpers
+    static internal aXsAssemblies  as IList<Assembly>
     static internal EnableOptimizations as logic
     static internal cacheClassesAll as Dictionary<string,Type>
     static internal cacheClassesOurAssemblies as Dictionary<string,Type>
@@ -1192,6 +1193,32 @@ internal static class OOPHelpers
             endif
         endif
         return result
+    static method LoadXSharpRuntimeAssemblies() as void
+        foreach asm as Assembly in FindOurAssemblies()
+            if aXsAssemblies:IndexOf(asm) == -1
+                var attr := (AssemblyCompanyAttribute) asm:GetCustomAttribute(typeof(AssemblyCompanyAttribute))
+                if attr != null
+                    if attr:Company == XSharp.Constants.Company
+                        aXsAssemblies:Add(asm)
+                    endif
+                endif
+            endif
+        next
+
+    static method GetCallingMethod() as MethodBase
+        if aXsAssemblies:Count == 0
+            LoadXSharpRuntimeAssemblies()
+        endif
+        var st := StackTrace{}
+        var level := 2
+        var mi := st:GetFrame(level):GetMethod()
+        var type := mi:DeclaringType
+        // when nested call from the runtime walk the stack
+        do while aXsAssemblies:Contains(type:Assembly)
+            level += 1
+            mi := st:GetFrame(level):GetMethod()
+        enddo
+        return mi
 
 end class
 
@@ -1397,6 +1424,7 @@ function IsInstanceOfUsual(uObject as usual,symClassName as string) as logic
     case __UsualType.Array
     case __UsualType.Decimal
     case __UsualType.Currency
+    case __UsualType.Binary
         return IsInstanceOf(uObject, symClassName)
     end switch
     return false
@@ -1412,7 +1440,12 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     if String.IsNullOrEmpty(symInstanceVar)
         throw Error.NullArgumentError(__function__, nameof(symInstanceVar),2)
     endif
-    return OOPHelpers.IVarGet(oObject, symInstanceVar, false)
+    // when we call IvarGet within a method of the same type as oObject
+    // we should allow to access private/hidden properties
+    // see https://github.com/X-Sharp/XSharpPublic/issues/1335
+    var mi := OOPHelpers.GetCallingMethod()
+    var lSelf := mi:DeclaringType == oObject:GetType()
+    return OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
@@ -1496,8 +1529,13 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as 
     if String.IsNullOrEmpty(symInstanceVar)
         throw Error.NullArgumentError(__function__, nameof(symInstanceVar),2)
     endif
-    OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, false)
-    return uValue
+    // when we call IvarGet within a method of the same type as oObject
+    // we should allow to access private/hidden properties
+    // see https://github.com/X-Sharp/XSharpPublic/issues/1335
+    VAR mi := OOPHelpers.GetCallingMethod()
+    VAR lSelf := mi:DeclaringType == oObject:GetType()
+    OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, lSelf)
+    RETURN uValue
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 

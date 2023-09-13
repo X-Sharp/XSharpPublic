@@ -40,7 +40,8 @@ FUNCTION Start() AS INT
 	 "R835", "R836", "R839", "R840", "R842", "R848", "R849", "R850", "R855", "R856", "R858",;
 	 "R861", "R862", "R863", "R864", "R865", "R868", "R870", "R871", "R872", "R873", ;
 	 "R875", "R876", "R878", "R879", "R883", "R884", "R885", "R886", "R888", "R889", ;
-	 "R890", "R892", "R895", "R897", "R899", "R900", "R902", "R903", "R904", "R905";
+	 "R890", "R892", "R895", "R897", "R899", "R900", "R902", "R903", "R904", "R905",;
+	 "R906";
 	 }
 
 	#ifdef GUI
@@ -114,14 +115,19 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	LOCAL oMethod AS MethodInfo
 
 	// todo: set the correct dialect by calling
-
 	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
 	TRY
 	    IF oMethod == NULL
 	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
     		lSucces := FALSE
 	    ELSE
-	       oMethod:Invoke(NULL , NULL)
+	        var pars := oMethod:GetParameters()
+	        if pars:Length == 0
+    	       oMethod:Invoke(NULL , NULL)
+	        else
+	            var oPars := OBJECT[]{pars:Length}
+	            oMethod:Invoke(NULL , oPars)
+	        endif
 		lSucces := TRUE
 	    ENDIF
 	CATCH e AS Exception

@@ -170,7 +170,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var publicMod = MakeList(SyntaxFactory.MakeGeneratedToken(SyntaxKind.PublicKeyword));
             var semi = SyntaxFactory.SemicolonToken;
-            var expr = GenerateMethodCall(ReservedNames.GetXppWrappedParentObject, MakeArgumentList(MakeArgument(GenerateSelf())), true);
+            var expr = GenerateMethodCall(ReservedNames.GetXppWrappedParentObject,
+                    MakeArgumentList(
+                        MakeArgument(GenerateSelf()),
+                        MakeArgument(MakeTypeOf(baseType))), true);
             var arrow = _syntaxFactory.ArrowExpressionClause(
                 SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                 expr);

@@ -583,6 +583,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // iterator body : Xs$Array.Add(element)
                 var addmethod = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("Add"));
                 var methcall = _syntaxFactory.InvocationExpression(addmethod, MakeArgumentList(MakeArgument(GenerateSimpleName("element"))));
+                var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
                 block.Add(GenerateExpressionStatement(methcall, context.Context(), true));
                 StatementSyntax forStmt = _syntaxFactory.ForEachStatement(
                     attributeLists: default,
@@ -592,10 +593,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _impliedType,
                     SyntaxFactory.Identifier("element"),
                     SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
-                    GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                    clipperArgs,
                     SyntaxFactory.CloseParenToken,
                     MakeBlock(block));
-                stmts.Add(forStmt);
+                var condition = _syntaxFactory.BinaryExpression(
+                   SyntaxKind.NotEqualsExpression,
+                   clipperArgs,
+                   SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                   GenerateLiteralNull());
+                var ifstmt = _syntaxFactory.IfStatement(default,
+                    SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    condition,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    forStmt,null);
+                stmts.Add(ifstmt);
                 // convert list to array
                 // Start(Xs$Array.ToArray())
                 var toarray = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("ToArray"));

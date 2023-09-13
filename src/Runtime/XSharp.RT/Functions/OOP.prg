@@ -9,6 +9,7 @@
 
 using XSharp.Internal
 using System.Reflection
+using System.Reflection.Emit
 using System.Collections.Generic
 using System.Linq
 using System.Text
@@ -821,6 +822,10 @@ internal static class OOPHelpers
             return oLB:NoIvarGet(cIVar)
         endif
         t := oObject:GetType()
+        if oObject is IWrappedObject var oWrapped
+            oObject := oWrapped:Object
+            t       := oWrapped:Type
+        endif
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, true, lSelf)
             if propInfo != null_object .and. propInfo:CanRead
@@ -862,7 +867,7 @@ internal static class OOPHelpers
             throw Error{e:GetInnerException()}
         end try
         cIVar := cIVar:ToUpperInvariant()
-        if SendHelper(oObject, "NoIVarGet", <usual>{cIVar}, out var oResult)
+        if SendHelper(oObject, "NoIVarGet", <usual>{cIVar}, out var oResult,false)
             return oResult
         end if
         var oError := Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar} )
@@ -887,6 +892,10 @@ internal static class OOPHelpers
             return
         endif
         t := oObject:GetType()
+        if oObject is IWrappedObject var oWrapped
+            oObject := oWrapped:Object
+            t       := oWrapped:Type
+        endif
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
             if propInfo != null_object .and. propInfo:CanWrite
@@ -927,9 +936,11 @@ internal static class OOPHelpers
             throw Error{inner}
         end try
 
-
     static method SendHelper(oObject as object, cMethod as string, uArgs as usual[]) as logic
-        local lOk := OOPHelpers.SendHelper(oObject, cMethod, uArgs, out var result) as logic
+        return SendHelper(oObject, cMethod, uArgs, false)
+
+    static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], lCallBase as logic) as logic
+        local lOk := OOPHelpers.SendHelper(oObject, cMethod, uArgs, out var result, lCallBase) as logic
         oObject := result   // get rid of warning
         return lOk
 
@@ -975,9 +986,14 @@ internal static class OOPHelpers
         type:Add(cMethod, ml)
         return true
 
-    static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual) as logic
+    static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual, lCallBase as logic) as logic
         local t := oObject?:GetType() as Type
         result := nil
+        if oObject is IWrappedObject var oWrapped
+            oObject     := oWrapped:Object
+            t           := oWrapped:Type
+            lCallBase   := true
+        endif
         if t == null
             throw Error.NullArgumentError( cMethod, nameof(oObject), 1 )
         endif
@@ -1009,9 +1025,62 @@ internal static class OOPHelpers
             // No Error Here. THat is done in the calling code
             return false
         endif
-        return OOPHelpers.SendHelper(oObject, mi, uArgs, out result)
+        return OOPHelpers.SendHelper(oObject, mi, uArgs, out result, lCallBase)
 
-    static method SendHelper(oObject as object, mi as MethodInfo , uArgs as usual[], result out usual) as logic
+        static method SendHelper(oObject as object, mi as MethodInfo , uArgs as usual[], result out usual) as logic
+            return SendHelper(oObject, mi, uArgs, out result, false)
+
+    static internal dynamicMethodCache as Dictionary<MethodInfo,DynamicMethod>
+    static method InvokeNotOverriddenMethod( methodInfo as MethodInfo, targetObject as object, arguments as object[]) as object
+        // this code is from
+        // http://www.simplygoodcode.com/2012/08/invoke-base-method-using-reflection/index.html
+        // I would have never come up with this myself.
+        // Thanks for the Internet and for people that share code!
+        var parameters := methodInfo:GetParameters()
+        if (parameters:Length == 0)
+            if arguments != null .and. arguments:Length != 0
+                 throw Exception{"Arguments count doesn't match"}
+            endif
+        elseif parameters:Length != arguments:Length
+            throw Exception{"Arguments count doesn't match"}
+        endif
+        local dynamicMethod as DynamicMethod
+        if dynamicMethodCache == null
+            dynamicMethodCache := Dictionary<MethodInfo,DynamicMethod>{}
+        endif
+        if dynamicMethodCache:ContainsKey(methodInfo)
+            dynamicMethod := dynamicMethodCache[methodInfo]
+        else
+            local returnType := null as System.Type
+            if (methodInfo:ReturnType != typeof(void))
+                returnType := methodInfo:ReturnType
+            endif
+            var type := targetObject:GetType()
+            dynamicMethod := DynamicMethod{"", returnType, <Type> { type, typeof(object) }, type}
+            var iLGenerator := dynamicMethod:GetILGenerator()
+            iLGenerator:Emit(OpCodes.Ldarg_0)
+            for var i := 0 upto parameters:Length-1
+                var parameter := parameters[i]
+                iLGenerator:Emit(OpCodes.Ldarg_1) // load array argument
+                // get element at index
+                iLGenerator:Emit(OpCodes.Ldc_I4_S, i) // specify index
+                iLGenerator:Emit(OpCodes.Ldelem_Ref) // get element
+                var parameterType := parameter:ParameterType
+                if (parameterType:IsPrimitive)
+                    iLGenerator:Emit(OpCodes.Unbox_Any, parameterType)
+                elseif (parameterType == typeof(object))
+                    nop
+                else
+                    iLGenerator:Emit(OpCodes.Castclass, parameterType)
+                endif
+            next
+            iLGenerator:Emit(OpCodes.Call, methodInfo)
+            iLGenerator:Emit(OpCodes.Ret)
+            dynamicMethodCache:Add(methodInfo, dynamicMethod)
+        endif
+        return dynamicMethod:Invoke(null, <object>{ targetObject, arguments })
+
+    static method SendHelper(oObject as object, mi as MethodInfo , uArgs as usual[], result out usual, lCallBase as logic) as logic
         result := nil
         if mi == null
             throw Error.NullArgumentError( __function__, nameof(mi), 2 )
@@ -1026,10 +1095,20 @@ internal static class OOPHelpers
             var oArgs := OOPHelpers.MatchParameters(mi, uArgs, out var hasByRef)
             try
                 if mi:ReturnType == typeof(usual)
-                    result := mi:Invoke(oObject, oArgs)
+                    if lCallBase
+                        // Call the base methoud using a helper dynamic method
+                        result := InvokeNotOverriddenMethod(mi, oObject, oArgs)
+                    else
+                        result := mi:Invoke(oObject, oArgs)
+                    endif
                 else
                     local oResult as object
-                    oResult := mi:Invoke(oObject, oArgs)
+                    if lCallBase
+                        // Call the base methoud using a helper dynamic method
+                        oResult := InvokeNotOverriddenMethod(mi, oObject, oArgs)
+                    else
+                        oResult := mi:Invoke(oObject, oArgs)
+                    endif
                     if oResult == null .and. mi:ReturnType == typeof(string)
                         oResult := String.Empty
                     endif
@@ -1170,7 +1249,7 @@ internal static class OOPHelpers
             throw Error.NullArgumentError( cCaller, nameof(cMethod), 2 )
         endif
         local result as usual
-        if ! OOPHelpers.SendHelper(oObject, cMethod, args, out result)
+        if ! OOPHelpers.SendHelper(oObject, cMethod, args, out result, false)
             local nomethodArgs as usual[]
             cMethod := cMethod:ToUpperInvariant()
             RuntimeState.NoMethod := cMethod   // For NoMethod() function
@@ -1187,7 +1266,7 @@ internal static class OOPHelpers
             if oObject is ILateBound var oLB
                 return oLB:NoMethod(nomethodArgs)
             endif
-            if ! OOPHelpers.SendHelper(oObject, "NoMethod" , nomethodArgs, out result)
+            if ! OOPHelpers.SendHelper(oObject, "NoMethod" , nomethodArgs, out result, false)
                 var oError := Error.VOError( EG_NOMETHOD, cCaller, nameof(cMethod), 2, <object>{oObject, cMethod, args} )
                 oError:Description  := oError:Message + " '"+cMethod+"'"
                 throw oError

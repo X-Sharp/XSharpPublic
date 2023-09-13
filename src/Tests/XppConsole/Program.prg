@@ -1,154 +1,49 @@
-USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
-using XSharp.XPP
-
-//#translate SetDefault(@ <expr>, <value>) => <expr> := IIF( IsNil( <expr>) , <value>, <expr>)
-
-#translate SetDefault(@ <expr>, <value>) => <expr> := SetDefault(<expr> , <value>)
-
-
-PROCEDURE Main()
-    TRY
-    ? PosUpper("abcdeFghi")
-    ? PosUpper("abcd1Fghi",TRUE)
-    ? PosUpper("Abcd1Fghi",FALSE,1)
-    ? PosLower("abcdeFghi")
-    ? PosLower("abcd1Fghi",TRUE)
-    ? PosLower("Abcd1Fghi",FALSE,1)
-    ? PosChar("abcdefg","h")
-    ? PosChar("abcdefg",42)
-    ? PosChar("abcdefg","ç",3)
-    ? PosDel("abcdefg",5,25)
-    ? PosIns("abcde","ABC",2)
-    ? PosIns("abcde","ABC")
-    ? PosRepl("abcde","q",3)
-    ? PosRepl("abcde","qrstuv")
-    CATCH e AS Exception
+// Calling method from parent class through the generated access that returns a parent object
+// https://github.com/X-Sharp/XSharpPublic/issues/1338
+#pragma warnings(9201, off)   // SHARED clause
+#pragma warnings(108, off)    // DerivedExample.a' hides inherited member 'Example.a'. Use the new keyword if hiding was intended.
+procedure Main()
+    local o
+    try
+    o := DerivedExample():new()
+    ? o:a
+    ? o:Example:a
+    ? o:Name()
+    ? "Example:Name",o:Example:Name()
+    ? o:OldName()
+    catch e as exception
         ? e:ToString()
+    end try
+    _wait()
+    return
 
-    END TRY
-WAIT
-    RETURN
+class DerivedExample from Example
+exported:
+    inline method Init()
+        super:Init()
+        ::a := 4
+        ::Example:a := 5
+        ? "DerivedExample:Init(): ", ::a, super:a, ::Example:a
+        return self
 
-FUNCTION MAINx(A,B,C) AS VOID clipper
-    TRY
-    ? XSharp.RuntimeState.Dialect:ToString()
-    LOCAL uTest := NIL as usual
-    SetCollationTable(2)
-    SetDefault(@uTest, 123)
-    ? uTest
+    inline method Name()
+        return "DerivedExample:Name():" + super:Name() + " " + ::Example:Name()+ " "
 
-    ReportMemory("Before")
-    FOR var nI := 1 to 100
-        testCLassCreate()
-    NEXT
-    ReportMemory("After")
-    testDataObject()
+    inline method OldName()
+    return "DerivedExample:OldName(): " + super:Name() + " " + ::Example:Name()+ " "
 
-    WAIT
-    CATCH e as Exception
-        ErrorDialog(e)
-    END TRY
-	RETURN
-
-    FUNCTION ReportMemory(description AS STRING) AS VOID
-        Console.WriteLine("Memory: {0} ({1})", GC.GetTotalMemory(TRUE),description)
-        Console.WriteLine()
-        RETURN
-
-function testClassCreate() as void
-    local oClass as OBJECT
-    local oObject as OBJECT
-    local aFields as array
-    local aMethods as array
-    aFields  := {{"FirstName", CLASS_EXPORTED + VAR_INSTANCE }, {"LastName", CLASS_EXPORTED + VAR_INSTANCE }}
-    aMethods := { ;
-        {"FullName", CLASS_EXPORTED + METHOD_INSTANCE +METHOD_ACCESS+METHOD_ASSIGN, {|oSelf, newValue| GetFullName(oSelf,newValue)} },;
-        {"Init",    CLASS_EXPORTED + METHOD_INSTANCE , {|oSelf| InitObject(oSelf)} } ;
-        }
-    oClass := ClassCreate("Test",{},aFields,aMethods)
-    //? oClass:GetType()
-    oObject := oClass:New()
-    //? oObject:ClassName()
-    oObject:FirstName := "Robert"
-    oObject:LastName  := "van der Hulst"
-    //? oObject:FirstName, oObject:LastName
-    //? oObject:FullName
-    //oObject:FullName := "New Name"
-    ClassDestroy(oClass)
-    aadd(aFields, {"City", CLASS_EXPORTED + VAR_INSTANCE })
-    oClass := ClassCreate("Test",NIL,aFields,aMethods)
-    oObject := oClass:New()
-    oObject:FirstName := "Marian"
-    oObject:LastName  := "Koolhaas"
-    //? oObject:FirstName, oObject:LastName
-    //? oObject:FullName
-    ClassDestroy(oClass)
-
-function testDataObject() as VOID
-    local oDO as OBJECT
-    oDO := DataObject{}
-    ? "LastName?", IsMemberVar(oDO, "lastname" )  // N
-    ? oDO:LastName                   // NIL
-
-  /* Add a member implicitly by value assignment,
-   * the check for a member and output its value
-   */
-  oDO:LastName := "Picard"
-  ? "LastName?", IsMemberVar(oDO, "lastname" )  // Y
-  ? oDO:LastName                   // "Picard"
-
-  /* Define a method via code block, execute
-   * the method
-   */
-  oDO:DefineMethod( "print" , {|oSelf|QOut("Hello "+oSelf:LastName)} )
-  ? "Call Print"
-  oDO:print()                      // "Hello Picard"
-
-  /* Add another member, redefine an existing
-   * method. Now implement the method using a
-   * function. Execute the method.
-   */
-  oDO:FirstName := "Jean-Luc"
-  oDO:DefineMethod( "print", "displayname" )
-  ? "Call Print (redefined)"
-  oDO:print( "," )
+    var a
+endclass
 
 
+class Example
+exported:
+    inline method Init()
+        ::a := 3
+        return self
 
-static function GetFullname(oSelf , newValue) CLIPPER
-    IF IsNil(newValue)
-        return "Full: "+oSelf:FirstName + " " + oSelf:LastName
-    ELSE
-        ? "Cannot assign FullName"
-    ENDIF
-    return NIL
+    inline method Name()
+        return "Example Name"
 
-static function InitObject(oSelf ) CLIPPER
-    oSelf:FirstName := "John"
-    oSelf:LastName  := "Doe"
-    return oSelf
-
-
-CLASS TestMe
-    EXPORT oCb as CodeBlock
-
-    METHOD CallMe(a params usual[]) AS USUAL
-        RETURN oCb:Eval(SELF)
-
-
-
-END CLASS
-
-FUNCTION DisplayName(oSelf AS OBJECT, cSeparator AS STRING) AS VOID
-  ? oSelf:FirstName+cSeparator+" "+oSelf:LastName
-RETURN
-
-
-FUNCTION SetDefault( uExpr as USUAL, uValue as USUAL) AS USUAL
-IF IsNil(uExpr)
-    return uValue
-ENDIF
-RETURN uExpr
+    var a
+endclass

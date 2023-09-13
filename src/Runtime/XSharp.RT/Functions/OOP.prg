@@ -27,6 +27,7 @@ internal static class OOPHelpers
         cacheClassesOurAssemblies   := Dictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
         fieldPropCache              := Dictionary<System.Type, Dictionary<string, MemberInfo> >{}
         overloadCache               := Dictionary<System.Type, Dictionary<string, IList<MethodInfo>> >{}
+        aXsAssemblies               := List<Assembly>{}
         return
 
     static method FindOurAssemblies as IEnumerable<Assembly>
@@ -1213,11 +1214,13 @@ internal static class OOPHelpers
         var level := 2
         var mi := st:GetFrame(level):GetMethod()
         var type := mi:DeclaringType
-        // when nested call from the runtime walk the stack
-        do while aXsAssemblies:Contains(type:Assembly)
-            level += 1
-            mi := st:GetFrame(level):GetMethod()
-        enddo
+        if type != null // For dynamic methods the type can be NULL
+            // when nested call from the runtime walk the stack
+            do while aXsAssemblies:Contains(type:Assembly)
+                level += 1
+                mi := st:GetFrame(level):GetMethod()
+            enddo
+        endif
         return mi
 
 end class

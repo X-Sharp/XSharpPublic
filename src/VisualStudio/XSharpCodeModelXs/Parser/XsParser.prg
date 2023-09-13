@@ -1260,7 +1260,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN SELF:ExpectAny(XSharpLexer.ASSIGN_OP, XSharpLexer.EQ)
 
     PRIVATE METHOD IsId(token AS LONG) AS LOGIC
-        IF token == XSharpLexer.ID 
+        if token == XSharpLexer.ID
             RETURN TRUE
         ENDIF
         // Soft keywords need to be
@@ -2350,7 +2350,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         DO WHILE SELF:La1 != XSharpLexer.GT .AND. !SELF:Eos()
             VAR sParam := SELF:TokensAsString(SELF:ParseAttributes())
 
-            IF SELF:Matches(XSharpLexer.IN, XSharpLexer.OUT)
+            if self:Matches(XSharpLexer.IN, XSharpLexer.OUT)
                 sParam += SELF:ConsumeAndGetText()+" "
             ENDIF
             IF SELF:IsId(SELF:La1)
@@ -2551,14 +2551,15 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 var subtype := SELF:ParseTypeName()
                 result := "ARRAY<"+subtype+">"
             ENDIF
-        CASE XSharpLexer.CODEBLOCK
-        CASE XSharpLexer.DATE
+        case XSharpLexer.BINARY  // Xbase Types
+        case XSharpLexer.CODEBLOCK
+        case XSharpLexer.CURRENCY
+        case XSharpLexer.DATE
         CASE XSharpLexer.FLOAT
         CASE XSharpLexer.PSZ
         CASE XSharpLexer.SYMBOL
         CASE XSharpLexer.USUAL
-            result :=  SELF:ConsumeAndGetText()
-        CASE XSharpLexer.BYTE
+        case XSharpLexer.BYTE     // Start of native Types
         CASE XSharpLexer.CHAR
         CASE XSharpLexer.DATETIME
         CASE XSharpLexer.DECIMAL
@@ -2569,7 +2570,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.LOGIC
         CASE XSharpLexer.LONGINT
         CASE XSharpLexer.OBJECT
-        CASE XSharpLexer.PTR
+        case XSharpLexer.NINT
+        case XSharpLexer.NUINT
+        case XSharpLexer.PTR
         CASE XSharpLexer.REAL4
         CASE XSharpLexer.REAL8
         CASE XSharpLexer.SHORTINT
@@ -3309,12 +3312,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE METHOD ParseFoxMethod() AS IList<XSourceEntity>
         /*
         foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
-        T=foxmethodtype  Sig=signature
+        T=funcproctype  Sig=signature
         (HelpString=HELPSTRING HelpText=expression)?
         (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
         end=eos
         StmtBlk=statementBlock
-        (END T2=foxmethodtype  EOS)?
+        (END T2=funcproctype  EOS)?
         ;
         funcproctype        : Token=(FUNCTION | PROCEDURE)
         ;

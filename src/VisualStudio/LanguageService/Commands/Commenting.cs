@@ -1,10 +1,10 @@
 ﻿
 using Community.VisualStudio.Toolkit;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
-using static LanguageService.SyntaxTree.Atn.SemanticContext;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService
@@ -44,16 +44,35 @@ namespace XSharp.LanguageService
             var sel = doc.TextView.Selection;
             var start = sel.Start.Position.Position;
             var end = sel.End.Position.Position;
+            if (start > end)
+            {
+                var tmp = start;
+                start = end;
+                end = tmp;
+            }
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
-                do
+                var startLine = snapshot.GetLineFromPosition(start);
+                var endLine = snapshot.GetLineFromPosition(end);
+                if (startLine.LineNumber == endLine.LineNumber && start != end)
                 {
-                    var line = snapshot.GetLineFromPosition(start);
-                    editsession.Insert(line.Start.Position, CommentChars[0] + " ");
-                    start = line.EndIncludingLineBreak.Position;
-                    if (start == end)
-                        break;
-                } while (start < end);
+                    var text = snapshot.GetText(start, end - start);
+                    text = "/*" + text + "*/";
+                    var span = new SnapshotSpan(snapshot, start, end - start);
+                    editsession.Replace(span, text);
+                }
+                else
+                {
+                    do
+                    {
+                        var line = snapshot.GetLineFromPosition(start);
+
+                        editsession.Insert(line.Start.Position, CommentChars[0] + " ");
+                        start = line.EndIncludingLineBreak.Position;
+                        if (start == end)
+                            break;
+                    } while (start < end);
+                }
                 editsession.Apply();
             }
         }
@@ -66,38 +85,85 @@ namespace XSharp.LanguageService
             var end = sel.End.Position.Position;
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
+                bool done = false;
+                // check to see if we are on a mle token
+                var xdoc = doc.TextBuffer.GetDocument();
+                var line = snapshot.GetLineFromPosition(start);
                 do
                 {
-                    var line = snapshot.GetLineFromPosition(start);
-                    var originalText = line.GetText();
-                    var trimmedText = originalText.TrimStart(new char[] { ' ', '\t' });
-                    string leading = "";
-                    if (trimmedText.Length < originalText.Length)
+                    if (xdoc.LineState.Get(line.LineNumber, out var state))
                     {
-                        leading = originalText.Substring(0, originalText.Length - trimmedText.Length);
-                    }
-                    int lenToDelete = 0;
-                    foreach (var str in CommentChars)
-                    {
-                        if (trimmedText.StartsWith(str))
+                        if (state.HasFlag(LineFlags.MultiLineComments))
                         {
-                            lenToDelete = str.Length;
-                            // delete whitespace after comment chars?
-                            if (trimmedText.Length > str.Length && char.IsWhiteSpace(trimmedText[lenToDelete]))
-                                lenToDelete++;
-                            break;
+                            // remove multi line comments
+                            do
+                            {
+                                var tokens = xdoc.GetTokensInSingleLine(line, true);
+                                foreach (XSharpToken token in tokens)
+                                {
+                                    if (token.Type == XSharpLexer.ML_COMMENT)
+                                    {
+                                        if (token.StartIndex <= start && token.StopIndex >= end)
+                                        {
+                                            var text = token.Text;
+                                            if (text.StartsWith("/*") && text.EndsWith("*/"))
+                                            {
+                                                text = text.Substring(2, text.Length - 4);
+                                                editsession.Replace(token.StartIndex, token.Text.Length, text);
+                                                done = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!done)
+                                {
+                                    if (line.LineNumber > 0)
+                                    {
+                                        line = xdoc.GetLine(line.LineNumber - 1);
+                                    }
+                                    else
+                                    {
+                                        done = true;
+                                    }
+                                }
+                            } while (!done);
+                        }
+
+                        if (!done)
+                        {
+                            var originalText = line.GetText();
+                            var trimmedText = originalText.TrimStart(new char[] { ' ', '\t' });
+                            string leading = "";
+                            if (trimmedText.Length < originalText.Length)
+                            {
+                                leading = originalText.Substring(0, originalText.Length - trimmedText.Length);
+                            }
+                            int lenToDelete = 0;
+                            foreach (var str in CommentChars)
+                            {
+                                if (trimmedText.StartsWith(str))
+                                {
+                                    lenToDelete = str.Length;
+                                    // delete whitespace after comment chars?
+                                    if (trimmedText.Length > str.Length && char.IsWhiteSpace(trimmedText[lenToDelete]))
+                                        lenToDelete++;
+                                    break;
+                                }
+                            }
+                            if (lenToDelete != 0)
+                            {
+                                var pos = line.Start.Position + leading.Length;
+                                Span commentCharSpan = new Span(pos, lenToDelete);
+                                editsession.Delete(commentCharSpan);
+                            }
+                            start = line.EndIncludingLineBreak.Position;
+                            if (start == end)
+                                break;
                         }
                     }
-                    if (lenToDelete != 0)
-                    {
-                        var pos = line.Start.Position + leading.Length;
-                        Span commentCharSpan = new Span(pos, lenToDelete);
-                        editsession.Delete(commentCharSpan);
-                    }
-                    start = line.EndIncludingLineBreak.Position;
-                    if (start == end)
-                        break;
-                } while (start < end);
+                } while (!done && start < end);
+
                 editsession.Apply();
             }
         }

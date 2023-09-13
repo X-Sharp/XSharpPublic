@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-//#define DUMP_TRACE
+#define DUMP_TRACE
 
 using System;
 using System.IO;

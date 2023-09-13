@@ -801,6 +801,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitAwaitExpression([NotNull] XSharpParser.AwaitExpressionContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>accessMemberWith</c>
+	/// labeled alternative in <see cref="XSharpParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAccessMemberWith([NotNull] XSharpParser.AccessMemberWithContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>accessMemberWith</c>
+	/// labeled alternative in <see cref="XSharpParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAccessMemberWith([NotNull] XSharpParser.AccessMemberWithContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>xFunctionExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>

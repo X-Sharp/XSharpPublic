@@ -7465,6 +7465,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        public override void ExitAccessMemberWith([NotNull] XP.AccessMemberWithContext context)
+        {
+            var expr = context.Rigth.Get<ExpressionSyntax>();
+            var e = _syntaxFactory.ParenthesizedLambdaExpression(
+                modifiers: default,
+                parameterList: MakeParameterList(new List<ParameterSyntax>() { MakeParameter("__this", null) }),
+                arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                block: null,
+                expressionBody: expr);
+            context.Put(_syntaxFactory.InvocationExpression(e, MakeArgumentList(MakeArgument(context.Left.Get<ExpressionSyntax>()))));
+        }
         #endregion
 
         #region Common Expressions

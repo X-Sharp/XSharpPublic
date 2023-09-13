@@ -170,9 +170,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var publicMod = MakeList(SyntaxFactory.MakeGeneratedToken(SyntaxKind.PublicKeyword));
             var semi = SyntaxFactory.SemicolonToken;
+            var expr = GenerateMethodCall(ReservedNames.GetXppWrappedParentObject, MakeArgumentList(MakeArgument(GenerateSelf())), true);
             var arrow = _syntaxFactory.ArrowExpressionClause(
                 SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                GenerateSelf());
+                expr);
             arrow.XGenerated = true;
             var accessor = _syntaxFactory.AccessorDeclaration(
                 SyntaxKind.GetAccessorDeclaration,
@@ -186,7 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var propdef = _syntaxFactory.PropertyDeclaration(
                 MakeCompilerGeneratedAttribute(),
                 publicMod,
-                baseType,
+                _objectType,
                 null,
                 SyntaxFactory.MakeIdentifier(baseType.XNode.GetText()),
                 MakeAccessorList(accessor),

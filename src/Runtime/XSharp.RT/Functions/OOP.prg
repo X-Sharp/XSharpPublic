@@ -1214,11 +1214,13 @@ internal static class OOPHelpers
         var level := 2
         var mi := st:GetFrame(level):GetMethod()
         var type := mi:DeclaringType
-        // when nested call from the runtime walk the stack
-        do while aXsAssemblies:Contains(type:Assembly)
-            level += 1
-            mi := st:GetFrame(level):GetMethod()
-        enddo
+        if type != null // For dynamic methods the type can be NULL
+            // when nested call from the runtime walk the stack
+            do while aXsAssemblies:Contains(type:Assembly)
+                level += 1
+                mi := st:GetFrame(level):GetMethod()
+            enddo
+        endif
         return mi
 
 end class

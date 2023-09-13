@@ -27,6 +27,7 @@ internal static class OOPHelpers
         cacheClassesOurAssemblies   := Dictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
         fieldPropCache              := Dictionary<System.Type, Dictionary<string, MemberInfo> >{}
         overloadCache               := Dictionary<System.Type, Dictionary<string, IList<MethodInfo>> >{}
+        aXsAssemblies               := List<Assembly>{}
         return
 
     static method FindOurAssemblies as IEnumerable<Assembly>

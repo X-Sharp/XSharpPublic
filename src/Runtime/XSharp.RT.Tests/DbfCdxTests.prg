@@ -5549,6 +5549,60 @@ RETURN
 			? AliasClient->RecNo()
 			DbCloseAll()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetIndex_wrong_controlling_order() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1341
+
+			LOCAL cDbf AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cDbf, {{ "NFIELD", "N", 8, 0 }} )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbAppend();FieldPut(1,2)
+			DbAppend();FieldPut(1,3)
+			DbAppend();FieldPut(1,1)
+			DbAppend();FieldPut(1,5)
+			DbAppend();FieldPut(1,4)
+			DbCreateOrder("ORD1",cDbf + "ord1", "NFIELD")
+			DbCreateOrder("ORD2",cDbf + "ord2", "-NFIELD")
+			DbCreateOrder("ORD3",cDbf + "ord3", "NFIELD % 5")
+			DbCloseArea()
+
+			DbUseArea(TRUE,"DBFCDX",cDbf)
+		
+			VoDbOrdListAdd(cDbf + "ord1",NIL)
+			? DbOrderInfo(DBOI_FULLPATH) // testord1, OK
+			Assert.True( Instr("ord1" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 1, OK
+			Assert.Equal(1, (INT)FieldGet(1))
+		
+			VoDbOrdListAdd(cDbf + "ord2",NIL)
+			? DbOrderInfo(DBOI_FULLPATH) // testord1, OK
+			Assert.True( Instr("ord1" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 1, OK
+			Assert.Equal(1, (INT)FieldGet(1))
+		
+			DbSetOrder(2)
+			? DbOrderInfo(DBOI_FULLPATH) // testord2, OK
+			Assert.True( Instr("ord2" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 5, OK
+			Assert.Equal(5, (INT)FieldGet(1))
+				
+//			VoDbOrdListAdd(cDbf + "ord3",NIL)
+			DbSetIndex(cDbf + "ord3")
+			? DbOrderInfo(DBOI_FULLPATH) // testord1, NOT OK (should remain testord2)
+			Assert.True( Instr("ord2" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 1, wrong, should remain 5
+			Assert.Equal(5, (INT)FieldGet(1))
+		
+			DbCloseArea()
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

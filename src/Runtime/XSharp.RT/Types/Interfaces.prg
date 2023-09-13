@@ -140,5 +140,11 @@ INTERFACE ILateBound
     /// </summary>
     /// <returns>Result of MethodCall</returns>
     METHOD NoMethod() AS USUAL CLIPPER
-END INTERFACE
+end interface
+
+interface IWrappedObject
+    property Object as object get
+    PROPERTY Type as System.Type GET
+end interface
+
 END NAMESPACE

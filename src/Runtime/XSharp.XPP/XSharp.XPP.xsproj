@@ -62,6 +62,7 @@
     <Compile Include="Types\XAction.prg" />
     <Compile Include="Types\XError.prg" />
     <Compile Include="Types\XDocument.prg" />
+    <Compile Include="Types\WrappedObject.prg" />
     <Compile Include="XPPCollations.Designer.prg">
       <DependentUpon>XPPCollations.resx</DependentUpon>
     </Compile>

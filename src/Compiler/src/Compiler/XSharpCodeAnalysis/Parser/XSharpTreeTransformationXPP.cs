@@ -280,7 +280,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             body.XGenerated = true;
 
             var func = _syntaxFactory.MethodDeclaration(
-                attributeLists: MakeCompilerGeneratedAttribute(true),
+                attributeLists: MakeCompilerGeneratedAttribute(),
                 modifiers: TokenListWithDefaultVisibility(false, SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword),
                 returnType: _usualType,
                 explicitInterfaceSpecifier: null,

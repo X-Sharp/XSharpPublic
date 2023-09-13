@@ -41,7 +41,7 @@ FUNCTION Start() AS INT
 	 "R861", "R862", "R863", "R864", "R865", "R868", "R870", "R871", "R872", "R873", ;
 	 "R875", "R876", "R878", "R879", "R883", "R884", "R885", "R886", "R888", "R889", ;
 	 "R890", "R892", "R895", "R897", "R899", "R900", "R902", "R903", "R904", "R905",;
-	 "R906";
+	 "R906", "R907", "R908";
 	 }
 
 	#ifdef GUI
@@ -121,13 +121,13 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
     		lSucces := FALSE
 	    ELSE
-	        var pars := oMethod:GetParameters()
-	        if pars:Length == 0
+	        VAR pars := oMethod:GetParameters()
+	        IF pars:Length == 0
     	       oMethod:Invoke(NULL , NULL)
-	        else
-	            var oPars := OBJECT[]{pars:Length}
+	        ELSE
+	            VAR oPars := OBJECT[]{pars:Length}
 	            oMethod:Invoke(NULL , oPars)
-	        endif
+	        ENDIF
 		lSucces := TRUE
 	    ENDIF
 	CATCH e AS Exception

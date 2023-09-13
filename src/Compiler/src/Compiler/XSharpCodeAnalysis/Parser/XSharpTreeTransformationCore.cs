@@ -43,7 +43,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public List<MemVarFieldInfo> FileWidePublics;
             public object LastMember;
             public bool LastIsStatic;
-            public List<Tuple<int, String>> InitProcedures;
+            public bool HasSlen = false;
+            public List<Tuple<int, string>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
             public List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings;
             public List<PragmaOption> PragmaOptions;
@@ -1572,7 +1573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax r =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute(true) : default,
+                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,
                 modifiers: modifiers.ToList<SyntaxToken>(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -1631,7 +1632,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax classdecl =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute(true) : default,
+                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,
                 modifiers: modifiers.ToList<SyntaxToken>(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -2705,7 +2706,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 string className = GlobalClassName + GetStaticGlobalClassname();
                 AddUsingWhenMissing(className, true, null);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, false, GlobalEntities.StaticGlobalClassMembers));
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, true, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();
             }
         }
@@ -4619,14 +4620,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                        right);
         }
 
-        internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
+        internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute()
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
-            //if (lWithGlobalScope)
-            //{
-            //    GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGlobalScope);
-            //}
             var compilerGenerated = attributeLists.ToList();
             _pool.Free(attributeLists);
             return compilerGenerated;
@@ -7810,9 +7807,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateAltD(context))
                         return;
                     break;
-                case XSharpIntrinsicNames.SLen:
-                    if (GenerateSLen(context))
-                        return;
+                case XSharpIntrinsicNames.SLen when _options.Dialect == XSharpDialect.Core:
+                    GenerateSLen(context);
                     break;
 
                 case XSharpIntrinsicNames.GetInst:
@@ -7900,23 +7896,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(GenerateExpressionStatement(expr, context));
         }
 
-        private bool GenerateSLen(XP.MethodCallContext context)
+        private void GenerateSLen(XP.MethodCallContext context)
         {
-            // Pseudo function SLen
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                return false;
-            }
-            if (argList.Arguments.Count != 1)
-                return false;
-            expr = argList.Arguments[0].Expression;
-            expr = MakeCastTo(_stringType, expr);
+            // Generate local function SLen for Core Dialect
+            // Check if it is already there in the static functions list
+            if (GlobalEntities.HasSlen)
+                return;
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+            ExpressionSyntax expr = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
             var cond = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression,
                         expr,
                         SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken),
@@ -7927,8 +7916,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             expr = MakeCastTo(_uintType, expr, true);
             expr.XGenerated = true;
             expr.XNoTypeWarning = true;
-            context.Put(expr);
-            return true;
+            var arrowExpr = _syntaxFactory.ArrowExpressionClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken), expr);
+            var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.ClipperArgs);
+            var par = _syntaxFactory.Parameter(default, default, _stringType, id, null);
+            var pars = _syntaxFactory.ParameterList(SyntaxFactory.OpenParenToken, MakeSeparatedList(par), SyntaxFactory.CloseParenToken);
+            var mdecl = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(),
+                modifiers.ToList(), _uintType, null,
+                SyntaxFactory.MakeIdentifier("SLen"),
+                null, pars, default, null, arrowExpr, SyntaxFactory.SemicolonToken);
+            GlobalEntities.StaticGlobalClassMembers.Add(mdecl);
+            mdecl.XGenerated = true;
+            GlobalEntities.HasSlen = true;
+            _pool.Free(modifiers);
+            return;
         }
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)
         {

@@ -7807,8 +7807,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateAltD(context))
                         return;
                     break;
-                case XSharpIntrinsicNames.SLen when _options.Dialect == XSharpDialect.Core:
-                    GenerateSLen(context);
+                case XSharpIntrinsicNames.SLen:
+                    if (_options.Dialect == XSharpDialect.Core || !_options.XSharpRuntime)
+                    {
+                        GenerateSLen(context);
+                    }
                     break;
 
                 case XSharpIntrinsicNames.GetInst:

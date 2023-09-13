@@ -1,32 +1,25 @@
-// Single record replace
-//#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                     ;
-//      => DbAutoLock(); __FieldSet(<(f1)>,<v1>) [;__FieldSet(<(fN)>,<vN>)]; DbAutoUnLock()
+#xcommand WP [/<x:S,F,SF,FS>] [/<y:CAPS,C>] [/<m:MUTE,M>] [/OBJ <obj> = <mes> [,<objn> = <mesn> ]] <list,...> [<file>] ;
+=> wpRouter({<list>},<(x)>,<file>,<(y)>,<(m)>,{[{<"obj">,{|o| <mes>}}] [,{<"objn">,{|o| <mesn>} }] })
 
-// Single record replace with IN clause
-#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                 ;
-         <x:IN,ALIAS> <(a)>                                             ;
-         => DbAutoLock(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fN)>,<vN>)], DbAutoUnLock(<(a)>)
-#pragma warnings(9043, off) // redefine of runtime functions
-FUNCTION Start as VOID
-//    REPLACE a with "b"
-//    REPLACE c with "d", e with "f"
-    REPLACE a with "b" in X
-    REPLACE c with "d", e with "f" in X
-    REPLACE g with "h", i with "j", k with "l" in X
+procedure Main()
+    local a, b, c
+    a := "a"
+    b := "b"
+    c := "c"
+
+    wp a,b,c
+    wp /sf /m a,b,c
+    _wait()
+    return
 
 
-
-FUNCTION DbAutoLock(area) AS LOGIC CLIPPER
-    ?  __FUNCTION__, area
-    RETURN TRUE
-FUNCTION DbAutoUnLock(area) AS LOGIC CLIPPER
-    ?  __FUNCTION__, area
-    RETURN TRUE
-
-FUNCTION __FieldSetWA(area , name , value ) AS USUAL
-    ? __FUNCTION__, area, name, value
-    RETURN value
-FUNCTION __FieldSet(name , value ) AS USUAL
-    ? __FUNCTION__, name, value
-    RETURN value
-
+function WpRouter() as usual clipper
+    var args := _Args()
+    foreach var arg in args
+        if IsArray(arg)
+            showArray(arg)
+        else
+            ? arg
+        endif
+    next
+    return nil

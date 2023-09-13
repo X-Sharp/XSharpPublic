@@ -39,3 +39,4 @@ IF l
 ELSE
 	THROW Exception{"Incorrect result"}
 END IF
+

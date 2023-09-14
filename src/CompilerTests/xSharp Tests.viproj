@@ -115328,6 +115328,10 @@ File = %AppPath%\Prg\tester.prg
 FileGUID = 7B4DD920-5928-4A7C-B3B6-F0E0C9FF09F3
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Prg\tester.ppo
+FileGUID = C3F0411B-9DF7-461D-903A-BD14145331EC
+FileType = Text
+CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -115338,7 +115342,7 @@ ReferenceBrowse = C:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
 [Tester Native Resources]
 [Tester License files]
 [Tester General Options]
-Switches=
+Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -122161,6 +122165,121 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R908 - SLen()  triggers method call twice - VO
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION R909 *************
+Application = R909
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R909\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R909
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2E17D73A-95A1-4BDF-B92F-4041571CBE77
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R909 FileGroups]
+[R909 Files]
+File = %AppPath%\Prg\R909.prg
+FileGUID = 20A9738A-1946-489B-B0EA-D01EBEC2DCC6
+FileType = Code
+CopyToBin = 0
+[R909 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+[R909 Resources]
+[R909 Native Resources]
+[R909 License files]
+[R909 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R909 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R909
 [EndApplications]
 
 [Configurations]

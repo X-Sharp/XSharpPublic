@@ -1526,7 +1526,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpToken ruleToken = mToken.Token;
             int iEnd;
             bool found = false;
-            while (sourceToken.Type == XSharpLexer.WS || sourceToken.Type == XSharpLexer.ML_COMMENT)
+            while (sourceToken.Channel != Channel.Default)
             {
                 iSource += 1;
                 if (iSource == tokens.Count)

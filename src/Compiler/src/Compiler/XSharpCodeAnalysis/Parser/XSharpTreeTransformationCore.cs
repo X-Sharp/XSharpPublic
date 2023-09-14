@@ -7808,7 +7808,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return;
                     break;
                 case XSharpIntrinsicNames.SLen:
-                    if (_options.Dialect == XSharpDialect.Core || !_options.XSharpRuntime)
+                    if (!_options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore))
                     {
                         GenerateSLen(context);
                     }

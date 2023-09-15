@@ -172,7 +172,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
 
-  <Target Condition =" '$(GenerateAssemblyInfo)' == 'True'" 
+  <Target Condition =" '$(GenerateAssemblyInfo)' == 'True' and '$(UsingMicrosoftNETSdk)' == 'True' " 
           Name="XsCoreGenerateAssemblyInfo"
           DependsOnTargets="CreateGeneratedAssemblyInfoInputsCacheFile"
           Inputs="$(GeneratedAssemblyInfoInputsCacheFile)"

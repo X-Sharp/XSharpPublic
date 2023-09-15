@@ -80,7 +80,8 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		VAR aLines := SELF:oXSharpEditor:GetStringLines()
 		VAR sb := StringBuilder{aLines:Count * 80}
 		FOREACH VAR line IN aLines
-			sb:AppendLine(AddPartial(line))
+			//sb:AppendLine(AddPartial(line))
+			sb:AppendLine(line) // the virtual editor already checks for class definition modifiers and retains them
 		NEXT
         var source := sb:ToString()
     	LOCAL oFile := XSolution.FindFile(_fileName) as XFile
@@ -119,7 +120,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		END IF
 	RETURN lSuccess
 
-	METHOD AddPartial(line AS STRING) AS STRING
+/*	METHOD AddPartial(line AS STRING) AS STRING
 		IF (line:IndexOf("class",StringComparison.OrdinalIgnoreCase) >= 0)
 			VAR line2 := line:TrimStart():ToUpper()
 			IF line2:StartsWith("CLASS ")
@@ -128,6 +129,6 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				line := spaces+ "PARTIAL "+line:Substring(prefixlength)
 			ENDIF
 		ENDIF
-		RETURN line
+		RETURN line*/
 END CLASS
 

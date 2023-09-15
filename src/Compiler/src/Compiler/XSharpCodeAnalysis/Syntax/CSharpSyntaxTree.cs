@@ -267,6 +267,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case XP.MemvardeclContext:
                             case XP.FoxmemvardeclContext:
                             case XP.FoxlocaldeclContext:
+                            case XP.FilewidememvarContext:
+
+                            case XP.ClassvarsContext:
+                            case XP.VoglobalContext:
+                            case XP.XppclassvarsContext:
+                            case XP.FoxclassvarsContext:
                                 // We want to set the error on the variable and not the statement
                                 break;
                             case XP.CaseStmtContext:

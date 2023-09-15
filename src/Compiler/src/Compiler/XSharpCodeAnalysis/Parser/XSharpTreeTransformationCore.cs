@@ -7807,13 +7807,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateAltD(context))
                         return;
                     break;
-                case XSharpIntrinsicNames.SLen:
-                    if (!_options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore))
-                    {
-                        GenerateSLen(context);
-                    }
-                    break;
-
                 case XSharpIntrinsicNames.GetInst:
                     if (GenerateGetInst(context))
                         return;
@@ -7897,41 +7890,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var expr = GenerateMethodCall(name, argList);
             context.Put(GenerateExpressionStatement(expr, context));
-        }
-
-        private void GenerateSLen(XP.MethodCallContext context)
-        {
-            // Generate local function SLen for Core Dialect
-            // Check if it is already there in the static functions list
-            if (GlobalEntities.HasSlen)
-                return;
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            ExpressionSyntax expr = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
-            var cond = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression,
-                        expr,
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken),
-                        GenerateLiteralNull());
-            var left = GenerateLiteral(0);
-            var right = MakeSimpleMemberAccess(expr, GenerateSimpleName("Length"));
-            expr = MakeConditional(cond, left, right);
-            expr = MakeCastTo(_uintType, expr, true);
-            expr.XGenerated = true;
-            expr.XNoTypeWarning = true;
-            var arrowExpr = _syntaxFactory.ArrowExpressionClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken), expr);
-            var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.ClipperArgs);
-            var par = _syntaxFactory.Parameter(default, default, _stringType, id, null);
-            var pars = _syntaxFactory.ParameterList(SyntaxFactory.OpenParenToken, MakeSeparatedList(par), SyntaxFactory.CloseParenToken);
-            var mdecl = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(),
-                modifiers.ToList(), _uintType, null,
-                SyntaxFactory.MakeIdentifier("SLen"),
-                null, pars, default, null, arrowExpr, SyntaxFactory.SemicolonToken);
-            GlobalEntities.StaticGlobalClassMembers.Add(mdecl);
-            mdecl.XGenerated = true;
-            GlobalEntities.HasSlen = true;
-            _pool.Free(modifiers);
-            return;
         }
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)
         {

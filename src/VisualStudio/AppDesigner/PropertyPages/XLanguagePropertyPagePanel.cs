@@ -132,6 +132,7 @@ namespace XSharp.Project
         internal void SetDialectOptions(string dialect)
         {
             bool Core = dialect == XSharpProjectFileConstants.DialectCore;
+            bool FoxPro = dialect == XSharpProjectFileConstants.DialectFoxPro;
             ThreadHelper.ThrowIfNotOnUIThread();
             chkMemVar.Enabled = !Core;
             chkLB.Enabled = !Core;
@@ -150,6 +151,24 @@ namespace XSharp.Project
                 chkUndefined.Checked = false;
                 chkLB.Checked = false;
                 this.ParentPropertyPage.IsDirty = true;
+            }
+            if (Core || FoxPro)
+            {
+                var strAllowDot = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Allowdot);
+                if (string.IsNullOrEmpty(strAllowDot))
+                {
+                    this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.Allowdot, "True");
+                    chkAllowDot.Checked = true;
+                }
+            }
+            if (Core)
+            { 
+                var strNamedArgs = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.NamedArgs);
+                if (string.IsNullOrEmpty(strNamedArgs))
+                {
+                    this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.NamedArgs, "True");
+                    chkNamedArgs.Checked = true;
+                }
             }
         }
 

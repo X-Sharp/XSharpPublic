@@ -109,15 +109,21 @@ class XSharp.XPP.StaticClassObject implements ILateBound
     METHOD NoMethod() AS USUAL CLIPPER
         // Lookup class method and call it.
         VAR cMethod := XSharp.RT.Functions.NoMethod()
-        VAR uArgs := _Args()
-        VAR overloads := OOPHelpers.FindOverloads(type, cMethod, FALSE):ToArray()
-        VAR mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
-        IF mi != NULL
-            IF OOPHelpers.SendHelper(NULL, mi, uArgs, OUT VAR result)
-                RETURN result
-            ENDIF
-        ENDIF
-        VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, NAMEOF(cMethod), 2, <OBJECT>{NULL, cMethod, uArgs} )
+        var uArgs := _Args()
+        var t := self:type
+        do while t != typeOf(System.Object)
+            var overloads := OOPHelpers.FindOverloads(t, cMethod, false):ToArray()
+            var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
+            if mi != null
+                if OOPHelpers.SendHelper(null, mi, uArgs, out var result)
+                    return result
+                endif
+            endif
+            t := t:BaseType
+        enddo
+
+        // maybe this is a class method?
+        var oError := Error.VOError( EG_NOMETHOD, __function__, nameof(cMethod), 2, <object>{null, cMethod, uArgs} )
         THROW oError
 
 END CLASS

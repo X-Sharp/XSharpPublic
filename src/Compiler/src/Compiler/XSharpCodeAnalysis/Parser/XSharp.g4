@@ -603,6 +603,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt  // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt
                     | {IsFox && HasMemVars}?  Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
+                    | {IsFox}? Decl=foxdimvardecl                #foxdimvardeclStmt        // DIMENSION this.Field(10)
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
                       (e=END (DO|WHILE)? | e=ENDDO) eos	#whileStmt
@@ -802,20 +803,20 @@ memvar            : (Amp=AMP)?  Id=varidentifierName
 // The parent rule already filters out so this is not called when MEMVARS are not enabled
 
                     // This includes array indices and optional type per name
-foxmemvardecl       :  T=DIMENSION  DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
-                    |  T=DECLARE    DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
-                    // This has names, and no ampersand
-                    // FoxPro does not have MEMVAR but it does not hurt to declare it here
-                    |  T=MEMVAR Vars+=varidentifierName XT=foxtypedecl?  (COMMA Vars+=varidentifierName XT=foxtypedecl? )*  end=eos
+foxmemvardecl       :  T=MEMVAR Vars+=varidentifierName XT=foxtypedecl?  (COMMA Vars+=varidentifierName XT=foxtypedecl? )*  end=eos
                       // This has names and optional types
                     |  T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName XT=foxtypedecl?)* end=eos
                     // This has names and optional ampersands
                     |  T=PRIVATE FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
                     |  T=PUBLIC  FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
+                   ;
+
+                    // This includes array indices and optional type per name
+foxdimvardecl       :  T=DIMENSION  DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
+                    |  T=DECLARE    DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
                     // This has names and dimensions
                     |  T=PUBLIC (ARRAY)? DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
                    ;
-
 
 
                     // This includes array indices and optional type per name
@@ -827,6 +828,10 @@ foxlocaldecl        : T=LPARAMETERS LParameters+=foxlparameter (COMMA LParameter
                     // FoxPro dimension statement allows the AS Type per variable name
                     // AS Type OF ClassLib is ignored in FoxPro too, except when calling COM components
 foxdimvar           : (Amp=AMP)?  Id=varidentifierName
+                        ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
+                        | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
+                        XT=foxtypedecl?
+                    | Expr=expression 
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?

@@ -165,13 +165,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterFoxdimvar([NotNull] XP.FoxdimvarContext context)
         {
             base.EnterFoxdimvar(context);
-            var name = CleanVarName(context.Id.GetText());
-            var local = context.Parent is XP.FoxlocaldeclContext;
-            var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
-            var field = findVar(name);
-            if (field == null)
+            if (context.Id != null)
             {
-                AddAmpbasedMemvar(context, name, alias, context.Amp);
+                var name = CleanVarName(context.Id.GetText());
+                var local = context.Parent is XP.FoxlocaldeclContext;
+                var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
+                var field = findVar(name);
+                if (field == null)
+                {
+                    AddAmpbasedMemvar(context, name, alias, context.Amp);
+                }
             }
         }
 
@@ -210,11 +213,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var name = memvar.Id.GetText();
                         AddAmpbasedMemvar(memvar, name, "M", memvar.Amp, true);
-                    }
-                    foreach (var dimvar in context._DimVars)
-                    {
-                        var name = dimvar.Id.GetText();
-                        AddAmpbasedMemvar(dimvar, name, "M", dimvar.Amp, true);
                     }
                     break;
             }
@@ -274,7 +272,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void EnterFoxdimvardecl([NotNull] XP.FoxdimvardeclContext context)
+        {
+            // use the Enter call to declare the memory variables
+            // The locals are generated in the ExitFoxdecl()
+            context.SetSequencePoint(context.end);
+            if (CurrentMember == null)
+            {
+                return;
+            }
+            foreach (var memvar in context._DimVars)
+            {
+                switch (context.T.Type)
+                {
+                    case XP.DIMENSION:
+                    case XP.DECLARE:
+                    case XP.PUBLIC:
+                        // List inside _FoxVars.
+                        if (memvar.Id != null)
+                        {
+                            CurrentMember.Data.HasMemVars = true;
+                            var name = memvar.Id.GetText();
+                            AddAmpbasedMemvar(memvar, name, "M", memvar.Amp);
+                        }
+                        break;
+                }
+            }
+        }
+
         public override void ExitFoxmemvardeclStmt([NotNull] XP.FoxmemvardeclStmtContext context)
+        {
+            context.PutList(context.Decl.GetList<StatementSyntax>());
+        }
+
+        public override void ExitFoxdimvardeclStmt([NotNull] XP.FoxdimvardeclStmtContext context)
         {
             context.PutList(context.Decl.GetList<StatementSyntax>());
         }
@@ -309,20 +340,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stmts = _pool.Allocate<StatementSyntax>();
             switch (context.T.Type)
             {
-                case XP.DIMENSION:
-                case XP.DECLARE:
-                    foreach (var dimvar in context._DimVars)
-                    {
-                        // call the runtime function to allocate the array
-                        // when the array is a LOCAL then the local declaration will also be added to the stmts list returned
-                        // all the statements will be 'anchored' to the foxdeclContext.
-                        var dimstmts = processDimensionVar(context, dimvar);
-                        foreach (var stmt in dimstmts)
-                        {
-                            stmts.Add(stmt);
-                        }
-                    }
-                    break;
                 case XP.MEMVAR:
                     // Handled in the Enter method
                     break;
@@ -364,49 +381,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // no need to assign a default. The runtime takes care of that
                     break;
                 case XP.PUBLIC:
-                    if (context._DimVars.Count > 0)
+                    foreach (var memvar in context._FoxVars)
                     {
-                        // PUBLIC ARRAY
-                        foreach (var dimvar in context._DimVars)
-                        {
-                            // declare the public and initialize it with a FoxPro array
-                            var varname = GetAmpBasedName(dimvar.Amp, dimvar.Id.Id);
-                            var exp = GenerateMemVarDecl(dimvar, varname, false);
-                            exp.XNode = dimvar;
-                            stmts.Add(GenerateExpressionStatement(exp, dimvar));
-                            var dimstmts = processDimensionVar(context, dimvar);
-                            foreach (var stmt in dimstmts)
-                            {
-                                stmts.Add(stmt);
-                            }
+                        // declare the public. FoxPro has no initializers
+                        var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
+                        var exp = GenerateMemVarDecl(memvar, varname, false);
+                        exp.XNode = memvar;
+                        stmts.Add(GenerateExpressionStatement(exp, memvar));
 
-                        }
-                    }
-                    else // context._XVars.Count > 0
-                    {
-                        foreach (var memvar in context._FoxVars)
+                        ExpressionSyntax initializer;
+                        if (memvar.Expression != null)
                         {
-                            // declare the public. FoxPro has no initializers
-                            var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
-                            var exp = GenerateMemVarDecl(memvar, varname, false);
+                            initializer = memvar.Expression.Get<ExpressionSyntax>();
+                        }
+                        else
+                        {
+                            initializer = MakePublicInitializer(memvar.Id.GetText());
+                        }
+                        if (initializer != null)
+                        {
+                            exp = GenerateMemVarPut(memvar, varname, initializer);
                             exp.XNode = memvar;
                             stmts.Add(GenerateExpressionStatement(exp, memvar));
-
-                            ExpressionSyntax initializer;
-                            if (memvar.Expression != null)
-                            {
-                                initializer = memvar.Expression.Get<ExpressionSyntax>();
-                            }
-                            else
-                            {
-                                initializer = MakePublicInitializer(memvar.Id.GetText());
-                            }
-                            if (initializer != null)
-                            {
-                                exp = GenerateMemVarPut(memvar, varname, initializer);
-                                exp.XNode = memvar;
-                                stmts.Add(GenerateExpressionStatement(exp, memvar));
-                            }
                         }
                     }
                     break;
@@ -427,6 +423,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     | T=LOCAL Ar=ARRAY DimVars += dimensionVar
                         (COMMA DimVars+=dimensionVar)*    end=eos
         */
+
+        public override void ExitFoxdimvardecl([NotNull] XP.FoxdimvardeclContext context)
+        {
+            context.SetSequencePoint(context.end);
+            var stmts = _pool.Allocate<StatementSyntax>();
+            foreach (var dimvar in context._DimVars)
+            {
+                if (context.T.Type == XP.DIMENSION ||
+                    context.T.Type == XP.DECLARE)
+                {
+                    // call the runtime function to allocate the array
+                    // when the array is a LOCAL then the local declaration will also be added to the stmts list returned
+                    // all the statements will be 'anchored' to the foxdeclContext.
+                    var dimstmts = processDimensionVar(context, dimvar);
+                    foreach (var stmt in dimstmts)
+                    {
+                        stmts.Add(stmt);
+                    }
+                }
+                if (context.T.Type == XP.PUBLIC)
+                {
+                    // declare the public and initialize it with a FoxPro array
+                    var varname = GetAmpBasedName(dimvar.Amp, dimvar.Id.Id);
+                    var exp = GenerateMemVarDecl(dimvar, varname, false);
+                    exp.XNode = dimvar;
+                    stmts.Add(GenerateExpressionStatement(exp, dimvar));
+                    var dimstmts = processDimensionVar(context, dimvar);
+                    foreach (var stmt in dimstmts)
+                    {
+                        stmts.Add(stmt);
+                    }
+                }
+            }
+            // do not make a block, otherwise locals will be scoped to that block!
+            context.PutList<StatementSyntax>(stmts);
+            _pool.Free(stmts);
+        }
         public override void ExitFoxlocaldecl([NotNull] XP.FoxlocaldeclContext context)
         {
             context.SetSequencePoint(context.end);
@@ -483,63 +516,99 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private IList<StatementSyntax> processDimensionVar(XSharpParserRuleContext context, XP.FoxdimvarContext dimVar)
         {
-            var name = CleanVarName(dimVar.Id.GetText());
             var stmts = new List<StatementSyntax>();
-            MemVarFieldInfo fieldInfo = findVar(name);
-
-            ArgumentListSyntax args;
-            ArgumentSyntax arg1;
-            ExpressionSyntax mcall;
-            if (fieldInfo.IsLocal)
+            if (dimVar.Id != null)
             {
-                if (!fieldInfo.IsCreated)
+                if (!_options.SupportsMemvars)
                 {
-                    var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
-                    decl.XNode = context;
-                    stmts.Add(decl);
-                    fieldInfo.IsCreated = true;
+                    var s = GenerateEmptyStatement();
+                    s = s.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DynamicVariablesNotAllowed));
+                    stmts.Add(s);
+                    return stmts;
                 }
-                if (fieldInfo.Context.Parent == context)
+                var name = CleanVarName(dimVar.Id.GetText());
+                MemVarFieldInfo fieldInfo = findVar(name);
+
+                ArgumentListSyntax args;
+                ArgumentSyntax arg1;
+                ExpressionSyntax mcall;
+                if (fieldInfo.IsLocal)
                 {
-                    arg1 = MakeArgument(GenerateNIL());
+                    if (!fieldInfo.IsCreated)
+                    {
+                        var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
+                        decl.XNode = context;
+                        stmts.Add(decl);
+                        fieldInfo.IsCreated = true;
+                    }
+                    if (fieldInfo.Context.Parent == context)
+                    {
+                        arg1 = MakeArgument(GenerateNIL());
+                    }
+                    else
+                    {
+                        arg1 = MakeArgument(GenerateSimpleName(name));
+                    }
                 }
                 else
                 {
-                    arg1 = MakeArgument(GenerateSimpleName(name));
+                    arg1 = MakeArgument(GenerateLiteral(name));
+                    args = MakeArgumentList(arg1);
+                    mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGetSafe, args, true);
+                    arg1 = MakeArgument(mcall);
                 }
+                var arg2 = MakeArgument(dimVar._Dims[0].Get<ExpressionSyntax>());
+                if (dimVar._Dims.Count == 2)
+                {
+                    var arg3 = MakeArgument(dimVar._Dims[1].Get<ExpressionSyntax>());
+                    args = MakeArgumentList(arg1, arg2, arg3);
+                }
+                else
+                {
+                    args = MakeArgumentList(arg1, arg2);
+                }
+                mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
+                mcall.XNode = dimVar;
+                ExpressionSyntax lhs;
+                if (fieldInfo != null && !fieldInfo.IsLocal)
+                {
+                    lhs = MakeMemVarField(fieldInfo);
+                }
+                else
+                {
+                    lhs = GenerateSimpleName(name);
+                }
+                var ass = MakeSimpleAssignment(lhs, mcall);
+                var stmt = GenerateExpressionStatement(ass, context);
+                stmt.XNode = dimVar;
+                stmts.Add(stmt);
             }
             else
             {
-                arg1 = MakeArgument(GenerateLiteral(name));
-                args = MakeArgumentList(arg1);
-                mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGetSafe, args, true);
-                arg1 = MakeArgument(mcall);
+                // something like DIMENSION this.Field(10)
+                // needs to be translated to
+                // this.Field := __FoxRedim(this.Field,10)
+                var expr = dimVar.Expr.Get<ExpressionSyntax>();
+                var arg1 = MakeArgument(expr);
+                var arg2 = MakeArgument(dimVar._Dims[0].Get<ExpressionSyntax>());
+                ArgumentListSyntax args;
+                if (dimVar._Dims.Count == 2)
+                {
+                    var arg3 = MakeArgument(dimVar._Dims[1].Get<ExpressionSyntax>());
+                    args = MakeArgumentList(arg1, arg2, arg3);
+                }
+                else
+                {
+                    args = MakeArgumentList(arg1, arg2);
+                }
+                var mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
+                mcall.XNode = dimVar;
+                var ass = MakeSimpleAssignment(expr, mcall);
+                var stmt = GenerateExpressionStatement(ass, context);
+                stmt.XNode = dimVar;
+                stmts.Add(stmt);
+
             }
-            var arg2 = MakeArgument(dimVar._Dims[0].Get<ExpressionSyntax>());
-            if (dimVar._Dims.Count == 2)
-            {
-                var arg3 = MakeArgument(dimVar._Dims[1].Get<ExpressionSyntax>());
-                args = MakeArgumentList(arg1, arg2, arg3);
-            }
-            else
-            {
-                args = MakeArgumentList(arg1, arg2);
-            }
-            mcall = GenerateMethodCall(XSharpQualifiedFunctionNames.FoxRedim, args);
-            mcall.XNode = dimVar;
-            ExpressionSyntax lhs;
-            if (fieldInfo != null && !fieldInfo.IsLocal)
-            {
-                lhs = MakeMemVarField(fieldInfo);
-            }
-            else
-            {
-                lhs = GenerateSimpleName(name);
-            }
-            var ass = MakeSimpleAssignment(lhs, mcall);
-            var stmt = GenerateExpressionStatement(ass, context);
-            stmt.XNode = dimVar;
-            stmts.Add(stmt);
             return stmts;
         }
 

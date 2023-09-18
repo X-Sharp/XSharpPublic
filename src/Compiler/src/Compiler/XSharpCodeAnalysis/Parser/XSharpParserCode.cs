@@ -1185,7 +1185,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class FoxmemvardeclContext : IMultiElementContext
         {
-            public int Count => this._FoxVars.Count + this._Vars.Count + this._DimVars.Count;
+            public int Count => this._FoxVars.Count + this._Vars.Count ;
         }
         public partial class ClassvarsContext : IMultiElementContext
         {

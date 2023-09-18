@@ -1553,6 +1553,19 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitFoxtextoutStmt([NotNull] XSharpParser.FoxtextoutStmtContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>foxdimvardeclStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFoxdimvardeclStmt([NotNull] XSharpParser.FoxdimvardeclStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>foxdimvardeclStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFoxdimvardeclStmt([NotNull] XSharpParser.FoxdimvardeclStmtContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>doStmt</c>
 	/// labeled alternative in <see cref="XSharpParser.statement"/>.
 	/// </summary>
@@ -2758,6 +2771,17 @@ public interface IXSharpListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFoxmemvardecl([NotNull] XSharpParser.FoxmemvardeclContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.foxdimvardecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFoxdimvardecl([NotNull] XSharpParser.FoxdimvardeclContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.foxdimvardecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFoxdimvardecl([NotNull] XSharpParser.FoxdimvardeclContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.foxlocaldecl"/>.

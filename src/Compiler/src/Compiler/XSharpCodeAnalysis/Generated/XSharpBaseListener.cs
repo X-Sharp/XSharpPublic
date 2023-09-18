@@ -1791,6 +1791,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitFoxtextoutStmt([NotNull] XSharpParser.FoxtextoutStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>foxdimvardeclStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFoxdimvardeclStmt([NotNull] XSharpParser.FoxdimvardeclStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>foxdimvardeclStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFoxdimvardeclStmt([NotNull] XSharpParser.FoxdimvardeclStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>doStmt</c>
 	/// labeled alternative in <see cref="XSharpParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -3210,6 +3225,19 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFoxmemvardecl([NotNull] XSharpParser.FoxmemvardeclContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.foxdimvardecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFoxdimvardecl([NotNull] XSharpParser.FoxdimvardeclContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.foxdimvardecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFoxdimvardecl([NotNull] XSharpParser.FoxdimvardeclContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.foxlocaldecl"/>.

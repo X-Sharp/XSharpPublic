@@ -892,16 +892,13 @@ METHOD SetOrder( uOrder AS USUAL, cIndexFileName := "" AS STRING) AS LOGIC
     LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode      AS LOGIC
 	LOCAL oError        AS USUAL
-	LOCAL pszStuff      AS STRING
-
-
-	lErrorFlag := FALSE
+	lErrorFlag := false
 	BEGIN SEQUENCE
 
 
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		SELF:__OptimisticFlush()
-		IF ! (lRetCode := VoDbOrdSetFocus(cIndexFileName,uOrder, REF pszStuff))
+		if ! (lRetCode := VoDbOrdSetFocus(cIndexFileName,uOrder, out var _))
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )

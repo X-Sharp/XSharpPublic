@@ -1157,21 +1157,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // convert ClassName():New(...) to ClassName{...}
             if (context.Expr is XP.AccessMemberContext lhs)
             {
-                if (lhs.Op.Type == XP.COLON && lhs.Name.GetText().ToLower() == "new")
+                if (lhs.Name.GetText().ToLower() == "new")
                 {
-                    if (lhs.Expr is XP.MethodCallContext operand && operand.ArgList == null)
+                    if (lhs.Op.Type == XP.COLONCOLON)
                     {
-                        if (operand.Expr is XP.PrimaryExpressionContext primary)
+                        if (CurrentEntity is XP.IXPPMemberContext mem)
                         {
-                            var className = primary.GetText();
-                            var seperators = new char[] { '.', ':' };
-                            if (className.IndexOfAny(seperators) == -1)
+                            // for static members we translate "::new(...)" to "ClassName{...}"
+                            if (mem.IsStatic)
                             {
+                                var info = mem.Info;
+                                var parent = info.Parent;
                                 var args = context.ArgList.Get<ArgumentListSyntax>();
-                                var type = GenerateQualifiedName(className);
+                                var type = GenerateQualifiedName(parent.Name);
                                 expr = CreateObject(type, args);
                                 context.Put(expr);
                                 return;
+                            }
+                        }
+                    }
+                    else if (lhs.Op.Type == XP.COLON)
+                    {
+                        if (lhs.Expr is XP.MethodCallContext operand && operand.ArgList == null)
+                        {
+                            if (operand.Expr is XP.PrimaryExpressionContext primary)
+                            {
+                                var className = primary.GetText();
+                                var seperators = new char[] { '.', ':' };
+                                if (className.IndexOfAny(seperators) == -1)
+                                {
+                                    var args = context.ArgList.Get<ArgumentListSyntax>();
+                                    var type = GenerateQualifiedName(className);
+                                    expr = CreateObject(type, args);
+                                    context.Put(expr);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -1230,9 +1250,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var info = mem.Info;
                         var parent = info.Parent;
                         var parentName = GenerateSimpleName(parent.Name);
-                        context.Put(MakeSimpleMemberAccess(
-                            parentName,
-                            context.Name.Get<SimpleNameSyntax>()));
+                        var name = context.Name.Get<SimpleNameSyntax>();
+                        if (context.Name.GetText().ToLower() != "new")
+                        {
+                            context.Put(MakeSimpleMemberAccess(parentName, name));
+                        }
                         return;
                     }
                 }

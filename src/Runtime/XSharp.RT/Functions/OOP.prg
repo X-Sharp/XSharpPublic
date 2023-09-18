@@ -1293,7 +1293,12 @@ internal static class OOPHelpers
             // when nested call from the runtime walk the stack
             do while aXsAssemblies:Contains(type:Assembly)
                 level += 1
-                mi := st:GetFrame(level):GetMethod()
+                var frame := st:GetFrame(level)
+                if (frame != null)
+                    mi := frame:GetMethod()
+                else
+                    exit
+                endif
             enddo
         endif
         return mi

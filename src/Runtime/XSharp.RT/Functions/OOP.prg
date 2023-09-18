@@ -714,10 +714,8 @@ internal static class OOPHelpers
             return false
         elseif oMethod:IsPublic
             return true
-        elseif lSelf .and. (oMethod:IsFamily .or. oMethod:IsFamilyOrAssembly)
-            return true
         endif
-        return false
+        return lSelf
 
 
     static method GetMember(t as Type, cName as string) as MemberInfo
@@ -779,10 +777,8 @@ internal static class OOPHelpers
             return false
         elseif oFld:IsPublic
             return true
-        elseif lSelf .and. (oFld:IsFamily .or. oFld:IsFamilyOrAssembly)
-            return true
         endif
-        return false
+        return lSelf
 
     /// <summary>
     /// This method returns TRUE when the assembly from which an IVarGet()

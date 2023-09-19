@@ -6,6 +6,32 @@
 USING System.Windows.Forms
 USING System.Drawing
 
+internal _dll func DeleteObject (hObject as IntPtr) as logic pascal:GDI32.DeleteObject
+internal _dll function SetROP2(hDC as IntPtr, fnDrawMode as Int32) as Int32 pascal:GDI32.SetROP2
+internal _dll function SetBkMode(hDC as IntPtr, iBkMOde as int) as Int32 pascal:GDI32.SetBkMode
+//INTERNAL _Dll Function SetBkMode(hDC As Ptr, iBkMOde As Int32) As Int32 Pascal:GDI32.SetBkMode
+internal _dll function SetTextColor(hDC as IntPtr, crColor as dword) as dword pascal:GDI32.SetTextColor
+internal _dll function SetBkColor(hDC as IntPtr, clrref as dword) as dword pascal:GDI32.SetBkColor
+internal _dll function TextOut(hDC as IntPtr,x as Int32,y as Int32,lpString as string,nLen as Int32) as logic pascal:GDI32.TextOutW
+internal _dll function DrawText(hDC as IntPtr, lpString as string, nCount as int, lpRect ref _winRECT,;
+    uFormat as dword) as int pascal:USER32.DrawTextW
+[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)];
+internal struct _winRECT
+	export Left as long
+	export Top as long
+	export Right as long
+	export Bottom as long
+end structure
+
+internal define DT_TOP              := 0x00000000
+internal define DT_LEFT             := 0x00000000
+internal define DT_CENTER           := 0x00000001
+internal define DT_RIGHT            := 0x00000002
+internal define DT_VCENTER          := 0x00000004
+internal define DT_BOTTOM           := 0x00000008
+internal define DT_WORDBREAK        := 0x00000010
+internal define DT_SINGLELINE       := 0x00000020
+
 INTERNAL CLASS DesignWindow INHERIT Panel
     EXPORT oItem AS DesignWindowItem
     CONSTRUCTOR(_oItem AS DesignWindowItem)
@@ -244,87 +270,124 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
         oParams := SUPER:CreateParams
         Funcs.SetCreateParams(oParams , SELF:oItem)
         RETURN oParams
-    VIRTUAL PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
-        SUPER:OnPaint(e)
+	override protected method OnPaint(e as PaintEventArgs) as void
+		super:OnPaint(e)
 
-        IF SELF:oBrush == NULL .or. SELF:oBrush:Color != SELF:ForeColor
-            SELF:oBrush := SolidBrush{SELF:ForeColor}
-        END IF
+		if self:lTestMode
+//			SELF:Text := ""
+			return
+		end if
 
-        //		SELF:oSF:Trimming := StringTrimming.Character
+		if self:oBrush == null .or. self:oBrush:Color != self:ForeColor
+			self:oBrush := SolidBrush{self:ForeColor}
+		end if
 
-        TRY
-            IF SELF:oItem:GetProperty("Multiline"):ValueLogic
-                IF _And(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
-                    SELF:oSF:FormatFlags := (StringFormatFlags)_Xor(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap)
-                END IF
-            ELSE
-                SELF:oSF:FormatFlags := StringFormatFlags.NoWrap
-            END IF
-        CATCH e1 AS Exception
-            SELF:oSF:FormatFlags := StringFormatFlags.NoWrap
-        END TRY
+		DesignCheckBox.DoPaint(self, oItem, oSF, oBrush, e:Graphics)
+	return
 
-        LOCAL cValue AS STRING
-        TRY
-            cValue := SELF:oItem:GetProperty("Horizontal Alignment"):TextValue:ToUpper()
-        CATCH e2 AS Exception
-            cValue := "AUTO"
-        END TRY
-        DO CASE
-        CASE cValue == "LEFT" .or. cValue == "AUTO"
-            SELF:oSF:Alignment := StringAlignment.Near
-        CASE cValue == "CENTER"
-            SELF:oSF:Alignment := StringAlignment.Center
-        CASE cValue == "RIGHT"
-            SELF:oSF:Alignment := StringAlignment.Far
-        END CASE
-        TRY
-            cValue := SELF:oItem:GetProperty("Vertical Alignment"):TextValue:ToUpper()
-        CATCH e3 AS Exception
-            cValue := "AUTO"
-        END TRY
-        DO CASE
-        CASE cValue == "TOP"
-            SELF:oSF:LineAlignment := StringAlignment.Near
-        CASE cValue == "CENTER" .or. cValue == "AUTO"
-            SELF:oSF:LineAlignment := StringAlignment.Center
-        CASE cValue == "BOTTOM"
-            SELF:oSF:LineAlignment := StringAlignment.Far
-        END CASE
-        TRY
-            IF SELF:oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
-                SELF:oSF:Alignment := StringAlignment.Far
-            END IF
-        CATCH
-            NOP
-        END TRY
+	static method DoPaint(oControl as Control, oItem as DesignWindowItem, oSF as StringFormat, oBrush as SolidBrush, oGraphics as Graphics) as void
+		local dwFlags as dword
 
-        LOCAL lExLeft := FALSE, lTextLeft := FALSE, lCheckRight := FALSE AS LOGIC
-        TRY
-            lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
-            lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
-            lCheckRight := lExLeft .OR. lTextLeft
-        CATCH
-            NOP
-        END TRY
+//		SELF:oSF:Trimming := StringTrimming.Character
 
-        LOCAL oRect AS Rectangle
-        LOCAL CONST nCheckSize := 16 AS INT
-        oRect := SELF:ClientRectangle
-        IF lCheckRight
-            oRect := Rectangle{0,0,oRect:Width - nCheckSize, oRect:Height}
-        ELSE
-            oRect := Rectangle{nCheckSize,0,oRect:Width - nCheckSize, oRect:Height}
-        END IF
+		try
+			if oItem:GetProperty("Multiline"):ValueLogic
+				dwFlags := DT_WORDBREAK
 
-        TRY
-            e:Graphics:DrawString(Funcs.TranslateCaption(SELF:oItem:GetProperty("Caption"):TextValue , FALSE) , SELF:Font , SELF:oBrush , oRect , SELF:oSF)
-        CATCH
-            NOP
-        END TRY
+				if _and(oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
+					oSF:FormatFlags := (StringFormatFlags)_xor(oSF:FormatFlags , StringFormatFlags.NoWrap)
+				end if
+			else
+				dwFlags := DT_SINGLELINE + DT_VCENTER
 
-        RETURN
+				oSF:FormatFlags := StringFormatFlags.NoWrap
+			end if
+		catch
+			oSF:FormatFlags := StringFormatFlags.NoWrap
+		end try
+
+		local cValue as string
+		try
+			cValue := oItem:GetProperty("Horizontal Alignment"):TextValue:ToUpper()
+		catch
+			cValue := "AUTO"
+		end try
+		do case
+		case cValue == "LEFT" .or. cValue == "AUTO"
+			oSF:Alignment := StringAlignment.Near
+		case cValue == "CENTER"
+			oSF:Alignment := StringAlignment.Center
+			dwFlags += DT_CENTER
+		case cValue == "RIGHT"
+			oSF:Alignment := StringAlignment.Far
+			dwFlags += DT_RIGHT
+		end case
+
+		try
+			cValue := oItem:GetProperty("Vertical Alignment"):TextValue:ToUpper()
+		catch e3 as Exception
+			cValue := "AUTO"
+		end try
+		do case
+		case cValue == "TOP"
+			dwFlags += DT_BOTTOM // for some bizarre reason...
+			oSF:LineAlignment := StringAlignment.Near
+		case cValue == "CENTER" .or. cValue == "AUTO"
+			oSF:LineAlignment := StringAlignment.Center
+		case cValue == "BOTTOM"
+			dwFlags += DT_VCENTER // see above...
+			oSF:LineAlignment := StringAlignment.Far
+		end case
+		try
+			if oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
+				oSF:Alignment := StringAlignment.Far
+			end if
+		end try
+
+		local lExLeft, lTextLeft, lCheckRight as logic
+		try
+			lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
+			lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
+		end try
+		lCheckRight := lExLeft .or. lTextLeft
+
+		local oRect as Rectangle
+		local const nCheckSize := 16 as int
+		oRect := oControl:ClientRectangle
+		if lCheckRight
+			oRect := Rectangle{0,0,oRect:Width - nCheckSize, oRect:Height}
+		else
+			oRect := Rectangle{nCheckSize,0,oRect:Width - nCheckSize, oRect:Height}
+		end if
+
+		try
+			local hDC as IntPtr
+			local hFont as IntPtr
+			hDC := oGraphics:GetHdc()
+			SetBkMode(hDC,1 /*bkMode.Transparent*/)
+			hFont := oControl:Font:ToHfont()
+			SelectObject(hDC, hFont )
+			local cText as string
+			cText := Funcs.TranslateCaption(oItem:GetProperty("Caption"):TextValue , false)
+			local r as _winRECT
+			r:Left := oRect:Left
+			r:Top := oRect:Top
+			r:Right := oRect:Right
+			r:Bottom := oRect:Bottom
+
+//			SetTextColor(hDC, (DWORD)oControl:ForeColor:ToArgb()  << 8 )
+			SetTextColor(hDC, ((dword)oControl:ForeColor:B  << 16) + ((dword)oControl:ForeColor:G  << 8) + ((dword)oControl:ForeColor:R))
+
+			DrawText(hDC, cText , cText:Length , ref r, dwFlags)
+//			TextOut(hDC, 0,0, cText , cText:Length)
+//			e:Graphics:DrawString(cText , oControl:Font , oBrush , oRect , oSF)
+
+			oGraphics:ReleaseHdc(hDC)
+			DeleteObject(hFont)
+		end try
+
+	return
+
 END CLASS
 
 INTERNAL CLASS DesignRadioButton INHERIT RadioButton
@@ -368,84 +431,17 @@ INTERNAL CLASS DesignRadioButton INHERIT RadioButton
     VIRTUAL PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
         SUPER:OnPaint(e)
 
+   		if self:lTestMode
+//			SELF:Text := ""
+			return
+		end if
+
         IF SELF:oBrush == NULL .OR. SELF:oBrush:Color != SELF:ForeColor
             SELF:oBrush := SolidBrush{SELF:ForeColor}
         END IF
 
-        //		SELF:oSF:Trimming := StringTrimming.Character
-
-        TRY
-            IF SELF:oItem:GetProperty("Multiline"):ValueLogic
-                IF _AND(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
-                    SELF:oSF:FormatFlags := (StringFormatFlags)_XOR(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap)
-                END IF
-            ELSE
-                SELF:oSF:FormatFlags := StringFormatFlags.NoWrap
-            END IF
-        CATCH e1 AS Exception
-            SELF:oSF:FormatFlags := StringFormatFlags.NoWrap
-        END TRY
-
-        LOCAL cValue AS STRING
-        TRY
-            cValue := SELF:oItem:GetProperty("Horizontal Alignment"):TextValue:ToUpper()
-        CATCH e2 AS Exception
-            cValue := "AUTO"
-        END TRY
-        DO CASE
-        CASE cValue == "LEFT" .OR. cValue == "AUTO"
-            SELF:oSF:Alignment := StringAlignment.Near
-        CASE cValue == "CENTER"
-            SELF:oSF:Alignment := StringAlignment.Center
-        CASE cValue == "RIGHT"
-            SELF:oSF:Alignment := StringAlignment.Far
-        END CASE
-        TRY
-            cValue := SELF:oItem:GetProperty("Vertical Alignment"):TextValue:ToUpper()
-        CATCH e3 AS Exception
-            cValue := "AUTO"
-        END TRY
-        DO CASE
-        CASE cValue == "TOP"
-            SELF:oSF:LineAlignment := StringAlignment.Near
-        CASE cValue == "CENTER" .OR. cValue == "AUTO"
-            SELF:oSF:LineAlignment := StringAlignment.Center
-        CASE cValue == "BOTTOM"
-            SELF:oSF:LineAlignment := StringAlignment.Far
-        END CASE
-        TRY
-            IF SELF:oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
-                SELF:oSF:Alignment := StringAlignment.Far
-            END IF
-        CATCH
-            NOP
-        END TRY
-
-        LOCAL lExLeft := FALSE, lTextLeft := FALSE, lCheckRight := FALSE AS LOGIC
-        TRY
-            lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
-            lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
-            lCheckRight := lExLeft .OR. lTextLeft
-        CATCH
-            NOP
-        END TRY
-
-        LOCAL oRect AS Rectangle
-        LOCAL CONST nCheckSize := 16 AS INT
-        oRect := SELF:ClientRectangle
-        IF lCheckRight
-            oRect := Rectangle{0,0,oRect:Width - nCheckSize, oRect:Height}
-        ELSE
-            oRect := Rectangle{nCheckSize,0,oRect:Width - nCheckSize, oRect:Height}
-        END IF
-
-        TRY
-            e:Graphics:DrawString(Funcs.TranslateCaption(SELF:oItem:GetProperty("Caption"):TextValue , FALSE) , SELF:Font , SELF:oBrush , oRect , SELF:oSF)
-        CATCH
-            NOP
-        END TRY
-
-        RETURN
+		DesignCheckBox.DoPaint(self, oItem, oSF, oBrush, e:Graphics)
+        return
 END CLASS
 
 INTERNAL CLASS DesignEdit INHERIT TextBox

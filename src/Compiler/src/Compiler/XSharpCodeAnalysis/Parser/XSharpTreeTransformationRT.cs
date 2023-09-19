@@ -1115,23 +1115,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name, string alias, IToken amp, bool isPublic)
+        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name, string alias, IToken amp, IToken modifier)
         {
             name = CleanVarName(name);
             if (amp == null) // normal DIMENSION foo (1,2)
             {
-                addFieldOrMemvar(name, alias, context, false, isPublic);
+                addFieldOrMemvar(name, alias, context, modifier);
             }
             else // DIMENSION &foo(1,2)
             {
                 // Make name unique because they can use &name multiple times
                 name += ":" + context.Position.ToString();
-                addFieldOrMemvar(name, "&", context, false, isPublic);
+                addFieldOrMemvar(name, "&", context, modifier);
             }
         }
 
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix,
-            XSharpParserRuleContext context, bool isParameter, bool isPublic = false)
+            XSharpParserRuleContext context, IToken modifier)
         {
             if (CurrentMember == null)
                 return null;
@@ -1146,8 +1146,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var info = CurrentMember.Data.AddField(name, prefix, context);
-                info.IsParameter = isParameter;
-                info.IsPublic = isPublic;
+                info.IsParameter = modifier.Type == XP.PARAMETERS || modifier.Type == XP.LPARAMETERS;
+                info.IsPublic = modifier.Type == XP.PUBLIC;
                 return info;
             }
         }
@@ -1169,12 +1169,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
             {
                 var name = CleanVarName(context.Id.GetText());
-                addFieldOrMemvar(name, "M", context, context.T.Type == XP.PARAMETERS);
+                addFieldOrMemvar(name, "M", context, context.T);
             }
             else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
             {
                 var name = context.Id.GetText();
-                AddAmpbasedMemvar(context, name, "M", amp: context.Amp, isPublic: context.T.Type == XP.PUBLIC);
+                AddAmpbasedMemvar(context, name, "M", amp: context.Amp, context.T);
             }
         }
         public override void EnterMemvardecl([NotNull] XP.MemvardeclContext context)
@@ -1301,7 +1301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.PRIVATE:
                 case XP.PUBLIC:
                     bool isprivate = context.T.Type == XP.PRIVATE;
-                    foreach (var memvar in context._XVars)
+                    foreach (var memvar in context._Vars)
                     {
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, isprivate);
@@ -4321,7 +4321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var field in context._Fields)
                 {
                     var name = field.Id.GetText();
-                    addFieldOrMemvar(name, alias, field, false);
+                    addFieldOrMemvar(name, alias, field, context.Start);
                 }
             }
         }

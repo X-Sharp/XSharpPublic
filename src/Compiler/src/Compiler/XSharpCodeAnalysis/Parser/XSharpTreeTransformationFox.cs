@@ -164,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (fieldInfo == null)
             {
                 var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
-                var field = addFieldOrMemvar(name, alias, context, false);
+                var field = addFieldOrMemvar(name, alias, context, context.Start);
                 field.IsCreated = local;
             }
         }
@@ -192,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var field = findVar(name);
                 if (field == null)
                 {
-                    AddAmpbasedMemvar(context, name, alias, amp: context.Amp, isPublic: context.T.Type == XP.PUBLIC);
+                    AddAmpbasedMemvar(context, name, alias, amp: context.Amp, context.T);
                 }
             }
         }
@@ -205,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             CurrentMember.Data.HasMemVars = true;
             var name = CleanVarName(context.Id.GetText());
-            AddAmpbasedMemvar(context, name, "M", amp: context.Amp, isPublic: context.T.Type == XP.PUBLIC);
+            AddAmpbasedMemvar(context, name, "M", amp: context.Amp, context.T);
         }
         public override void EnterFoxmemvardecl([NotNull] XP.FoxmemvardeclContext context)
         {
@@ -232,7 +232,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var prefix = XSharpSpecialNames.ClipperParamPrefix;
             var name = CleanVarName(context.Name.Id.GetText());
-            addFieldOrMemvar(name, prefix, context, isParameter: true, isPublic: false);
+            addFieldOrMemvar(name, prefix, context, context.T);
         }
         public override void EnterFoxlparameters([NotNull] XP.FoxlparametersContext context)
         {
@@ -268,7 +268,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var field = findVar(name);
                 if (field == null)
                 {
-                    AddAmpbasedMemvar(context, name, "M", amp: context.Amp, isPublic: context.T.Type == XP.PUBLIC);
+                    AddAmpbasedMemvar(context, name, "M", amp: context.Amp, context.T);
                 }
             }
         }

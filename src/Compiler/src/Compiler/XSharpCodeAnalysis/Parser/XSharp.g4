@@ -783,9 +783,9 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
                     //  Not for FoxPro !
                     //  NOTE: The parent rule already filters out so this is not called when MEMVARS are not enabled
                     // This is only the list of names
-memvardecl         : T=(MEMVAR|PARAMETERS) Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
                       // This includes the optional initializer or array dimension
-                   | T=(PRIVATE|PUBLIC)    XVars+=memvar[$T] (COMMA XVars+=memvar[$T])*  end=eos 
+memvardecl         : T=(MEMVAR|PARAMETERS|PRIVATE|PUBLIC)
+                      Vars+=memvar[$T] (COMMA Vars+=memvar[$T] )* end=eos  // MEMVAR  Foo, Bar
                    ;
 
 // For the variable list for Private and Public
@@ -811,7 +811,7 @@ foxdimvardecl       :  T=(DIMENSION | DECLARE )  DimVars += foxdimvar[$T] (COMMA
 
 
                     // This includes array indices and optional type per name
-foxlparameters      : T=LPARAMETERS LParameters+=foxlparameter (COMMA LParameters+=foxlparameter )* end=eos
+foxlparameters      : T=LPARAMETERS LParameters+=foxlparameter[$T] (COMMA LParameters+=foxlparameter[$T] )* end=eos
                     // This has names and optional ampersands
                     ;
 
@@ -831,8 +831,8 @@ foxdimvar[IToken T]  : (Amp=AMP)? Id=varidentifierName
 foxclasslib        : Of=OF ClassLib=identifierName
                    ;
 
-foxlparameter       : Name=varidentifierName XT=foxtypedecl?
-                    ;
+foxlparameter[IToken T] : Name=varidentifierName XT=foxtypedecl?
+                        ;
 
                       // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
 foxtypedecl         : As=AS Type=datatype foxclasslib?

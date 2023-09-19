@@ -614,9 +614,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitFoxmemvar([NotNull] XSharpParser.FoxmemvarContext context)
         {
             base.ExitFoxmemvar(context);
-            if (context.T.Type == XSharpParser.PARAMETERS && context.Expression != null)
+            if ((context.T.Type == XSharpParser.PARAMETERS || context.T.Type == XSharpParser.MEMVAR))
             {
-                _parseErrors.Add(new ParseErrorData(context.Expression, ErrorCode.ERR_ParameterInit));
+                if (context.Amp != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Amp, ErrorCode.ERR_IdentifierExpected));
+                }
+                if (context.Expression != null)
+                {
+                    var type = context.T.Type == XSharpParser.PARAMETERS ? "Parameters" : "Memory Variables";
+                    _parseErrors.Add(new ParseErrorData(context.Expression, ErrorCode.ERR_ParameterInit, type));
+                }
             }
         }
         public override void ExitFoxmethod([NotNull] XSharpParser.FoxmethodContext context)
@@ -865,15 +873,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             NotInCore(context, "Late bound member access");
             return;
         }
-        //public override void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context)
-        //{
-        //    NotInCore(context, "Late bound member access");
-        //    return;
-        //}
-        
+
         public override void ExitMemvardecl([NotNull] XSharpParser.MemvardeclContext context)
         {
-
             if (_options.Dialect == XSharpDialect.Core)
             {
                 NotInCore(context, "Dynamic Memory Variables");
@@ -896,9 +898,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // can't have both an array specification and a initialization value
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarInit));
             }
-            if (context.T.Type == XSharpParser.PARAMETERS && context.Expression != null)
+            if ((context.T.Type == XSharpParser.PARAMETERS || context.T.Type == XSharpParser.MEMVAR) )
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_ParameterInit));
+                if (context.Amp != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Amp, ErrorCode.ERR_IdentifierExpected));
+                }
+                if (context.Expression != null)
+                {
+                    var type = context.T.Type == XSharpParser.PARAMETERS ? "Parameters" : "Memory Variables";
+                    _parseErrors.Add(new ParseErrorData(context.Expression, ErrorCode.ERR_ParameterInit, type));
+                }
             }
         }
 

@@ -107755,9 +107755,9 @@ FileType = Code
 CopyToBin = 0
 [C837 - SCATTER TO and APPEND FROM ARRAY References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll,1,1
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
 [C837 - SCATTER TO and APPEND FROM ARRAY Resources]
 [C837 - SCATTER TO and APPEND FROM ARRAY Native Resources]
 [C837 - SCATTER TO and APPEND FROM ARRAY License files]
@@ -122363,7 +122363,7 @@ Undeclared=0
 EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
-MemVar=0
+MemVar=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0

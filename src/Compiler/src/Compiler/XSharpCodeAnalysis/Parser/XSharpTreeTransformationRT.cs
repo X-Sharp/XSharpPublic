@@ -17,8 +17,6 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using System.Xml.Xsl;
-    using Microsoft.CodeAnalysis.CSharp.Symbols;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
@@ -45,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
-        private readonly Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
+        protected readonly Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
 
         private readonly Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private readonly Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
@@ -1117,8 +1115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name,
-            string alias, IToken amp, bool isPublic = false)
+        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name, string alias, IToken amp, bool isPublic)
         {
             name = CleanVarName(name);
             if (amp == null) // normal DIMENSION foo (1,2)
@@ -1136,6 +1133,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix,
             XSharpParserRuleContext context, bool isParameter, bool isPublic = false)
         {
+            if (CurrentMember == null)
+                return null;
             var field = CurrentMember.Data.GetField(name);
             if (field != null)
             {
@@ -1160,40 +1159,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return name;
         }
-        public override void EnterMemvardecl([NotNull] XP.MemvardeclContext context)
+        public override void EnterMemvar([NotNull] XP.MemvarContext context)
         {
-            // declare memvars
-            context.SetSequencePoint(context.end);
-            if (CurrentMember == null)
+            if (CurrentMember == null || context.Parent is XP.FilewidememvarContext)
             {
                 return;
             }
-            if (_options.SupportsMemvars)
+            CurrentMember.Data.HasMemVars = true;
+            if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
             {
-                CurrentMember.Data.HasMemVars = true;
-                if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
-                {
-                    foreach (var memvar in context._Vars)
-                    {
-                        var name = CleanVarName(memvar.Id.GetText());
-                        addFieldOrMemvar(name, "M", memvar, context.T.Type == XP.PARAMETERS);
-                    }
-                }
-                else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
-                {
-                    foreach (var memvar in context._XVars)
-                    {
-                        var name = memvar.Id.GetText();
-                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp, context.T.Type == XP.PUBLIC);
-                    }
-                }
+                var name = CleanVarName(context.Id.GetText());
+                addFieldOrMemvar(name, "M", context, context.T.Type == XP.PARAMETERS);
             }
-            if (context.T.Type == XP.PARAMETERS)
+            else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
+            {
+                var name = context.Id.GetText();
+                AddAmpbasedMemvar(context, name, "M", amp: context.Amp, isPublic: context.T.Type == XP.PUBLIC);
+            }
+        }
+        public override void EnterMemvardecl([NotNull] XP.MemvardeclContext context)
+        {
+            if (CurrentMember != null && context.T.Type == XP.PARAMETERS)
             {
                 // parameters assumes Clipper Calling Convention
                 var member = CurrentMember;
                 member.Data.HasClipperCallingConvention = true;
-                if (member.Data.HasParametersStmt || member.Data.HasLParametersStmt || member.Data.HasFormalParameters)
+                if (member.Data.HasDeclaredParameters)
                 {
                     // trigger error message by setting both
                     // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
@@ -1202,8 +1193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    member.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
-                    member.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                    member.Data.HasParametersStmt = true;
                 }
             }
         }
@@ -1215,35 +1205,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Token.Type == XP.PUBLIC)
                 {
                     // PUBLIC
-                    if (_options.Dialect != XSharpDialect.FoxPro)
+                    foreach (var memvar in context._XVars)
                     {
-                        foreach (var memvar in context._XVars)
+                        if (memvar.Amp == null)
                         {
-                            if (memvar.Amp == null)
-                            {
-                                var name = CleanVarName(memvar.Id.GetText());
-                                var mv = new MemVarFieldInfo(name, "M", memvar, true);
-                                mv.IsPublic = true;
-                                _filewideMemvars.Add(mv.Name, mv);
-                                GlobalEntities.FileWidePublics.Add(mv);
-                            }
-                            // Code generation for initialization is done in CreateInitFunction()
+                            var name = CleanVarName(memvar.Id.GetText());
+                            var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
+                            mv.IsPublic = true;
+                            _filewideMemvars.Add(mv.Name, mv);
+                            GlobalEntities.FileWidePublics.Add(mv);
                         }
-                    }
-                    else
-                    {
-                        foreach (var memvar in context._FoxVars)
-                        {
-                            if (memvar.Amp == null)
-                            {
-                                var name = CleanVarName(memvar.Id.GetText());
-                                var mv = new MemVarFieldInfo(name, "M", memvar, true);
-                                mv.IsPublic = true;
-                                _filewideMemvars.Add(mv.Name, mv);
-                                GlobalEntities.FileWidePublics.Add(mv);
-                            }
-                            // Code generation for initialization is done in CreateInitFunction()
-                        }
+                        // Code generation for initialization is done in CreateInitFunction()
                     }
                 }
                 else
@@ -1253,7 +1225,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._Vars)
                     {
                         var name = CleanVarName(memvar.Id.GetText());
-                        var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                        var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
                         mv.IsPublic = false;
                         _filewideMemvars.Add(mv.Name, mv);
                     }
@@ -1297,6 +1269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.CsNode = context.Decl.CsNode; // in the case of script LPARAMETERS this is a list
         }
+
         public override void ExitMemvardecl([NotNull] XP.MemvardeclContext context)
         {
             context.SetSequencePoint(context.end);
@@ -2166,7 +2139,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    fieldInfo = new MemVarFieldInfo(name, "", context.Left);
+                    fieldInfo = new MemVarFieldInfo(name, "", context.Left, filewidepublic: false);
                     field = MakeMemVarField(fieldInfo);
                 }
                 context.Left.Put(field);
@@ -4480,13 +4453,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //_FIELD->NAME, CUSTOMER-NAME, _FIELD->CUSTOMER->NAME
                 if (context.Alias == null)
                 {
-                    var info = new MemVarFieldInfo(fldName, "", context);
+                    var info = new MemVarFieldInfo(fldName, "", context, filewidepublic: false);
                     context.Put(MakeMemVarField(info));
                 }
                 else
                 {
                     var alias = context.Alias.GetText();
-                    var info = new MemVarFieldInfo(fldName, alias, context);
+                    var info = new MemVarFieldInfo(fldName, alias, context, filewidepublic: false);
                     context.Put(MakeMemVarField(info));
                 }
             }
@@ -4534,7 +4507,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string field = context.Expr.GetText();
                 var varName = field;
                 // assume it is a field
-                var info = new MemVarFieldInfo(varName, "", context);
+                var info = new MemVarFieldInfo(varName, "", context, filewidepublic: false);
                 if (context.Id != null || context.Alias.IsIdentifier())
                 {
                     string name;
@@ -4542,7 +4515,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name = context.Id.GetText();
                     else
                         name = context.Expr.GetText();
-                    info = new MemVarFieldInfo(varName, name, context);
+                    info = new MemVarFieldInfo(varName, name, context, filewidepublic: false);
                     context.Put(MakeMemVarField(info));
                 }
                 else

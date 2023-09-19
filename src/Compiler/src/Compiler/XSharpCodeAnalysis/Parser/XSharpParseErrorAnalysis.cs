@@ -611,6 +611,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitFoxmemvar([NotNull] XSharpParser.FoxmemvarContext context)
+        {
+            base.ExitFoxmemvar(context);
+            if (context.T.Type == XSharpParser.PARAMETERS && context.Expression != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Expression, ErrorCode.ERR_ParameterInit));
+            }
+        }
         public override void ExitFoxmethod([NotNull] XSharpParser.FoxmethodContext context)
         {
             if (context.HelpString != null)
@@ -862,6 +870,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         //    NotInCore(context, "Late bound member access");
         //    return;
         //}
+        
         public override void ExitMemvardecl([NotNull] XSharpParser.MemvardeclContext context)
         {
 
@@ -886,6 +895,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // can't have both an array specification and a initialization value
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarInit));
+            }
+            if (context.T.Type == XSharpParser.PARAMETERS && context.Expression != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_ParameterInit));
             }
         }
 

@@ -7697,6 +7697,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_PropertyParametersBrackets" xml:space="preserve">
   <value>Property parameters should be specified between Square Brackets ('[ &lt;parameters&gt; ]').</value>
  </data>
-  
+  <data name="ERR_ParameterInit" xml:space="preserve">
+  <value>Parameters cannot have an initial value.</value>
+ </data>
+
 </root>
 

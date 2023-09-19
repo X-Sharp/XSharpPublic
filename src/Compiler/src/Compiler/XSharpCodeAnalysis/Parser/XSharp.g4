@@ -592,13 +592,13 @@ globalAttributeTarget : Token=ID COLON      // We'll Check for ASSEMBLY and MODU
 
 
 filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
-                    | {!IsFox }? Token=PUBLIC XVars+=memvar (COMMA XVars+=memvar)*  end=EOS
-                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar (COMMA FoxVars+=foxmemvar)*  end=EOS
+                    | {!IsFox }? Token=PUBLIC XVars+=memvar[$Token] (COMMA XVars+=memvar[$Token])*  end=EOS 
+                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=EOS
                     ;
 
-
+ 
 statement           : Decl=localdecl                            #declarationStmt
-                    | {IsFox}? Decl=foxlocaldecl                #foxlocaldeclStmt    // Local declarations FoxPro specific
+                    | {IsFox}? Decl=foxlparameters              #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
                     | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt  // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt
@@ -778,56 +778,47 @@ impliedvar         : (Const=CONST)? Id=varidentifier Op=assignoperator Expressio
 fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
                    ;
 
-// Old Style xBase declarations
-// FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect. The varidentifierrule has the M DOT clause
+                    // Old Style xBase declarations
+                    // FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect. The varidentifierrule has the M DOT clause
                     //  Not for FoxPro !
                     //  NOTE: The parent rule already filters out so this is not called when MEMVARS are not enabled
                     // This is only the list of names
-memvardecl         : T=MEMVAR     Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
-                   | T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
+memvardecl         : T=(MEMVAR|PARAMETERS) Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
                       // This includes the optional initializer or array dimension
-                   |  T=PRIVATE   XVars+=memvar (COMMA XVars+=memvar)*  end=eos
-                   |  T=PUBLIC    XVars+=memvar (COMMA XVars+=memvar)*  end=eos
-                    ;
+                   | T=(PRIVATE|PUBLIC)    XVars+=memvar[$T] (COMMA XVars+=memvar[$T])*  end=eos 
+                   ;
 
 // For the variable list for Private and Public
-memvar            : (Amp=AMP)?  Id=varidentifierName
-                      (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
-                  ;
+memvar[IToken T]  : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+                   ;
 
 
 //
 // Only for the FoxPro dialect
-// LPARAMETERS may have AS Type clause
 // DIMENSION  may have AS Type clause and either parens or brackets (see DimensionVar)
 // The parent rule already filters out so this is not called when MEMVARS are not enabled
 
-                    // This includes array indices and optional type per name
-foxmemvardecl       :  T=MEMVAR Vars+=varidentifierName XT=foxtypedecl?  (COMMA Vars+=varidentifierName XT=foxtypedecl? )*  end=eos
-                      // This has names and optional types
-                    |  T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName XT=foxtypedecl?)* end=eos
-                    // This has names and optional ampersands
-                    |  T=PRIVATE FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
-                    |  T=PUBLIC  FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
-                   ;
+                                        
+foxmemvardecl       :  T=( MEMVAR |PARAMETERS | PRIVATE | PUBLIC ) FoxVars+=foxmemvar[$T]  (COMMA FoxVars+=foxmemvar[$T])*  end=eos 
+                    ;
 
                     // This includes array indices and optional type per name
-foxdimvardecl       :  T=DIMENSION  DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
-                    |  T=DECLARE    DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
+foxdimvardecl       :  T=(DIMENSION | DECLARE )  DimVars += foxdimvar[$T] (COMMA DimVars+=foxdimvar[$T])* end=eos
                     // This has names and dimensions
-                    |  T=PUBLIC (ARRAY)? DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
-                   ;
+                    |  T=PUBLIC (ARRAY)? DimVars += foxdimvar[$T] (COMMA DimVars+=foxdimvar[$T])*    end=eos
+                    |  T=LOCAL ARRAY     DimVars += foxdimvar[$T] (COMMA DimVars+=foxdimvar[$T])*    end=eos
+                    ;
 
 
                     // This includes array indices and optional type per name
-foxlocaldecl        : T=LPARAMETERS LParameters+=foxlparameter (COMMA LParameters+=foxlparameter )* end=eos
+foxlparameters      : T=LPARAMETERS LParameters+=foxlparameter (COMMA LParameters+=foxlparameter )* end=eos
                     // This has names and optional ampersands
-                    | T=LOCAL ARRAY DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
                     ;
 
                     // FoxPro dimension statement allows the AS Type per variable name
                     // AS Type OF ClassLib is ignored in FoxPro too, except when calling COM components
-foxdimvar           : (Amp=AMP)?  Id=varidentifierName
+                    // second variation to redim class members
+foxdimvar[IToken T]  : (Amp=AMP)? Id=varidentifierName
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?
@@ -836,7 +827,7 @@ foxdimvar           : (Amp=AMP)?  Id=varidentifierName
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?
                     ;
-
+                    
 foxclasslib        : Of=OF ClassLib=identifierName
                    ;
 
@@ -849,10 +840,10 @@ foxtypedecl         : As=AS Type=datatype foxclasslib?
 
                        // For the variable list for Private and Public
                        // We have added the initializer that FoxPro does not have
-foxmemvar          : (Amp=AMP)?  Id=varidentifierName
+foxmemvar[IToken T] : (Amp=AMP)?  Id=varidentifierName
                       (Op=assignoperator Expression=expression)?
                       XT=foxtypedecl?  // is ignored in FoxPro too
-                    ;
+                   ;
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=funcproctype Sig=signature

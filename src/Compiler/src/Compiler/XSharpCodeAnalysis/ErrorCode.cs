@@ -2089,6 +2089,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_ConversionFromNilNotSupported = 9117,
         WRN_ParameterMustBeTyped = 9118,
         WRN_PropertyParametersBrackets = 9119,
+        ERR_ParameterInit = 9120,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

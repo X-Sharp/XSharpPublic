@@ -176,7 +176,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var refkinds = node.Method.ParameterRefKinds;
                 for (var i = 0; i < node.Method.ParameterCount;i++)
                 {
-                    if (refkinds[i] == RefKind.Out)
+                    if (refkinds[i] == RefKind.Out && xNode.ArgList._Args.Count > i)
                     {
                         var arg = xNode.ArgList._Args[i];
                         if (arg.RefOut?.Type != XSharpLexer.OUT)

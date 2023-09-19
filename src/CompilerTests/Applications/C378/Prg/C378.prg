@@ -17,7 +17,7 @@ END IF
 LOCAL o AS StandardFileDialog
 o := StandardFileDialog{}
 
-FUNCTION _SLen(c AS STRING) AS DWORD
+FUNCTION SLen(c AS STRING) AS DWORD
 RETURN (DWORD)c:Length
 
 

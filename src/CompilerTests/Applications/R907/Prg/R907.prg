@@ -19,7 +19,8 @@ FUNCTION JoinFiles() AS STRING STRICT
 
     RETURN ""
 
-
+FUNCTION SLen(c as STRING) AS DWORD
+    RETURN (DWORD) c:Length
 
 PROC xAssert(l AS LOGIC)
 IF l

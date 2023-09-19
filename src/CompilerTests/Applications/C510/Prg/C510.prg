@@ -39,4 +39,5 @@ CLASS AnotherClass
 		? aSort[3]
 	RETURN
 END CLASS
-
+FUNCTION SLen(c AS STRING) AS DWORD
+RETURN (DWORD)c:Length

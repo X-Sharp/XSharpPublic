@@ -231,4 +231,5 @@ METHOD Show(cKeyword, symLookupType)
 
 END CLASS
 
-
+FUNCTION SLen(c AS STRING) AS DWORD
+RETURN (DWORD)c:Length

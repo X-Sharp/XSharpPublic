@@ -5602,6 +5602,52 @@ RETURN
 		
 			DbCloseArea()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD Incorrect_index_scope_visibility() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1238
+
+			LOCAL cDbf AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cDbf, {{"COL1", "N", 4, 0}} )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbCreateOrder("ORDER1", cDbf, "STR(COL1,4)", {|| Str(_FIELD->COL1, 4)}, FALSE)
+			DbCloseArea()
+
+			DbUseArea(TRUE,"DBFCDX",cDbf)
+
+			LOCAL CONST nScopeVal := 1 AS INT
+			LOCAL cS := Str(nScopeVal, 4) AS STRING
+		
+			OrdScope(TOPSCOPE, cS)
+			OrdScope(BOTTOMSCOPE, cS)
+			VoDbGoTop()
+		
+			LOCAL CONST nNumberOfTestRecords := 15 AS INT // any number greater than 1
+		
+			// Filling with data
+			FOR LOCAL i := 1 AS INT UPTO nNumberOfTestRecords + 1
+				VoDbAppend(FALSE)
+				FieldPutSym(#COL1, nScopeVal)
+			NEXT
+		
+			VoDbCommit()
+			VoDbUnlock(NIL)
+		
+			// Test
+			LOCAL nCountInCurrentScope := 0 AS INT
+			VoDbGoTop()
+			DO WHILE !VoDbEof()
+				nCountInCurrentScope++
+				VoDbSkip(1)
+			ENDDO
+		
+			? nCountInCurrentScope // must be <nNumberOfTestRecords + 1>, instead 1
+			Assert.Equal(nNumberOfTestRecords + 1, nCountInCurrentScope)
+		
+			DbCloseArea()
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

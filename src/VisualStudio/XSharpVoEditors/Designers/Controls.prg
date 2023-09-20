@@ -31,6 +31,7 @@ internal define DT_VCENTER          := 0x00000004
 internal define DT_BOTTOM           := 0x00000008
 internal define DT_WORDBREAK        := 0x00000010
 internal define DT_SINGLELINE       := 0x00000020
+internal define DT_CALCRECT         := 0x00000400
 
 INTERNAL CLASS DesignWindow INHERIT Panel
     EXPORT oItem AS DesignWindowItem
@@ -287,11 +288,13 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 
 	static method DoPaint(oControl as Control, oItem as DesignWindowItem, oSF as StringFormat, oBrush as SolidBrush, oGraphics as Graphics) as void
 		local dwFlags as dword
+		local lMultiline := false as logic
 
 //		SELF:oSF:Trimming := StringTrimming.Character
 
 		try
-			if oItem:GetProperty("Multiline"):ValueLogic
+            if oItem:GetProperty("Multiline"):ValueLogic
+                lMultiline := true
 				dwFlags := DT_WORDBREAK
 
 				if _and(oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
@@ -329,13 +332,17 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 			cValue := "AUTO"
 		end try
 		do case
-		case cValue == "TOP"
-			dwFlags += DT_BOTTOM // for some bizarre reason...
+        case cValue == "TOP"
+            if .not. lMultiline
+                dwFlags += DT_BOTTOM // for some bizarre reason...
+            endif
 			oSF:LineAlignment := StringAlignment.Near
 		case cValue == "CENTER" .or. cValue == "AUTO"
 			oSF:LineAlignment := StringAlignment.Center
 		case cValue == "BOTTOM"
-			dwFlags += DT_VCENTER // see above...
+            if .not. lMultiline
+                dwFlags += DT_VCENTER // see above...
+            endif
 			oSF:LineAlignment := StringAlignment.Far
 		end case
 		try
@@ -377,6 +384,25 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 
 //			SetTextColor(hDC, (DWORD)oControl:ForeColor:ToArgb()  << 8 )
 			SetTextColor(hDC, ((dword)oControl:ForeColor:B  << 16) + ((dword)oControl:ForeColor:G  << 8) + ((dword)oControl:ForeColor:R))
+
+   			if lMultiline
+				// becuase DT_VCENTER and DT_BOTTOM do not work with multiline text, we need to calculate the height of the text and print it manually in the required position..
+				local testRect as _winRECT
+				testRect:Left := oRect:Left
+				testRect:Top := oRect:Top
+				testRect:Right := oRect:Right
+				testRect:Bottom := oRect:Bottom
+
+				DrawText(hDC, cText , cText:Length , ref testRect,  dwFlags + DT_CALCRECT)
+				switch oSF:LineAlignment
+				case StringAlignment.Near
+					r:Top := 0
+				case StringAlignment.Center
+					r:Top := r:Bottom / 2 - testRect:Bottom / 2
+				case StringAlignment.Far
+					r:Top := r:Bottom - testRect:Bottom
+				end switch
+			end if
 
 			DrawText(hDC, cText , cText:Length , ref r, dwFlags)
 //			TextOut(hDC, 0,0, cText , cText:Length)

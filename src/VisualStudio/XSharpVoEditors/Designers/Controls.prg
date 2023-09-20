@@ -75,18 +75,23 @@ INTERNAL CLASS DesignPushButton INHERIT Button
     METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
         LOCAL cUpper AS STRING
         cUpper := oProp:Name:ToUpperInvariant()
-        DO CASE
-        CASE cUpper == "FLAT"
+        switch cUpper
+        case "FLAT"
             IF (INT)oProp:Value == 0
                 SELF:FlatStyle := FlatStyle.Flat
             ELSE
                 SELF:FlatStyle := FlatStyle.Standard
             ENDIF
-        CASE cUpper == "VERTICAL ALIGNMENT" .or. cUpper == "HORIZONTAL ALIGNMENT" .or. cUpper == "EXALIGNMENT" .or. cUpper == "MULTILINE"
-            SELF:Invalidate()
-        CASE IsVisibleStyle(oProp:Name)
-            SELF:UpdateStyles()
-        END CASE
+        case "VERTICAL ALIGNMENT"
+        case "HORIZONTAL ALIGNMENT"
+        case "EXALIGNMENT"
+        case "MULTILINE"
+            self:Invalidate()
+        otherwise
+            if IsVisibleStyle(oProp:Name)
+                self:UpdateStyles()
+            endif
+        end switch
         RETURN
     PROTECTED ACCESS CreateParams() AS CreateParams
         LOCAL oParams AS CreateParams
@@ -104,7 +109,7 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 
         TRY
             IF SELF:oItem:GetProperty("Multiline"):ValueLogic
-                IF _And(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
+                if self:oSF:FormatFlags:HasFlag(StringFormatFlags.NoWrap)
                     SELF:oSF:FormatFlags := (StringFormatFlags)_Xor(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap)
                 END IF
             ELSE
@@ -251,20 +256,26 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
     METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
         LOCAL cUpper AS STRING
         cUpper := oProp:Name:ToUpper()
-        DO CASE
-        CASE cUpper == "VERTICAL ALIGNMENT" .or. cUpper == "HORIZONTAL ALIGNMENT" .or. cUpper == "EXALIGNMENT" .or. cUpper == "TEXT LEFT" .or. cUpper == "MULTILINE"
-            TRY
+        switch cUpper
+        case "VERTICAL ALIGNMENT"
+        case "HORIZONTAL ALIGNMENT"
+        case "EXALIGNMENT"
+        case "TEXT LEFT"
+        case "MULTILINE"
+            try
                 SELF:TextAlign := GetButtonAlignment(SELF:oItem , TRUE)
                 SELF:CheckAlign := GetButtonAlignment(SELF:oItem , FALSE)
                 SELF:Invalidate()
             CATCH
                 NOP
             END TRY
-        CASE cUpper == "PUSH LIKE"
+        case "PUSH LIKE"
             SELF:Appearance := iif(oProp:ValueLogic , Appearance.Button , Appearance.Normal)
-        CASE IsVisibleStyle(oProp:Name)
-            SELF:UpdateStyles()
-        END CASE
+        otherwise
+            if IsVisibleStyle(oProp:Name)
+                self:UpdateStyles()
+            endif
+        end switch
         RETURN
     PROTECTED ACCESS CreateParams() AS CreateParams
         LOCAL oParams AS CreateParams
@@ -297,7 +308,7 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
                 lMultiline := true
 				dwFlags := DT_WORDBREAK
 
-				if _and(oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
+				if oSF:FormatFlags:HasFlag(StringFormatFlags.NoWrap)
 					oSF:FormatFlags := (StringFormatFlags)_xor(oSF:FormatFlags , StringFormatFlags.NoWrap)
 				end if
 			else
@@ -315,46 +326,52 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 		catch
 			cValue := "AUTO"
 		end try
-		do case
-		case cValue == "LEFT" .or. cValue == "AUTO"
+		switch cValue
+        case "LEFT"
+        case "AUTO"
 			oSF:Alignment := StringAlignment.Near
-		case cValue == "CENTER"
+		case "CENTER"
 			oSF:Alignment := StringAlignment.Center
 			dwFlags += DT_CENTER
-		case cValue == "RIGHT"
+		case "RIGHT"
 			oSF:Alignment := StringAlignment.Far
 			dwFlags += DT_RIGHT
-		end case
+		end switch
 
 		try
 			cValue := oItem:GetProperty("Vertical Alignment"):TextValue:ToUpper()
 		catch e3 as Exception
 			cValue := "AUTO"
 		end try
-		do case
-        case cValue == "TOP"
+		switch cValue
+        case "TOP"
             if .not. lMultiline
                 dwFlags += DT_BOTTOM // for some bizarre reason...
             endif
 			oSF:LineAlignment := StringAlignment.Near
-		case cValue == "CENTER" .or. cValue == "AUTO"
+        case "CENTER"
+        case "AUTO"
 			oSF:LineAlignment := StringAlignment.Center
-		case cValue == "BOTTOM"
+		case "BOTTOM"
             if .not. lMultiline
                 dwFlags += DT_VCENTER // see above...
             endif
 			oSF:LineAlignment := StringAlignment.Far
-		end case
+		end switch
 		try
 			if oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
 				oSF:Alignment := StringAlignment.Far
-			end if
+            end if
+        catch
+            nop
 		end try
 
 		local lExLeft, lTextLeft, lCheckRight as logic
 		try
 			lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
 			lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
+        catch
+            nop
 		end try
 		lCheckRight := lExLeft .or. lTextLeft
 
@@ -410,6 +427,8 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 
 			oGraphics:ReleaseHdc(hDC)
 			DeleteObject(hFont)
+        catch
+            nop
 		end try
 
 	return

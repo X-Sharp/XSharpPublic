@@ -4,38 +4,38 @@
 // See License.txt in the project root for license information.
 //
 
-BEGIN NAMESPACE XSharp
+begin namespace XSharp
 /// <summary>This interface can be used to access any object with an indexer.
 /// This is mostly used for elements inside typed arrays of the 'ARRAY OF' class.
 /// If you implement the interface on the elements you can use an array syntax to
 /// assess fields/properties in the elements of the array by name or ordinal.</summary>
 /// <seealso cref='INamedIndexer' />
 /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
-INTERFACE IIndexedProperties
+interface IIndexedProperties
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
     /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    PROPERTY SELF[index AS INT   ] AS USUAL GET SET
+    property self[index as int   ] as usual get set
     /// <summary>Get/Set array elements with a name.</summary>
     /// <param name="name">Name which will be used to lookup a property</param>
-    PROPERTY SELF[name  AS STRING] AS USUAL GET SET
-END INTERFACE
+    property self[name  as string] as usual get set
+end interface
 
 /// <summary> This interface is used to index a collection using the VO Array syntax.
 /// The interface is implemented by the ARRAY type in the runtime, but you can also use it for your custom types.</summary>
 /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
 /// <seealso cref='T:XSharp.__Array' />
-INTERFACE IIndexer
+interface IIndexer
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
     /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL GET SET
+    public property self[index params int[]] as usual get set
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
     /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    PUBLIC PROPERTY SELF[index AS INT] AS USUAL GET SET
+    public property self[index as int] as usual get set
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
     /// <param name="index1"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
     /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-    PUBLIC PROPERTY SELF[index1 AS INT, index2 AS INT] AS USUAL GET SET
-END INTERFACE
+    public property self[index1 as int, index2 as int] as usual get set
+end interface
 
 /// <summary>This interface is used to index a collection using a numeric and a string index and is implemented by the
 /// typed array class ('ARRAY OF'). If your elements inside the collection implement the IIndexProperties interface then
@@ -43,24 +43,24 @@ END INTERFACE
 /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
 /// <seealso cref='T:XSharp.IIndexedProperties' />
 /// <seealso cref='T:XSharp.__ArrayBase`1' />
-INTERFACE INamedIndexer
+interface INamedIndexer
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
     /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
     /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
-    PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL GET SET
-END INTERFACE
+    public property self[index as int, name as string] as usual get set
+end interface
 
 /// <summary> This interface is used for objects that implement a special mechanism
 /// for reading / writing properties at runtime.</summary>
 
-INTERFACE IDynamicProperties
+interface IDynamicProperties
     /// <summary>Retrieve an array of the property names that exist.</summary>
-    PUBLIC METHOD GetPropertyNames() AS STRING[]
+    public method GetPropertyNames() as string[]
     /// <summary>Retrieve the value of a property by name.</summary>
     /// <param name="cName">Property Name</param>
     /// <returns>The current value of the property </returns>
     /// <remarks>Accessing a property that does not exist will result in a runtime error.</remarks>
-    PUBLIC METHOD NoIvarGet(cName AS STRING) AS USUAL
+    public method NoIvarGet(cName as string) as usual
     /// <summary>Update the value of a property by name.</summary>
     /// <param name="cName">Property Name</param>
     /// <param name="uValue">New value of the property</param>
@@ -80,7 +80,7 @@ end interface
 /// </summary>
 /// <seealso cref="T:XSharp.IMacroCompiler"/>
 /// <seealso cref="T:XSharp.IMacroCompiler2"/>
-INTERFACE IMacroCompilerUsual
+interface IMacroCompilerUsual
     /// <summary>Compile a string into a runtime codeblock.</summary>
     /// <param name="macro">String to compile</param>
     /// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
@@ -89,31 +89,31 @@ INTERFACE IMacroCompilerUsual
     /// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
     /// <returns>A compiled codeblock</returns>
     /// <seealso cref="T:XSharp._Codeblock"/>
-    PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module) AS XSharp._Codeblock
+    public method CompileCodeblock(macro as string , lAllowSingleQuotes as logic, module as System.Reflection.Module) as XSharp._Codeblock
 
     /// <summary>Compile a string into a runtime codeblock.</summary>
     /// <param name="macro">String to compile</param>
     /// <returns>A compiled codeblock</returns>
     /// <seealso cref="T:XSharp._Codeblock"/>
     /// <remarks>This overload of the CompileCodeBlock assumes that single quotes are allowed, and that no memvars are used.</remarks>
-    PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp._Codeblock
+    public method CompileCodeblock(macro as string ) as XSharp._Codeblock
 
-END INTERFACE
+end interface
 
 /// <summary>
 /// This interface Extended the ICodeblock interface and adds support for usual
 /// parameters and return values
 /// </summary>
 /// <seealso cref="T:XSharp.ICodeblock"/>
-INTERFACE IRtCodeblock INHERIT ICodeblock2
+interface IRtCodeblock inherit ICodeblock2
     /// <summary>Was the codeblock created from a string that started with "{|" </summary>
-    PROPERTY IsBlock AS LOGIC GET
+    property IsBlock as logic get
     /// <summary>
     /// Executes the codeblock.</summary>
     /// <param name="args">Zero or more arguments to pass to the codeblock.</param>
     /// <returns>The value of the last expression in the codeblock.</returns>
-    METHOD Eval(args PARAMS USUAL[]) AS USUAL
-END INTERFACE
+    method Eval(args params usual[]) as usual
+end interface
 
 /// <summary>
 /// This interface described the methods needed for a LateBound object <br/>
@@ -121,30 +121,30 @@ END INTERFACE
 /// reflection to implement late bound calls to properties or methods
 /// but will call these methods instead.
 /// </summary>
-INTERFACE ILateBound
+interface ILateBound
     /// <summary>
     /// Method to read a field or property late bound.
     /// </summary>
     /// <param name="cName">Field/Property Name</param>
     /// <returns>Current value of Field/Property</returns>
-    METHOD NoIvarGet(cName AS STRING) AS USUAL
+    method NoIvarGet(cName as string) as usual
     /// <summary>
     /// Method to update a field or property late bound.
     /// </summary>
     /// <param name="cName">Field/Property Name</param>
     /// <param name="uValue">New value for field/property</param>
-    METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+    method NoIvarPut(cName as string, uValue as usual) as void
     /// <summary>
     /// Call a method in the type late bound. Arguments are passed as Clipper calling convention parameters.
     /// The method name is passed as first parameter.
     /// </summary>
     /// <returns>Result of MethodCall</returns>
-    METHOD NoMethod() AS USUAL CLIPPER
+    method NoMethod() as usual clipper
 end interface
 
 interface IWrappedObject
     property Object as object get
-    PROPERTY Type as System.Type GET
+    property Type   as System.Type get
 end interface
 
-END NAMESPACE
+end namespace

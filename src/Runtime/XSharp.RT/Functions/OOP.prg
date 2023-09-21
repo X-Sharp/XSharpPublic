@@ -674,6 +674,7 @@ internal static class OOPHelpers
         if t == null .or. String.IsNullOrEmpty(cName)
             return null
         endif
+        lSelf := lSelf .or. EmulateSelf
         var mi := OOPHelpers.GetMember(t, cName)
         if mi != null
             if mi is PropertyInfo var pi
@@ -746,6 +747,7 @@ internal static class OOPHelpers
         if t == null .or. String.IsNullOrEmpty(cName)
             return null
         endif
+        lSelf := lSelf .or. EmulateSelf
         var mi := OOPHelpers.GetMember(t, cName)
         if mi != null
             if mi is FieldInfo var fi .and. IsFieldVisible(fi, lSelf)
@@ -804,6 +806,7 @@ internal static class OOPHelpers
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
         local result as object
+        lSelf := lSelf .or. EmulateSelf
         if oObject == null_object
             throw Error.NullArgumentError(__function__, nameof(oObject),1)
         endif
@@ -870,6 +873,7 @@ internal static class OOPHelpers
         oError:Description := oError:Message+" '"+cIVar+"'"
         throw oError
 
+    static property EmulateSelf as logic auto
     static method IVarPut(oObject as object, cIVar as string, oValue as object, lSelf as logic)  as void
         local t as Type
         if oObject == null_object
@@ -892,6 +896,7 @@ internal static class OOPHelpers
             oObject := oWrapped:Object
             t       := oWrapped:Type
         endif
+        lSelf := lSelf .or. EmulateSelf
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
             if propInfo != null_object .and. propInfo:CanWrite
@@ -1329,7 +1334,6 @@ function CheckInstanceOf(oObject as object,symClassName as string) as logic
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classcount/*" />
-
 function ClassCount() as dword
     return ClassList():Length
 
@@ -1755,7 +1759,6 @@ function _Send(oObject as object,symMethod as MethodInfo, MethodArgList params u
     // Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
     //       The compiler expects that
 /// <exclude />
-
 function __InternalSend( oObject as usual, cMethod as string, args params usual[] ) as usual
     return OOPHelpers.DoSend(oObject, cMethod, args, __function__)
 

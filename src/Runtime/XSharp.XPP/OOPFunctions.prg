@@ -21,8 +21,8 @@ function IsMemberVar(uObject , cName , nAttributes) as logic clipper
 
 
 
-FUNCTION __GetXppClassObject(type AS System.Type) AS ILateBound
-    RETURN Abstract.GetClassObject(type)
+function __GetXppClassObject(type as System.Type) as ILateBound
+    return Abstract.GetClassObject(type)
 
 
 // this is used for the property that returns the parent object

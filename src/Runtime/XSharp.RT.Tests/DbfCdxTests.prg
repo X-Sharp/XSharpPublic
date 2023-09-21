@@ -3856,11 +3856,11 @@ RETURN
 			DbUseArea(TRUE, "DBFCDX", cDbf)
 
 			LOCAL cPrevious := "" AS STRING
-			Assert.False(VoDbOrdSetFocus("",123,REF cPrevious))
-			Assert.False(VoDbOrdSetFocus("","abc",REF cPrevious))
-			Assert.False(VoDbOrdSetFocus("abc","",REF cPrevious))
-			Assert.True(VoDbOrdSetFocus("",1,REF cPrevious))
-			Assert.True(VoDbOrdSetFocus("",1,REF cPrevious))
+			Assert.False(VoDbOrdSetFocus("",123,out cPrevious))
+			Assert.False(VoDbOrdSetFocus("","abc",out cPrevious))
+			Assert.False(VoDbOrdSetFocus("abc","",out cPrevious))
+			Assert.True(VoDbOrdSetFocus("",1,out cPrevious))
+			Assert.True(VoDbOrdSetFocus("",1,out cPrevious))
 			Assert.Equal("ORDER1", cPrevious)
 			DbCloseArea()
 

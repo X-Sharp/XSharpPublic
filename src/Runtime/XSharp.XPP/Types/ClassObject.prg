@@ -5,6 +5,7 @@
 //
 USING System.Reflection
 using System.Linq
+using System.Diagnostics
 using XSharp.RT
 #pragma options("az", on)
 
@@ -13,6 +14,7 @@ using XSharp.RT
 /// This object allows to access static members and methods late bound
 /// Such as <code>Example():Fieldname</code>
 /// </summary>
+[DebuggerDisplay("ClassObject {type.FullName}")];
 class XSharp.XPP.StaticClassObject implements ILateBound
     hidden type as System.Type
 
@@ -28,7 +30,7 @@ class XSharp.XPP.StaticClassObject implements ILateBound
         // This is normally not called. The compiler
         // converts Foo():New(...)
         // to Foo{....}
-        RETURN _CreateInstance(type:FullName, _Args())
+        return _CreateInstance(self:type, _Args())
 
     /// <summary>
     /// Late bound access to class/static vars

@@ -1386,21 +1386,13 @@ function CreateInstance(symClassName,InitArgList) as object clipper
     next
     return _CreateInstance(symClassName, uArgs)
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
-function _CreateInstance(symClassName as string, InitArgList as usual[]) as object
-
-    var t := OOPHelpers.FindClass(symClassName)
-    if t == null
-        var oError := Error.VOError( EG_NOCLASS, __function__, nameof(symClassName), 1,  <object>{symClassName}  )
-        oError:Description := oError:Message+" '"+symClassName+"'"
-        throw oError
-    endif
-    var constructors := t:GetConstructors()
+function _CreateInstance(type as System.Type, InitArgList as usual[]) as object
+    var constructors := type:GetConstructors()
     local ctor := OOPHelpers.FindBestOverLoad(constructors, __function__ ,InitArgList) as ConstructorInfo
     if ctor == null
         var oError := Error.VOError( EG_NOMETHOD, __function__, "Constructor", 0 , null)
-        oError:Description := "No CONSTRUCTOR defined for type "+ (string) symClassName
+        oError:Description := "No CONSTRUCTOR defined for type "+ type:FullName
         throw oError
     endif
     local oRet as object
@@ -1417,6 +1409,18 @@ function _CreateInstance(symClassName as string, InitArgList as usual[]) as obje
         throw Error{e:GetInnerException()}
     end try
     return oRet
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
+function _CreateInstance(symClassName as string, InitArgList as usual[]) as object
+
+    var t := OOPHelpers.FindClass(symClassName)
+    if t == null
+        var oError := Error.VOError( EG_NOCLASS, __function__, nameof(symClassName), 1,  <object>{symClassName}  )
+        oError:Description := oError:Message+" '"+symClassName+"'"
+        throw oError
+    endif
+    return _CreateInstance(t, InitArgList)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />

@@ -706,7 +706,7 @@ ACCESS HyperLabel AS HyperLabel STRICT
    				    ENDIF
    				 ENDIF
    	       ENDIF
-   			 IF oObject IS Window
+   			 if oObject is Window
    				 IF IsInstanceOf(oObject,#__DocApp) .OR.;
    					 IsInstanceOf(oObject,#__WindApp) .OR.;
    		 	       IsInstanceOf(oObject,#__FormDialogWindow)

@@ -191,7 +191,7 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 		SELF:SetPaneClient(oListView, 2)
 	ENDIF
 	// 2.0a-1, add check
-	IF IsInstanceOf(oListView, #__ExplorerLV)
+	if oListView is __ExplorerLV
 		oListView:EnableSort(#DefaultSort)
 	ENDIF
 
@@ -232,8 +232,8 @@ METHOD ListViewColumnClick(oEvt)
 
 
 
-	IF IsInstanceOf(oListView, #__ExplorerLV)
-		IVarPut(oListView, #symSortCol, oEvt:ListViewColumn:NameSym)
+    if oListView is __ExplorerLV var oEV
+        oEV:symSortCol := oEvt:ListViewColumn:NameSym
 		oListView:SortItems()
 	ENDIF
 

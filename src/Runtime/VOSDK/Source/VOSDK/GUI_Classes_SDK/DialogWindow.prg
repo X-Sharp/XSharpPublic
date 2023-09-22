@@ -46,8 +46,7 @@ METHOD __Close(oEvent AS @@event) AS VOID STRICT
 METHOD __SetupDataControl(oDC AS Control) AS DialogWindow STRICT
 	//PP-030828 Strong typing
 
-
-	IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
+    if oDC is RadioButtonGroup
 		AAdd(aRadioGroups, oDC)
 	ENDIF
 	RETURN SELF
@@ -94,31 +93,25 @@ METHOD Active()
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ButtonClick/*" />
 METHOD ButtonClick(oControlEvent)
-	LOCAL oButton AS OBJECT
-	LOCAL dwI, dwCount AS DWORD
+	local dwI, dwCount as dword
 	LOCAL oRBG AS RadioButtonGroup
 	LOCAL oCE := oControlEvent	AS ControlEvent
-
-
-
-
-	oButton := oCE:Control
-	IF IsInstanceOf(oButton, #Button)
+	var oControl := oCE:Control
+	if oControl is Button var oButton
 		oButton:Modified := TRUE // assume its modified
-		IF IsInstanceOf(oButton, #RadioButton)
-			//SE-060526
+		if oButton is RadioButton var oRB
 			dwCount := ALen(aRadioGroups)
 			FOR dwI := 1 UPTO dwCount
 				oRBG := aRadioGroups[dwI]
-				IF oRBG:__IsElement(OBJECT(_CAST,oButton))
-					oRBG:__SetOn(OBJECT(_CAST,oButton))
+				if oRBG:__IsElement(oRB)
+					oRBG:__SetOn(oRB)
 					oButton:__Update()
-					oButton := oRBG
+					oControl := oRBG
 					EXIT
 				ENDIF
 			NEXT  //Vulcan.NET-Transporter: dwI
 		ENDIF
-		oButton:__Update() // Update radio button group
+		oControl:__Update() // Update radio button group
 	ENDIF
 	RETURN 0
 
@@ -425,8 +418,8 @@ METHOD EndDialog(iResult)
 	nResult := iResult
 
 
-	IF IsInstanceOf(oParent, #Window)
-		SetFocus(oParent:Handle())
+	if oParent is Window var oWin
+		SetFocus(oWin:Handle())
 	ENDIF
 
 
@@ -447,15 +440,8 @@ METHOD ExecModal()
 /// <include file="Gui.xml" path="doc/DialogWindow.HelpRequest/*" />
 METHOD HelpRequest(oHelpRequestEvent)
 	LOCAL cHelpContext AS STRING
-	LOCAL oHRE AS HelpRequestEvent
 
-
-
-
-	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
-			.AND. SELF:HelpDisplay != NULL_OBJECT
-		// .AND. self:CurrentView == #FormView ;
-		oHRE := oHelpRequestEvent
+	if oHelpRequestEvent is HelpRequestEvent var oHRE .and. self:HelpDisplay != null_object
 		cHelpContext := oHRE:HelpContext
 		IF NULL_STRING != cHelpContext
 			SELF:HelpDisplay:Show(cHelpContext, oHRE:HelpInfo)
@@ -511,9 +497,9 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
 
 
 	IF !IsNil(oParent)
-		IF IsInstanceOf(SELF, #__DDImp)
-			IF IsInstanceOf(oParent:Owner, #Window)
-				hHandle := oParent:Owner:Handle()
+		if IsInstanceOf(self, #__DDImp)
+			if oParent:Owner is Window var oWin
+				hHandle := oWin:Handle()
 			ELSE
 				hHandle := NULL_PTR
 			ENDIF

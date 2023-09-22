@@ -3,121 +3,130 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-USING System.Reflection
+using System.Reflection
 using System.Linq
+using System.Diagnostics
 using XSharp.RT
 #pragma options("az", on)
 
 /// <summary>
-/// This class returns the ClasssObject for classes created at compile time
+/// This class returns the ClasssObject for classes, both the classes created at compile time
+/// as well as the classes created at runtime.
 /// This object allows to access static members and methods late bound
 /// Such as <code>Example():Fieldname</code>
 /// </summary>
-class XSharp.XPP.StaticClassObject implements ILateBound
-    hidden type as System.Type
+[DebuggerDisplay("ClassObject {type.FullName}")];
+abstract class XSharp.XPP.ClassObject implements ILateBound
+    protected _Type as System.Type
 
-    CONSTRUCTOR(t AS System.Type)
-        SELF:type := t
+    constructor(t as System.Type)
+        self:_Type := t
 
     /// <summary>
     /// Create a new instance of the class.
     /// </summary>
     /// <returns>new object</returns>
-    /// <remarks>The compiler compiled <code>SomeClass():New(....)</code> directly into <code>SomeClass{....}</code> </remarks>
-    METHOD New() AS OBJECT CLIPPER
-        // This is normally not called. The compiler
-        // converts Foo():New(...)
-        // to Foo{....}
-        RETURN _CreateInstance(type:FullName, _Args())
+    virtual method New() as object clipper
+        return _CreateInstance(self:_Type, _Args())
 
     /// <summary>
     /// Late bound access to class/static vars
     /// </summary>
-    /// <param name="cName"></param>
-    /// <returns></returns>
-    METHOD NoIvarGet(cName AS STRING) AS USUAL
-        VAR mem := OOPHelpers.GetMember(type, cName)
-        IF mem != NULL
-            IF mem IS FieldInfo VAR fld .AND. fld:IsStatic
-                RETURN fld:GetValue(NULL)
-            ENDIF
-            IF mem IS PropertyInfo VAR  prop .AND. prop:CanRead .AND. prop:GetMethod:IsStatic
-                RETURN prop:GetValue(NULL)
-            ENDIF
-        ENDIF
-        FOREACH fld AS FieldInfo IN  type:GetFields()
-            IF fld:IsStatic .AND. String.Compare(fld:Name, cName, TRUE) == 0
-                OOPHelpers.AddMember(type, cName, fld)
-                RETURN fld:GetValue(NULL)
-            ENDIF
-        NEXT
-        FOREACH prop AS PropertyInfo IN  type:GetProperties()
-            IF prop:CanRead .AND. prop:GetMethod:IsStatic .AND. String.Compare(prop:Name, cName, TRUE) == 0
-                RETURN prop:GetValue(NULL)
-            ENDIF
-        NEXT
-        VAR oError := Error.VOError( EG_NOVARMETHOD, type:Name, NAMEOF(cName), 2, <OBJECT>{type:Name, cName} )
+    /// <param name="cName">Name of the property/field to read</param>
+    /// <returns>the result of reading the property or field</returns>
+    virtual method NoIvarGet(cName as string) as usual
+        var mem := OOPHelpers.GetMember(self:_Type, cName)
+        if mem != null
+            if mem is FieldInfo var fld .and. fld:IsStatic
+                return fld:GetValue(null)
+            endif
+            if mem is PropertyInfo var  prop .and. prop:CanRead .and. prop:GetMethod:IsStatic
+                return prop:GetValue(null)
+            endif
+        endif
+        foreach fld as FieldInfo in  _Type:GetFields()
+            if fld:IsStatic .and. String.Compare(fld:Name, cName, true) == 0
+                OOPHelpers.AddMember(_Type, cName, fld)
+                return fld:GetValue(null)
+            endif
+        next
+        foreach prop as PropertyInfo in  _Type:GetProperties()
+            if prop:CanRead .and. prop:GetMethod:IsStatic .and. String.Compare(prop:Name, cName, true) == 0
+                return prop:GetValue(null)
+            endif
+        next
+        var oError := Error.VOError( EG_NOVARMETHOD, _Type:Name, nameof(cName), 2, <object>{_Type:Name, cName} )
         oError:Description := oError:Message+" '"+cName+"'"
-        THROW oError
+        throw oError
 
     /// <summary>
     /// Late bound assign for class/static vars
     /// </summary>
-    /// <param name="cName"></param>
-    /// <param name="uValue"></param>
-    /// <returns></returns>
-    METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
-        LOCAL oValue AS OBJECT
-        VAR mem := OOPHelpers.GetMember(type, cName)
-        IF mem != NULL
-            IF mem IS FieldInfo VAR fld .AND. fld:IsStatic
+    /// <param name="cName">Name of the property/field to update</param>
+    /// <param name="uValue">New value for the property</param>
+    /// <returns>uValue</returns>
+    virtual method NoIvarPut(cName as string, uValue as usual) as void
+        local oValue as object
+        // get member from cache
+        var mem := OOPHelpers.GetMember(self:_Type, cName)
+        if mem != null
+            if mem is FieldInfo var fld .and. fld:IsStatic
                 oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
-                fld:SetValue(NULL, oValue)
-                RETURN
-            ENDIF
-            IF mem IS PropertyInfo VAR  prop .AND. prop:CanWrite .AND. prop:SetMethod:IsStatic
+                fld:SetValue(null, oValue)
+                return
+            endif
+            if mem is PropertyInfo var  prop .and. prop:CanWrite .and. prop:SetMethod:IsStatic
                 oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
-                prop:SetValue(NULL, (OBJECT) uValue)
-                RETURN
-            ENDIF
-        ENDIF
-        FOREACH fld AS FieldInfo IN  type:GetFields()
-            IF fld:IsStatic .AND. String.Compare(fld:Name, cName, TRUE) == 0
+                prop:SetValue(null, (object) uValue)
+                return
+            endif
+        endif
+        foreach fld as FieldInfo in  self:_Type:GetFields()
+            if fld:IsStatic .and. String.Compare(fld:Name, cName, true) == 0
                 oValue := OOPHelpers.ValueConvert(uValue, fld:FieldType)
-                fld:SetValue(NULL, oValue)
-                OOPHelpers.AddMember(type, cName, fld)
-                RETURN
-            ENDIF
-        NEXT
-        FOREACH prop AS PropertyInfo IN  type:GetProperties()
-            IF prop:CanWrite .AND. prop:SetMethod:IsStatic .AND. String.Compare(prop:Name, cName, TRUE) == 0
+                fld:SetValue(null, oValue)
+                // add member to cache
+                OOPHelpers.AddMember(self:_Type, cName, fld)
+                return
+            endif
+        next
+        foreach prop as PropertyInfo in  self:_Type:GetProperties()
+            if prop:CanWrite .and. prop:SetMethod:IsStatic .and. String.Compare(prop:Name, cName, true) == 0
                 oValue := OOPHelpers.ValueConvert(uValue, prop:PropertyType)
-                prop:SetValue(NULL, (OBJECT) uValue)
-                OOPHelpers.AddMember(type, cName, prop)
-                RETURN
-            ENDIF
-        NEXT
-        VAR oError := Error.VOError( EG_NOVARMETHOD, type:Name, NAMEOF(cName), 2, <OBJECT>{type:Name, cName, uValue} )
+                prop:SetValue(null, (object) uValue)
+                // add member to cache
+                OOPHelpers.AddMember(self:_Type, cName, prop)
+                return
+            endif
+        next
+        var oError := Error.VOError( EG_NOVARMETHOD, _Type:Name, nameof(cName), 2, <object>{_Type:Name, cName, uValue} )
         oError:Description := oError:Message+" '"+cName+"'"
-        THROW oError
+        throw oError
 
 
     /// <summary>
     /// Late bound calls for Static/Class methods.
     /// </summary>
     /// <returns>Result of Method Call</returns>
-    METHOD NoMethod() AS USUAL CLIPPER
+    virtual method NoMethod() as usual clipper
         // Lookup class method and call it.
-        VAR cMethod := XSharp.RT.Functions.NoMethod()
-        VAR uArgs := _Args()
-        VAR overloads := OOPHelpers.FindOverloads(type, cMethod, FALSE):ToArray()
-        VAR mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
-        IF mi != NULL
-            IF OOPHelpers.SendHelper(NULL, mi, uArgs, OUT VAR result)
-                RETURN result
-            ENDIF
-        ENDIF
-        VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, NAMEOF(cMethod), 2, <OBJECT>{NULL, cMethod, uArgs} )
-        THROW oError
+        // when method not found in the class, then walk the base class
+        var cMethod := XSharp.RT.Functions.NoMethod()
+        var uArgs := _Args()
+        var t := self:_Type
+        do while t != typeof(System.Object)
+            var overloads := OOPHelpers.FindOverloads(t, cMethod, false):ToArray()
+            var mi  := OOPHelpers.FindBestOverLoad<MethodInfo>(overloads, cMethod, uArgs)
+            if mi != null
+                if OOPHelpers.SendHelper(null, mi, uArgs, out var result)
+                    return result
+                endif
+            endif
+            t := t:BaseType
+        enddo
 
-END CLASS
+        // maybe this is a class method?
+        var oError := Error.VOError( EG_NOMETHOD, __function__, nameof(cMethod), 2, <object>{null, cMethod, uArgs} )
+        throw oError
+
+end class

@@ -407,8 +407,13 @@ METHOD Dispatch(oEvent)
 
 
 				CASE oChild IS ToolBar VAR oTb
-					oObject := oTb:Owner
-					IF IsInstanceOfUsual(oTb:Owner, #Window) .AND. !(IsInstanceOfUsual(oObject, #ShellWindow) .AND. (IVarGet(oObject, #ChildToolbarLocation) == TBL_SHELL))
+                    oObject := oTb:Owner
+                    local lPassObject as logic
+                    lPassObject := oObject is Window
+                    if oObject is ShellWindow var oShell .and. oShell:ChildToolBarLocation == TBL_SHELL
+                        lPassObject := false
+                    endif
+					if lPassObject
 						SELF:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(oObject))
 					ELSE
 						SELF:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(SELF))

@@ -321,7 +321,7 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
             ENDIF
 
             DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
-            VoDbSelect(siFrom, REF siTo)
+            VoDbSelect(siFrom, out siTo)
 
             lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 
@@ -448,7 +448,7 @@ FUNCTION DbCopyDelim (cTargetFile, cDelim, acFields, cbForCondition, cbWhileCond
         IF ( !lAnsi .AND. lDbfAnsi)
             SetAnsi(.T.)
         ENDIF
-        VoDbSelect(siFrom, REF siTo)
+        VoDbSelect(siFrom, out siTo)
 
         lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 
@@ -518,7 +518,7 @@ FUNCTION DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
             SetAnsi(.T.)
         ENDIF
 
-        VoDbSelect(siFrom, REF siTo)
+        VoDbSelect(siFrom, out siTo)
 
         lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 
@@ -579,7 +579,7 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition, lNoOpt) AS LOGIC 
             THROW oError
         ENDIF
         DbCreate( cTargetFile, aStruct,"" , .T., "" )
-        VoDbSelect(siFrom1, REF siTo)
+        VoDbSelect(siFrom1, out siTo)
 
         pJoinList:uiDestSel := siTo
 
@@ -670,7 +670,7 @@ FUNCTION DbSort(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
         fnSortNames := VoDb.AllocFieldNames(acFields)
 
         DbCreate(cTargetFile, aStruct, cRdd, .T.)
-        VoDbSelect(siFrom, REF siTo)
+        VoDbSelect(siFrom, out siTo)
         lRetCode := VoDbSort(siTo, fnFieldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, fnSortNames)
 
         IF !lRetCode
@@ -825,7 +825,7 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 
         DbCreate( cTargetFile, aStruct, RddSetDefault(), .T.)
 
-        VoDbSelect(siFrom, REF siTo)
+        VoDbSelect(siFrom, OUT siTo)
 
         n := Len(aFldNum)
 

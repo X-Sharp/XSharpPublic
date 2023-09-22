@@ -46,8 +46,7 @@ METHOD __Close(oEvent AS @@event) AS VOID STRICT
 METHOD __SetupDataControl(oDC AS Control) AS DialogWindow STRICT
 	//PP-030828 Strong typing
 
-
-	IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
+    if oDC is RadioButtonGroup
 		AAdd(aRadioGroups, oDC)
 	ENDIF
 	RETURN SELF
@@ -94,31 +93,25 @@ METHOD Active()
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ButtonClick/*" />
 METHOD ButtonClick(oControlEvent)
-	LOCAL oButton AS OBJECT
-	LOCAL dwI, dwCount AS DWORD
+	local dwI, dwCount as dword
 	LOCAL oRBG AS RadioButtonGroup
 	LOCAL oCE := oControlEvent	AS ControlEvent
-
-
-
-
-	oButton := oCE:Control
-	IF IsInstanceOf(oButton, #Button)
+	var oControl := oCE:Control
+	if oControl is Button var oButton
 		oButton:Modified := TRUE // assume its modified
-		IF IsInstanceOf(oButton, #RadioButton)
-			//SE-060526
+		if oButton is RadioButton var oRB
 			dwCount := ALen(aRadioGroups)
 			FOR dwI := 1 UPTO dwCount
 				oRBG := aRadioGroups[dwI]
-				IF oRBG:__IsElement(OBJECT(_CAST,oButton))
-					oRBG:__SetOn(OBJECT(_CAST,oButton))
+				if oRBG:__IsElement(oRB)
+					oRBG:__SetOn(oRB)
 					oButton:__Update()
-					oButton := oRBG
+					oControl := oRBG
 					EXIT
 				ENDIF
 			NEXT  //Vulcan.NET-Transporter: dwI
 		ENDIF
-		oButton:__Update() // Update radio button group
+		oControl:__Update() // Update radio button group
 	ENDIF
 	RETURN 0
 
@@ -158,7 +151,7 @@ METHOD ChangeFont(oFont, lRescale)
 	ENDIF
 
 
-	IF !IsNil(oFont) .AND. !IsInstanceOf(oFont, #Font)
+	if !IsNil(oFont) .and. !(oFont is Font)
 		WCError{#ChangeFont, #DialogWindow, __WCStypeError, oFont,1}:Throw()
 	ENDIF
 
@@ -425,8 +418,8 @@ METHOD EndDialog(iResult)
 	nResult := iResult
 
 
-	IF IsInstanceOf(oParent, #Window)
-		SetFocus(oParent:Handle())
+	if oParent is Window var oWin
+		SetFocus(oWin:Handle())
 	ENDIF
 
 
@@ -447,15 +440,8 @@ METHOD ExecModal()
 /// <include file="Gui.xml" path="doc/DialogWindow.HelpRequest/*" />
 METHOD HelpRequest(oHelpRequestEvent)
 	LOCAL cHelpContext AS STRING
-	LOCAL oHRE AS HelpRequestEvent
 
-
-
-
-	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
-			.AND. SELF:HelpDisplay != NULL_OBJECT
-		// .AND. self:CurrentView == #FormView ;
-		oHRE := oHelpRequestEvent
+	if oHelpRequestEvent is HelpRequestEvent var oHRE .and. self:HelpDisplay != null_object
 		cHelpContext := oHRE:HelpContext
 		IF NULL_STRING != cHelpContext
 			SELF:HelpDisplay:Show(cHelpContext, oHRE:HelpInfo)
@@ -479,30 +465,28 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
    LOCAL pDialogProc AS PTR
 
 
-	IF IsInstanceOfUsual(oOwner, #App)
+	if oOwner is App
 		oOwner := NIL
 	ENDIF
 
 
-	IF !IsNil(oOwner) .AND. !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #ToolBar) .AND. !IsPtr(oOwner)
+	if !IsNil(oOwner) .and. !(oOwner is Window) .and. !(oOwner is ToolBar) .and. !IsPtr(oOwner)
 		WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
 
 	// should (might) change (separate class for TabDialogs) depending on how we implement DataDialog
-	IF !IsInstanceOf(SELF, #__DDImp) .AND. IsInstanceOfUsual(oOwner, #DataWindow) .AND. !IsInstanceOf(SELF, #FormDialogWindow)
+	if !(self is __DDImp) .and. oOwner is DataWindow .and. !(self is __FormDialogWindow)
 		oOldOwner := oOwner
 		oOwner := oOwner:__GetFormSurface()
 	ENDIF
 
+	super(oOwner)
 
-	SUPER(oOwner)
-
-
-	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
+	if IsNumeric(xResourceID) .or. IsSymbol(xResourceID) .or. IsString(xResourceID)
 		oResourceID := ResourceID{xResourceID}
-	ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
-		oResourceID := xResourceID
+	elseif xResourceID is ResourceID var oResID2
+		oResourceID := oResID2
 	ENDIF
 
 
@@ -511,9 +495,9 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
 
 
 	IF !IsNil(oParent)
-		IF IsInstanceOf(SELF, #__DDImp)
-			IF IsInstanceOf(oParent:Owner, #Window)
-				hHandle := oParent:Owner:Handle()
+		if self is __DDImp
+			if oParent:Owner is Window var oWin
+				hHandle := oWin:Handle()
 			ELSE
 				hHandle := NULL_PTR
 			ENDIF
@@ -537,17 +521,14 @@ CONSTRUCTOR(oOwner, xResourceID, lModal)
         hRSCHandle := xResourceID
         hWnd := CreateDialogIndirectParam(_GetInst(), hRSCHandle, hHandle, pDialogProc, LONGINT(_CAST,ptrSelfPtr))
     ELSE
-        IF IsInstanceOfUsual(xResourceID, #ResourceID)
-            oResId := xResourceID
+        if xResourceID is ResourceID var oResID2
+            oResId := oResID2
         ELSEIF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
             oResId := ResourceID{xResourceID}
         ENDIF
 
-
-        IF oResId != NULL_OBJECT
+        if oResId != null_object
             hRSCHandle := oResId:Handle()
-
-
             // MessageBox(0, "CreateDialog, hinst : "+AsSTring(hRSCHAndle)+", add: "+AsString(oResourceID:Address()),"create", 0)
             hWnd := CreateDialogParam(hRSCHandle, PTR(_CAST, oResId:Address()), hHandle, pDialogProc, LONGINT(_CAST,ptrSelfPtr))
         ENDIF
@@ -634,8 +615,8 @@ METHOD ListBoxClick(oControlEvent)
 	LOCAL oCE AS ControlEvent
 	oCE := oControlEvent
 	oListBox := oCE:Control
-	IF IsInstanceOf(oListBox, #ListBox)
-		oListBox : Modified := TRUE // assume its modified
+	if oListBox is ListBox
+		oListBox:Modified := true // assume its modified
 		oListBox:__Update()
 	ENDIF
 	RETURN SELF
@@ -646,7 +627,7 @@ METHOD ListBoxSelect(oControlEvent)
 	LOCAL oCE AS ControlEvent
 	oCE := oControlEvent
 	oListBox := oCE:Control
-	IF IsInstanceOf(oListBox, #ListBox)
+	if oListBox is ListBox
 		oListBox:Modified := TRUE // assume its modified
 		oListBox:__SetText(oListBox:CurrentItem)
 		oListBox:__Update()
@@ -727,7 +708,7 @@ METHOD ShowModal(lActive)
 		DO WHILE (hHandle := GetParent(hHandle)) != NULL_PTR
 			EnableWindow(hHandle, TRUE)
 			oDlg := __WCGetWindowByHandle(hHandle)
-			IF (IsInstanceOf(oDlg, #DialogWindow) .AND. IVarGet(oDlg, #IsModal))
+			if oDlg is DialogWindow var oDialog .and. oDialog:IsModal
 				EXIT
 			ENDIF
 		ENDDO
@@ -856,7 +837,7 @@ FUNCTION __WCDialogProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS L
       oDialogWindow := __WcSelfptr2Object(PTR(_CAST, lParam))
       IF (oDialogWindow != NULL_OBJECT)
 		   oDialogWindow:SetHandle(hWnd)
-		   IF !IsInstanceOf(oDialogWindow, #__DDImp)
+		   if !(oDialogWindow is __DDImp)
 			   WCAppSetDialogWindow(hwnd)
 		   ENDIF
       ENDIF

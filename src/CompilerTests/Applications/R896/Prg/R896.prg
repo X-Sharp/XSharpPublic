@@ -1,4 +1,4 @@
-/*
+
 // https://github.com/X-Sharp/XSharpPublic/issues/1288
 #xcommand WP [/<x:S,F,SF,FS>] [/<y:CAPS,C>] [/<m:MUTE,M>] [/OBJ <obj> = <mes> [,<objn> = <mesn> ]] <list,...> [<file>] ;
 => wpRouter({<list>},<(x)>,<file>,<(y)>,<(m)>,{[{<"obj">,{|o| <mes>}}] [,{<"objn">,{|o| <mesn>} }] })
@@ -9,7 +9,7 @@ procedure Main()
     wp a,b,c
     wp /sf /m a,b,c
     return
-*/
+/*
 procedure Main()
     local o
 
@@ -47,3 +47,4 @@ exported:
 
     var a
 endclass
+*/

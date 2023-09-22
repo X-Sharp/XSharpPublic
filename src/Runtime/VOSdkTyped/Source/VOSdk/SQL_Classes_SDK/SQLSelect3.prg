@@ -400,7 +400,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD GetTimeString( uFieldPos AS USUAL ) AS STRING
 		LOCAL cVal AS STRING
 		cVal := SELF:GetTimeStamp( uFieldPos )
-		IF Slen(cVal) > 0
+		if SLen(cVal) > 0
 			cVal := Left( cVal, 12 )
 		ENDIF
 		RETURN cVal

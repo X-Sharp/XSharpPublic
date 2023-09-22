@@ -4464,7 +4464,7 @@
         <summary>
             Create an object.
         </summary>
-
+        <param name="type">The type object that descrives the the object that needs to be created.</param>
         <param name="symClassName">The name of the class for which you want to create an object.</param>
         <param name="InitArgList">
             A comma-separated list of arguments to pass to the Init() method of <paramref name="symClassName" /> (see example below).

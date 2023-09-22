@@ -714,19 +714,30 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 	RETURN
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
+constructor( cFile as string, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
     SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD )
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
+constructor( cFile as usual, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
+    if cFile is FileSpec var oFs
+        self(oFs, lShareMode, lReadOnlyMode , xDriver, aRDD )
+    elseif cFile is string var strFile
+        self(strFile, lShareMode, lReadOnlyMode , xDriver, aRDD )
+    endif
+    break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  cFile, "cFile" }
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+constructor( oFS := null as FileSpec, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
 	LOCAL n AS DWORD
 	LOCAL oError AS USUAL
-	LOCAL symTemp AS SYMBOL
-	LOCAL cTemp AS STRING
+	local cTemp as string
 	LOCAL rddList AS _RddList
 	LOCAL uTemp AS USUAL
 	LOCAL aField AS ARRAY
@@ -734,14 +745,9 @@ CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMo
 	LOCAL wProps AS DWORD
 	LOCAL lRetCode AS LOGIC
 
-
-
-
 	SUPER( )
 
-
 	aRelationChildren := { }
-
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -766,33 +772,11 @@ CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMo
 
 
 		IF lShareMode  == NULL
-			SELF:lShared := ! SetExclusive( )
-		ELSEIF lShareMode  IS LOGIC
-			SELF:lShared := (LOGIC) lShareMode
-		ELSEIF lShareMode IS SYMBOL VAR symShareMode
-			IF symShareMode = #Shared
-				SELF:lShared := TRUE
-			ELSEIF symShareMode = #Exclusive
-				SELF:lShared := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
-					lShareMode, "lShareMode" }
-			ENDIF
-
-
-		ELSEIF lShareMode IS STRING VAR strShareMode
-			symTemp := String2Symbol( strShareMode )
-			IF symTemp = #Shared
-				SELF:lShared := TRUE
-			ELSEIF symTemp = #Exclusive
-				SELF:lShared := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
-					lShareMode, "lShareMode" }
-			ENDIF
-		ELSE
-			BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
-				lShareMode, "lShareMode" }
+			self:lShared := ! SetExclusive( )
+		elseif lShareMode is logic var lSh
+			self:lShared := lSh
+		else
+			break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  lShareMode, "lShareMode" }
 		ENDIF
 
 
@@ -800,26 +784,7 @@ CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMo
 			lReadOnly := FALSE
 		ELSEIF lReadOnlyMode IS LOGIC
 			lReadOnly := (LOGIC) lReadOnlyMode
-		ELSEIF lReadOnlyMode  IS SYMBOL VAR symReadOnlyMode
-			IF symReadOnlyMode = #ReadOnly
-				lReadOnly := TRUE
-			ELSEIF symReadOnlyMode = #ReadWrite
-				lReadOnly := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
-					lReadOnlyMode, "lReadOnlyMode" }
-			ENDIF
-		ELSEIF lReadOnlyMode IS STRING VAR strReadOnlyMode
-			symTemp := String2Symbol( strReadOnlyMode)
-			IF symTemp = #ReadOnly
-				lReadOnly := TRUE
-			ELSEIF symTemp = #ReadWrite
-				lReadOnly := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
-					lReadOnlyMode, "lReadOnlyMode" }
-			ENDIF
-		ELSE
+		else
 			BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
 				lReadOnlyMode, "lReadOnlyMode" }
 		ENDIF

@@ -57,6 +57,7 @@
     <Compile Include="Types\Abstract.prg" />
     <Compile Include="Types\ClassObject.prg" />
     <Compile Include="Types\Collations.prg" />
+    <Compile Include="Types\StaticClassObject.prg" />
     <Compile Include="Types\DataObject.prg" />
     <Compile Include="Types\RuntimeClasses.prg" />
     <Compile Include="Types\XAction.prg" />

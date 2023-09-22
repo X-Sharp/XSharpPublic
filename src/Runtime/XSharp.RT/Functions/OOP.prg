@@ -674,6 +674,7 @@ internal static class OOPHelpers
         if t == null .or. String.IsNullOrEmpty(cName)
             return null
         endif
+        lSelf := lSelf .or. EmulateSelf
         var mi := OOPHelpers.GetMember(t, cName)
         if mi != null
             if mi is PropertyInfo var pi
@@ -714,10 +715,8 @@ internal static class OOPHelpers
             return false
         elseif oMethod:IsPublic
             return true
-        elseif lSelf .and. (oMethod:IsFamily .or. oMethod:IsFamilyOrAssembly)
-            return true
         endif
-        return false
+        return lSelf
 
 
     static method GetMember(t as Type, cName as string) as MemberInfo
@@ -748,6 +747,7 @@ internal static class OOPHelpers
         if t == null .or. String.IsNullOrEmpty(cName)
             return null
         endif
+        lSelf := lSelf .or. EmulateSelf
         var mi := OOPHelpers.GetMember(t, cName)
         if mi != null
             if mi is FieldInfo var fi .and. IsFieldVisible(fi, lSelf)
@@ -779,10 +779,8 @@ internal static class OOPHelpers
             return false
         elseif oFld:IsPublic
             return true
-        elseif lSelf .and. (oFld:IsFamily .or. oFld:IsFamilyOrAssembly)
-            return true
         endif
-        return false
+        return lSelf
 
     /// <summary>
     /// This method returns TRUE when the assembly from which an IVarGet()
@@ -808,6 +806,7 @@ internal static class OOPHelpers
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
         local result as object
+        lSelf := lSelf .or. EmulateSelf
         if oObject == null_object
             throw Error.NullArgumentError(__function__, nameof(oObject),1)
         endif
@@ -874,6 +873,7 @@ internal static class OOPHelpers
         oError:Description := oError:Message+" '"+cIVar+"'"
         throw oError
 
+    static property EmulateSelf as logic auto
     static method IVarPut(oObject as object, cIVar as string, oValue as object, lSelf as logic)  as void
         local t as Type
         if oObject == null_object
@@ -896,6 +896,7 @@ internal static class OOPHelpers
             oObject := oWrapped:Object
             t       := oWrapped:Type
         endif
+        lSelf := lSelf .or. EmulateSelf
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
             if propInfo != null_object .and. propInfo:CanWrite
@@ -1297,7 +1298,12 @@ internal static class OOPHelpers
             // when nested call from the runtime walk the stack
             do while aXsAssemblies:Contains(type:Assembly)
                 level += 1
-                mi := st:GetFrame(level):GetMethod()
+                var frame := st:GetFrame(level)
+                if (frame != null)
+                    mi := frame:GetMethod()
+                else
+                    exit
+                endif
             enddo
         endif
         return mi
@@ -1328,7 +1334,6 @@ function CheckInstanceOf(oObject as object,symClassName as string) as logic
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classcount/*" />
-
 function ClassCount() as dword
     return ClassList():Length
 
@@ -1385,21 +1390,13 @@ function CreateInstance(symClassName,InitArgList) as object clipper
     next
     return _CreateInstance(symClassName, uArgs)
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
-function _CreateInstance(symClassName as string, InitArgList as usual[]) as object
-
-    var t := OOPHelpers.FindClass(symClassName)
-    if t == null
-        var oError := Error.VOError( EG_NOCLASS, __function__, nameof(symClassName), 1,  <object>{symClassName}  )
-        oError:Description := oError:Message+" '"+symClassName+"'"
-        throw oError
-    endif
-    var constructors := t:GetConstructors()
+function _CreateInstance(type as System.Type, InitArgList as usual[]) as object
+    var constructors := type:GetConstructors()
     local ctor := OOPHelpers.FindBestOverLoad(constructors, __function__ ,InitArgList) as ConstructorInfo
     if ctor == null
         var oError := Error.VOError( EG_NOMETHOD, __function__, "Constructor", 0 , null)
-        oError:Description := "No CONSTRUCTOR defined for type "+ (string) symClassName
+        oError:Description := "No CONSTRUCTOR defined for type "+ type:FullName
         throw oError
     endif
     local oRet as object
@@ -1416,6 +1413,18 @@ function _CreateInstance(symClassName as string, InitArgList as usual[]) as obje
         throw Error{e:GetInnerException()}
     end try
     return oRet
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
+function _CreateInstance(symClassName as string, InitArgList as usual[]) as object
+
+    var t := OOPHelpers.FindClass(symClassName)
+    if t == null
+        var oError := Error.VOError( EG_NOCLASS, __function__, nameof(symClassName), 1,  <object>{symClassName}  )
+        oError:Description := oError:Message+" '"+symClassName+"'"
+        throw oError
+    endif
+    return _CreateInstance(t, InitArgList)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />
@@ -1750,7 +1759,6 @@ function _Send(oObject as object,symMethod as MethodInfo, MethodArgList params u
     // Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
     //       The compiler expects that
 /// <exclude />
-
 function __InternalSend( oObject as usual, cMethod as string, args params usual[] ) as usual
     return OOPHelpers.DoSend(oObject, cMethod, args, __function__)
 

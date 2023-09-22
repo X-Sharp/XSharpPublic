@@ -1,25 +1,31 @@
-#xcommand WP [/<x:S,F,SF,FS>] [/<y:CAPS,C>] [/<m:MUTE,M>] [/OBJ <obj> = <mes> [,<objn> = <mesn> ]] <list,...> [<file>] ;
-=> wpRouter({<list>},<(x)>,<file>,<(y)>,<(m)>,{[{<"obj">,{|o| <mes>}}] [,{<"objn">,{|o| <mesn>} }] })
+USING System
+USING System.Collections.Generic
+USING System.Text
 
-procedure Main()
-    local a, b, c
-    a := "a"
-    b := "b"
-    c := "c"
+BEGIN NAMESPACE VFP_ConsoleApplication8
 
-    wp a,b,c
-    wp /sf /m a,b,c
-    _wait()
+	/// <summary>
+	/// The Class1 class.
+	/// </summary>
+	CLASS Class1
+
+		PUBLIC MyTab AS USUAL
+
+		CONSTRUCTOR()
+
+			// This does not work
+			DIMENSION this.MyTab(3)
+            MyTab = 42
+			// Same inside a WITH clause
+			WITH This
+				DIMENSION .MyTab(4)
+			END WITH
+            ShowArray(This.MyTab) // shows 3 x 42 and 1 x NIL
+			RETURN
+
+	END CLASS
+END NAMESPACE // VFP_ConsoleApplication8
+FUNCTION Start() as void
+    Class1{}
     return
 
-
-function WpRouter() as usual clipper
-    var args := _Args()
-    foreach var arg in args
-        if IsArray(arg)
-            showArray(arg)
-        else
-            ? arg
-        endif
-    next
-    return nil

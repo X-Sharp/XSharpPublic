@@ -13,9 +13,9 @@ USING XSharp.XPP
 
 /// <summary>Open an XML document. </summary>
 /// <param name="cFileName">Name of an XML file to be parsed.</param>
-/// <returns>Returns a non-zero numeric handle for the document, or 0 if there are not enough system resources 
+/// <returns>Returns a non-zero numeric handle for the document, or 0 if there are not enough system resources
 /// for the parser, or when the file cannot be opened, read or parsed. The handle returned by this function must be used in subsequent calls to other XMLDoc..() functions. </returns>
-/// <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents. 
+/// <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents.
 /// While parsing a document, a tree is build by the parsing engine. </remarks>
 FUNCTION XMLDocOpenFile( cFileName AS STRING) AS INT64
     LOCAL nErrHandle AS USUAL
@@ -27,20 +27,20 @@ FUNCTION XMLDocOpenFile( cFileName AS STRING) AS INT64
 /// <summary>Open an XML document. </summary>
 /// <param name="cFileName">Name of an XML file to be parsed.</param>
 /// <param name="nErrHandle">Pass a variable by reference which receives an error handle if errors were recorded.</param>
-/// <returns>Returns a non-zero numeric handle for the document, or 0 if there are not enough system resources 
+/// <returns>Returns a non-zero numeric handle for the document, or 0 if there are not enough system resources
 /// for the parser, or when the file cannot be opened, read or parsed. The handle returned by this function must be used in subsequent calls to other XMLDoc..() functions. </returns>
-/// <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents. 
+/// <remarks>XMLDocOpenFile() opens a new XML document. It allocates system resources for the parser, opens and reads the file and parses it contents.
 /// While parsing a document, a tree is build by the parsing engine. </remarks>
 FUNCTION XMLDocOpenFile( cFileName AS STRING, nErrHandle OUT USUAL) AS INT64
     LOCAL oDoc AS XDocument
     LOCAL nResult AS INT64
     nResult := 0
-    
+
     oDoc := XDocument{}
     oDoc:OpenFile(cFileName)
     nResult := oDoc:DocHandle
     IF nResult == 0
-        nErrHandle := oDoc:LastError 
+        nErrHandle := oDoc:LastError
     ELSE
         nErrHandle := NIL
     ENDIF
@@ -155,10 +155,10 @@ RETURN NULL_ARRAY
 /// <summary>Get the root tag of an XML document. </summary>
 /// <param name="nDocHandle">Numeric handle of an XML document. </param>
 /// <returns>The function returns the numeric handle of an XML document. </returns>
-/// <remarks>This function returns the root tag of an XML document. 
-/// The root tag is a tag that is created by the parser as the root node of the XML document tree. 
-/// i.e. a document has always a root tag, even if the XML file (or string) is empty. 
-/// This function provides for the starting point when traversing a document tree. 
+/// <remarks>This function returns the root tag of an XML document.
+/// The root tag is a tag that is created by the parser as the root node of the XML document tree.
+/// i.e. a document has always a root tag, even if the XML file (or string) is empty.
+/// This function provides for the starting point when traversing a document tree.
 /// See function XMLGetTag() for more information about an XML tag. </remarks>
 
 FUNCTION XMLDocGetRootTag( nDocHandle AS INT64 ) AS INT64
@@ -173,8 +173,8 @@ RETURN nTag
 /// <summary>Create XML document from a string. </summary>
 /// <param name="cXMLString">Character string representing a valid XML document. </param>
 /// <param name="nErrHandle">Pass a variable by reference which receives an error handle if errors were recorded.</param>
-/// <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser, 
-/// or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent 
+/// <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser,
+/// or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent
 /// calls to other XMLDoc..() functions. <br/>
 /// If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(, <paramref name="nErrHandle" /> ). </returns>
 /// <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
@@ -182,12 +182,12 @@ FUNCTION XMLDocOpenString( cXMLString AS STRING ,  nErrHandle OUT USUAL ) AS INT
     LOCAL oDoc AS XDocument
     LOCAL nResult AS INT64
     nResult := 0
-    
+
     oDoc := XDocument{}
     oDoc:OpenText(cXMLString)
     nResult := oDoc:DocHandle
     IF nResult == 0
-        nErrHandle := oDoc:LastError 
+        nErrHandle := oDoc:LastError
     ELSE
         nErrHandle := NIL
     ENDIF
@@ -196,8 +196,8 @@ FUNCTION XMLDocOpenString( cXMLString AS STRING ,  nErrHandle OUT USUAL ) AS INT
 /// <summary>Create XML document from a string. </summary>
 /// <param name="cXMLString">Character string representing a valid XML document. </param>
 /// <param name="nErrHandle">Pass a variable by reference which receives an error handle if errors were recorded.</param>
-/// <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser, 
-/// or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent 
+/// <returns>Returns a non-zero handle for the passed string or 0 if there are not enough system resources for the parser,
+/// or when the string does not contain valid XML code. The handle returned by this function must be used in subsequent
 /// calls to other XMLDoc..() functions. <br/>
 /// If the function returns 0, more information can be obtained by calling XMLDocGetErrorList(,<paramref name="nErrHandle" />). </returns>
 /// <remarks>Invokes the XML parser engine which parsed the passed string and builds the internal tree structure. </remarks>
@@ -216,7 +216,7 @@ FUNCTION XMLDocOpenString( cXMLString AS STRING  ) AS INT64
 FUNCTION XMLGetAttribute( nTagHandle AS INT64, cAttributeName AS STRING ) AS STRING
     LOCAL aTag := NIL AS USUAL
     LOCAL aAttributes AS ARRAY
-    IF XMLGetTag(nTagHandle, REF aTag)
+    IF XMLGetTag(nTagHandle, OUT aTag)
         IF IsArray(aTag)
             IF ALen(aTag) >= XMLTAG_ATTRIB .AND. IsArray(aTag[XMLTAG_ATTRIB])
                 aAttributes := aTag[XMLTAG_ATTRIB]
@@ -234,12 +234,12 @@ RETURN NULL_STRING
 /// <param name="nTagHandle">Numeric handle for the XML tag. </param>
 /// <param name="cChildTagName">The tag name of the child to search.</param>
 /// <returns>Returns the numeric handle of the first child matching the specified name, or 0 if no child with the given name exists. </returns>
-/// <remarks>This function is used to retrieve the first child tag of an XML tag matching the name 
+/// <remarks>This function is used to retrieve the first child tag of an XML tag matching the name
 /// specified with the second parameter. The XMLGetChildren() function can be used to obtain ALL child tags having a specific name. </remarks>
 
 FUNCTION XMLGetChild( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
     RETURN XDocument.FindFirstChildTag(nTagHandle, cChildTagName)
-  
+
 /// <summary>Get array of children of an XML tag. </summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag. </param>
 /// <param name="cChildTagName">The tag name of the child tags to search.</param>
@@ -272,7 +272,7 @@ FUNCTION XMLGetTag( nTagHandle AS INT64, aTagMember OUT USUAL ) AS LOGIC
     ENDIF
 
 RETURN aResult != NULL_ARRAY
-    
+
 /// <summary>Select specific nodes via xpath. </summary>
 /// <param name="nDocHandle">Numeric handle for an XML document. </param>
 /// <param name="cSelect">XPath select statement. </param>
@@ -287,7 +287,7 @@ FUNCTION XMLSelectNodes(nDocHandle AS INT64, cSelect AS STRING, aTagHandles OUT 
         aTagHandles := oDoc:SelectNodes(cSelect)
         lOk := TRUE
     ELSE
-        aTagHandles := NULL_ARRAY           
+        aTagHandles := null_array
         lOk := FALSE
     ENDIF
     RETURN lOk

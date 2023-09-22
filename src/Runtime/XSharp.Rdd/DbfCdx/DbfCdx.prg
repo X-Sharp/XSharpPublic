@@ -124,7 +124,7 @@ BEGIN NAMESPACE XSharp.RDD
                         // Already open, do nothing
                         lOk := TRUE
                     ENDIF
-                    IF lOk
+                    IF lOk .and. SELF:CurrentOrder == NULL
                         orderInfo:Order := 1
                         lOk := SELF:OrderListFocus(orderInfo)
                     ENDIF

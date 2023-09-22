@@ -440,7 +440,11 @@ INTERNAL STATIC CLASS ConsoleHelpers
                 FSeek(ConsoleHelpers.AltFileHandle, FS_END, 0)
             ELSE
                 hFile := FCreate(cFile)
-            ENDIF
+            endif
+            if hFile == F_ERROR
+                var error := Error{RuntimeState.FileException}
+                error:Throw()
+            endif
         ENDIF
         RETURN hFile
     INTERNAL STATIC METHOD FileClose(hFile REF IntPtr) AS VOID

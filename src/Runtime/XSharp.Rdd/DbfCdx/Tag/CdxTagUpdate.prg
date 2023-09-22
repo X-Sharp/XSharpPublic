@@ -628,7 +628,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // because that will slow down indexing
             // When the page is split then the topreference will be updated
             // and at the end of the indexing the top reference for the last page will be written.
-            VAR page := SELF:Stack:Top:Page ASTYPE CdxLeafPage
+            var page := self:Stack:Top:Page astype CdxLeafPage
+            self:_scopeEmpty := false
             IF page IS CdxLeafPage VAR leaf
                 action := leaf:Add(action:Recno, action:Key)
                 IF action:Type == CdxActionType.Ok
@@ -646,7 +647,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_UpdateError(NULL,"CdxTag.DeleteKey","Page is not a Leaf page")
             RETURN CdxAction.Ok
 
-        INTERNAL METHOD InsertKey(action AS CdxAction) AS CdxAction
+        internal method InsertKey(action as CdxAction) as CdxAction
+            self:_scopeEmpty := false
             IF SELF:GetPage(action:PageNo) IS CdxLeafPage VAR leaf
                 RETURN leaf:Insert(action:Pos, action:Recno, action:Key)
             ENDIF

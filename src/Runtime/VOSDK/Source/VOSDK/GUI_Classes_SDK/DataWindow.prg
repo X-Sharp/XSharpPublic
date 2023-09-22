@@ -1412,7 +1412,6 @@ METHOD CheckStatus()
 METHOD Clear()
 
     if sCurrentView == #FormView
-
 		if oDCCurrentControl is Edit var oEdit
             oEdit:__SetText("")
         elseif oDCCurrentControl is EditWindow var oEW

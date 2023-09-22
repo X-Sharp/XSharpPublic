@@ -1427,10 +1427,7 @@ METHOD Clear()
 		ENDIF
 	ENDIF
 
-
-	RETURN SELF
-
-
+	return self
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.ClearRelations/*" />

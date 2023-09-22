@@ -906,23 +906,23 @@ CLASS UsualTests
 		Assert.False( InList("VOL", "VOLL", "FIBU") )
 		Assert.True ( InList("VOLL123", "VOLL", "FIBU") )
 		Assert.True ( InList("VOLL", "VOLL", "FIBU") )
-		local u as usual
+		LOCAL u AS USUAL
       u := "VOL"
       Assert.False( InList(u, "VOLL", "FIBU") )
       Assert.False( InList(1,2,3,4) )
       Assert.True( InList(1,2,3,4,1) )
       Assert.False( InList(1.0,2.0,3.0,4) )
-      var oldDelta := SetFloatDelta(0.0001)
+      VAR oldDelta := SetFloatDelta(0.0001)
       Assert.True( InList(1.0,2.0,3.0,4,1.0000001) )
       SetFloatDelta(oldDelta)
       SetExact(lExact)
-      Assert.False( InList(ToDay(), Today()+1, Today()-1, 1000.01.01))
-      Assert.True( InList(ToDay(), Today()+1, Today()-1, 1000.01.01, ToDay()))
+      Assert.False( InList(Today(), Today()+1, Today()-1, 1000.01.01))
+      Assert.True( InList(Today(), Today()+1, Today()-1, 1000.01.01, Today()))
         InList("abc",1,2,Today(), 1.0)
 
     [Fact, Trait("Category", "Usual")];
     METHOD UsualIsNilTest() AS VOID
-        LOCAL u as USUAL
+        LOCAL u AS USUAL
         XSharp.RuntimeState.Dialect := XSharpDialect.VO
         u := NIL
         Assert.True(IsNil(u))
@@ -937,9 +937,9 @@ CLASS UsualTests
     #pragma options("lb",on)
     [Fact, Trait("Category", "Usual")];
     METHOD UsualDictionary() AS VOID
-        LOCAL u as USUAL
-        local c1 as Container1
-        local c2 as Container2
+        LOCAL u AS USUAL
+        LOCAL c1 AS Container1
+        LOCAL c2 AS Container2
         XSharp.RuntimeState.Dialect := XSharpDialect.VO
         c1 := Container1{}
         c2 := Container2{}
@@ -955,17 +955,40 @@ CLASS UsualTests
         u:Data[1] := 43
         Assert.True(43== u:Data[1])
 
+    [Fact, Trait("Category", "Usual")];
+    METHOD Usual_Indexed() AS VOID
+        LOCAL u AS USUAL
+        XSharp.RuntimeState.Dialect := XSharpDialect.VO
+        
+        u := System.Collections.ArrayList{}
+        u:Add(123)
+        u:Add(456)
+        Assert.Equal(123, (INT)u[0])
+        
+        u := System.Collections.Generic.Dictionary<STRING,INT>{}
+        u:Add("abc",123)
+        u:Add("def",456)
+        u:Add("ghi",789)
+        Assert.Equal(456, (INT)u["def"])
+        
+        u := System.Collections.Generic.Dictionary<INT,STRING>{}
+        u:Add(123,"abc")
+        u:Add(456,"def")
+        u:Add(789,"ghi")
+        Assert.Equal("def", (STRING)u[456])
+        
+
     #pragma options("lb",restore)
 
 
 
 
-    class Container1
-        public Data := Dictionary<string, int>{} as Dictionary<string, int>
-    end class
-    class Container2
-        public Data := Dictionary<int, int>{} as Dictionary<int, int>
-    end class
+    CLASS Container1
+        PUBLIC Data := Dictionary<STRING, INT>{} AS Dictionary<STRING, INT>
+    END CLASS
+    CLASS Container2
+        PUBLIC Data := Dictionary<INT, INT>{} AS Dictionary<INT, INT>
+    END CLASS
 
 END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

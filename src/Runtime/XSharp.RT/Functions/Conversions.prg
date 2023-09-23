@@ -609,7 +609,7 @@ FUNCTION StrZero(nNumber AS USUAL,nLength AS INT,nDecimals AS INT) AS STRING
       THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNumber),1,nNumber)
     ENDIF
     LOCAL cValue := Str3(nNumber, (DWORD) nLength, (DWORD) nDecimals) AS STRING
-    RETURN _PadZero(cValue)
+    return _PadZero(cValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strzero/*" />
 FUNCTION StrZero(nNumber AS USUAL,nLength AS INT) AS STRING
@@ -696,7 +696,8 @@ FUNCTION Str2(fNumber AS FLOAT,dwLength AS DWORD) AS STRING
 
 
 INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
-  IF dwLen == 0 .OR. RuntimeState.DigitsFixed
+  local dwOriginal := dwLen as dword
+  if dwLen == 0 .or. RuntimeState.DigitsFixed
       dwLen := (DWORD) RuntimeState.Digits
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( (DWORD) dwLen, (DWORD) MAXDIGITS )
@@ -705,7 +706,11 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
     IF nDecimals < 0 .OR. RuntimeState.DigitsFixed
         nDecimals := (SHORT) RuntimeState.Decimals
     ENDIF
-   RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, nDecimals)
+   var result :=  ConversionHelpers.FormatNumber(f, (int) dwLen, nDecimals)
+   if SLen(result) < dwOriginal
+        result := result:PadLeft((int) dwOriginal)
+    endif
+   return result
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str3/*" />
@@ -718,7 +723,7 @@ FUNCTION Str3(fNumber AS FLOAT,dwLength AS DWORD,dwDecimals AS DWORD) AS STRING
 /// <inheritdoc cref="Str3" />
 /// <returns>A string with DOT as decimal separator.</returns>
 FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-
+   local dwOriginal := dwLen as dword
    LOCAL lUnspecifiedDecimals := dwDec == UInt32.MaxValue AS LOGIC
    IF dwDec == UInt32.MaxValue
         IF RuntimeState.Fixed
@@ -755,11 +760,14 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
    ENDIF
 
 
- IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .and. !lUnspecifiedDecimals .AND. ( dwLen < ( dwDec + 2 ) )
+   if dwDec > 0 .and. dwLen != UInt32.MaxValue .and. !lUnspecifiedDecimals .and. ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
-   RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
-
+   var result :=  ConversionHelpers.FormatNumber(f, (int) dwLen, (int) dwDec)
+   if SLen(result) < dwOriginal
+        result := result:PadLeft((int) dwOriginal)
+    endif
+   return result
 
 /// <inheritdoc cref="Val" />
 /// <returns>The numeric value as a FLOAT.</returns>

@@ -461,7 +461,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stmts = new List<StatementSyntax>();
             if (dimVar.Id != null)
             {
-                if (isDynamic && !_options.SupportsMemvars)
+                if (isDynamic && !_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                 {
                     var s = GenerateEmptyStatement();
                     s = s.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DynamicVariablesNotAllowed));

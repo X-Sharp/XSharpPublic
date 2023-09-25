@@ -958,7 +958,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     isFoxMemberAccess = true;
                     if (amc.HasMPrefix)
                     {
-                        memvarorfield = Compilation.Options.SupportsMemvars(node);
+                        memvarorfield = Compilation.Options.HasOption(CompilerOption.MemVars, node);
                         if (memvarorfield)
                         {
                             // convert "M.FieldName" to "Xs$Memvar->FieldName"
@@ -972,7 +972,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars(node)
+            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.HasOption(CompilerOption.MemVars, node)
                 || memvarorfield || isFoxMemberAccess))
             {
                 var type = Compilation.RuntimeFunctionsType();

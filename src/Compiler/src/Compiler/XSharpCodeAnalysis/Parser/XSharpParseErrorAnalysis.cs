@@ -613,7 +613,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxmemvar([NotNull] XSharpParser.FoxmemvarContext context)
         {
-            base.ExitFoxmemvar(context);
+            if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas))
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
+            }
             if ((context.T.Type == XSharpParser.PARAMETERS || context.T.Type == XSharpParser.MEMVAR))
             {
                 if (context.Amp != null)
@@ -764,7 +767,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXppdeclareMethod([NotNull] XSharpParser.XppdeclareMethodContext context)
         {
-            base.ExitXppdeclareMethod(context);
             if (_options.Dialect == XSharpDialect.XPP)
             {
                 if (context.Is?.ChildCount > 0)
@@ -886,19 +888,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // this declares local vars or fields, so always allowed outside of the Core dialect
                 return;
             }
-            if (!_options.SupportsMemvars)
+            if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }
         }
         public override void ExitMemvar([NotNull] XSharpParser.MemvarContext context)
         {
+            if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas))
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
+            }
             if (context.Expression != null && context.ArraySub != null)
             {
                 // can't have both an array specification and a initialization value
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarInit));
             }
-            if ((context.T.Type == XSharpParser.PARAMETERS || context.T.Type == XSharpParser.MEMVAR) )
+            if (context.T.Type == XSharpParser.PARAMETERS || context.T.Type == XSharpParser.MEMVAR)
             {
                 if (context.Amp != null)
                 {
@@ -919,7 +925,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 NotInCore(context, "Dynamic Memory Variables");
                 return;
             }
-            if (!_options.SupportsMemvars)
+            if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }

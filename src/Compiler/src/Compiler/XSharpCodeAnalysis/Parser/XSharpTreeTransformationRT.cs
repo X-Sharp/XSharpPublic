@@ -1200,7 +1200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFilewidememvar([NotNull] XP.FilewidememvarContext context)
         {
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 if (context.Token.Type == XP.PUBLIC)
                 {
@@ -1273,7 +1273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMemvardecl([NotNull] XP.MemvardeclContext context)
         {
             context.SetSequencePoint(context.end);
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
@@ -2071,7 +2071,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
 
-            if (macro != null && _options.SupportsMemvars)
+            if (macro != null && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 ExpressionSyntax expr;
                 var id = macro.Name.Get<IdentifierNameSyntax>();
@@ -3221,7 +3221,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case "__MEMVARGET":
                     case "__VARPUT":
                     case "__VARGET":
-                        if (_options.SupportsMemvars)
+                        if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                         {
                             CurrentMember.Data.HasMemVars = true;
                         }
@@ -3311,7 +3311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (expr is MemberAccessExpressionSyntax maes)
             {
                 var memname = maes.Name.Identifier.Text.ToUpper();
-                if (memname == "EVAL" && _options.SupportsMemvars)
+                if (memname == "EVAL" && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                 {
                     CurrentMember.Data.HasMemVars = true;
                 }
@@ -3580,7 +3580,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(attrs);
             }
 
-            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || _options.SupportsMemvars)
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ||
+                _options.HasOption(CompilerOption.MemVars, (XSharpParserRuleContext) context, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 var finallystmts = _pool.Allocate<StatementSyntax>();
@@ -3691,7 +3692,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         finallystmts.Add(updatestmt);
 
                     }
-                    if (_options.SupportsMemvars)
+                    if (_options.HasOption(CompilerOption.MemVars, (XSharpParserRuleContext)context, PragmaOptions)  && body.Statements.Count > 0)
                     {
                         // VAR Xs$PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
                         // in the finally
@@ -4495,7 +4496,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             | ( Id=identifier | LPAREN Alias=expression RPAREN)
                 ALIAS ( (LPAREN Expr=expression RPAREN) | Expr=expression )
            */
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
@@ -4558,7 +4559,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
             // & LPAREN expression RPAREN
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
@@ -4574,12 +4575,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacroName([NotNull] XP.MacroNameContext context)
         {
             // &identifierName
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
             context.SetSequencePoint();
-            if (_options.SupportsMemvars && context.Name.GetText().IndexOf(".") > 0)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && context.Name.GetText().IndexOf(".") > 0)
             {
                 var id = getMacroNameExpression(context.Name);
                 var expr = GenerateMemVarGet(context, id);
@@ -4600,7 +4601,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // expression:&(expression)
             // or expression:&name
             // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }

@@ -25,11 +25,15 @@ class SQLRDD inherit DBFVFP
     protect _creatingIndex  as logic
     protect _incrementKey   as long
     protect _incrementColumn as DataColumn
+    protect _recnoColumn     as long
+    protect _deletedColumn   as long
     protect _tableMode      as TableMode
+    protect _rowNum         as long
     protect _hasData        as logic
+    protect _realOpen       as logic
     protect _connection     as SqlDbConnection
     protect _oTd            as SqlDbTableDef
-    protect _oTableInfo     as SqlTableInfo
+    protect _obuilder       as SqlDbTableCommandBuilder
     protect _command        as SqlDbCommand
 
 #region Overridden properties
@@ -42,7 +46,9 @@ class SQLRDD inherit DBFVFP
         _tableMode       := TableMode.Query
         _ReadOnly        := true
         _connection      := null
-        _oTableInfo      := null
+        _obuilder        := null
+        _recnoColumn     := -1
+        _deletedColumn   := -1
         return
 
     private method TempFileName() as string
@@ -57,14 +63,9 @@ class SQLRDD inherit DBFVFP
 
     private method GetTableInfo(cTable as string) as logic
         // First check to see if there is a tableDef for this table in the connection
-        local oTd as SqlDbTableDef
-
-        oTd := self:_connection:GetStructure(cTable)
-        if oTd != null
-            self:_oTd := oTd
-            return true
-        endif
-        return false
+        self:_obuilder := SqlDbTableCommandBuilder{cTable, self:_connection}
+        self:_oTd := _obuilder:FetchInfo()
+        return true
 
     override method Open(info as DbOpenInfo) as logic
         var query := info:FileName
@@ -89,7 +90,8 @@ class SQLRDD inherit DBFVFP
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(query)
         if (selectStmt)
             self:_tableMode := TableMode.Query
-            self:_oTd := _connection:GetStructureForQuery(query,"QUERY")
+            var longFieldNames := _connection:RaiseLogicEvent(_connection, SqlRDDEventReason.LongFieldNames,query,true)
+            self:_oTd := _connection:GetStructureForQuery(query,"QUERY",longFieldNames)
         else
             self:_tableMode := TableMode.Table
             if ! self:GetTableInfo(query)
@@ -97,11 +99,18 @@ class SQLRDD inherit DBFVFP
             endif
 
 
+
         endif
 
         // Get the structure
         var oFields := List<RddFieldInfo>{}
         foreach var oCol in _oTd:Columns
+            if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
+                self:_recnoColumn := oCol:ColumnInfo:Ordinal+1
+            elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
+                self:_deletedColumn := oCol:ColumnInfo:Ordinal+1
+            endif
+
             oFields:Add(oCol:ColumnInfo)
         next
         var aFields := oFields:ToArray()
@@ -110,6 +119,7 @@ class SQLRDD inherit DBFVFP
         info:FileName := Path.Combine(Path.GetDirectoryName(tempFile), Path.GetFileNameWithoutExtension(tempFile))
         info:Extension := ".DBF"
         info:ReadOnly := false
+        self:_realOpen := false
         super:Open(info)
         // Assoctiate the extra properties
         for var nI := 1 to aFields:Length
@@ -121,7 +131,7 @@ class SQLRDD inherit DBFVFP
             self:_hasData := false
         endif
         _command:CommandText := query
-        self:DataTable   := _command:GetDataTable(info:Alias)
+        self:_realOpen := true
         return true
 
 
@@ -132,6 +142,7 @@ class SQLRDD inherit DBFVFP
         return result
 
     /// <inheritdoc />
+
     override method Create(info as DbOpenInfo) as logic
         var lResult := super:Create(info)
         self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
@@ -241,6 +252,7 @@ class SQLRDD inherit DBFVFP
             endif
             foreach oColumn as DataColumn in _table:Columns
                 var index := oColumn:Ordinal
+
                 local dbColumn := self:_Fields[index] as RddFieldInfo
                 // use the BlankValue() from the RddFieldInfo class. One place to define blanks is enough
                 var blank := dbColumn:BlankValue()
@@ -325,8 +337,12 @@ class SQLRDD inherit DBFVFP
 
     method BuildSqlStatement() as string
         var query := self:_oTd:SelectStatement
+        if ! self:_realOpen
+            query := self:_oTd:EmptySelectStatement
+        endif
         // create filter from seek
         // add server side filter
+        query := Self:_connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _oTd:Name, query)
         return query
 
     override method GoTop() as logic
@@ -347,6 +363,28 @@ class SQLRDD inherit DBFVFP
         endif
         return super:SkipRaw(move)
 
+
+        override property RecNo		as int
+            get
+                self:ForceRel()
+                if self:_recnoColumn != 0
+                    return (int) self:GetValue(self:_recnoColumn)
+                else
+                    return super:RecNo
+                endif
+	        end get
+        end property
+
+override property Deleted		as logic
+	get
+		self:ForceRel()
+        if self:_deletedColumn != 0
+            return (logic) self:GetValue(self:_deletedColumn)
+        else
+            return super:Deleted
+        endif
+	end get
+end property
 
 
 end class

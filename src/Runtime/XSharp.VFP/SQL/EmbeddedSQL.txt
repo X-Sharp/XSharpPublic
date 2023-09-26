@@ -1,0 +1,190 @@
+﻿To support embedded SQL we can will add some functions.
+The UDC for that should be very simple. Parsing the elements is done in the runtime.
+
+--------------------------------------------------------------------------------
+
+DROP VIEW ViewName
+DELETE VIEW ViewName
+
+
+DbDropView()
+============
+
+--------------------------------------------------------------------------------
+
+CREATE CURSOR alias_name 
+...[CODEPAGE=nCodePage]
+   (fname1 cFieldType [(nFieldWidth [, nPrecision])] [NULL | NOT NULL] 
+   [CHECK lExpression [ERROR cMessageText]] 
+   [AUTOINC [NEXTVALUE NextValue [STEP StepValue]]]
+   [DEFAULT eExpression] [UNIQUE [COLLATE cCollateSequence]]
+   [NOCPTRANS] [, fname2 ...]) 
+   | FROM ARRAY ArrayName
+
+
+DbCreateCursor() 
+================
+Receives the whole CREATE CURSOR command.
+Parses the column definitions and creates a DbStruct
+Then creates the temporary file and opens it with the DbfVFP driver just
+like the results from SqlExec().
+Then creates the DataTable with columns for each of the columns declared 
+in the CREATE Cursor statement
+
+--------------------------------------------------------------------------------
+
+
+CREATE TABLE | DBF TableName1 [NAME LongTableName] [FREE] 
+    [CODEPAGE = nCodePage]
+    ( FieldName1 FieldType [( nFieldWidth [, nPrecision] )] [NULL | NOT NULL] 
+    [CHECK lExpression1 [ERROR cMessageText1]] 
+    [AUTOINC [NEXTVALUE NextValue [STEP StepValue]]] [DEFAULT eExpression1] 
+    [PRIMARY KEY | UNIQUE [COLLATE cCollateSequence]] 
+    [REFERENCES TableName2 [TAG TagName1]] [NOCPTRANS]
+    [, FieldName2 ... ] 
+    [, PRIMARY KEY eExpression2 TAG TagName2 |, UNIQUE eExpression3 TAG TagName3 
+    [COLLATE cCollateSequence]]
+    [, FOREIGN KEY eExpression4 TAG TagName4 [NODUP] 
+    [COLLATE cCollateSequence] 
+    REFERENCES TableName3 [TAG TagName5]] [, CHECK lExpression2 [ERROR cMessageText2]] ) 
+    | FROM ARRAY ArrayName
+
+DbCreateTable()
+================
+Receives the whole CREATE TABLE command, parses it and creates the file with DbCreate().
+For now the PRIMARY KEY, FOREIGN Key, REFERENCES etc are ignored.
+Shoult the table be added to the DBC?
+--------------------------------------------------------------------------------
+ALTER TABLE TableName1 ADD | ALTER [COLUMN] FieldName1 
+      FieldType [( nFieldWidth [, nPrecision])] [NULL | NOT NULL] [CHECK lExpression1 [ERROR cMessageText1]] 
+   [AUTOINC [NEXTVALUE NextValue [STEP StepValue]]] [DEFAULT eExpression1] 
+   [PRIMARY KEY | UNIQUE [COLLATE cCollateSequence]] 
+   [REFERENCES TableName2 [TAG TagName1]] [NOCPTRANS] [NOVALIDATE]
+ 
+ 
+ALTER TABLE TableName1 ALTER [COLUMN] FieldName2 [NULL | NOT NULL] [SET DEFAULT eExpression2] 
+   [SET CHECK lExpression2 [ERROR cMessageText2]] [ DROP DEFAULT ] [ DROP CHECK ] [ NOVALIDATE ]
+ 
+ 
+ALTER TABLE TableName1 [DROP [COLUMN] FieldName3] 
+   [SET CHECK lExpression3 [ERRORcMessageText3]] [DROP CHECK] 
+   [ADD PRIMARY KEY eExpression3 [FOR lExpression4] TAG TagName2
+   [COLLATE cCollateSequence]] [DROP PRIMARY KEY] 
+   [ADD UNIQUE eExpression4 [[FOR lExpression5] TAG TagName3 
+      [COLLATE cCollateSequence]]] [DROP UNIQUE TAG TagName4] 
+   [ADD FOREIGN KEY [eExpression5] [FOR lExpression6] TAG TagName4 
+      REFERENCES TableName4 [TAG TagName4][COLLATE cCollateSequence]
+      REFERENCES TableName2 [TAG TagName5]] 
+   [DROP FOREIGN KEY TAG TagName6 [SAVE]] 
+   [RENAME COLUMN FieldName4 TO FieldName5] [NOVALIDATE]
+ 
+
+DbAlterTable()
+
+
+--------------------------------------------------------------------------------
+
+1) INSERT INTO dbf_name [(FieldName1 [, FieldName2, ...])]
+   VALUES (eExpression1 [, eExpression2, ...])
+ 
+ 
+2) INSERT INTO dbf_name FROM ARRAY ArrayName | FROM MEMVAR | FROM NAME ObjectName
+ 
+ 
+3) INSERT INTO dbf_name [(FieldName1 [, FieldName2, ...])]
+   SELECT SELECTClauses [UNION UnionClause SELECT SELECTClauses ...]
+ 
+DbInsertSQL()
+=============
+1) Recognized by VALUES
+   DbAppend()
+   FieldPuts()
+
+2) FROM ARRAY / FROM MEMVAR FROM NAME
+   DbAppend()
+   FieldPuts() based on the array elements, Memvar names, object properties
+
+3) Recognized by the SELECT keyword
+   Execute SELECT first and store data in DataTable
+   Foreach row in DataTable
+    DbAppend()
+    FieldPuts() for the columns
+
+--------------------------------------------------------------------------------
+
+  
+DELETE [Target] FROM [FORCE] Table_List [[, Table_List ...] | [JOIN [ Table_List]]]
+   [WHERE FilterCondition1 [AND | OR FilterCondition2 ...]]
+ 
+DbDeleteSQL()
+=============
+Gets the whole command. The Where condition should be translated to a FOR condition
+and the command is executed with DbEval()
+WHERE may contain subselect?
+
+--------------------------------------------------------------------------------
+
+
+UPDATE Target
+   SET Column_Name1 = eExpression1 [, Column_Name2 = eExpression2 ...]
+   [FROM [FORCE] Table_List_Item [[, ...] | [JOIN [ Table_List_Item]]]
+   WHERE FilterCondition1 [AND | OR FilterCondition2 ...]
+
+DbUpdateSQL()
+=============
+Translate WHERE to FOR 
+DbEval FieldPuts() FOR key
+
+--------------------------------------------------------------------------------
+
+
+SELECT [ALL | DISTINCT] [TOP nExpr [PERCENT]] Select_List_Item [, ...]
+   FROM [FORCE] Table_List_Item [, ...]
+      [[JoinType] JOIN DatabaseName!]Table [[AS] Local_Alias]
+      [ON JoinCondition [AND | OR [JoinCondition | FilterCondition] ...] 
+   [WITH (BUFFERING = lExpr)]
+   [WHERE JoinCondition | FilterCondition [AND | OR JoinCondition | FilterCondition] ...]
+   [GROUP BY Column_List_Item [, ...]] [HAVING FilterCondition [AND | OR ...]]
+   [UNION [ALL] SELECTCommand]
+   [ORDER BY Order_Item [ASC | DESC] [, ...]]
+   [INTO StorageDestination | TO DisplayDestination]
+   [PREFERENCE PreferenceName] [NOCONSOLE] [PLAIN] [NOWAIT]
+
+Read the VFP Docs for each element
+
+See VFP Doc for Filter COnditions
+
+DbSelectSQL()
+
+--------------------------------------------------------------------------------
+ADD TABLE TableName | ?   [NAME LongTableName]
+
+DbAddTable()
+=============
+Add existing table to the current database
+
+
+--------------------------------------------------------------------------------
+FREE TABLE TableName
+DbFreeTable()
+=============
+Remove Database reference from DBF
+
+
+--------------------------------------------------------------------------------
+
+DROP TABLE TableName | FileName | ? [RECYCLE]
+
+
+DbDropTable()
+=============
+Deletes the table from the Database and/or Freetable from disk
+RECYCLE Moves table to the Bin
+--------------------------------------------------------------------------------
+
+REMOVE TABLE TableName | ? [DELETE] [RECYCLE]
+
+DbRemoveTable()
+=============
+Removes the table from the Database and deletes it optionally and
+moves it to the recycle bin optionally

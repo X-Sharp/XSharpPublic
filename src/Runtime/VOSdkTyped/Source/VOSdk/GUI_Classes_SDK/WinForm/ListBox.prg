@@ -32,8 +32,6 @@ CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBo
     END PROPERTY
 
     NEW PROPERTY Items           AS IList GET SUPER:Items
-    NEW PROPERTY SelectedIndices AS IList GET SUPER:SelectedIndices
-    NEW PROPERTY SelectedItems   AS IList GET SUPER:SelectedItems
 
 #endregion
 	#include "PropControl.xh"

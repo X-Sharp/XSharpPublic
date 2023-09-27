@@ -13,6 +13,9 @@ using SD    := System.Drawing
 using System.Collections
 using System.Collections.Generic
 
+/// <summary>
+/// Interface with common properties that both the listbox and combobox class have
+/// </summary>
 INTERFACE IBaseListBox
     PROPERTY SelectedIndex AS LONG GET SET
     PROPERTY Items AS IList GET
@@ -38,11 +41,27 @@ interface IVOUIObject
     method SuspendLayout as void strict
 end interface
 
-
+/// <summary>
+/// This interface declares the link between a Windows Forms Control and the matching VOSDK.Control
+/// </summary>
 interface IVOControlProperties inherit IVOControl
+    /// <summary>
+    /// The VOSDK.Control object that this Windows Forms Control is linked to
+    /// </summary>
     property Control            as VOSDK.Control get
+    /// <summary>
+    /// An object with some properties, such as the Control, its owning window, style, exstyle etc.
+    /// </summary>
     property ControlProperties  as VOControlProperties get
-    method SetVisualStyle as void strict
+    /// <summary>
+    /// This method is used to change the Visual Style of the control to match with the definition of the
+    /// original VO control
+    /// </summary>
+    method SetVisualStyle() as void strict
+    /// <summary>
+    /// This method is called to link the Windows.Forms control to the VO Control
+    /// </summary>
+    /// <param name="Owner">The Owning VO Control</param>
     method SetOwner(Owner as VOSDK.Control) as void
 end interface
 
@@ -91,6 +110,9 @@ interface IVOControl inherit IVOUIObject
 
 end interface
 
+/// <summary>
+/// This interface is implemented by controls that need special initialization, such as the TabControl and RTF Control
+/// </summary>
 interface IVOControlInitialize inherit IVOControlProperties
     method Initialize as void strict
 end interface

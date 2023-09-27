@@ -8,7 +8,7 @@
 CLASS ComboBox INHERIT ListBox
 	PROTECT liComboType AS LONG	// BOXSIMPLE, BOXDROPDOWN or BOXDROPDOWNLIST
 
-    PROPERTY ControlType AS ControlType GET ControlType.ComboBox
+    property ControlType as ControlType get ControlType.ComboBox
 
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
@@ -16,6 +16,12 @@ CLASS ComboBox INHERIT ListBox
 		oCombo:DropDownHeight := oSize:Height
 		RETURN
  /// <exclude />
+
+
+    protected method __BeginUpdate() as void
+        self:__ComboBox:BeginUpdate()
+    protected method __EndUpdate() as void
+        self:__ComboBox:EndUpdate()
 
 	METHOD __EditChange() AS VOID STRICT
 		SELF:Modified := TRUE

@@ -6,1602 +6,1599 @@
 #pragma options ("enforceself", on)
 #pragma warnings(165, off)
 
-PARTIAL CLASS DbServer
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.GetArray/*" />
-METHOD GetArray( nMaxRows:= 100 AS LONG, uField1 := 1 AS USUAL, uSearchValue := NIL AS USUAL)  AS ARRAY
-	LOCAL uValue AS USUAL
-	LOCAL cbKey AS USUAL
-	LOCAL aResult := { } AS ARRAY
-	LOCAL wRows := 32767 AS LONG
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oHLTemp AS HyperLabel
-	LOCAL wPos AS DWORD
-
-
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
-			BREAK DbError{ SELF, #GetArray, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
-		ENDIF
-
-
-	    IF nMaxRows < wRows
-			wRows := nMaxRows
-		ENDIF
-
-
-		IF IsNil( uField1 )
-			wPos := 1
-		ELSEIF IsSymbol( uField1 )
-			wPos := FieldPosSym( uField1 )
-		ELSEIF IsString( uField1 )
-			wPos := FieldPos( uField1 )
-		ELSE
-			wPos := uField1
-		ENDIF
-
+partial class DbServer
+
+
+    /// <include file="Rdd.xml" path="doc/DbServer.GetArray/*" />
+    method GetArray( nMaxRows:= 100 as long, uField1 := 1 as usual, uSearchValue := nil as usual)  as array
+        local uValue as usual
+        local cbKey as usual
+        local aResult := { } as array
+        local wRows := 32767 as long
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
+        local oHLTemp as HyperLabel
+        local wPos as dword
+
+
+
+
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! self:Notify( NOTIFYINTENTTOMOVE )
+                break DbError{ self, #GetArray, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
+            endif
+
+
+            if nMaxRows < wRows
+                wRows := nMaxRows
+            endif
+
+
+            if IsNil( uField1 )
+                wPos := 1
+            elseif IsSymbol( uField1 )
+                wPos := FieldPosSym( uField1 )
+            elseif IsString( uField1 )
+                wPos := FieldPos( uField1 )
+            else
+                wPos := uField1
+            endif
+
 
-		IF lSelectionActive
-			uValue := uSelectionValue
-			cbKey := cbSelectionIndexingExpression
-			IF ! VoDbSeek( uValue, FALSE )
-				SELF:__SetStatusHL( #GetArray, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
-				oHLTemp := oHLStatus
-				aResult := NULL_ARRAY
-			ELSE
-				SELF:__DbServerEval( { | | AAdd( aResult, __DBSFieldGet( wPos ) ) },  ;
-					NIL,  ;
-					{ || Eval( cbKey ) = uValue },  ;
-					wRows,  ;
-					NIL,  ;
-					TRUE,  ;
-					DBCCON,  ;
-					DBCCREADONLY )
-				siSelectionStatus := DBSELECTIONEOF
-				IF ! VoDbGoBottom( )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				IF ! VoDbSkip( 1 )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-			ENDIF
-
-
-		ELSEIF ! IsNil( uSearchValue )
-			IF ! VoDbSeek( uSearchValue, FALSE )
-				SELF:__SetStatusHL( #GetArray, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
-				oHLTemp := oHLStatus
-				aResult := NULL_ARRAY
-			ELSE
-				cbKey := &( "{ ||"+__DBSDbOrderInfo( DBOI_EXPRESSION, "", 0 ) + " }" )
-				SELF:__DbServerEval( { || AAdd( aResult, __DBSFieldGet( wPos ) ) },  ;
-					NIL,  ;
-					NIL,  ;
-					wRows,  ;
-					NIL,  ;
-					TRUE,  ;
-					DBCCON,  ;
-					DBCCREADONLY )
-			ENDIF
+            if lSelectionActive
+                uValue := uSelectionValue
+                cbKey := cbSelectionIndexingExpression
+                if ! VoDbSeek( uValue, false )
+                    self:__SetStatusHL( #GetArray, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
+                    oHLTemp := oHLStatus
+                    aResult := null_array
+                else
+                    self:__DbServerEval( { | | AAdd( aResult, __DBSFieldGet( wPos ) ) },  ;
+                        nil,  ;
+                        { || Eval( cbKey ) = uValue },  ;
+                        wRows,  ;
+                        nil,  ;
+                        true,  ;
+                        DBCCON,  ;
+                        DBCCREADONLY )
+                    siSelectionStatus := DBSELECTIONEOF
+                    if ! VoDbGoBottom( )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    if ! VoDbSkip( 1 )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                endif
+
+
+            elseif ! IsNil( uSearchValue )
+                if ! VoDbSeek( uSearchValue, false )
+                    self:__SetStatusHL( #GetArray, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
+                    oHLTemp := oHLStatus
+                    aResult := null_array
+                else
+                    cbKey := &( "{ ||"+__DBSDbOrderInfo( DBOI_EXPRESSION, "", 0 ) + " }" )
+                    self:__DbServerEval( { || AAdd( aResult, __DBSFieldGet( wPos ) ) },  ;
+                        nil,  ;
+                        nil,  ;
+                        wRows,  ;
+                        nil,  ;
+                        true,  ;
+                        DBCCON,  ;
+                        DBCCREADONLY )
+                endif
+
+
+            else
+                self:__DbServerEval( { || AAdd( aResult, __DBSFieldGet( wPos ) ) },  ;
+                    nil,  ;
+                    nil,  ;
+                    wRows,  ;
+                    nil,  ;
+                    true,  ;
+                    DBCCON,  ;
+                    DBCCREADONLY )
+            endif
+
+
+            self:__ProcessConcurrency( true )
+
+
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
-		ELSE
-			SELF:__DbServerEval( { || AAdd( aResult, __DBSFieldGet( wPos ) ) },  ;
-				NIL,  ;
-				NIL,  ;
-				wRows,  ;
-				NIL,  ;
-				TRUE,  ;
-				DBCCON,  ;
-				DBCCREADONLY )
-		ENDIF
+        recover using oError
+            self:__ProcessConcurrency(false)
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oError, #GetArray )
+            oErrorInfo := oError
+            oHLTemp := oHLStatus
+            aResult := null_array
+        end sequence
+
+
+
+
+        self:__Notify( NOTIFYRECORDCHANGE )
+
+
+        if ! IsNil( oHLTemp )
+            lErrorFlag := true
+            oHLStatus := oHLTemp
+            if ! IsNil( oError )
+                oErrorInfo := oError
+            else
+                oErrorInfo := null_object
+            endif
+        endif
+
+
+        return aResult
+
+
+    /// <include file="Rdd.xml" path="doc/DbServer.GetLocate/*" />
+    method GetLocate ( ) as usual
+
+
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
+        local uInfo as usual
+
+
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbInfo( DBI_GETSCOPE, ref uInfo )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #Info )
+        end sequence
+
+
+        return uInfo
+
+
+    /// <include file="Rdd.xml" path="doc/DbServer.GetLookupTable/*" />
+    method GetLookupTable( nMaxRows , uField1 , uField2 , uSearchValue )  as array clipper
+        local uValue as usual
+        local cbKey as usual
+        local aResult := { } as array
+        local wRows := 32767 as long
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
+        local oHLTemp as HyperLabel
+
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! self:Notify( NOTIFYINTENTTOMOVE )
+                break DbError{ self, #GetLookupTable, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
+            endif
+
+            if IsNil( nMaxRows )
+                wRows := 100
+            elseif nMaxRows < wRows
+                wRows := nMaxRows
+            endif
+
+            if IsNil( uField1 )
+                uField1 := 1
+            elseif IsSymbol( uField1 )
+                uField1 := FieldPosSym( uField1 )
+            elseif IsString( uField1 )
+                uField1 := FieldPos( uField1 )
+            endif
+
+
+            if IsNil( uField2 )
+                uField2 := 2
+            elseif IsSymbol( uField2 )
+                uField2 := FieldPosSym( uField2 )
+            elseif IsString( uField2 )
+                uField2 := FieldPos( uField2 )
+            endif
+
+
+            if lSelectionActive
+                uValue := uSelectionValue
+                cbKey := cbSelectionIndexingExpression
+                if ! VoDbSeek( uValue, false )
+                    self:__SetStatusHL( #GetLookupTable, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
+                    oHLTemp := oHLStatus
+                    aResult := null_array
+                else
+                    self:__DbServerEval( { || AAdd( aResult, { __DBSFieldGet( uField1 ), __DBSFieldGet( uField2 ) } ) },  ;
+                        nil,  ;
+                        { || Eval( cbKey ) == uValue },  ;
+                        wRows,  ;
+                        nil,  ;
+                        true,  ;
+                        DBCCON,  ;
+                        DBCCREADONLY )
+                    siSelectionStatus := DBSELECTIONEOF
+                    if ! VoDbGoBottom( )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    if ! VoDbSkip( 1 )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                endif
+
+
+            elseif ! IsNil( uSearchValue )
+                if ! VoDbSeek( uSearchValue, false )
+                    self:__SetStatusHL ( #GetLookupTable, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
+                    oHLTemp := oHLStatus
+                    aResult := null_array
+                else
+                    self:__DbServerEval( { || AAdd( aResult, { __DBSFieldGet( uField1 ), __DBSFieldGet( uField2 ) } ) },  ;
+                        nil,  ;
+                        nil,  ;
+                        wRows,  ;
+                        nil,  ;
+                        true,  ;
+                        DBCCON,  ;
+                        DBCCREADONLY )
+                endif
+
+
+            else
+                self:__DbServerEval( { || AAdd( aResult, { __DBSFieldGet( uField1 ), __DBSFieldGet( uField2 ) } ) },  ;
+                    nil,  ;
+                    nil,  ;
+                    wRows,  ;
+                    nil,  ;
+                    true,  ;
+                    DBCCON,  ;
+                    DBCCREADONLY )
+            endif
+
+
+            self:__ProcessConcurrency( true )
+            __DBSSetSelect( dwCurrentWorkArea )
+
+
+        recover using oError
+            oErrorInfo := oError
+            self:__ProcessConcurrency( false )
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oError, #GetLookupTable )
+            oErrorInfo := oError
+            oHLTemp := oHLStatus
+            aResult := null_array
+        end sequence
+
+
+
+
+        self:__Notify( NOTIFYRECORDCHANGE )
+
+
+        if ! IsNil( oHLTemp )
+            lErrorFlag := true
+            oHLStatus := oHLTemp
+            if ! IsNil( oError )
+                oErrorInfo := oError
+            else
+                oErrorInfo := null_object
+            endif
+        endif
+
+
+
+
+        return aResult
+
+
+    /// <include file="Rdd.xml" path="doc/DbServer.GoBottom/*" />
+    method GoBottom( )   as logic
+        local dwCurrentWorkArea := 0 as dword
+        local uValue as usual
+        local cbKey as usual
+        local lRetCode := false as logic
+        local oError as usual
+        local oHLTemp as HyperLabel
+        local nTries as dword
 
 
-		SELF:__ProcessConcurrency( TRUE )
+        lErrorFlag := false
+        nTries := self:nRetries
 
 
-		__DBSSetSelect( dwCurrentWorkArea )
+        begin sequence
+            VoDbSelect( self:wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                if lSelectionActive
+                    if siSelectionStatus == DBSELECTIONEMPTY
+                        lRetCode := true
+                    elseif siSelectionStatus == DBSELECTIONEOF
+                        lRetCode := self:Skip( -1 )
+                        siSelectionStatus := DBSELECTIONNULL
+                    else
+                        uValue := uSelectionValue
+                        cbKey := cbSelectionIndexingExpression
+                        __DBSSeek( uSelectionValue, false, false , nTries )
+                        if Eval( cbKey ) = uValue .or. VoDbFound( )
+                            lRetCode := self:__DbServerEval( { || },  ;
+                                nil,  ;
+                                { || Eval( cbKey ) = uValue },  ;
+                                nil,  nil,  true , false, false)
+                            lRetCode := __DBSSkip( -1, nTries )
+                            siSelectionStatus := DBSELECTIONNULL
+                        else
+                            siSelectionStatus := DBSELECTIONEMPTY
+                            self:__SetStatusHL( #GoBottom, EG_BOUND, __CavoStr( __CAVOSTR_DBFCLASS_SELECTIVEVALUE ) )
+                            oHLTemp := oHLStatus
+                            lRetCode := false
+                        endif
+                    endif
+                else
+                    lRetCode := __DBSGoBottom( nTries )
+                endif
 
 
-	RECOVER USING oError
-		SELF:__ProcessConcurrency(FALSE)
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oError, #GetArray )
-		oErrorInfo := oError
-		oHLTemp := oHLStatus
-		aResult := NULL_ARRAY
-	END SEQUENCE
+                self:Notify( NOTIFYGOBOTTOM )
+                if ! lRetCode .and. ! IsNil( oHLTemp )
+                    lErrorFlag := true
+                    oHLStatus := oHLTemp
+                endif
+                if lRetCode
+                    lRetCode := self:__ProcessConcurrency( true )
+                endif
+            else
+                lRetCode := false
+                self:__SetStatusHL( #GoBottom, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+            endif
 
 
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
-	SELF:__Notify( NOTIFYRECORDCHANGE )
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            lRetCode := false
+        end sequence
 
 
-	IF ! IsNil( oHLTemp )
-		lErrorFlag := TRUE
-		oHLStatus := oHLTemp
-		IF ! IsNil( oError )
-			oErrorInfo := oError
-		ELSE
-			oErrorInfo := NULL_OBJECT
-		ENDIF
-	ENDIF
 
 
-	RETURN aResult
+        return lRetCode
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.GetLocate/*" />
-METHOD GetLocate ( ) AS USUAL
+    /// <include file="Rdd.xml" path="doc/DbServer.GoTo/*" />
+    method GoTo( nRecordNumber as long) as logic
+        local nCurrentRecord as dword
+        local lRetCode := false as logic
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
+        local nTries as dword
 
 
-    LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL uInfo AS USUAL
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbInfo( DBI_GETSCOPE, REF uInfo )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-      __DBSSetSelect( dwCurrentWorkArea )
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #Info )
-	END SEQUENCE
-
-
-	RETURN uInfo
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.GetLookupTable/*" />
-METHOD GetLookupTable( nMaxRows:= 100 AS LONG, uField1 := 1 AS USUAL, uField2 := 2 AS USUAL, uSearchValue := NIL AS USUAL)  AS ARRAY
-	LOCAL uValue AS USUAL
-	LOCAL cbKey AS USUAL
-	LOCAL aResult := { } AS ARRAY
-	LOCAL wRows := 32767 AS LONG
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oHLTemp AS HyperLabel
-
-
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
-			BREAK DbError{ SELF, #GetLookupTable, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
-		ENDIF
 
 
-		IF nMaxRows < wRows
-			wRows := nMaxRows
-		ENDIF
+        lErrorFlag := false
 
 
-		IF IsNil( uField1 )
-			uField1 := 1
-		ELSEIF IsSymbol( uField1 )
-			uField1 := FieldPosSym( uField1 )
-		ELSEIF IsString( uField1 )
-			uField1 := FieldPos( uField1 )
-		ENDIF
+        nTries := self:nRetries
 
 
-		IF IsNil( uField2 )
-			uField2 := 2
-		ELSEIF IsSymbol( uField2 )
-			uField2 := FieldPosSym( uField2 )
-		ELSEIF IsString( uField2 )
-			uField2 := FieldPos( uField2 )
-		ENDIF
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                if lSelectionActive
 
 
-		IF lSelectionActive
-			uValue := uSelectionValue
-			cbKey := cbSelectionIndexingExpression
-			IF ! VoDbSeek( uValue, FALSE )
-				SELF:__SetStatusHL( #GetLookupTable, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
-				oHLTemp := oHLStatus
-				aResult := NULL_ARRAY
-			ELSE
-				SELF:__DbServerEval( { || AAdd( aResult, { __DBSFieldGet( uField1 ), __DBSFieldGet( uField2 ) } ) },  ;
-					NIL,  ;
-					{ || Eval( cbKey ) == uValue },  ;
-					wRows,  ;
-					NIL,  ;
-					TRUE,  ;
-					DBCCON,  ;
-					DBCCREADONLY )
-				siSelectionStatus := DBSELECTIONEOF
-				IF ! VoDbGoBottom( )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				IF ! VoDbSkip( 1 )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-			ENDIF
-
-
-		ELSEIF ! IsNil( uSearchValue )
-			IF ! VoDbSeek( uSearchValue, FALSE )
-				SELF:__SetStatusHL ( #GetLookupTable, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOSEEK ) )
-				oHLTemp := oHLStatus
-				aResult := NULL_ARRAY
-			ELSE
-				SELF:__DbServerEval( { || AAdd( aResult, { __DBSFieldGet( uField1 ), __DBSFieldGet( uField2 ) } ) },  ;
-					NIL,  ;
-					NIL,  ;
-					wRows,  ;
-					NIL,  ;
-					TRUE,  ;
-					DBCCON,  ;
-					DBCCREADONLY )
-			ENDIF
-
-
-		ELSE
-			SELF:__DbServerEval( { || AAdd( aResult, { __DBSFieldGet( uField1 ), __DBSFieldGet( uField2 ) } ) },  ;
-				NIL,  ;
-				NIL,  ;
-				wRows,  ;
-				NIL,  ;
-				TRUE,  ;
-				DBCCON,  ;
-				DBCCREADONLY )
-		ENDIF
-
-
-		SELF:__ProcessConcurrency( TRUE )
-		__DBSSetSelect( dwCurrentWorkArea )
-
-
-	RECOVER USING oError
-		oErrorInfo := oError
-		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oError, #GetLookupTable )
-		oErrorInfo := oError
-		oHLTemp := oHLStatus
-		aResult := NULL_ARRAY
-	END SEQUENCE
-
+                    if siSelectionStatus == DBSELECTIONEMPTY
+                        lRetCode := true
+                    else
+                        nCurrentRecord := VoDbRecno( )
+                        lRetCode := __DBSGoTo( nRecordNumber, nTries )
 
 
-
-	SELF:__Notify( NOTIFYRECORDCHANGE )
-
-
-	IF ! IsNil( oHLTemp )
-		lErrorFlag := TRUE
-		oHLStatus := oHLTemp
-		IF ! IsNil( oError )
-			oErrorInfo := oError
-		ELSE
-			oErrorInfo := NULL_OBJECT
-		ENDIF
-	ENDIF
 
 
+                        if Eval( cbSelectionIndexingExpression ) = uSelectionValue
+                            siSelectionStatus := DBSELECTIONNULL
 
 
-	RETURN aResult
+                        else
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.GoBottom/*" />
-METHOD GoBottom( )   AS LOGIC
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL uValue AS USUAL
-	LOCAL cbKey AS USUAL
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL oHLTemp AS HyperLabel
-	LOCAL nTries AS DWORD
+                            if ! siSelectionStatus == DBSELECTIONEOF
+                                __DBSGoBottom( nTries )
+                                __DBSSkip( 1, nTries )
+                            else
+                                __DBSGoTo( (int) nCurrentRecord, nTries )
+                            endif
+                        endif
+                    endif
+                else
+                    lRetCode := __DBSGoTo( nRecordNumber, nTries )
+                endif
+                if lRetCode
+                    lRetCode := self:__ProcessConcurrency( true )
+                endif
+                self:Notify( NOTIFYRECORDCHANGE )
 
 
-	lErrorFlag := FALSE
-	nTries := SELF:nRetries
+            else
+                lRetCode := false
+                self:__SetStatusHL( #GoTo, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+            endif
 
 
-	BEGIN SEQUENCE
-		VoDbSelect( SELF:wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF lSelectionActive
-				IF siSelectionStatus == DBSELECTIONEMPTY
-					lRetCode := TRUE
-				ELSEIF siSelectionStatus == DBSELECTIONEOF
-					lRetCode := SELF:Skip( -1 )
-					siSelectionStatus := DBSELECTIONNULL
-				ELSE
-					uValue := uSelectionValue
-					cbKey := cbSelectionIndexingExpression
-					__DBSSeek( uSelectionValue, FALSE, FALSE , nTries )
-					IF Eval( cbKey ) = uValue .OR. VoDbFound( )
-						lRetCode := SELF:__DbServerEval( { || },  ;
-							NIL,  ;
-							{ || Eval( cbKey ) = uValue },  ;
-							NIL,  NIL,  TRUE , FALSE, FALSE)
-						lRetCode := __DBSSkip( -1, nTries )
-						siSelectionStatus := DBSELECTIONNULL
-					ELSE
-						siSelectionStatus := DBSELECTIONEMPTY
-						SELF:__SetStatusHL( #GoBottom, EG_BOUND, __CavoStr( __CAVOSTR_DBFCLASS_SELECTIVEVALUE ) )
-						oHLTemp := oHLStatus
-						lRetCode := FALSE
-					ENDIF
-				ENDIF
-			ELSE
-				lRetCode := __DBSGoBottom( nTries )
-			ENDIF
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
-			SELF:Notify( NOTIFYGOBOTTOM )
-			IF ! lRetCode .AND. ! IsNil( oHLTemp )
-				lErrorFlag := TRUE
-				oHLStatus := oHLTemp
-			ENDIF
-			IF lRetCode
-				lRetCode := SELF:__ProcessConcurrency( TRUE )
-			ENDIF
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL( #GoBottom, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-		ENDIF
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            lRetCode := false
+        end sequence
 
 
-		__DBSSetSelect( dwCurrentWorkArea )
 
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
+        return lRetCode
 
 
+    /// <include file="Rdd.xml" path="doc/DbServer.GoTop/*" />
+    method GoTop( ) as logic
+        local lRetCode := false as logic
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
+        local nTries as dword
 
 
-	RETURN lRetCode
+        lErrorFlag := false
+        nTries     := self:nRetries
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.GoTo/*" />
-METHOD GoTo( nRecordNumber AS LONG) AS LOGIC
-	LOCAL nCurrentRecord AS DWORD
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL nTries AS DWORD
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                if lSelectionActive
+                    if siSelectionStatus == DBSELECTIONEMPTY
+                        lRetCode := true
+                    else
+                        lRetCode := __DBSSeek( uSelectionValue, false, false, nTries )
+                        if lRetCode
+                            siSelectionStatus := DBSELECTIONNULL
+                        else
+                            siSelectionStatus := DBSELECTIONEMPTY
+                        endif
+                    endif
+                else
+                    lRetCode := __DBSGoTop( nTries )
+                endif
 
 
+                if lRetCode
+                    lRetCode := self:__ProcessConcurrency( true )
+                endif
+                self:Notify( NOTIFYGOTOP )
+            else
+                lRetCode := false
+                self:__SetStatusHL( #GoTop, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
-	lErrorFlag := FALSE
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            lRetCode := false
+        end sequence
 
 
-	nTries := SELF:nRetries
 
 
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF lSelectionActive
+        return lRetCode
 
 
-				IF siSelectionStatus == DBSELECTIONEMPTY
-					lRetCode := TRUE
-				ELSE
-					nCurrentRecord := VoDbRecno( )
-					lRetCode := __DBSGoTo( nRecordNumber, nTries )
+    /// <include file="Rdd.xml" path="doc/DbServer.IndexKey/*" />
+    method IndexKey( uOrder as usual) as usual
 
 
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
+        local uOrdVal as usual
 
 
-					IF Eval( cbSelectionIndexingExpression ) = uSelectionValue
-						siSelectionStatus := DBSELECTIONNULL
 
 
-					ELSE
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbOrderInfo( DBOI_EXPRESSION, "", uOrder, ref uOrdVal )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderInfo )
+        end sequence
 
 
-						IF ! siSelectionStatus == DBSELECTIONEOF
-							__DBSGoBottom( nTries )
-							__DBSSkip( 1, nTries )
-						ELSE
-							__DBSGoTo( (int) nCurrentRecord, nTries )
-						ENDIF
-					ENDIF
-				ENDIF
-			ELSE
-				lRetCode := __DBSGoTo( nRecordNumber, nTries )
-			ENDIF
-			IF lRetCode
-				lRetCode := SELF:__ProcessConcurrency( TRUE )
-			ENDIF
-			SELF:Notify( NOTIFYRECORDCHANGE )
 
 
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL( #GoTo, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-		ENDIF
+        return uOrdVal
 
 
-		__DBSSetSelect( dwCurrentWorkArea )
+    /// <include file="Rdd.xml" path="doc/DbServer.IndexOrd/*" />
+    method IndexOrd( ) as usual
 
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
+        local uOrdVal as usual
 
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbOrderInfo( DBOI_NUMBER, "", nil, ref uOrdVal )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderInfo )
+        end sequence
 
 
-	RETURN lRetCode
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.GoTop/*" />
-METHOD GoTop( ) AS LOGIC
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL nTries AS DWORD
+        return uOrdVal
 
 
-	lErrorFlag := FALSE
-	nTries     := SELF:nRetries
+    /// <include file="Rdd.xml" path="doc/DbServer.Info/*" />
+    method Info( kInfoType as long, uInfo := nil as usual) as usual
 
 
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF lSelectionActive
-				IF siSelectionStatus == DBSELECTIONEMPTY
-					lRetCode := TRUE
-				ELSE
-					lRetCode := __DBSSeek( uSelectionValue, FALSE, FALSE, nTries )
-					IF lRetCode
-						siSelectionStatus := DBSELECTIONNULL
-					ELSE
-						siSelectionStatus := DBSELECTIONEMPTY
-					ENDIF
-				ENDIF
-			ELSE
-				lRetCode := __DBSGoTop( nTries )
-			ENDIF
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
 
 
-			IF lRetCode
-				lRetCode := SELF:__ProcessConcurrency( TRUE )
-			ENDIF
-			SELF:Notify( NOTIFYGOTOP )
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL( #GoTop, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
 
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbInfo( (dword) kInfoType, ref uInfo)
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #Info )
+        end sequence
 
 
+        return uInfo
 
 
-	RETURN lRetCode
+    /// <include file="Rdd.xml" path="doc/DbServer.Join/*" />
+    method Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) as logic clipper
+        local cSource as string
+        local cTarget as string
+        local aFieldNames as array
+        local w as dword
+        local lRetCode := false as logic
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
+        local wLen as dword
+        local lRestore	as logic
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.IndexKey/*" />
-METHOD IndexKey( uOrder AS USUAL) AS USUAL
+        lRestore	:= DbSetRestoreWorkarea(true)
 
 
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL uOrdVal AS USUAL
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                if IsObject(oDBSource) .and. __Usual.ToObject(oDBSource) is DbServer var oDb
+                    cSource := oDb:Alias
+                else
+                    cSource := AsString( oDBSource )
+                endif
 
 
+                if IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) is FileSpec var oFs
+                    cTarget := oFs:FullPath
+                else
+                    cTarget := AsString( oFSTarget )
+                endif
 
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbOrderInfo( DBOI_EXPRESSION, "", uOrder, REF uOrdVal )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-	   __DBSSetSelect( dwCurrentWorkArea )
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderInfo )
-	END SEQUENCE
+                aFieldNames := ArrayNew( ALen( aFieldList ) )
+                wLen := ALen( aFieldList )
+                for w := 1 upto wLen
+                    aFieldNames[w] := AsString( aFieldList[w] )
+                next
+                if IsNil( cbForBlock )
+                    cbForBlock := cbStoredForBlock
+                    if IsNil( cbStoredForBlock )
+                        cbStoredForBlock := { || true }
+                    endif
+                endif
+                lRetCode := __DBSDBJOIN( cSource, cTarget, aFieldNames, cbForBlock, self:cRDDName )
+                lRetCode := self:__ProcessConcurrency( true )
+                siSelectionStatus := DBSELECTIONNULL
+                self:Notify( NOTIFYRECORDCHANGE )
 
 
+            else
+                lRetCode := false
+                self:__SetStatusHL ( #Join, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
-	RETURN uOrdVal
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            self:__ProcessConcurrency( false )
+            __DBSSetSelect( dwCurrentWorkArea )
+            lRetCode := false
+        end sequence
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.IndexOrd/*" />
-METHOD IndexOrd( ) AS USUAL
+        DbSetRestoreWorkarea(lRestore)
+        return lRetCode
 
 
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL uOrdVal AS USUAL
+    /// <include file="Rdd.xml" path="doc/DbServer.Locate/*" />
+    method Locate( cbForBlock, cbWhileBlock, uScope )  as logic clipper
+        local uValue as usual
+        local cbKey as usual
+        local nNextCount as longint
+        local lRestOfFile as logic
+        local lRetCode := false as logic
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
+        local oHLTemp as HyperLabel
+        local lRestore	as logic
 
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbOrderInfo( DBOI_NUMBER, "", NIL, REF uOrdVal )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-	   __DBSSetSelect( dwCurrentWorkArea )
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderInfo )
-	END SEQUENCE
+        lRestore	:= DbSetRestoreWorkarea(true)
 
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                if ! IsNil( cbForBlock ) .or. ! IsNil( cbWhileBlock ) .or. ! IsNil( uScope )
+                    if Empty( cbForBlock )
+                        cbForBlock := { || true }
+                    elseif IsString( cbForBlock )
+                        cbForBlock := &( "{ || " + cbForBlock + " } " )
+                    endif
 
 
-	RETURN uOrdVal
+                    if Empty( cbWhileBlock )
+                        cbWhileBlock := { || true }
+                    else
+                        lRestOfFile := true
+                        if IsString( cbWhileBlock )
+                            cbWhileBlock := &( "{ || " + cbWhileBlock + " }" )
+                        endif
+                    endif
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.Info/*" />
-METHOD Info( kInfoType AS LONG, uInfo := NIL AS USUAL) AS USUAL
+                    if ! IsNil( uScope )
+                        if IsNumeric( uScope )
+                            nNextCount := uScope
+                        else
+                            lRestOfFile := uScope
+                        endif
+                    endif
+                    if ! VoDbLocate( cbForBlock,  ;
+                            cbWhileBlock,  ;
+                            nNextCount,  ;
+                            nil,  ;
+                            lRestOfFile )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    lRetCode := VoDbFound( )
 
 
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
+                elseif lActiveScope
+                    lRestOfFile := lStoredRestOfFile
+                    if IsNil( cbStoredWhileBlock )
+                        cbWhileBlock := { || true }
+                    else
+                        cbWhileBlock := cbStoredWhileBlock
+                        lRestOfFile := true
+                    endif
 
 
+                    if ! VoDbLocate( cbStoredForBlock,  ;
+                            cbWhileBlock,  ;
+                            nStoredNextCount,  ;
+                            nil,  ;
+                            lRestOfFile  )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    lRetCode := VoDbFound( )
 
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbInfo( (DWORD) kInfoType, REF uInfo)
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-      __DBSSetSelect( dwCurrentWorkArea )
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #Info )
-	END SEQUENCE
+                elseif lSelectionActive
+                    uValue := uSelectionValue
+                    cbKey := cbSelectionIndexingExpression
+                    if ! VoDbLocate( { || Eval( cbKey ) = uValue },  ;
+                            { || true },  ;
+                            0,  ;
+                            nil,  ;
+                            true  )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    lRetCode := VoDbFound( )
+                    if lRetCode
+                        siSelectionStatus := DBSELECTIONFOUND
+                    else
+                        siSelectionStatus := DBSELECTIONEOF
+                        if ! VoDbGoBottom( )
+                            break ErrorBuild( _VoDbErrInfoPtr( ) )
+                        endif
+                        if ! VoDbSkip( 1 )
+                            break ErrorBuild( _VoDbErrInfoPtr( ) )
+                        endif
+                    endif
+
+
+                else
+                    if ! VoDbLocate( { || true },  ;
+                            { || true },  ;
+                            0,  ;
+                            nil,  ;
+                            false  )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    lRetCode := VoDbFound( )
+                endif
+                self:__ProcessConcurrency( true )
+
 
+            else
+                lRetCode := false
+                self:__SetStatusHL( #Locate, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+                oHLTemp := oHLStatus
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
-	RETURN uInfo
 
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oHLTemp := oHLStatus
+            oErrorInfo := oError
+            self:__ProcessConcurrency( false )
+            __DBSSetSelect( dwCurrentWorkArea )
+            lRetCode := false
+        end sequence
 
-/// <include file="Rdd.xml" path="doc/DbServer.Join/*" />
-METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock ) AS LOGIC CLIPPER
-	LOCAL cSource AS STRING
-	LOCAL cTarget AS STRING
-	LOCAL aFieldNames AS ARRAY
-	LOCAL w AS DWORD
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL wLen AS DWORD
-	LOCAL lRestore	AS LOGIC
 
 
-   lRestore	:= DbSetRestoreWorkarea(TRUE)
 
+        self:__Notify( NOTIFYRECORDCHANGE )
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsObject(oDBSource) .and. __Usual.ToObject(oDBSource) IS DbServer VAR oDb
-				cSource := oDb:Alias
-			ELSE
-				cSource := AsString( oDBSource )
-			ENDIF
 
+        if ! lRetCode .and. ! IsNil( oHLTemp )
+            lErrorFlag := true
+            oHLStatus := oHLTemp
+            if ! IsNil( oError )
+                oErrorInfo := oError
+            else
+                oErrorInfo := null_object
+            endif
+        endif
 
-			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
-				cTarget := oFs:FullPath
-			ELSE
-				cTarget := AsString( oFSTarget )
-			ENDIF
 
+        DbSetRestoreWorkarea(lRestore)
+        return lRetCode
 
-			aFieldNames := ArrayNew( ALen( aFieldList ) )
-			wLen := ALen( aFieldList )
-			FOR w := 1 UPTO wLen
-				aFieldNames[w] := AsString( aFieldList[w] )
-			NEXT
-			IF IsNil( cbForBlock )
-				cbForBlock := cbStoredForBlock
-				IF IsNil( cbStoredForBlock )
-					cbStoredForBlock := { || TRUE }
-				ENDIF
-			ENDIF
-			lRetCode := __DBSDBJOIN( cSource, cTarget, aFieldNames, cbForBlock, SELF:cRDDName )
-			lRetCode := SELF:__ProcessConcurrency( TRUE )
-			siSelectionStatus := DBSELECTIONNULL
-			SELF:Notify( NOTIFYRECORDCHANGE )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.LockCurrentRecord/*" />
+    method LockCurrentRecord( ) as logic strict
+        return self:RLock( -1 )
 
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL ( #Join, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.LockSelection/*" />
+    method LockSelection( )  as logic
+        local uCurrentRecord as usual
+        local uValue as usual
+        local cbKey as usual
+        local lRetCode := false as logic
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if lSelectionActive
+                if self:Notify( NOTIFYINTENTTOMOVE )
+                    uCurrentRecord := VoDbRecno( )
+                    uValue := uSelectionValue
+                    cbKey := cbSelectionIndexingExpression
+                    if VoDbSeek( uSelectionValue, false )
+                        lRetCode := self:__DbServerEval( { || VoDbRlock( VoDbRecno( ) ) },  ;
+                            nil,  ;
+                            { || Eval( cbKey ) = uValue },  ;
+                            nil,  nil,  true , false, false)
+                        if ! lRetCode .or. ! VoDbGoto( uCurrentRecord )
+                            break ErrorBuild( _VoDbErrInfoPtr( ) )
+                        endif
+                    else
+                        self:__SetStatusHL( #LockSelection, EG_BOUND,  ;
+                            __CavoStr( __CAVOSTR_DBFCLASS_SELECTIVENOTFOUND ) )
+                        lRetCode := false
+                    endif
+                else
+                    lRetCode := false
+                    self:__SetStatusHL( #LockSelection,  ;
+                        __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                        __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+                endif
+            else
+                lRetCode := VoDbFlock( )
+                if ! lRetCode
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+            endif
+            self:__OptimisticFlushNoLock( )
+            __DBSSetSelect( dwCurrentWorkArea )
 
-	DbSetRestoreWorkarea(lRestore)
-	RETURN lRetCode
 
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            lRetCode := false
+        end sequence
 
-/// <include file="Rdd.xml" path="doc/DbServer.Locate/*" />
-METHOD Locate( cbForBlock, cbWhileBlock, uScope )  AS LOGIC CLIPPER
-	LOCAL uValue AS USUAL
-	LOCAL cbKey AS USUAL
-	LOCAL nNextCount AS LONGINT
-	LOCAL lRestOfFile AS LOGIC
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oHLTemp AS HyperLabel
-	LOCAL lRestore	AS LOGIC
 
 
-	lRestore	:= DbSetRestoreWorkarea(TRUE)
 
+        return lRetCode
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
-				IF Empty( cbForBlock )
-					cbForBlock := { || TRUE }
-				ELSEIF IsString( cbForBlock )
-					cbForBlock := &( "{ || " + cbForBlock + " } " )
-				ENDIF
 
+    /// <include file="Rdd.xml" path="doc/DbServer.NoIVarGet/*" />
+    method NoIVarGet( symFieldName as usual) as usual
 
-				IF Empty( cbWhileBlock )
-					cbWhileBlock := { || TRUE }
-				ELSE
-					lRestOfFile := TRUE
-					IF IsString( cbWhileBlock )
-						cbWhileBlock := &( "{ || " + cbWhileBlock + " }" )
-					ENDIF
-				ENDIF
 
+        local dwCurrentWorkArea := 0 as dword
+        local uRetVal := nil as usual
+        local oError as usual
+        local wPos as dword
 
-				IF ! IsNil( uScope )
-					IF IsNumeric( uScope )
-						nNextCount := uScope
-					ELSE
-						lRestOfFile := uScope
-					ENDIF
-				ENDIF
-				IF ! VoDbLocate( cbForBlock,  ;
-					cbWhileBlock,  ;
-					nNextCount,  ;
-					NIL,  ;
-					lRestOfFile )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				lRetCode := VoDbFound( )
 
 
-			ELSEIF lActiveScope
-				lRestOfFile := lStoredRestOfFile
-				IF IsNil( cbStoredWhileBlock )
-					cbWhileBlock := { || TRUE }
-				ELSE
-					cbWhileBlock := cbStoredWhileBlock
-					lRestOfFile := TRUE
-				ENDIF
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            wPos:= FieldPosSym( symFieldName )
+            if wPos > 0  .and. nEffectiveCCMode == ccOptimistic .and. lCCOptimisticRecChg .and. ;
+                    aCurrentBuffer[BUFFER_IS_CHANGED, wPos] .and. ! aOriginalBuffer[BUFFER_IS_BLOB, wPos]
 
-				IF ! VoDbLocate( cbStoredForBlock,  ;
-					cbWhileBlock,  ;
-					nStoredNextCount,  ;
-					NIL,  ;
-					lRestOfFile  )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				lRetCode := VoDbFound( )
 
+                uRetVal := aCurrentBuffer[BUFFER_VALUE, wPos]
+            else
+                if ! VoDbFieldGet( wPos, ref uRetVal )
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #symFieldName )
+        end sequence
 
-			ELSEIF lSelectionActive
-				uValue := uSelectionValue
-				cbKey := cbSelectionIndexingExpression
-				IF ! VoDbLocate( { || Eval( cbKey ) = uValue },  ;
-					{ || TRUE },  ;
-					0,  ;
-					NIL,  ;
-					TRUE  )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				lRetCode := VoDbFound( )
-				IF lRetCode
-					siSelectionStatus := DBSELECTIONFOUND
-				ELSE
-					siSelectionStatus := DBSELECTIONEOF
-					IF ! VoDbGoBottom( )
-						BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-					ENDIF
-					IF ! VoDbSkip( 1 )
-						BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-					ENDIF
-				ENDIF
 
 
-			ELSE
-				IF ! VoDbLocate( { || TRUE },  ;
-					{ || TRUE },  ;
-					0,  ;
-					NIL,  ;
-					FALSE  )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				lRetCode := VoDbFound( )
-			ENDIF
-			SELF:__ProcessConcurrency( TRUE )
 
+        return uRetVal
 
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL( #Locate, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-			oHLTemp := oHLStatus
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.NoIVarPut/*" />
+    method NoIVarPut( symFieldName as usual, uValue as usual ) as usual
+        local uRetVal := nil as usual
+        local uError as usual
+        local dwCurrentWorkArea := 0 as dword
+        local wPos as dword
+        local uIsRlock as usual
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oHLTemp := oHLStatus
-		oErrorInfo := oError
-		SELF:__ProcessConcurrency( FALSE )
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if nEffectiveCCMode == ccOptimistic .and. VoDbRecno() <= VoDbLastRec()
+                if ! VoDbRecordInfo( DBRI_LOCKED, 0, ref uIsRlock )
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
 
 
+                if uIsRlock
+                    uRetVal := FieldPutSym( symFieldName, uValue )
+                else
+                    wPos := FieldPosSym( symFieldName )
+                    //type checking for optimistic locking
+                    if ! __CheckFieldType(ref uValue, aStruct[wPos], ref uError)
+                        ASize(uError, 3)
+                        break DbError{self, #NoIVarPut, uError[1], VO_Sprintf(uError[2], "Field " + aStruct[wPos,DBS_NAME], uError[3]), uValue, "uValue"}
+                    endif
+                    aCurrentBuffer[BUFFER_VALUE, wPos]   := uRetVal := uValue
+                    aCurrentBuffer[BUFFER_IS_CHANGED, wPos] := true
+                    lCCOptimisticRecChg := true
+                endif
+            else
+                uRetVal := FieldPutSym( symFieldName, uValue )
+            endif
+            self:Notify( Notify.FieldChange, symFieldName )
+            __DBSSetSelect( dwCurrentWorkArea )
 
-	SELF:__Notify( NOTIFYRECORDCHANGE )
 
+        recover using uError
+            oErrorInfo := uError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #symFieldName )
+        end sequence
 
-	IF ! lRetCode .AND. ! IsNil( oHLTemp )
-		lErrorFlag := TRUE
-		oHLStatus := oHLTemp
-		IF ! IsNil( oError )
-			oErrorInfo := oError
-		ELSE
-			oErrorInfo := NULL_OBJECT
-		ENDIF
-	ENDIF
 
 
-	DbSetRestoreWorkarea(lRestore)
-	RETURN lRetCode
 
+        return uRetVal
 
-/// <include file="Rdd.xml" path="doc/DbServer.LockCurrentRecord/*" />
-method LockCurrentRecord( ) as logic strict
-    return self:RLock( -1 )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.Notify/*" />
+    method Notify( kNotification as long, uDescription := nil as usual) as usual
 
-/// <include file="Rdd.xml" path="doc/DbServer.LockSelection/*" />
-METHOD LockSelection( )  AS LOGIC
-	LOCAL uCurrentRecord AS USUAL
-	LOCAL uValue AS USUAL
-	LOCAL cbKey AS USUAL
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
 
+        local dwCurrentWorkArea := 0 as dword
+        local uVOVal, uVoVal2 as usual
+        local uRetValue as usual
+        //	STATIC lNITMStart := FALSE AS LOGIC
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF lSelectionActive
-			IF SELF:Notify( NOTIFYINTENTTOMOVE )
-				uCurrentRecord := VoDbRecno( )
-				uValue := uSelectionValue
-				cbKey := cbSelectionIndexingExpression
-				IF VoDbSeek( uSelectionValue, FALSE )
-					lRetCode := SELF:__DbServerEval( { || VoDbRlock( VoDbRecno( ) ) },  ;
-						NIL,  ;
-						{ || Eval( cbKey ) = uValue },  ;
-						NIL,  NIL,  TRUE , FALSE, FALSE)
-					IF ! lRetCode .OR. ! VoDbGoto( uCurrentRecord )
-						BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-					ENDIF
-				ELSE
-					SELF:__SetStatusHL( #LockSelection, EG_BOUND,  ;
-						__CavoStr( __CAVOSTR_DBFCLASS_SELECTIVENOTFOUND ) )
-					lRetCode := FALSE
-				ENDIF
-			ELSE
-				lRetCode := FALSE
-				SELF:__SetStatusHL( #LockSelection,  ;
-					__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-					__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-			ENDIF
-		ELSE
-			lRetCode := VoDbFlock( )
-			IF ! lRetCode
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
-		ENDIF
-		SELF:__OptimisticFlushNoLock( )
-		__DBSSetSelect( dwCurrentWorkArea )
 
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		lRetCode := FALSE
-	END SEQUENCE
 
+        uRetValue := true
+        do case
+        case kNotification <= NOTIFYCOMPLETION
+            if siSuspendNotification == 0 .and. nClients > 0
+                VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+                foreach oClient as usual in aClients
+                    Send(oClient,#Notify, kNotification, uDescription )
+                next
+                VoDbSetSelect( longint(dwCurrentWorkArea ) )
+            endif
 
 
+        case kNotification == NOTIFYINTENTTOMOVE
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            uRetValue := true
+            if siSuspendNotification == 0
+                if nClients > 0
+                    foreach oClient as usual in aClients
+                        uRetValue := Send(oClient,#Notify, kNotification, uDescription )
+                        if ! uRetValue
+                            exit
+                        endif
+                    next
+                endif
 
-	RETURN lRetCode
 
+                if uRetValue .and. lRelationsActive
+                    foreach oChild as usual in aRelationChildren
+                        uRetValue := Send(oChild, #Notify, kNotification , uDescription)
+                        if ! uRetValue
+                            exit
+                        endif
+                    next  // nChild
+                endif
+            else
+                foreach oChild as usual in aRelationChildren
+                    Send(oChild, #__NotifyBufferFlush)
+                next  // nChild
+            endif
 
-/// <include file="Rdd.xml" path="doc/DbServer.NoIVarGet/*" />
-METHOD NoIVarGet( symFieldName AS USUAL) AS USUAL
 
+            if uRetValue
+                VoDbSetSelect( longint( wWorkArea ) )
+                self:__OptimisticFlush()
+            endif
+            VoDbSetSelect( longint(dwCurrentWorkArea ) )
+
+
+        case kNotification <= NOTIFYFILECHANGE
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+
+
+            self:__InitRecordBuf()
+
+
+            if siSuspendNotification == 0
+                if lRelationsActive
+                    foreach oChild as usual in aRelationChildren
+                        Send(oChild, #Notify, NOTIFYRELATIONCHANGE)
+                    next
+                endif
+                if nClients > 0
+                    foreach oClient as usual in aClients
+                        Send(oClient, #Notify, kNotification, uDescription )
+                    next
+                endif
+            endif
+            VoDbSetSelect( longint(dwCurrentWorkArea ))
+
+
+        case kNotification == NOTIFYRELATIONCHANGE
+            if siSuspendNotification == 0
+                if lSelectionActive
+                    if uDescription == nil .or. uDescription == DBSELECTIONNULL
+                        VoDbSelect( wSelectionWorkArea, out dwCurrentWorkArea )
+                        uSelectionValue := Eval( cbSelectionParentExpression )
+                        VoDbSetSelect( longint( wWorkArea ) )
+                        if VoDbEof( ) .or. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
+                            siSelectionStatus := DBSELECTIONEMPTY
+                        else
+                            siSelectionStatus := DBSELECTIONNULL
+                        endif
+                    else
+                        VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+                        siSelectionStatus := DBSELECTIONEMPTY
+                    endif
 
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL uRetVal := NIL AS USUAL
-	LOCAL oError AS USUAL
-	LOCAL wPos AS DWORD
 
+                elseif lCDXSelectionActive
+                    VoDbSelect( wSelectionWorkArea, out dwCurrentWorkArea )
+                    uVOVal := uVoVal2 := Eval( cbSelectionParentExpression )
+                    VoDbSetSelect( longint(wWorkArea ) )
+                    VoDbOrderInfo( DBOI_SCOPETOP	 , "", nil, ref uVOVal )
+                    VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", nil, ref uVoVal2 )
+                    if ! VoDbGoTop()
+                        VoDbSetSelect( longint(dwCurrentWorkArea ))
+                        break ErrorBuild(_VoDbErrInfoPtr())
+                    endif
+                else
+                    VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+                endif
 
 
+                self:__InitRecordBuf()
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		wPos:= FieldPosSym( symFieldName )
-		IF wPos > 0  .AND. nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND. ;
-			aCurrentBuffer[BUFFER_IS_CHANGED, wPos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wPos]
 
+                if nClients > 0
+                    foreach oClient as usual in aClients
+                        Send(oClient, #Notify, NOTIFYFILECHANGE)
+                    next
+                endif
+                if lRelationsActive
+                    foreach oChild as usual in aRelationChildren
+                        Send(oChild, #Notify, NOTIFYRELATIONCHANGE, siSelectionStatus)
+                    next
+                endif
 
-			uRetVal := aCurrentBuffer[BUFFER_VALUE, wPos]
-		ELSE
-			IF ! VoDbFieldGet( wPos, REF uRetVal )
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
-		ENDIF
-	   __DBSSetSelect( dwCurrentWorkArea )
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #symFieldName )
-	END SEQUENCE
 
+                VoDbSetSelect( longint(dwCurrentWorkArea ) )
+            endif
 
 
+        case kNotification == NOTIFYCLEARRELATION
+            lSelectionActive 	:= false
+            oDBSelectionParent := null_object
+            wSelectionWorkArea := 0
+            cbSelectionParentExpression := nil
+            cbSelectionIndexingExpression := nil
+            if lCDXSelectionActive
+                lCDXSelectionActive := false
+                VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+                uVOVal := nil
+                VoDbOrderInfo( DBOI_SCOPETOPCLEAR, "", nil, ref uVOVal )
+                uVOVal := nil
+                VoDbOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", nil, ref uVOVal )
+                VoDbSetSelect( longint(dwCurrentWorkArea ) )
+            endif
 
-	RETURN uRetVal
 
+        otherwise
+            self:__InitRecordBuf()
+            if siSuspendNotification == 0
+                VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+                if nClients > 0
+                    foreach oClient as usual in aClients
+                        Send(oClient, #Notify, kNotification )
+                    next
+                endif
+                if lRelationsActive
+                    foreach oChild as usual in aRelationChildren
+                        Send(oChild, #Notify, kNotification )
+                    next
+                endif
+                VoDbSetSelect( longint(dwCurrentWorkArea ))
+            endif
+        endcase
 
-/// <include file="Rdd.xml" path="doc/DbServer.NoIVarPut/*" />
-METHOD NoIVarPut( symFieldName AS USUAL, uValue AS USUAL ) AS USUAL
-	LOCAL uRetVal := NIL AS USUAL
-	LOCAL uError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL wPos AS DWORD
-	LOCAL uIsRlock AS USUAL
 
+        return uRetValue
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF nEffectiveCCMode == ccOptimistic .AND. VoDbRecno() <= VoDbLastRec()
-			IF ! VoDbRecordInfo( DBRI_LOCKED, 0, REF uIsRlock )
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderDescend/*" />
+    method OrderDescend( uOrder as usual, oFSIndex as FileSpec, lNew := nil as usual) as long
+        return self:OrderDescend(uOrder, oFSIndex:FullPath, lNew)
 
-			IF uIsRlock
-				uRetVal := FieldPutSym( symFieldName, uValue )
-			ELSE
-				wPos := FieldPosSym( symFieldName )
-                //type checking for optimistic locking
-                IF ! __CheckFieldType(REF uValue, aStruct[wPos], REF uError)
-                    ASize(uError, 3)
-                    BREAK DbError{SELF, #NoIVarPut, uError[1], VO_Sprintf(uError[2], "Field " + aStruct[wPos,DBS_NAME], uError[3]), uValue, "uValue"}
-                ENDIF
-                aCurrentBuffer[BUFFER_VALUE, wPos]   := uRetVal := uValue
-                aCurrentBuffer[BUFFER_IS_CHANGED, wPos] := TRUE
-                lCCOptimisticRecChg := TRUE
-			ENDIF
-		ELSE
-			uRetVal := FieldPutSym( symFieldName, uValue )
-		ENDIF
-		SELF:Notify( Notify.FieldChange, symFieldName )
-		__DBSSetSelect( dwCurrentWorkArea )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderDescend/*" />
+    method OrderDescend( uOrder as usual, cIndex := "" as string, lNew := nil as usual) as long
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
 
-	RECOVER USING uError
-		oErrorInfo := uError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #symFieldName )
-	END SEQUENCE
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            VoDbOrderInfo( DBOI_ISDESC, cIndex, uOrder, ref lNew )
+            __DBSSetSelect( dwCurrentWorkArea )
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderDescend )
+            lNew := nil
+        end sequence
 
 
 
-	RETURN uRetVal
 
+        return lNew
 
-/// <include file="Rdd.xml" path="doc/DbServer.Notify/*" />
-METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderInfo/*" />
+    method OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) as usual clipper
 
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL uVOVal, uVoVal2 AS USUAL
-	LOCAL uRetValue AS USUAL
-	//	STATIC lNITMStart := FALSE AS LOGIC
 
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
+        local cTarget as string
+        local lKeyVal as logic
 
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) is FileSpec var oFS
+                cTarget := oFS:FullPath
+            else
+                if IsString( oFSIndex )
+                    cTarget := oFSIndex
+                endif
+            endif
 
-	uRetValue := TRUE
-	DO CASE
-	CASE kNotification <= NOTIFYCOMPLETION
-		IF siSuspendNotification == 0 .AND. nClients > 0
-			VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-            FOREACH oClient AS USUAL IN aClients
-                Send(oClient,#Notify, kNotification, uDescription )
-            NEXT
-			VoDbSetSelect( LONGINT(dwCurrentWorkArea ) )
-		ENDIF
 
+            if IsString(uOrder)
+                if Len(uOrder) == 0
+                    uOrder := nil
+                endif
+            endif
 
-	CASE kNotification == NOTIFYINTENTTOMOVE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		uRetValue := TRUE
-		IF siSuspendNotification == 0
-			IF nClients > 0
-                FOREACH oClient AS USUAL IN aClients
-                    uRetValue := Send(oClient,#Notify, kNotification, uDescription )
-                    IF ! uRetValue
-                        EXIT
-                    ENDIF
-                NEXT
-			ENDIF
 
+            if kOrderInfoType == DBOI_KEYVAL
+                lKeyVal := .t.
+                kOrderInfoType := DBOI_EXPRESSION
+            endif
 
-			IF uRetValue .AND. lRelationsActive
-				FOREACH oChild AS USUAL IN aRelationChildren
-                    uRetValue := Send(oChild, #Notify, kNotification , uDescription)
-                    IF ! uRetValue
-						EXIT
-					ENDIF
-				NEXT  // nChild
-			ENDIF
-		ELSE
-			FOREACH oChild AS USUAL IN aRelationChildren
-                Send(oChild, #__NotifyBufferFlush)
-			NEXT  // nChild
-		ENDIF
 
+            if ! VoDbOrderInfo(kOrderInfoType, cTarget, uOrder, ref uOrdVal)
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
 
-		IF uRetValue
-			VoDbSetSelect( LONGINT( wWorkArea ) )
-			SELF:__OptimisticFlush()
-		ENDIF
-		VoDbSetSelect( LONGINT(dwCurrentWorkArea ) )
 
+            if lKeyVal
+                if IsString(uOrdVal)
+                    if Len(uOrdVal) == 0
+                        uOrdVal := nil
+                    else
+                        uOrdVal := &(uOrdVal)
+                    endif
+                endif
+            endif
 
-	CASE kNotification <= NOTIFYFILECHANGE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
+            __DBSSetSelect( dwCurrentWorkArea )
 
-		SELF:__InitRecordBuf()
 
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderInfo )
+        end sequence
 
-		IF siSuspendNotification == 0
-			IF lRelationsActive
-				FOREACH oChild AS USUAL IN aRelationChildren
-                    Send(oChild, #Notify, NOTIFYRELATIONCHANGE)
-				NEXT
-			ENDIF
-			IF nClients > 0
-				FOREACH oClient AS USUAL IN aClients
-                    Send(oClient, #Notify, kNotification, uDescription )
-				NEXT
-			ENDIF
-		ENDIF
-		VoDbSetSelect( LONGINT(dwCurrentWorkArea ))
 
 
-	CASE kNotification == NOTIFYRELATIONCHANGE
-		IF siSuspendNotification == 0
-			IF lSelectionActive
-				IF uDescription == NIL .OR. uDescription == DBSELECTIONNULL
-					VoDbSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )
-					uSelectionValue := Eval( cbSelectionParentExpression )
-					VoDbSetSelect( LONGINT( wWorkArea ) )
-					IF VoDbEof( ) .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
-						siSelectionStatus := DBSELECTIONEMPTY
-					ELSE
-						siSelectionStatus := DBSELECTIONNULL
-					ENDIF
-				ELSE
-					VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-					siSelectionStatus := DBSELECTIONEMPTY
-				ENDIF
 
+        return uOrdVal
 
-			ELSEIF lCDXSelectionActive
-				VoDbSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )
-				uVOVal := uVoVal2 := Eval( cbSelectionParentExpression )
-				VoDbSetSelect( LONGINT(wWorkArea ) )
-				VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF uVOVal )
-				VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF uVoVal2 )
-				IF ! VoDbGoTop()
-					VoDbSetSelect( LONGINT(dwCurrentWorkArea ))
-					BREAK ErrorBuild(_VoDbErrInfoPtr())
-				ENDIF
-			ELSE
-				VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-			ENDIF
 
 
-			SELF:__InitRecordBuf()
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderIsUnique/*" />
+    method OrderIsUnique( uOrder as usual, oFSIndex as FileSpec) as long
+        return self:OrderIsUnique(uOrder, oFSIndex:FullPath)
 
-			IF nClients > 0
-                FOREACH oClient AS USUAL IN aClients
-                    Send(oClient, #Notify, NOTIFYFILECHANGE)
-				NEXT
-			ENDIF
-			IF lRelationsActive
-                FOREACH oChild AS USUAL IN aRelationChildren
-                    Send(oChild, #Notify, NOTIFYRELATIONCHANGE, siSelectionStatus)
-				NEXT
-			ENDIF
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderIsUnique/*" />
+    method OrderIsUnique( uOrder as usual, cTarget := "" as string) as long
+        local dwCurrentWorkArea := 0 as dword
+        local lRetVal as usual
+        local oError as usual
 
-			VoDbSetSelect( LONGINT(dwCurrentWorkArea ) )
-		ENDIF
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbOrderInfo( DBOI_UNIQUE, cTarget, uOrder, ref lRetVal )
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
-	CASE kNotification == NOTIFYCLEARRELATION
-		lSelectionActive 	:= FALSE
-		oDBSelectionParent := NULL_OBJECT
-		wSelectionWorkArea := 0
-		cbSelectionParentExpression := NIL
-		cbSelectionIndexingExpression := NIL
-		IF lCDXSelectionActive
-			lCDXSelectionActive := FALSE
-			VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-			uVOVal := NIL
-			VoDbOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF uVOVal )
-			uVOVal := NIL
-			VoDbOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", NIL, REF uVOVal )
-			VoDbSetSelect( LONGINT(dwCurrentWorkArea ) )
-		ENDIF
 
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderIsUnique )
+        end sequence
 
-	OTHERWISE
-		SELF:__InitRecordBuf()
-		IF siSuspendNotification == 0
-			VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-			IF nClients > 0
-                FOREACH oClient AS USUAL IN aClients
-                    Send(oClient, #Notify, kNotification )
-                NEXT
-			ENDIF
-			IF lRelationsActive
-                FOREACH oChild AS USUAL IN aRelationChildren
-                    Send(oChild, #Notify, kNotification )
-                NEXT
-			ENDIF
-			VoDbSetSelect( LONGINT(dwCurrentWorkArea ))
-		ENDIF
-	ENDCASE
 
 
-	RETURN uRetValue
 
+        return lRetVal
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderDescend/*" />
-METHOD OrderDescend( uOrder AS USUAL, oFSIndex AS FileSpec, lNew := NIL AS USUAL) AS LONG
-    RETURN SELF:OrderDescend(uOrder, oFSIndex:FullPath, lNew)
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderDescend/*" />
-METHOD OrderDescend( uOrder AS USUAL, cIndex := "" AS STRING, lNew := NIL AS USUAL) AS LONG
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyAdd/*" />
+    method OrderKeyAdd( uOrder as usual, oFSIndex as FileSpec, uKeyValue  := nil as usual) as long
+        return self:OrderKeyAdd(uOrder, oFSIndex:FullPath,uKeyValue)
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		VoDbOrderInfo( DBOI_ISDESC, cIndex, uOrder, REF lNew )
-		__DBSSetSelect( dwCurrentWorkArea )
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderDescend )
-		lNew := NIL
-	END SEQUENCE
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyAdd/*" />
+    method OrderKeyAdd( uOrder as usual, cIndex := "" as string, uKeyValue := nil  as usual) as long
 
 
 
-	RETURN lNew
 
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderInfo/*" />
-METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal ) AS USUAL CLIPPER
 
+        VoDbSelect( wWorkArea, out dwCurrentWorkArea )
 
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL cTarget AS STRING
-	LOCAL lKeyVal AS LOGIC
 
+        lErrorFlag := false
+        begin sequence
+            if ! VoDbOrderInfo( DBOI_KEYADD, cIndex, uOrder, ref uKeyValue )
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
-			cTarget := oFS:FullPath
-		ELSE
-			IF IsString( oFSIndex )
-				cTarget := oFSIndex
-			ENDIF
-		ENDIF
 
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            uKeyValue := false
+        end sequence
 
-		IF IsString(uOrder)
-			IF Len(uOrder) == 0
-				uOrder := NIL
-			ENDIF
-		ENDIF
 
+        __DBSSetSelect( dwCurrentWorkArea )
 
-		IF kOrderInfoType == DBOI_KEYVAL
-			lKeyVal := .T.
-			kOrderInfoType := DBOI_EXPRESSION
-		ENDIF
 
 
-		IF ! VoDbOrderInfo(kOrderInfoType, cTarget, uOrder, REF uOrdVal)
-		   BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
 
+        return uKeyValue
 
-	   IF lKeyVal
-			IF IsString(uOrdVal)
-				IF Len(uOrdVal) == 0
-					uOrdVal := NIL
-				ELSE
-					uOrdVal := &(uOrdVal)
-				ENDIF
-			ENDIF
-		ENDIF
 
 
-      __DBSSetSelect( dwCurrentWorkArea )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyCount/*" />
+    method OrderKeyCount( uOrder as usual, oFSIndex as FileSpec) as long
+        return self:OrderKeyCount(uOrder, oFSIndex:FullPath)
 
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderInfo )
-	END SEQUENCE
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyCount/*" />
+    method OrderKeyCount( uOrder as usual, cIndex := "" as string) as long
+        local dwCurrentWorkArea := 0 as dword
+        local uRetVal := nil as usual
+        local oError as usual
 
 
 
-	RETURN uOrdVal
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbOrderInfo( DBOI_KEYCOUNT, cIndex, uOrder, ref uRetVal )
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderKeyCount )
+            uRetVal := nil
+        end sequence
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderIsUnique/*" />
-METHOD OrderIsUnique( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
-    RETURN SELF:OrderIsUnique(uOrder, oFSIndex:FullPath)
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderIsUnique/*" />
-METHOD OrderIsUnique( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL lRetVal AS USUAL
-	LOCAL oError AS USUAL
 
+        return uRetVal
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbOrderInfo( DBOI_UNIQUE, cTarget, uOrder, REF lRetVal )
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyDel/*" />
+    method OrderKeyDel( uOrder as usual, oFSIndex as FileSpec) as long
+        return self:OrderKeyDel(uOrder, oFSIndex:FullPath)
 
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderIsUnique )
-	END SEQUENCE
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyDel/*" />
+    method OrderKeyDel( uOrder as usual, cIndex := "" as string) as long
+        local dwCurrentWorkArea := 0 as dword
+        local lRetCode as usual
+        local oError as usual
 
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbOrderInfo( DBOI_KEYDELETE, cIndex, uOrder, ref lRetCode )
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
 
-	RETURN lRetVal
 
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            lRetCode := false
+        end sequence
 
 
+        __DBSSetSelect( dwCurrentWorkArea )
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyAdd/*" />
-METHOD OrderKeyAdd( uOrder AS USUAL, oFSIndex AS FileSpec, uKeyValue  := NIL AS USUAL) AS LONG
-    RETURN SELF:OrderKeyAdd(uOrder, oFSIndex:FullPath,uKeyValue)
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyAdd/*" />
-METHOD OrderKeyAdd( uOrder AS USUAL, cIndex := "" AS STRING, uKeyValue := NIL  AS USUAL) AS LONG
 
+        return lRetCode
 
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyGoTo/*" />
+    method OrderKeyGoTo( nKeyNo as long) as logic
+        local lRetCode := false as logic
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
 
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
 
 
-	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                if IsNil( nKeyNo )
+                    nKeyNo := 1
+                endif
+                if IsNumeric(nKeyNo)
+                    if ! VoDbGoTop()
+                        break ErrorBuild(_VoDbErrInfoPtr())
+                    endif
+                    if ! VoDbSkip(nKeyNo-1L)
+                        break ErrorBuild(_VoDbErrInfoPtr())
+                    endif
+                    lRetCode := true
+                endif
+                if lRetCode
+                    lRetCode := self:__ProcessConcurrency( true )
+                endif
+                self:Notify( NOTIFYRECORDCHANGE )
+            else
+                lRetCode := false
+                self:__SetStatusHL( #OrderKeyGoTo,  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		IF ! VoDbOrderInfo( DBOI_KEYADD, cIndex, uOrder, REF uKeyValue )
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
 
+        recover using oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            lRetCode := false
+        end sequence
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		uKeyValue := FALSE
-	END SEQUENCE
 
 
-   __DBSSetSelect( dwCurrentWorkArea )
 
+        return lRetCode
 
 
 
-	RETURN uKeyValue
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyNo/*" />
+    method OrderKeyNo( uOrder as usual, oFSIndex as FileSpec) as long
+        return self:OrderKeyNo(uOrder, oFSIndex:FullPath)
 
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderKeyNo/*" />
+    method OrderKeyNo( uOrder as usual, cIndex := "" as string) as long
+        //
+        local dwCurrentWorkArea := 0 as dword
+        local uRetVal := nil as usual
+        local oError as usual
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyCount/*" />
-METHOD OrderKeyCount( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
-    RETURN SELF:OrderKeyCount(uOrder, oFSIndex:FullPath)
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if ! VoDbOrderInfo( DBOI_POSITION, cIndex, uOrder, ref uRetVal )
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyCount/*" />
-METHOD OrderKeyCount( uOrder AS USUAL, cIndex := "" AS STRING) AS LONG
-    LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL uRetVal := NIL AS USUAL
-	LOCAL oError AS USUAL
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderKeyNo )
+            uRetVal := 0
+        end sequence
 
 
 
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbOrderInfo( DBOI_KEYCOUNT, cIndex, uOrder, REF uRetVal )
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
+        return uRetVal
 
 
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderKeyCount )
-		uRetVal := NIL
-	END SEQUENCE
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderScope/*" />
+    method OrderScope( nScope := TOPSCOPE as long, uValue := nil as usual) as usual
 
 
+        local dwCurrentWorkArea := 0 as dword
+        local oError as usual
+        local n as dword
 
 
-	RETURN uRetVal
+        lErrorFlag := false
+        begin sequence
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyDel/*" />
-METHOD OrderKeyDel( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
-    RETURN SELF:OrderKeyDel(uOrder, oFSIndex:FullPath)
+            if nScope == TOPSCOPE
+                n := DBOI_SCOPETOP
+                if IsNil( uValue )
+                    n := DBOI_SCOPETOPCLEAR
+                endif
+            else
+                n := DBOI_SCOPEBOTTOM
+                if IsNil( uValue )
+                    n := DBOI_SCOPEBOTTOMCLEAR
+                endif
+            endif
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyDel/*" />
-METHOD OrderKeyDel( uOrder AS USUAL, cIndex := "" AS STRING) AS LONG
-    LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL lRetCode AS USUAL
-	LOCAL oError AS USUAL
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            self:__OptimisticFlush()
+            if ! VoDbOrderInfo( n, "", nil, ref uValue )
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
+            if ! __DBSGoTop(self:nRetries)
+                break ErrorBuild(_VoDbErrInfoPtr())
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Notify( NOTIFYFILECHANGE )
 
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbOrderInfo( DBOI_KEYDELETE, cIndex, uOrder, REF lRetCode )
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
+        recover using oError
+            oErrorInfo := oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            self:Error( oErrorInfo, #OrderScope )
+            uValue := nil
+        end sequence
 
 
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		lRetCode := FALSE
-	END SEQUENCE
 
 
-	__DBSSetSelect( dwCurrentWorkArea )
+        return uValue
 
 
+    /// <include file="Rdd.xml" path="doc/DbServer.OrderSkipUnique/*" />
+    method OrderSkipUnique( nDirection as usual)  as logic
+        local lRetCode := false as logic
+        local oError as usual
+        local dwCurrentWorkArea := 0 as dword
 
 
-	RETURN lRetCode
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            if self:Notify( NOTIFYINTENTTOMOVE )
+                lRetCode := VoDbOrderInfo( DBOI_SKIPUNIQUE, "", nil, ref nDirection )
+                if lRetCode
+                    lRetCode := self:__ProcessConcurrency( true )
+                endif
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyGoTo/*" />
-METHOD OrderKeyGoTo( nKeyNo AS LONG) AS LOGIC
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
+                self:Notify( NOTIFYRECORDCHANGE )
+            else
+                lRetCode := false
+                self:__SetStatusHL( #OrderSkipUnique,  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
+                    __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
+            endif
+            __DBSSetSelect( dwCurrentWorkArea )
 
 
+        recover using oError
+            __DBSSetSelect( dwCurrentWorkArea )
+            oErrorInfo := oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            oErrorInfo := oError
+            lRetCode := false
+        end sequence
 
 
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF IsNil( nKeyNo )
-				nKeyNo := 1
-			ENDIF
-			IF IsNumeric(nKeyNo)
-			   IF ! VoDbGoTop()
-			   	BREAK ErrorBuild(_VoDbErrInfoPtr())
-			   ENDIF
-			   IF ! VoDbSkip(nKeyNo-1L)
-			   	BREAK ErrorBuild(_VoDbErrInfoPtr())
-			   ENDIF
-			   lRetCode := TRUE
-	      ENDIF
-			IF lRetCode
-				lRetCode := SELF:__ProcessConcurrency( TRUE )
-			ENDIF
-			SELF:Notify( NOTIFYRECORDCHANGE )
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL( #OrderKeyGoTo,  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
 
 
-	RECOVER USING oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		lRetCode := FALSE
-	END SEQUENCE
+        return lRetCode
 
 
+    /// <include file="Rdd.xml" path="doc/DbServer.Pack/*" />
+    method Pack( ) as logic
 
 
-	RETURN lRetCode
+        local dwCurrentWorkArea := 0 as dword
+        local lRetCode := false as logic
+        local oError as usual
 
 
+        lErrorFlag := false
+        begin sequence
+            VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+            self:__OptimisticFlush()
+            if (lRetCode := VoDbPack( ))
+                __DBSSetSelect( dwCurrentWorkArea )
+                self:Notify( NOTIFYFILECHANGE )
+            else
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            wLastSelectionRec := 0
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyNo/*" />
-METHOD OrderKeyNo( uOrder AS USUAL, oFSIndex AS FileSpec) AS LONG
-    RETURN SELF:OrderKeyNo(uOrder, oFSIndex:FullPath)
+        recover using oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+            __DBSSetSelect( dwCurrentWorkArea )
+            oErrorInfo := oError
+            lRetCode := false
+        end sequence
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyNo/*" />
-METHOD OrderKeyNo( uOrder AS USUAL, cIndex := "" AS STRING) AS LONG
-	//
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL uRetVal := NIL AS USUAL
-	LOCAL oError AS USUAL
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbOrderInfo( DBOI_POSITION, cIndex, uOrder, REF uRetVal )
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
-
-
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderKeyNo )
-		uRetVal := 0
-	END SEQUENCE
-
-
-
-
-	RETURN uRetVal
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.OrderScope/*" />
-METHOD OrderScope( nScope := TOPSCOPE AS LONG, uValue := NIL AS USUAL) AS USUAL
-
-
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL n AS DWORD
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-
-
-		IF nScope == TOPSCOPE
-			n := DBOI_SCOPETOP
-			IF IsNil( uValue )
-				n := DBOI_SCOPETOPCLEAR
-			ENDIF
-		ELSE
-			n := DBOI_SCOPEBOTTOM
-			IF IsNil( uValue )
-				n := DBOI_SCOPEBOTTOMCLEAR
-			ENDIF
-		ENDIF
-
-
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		SELF:__OptimisticFlush()
-		IF ! VoDbOrderInfo( n, "", NIL, REF uValue )
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
-		IF ! __DBSGoTop(SELF:nRetries)
-			BREAK ErrorBuild(_VoDbErrInfoPtr())
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Notify( NOTIFYFILECHANGE )
-
-
-	RECOVER USING oError
-		oErrorInfo := oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		SELF:Error( oErrorInfo, #OrderScope )
-		uValue := NIL
-	END SEQUENCE
-
-
-
-
-	RETURN uValue
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.OrderSkipUnique/*" />
-METHOD OrderSkipUnique( nDirection AS USUAL)  AS LOGIC
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			lRetCode := VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
-			IF lRetCode
-				lRetCode := SELF:__ProcessConcurrency( TRUE )
-			ENDIF
-
-
-			SELF:Notify( NOTIFYRECORDCHANGE )
-		ELSE
-			lRetCode := FALSE
-			SELF:__SetStatusHL( #OrderSkipUnique,  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
-				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
-		ENDIF
-		__DBSSetSelect( dwCurrentWorkArea )
-
-
-	RECOVER USING oError
-		__DBSSetSelect( dwCurrentWorkArea )
-		oErrorInfo := oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		oErrorInfo := oError
-		lRetCode := FALSE
-	END SEQUENCE
-
-
-
-
-	RETURN lRetCode
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.Pack/*" />
-METHOD Pack( ) AS LOGIC
-
-
-   LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL lRetCode := FALSE AS LOGIC
-	LOCAL oError AS USUAL
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		SELF:__OptimisticFlush()
-		IF (lRetCode := VoDbPack( ))
-			__DBSSetSelect( dwCurrentWorkArea )
-			SELF:Notify( NOTIFYFILECHANGE )
-		ELSE
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-		wLastSelectionRec := 0
-
-
-	RECOVER USING oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-		__DBSSetSelect( dwCurrentWorkArea )
-		oErrorInfo := oError
-		lRetCode := FALSE
-	END SEQUENCE
-
-
-	RETURN lRetCode
-END CLASS
+        return lRetCode
+end class
 
 

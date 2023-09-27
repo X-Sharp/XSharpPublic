@@ -22,9 +22,8 @@ END PROPERTY
 CONSTRUCTOR() STRICT
    SUPER()
    SELF:SetVisualStyle()
-   IF SELF IS IVOControlInitialize
-      LOCAL oIni AS IVOControlInitialize
-      oIni := (IVOControlInitialize) (OBJECT) SELF
+   // When the control a special initialization code, call it
+   IF SELF IS IVOControlInitialize VAR oIni
       oIni:Initialize()
    ENDIF
 

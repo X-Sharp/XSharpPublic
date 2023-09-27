@@ -18,15 +18,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <remarks>
 /// This class stores "metadata" about tables. It can be filled from the database, in code or otherwise
 /// </remarks>
-class SqlTableInfo
-    /// <summary>
-    /// Table Name
-    /// </summary>
-    property Name           as string auto
-    /// <summary>
-    /// List of Columns
-    /// </summary>
-    property Columns        as List<SqlColumnInfo> auto get private set
+class SqlTableInfo inherit SqlDbTableDef
     /// <summary>
     /// List of Indexes and tags
     /// </summary>
@@ -57,8 +49,21 @@ class SqlTableInfo
     /// </summary>
     property MaxRecords     as long auto
 
-    constructor()
-        Columns := List<SqlColumnInfo>{}
+
+    constructor(cName as string)
+        super(cName)
+        MaxRecords := 1000
+        RecnoColumn := "xs_pk"
+        DeletedColumn := "xs_deleted"
+        ServerFilter := ""
+        AllowUpdates := true
+        LongFieldNames := true
+        return
+
+    method CopyFromTd(oTd as SqlDbTableDef) as void
+        self:Columns                := oTd:Columns
+        self:SelectStatement        := oTd:SelectStatement
+        self:EmptySelectStatement   := oTd:EmptySelectStatement
         return
 
     static constructor()
@@ -66,35 +71,6 @@ class SqlTableInfo
     internal static Cache   as Dictionary<string, SqlTableInfo>
 
 
-end class
-
-/// <summary>
-/// The ColumnInfo class.
-/// </summary>
-/// <remarks>
-/// This class stores "metadata" about tables. It can be filled from the database, in code or otherwise
-/// </remarks>
-class SqlColumnInfo
-    /// <summary>
-    /// Column Name
-    /// </summary>
-    property Name       as string auto
-    /// <summary>
-    /// Is the column nullable
-    /// </summary>
-    property Nullable   as logic auto
-    /// <summary>
-    /// Is the column ReadOnly
-    /// </summary>
-    property ReadOnly   as logic auto
-    /// <summary>
-    /// Is the column an identity column
-    /// </summary>
-    property Identity   as logic auto
-    /// <summary>
-    /// Is the column hidden ?
-    /// </summary>
-    property Hidden     as logic auto
 end class
 
 

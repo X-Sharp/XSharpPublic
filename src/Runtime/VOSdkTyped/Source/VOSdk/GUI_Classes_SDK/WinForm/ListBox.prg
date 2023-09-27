@@ -32,8 +32,6 @@ CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBo
     END PROPERTY
 
     NEW PROPERTY Items           AS IList GET SUPER:Items
-    NEW PROPERTY SelectedIndices AS IList GET SUPER:SelectedIndices
-    NEW PROPERTY SelectedItems   AS IList GET SUPER:SelectedItems
 
 #endregion
 	#include "PropControl.xh"
@@ -41,13 +39,10 @@ CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBo
 
 #region Helper methods
 	METHOD Initialize AS VOID STRICT
-		SELF:DisplayMember         := "DisplayValue"
-		SELF:ValueMember           := "Value"
-		SELF:DrawMode              := SWF.DrawMode.OwnerDrawFixed
-		//SELF:DrawItem += SupportFunctions.listBox_DrawItem
-        SELF:oProperties:OnWndProc += OnWndProc
-
-		RETURN
+		self:DisplayMember         := "DisplayValue"
+		self:ValueMember           := "Value"
+        self:oProperties:OnWndProc += OnWndProc
+		return
 
 	METHOD IncrementalSearch( ch AS CHAR) AS LOGIC
 		LOCAL nItem AS INT
@@ -220,11 +215,11 @@ CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseList
 	#include "PropControlStyle.xh"
 
 	METHOD Initialize AS VOID STRICT
-		SELF:DisplayMember	:= "DisplayValue"
-		SELF:ValueMember	:= "Value"
+		self:DisplayMember	:= "DisplayValue"
+		self:ValueMember	:= "Value"
 		SELF:FlatStyle		:= SWF.FlatStyle.System
-		SELF:Margin			:= SWF.Padding{0}
-		RETURN
+        self:Margin			:= SWF.Padding{0}
+		return
 
     NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (SWF.AutoCompleteSource) VALUE
     NEW Property Items as IList GET SuPER:Items
@@ -268,9 +263,6 @@ CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseList
 		SELF:Sorted:= lSorted
 		SELF:Initialize()
 		SELF:SetVisualStyle()
-		SELF:DrawMode := SWF.DrawMode.OwnerDrawFixed
-		//SELF:DrawItem += SupportFunctions.comboBox_DrawItem
-
 
 	method IncrementalSearch( ch as char) as logic
 		LOCAL nItem AS INT

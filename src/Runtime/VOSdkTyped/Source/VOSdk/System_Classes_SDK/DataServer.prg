@@ -274,6 +274,9 @@ METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 		RETURN FALSE
 
 
+/// <include file="Rdd.xml" path="doc/DbServer.GetLookupTable/*" />
+    abstract METHOD GetLookupTable( nMaxRows , uField1 , uField2 , uSearchValue )  AS ARRAY CLIPPER
+
 /// <include file="System.xml" path="doc/DataServer.GoBottom/*" />
 	METHOD GoBottom( ) AS LOGIC STRICT
 		RETURN FALSE

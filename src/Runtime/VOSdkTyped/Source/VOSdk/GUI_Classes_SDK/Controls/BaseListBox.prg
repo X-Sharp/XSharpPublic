@@ -4,118 +4,119 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Collections
-USING System.Collections.Generic
+using System.Collections
+using System.Collections.Generic
 using System.Diagnostics
 
 /// <summary>
 /// Abstract (Empty) Class for compatibility with VO
 /// </summary>
-CLASS BaseListBox INHERIT TextControl
-    PROTECT liSavedCurrentItemNo AS LONG
-    PROTECT sSavedCurrentItem AS STRING
-    PROTECT lIsComboBox		AS LOGIC
-    PROPERTY  IsBusy         AS LOGIC AUTO
+class BaseListBox inherit TextControl
+    protect liSavedCurrentItemNo as long
+    protect sSavedCurrentItem as string
+    property  IsBusy         as logic auto
 
-    PROPERTY __List AS IBaseListBox GET (IBaseListBox ) oCtrl
-
-    /// <exclude />
-    ACCESS __Items AS IList
-        IF oCtrl != NULL
-            RETURN __List:Items
-        ELSE
-            RETURN System.Collections.Generic.List<OBJECT>{}
-        ENDIF
+    property __List as IBaseListBox get (IBaseListBox ) oCtrl
+    property IsComboBox as logic get oCtrl is VOComboBox
+    property IsListBox  as logic get oCtrl is VOListBox
 
     /// <exclude />
-    ACCESS __ComboBox AS VOComboBox
-        IF SELF:lIsComboBox
-            RETURN (VOComboBox) oCtrl
-        ENDIF
-        RETURN NULL_OBJECT
+    access __Items as IList
+        if oCtrl != null
+            return __List:Items
+        else
+            return System.Collections.Generic.List<object>{}
+        endif
 
     /// <exclude />
-    ACCESS __ListBox AS VOListBox
-        IF SELF:lIsComboBox
-            RETURN NULL_OBJECT
-        ENDIF
-        RETURN (VOListBox) oCtrl
+    access __ComboBox as VOComboBox
+        if oCtrl is VOComboBox var oCombo
+            return oCombo
+        endif
+        return null_object
+
+    /// <exclude />
+    access __ListBox as VOListBox
+        if oCtrl is VOListBox var oLB
+            return oLB
+        endif
+        return null_object
 
     /// <include file="Gui.xml" path="doc/BaseListBox.AddItem/*" />
-    METHOD AddItem(uItem , uIndex, uValue   ) AS LONG
+    method AddItem(uItem , uIndex, uValue   ) as long
         // nIndex = 1-based index in collection
-        LOCAL nItem AS LONG
-        LOCAL cItem AS STRING
+        local nItem as long
+        local cItem as string
         local oValue as object
-        LOCAL nIndex AS LONG
-        IF !IsString(uItem)
+        local nIndex as long
+        if !IsString(uItem)
             WCError{#AddItem,#BaseListBox,__WCSTypeError,uItem,1}:Throw()
-        ENDIF
+        endif
         cItem := uItem
-        IF IsLong(uIndex)
+        if IsLong(uIndex)
             nIndex := uIndex
-        ENDIF
+        endif
         oValue := uValue
-        IF nIndex <= 0
-            SELF:__Items:Add(ListBoxItemValue{cItem, oValue})
-            nItem := ((ICollection) SELF:__Items):Count
-        ELSE
-            SELF:__Items:Insert(nIndex-1, ListBoxItemValue{cItem, oValue})
+        if nIndex <= 0
+            self:__Items:Add(ListBoxItemValue{cItem, oValue})
+            nItem := ((ICollection) self:__Items):Count
+        else
+            self:__Items:Insert(nIndex-1, ListBoxItemValue{cItem, oValue})
             nItem := nIndex
-        ENDIF
-        RETURN nItem
+        endif
+        return nItem
     /// <include file="Gui.xml" path="doc/BaseListBox.Clear/*" />
 
-    METHOD Clear() AS VOID
-        IF SELF:ValidateControl()
-            SELF:__Items:Clear()
-        ENDIF
-        RETURN
+    method Clear() as void
+        if self:ValidateControl()
+            self:__Items:Clear()
+        endif
+        return
     /// <include file="Gui.xml" path="doc/BaseListBox.CurrentItem/*" />
-    ACCESS CurrentItem AS STRING
-        RETURN NULL_STRING
+    access CurrentItem as string
+        return null_string
     /// <include file="Gui.xml" path="doc/BaseListBox.CurrentItemNo/*" />
-    ACCESS CurrentItemNo AS LONG
+    access CurrentItemNo as long
         // Returns 1-based index in collection
-        LOCAL nResult AS LONG
-        IF SELF:__IsValid
+        local nResult as long
+        if self:__IsValid
             nResult := __List:SelectedIndex+1
-        ELSE
+        else
             nResult :=liSavedCurrentItemNo
-        ENDIF
-        RETURN nResult
+        endif
+        return nResult
 
     /// <exclude />
-    ASSIGN __CurrentItemNo(nItemNo AS INT)
+    assign __CurrentItemNo(nItemNo as int)
         // Assignes 1-based index in collection
-        IF SELF:__IsValid
-            SELF:IsBusy := TRUE
-            IF SELF:__Items:Count >= nItemNo
+        if self:__IsValid
+            self:IsBusy := true
+            if self:__Items:Count >= nItemNo
                 __List:SelectedIndex := nItemNo-1
-            ENDIF
-            SELF:IsBusy := FALSE
-        ENDIF
+            endif
+            self:IsBusy := false
+        endif
 
-        RETURN
+        return
 
     /// <include file="Gui.xml" path="doc/BaseListBox.CurrentText/*" />
-    ACCESS CurrentText AS STRING
-        IF SELF is ComboBox
-            RETURN SUPER:CurrentText
-        ENDIF
-        RETURN NULL_STRING
+    access CurrentText as string
+        if self is ComboBox
+            return super:CurrentText
+        endif
+        return null_string
 
     /// <include file="Gui.xml" path="doc/BaseListBox.DeleteItem/*" />
-    METHOD DeleteItem(nItemNumber := 0 AS LONG)  AS LOGIC
+    method DeleteItem(nItemNumber := 0 as long)  as logic
         // nItemNumber = 1-based index in collection
-        LOCAL lOk AS LOGIC
-        IF nItemNumber == 0
-            nItemNumber := SELF:CurrentItemNo
-        ENDIF
-        IF nItemNumber <= SELF:ItemCount .and. nItemNumber > 0
-            SELF:__Items:RemoveAt(nItemNumber-1)
-        ENDIF
-        RETURN lOk
+        local lOk as logic
+        if nItemNumber == 0
+            nItemNumber := self:CurrentItemNo
+        endif
+        if nItemNumber <= self:ItemCount .and. nItemNumber > 0
+            self:__Items:RemoveAt(nItemNumber-1)
+        endif
+        return lOk
 
         //METHOD Destroy() AS USUAL STRICT
         //IF oCtrl != NULL_OBJECT
@@ -125,142 +126,141 @@ CLASS BaseListBox INHERIT TextControl
         //RETURN SUPER:Destroy()
 
     /// <include file="Gui.xml" path="doc/BaseListBox.FindItem/*" />
-    METHOD FindItem(cItem AS STRING, lWholeItem := TRUE AS LOGIC, nStart := 0 AS LONG) AS LONG
+    method FindItem(cItem as string, lWholeItem := true as logic, nStart := 0 as long) as long
         // nStart = 1-based index in collection
         // returns 1-based index in collection
-        LOCAL liIndex := LB_ERR AS LONGINT
+        local liIndex := LB_ERR as longint
 
-        IF SELF:__IsValid
-            IF lWholeItem
-                liIndex := SELF:__List:FindStringExact(cItem, nStart-1)
-            ELSE
-                IF Len(cItem) == 0
+        if self:__IsValid
+            if lWholeItem
+                liIndex := self:__List:FindStringExact(cItem, nStart-1)
+            else
+                if Len(cItem) == 0
                     liIndex := -1
-                ELSE
-                    liIndex := SELF:__List:FindString(cItem, nStart-1)
-                ENDIF
-            ENDIF
-        ENDIF
+                else
+                    liIndex := self:__List:FindString(cItem, nStart-1)
+                endif
+            endif
+        endif
 
-        IF (liIndex < 0)
-            RETURN 0
-        ENDIF
+        if (liIndex < 0)
+            return 0
+        endif
 
-        RETURN liIndex+1
+        return liIndex+1
+    method __GetItem(nItemNumber as long) as ListBoxItemValue
+        if nItemNumber > 0 .and. nItemNumber <= self:ItemCount
+            return (ListBoxItemValue) __Items[nItemNumber-1]
+        endif
+        return null_object
+        
     /// <include file="Gui.xml" path="doc/BaseListBox.GetItem/*" />
-    METHOD GetItem(nItemNumber AS LONG, nLength := -1 AS LONG) AS STRING
+    method GetItem(nItemNumber as long, nLength := -1 as long) as string
         // nItemNumber = 1-based index in collection
-        LOCAL oItem AS ListBoxItemValue
-        LOCAL cItem AS STRING
-        IF nItemNumber == 0
-            nItemNumber := SELF:CurrentItemNo
+        local cItem as string
+        if nItemNumber == 0
+            nItemNumber := self:CurrentItemNo
             // Wenn kein aktuelles Item gefunden wurde und es sich um eine editierbare Combobox handelt wird der Text zurückgegeben
-            IF nItemNumber == 0 .AND. SELF:__ComboBox != NULL .AND. SELF:__ComboBox:DropDownStyle == System.Windows.Forms.ComboBoxStyle.DropDown
-                cItem := SELF:__ComboBox:Text
-            ENDIF
-        ENDIF
-        IF nItemNumber > 0 .and. nItemNumber <= SELF:ItemCount
-            oItem := (ListBoxItemValue) __Items[nItemNumber-1]
+            if nItemNumber == 0 .and. self:__ComboBox != null .and. self:__ComboBox:DropDownStyle == System.Windows.Forms.ComboBoxStyle.DropDown
+                cItem := self:__ComboBox:Text
+            endif
+        endif
+        var oItem := self:__GetItem(nItemNumber)
+        if oItem != null_object
             cItem := oItem:DisplayValue
-        ENDIF
-        IF nLength >= 0
+        endif
+        if nLength >= 0
             cItem := cItem:Substring(0, nLength)
-        ENDIF
-        RETURN cItem
+        endif
+        return cItem
 
     /// <include file="Gui.xml" path="doc/BaseListBox.GetItemDisplayValue/*" />
-    METHOD GetItemDisplayValue(nItemNumber AS LONG) AS STRING
+    method GetItemDisplayValue(nItemNumber as long) as string
         // nItemNumber = 1-based index in collection
-        LOCAL oItem AS ListBoxItemValue
-        LOCAL cResult AS STRING
-        IF nItemNumber == 0
-            nItemNumber := SELF:CurrentItemNo
-        ENDIF
-        IF nItemNumber > 0 .and. nItemNumber <= SELF:ItemCount
-            oItem := (ListBoxItemValue) __Items[nItemNumber-1]
+        local cResult as string
+        if nItemNumber == 0
+            nItemNumber := self:CurrentItemNo
+        endif
+        var oItem := self:__GetItem(nItemNumber)
+        if oItem != null_object
             cResult := oItem:DisplayValue
-        ENDIF
-        RETURN cResult
+        endif
+        return cResult
 
     /// <include file="Gui.xml" path="doc/BaseListBox.GetItemValue/*" />
-    METHOD GetItemValue(nItemNumber AS LONG) AS USUAL
+    method GetItemValue(nItemNumber as long) as usual
         // nItemNumber = 1-based index in collection
-        LOCAL oItem AS ListBoxItemValue
-        LOCAL oResult AS OBJECT
-        IF nItemNumber == 0
-            nItemNumber := SELF:CurrentItemNo
-        ENDIF
-        IF nItemNumber > 0 .and. nItemNumber <= SELF:ItemCount
-            oItem := (ListBoxItemValue) __Items[nItemNumber-1]
+        local oResult as object
+        if nItemNumber == 0
+            nItemNumber := self:CurrentItemNo
+        endif
+        var oItem := self:__GetItem(nItemNumber)
+        if oItem != null_object
             oResult := oItem:Value
-        ENDIF
-        RETURN oResult
+        endif
+        return oResult
 
     /// <include file="Gui.xml" path="doc/BaseListBox.SetItemValue/*" />
-    METHOD SetItemValue(nItemNumber AS LONG, oValue AS USUAL ) AS LOGIC
+    method SetItemValue(nItemNumber as long, oValue as usual ) as logic
         // nItemNumber = 1-based index in collection
-        LOCAL oItem AS ListBoxItemValue
-        IF nItemNumber == 0
-            nItemNumber := SELF:CurrentItemNo
-        ENDIF
-        IF nItemNumber > 0 .and. nItemNumber <= SELF:ItemCount
-            oItem := (ListBoxItemValue) __Items[nItemNumber-1]
+        if nItemNumber == 0
+            nItemNumber := self:CurrentItemNo
+        endif
+        var oItem := self:__GetItem(nItemNumber)
+        if oItem != null_object
             oItem:Value := oValue
-            RETURN TRUE
-        ENDIF
-        RETURN FALSE
+            return true
+        endif
+        return false
 
     /// <include file="Gui.xml" path="doc/BaseListBox.ctor/*" />
-    CONSTRUCTOR( oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
-        LOCAL sClassName AS STRING
-        IF SELF is ComboBox
-            SELF:lIsComboBox := TRUE
+    constructor( oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
+        local sClassName as string
+        if self is ComboBox
             sClassName := "combobox"
-        ELSE
+        else
             sClassName := "listbox"
-        ENDIF
-        SUPER(oOwner, xID, oPoint, oDimension, sClassName, kStyle, lDataAware)
-        SELF:SetStyle(_OR(WS_VScroll,WS_Border))
-        RETURN
+        endif
+        super(oOwner, xID, oPoint, oDimension, sClassName, kStyle, lDataAware)
+        self:SetStyle(_or(WS_VScroll,WS_Border))
+        return
 
     /// <include file="Gui.xml" path="doc/BaseListBox.ItemCount/*" />
-    ACCESS ItemCount AS LONG
-        RETURN  SELF:__Items:Count
+    access ItemCount as long
+        return  self:__Items:Count
 
     /// <include file="Gui.xml" path="doc/BaseListBox.SetTop/*" />
-    METHOD SetTop(nItemNumber := 0 AS LONG)  AS VOID
+    method SetTop(nItemNumber := 0 as long)  as void
         // nItemNumber = 1-based index in collection
-        IF !SELF:lIsComboBox
-            SELF:__ListBox:TopIndex := nItemNumber-1
-        ENDIF
+        if self:IsListBox
+            self:__ListBox:TopIndex := nItemNumber-1
+        endif
 
-END CLASS
+end class
 
 /// <exclude />
 [DebuggerDisplay("{DisplayValue}")];
-CLASS ListBoxItemValue IMPLEMENTS IComparable
-    PROTECT cDisplayValue	AS STRING
-    PROTECT uValue			AS USUAL
-    PROPERTY DisplayValue	AS STRING GET cDisplayValue SET cDisplayValue := Value
-    PROPERTY Value			AS USUAL GET uValue	SET uValue := Value
+class ListBoxItemValue implements IComparable
+    property DisplayValue	as string auto
+    property Value			as usual auto
     /// <exclude />
-    CONSTRUCTOR(lcDisplayValue AS STRING, luValue AS USUAL)
-        cDisplayValue := Rtrim(lcDisplayValue)
-        IF IsString(luValue)
-            uValue        := Rtrim(luValue)
-        ELSE
-            uValue := luValue
-        ENDIF
+    constructor(lcDisplayValue as string, luValue as usual)
+        self:DisplayValue := Rtrim(lcDisplayValue)
+        if IsString(luValue)
+            self:Value        := Rtrim(luValue)
+        else
+            self:Value := luValue
+        endif
 
     /// <exclude />
-    PUBLIC METHOD CompareTo(obj AS OBJECT) AS INT
-        IF obj is ListBoxItemValue
-            LOCAL otherVal := (ListBoxItemValue) obj AS ListBoxItemValue
-            RETURN SELF:DisplayValue:CompareTo((OBJECT) otherVal:DisplayValue)
-        ENDIF
-        RETURN -1
+    public method CompareTo(obj as object) as int
+        if obj is ListBoxItemValue
+            local otherVal := (ListBoxItemValue) obj as ListBoxItemValue
+            return self:DisplayValue:CompareTo((object) otherVal:DisplayValue)
+        endif
+        return -1
 
     /// <exclude />
-    PUBLIC METHOD ToString() AS STRING STRICT
-        RETURN strtran(SELF:cDisplayValue,"&","&&") // escape ampersand
-END CLASS
+    public method ToString() as string strict
+        return strtran(self:DisplayValue,"&","&&") // escape ampersand
+end class

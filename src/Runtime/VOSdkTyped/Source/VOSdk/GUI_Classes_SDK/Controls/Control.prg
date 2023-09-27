@@ -1063,7 +1063,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             lBaseServer  := symClassName==#DBServer .OR. symClassName==#SQLSelect .OR. symClassName==#SQLTable .OR. symClassName==#JDataServer
         ENDIF
 
-        // Propogate data field if no explicit one
+        // Propagate data field if no explicit one
         IF ((tmpDF := oServer:DataField(siDataField)) != NULL_OBJECT)
             oDataField := tmpDF
 
@@ -1109,12 +1109,12 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.MouseButtonDown/*" />
-    METHOD MouseButtonDown(oMouseEvent  as MouseEvent) AS VOID
+    method MouseButtonDown(oMouseEvent as MouseEvent) as void
         //Also empty in GUI Classes
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.MouseButtonUp/*" />
-    METHOD MouseButtonUp(oMouseEvent  as MouseEvent) AS VOID
+    METHOD MouseButtonUp(oMouseEvent as MouseEvent) AS VOID
         //Also empty in GUI Classes
         RETURN
 

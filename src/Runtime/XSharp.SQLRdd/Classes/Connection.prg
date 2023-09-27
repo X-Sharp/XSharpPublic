@@ -177,9 +177,8 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         return false
 #endregion
 #region MetaData
-    method GetStructureForQuery(cQuery as string, TableName as string) as SqlDbTableDef
+    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as logic) as SqlDbTableDef
         cQuery := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
-        var longFieldNames := false
         longFieldNames := RaiseLogicEvent(self,SqlRDDEventReason.LongFieldNames, TableName, longFieldNames)
         var cmd   := SqlDbCommand{TableName, self}
         cmd:CommandText := cQuery
@@ -193,12 +192,13 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         var oTd   := SqlDbTableDef{TableName, oCols}
         return oTd
 
-    method GetStructure(TableName as string) as SqlDbTableDef
+    method GetStructureForTable(TableName as string,longFieldNames as logic) as SqlDbTableDef
         if self:Schema:ContainsKey(TableName)
             return self:Schema[TableName]
         endif
         try
             var table := self:Provider:QuotePrefix+TableName+self:Provider:QuoteSuffix
+
             if String.IsNullOrEmpty(self:Provider:QuotePrefix) .and. TableName:IndexOf(" ") > 0
                 table := SqlDbProvider.DefaultQuotePrefix+TableName+SqlDbProvider.DefaultQuoteSuffix
             endif
@@ -207,7 +207,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             query := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, query)
-            var oTd := GetStructureForQuery(query,TableName)
+            var oTd := GetStructureForQuery(query,TableName, longFieldNames)
             oTd:SelectStatement := selectStmt
             oTd:EmptySelectStatement := query
             self:Schema:Add(TableName, oTd)

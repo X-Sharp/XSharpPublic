@@ -500,7 +500,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
         STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
 
-        PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
+        PRIVATE STATIC METHOD _toJulian(dt AS @@DateTime) AS LONG
             VAR days      := dt:Subtract( Jan_1_1901 )
             RETURN Convert.ToInt32( days:TotalDays ) + 2415386   // Julian date number of 1901-01-01
 
@@ -511,19 +511,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ,  resultLength REF LONG ) AS LOGIC
             LOCAL text AS STRING
-            LOCAL typeCde AS TypeCode
-            text := NULL
+            local typeCde as TypeCode
+            text := null
             IF toConvert IS IFloat // Float Value ?
                 typeCde   := TypeCode.Double
-            ELSEIF toConvert IS IDate VAR valueDate // Date Value
-                toConvert := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
+            ELSEIF toConvert is IDate var valueDate // Date Value
                 typeCde   := TypeCode.DateTime
+                IF valueDate.IsEmpty
+                    toConvert := DateTime.MinValue
+                ELSE
+                    toConvert := @@DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
+                ENDIF
             ELSE
                 typeCde := Type.GetTypeCode(toConvert:GetType())
             ENDIF
             IF typeCde == TypeCode.DateTime
                 // Convert to Julian number and then process as normal numeric value
-                toConvert     := _toJulian((DateTime) toConvert)
+                VAR d := (@@DateTime) toConvert
+                IF d == DateTime.MinValue
+                    toConvert := 0
+                ELSE
+                    toConvert     := _toJulian((@@DateTime) toConvert)
+                ENDIF
                 typeCde       := TypeCode.Int32
             ENDIF
             SWITCH typeCde
@@ -864,8 +873,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 sRecords:AppendLine("------------------------------")
                 DO WHILE ! _oRdd:EoF
                     VAR key := _oRdd:EvalBlock(SELF:_KeyCodeBlock)
-                    IF key IS IDate VAR d
-                        key := DateTime{d:Year, d:Month, d:Day}:ToString("yyyyMMdd")
+                    IF key is IDate var d
+                        IF d:IsEmpty
+                            key := "00000000"
+                        ELSE
+                            key := @@DateTime{d:Year, d:Month, d:Day}:ToString("yyyyMMdd")
+                        ENDIF
+
                     ELSEIF key IS IFloat VAR f
                         key   :=  f:Value:ToString("F"+f:Decimals:ToString())
                     ENDIF

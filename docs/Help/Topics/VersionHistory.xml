@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-09-21T19:18:11.931+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-09-28T12:42:37.580+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -36,21 +36,40 @@
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Introduced warning for not specifying the OUT keyword for OUT parameters (#1295)</li>
+      <li styleclass="Body Text">The parser rules for method and constructor calls without parameters have been updated. This may result in a bit faster compilation.</li>
+      <li styleclass="Body Text">SLen() is no longer &quot;inlined&quot; by the compiler. If you reference XSharp.Core in your app, SLen() now gets resolved to the SLen() function inside X# Core.<br/>If you compile without X# runtime, or compile against the Vulcan Runtime you now need to add a SLen() function to your code. <br/>This is the code inside X# Core that you can use as a template <br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> SLen(cString </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DWORD</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> len := 0 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DWORD</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> cString != </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">NULL</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;len := (</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DWORD</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) cString:Length</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDIF</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> len</text></li>
       <li styleclass="Body Text">Added support for preprocessor commands<link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command"> #ycommand</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Translate">#ytranslate</link> that are also supported by Harbour. They work the same as #xcommand and #xtranslate, but the tokens are compared in case sensitive mode (#1314)</li>
+      <li styleclass="Body Text">Code generation for some of the Xbase++ specific features has changed. </li>
+      <li styleclass="Body Text">We have added several more UDCs with the IN &lt;cursor&gt; clause</li>
     </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">We have added UDC support for the FoxPro CAST expression</li>
+      <li styleclass="Normal">Several more SET commands now also support the &amp; operator</li>
+      <li styleclass="Normal">The compiler now supports &quot;Late bound names&quot; in more locations, such as in the REPLACE command, With command etc. This now compiles without problems:</li>
+    </list>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">cVar := &quot;FirstName&quot;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">WITH</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> oCustomer</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; .&amp;cVar := &quot;John&quot;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">WITH</text><br/><text styleclass="Normal">and this too</text><br/><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">cVar := &quot;FirstName&quot;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">REPLACE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &amp;cVar </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">with</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &quot;John&quot;</text></para>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with incorrectly closing dbf file before relations are cleared (#1237)</li>
       <li styleclass="Normal">Fixed incorrect index scope visibility immediately after file creation (#1238)</li>
-      <li styleclass="Normal">Fixed problem in FFirst()/FNExt() not finding all files specified by filter (#1315)</li>
+      <li styleclass="Normal">Fixed problem in FFirst()/FNext() not finding all files specified by filter (#1315)</li>
       <li styleclass="Normal">Fixed problem with DBSetIndex()/VoDbOrdListAdd() always reseting the controlling order to 1 (#1341)</li>
+      <li styleclass="Normal">Fixed problem with updating index keys in the DBFCDX driver when the key expression was of type DATE.</li>
+      <li styleclass="Normal">Fixed a problem when Str() and StrZero() had a built-in maximum string length of 30.(#1352)</li>
+      <li styleclass="Normal">The RegisteredRDD Class now uses a ConcurrentDictionary.</li>
+      <li styleclass="Normal">We have added a DbCurrency type that is returned from the RDD when a currency field is read.</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added support for accessing indexers in the USUAL type (#1296 )</li>
       <li styleclass="Normal">Implemented the TEXT TO FILE command (#1304)</li>
       <li styleclass="Normal">Now the RDD reports an error (dialog) when tagname &gt; maximum length when creating an index order (#1305)</li>
+      <li styleclass="Normal">Added a function _CreateInstance() that accepts a System.Type parameter</li>
+      <li styleclass="Normal">The late binding code now detects from where Send(), IVarGet() and IVarPut() are called and allow access to private/hidden fields when the calling code is of the same type as the type where the class members were declared. This is used in some of the XBase++ related changes.</li>
+      <li styleclass="Normal">The classes in the XBase++ have been restructured a bit. </li>
+      <li styleclass="Normal">The mapping of several DBF / Workarea / Cursor related UDCs has been changed to be more FoxPro compatible.</li>
+      <li styleclass="Normal">We have added runtime support for the FoxPro CAST expression</li>
     </list>
     <para styleclass="Heading2">Typed SDK classes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -61,6 +80,7 @@
       <li styleclass="Normal">Fixed exception when using a ComboBox on a VO Window (#1328)</li>
       <li styleclass="Normal">Fixed error when opening a datawindow with an assigned server (#1332)</li>
       <li styleclass="Normal">Fixed runtime error when instantiating a DBServer object with an untyped FileSpec object as first argument (#1348)</li>
+      <li styleclass="Normal">Fixed problem with displaying items in Comboboxes and Listboxes (#1347)</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -84,6 +104,11 @@
     <para styleclass="Normal">- {VOXP:COM} // comment out line</para>
     <para styleclass="Normal">- {VOXP:UNC} // uncomment line</para>
     <para styleclass="Normal">- {VOXP:DEL} and // {VOXP:REM} // remove line</para>
+    <para styleclass="Heading2">Installer</para>
+    <para styleclass="Heading3">New features</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The installer now detects if the required Visual Studio components &quot;Core Editor&quot; and &quot;.Net Desktop Development&quot; are installed. <br/>When it finds one or more VS installations but none of these installations has both the required components then a warning is shown.</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.17.0.3</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>

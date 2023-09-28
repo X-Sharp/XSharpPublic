@@ -101,19 +101,33 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="XSharp.CodeAnalysis, Version=2.18.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Release\net472\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>$(RuntimeFilesDir)XSharp.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>$(RuntimeFilesDir)XSharp.RT.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\DevRt\Binaries\Debug\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Scripting, Version=2.18.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Scripting</Name>
+      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\Artifacts\bin\xsi\Release\net472\XSharp.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VFP, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VFP</Name>

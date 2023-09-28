@@ -154,8 +154,10 @@ interface IGuiObject
     property HyperLabel as HyperLabel get set
     property NameSym	as symbol get
     property __Handle   as IntPtr get
-    METHOD   Destroy()	AS USUAL CLIPPER
+    method   Destroy()	as usual clipper
+#ifndef DOCUMENTATION
     method   Show()     as void clipper
+#endif
     method   Hide()     as void strict
     method   SetFocus() as void strict
 

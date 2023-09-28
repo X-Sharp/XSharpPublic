@@ -339,7 +339,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.GetLookupTable/*" />
-	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY CLIPPER
+	METHOD GetLookupTable(nMaxRows,uField1,uField2, uSearch) AS ARRAY CLIPPER
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
 		IF IsNil(nMaxRows)

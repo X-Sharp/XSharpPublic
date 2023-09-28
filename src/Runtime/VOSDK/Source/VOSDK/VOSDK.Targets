@@ -15,7 +15,7 @@
     <Nologo>true</Nologo>
     <Nostandarddefs>true</Nostandarddefs>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)Runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <Prefer32Bit>False</Prefer32Bit>

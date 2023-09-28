@@ -17,7 +17,13 @@ class BaseListBox inherit TextControl
     property  IsBusy         as logic auto
 
     property __List as IBaseListBox get (IBaseListBox ) oCtrl
+    /// <summary>
+    /// Is the control a ComboBox
+    /// </summary>
     property IsComboBox as logic get oCtrl is VOComboBox
+    /// <summary>
+    /// Is the control a ListBox
+    /// </summary>
     property IsListBox  as logic get oCtrl is VOListBox
 
     /// <exclude />
@@ -153,7 +159,7 @@ class BaseListBox inherit TextControl
             return (ListBoxItemValue) __Items[nItemNumber-1]
         endif
         return null_object
-        
+
     /// <include file="Gui.xml" path="doc/BaseListBox.GetItem/*" />
     method GetItem(nItemNumber as long, nLength := -1 as long) as string
         // nItemNumber = 1-based index in collection

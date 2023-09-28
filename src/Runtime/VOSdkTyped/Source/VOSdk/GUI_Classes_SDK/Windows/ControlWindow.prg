@@ -48,6 +48,7 @@ CLASS ControlWindow INHERIT Window
     PROPERTY HyperLabel AS HyperLabel GET oCtrl:HyperLabel
 
     /// <include file="Gui.xml" path="doc/ControlWindow.ctor/*" />
+#ifndef DOCUMENTATION
     constructor(oControl as Control)
 
         oCtrl := oControl
@@ -62,7 +63,7 @@ CLASS ControlWindow INHERIT Window
         oSurface:Visible := TRUE
 
         RETURN
-
+#endif
     /// <include file="Gui.xml" path="doc/ControlWindow.Modified/*" />
     PROPERTY Modified AS LOGIC
         GET

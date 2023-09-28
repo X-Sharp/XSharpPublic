@@ -40,7 +40,7 @@ CLASS TopAppWindow INHERIT AppWindow
         RETURN
 
     /// <inheritdoc />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         SUPER:Destroy()
         // Tests if this is the last TopAppWindow
         IF (oApp != NULL_OBJECT)

@@ -18,7 +18,7 @@ class VOTabControl inherit SWF.TabControl implements IVOControlProperties,IVOCon
 	#include "PropControlStyle.xh"
 	PROPERTY BounceFocus AS LOGIC AUTO := FALSE
     PROPERTY VOTab AS VOSDK.TabControl GET (VOSDK.TabControl) SELF:Control
-
+ 
 	METHOD Initialize AS VOID STRICT
 		SELF:ShowToolTips := TRUE
 		SELF:HotTrack	  := TRUE

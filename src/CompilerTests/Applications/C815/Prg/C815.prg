@@ -5,6 +5,7 @@
 // Snippets taken as is from customers' code, I have intentionally not "fixed" them
 #pragma warnings(165, off) // unasigned local
 #pragma warnings(219, off) // assigned but not used
+#pragma warnings(9071, off) // out expected
 FUNCTION Start() AS VOID
     NoRunTest3()
     NoRunTest5()

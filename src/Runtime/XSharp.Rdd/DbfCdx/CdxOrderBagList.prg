@@ -44,7 +44,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     _bags:Add(oBag)
                     isOk := oBag:Open(info)
                     IF isOk
-                        IF XSharp.RuntimeState.AutoOrder != 0
+                        if XSharp.RuntimeState.AutoOrder != 0 .and. self:CurrentOrder == null ;
+                            .and. oBag:Tags:Count > 0
                             SELF:CurrentOrder := oBag:Tags[0]
                         ENDIF
                     ELSE

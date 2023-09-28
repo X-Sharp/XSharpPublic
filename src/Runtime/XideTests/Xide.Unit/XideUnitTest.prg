@@ -17,9 +17,9 @@ CLASS XideUnitTest
 	
 	STATIC METHOD AddTestsFromAssembly(oAssembly AS Assembly) AS VOID
 		FOREACH oType AS Type IN oAssembly:GetTypes()
-			IF oType:Name:StartsWith("DbfCdx")
-//				LOOP
-			END IF
+/*			IF oType:Name:StartsWith("DbfCdx")
+				LOOP
+			END IF*/
 			FOREACH oMethod AS MethodInfo IN oType:GetMethods(BindingFlags.Instance + BindingFlags.Public + BindingFlags.DeclaredOnly)
 				IF oMethod:GetCustomAttribute(TypeOf(TestAttribute)) != NULL .or. ;
 						oMethod:GetCustomAttribute(TypeOf(FactAttribute)) != NULL

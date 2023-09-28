@@ -17,7 +17,7 @@ METHOD RDDINFO( kRDDInfoType, uRDDVal )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF ! VODBRDDInfo( kRDDInfoType, REF uRDDVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr() )
 		ENDIF
@@ -56,7 +56,7 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 			IF SELF:Notify( NOTIFYINTENTTOMOVE )
 				IF IsString( cbForBlock )
@@ -174,7 +174,7 @@ METHOD RecallAll()
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			lSetDeleted := SetDeleted( FALSE )
 			IF lSelectionActive
@@ -253,7 +253,7 @@ METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF IsNil( nRecordNumber )
 			nRecordNumber := 0
 		ENDIF
@@ -300,7 +300,7 @@ METHOD Refresh() CLIPPER
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF ! VODBInfo( DBI_ISFLOCK, REF uInfo)
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
@@ -387,7 +387,7 @@ METHOD Reindex()
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			lRetCode := VODBOrdListRebuild()
 			IF ! lRetCode
@@ -435,7 +435,7 @@ METHOD Relation( nRelation )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF ! VODBRelation( nRelation,  REF cRelation )
 			BREAK ErrorBuild( _VODBErrInfoPtr() )
 		ENDIF
@@ -482,7 +482,7 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF ! IsArray( acbExpression )
 			acbExpression := { acbExpression }
 		ENDIF
@@ -653,7 +653,7 @@ METHOD RLOCK( nRecordNumber )
 
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		//RvdH 030926 Strong typing of __DbsRLock() caused problems
 		//with missing nRecordnumber (Bug # 12448)
 		//PP-040416 Issue 12766 nRecordNumber must be allowed to be NIL, __DBSRLock changed to accept USUAL
@@ -707,7 +707,7 @@ METHOD RLockVerify()
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		lRetCode := SELF:__RLockVerify()
 		IF lRetCode
 			SELF:__OptimisticFlushNoLock()
@@ -748,7 +748,7 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast )
 	nTries := SELF:nReTries
     DEFAULT(REF lLast, FALSE)
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF lSelectionActive
 				IF uSearchExpr == uSelectionValue
@@ -804,7 +804,7 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast )
 METHOD SELECT()
 	// RvdH 060623 Added
 	LOCAL dwCurrentWorkArea AS DWORD
-	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+	VODBSelect( wWorkArea, out dwCurrentWorkArea )
 	RETURN dwCurrentWorkArea
 
 
@@ -892,7 +892,7 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		lRetCode := TRUE
 		IF IsNil( cFilterText )  .AND. ! IsNil(cbFilterBlock)
 			cFilterText := "UNKNOWN"
@@ -987,7 +987,7 @@ METHOD SetIndex( oFSIndexFile )
 
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsNil(oFSIndexFile)
 				lRetCode := __DBSOrdListClear("", NIL, nTries)
@@ -1034,8 +1034,6 @@ METHOD SetOrder( uOrder, cIndexFileName )
    LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetCode      AS LOGIC
 	LOCAL oError        AS USUAL
-	LOCAL pszStuff      AS STRING
-
 
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString( uOrder ), AsString( cIndexFileName ))
@@ -1046,7 +1044,7 @@ METHOD SetOrder( uOrder, cIndexFileName )
 	BEGIN SEQUENCE
 
 
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
         //RvdH 070925 Save pending changes
         SELF:__OptimisticFlush()
 		IF IsObject(cIndexFileName) .AND. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
@@ -1054,7 +1052,7 @@ METHOD SetOrder( uOrder, cIndexFileName )
 		ELSEIF IsNil(cIndexFileName)
 			cIndexFileName:=""
 		ENDIF
-		IF ! (lRetCode := VODBOrdSetFocus(cIndexFileName,uOrder, REF pszStuff))
+		if ! (lRetCode := VODBOrdSetFocus(cIndexFileName,uOrder, out null))
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -1111,7 +1109,7 @@ METHOD SetOrderCondition(   cFor,           ;
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+      VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF !__CanEval(cbForBlock)
 
 
@@ -1235,7 +1233,7 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 			Send(oDBChild,#__NotifyBufferFlush)
 
 
-         VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+         VODBSelect( wWorkArea, out dwCurrentWorkArea )
          lRetCode := VODBSetRelation( cChildAlias, cbRelationExpression, cRelationExpression )
          __DBSSetSelect( dwCurrentWorkArea )
 			IF ! lRetCode
@@ -1310,7 +1308,7 @@ METHOD Skip( nRecordCount )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		nTries := SELF:nReTries
-		VODBSelect(SELF:wWorkArea, REF dwCurrentWorkArea)
+		VODBSelect(self:wWorkArea, out dwCurrentWorkArea)
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsNil(nRecordCount)
 				iRecords := 1
@@ -1432,7 +1430,7 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	lRestore	:= DbSetRestoreWorkarea(TRUE)
 	lErrorFlag := FALSE
     BEGIN SEQUENCE
-	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+	VODBSelect( wWorkArea, out dwCurrentWorkArea )
 	IF SELF:Notify( NOTIFYINTENTTOMOVE )
 		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
 			cTarget := oFS:FullPath
@@ -1574,7 +1572,7 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF !SELF:Notify( NOTIFYINTENTTOMOVE )
 			BREAK DbError{ SELF, #Sum, 999, VO_Sprintf(__CAVOSTR_DBFCLASS_INTENTTOMOVE)}
 		ENDIF
@@ -1750,7 +1748,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
 				cTarget := oFS:FullPath
@@ -1923,7 +1921,7 @@ METHOD UnLock( nRecordNumber )
 	BEGIN SEQUENCE
 
 
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		IF ! (lRetCode := VODBUnlock(nRecordNumber))
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
@@ -1978,7 +1976,7 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace)
 	BEGIN SEQUENCE
 
 
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, out dwCurrentWorkArea )
         //RvdH 070925 Save pending changes
         SELF:__OptimisticFlush()
 		IF IsObject(oDbServer) .and. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
@@ -2052,7 +2050,7 @@ METHOD Zap()
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+      VODBSelect( wWorkArea, out dwCurrentWorkArea )
 		lRetCode := VODBZap()
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Notify( NOTIFYFILECHANGE )

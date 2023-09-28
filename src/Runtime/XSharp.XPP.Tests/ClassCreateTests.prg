@@ -10,7 +10,9 @@ class ClassCreateTests
     [Fact, Trait("Category", "Dynamic Classes")];
     method ClassCreateTest as void
         local oClass, oObject as object
-        local nAttr, aIVar, bMethod, aMethod
+        local aMethod, aIVar as array
+        local nAttr as long
+        local bMethod as codeblock
         oClass := ClassObject( "Abc" )
         Assert.Equal(oClass, null_object)
         nAttr   := CLASS_EXPORTED + VAR_INSTANCE
@@ -22,8 +24,15 @@ class ClassCreateTests
         nAttr   := CLASS_EXPORTED + METHOD_INSTANCE
         bMethod  :={ | oSelf | Age( oSelf:BirthDate) }
         AAdd(aMethod, { "CalcAge", nAttr, bMethod})
+        bMethod  := { | oSelf | oSelf:FirstName := "None", oSelf:LastName := "None" , oSelf:BirthDate := 1900.01.01  }
+        AAdd(aMethod, { "Init", nAttr, bMethod})
         oClass := ClassCreate("Abc",nil, aIVar,aMethod)
         oObject := oClass:New()
+        Assert.Equal<string>("None", oObject:FirstName)
+        Assert.Equal<string>("None", oObject:LastName)
+        Assert.Equal<date>(1900.01.01, oObject:BirthDate)
+        Assert.Equal<dword>( Age(1900.01.01), oObject:CalcAge())
+
         oObject:FirstName := "Fabrice"
         oObject:LastName  := "Foray"
         oObject:BirthDate := 1966.09.21

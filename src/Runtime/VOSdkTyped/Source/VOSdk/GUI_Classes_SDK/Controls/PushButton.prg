@@ -11,7 +11,7 @@ CLASS PushButton INHERIT Button
 /// <include file="Gui.xml" path="doc/PushButton.ctor/*" />
 	CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, FALSE)
-		IF IsInstanceOfUsual(xID,#ResourceID)
+		IF xID IS ResourceID
 			SELF:SetStyle(BS_PushButton)
 		ENDIF
 		RETURN

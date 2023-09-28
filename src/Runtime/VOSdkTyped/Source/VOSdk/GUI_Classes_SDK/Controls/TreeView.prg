@@ -225,8 +225,8 @@ CLASS TreeView INHERIT TextControl
 	METHOD DeleteItem(oItem AS USUAL) AS LOGIC
 		IF IsSymbol(oItem)
 			RETURN SELF:DeleteItem((SYMBOL)oItem, FALSE)
-		ELSEIF IsInstanceOf(oItem, #TreeViewItem)
-			RETURN SELF:DeleteItem((TreeViewItem)oItem, FALSE)
+		elseif oItem is TreeViewItem var oTVI
+			return self:DeleteItem(oTVI, false)
 		ENDIF
 		RETURN FALSE
 /// <include file="Gui.xml" path="doc/TreeView.DeleteItem/*" />
@@ -234,8 +234,8 @@ CLASS TreeView INHERIT TextControl
 	METHOD DeleteItem(oItem AS USUAL, lChildrenOnly AS LOGIC) AS LOGIC
 		IF IsSymbol(oItem)
 			RETURN SELF:DeleteItem((SYMBOL)oItem, lChildrenOnly)
-		ELSEIF IsInstanceOf(oItem, #TreeViewItem)
-			RETURN SELF:DeleteItem((TreeViewItem)oItem, lChildrenOnly)
+		elseif oItem is TreeViewItem var oTVI
+			return self:DeleteItem(oTVI, lChildrenOnly)
 		ENDIF
 		RETURN FALSE
 
@@ -266,7 +266,7 @@ CLASS TreeView INHERIT TextControl
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/TreeView.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		oDragImageList := NULL_OBJECT
 		RETURN SUPER:Destroy()
 
@@ -589,7 +589,7 @@ CLASS TreeView INHERIT TextControl
 			dwStyle := _Or(DWORD(kStyle), DWORD(_CAST, WS_BORDER))
 		ENDIF
 
-		IF IsInstanceOfUsual(xID, #ResourceID)
+		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , dwStyle, TRUE)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, "SysTreeView32", dwStyle, TRUE)

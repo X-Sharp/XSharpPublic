@@ -176,7 +176,7 @@ METHOD __Gather() AS LOGIC STRICT
 
 
 	IF lChanged
-		IF IsInstanceOfUsual(oServer, #DataServer)
+		if oServer is DataServer
 			IF lBaseServer // if not subclassing
 				oServer:FIELDPUT(siDataField,SELF:Value) //use FieldPut
 			ELSEIF (symDataField != NULL_SYMBOL) //else use assigns
@@ -236,7 +236,7 @@ METHOD __Scatter() AS Control STRICT
 	LOCAL cFSValType AS STRING
 
 
-	IF IsInstanceOfUsual(oServer, #DataServer)
+	if oServer is DataServer
 		IF lBaseServer // if not subclassing
 			NewValue := oServer:FIELDGET(symDataField) //use fieldget
 		ELSEIF symDataField != NULL_SYMBOL //else use Access
@@ -376,7 +376,7 @@ METHOD __Unlink(oDataServer := NIL AS USUAL) AS Control STRICT
 		oDataField:= NULL_OBJECT
 		oServer:= NULL_OBJECT
 	ELSE
-		IF !IsInstanceOfUsual(oDataServer,#DataServer)
+		if !(oDataServer is DataServer)
 			WCError{#__Unlink,#Control,__WCSTypeError,oDataServer,1}:Throw()
 		ENDIF
 		IF (oDataServer == oServer)
@@ -435,13 +435,13 @@ ASSIGN __Value(uNewValue AS USUAL)  STRICT
 		oHlStatus := NULL_OBJECT
 		SELF:Modified := FALSE
 		SELF:lChanged := TRUE
-	ELSEIF IsInstanceOfUsual(oFieldSpec, #FieldSpec)
-		uTemp := oFieldSpec:Transform(uNewValue)
+	elseif oFieldSpec is FieldSpec var oFS
+		uTemp := oFS:Transform(uNewValue)
 		IF IsNil(uTemp)
-			oHLStatus := oFieldSpec:Status
+			oHLStatus := oFS:Status
 			WCError{#__Value,#Control,__WCSTypeError}:Throw()
 		ELSE
-			SELF:uValue := oFieldSpec:Val(uTemp)
+			self:uValue := oFS:Val(uTemp)
 			SELF:TextValue := uTemp
 			oHLStatus := NULL_OBJECT
 			SELF:Modified := FALSE
@@ -493,7 +493,7 @@ ASSIGN Background(oNewBrush)
 
 
 	IF !IsNil(oNewBrush)
-		IF !IsInstanceOfUsual(oNewBrush,#Brush)
+		if !(oNewBrush is Brush)
 			WCError{#Background,#Control,__WCSTypeError,oNewBrush,1}:Throw()
 		ENDIF
 	ENDIF
@@ -1034,7 +1034,7 @@ ASSIGN FieldSpec(oDSAssign)
 	//
 
 
-	IF !IsInstanceOfUsual(oDSAssign,#FieldSpec)
+	if !(oDSAssign is FieldSpec)
 		WCError{#FieldSpec,#Control,__WCSTypeError,oDSAssign,1}:Throw()
 	ENDIF
 
@@ -1192,10 +1192,10 @@ ASSIGN HyperLabel(oNewHL)
 
 
 
-	IF IsInstanceOfUsual(oNewHL, #HyperLabel)
-		__oHyperLabel := oNewHL
+	if oNewHL is HyperLabel var oHL
+		__oHyperLabel := oHL
 		lExplicitHL := TRUE
-		SELF:Caption := oNewHL:Caption
+		self:Caption := oHL:Caption
 	ELSEIF oNewHL != NIL
 		WCError{#HyperLabel,#Control,__WCSTypeError,oNewHL,1}:Throw()
 	ELSE
@@ -1236,7 +1236,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 			xID := ResourceID{ xID }
 		ENDIF
 	ELSE
-		IF !IsInstanceOfUsual(xID,#ResourceID)
+		if !(xID is ResourceID)
 			WCError{#Init,#Control,__WCSTypeError,xID,2}:Throw()
 		ENDIF
 	ENDIF
@@ -1247,12 +1247,12 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 
 
 	IF oFormSurface IS DialogWindow .AND. ;
-			(IsInstanceOfUsual(xID,#ResourceID) .OR. (IsLong(xID) .AND.;
+			((xID is ResourceID) .or. (IsLong(xID) .and.;
 			IsNil(oDimension) .AND. IsNil(oPoint)))
 
 
-		IF IsInstanceOfUsual(xID,#ResourceID)
-			wId 		:= xID:ID
+		if xID is ResourceID var oResID
+			wId 		:= oResID:ID
 		ELSE
 			wId 		:= xID
 		ENDIF
@@ -1283,10 +1283,10 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 			SELF:Size := oDimension
 		ENDIF
 	ELSEIF (oFormSurface IS Window .OR. oFormSurface IS Control) .AND. IsLong(xID)
-		IF !IsInstanceOfUsual(oPoint,#Point)
+		if !(oPoint is Point)
 			WCError{#Init,#Control,__WCSTypeError,oPoint,3}:Throw()
 		ENDIF
-		IF !IsInstanceOfUsual(oDimension,#Dimension)
+		if !(oDimension is Dimension)
 			WCError{#Init,#Control,__WCSTypeError,oDimension,4}:Throw()
 		ENDIF
 
@@ -1439,7 +1439,7 @@ METHOD LinkDF(oDS, siDF)
 	ENDIF
 
 
-	IF !IsInstanceOfUsual(oDS,#DataServer)
+	if !(oDS is DataServer)
 		WCError{#LinkDF,#Control,__WCSTypeError,oDS,1}:Throw()
 	ENDIF
 
@@ -1611,7 +1611,7 @@ ACCESS Origin
 
 /// <include file="Gui.xml" path="doc/Control.Origin/*" />
 ASSIGN Origin(oPoint)
-	IF !IsInstanceOfUsual(oPoint, #Point)
+	if !(oPoint is Point)
 		WCError{#Origin,#Control,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 
@@ -1948,16 +1948,13 @@ ACCESS Size
 /// <include file="Gui.xml" path="doc/Control.Size/*" />
 ASSIGN Size(oDimension)
 
-
-	IF IsInstanceOfUsual(oDimension, #BoundingBox)
-		oDimension := oDimension:Size
+	if oDimension is BoundingBox var oBB
+		oDimension := oBB:Size
 	ENDIF
 
-
-	IF !IsInstanceOfUsual(oDimension,#Dimension)
+	if !(oDimension is Dimension)
 		WCError{#Size,#Control,__WCSTypeError,oDimension,1}:Throw()
 	ENDIF
-
 
 	IF (hWnd == NULL_PTR)
 		oSize	:= Dimension{oDimension:Width, oDimension:Height}
@@ -1980,7 +1977,7 @@ ACCESS Status
 /// <include file="Gui.xml" path="doc/Control.Status/*" />
 ASSIGN Status(oStatus)
     //SE-081122 null_object is a valid parameter now
-    IF IsObject(oStatus) .AND. (IsInstanceOf(oStatus, #HyperLabel) .OR. oStatus == NULL_OBJECT)
+    if oStatus is HyperLabel .or. oStatus == null_object
          RETURN oHlStatus := oStatus
     ENDIF
     WCError{#Status,#Control,__WCSTypeError,oStatus,1}:Throw()
@@ -2124,7 +2121,7 @@ ASSIGN Value(uNewValue)
 	cOldValue := AsString(uValue)
 	// !!! should be result of FIELDGET and located after FIELDPUT !!!
 	SELF:__Value := uNewValue //Update the control
-	IF IsInstanceOfUsual(oServer, #DataServer)
+	if oServer is DataServer
 		IF lBaseServer // if not subclassing
 			oServer:FIELDPUT(siDataField,SELF:uValue) //update the DataServer
 		ELSEIF symDataField != NULL_SYMBOL

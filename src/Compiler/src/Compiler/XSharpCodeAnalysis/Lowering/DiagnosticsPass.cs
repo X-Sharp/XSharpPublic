@@ -170,6 +170,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 return;
             }
+            if (node.Method.ParameterRefKinds != null)
+            {
+                var xNode = node.Syntax?.XNode as XSharpParser.MethodCallContext;
+                var refkinds = node.Method.ParameterRefKinds;
+                for (var i = 0; i < node.Method.ParameterCount;i++)
+                {
+                    if (refkinds[i] == RefKind.Out && xNode.ArgList._Args.Count > i)
+                    {
+                        var arg = xNode.ArgList._Args[i];
+                        if (arg.RefOut?.Type != XSharpLexer.OUT)
+                        {
+                            var argnode = node.Arguments[i];
+                            Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);
+                        }
+                    }
+                }
+            }
         }
         public void XsVisitEventAssignmentOperator(BoundEventAssignmentOperator node)
         {

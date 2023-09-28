@@ -17,7 +17,6 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using Microsoft.CodeAnalysis.CSharp.Symbols;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
@@ -44,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
-        private readonly Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
+        protected readonly Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
 
         private readonly Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private readonly Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
@@ -582,6 +581,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // iterator body : Xs$Array.Add(element)
                 var addmethod = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("Add"));
                 var methcall = _syntaxFactory.InvocationExpression(addmethod, MakeArgumentList(MakeArgument(GenerateSimpleName("element"))));
+                var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
                 block.Add(GenerateExpressionStatement(methcall, context.Context(), true));
                 StatementSyntax forStmt = _syntaxFactory.ForEachStatement(
                     attributeLists: default,
@@ -591,10 +591,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _impliedType,
                     SyntaxFactory.Identifier("element"),
                     SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
-                    GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                    clipperArgs,
                     SyntaxFactory.CloseParenToken,
                     MakeBlock(block));
-                stmts.Add(forStmt);
+                var condition = _syntaxFactory.BinaryExpression(
+                   SyntaxKind.NotEqualsExpression,
+                   clipperArgs,
+                   SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                   GenerateLiteralNull());
+                var ifstmt = _syntaxFactory.IfStatement(default,
+                    SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    condition,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    forStmt,null);
+                stmts.Add(ifstmt);
                 // convert list to array
                 // Start(Xs$Array.ToArray())
                 var toarray = MakeSimpleMemberAccess(arrayName, GenerateSimpleName("ToArray"));
@@ -810,7 +821,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // check to see if the LHS is Late bound access
                             // because we need to generate a IVarPut() then
                             var left = LHS.XNode;
-                            if (left is XP.AccessMemberLateContext || left is XP.AccessMemberLateNameContext)
+                            if (left is XP.AccessMemberLateContext)
                             {
                                 // lhs is then an InvocationExpression
                                 var invoke = LHS as InvocationExpressionSyntax;
@@ -1104,25 +1115,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name,
-            string alias, IToken amp, bool isPublic = false)
+        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name, string alias, IToken amp, IToken modifier)
         {
             name = CleanVarName(name);
             if (amp == null) // normal DIMENSION foo (1,2)
             {
-                addFieldOrMemvar(name, alias, context, false, isPublic);
+                addFieldOrMemvar(name, alias, context, modifier);
             }
             else // DIMENSION &foo(1,2)
             {
                 // Make name unique because they can use &name multiple times
                 name += ":" + context.Position.ToString();
-                addFieldOrMemvar(name, "&", context, false, isPublic);
+                addFieldOrMemvar(name, "&", context, modifier);
             }
         }
 
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix,
-            XSharpParserRuleContext context, bool isParameter, bool isPublic = false)
+            XSharpParserRuleContext context, IToken modifier)
         {
+            if (CurrentMember == null)
+                return null;
             var field = CurrentMember.Data.GetField(name);
             if (field != null)
             {
@@ -1134,8 +1146,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var info = CurrentMember.Data.AddField(name, prefix, context);
-                info.IsParameter = isParameter;
-                info.IsPublic = isPublic;
+                info.IsParameter = modifier.Type == XP.PARAMETERS || modifier.Type == XP.LPARAMETERS;
+                info.IsPublic = modifier.Type == XP.PUBLIC;
                 return info;
             }
         }
@@ -1147,40 +1159,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return name;
         }
-        public override void EnterMemvardecl([NotNull] XP.MemvardeclContext context)
+        public override void EnterMemvar([NotNull] XP.MemvarContext context)
         {
-            // declare memvars
-            context.SetSequencePoint(context.end);
-            if (CurrentMember == null)
+            if (CurrentMember == null || context.Parent is XP.FilewidememvarContext)
             {
                 return;
             }
-            if (_options.SupportsMemvars)
+            CurrentMember.Data.HasMemVars = true;
+            if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
             {
-                CurrentMember.Data.HasMemVars = true;
-                if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
-                {
-                    foreach (var memvar in context._Vars)
-                    {
-                        var name = CleanVarName(memvar.Id.GetText());
-                        addFieldOrMemvar(name, "M", memvar, context.T.Type == XP.PARAMETERS);
-                    }
-                }
-                else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
-                {
-                    foreach (var memvar in context._XVars)
-                    {
-                        var name = memvar.Id.GetText();
-                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp, context.T.Type == XP.PUBLIC);
-                    }
-                }
+                var name = CleanVarName(context.Id.GetText());
+                addFieldOrMemvar(name, "M", context, context.T);
             }
-            if (context.T.Type == XP.PARAMETERS)
+            else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
+            {
+                var name = context.Id.GetText();
+                AddAmpbasedMemvar(context, name, "M", amp: context.Amp, context.T);
+            }
+        }
+        public override void EnterMemvardecl([NotNull] XP.MemvardeclContext context)
+        {
+            if (CurrentMember != null && context.T.Type == XP.PARAMETERS)
             {
                 // parameters assumes Clipper Calling Convention
                 var member = CurrentMember;
                 member.Data.HasClipperCallingConvention = true;
-                if (member.Data.HasParametersStmt || member.Data.HasLParametersStmt || member.Data.HasFormalParameters)
+                if (member.Data.HasDeclaredParameters)
                 {
                     // trigger error message by setting both
                     // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
@@ -1189,48 +1193,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    member.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
-                    member.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                    member.Data.HasParametersStmt = true;
                 }
             }
         }
 
         public override void EnterFilewidememvar([NotNull] XP.FilewidememvarContext context)
         {
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 if (context.Token.Type == XP.PUBLIC)
                 {
                     // PUBLIC
-                    if (_options.Dialect != XSharpDialect.FoxPro)
+                    foreach (var memvar in context._XVars)
                     {
-                        foreach (var memvar in context._XVars)
+                        if (memvar.Amp == null)
                         {
-                            if (memvar.Amp == null)
-                            {
-                                var name = CleanVarName(memvar.Id.GetText());
-                                var mv = new MemVarFieldInfo(name, "M", memvar, true);
-                                mv.IsPublic = true;
-                                _filewideMemvars.Add(mv.Name, mv);
-                                GlobalEntities.FileWidePublics.Add(mv);
-                            }
-                            // Code generation for initialization is done in CreateInitFunction()
+                            var name = CleanVarName(memvar.Id.GetText());
+                            var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
+                            mv.IsPublic = true;
+                            _filewideMemvars.Add(mv.Name, mv);
+                            GlobalEntities.FileWidePublics.Add(mv);
                         }
-                    }
-                    else
-                    {
-                        foreach (var memvar in context._FoxVars)
-                        {
-                            if (memvar.Amp == null)
-                            {
-                                var name = CleanVarName(memvar.Id.GetText());
-                                var mv = new MemVarFieldInfo(name, "M", memvar, true);
-                                mv.IsPublic = true;
-                                _filewideMemvars.Add(mv.Name, mv);
-                                GlobalEntities.FileWidePublics.Add(mv);
-                            }
-                            // Code generation for initialization is done in CreateInitFunction()
-                        }
+                        // Code generation for initialization is done in CreateInitFunction()
                     }
                 }
                 else
@@ -1240,7 +1225,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._Vars)
                     {
                         var name = CleanVarName(memvar.Id.GetText());
-                        var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                        var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
                         mv.IsPublic = false;
                         _filewideMemvars.Add(mv.Name, mv);
                     }
@@ -1284,10 +1269,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.CsNode = context.Decl.CsNode; // in the case of script LPARAMETERS this is a list
         }
+
         public override void ExitMemvardecl([NotNull] XP.MemvardeclContext context)
         {
             context.SetSequencePoint(context.end);
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
@@ -1315,7 +1301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.PRIVATE:
                 case XP.PUBLIC:
                     bool isprivate = context.T.Type == XP.PRIVATE;
-                    foreach (var memvar in context._XVars)
+                    foreach (var memvar in context._Vars)
                     {
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, isprivate);
@@ -2085,7 +2071,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
 
-            if (macro != null && _options.SupportsMemvars)
+            if (macro != null && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 ExpressionSyntax expr;
                 var id = macro.Name.Get<IdentifierNameSyntax>();
@@ -2153,12 +2139,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    fieldInfo = new MemVarFieldInfo(name, "", context.Left);
+                    fieldInfo = new MemVarFieldInfo(name, "", context.Left, filewidepublic: false);
                     field = MakeMemVarField(fieldInfo);
                 }
                 context.Left.Put(field);
-            }
-            if (left.XNode is XP.AccessMemberLateContext || left.XNode is XP.AccessMemberLateNameContext)
+            } 
+            if (left.XNode is XP.AccessMemberLateContext)
             {
                 var mcall = left as InvocationExpressionSyntax;
                 var obj = mcall.ArgumentList.Arguments[0].Expression;
@@ -2221,6 +2207,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Clear();
             call = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.ExitSequence : VulcanQualifiedFunctionNames.ExitSequence, true);
             stmts.Add(GenerateExpressionStatement(call, context, true));
+            if (context.FinBlock != null && context.F != null)
+            {
+                context.FinBlock.Start = context.F;
+            }
             var innerTry = _syntaxFactory.TryStatement(
                 attributeLists: default,
                 SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
@@ -3231,7 +3221,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case "__MEMVARGET":
                     case "__VARPUT":
                     case "__VARGET":
-                        if (_options.SupportsMemvars)
+                        if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                         {
                             CurrentMember.Data.HasMemVars = true;
                         }
@@ -3321,7 +3311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (expr is MemberAccessExpressionSyntax maes)
             {
                 var memname = maes.Name.Identifier.Text.ToUpper();
-                if (memname == "EVAL" && _options.SupportsMemvars)
+                if (memname == "EVAL" && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                 {
                     CurrentMember.Data.HasMemVars = true;
                 }
@@ -3590,7 +3580,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(attrs);
             }
 
-            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || _options.SupportsMemvars)
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ||
+                _options.HasOption(CompilerOption.MemVars, (XSharpParserRuleContext) context, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 var finallystmts = _pool.Allocate<StatementSyntax>();
@@ -3701,7 +3692,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         finallystmts.Add(updatestmt);
 
                     }
-                    if (_options.SupportsMemvars)
+                    if (_options.HasOption(CompilerOption.MemVars, (XSharpParserRuleContext)context, PragmaOptions)  && body.Statements.Count > 0)
                     {
                         // VAR Xs$PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
                         // in the finally
@@ -4331,7 +4322,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var field in context._Fields)
                 {
                     var name = field.Id.GetText();
-                    addFieldOrMemvar(name, alias, field, false);
+                    addFieldOrMemvar(name, alias, field, context.Start);
                 }
             }
         }
@@ -4463,13 +4454,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //_FIELD->NAME, CUSTOMER-NAME, _FIELD->CUSTOMER->NAME
                 if (context.Alias == null)
                 {
-                    var info = new MemVarFieldInfo(fldName, "", context);
+                    var info = new MemVarFieldInfo(fldName, "", context, filewidepublic: false);
                     context.Put(MakeMemVarField(info));
                 }
                 else
                 {
                     var alias = context.Alias.GetText();
-                    var info = new MemVarFieldInfo(fldName, alias, context);
+                    var info = new MemVarFieldInfo(fldName, alias, context, filewidepublic: false);
                     context.Put(MakeMemVarField(info));
                 }
             }
@@ -4505,7 +4496,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             | ( Id=identifier | LPAREN Alias=expression RPAREN)
                 ALIAS ( (LPAREN Expr=expression RPAREN) | Expr=expression )
            */
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
@@ -4517,7 +4508,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string field = context.Expr.GetText();
                 var varName = field;
                 // assume it is a field
-                var info = new MemVarFieldInfo(varName, "", context);
+                var info = new MemVarFieldInfo(varName, "", context, filewidepublic: false);
                 if (context.Id != null || context.Alias.IsIdentifier())
                 {
                     string name;
@@ -4525,7 +4516,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name = context.Id.GetText();
                     else
                         name = context.Expr.GetText();
-                    info = new MemVarFieldInfo(varName, name, context);
+                    info = new MemVarFieldInfo(varName, name, context, filewidepublic: false);
                     context.Put(MakeMemVarField(info));
                 }
                 else
@@ -4568,7 +4559,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
             // & LPAREN expression RPAREN
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
@@ -4584,12 +4575,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacroName([NotNull] XP.MacroNameContext context)
         {
             // &identifierName
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
             context.SetSequencePoint();
-            if (_options.SupportsMemvars && context.Name.GetText().IndexOf(".") > 0)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && context.Name.GetText().IndexOf(".") > 0)
             {
                 var id = getMacroNameExpression(context.Name);
                 var expr = GenerateMemVarGet(context, id);
@@ -4608,35 +4599,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)
         {
             // expression:&(expression)
+            // or expression:&name
             // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
-            if (_options.SupportsMemvars)
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 CurrentMember.Data.HasMemVars = true;
             }
-            var left = context.Left.Get<ExpressionSyntax>();
-            var right = context.Right.Get<ExpressionSyntax>();
-            var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
-            string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
-            var ivarget = GenerateMethodCall(methodName, args, true);
-            context.Put(ivarget);
-        }
-        public override void ExitAccessMemberLateName([NotNull] XP.AccessMemberLateNameContext context)
-        {
-            // expression:&identifierName
-            // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
-            /*
-            | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate
-                // aa:&(Expr). Expr must evaluate to a string which is the ivar name
-                // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
-            | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName
-                // aa:&Name  Expr must evaluate to a string which is the ivar name
-            */
-            if (_options.SupportsMemvars)
+            ExpressionSyntax left;
+            if (context.Op.Type == XP.COLONCOLON)
             {
-                CurrentMember.Data.HasMemVars = true;
+                left = GenerateSelf();
             }
-            var left = context.Left.Get<ExpressionSyntax>();
-            var right = getMacroNameExpression(context.Name);
+            else if (context.Left != null)
+            {
+                left = context.Left.Get<ExpressionSyntax>();
+            }
+            else
+            {
+                // in with block?
+                var parent = FindWithBlock(context);
+                if (parent is XP.WithBlockContext wb)
+                {
+                    left = GenerateSimpleName(wb.VarName);
+                }
+                else if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.LateBinding, context, PragmaOptions))
+                {
+                    // replace the lhs with a call to a special runtime function
+                    left = GenerateMethodCall(ReservedNames.FoxGetWithExpression, true);
+                }
+                else
+                {
+                    left = GenerateLiteral(0);
+                    left = left.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                }
+            }
+            ExpressionSyntax right; 
+            // we either have a simple name or an expression between parens
+            if (context.Name != null)
+            {
+                right = getMacroNameExpression(context.Name);
+            }
+            else
+            {
+               right = context.Right.Get<ExpressionSyntax>();
+            }
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
             string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
             var ivarget = GenerateMethodCall(methodName, args, true);

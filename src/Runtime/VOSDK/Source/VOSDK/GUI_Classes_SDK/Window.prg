@@ -481,16 +481,8 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
     LOCAL oReport AS OBJECT
     LOCAL o AS OBJECT
 
-
-
-
-
-
     symNameSym := oEvent:NameSym
     oWindow := SELF
-
-
-
 
     DO WHILE TRUE
         //RvdH 050602 Added oEvent parameter
@@ -500,7 +492,7 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
             Send(oWindow, symNameSym)
             RETURN TRUE
         ENDIF
-        IF ((OBJECT) oWindow:Owner) IS Window
+        if oWindow:Owner is Window
             oWindow := oWindow:Owner
         ELSE
             EXIT
@@ -511,13 +503,12 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
     IF IsClassOf(symNameSym, #Window)
         IF SELF IS ChildAppWindow
             oWindow:=SELF
-            DO WHILE ((OBJECT) oWindow:Owner) IS Window
+            do while oWindow:Owner is Window
                 oWindow:=oWindow:Owner
             ENDDO
             o := CreateInstance(symNameSym, oWindow)
             o:show()
-            // (CreateInstance(symNameSym, oWindow)):Show()
-        ELSE
+        else
             o := CreateInstance(symNameSym, SELF)
             o:Show()
         ENDIF
@@ -624,16 +615,11 @@ METHOD __DestroyChildren() AS VOID STRICT
     LOCAL cObj AS OBJECT
 
 
-
-
-
-
     IF SELF IS ShellWindow
         hChild := GetWindow(SELF:Handle(4), GW_CHILD)
     ELSE
         hChild := GetWindow(SELF:Handle(), GW_CHILD)
     ENDIF
-
 
     DO WHILE (hChild != NULL_PTR)
         cObj :=__WCGetObjectByHandle(hChild)

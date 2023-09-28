@@ -97,9 +97,8 @@ ACCESS TextValue
 
 	lTicked := SELF:Checked
 
-
-	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-		cTickValue := SELF:FieldSpec:Transform(lTicked)
+	if self:FieldSpec is FieldSpec var oFS
+		cTickValue := oFS:Transform(lTicked)
 	ELSE
 		cTickValue := AsString(lTicked)
 	ENDIF

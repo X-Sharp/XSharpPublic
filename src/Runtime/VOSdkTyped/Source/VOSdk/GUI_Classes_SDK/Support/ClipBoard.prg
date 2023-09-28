@@ -68,9 +68,7 @@ RETURN
 				System.Windows.Forms.Clipboard.SetText( cString)
 			ENDIF
 			lOk := TRUE
-		ELSEIF IsInstanceOfUsual(xType,#Bitmap)
-			LOCAL oBitMap AS BitMap
-			oBitMap := xType
+		elseif xType is Bitmap var oBitMap
 			System.Windows.Forms.Clipboard.SetImage( (System.Drawing.Image) oBitMap)
 			lOk := TRUE
 		ELSE

@@ -68,7 +68,7 @@ CLASS StatusBar INHERIT Control
 
         iInsertOn := iNumLockOn := iScrollOn := iCapsLockOn := -1
 
-        IF IsInstanceOfUsual(xID, #ResourceID)
+        IF xID IS ResourceID
             // Created by resource
             SUPER(oOwner, xID, oPoint, oDimension, , , FALSE)
         ELSE
@@ -316,7 +316,7 @@ CLASS StatusBar INHERIT Control
 
 
     /// <include file="Gui.xml" path="doc/StatusBar.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL clipper
         aMessages := NULL_ARRAY
         aItems := NULL_ARRAY
         RETURN SUPER:Destroy()
@@ -699,7 +699,7 @@ CLASS StatusBar INHERIT Control
         RETURN uValue
 
     /// <include file="Gui.xml" path="doc/StatusBar.Show/*" />
-    METHOD Show()  AS VOID STRICT
+    METHOD Show()  AS VOID CLIPPER
         SUPER:Show()
         SELF:RefreshMemoryDisplay()
         SELF:__UpdateKeyStates()

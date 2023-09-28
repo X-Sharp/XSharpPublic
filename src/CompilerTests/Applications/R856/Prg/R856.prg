@@ -1,5 +1,5 @@
 #pragma options("vo7", on)
-
+#pragma warnings(9071, off) // out expected
 FUNCTION Start() AS VOID
     LOCAL nOldArea     AS DWORD
     LOCAL nArea := 0 AS USUAL

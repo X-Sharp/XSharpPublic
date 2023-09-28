@@ -120,20 +120,7 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     IF area:IsSymbol .AND. ((STRING) area):ToUpper() == "M"
         RETURN __MemVarGet(fieldName)
     ENDIF
-    LOCAL ret AS USUAL
-    LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
-    LOCAL newArea := _Select( area ) AS DWORD
-    IF newArea > 0
-        RuntimeState.CurrentWorkarea := newArea
-        TRY
-            ret := __FieldGet( fieldName )
-        FINALLY
-            RuntimeState.CurrentWorkarea := curArea
-        END TRY
-    ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, NAMEOF(area), 1, <OBJECT>{area}  )
-    ENDIF
-    RETURN ret
+    RETURN FieldGetSelect(area,fieldName)
 
 /// <summary>Access a value from a field in a workarea, or get a property of an undeclared variable.</summary>
 /// <param name="wa">Workarea in which the expression will be evaluated, or the name of the undeclared variable.</param>
@@ -193,20 +180,7 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
     IF area:IsSymbol .AND. ((STRING) area):ToUpper() == "M"
         RETURN __MemVarPut(fieldName,uValue)
     ENDIF
-    LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
-    LOCAL newArea := _Select( area ) AS DWORD
-    IF newArea > 0
-        RuntimeState.CurrentWorkarea := newArea
-
-        TRY
-            __FieldSet( fieldName, uValue )
-        FINALLY
-            RuntimeState.CurrentWorkarea := curArea
-        END TRY
-    ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, NAMEOF(area),1, <OBJECT>{area}  )
-    ENDIF
-    // Note: must return the same value passed in, to allow chained assignment expressions
+    FieldPutSelect(area,fieldName,uValue)
     RETURN uValue
 
 /// <summary>Assign a value to a field in a workarea, or set a property of an undeclared variable</summary>

@@ -28,8 +28,8 @@ CLASS Brush INHERIT VObject
         ENDIF
 
         oColor := NULL_OBJECT
-        IF IsInstanceOfUsual(xColor, #Color)
-            oColor := xColor
+        if xColor is Color var oColor
+            self:oColor := oColor
             DEFAULT( REF kHatchStyle, HATCHSOLID)
 
             IF IsNumeric(kHatchStyle)
@@ -42,10 +42,8 @@ CLASS Brush INHERIT VObject
                 argTypeError := TRUE
             ENDIF
 
-        ELSEIF IsInstanceOfUsual(xColor, #Bitmap)
-            LOCAL oBmp AS Bitmap
-            IF IsNil(kHatchStyle)
-                oBmp := xColor
+        elseif xColor is Bitmap var oBmp
+            if IsNil(kHatchStyle)
                 oBrush := System.Drawing.TextureBrush{ oBmp}
             ELSE
                 argTypeError := TRUE
@@ -68,7 +66,7 @@ CLASS Brush INHERIT VObject
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/Brush.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL  CLIPPER
 
         IF (oBrush != NULL_OBJECT)
             oBrush:Dispose()
@@ -94,8 +92,8 @@ CLASS Brush INHERIT VObject
     ASSIGN Parent (oWindow)
         LOCAL oParent AS Window
 
-        IF IsInstanceOfUsual(oWindow, #Window)
-            oParent := oWindow
+        if oWindow is Window var oWin
+            oParent := oWin
             _hParent := oParent:Handle()
         ELSE
             _hParent := NULL_PTR

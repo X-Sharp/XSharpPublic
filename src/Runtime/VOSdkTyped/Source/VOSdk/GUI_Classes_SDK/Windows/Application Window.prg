@@ -43,7 +43,7 @@ CLASS AppWindow INHERIT Window
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
 
         IF (oVertScroll != NULL_OBJECT)
             oVertScroll:Destroy()
@@ -281,7 +281,7 @@ CLASS AppWindow INHERIT Window
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/AppWindow.Show/*" />
-    METHOD Show(nShowState AS LONG ) AS VOID
+    METHOD Show(nShowState) AS VOID CLIPPER
         IF oStatusBar != NULL_OBJECT
             oStatusBar:Show()
         ENDIF

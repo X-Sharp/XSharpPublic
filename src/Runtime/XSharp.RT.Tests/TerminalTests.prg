@@ -21,14 +21,14 @@ CLASS TerminalTests
         var lAlte    := SetAlternate()
         SetConsole(FALSE)
         SetAlternate(FALSE)
-        TEXT TO FILE Test.Txt
+        TEXT TO FILE TextToFileTests.Txt
         a
         b
         c
         ENDTEXT
         SetConsole(lConsole)
         SetAlternate(lAlte)
-        var cText := MemoRead("test.txt")
+        var cText := MemoRead("TextToFileTests.txt")
         var nCount := MLCount(cText)
         Assert.Equal(nCount, 4U)
         Assert.Equal("a", MLine(cText,2):Trim())

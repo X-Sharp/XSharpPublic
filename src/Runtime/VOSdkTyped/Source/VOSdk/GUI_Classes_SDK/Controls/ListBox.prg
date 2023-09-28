@@ -4,561 +4,573 @@
 // See License.txt in the project root for license information.
 //
 /// <include file="Gui.xml" path="doc/ListBox/*" />
-CLASS ListBox INHERIT BaseListBox
-	PROTECT wSelectNum 		AS LONG
+class ListBox inherit BaseListBox
+    protect wSelectNum 		as long
     /// <exclude  />
-    PROPERTY ControlType AS ControlType GET ControlType.ListBox
-
-    /// <exclude  />
-	METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
-		LOCAL nItem AS LONG
-		SELF:cSavedText := STRING.Empty
-		nItem := SELF:__FindRetValue(SELF:uValue)
-		SUPER:OnHandleCreated(o,e)
-		SELF:__CurrentItemNo := nItem
+    property ControlType as ControlType get ControlType.ListBox
 
     /// <exclude  />
-	[Obsolete];
-	METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS LONG) AS VOID STRICT
-		RETURN
-
- /// <exclude />
-	METHOD __FindDisplayValue(cValue AS STRING) AS LONG STRICT
-		// Returns 1-based index in collection
-		LOCAL dwI AS LONG
-		FOREACH oItem AS ListBoxItemValue IN SELF:__Items
-			dwI++
-			IF Alltrim(oItem:DisplayValue) == cValue
-				RETURN dwI
-			ENDIF
-		NEXT
-
-		RETURN 0
+    method OnHandleCreated(o as object, e as EventArgs) as void
+        local nItem as long
+        self:cSavedText := STRING.Empty
+        nItem := self:__FindRetValue(self:uValue)
+        super:OnHandleCreated(o,e)
+        self:__CurrentItemNo := nItem
 
 
- /// <exclude />
-	METHOD __FindRetValue(uValue AS USUAL) AS LONG STRICT
-		LOCAL dwI as LONG
-		// Returns 1-based index in collection
-		FOREACH oItem AS ListBoxItemValue IN SELF:__Items
-			dwI++
-			IF valtype(oItem:Value) == valtype(uValue)
-				IF oItem:Value == uValue
-					RETURN dwI
-				ENDIF
-			ELSE
-				// What is this ?
-				oItem:Value := oItem:Value
-			ENDIF
-		NEXT
-		RETURN 0
+
+
+    protected method __BeginUpdate() as void
+        self:__ListBox:BeginUpdate()
+    protected method __EndUpdate() as void
+        self:__ListBox:EndUpdate()
+    /// <exclude />
+    method __FindDisplayValue(cValue as string) as long strict
+        // Returns 1-based index in collection
+        local dwI as long
+        foreach oItem as ListBoxItemValue in self:__Items
+            dwI++
+            if Alltrim(oItem:DisplayValue) == cValue
+                return dwI
+            endif
+        next
+
+        return 0
+
+
+    /// <exclude />
+    method __FindRetValue(uValue as usual) as long strict
+        local dwI as long
+        // Returns 1-based index in collection
+        foreach oItem as ListBoxItemValue in self:__Items
+            dwI++
+            if valtype(oItem:Value) == valtype(uValue)
+                if oItem:Value == uValue
+                    return dwI
+                endif
+            else
+                // What is this ?
+                oItem:Value := oItem:Value
+            endif
+        next
+        return 0
 
     /// <exclude  />
-	METHOD __SetText(cNewText AS STRING) AS STRING
-		IF cNewText != SELF:CurrentText
-			RETURN SUPER:__SetText(cNewText)
-		ENDIF
-		RETURN cNewText
+    method __SetText(cNewText as string) as string
+        if cNewText != self:CurrentText
+            return super:__SetText(cNewText)
+        endif
+        return cNewText
 
- /// <exclude />
-	METHOD __Update() AS VOID STRICT
-		LOCAL cOldValue AS STRING
-		LOCAL oItem AS ListBoxItemValue
-		LOCAL nIndex AS LONG
-		IF SELF:Modified
-			cOldValue := AsString(uValue)
-			IF (nIndex := SELF:__List:SelectedIndex) >= 0
-				oItem := SELF:__Items[nIndex]
-				uValue := oItem:Value
-			ELSE
-				uValue := NIL
-			ENDIF
-			SELF:ValueChanged	:= !(cOldValue == AsString(uValue))
-			SELF:Modified		:= FALSE
-		ENDIF
-		RETURN
+    /// <exclude />
+    method __Update() as void strict
+        local cOldValue as string
+        local oItem as ListBoxItemValue
+        local nIndex as long
+        if self:Modified
+            cOldValue := AsString(uValue)
+            if (nIndex := self:__List:SelectedIndex) >= 0
+                oItem := self:__Items[nIndex]
+                uValue := oItem:Value
+            else
+                uValue := nil
+            endif
+            self:ValueChanged	:= !(cOldValue == AsString(uValue))
+            self:Modified		:= false
+        endif
+        return
 
- /// <exclude />
-	ASSIGN __Value(uNewVal AS USUAL)  STRICT
-		LOCAL cSelValue AS STRING
-		LOCAL nIndex AS LONG
-		LOCAL oValue AS ListBoxItemValue
-		//PP-030924 allow value of NIL to reset control
-		IF IsNil(uNewVal)
-			SELF:__CurrentItemNo := 0
-			SUPER:TextValue := ""
-			uValue := uNewVal
-		ELSE
-			//PP-030924 clear and reload box, clears selection
-			//SELF:__reset()
-			cSelValue := AllTrim(AsString(uNewVal))
-			nIndex := SELF:__FindRetValue(uNewVal)
-			IF nIndex > 0
-				// select the corresponding display string
-				SELF:CurrentItemNo := nIndex
-				oValue := SELF:__Items[nIndex-1]
-				SELF:__SetText(oValue:DisplayValue)
-				uValue := oValue:Value
-			ELSE
-				nIndex := SELF:FindItem(cSelValue, TRUE)
-				IF nIndex == 0
-					nIndex := SELF:FindItem(cSelValue, FALSE)
-					IF nIndex > 0
-						oValue := SELF:__Items[nIndex-1]
-						IF ! cSelValue == oValue:DisplayValue
-							nIndex := 0
-						ENDIF
-					ELSE
-						uValue := uNewVal
-					ENDIF
-				ENDIF
-				IF nIndex > 0
-					oValue    := SELF:__Items[nIndex-1]
-					cSelValue := oValue:DisplayValue
-					uValue    := oValue:Value
-				ENDIF
-				SELF:__CurrentItemNo := nIndex
-				SELF:__SetText(cSelValue)
-			ENDIF
-		ENDIF
+    /// <exclude />
+    assign __Value(uNewVal as usual)  strict
+        local cSelValue as string
+        local nIndex as long
+        local oValue as ListBoxItemValue
+        //PP-030924 allow value of NIL to reset control
+        if IsNil(uNewVal)
+            self:__CurrentItemNo := 0
+            super:TextValue := ""
+            uValue := uNewVal
+        else
+            //PP-030924 clear and reload box, clears selection
+            //SELF:__reset()
+            cSelValue := AllTrim(AsString(uNewVal))
+            nIndex := self:__FindRetValue(uNewVal)
+            if nIndex > 0
+                // select the corresponding display string
+                self:CurrentItemNo := nIndex
+                oValue := self:__Items[nIndex-1]
+                self:__SetText(oValue:DisplayValue)
+                uValue := oValue:Value
+            else
+                nIndex := self:FindItem(cSelValue, true)
+                if nIndex == 0
+                    nIndex := self:FindItem(cSelValue, false)
+                    if nIndex > 0
+                        oValue := self:__Items[nIndex-1]
+                        if ! cSelValue == oValue:DisplayValue
+                            nIndex := 0
+                        endif
+                    else
+                        uValue := uNewVal
+                    endif
+                endif
+                if nIndex > 0
+                    oValue    := self:__Items[nIndex-1]
+                    cSelValue := oValue:DisplayValue
+                    uValue    := oValue:Value
+                endif
+                self:__CurrentItemNo := nIndex
+                self:__SetText(cSelValue)
+            endif
+        endif
 
-		RETURN
-
-
-/// <include file="Gui.xml" path="doc/ListBox.AddItem/*" />
-	METHOD AddItem(cItem , nItemNumber , uRetValue ) AS LONG
-		// nItemNumber = 1-based index in collection
-		// Returns 1-based index in collection
-
-		LOCAL nIndex AS LONG
-		IF IsNil(uRetValue)
-			uRetValue := cItem
-		ENDIF
-		nIndex := SUPER:AddItem(cItem, nItemNumber, uRetValue)
-		RETURN nIndex
-
-/// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
-	PROPERTY Caption AS STRING GET cCaption SET cCaption := Value
-
-/// <include file="Gui.xml" path="doc/ListBox.ChangeSelected/*" />
-	METHOD ChangeSelected(oRange AS Range, lEnabled := TRUE AS LOGIC)  AS LOGIC
-		LOCAL nItem AS LONG
-		IF !SELF:lIsComboBox
-			IF SELF:ValidateControl() .and. ! SELF:lIsComboBox
-				FOR nItem := oRange:Min TO oRange:Max
-					IF lEnabled
-						SELF:__ListBox:SelectedIndices:Add(nItem-1)
-					ELSE
-						IF SELF:__ListBox:SelectedIndices:Contains(nItem-1)
-							SELF:__ListBox:SelectedIndices:Remove(nItem-1)
-						ENDIF
-					ENDIF
-				NEXT
-				RETURN TRUE
-			ENDIF
-		ENDIF
-		RETURN FALSE
-
-/// <include file="Gui.xml" path="doc/ListBox.Clear/*" />
-	METHOD Clear() AS VOID
-		IF SELF:FieldSpec == NULL_OBJECT
-			SELF:uValue := NIL
-		ELSE
-			SELF:uValue := EmptyUsual(SELF:FieldSpec:UsualType)
-		ENDIF
-
-		SUPER:Clear()
-		RETURN
+        return
 
 
-/// <include file="Gui.xml" path="doc/ListBox.ClearSelection/*" />
-	METHOD ClearSelection()
-		IF SELF:ValidateControl()
-			IF !lIsComboBox
-				SELF:__ListBox:SelectedIndices:Clear()
-			ENDIF
-			SELF:__CurrentItemNo := 0
-			RETURN TRUE
-		ENDIF
+    /// <include file="Gui.xml" path="doc/ListBox.AddItem/*" />
+    method AddItem(cItem , nItemNumber , uRetValue ) as long
+        // nItemNumber = 1-based index in collection
+        // Returns 1-based index in collection
 
-		RETURN FALSE
+        local nIndex as long
+        if IsNil(uRetValue)
+            uRetValue := cItem
+        endif
+        nIndex := super:AddItem(cItem, nItemNumber, uRetValue)
+        return nIndex
 
-/// <include file="Gui.xml" path="doc/ListBox.Create/*" />
-	METHOD Create() AS IVOControl STRICT
-		IF oCtrl ==  NULL_OBJECT  .AND. !IsInstanceOf(SELF, #ComboBox)
-			SELF:SetStyle(_OR(LBS_Notify, LBS_NoIntegralHeight))
-		ENDIF
-		RETURN SUPER:Create()
+    /// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
+    property Caption as string get cCaption set cCaption := value
 
-/// <include file="Gui.xml" path="doc/ListBox.CurrentItem/*" />
-    PROPERTY CurrentItem  AS STRING
-    GET
-		IF SELF:ValidateControl()
-			RETURN SELF:GetItem(0)
-		ENDIF
-        RETURN sSavedCurrentItem
-    END GET
-    SET
-		SELF:CurrentItemNo := SELF:FindItem(value)
-		RETURN
-    END SET
-    END PROPERTY
-/// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
-    PROPERTY CurrentItemNo AS LONG
-    GET
-		IF SELF:MultiSelection
-			RETURN SELF:FirstSelected()
-		ENDIF
-		RETURN SUPER:CurrentItemNo
-    END GET
-    SET
+    /// <include file="Gui.xml" path="doc/ListBox.ChangeSelected/*" />
+    method ChangeSelected(oRange as Range, lEnabled := true as logic)  as logic
+        local nItem as long
+        if !self:IsComboBox
+            if self:ValidateControl() .and. ! self:IsComboBox
+                for nItem := oRange:Min to oRange:Max
+                    if lEnabled
+                        self:__ListBox:SelectedIndices:Add(nItem-1)
+                    else
+                        if self:__ListBox:SelectedIndices:Contains(nItem-1)
+                            self:__ListBox:SelectedIndices:Remove(nItem-1)
+                        endif
+                    endif
+                next
+                return true
+            endif
+        endif
+        return false
 
-		// nItemNo = 1-based index in collection
-		LOCAL cSelValue AS STRING
-		LOCAL dwIndex AS LONG
-		LOCAL uOldValue AS USUAL
-		LOCAL oItem AS ListBoxItemValue
-		SELF:__CurrentItemNo := value
+    /// <include file="Gui.xml" path="doc/ListBox.Clear/*" />
+    method Clear() as void
+        if self:FieldSpec == null_object
+            self:uValue := nil
+        else
+            self:uValue := EmptyUsual(self:FieldSpec:UsualType)
+        endif
 
-		IF value > 0
-			cSelValue := SELF:CurrentItem
-		ENDIF
-		uOldValue := AsString(uValue)
-		IF ! IsNil(cSelValue) .AND. (dwIndex := SELF:__FindDisplayValue(AllTrim(cSelValue))) > 0
-			oItem := SELF:__Items[dwIndex-1]
-			uValue := oItem:Value
-		ELSE
-			uValue := cSelValue
-		ENDIF
-		SELF:ValueChanged := !(AsString(uValue) == uOldValue)
-
-    END SET
-    END PROPERTY
+        super:Clear()
+        return
 
 
-/// <include file="Gui.xml" path="doc/ListBox.CurrentText/*" />
-	ASSIGN CurrentText(cNewText AS STRING)
-		SELF:__SetText(cNewText)
-		RETURN
+    /// <include file="Gui.xml" path="doc/ListBox.ClearSelection/*" />
+    method ClearSelection()
+        if self:ValidateControl()
+            if self:IsListBox
+                self:__ListBox:SelectedIndices:Clear()
+            else
+                self:__ComboBox:SelectedIndex := -1
+            endif
+            self:__CurrentItemNo := 0
+            return true
+        endif
 
-/// <include file="Gui.xml" path="doc/ListBox.DeleteItem/*" />
-	METHOD DeleteItem(nItem := 0 AS LONG) AS LOGIC
-		// nItem = 1-based index in collection
-		LOCAL lReturnValue AS LOGIC
-		lReturnValue := SUPER:DeleteItem(nItem)
-		RETURN lReturnValue
+        return false
 
-/// <include file="Gui.xml" path="doc/ListBox.DeselectItem/*" />
-	METHOD DeselectItem(nItem AS LONG) AS LOGIC
-		// nItem = 1-based index in collection
-		IF SELF:ValidateControl() .and. ! SELF:lIsComboBox
-			IF SELF:__ListBox:SelectedIndices:Contains(nItem-1)
-				SELF:__ListBox:SelectedIndices:Remove(nItem-1)
-				RETURN TRUE
-			ENDIF
-		ENDIF
+    /// <include file="Gui.xml" path="doc/ListBox.Create/*" />
+    method Create() as IVOControl strict
+        if oCtrl ==  null_object  .and. !IsInstanceOf(self, #ComboBox)
+            self:SetStyle(_or(LBS_Notify, LBS_NoIntegralHeight))
+        endif
+        return super:Create()
 
-		RETURN FALSE
+    /// <include file="Gui.xml" path="doc/ListBox.CurrentItem/*" />
+    property CurrentItem  as string
+        get
+            if self:ValidateControl()
+                return self:GetItem(0)
+            endif
+            return sSavedCurrentItem
+        end get
+        set
+            self:CurrentItemNo := self:FindItem(value)
+            return
+        end set
+    end property
+    /// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
+    property CurrentItemNo as long
+        get
+            if self:MultiSelection
+                return self:FirstSelected()
+            endif
+            return super:CurrentItemNo
+        end get
+        set
 
-/// <include file="Gui.xml" path="doc/ListBox.EnableItemDrag/*" />
-	METHOD EnableItemDrag() AS VOID
-		//Todo EnableItemDrag
-		//IF IsInstanceOf(oFormSurface, #DialogWindow)
-		//	Send(oFormSurface, #__SubClassForDragList)
-		//ENDIF
-		//SELF:setstyle(LBS_SORT, FALSE)
-		//RETURN MakeDragList(SELF:Handle())
+            // nItemNo = 1-based index in collection
+            local cSelValue as string
+            local dwIndex as long
+            local uOldValue as usual
+            local oItem as ListBoxItemValue
+            self:__CurrentItemNo := value
 
-/// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
-	METHOD FillUsingBySortedList(oList AS System.Collections.Generic.SortedList<STRING,USUAL>) AS VOID STRICT
-		IF !SELF:lIsComboBox
-			SELF:__ListBox:BeginUpdate()
-			SELF:Clear()
-			IF oList:Count > 0 // aus irgendeinem Grund geht er bei leerer Liste trotzdem in die SChleife
-				FOREACH kvp AS System.Collections.Generic.KeyValuePair<STRING,USUAL> IN oList
-					SUPER:AddItem(kvp:Key, ,kvp:Value)
-				NEXT
-			ENDIF
-			SELF:__ListBox:EndUpdate()
-		ENDIF
+            if value > 0
+                cSelValue := self:CurrentItem
+            endif
+            uOldValue := AsString(uValue)
+            if ! IsNil(cSelValue) .and. (dwIndex := self:__FindDisplayValue(AllTrim(cSelValue))) > 0
+                oItem := self:__Items[dwIndex-1]
+                uValue := oItem:Value
+            else
+                uValue := cSelValue
+            endif
+            self:ValueChanged := !(AsString(uValue) == uOldValue)
 
-/// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
-	METHOD FillUsing(aContents, symField1, symField2)
-		LOCAL wArrLen AS DWORD
-		LOCAL wElemLen AS DWORD
-		LOCAL wIndex AS LONG
-		LOCAL uElement AS USUAL
-		LOCAL uDisplayValue AS USUAL
-		LOCAL cDisplayValue AS STRING
-		LOCAL uRetValue AS USUAL
-
-		IF IsInstanceOfUsual(aContents, #DataServer) .AND. IsMethod(aContents, #GetLookUpTable)
-			aContents := Send(aContents, #GetLookUpTable, Math.Min(0x7FFF, (LONG) IVarGet(aContents, #RecCount)), symField1, symField2)
-		ELSEIF IsArray(aContents)
-			IF !IsNil(symField1) .OR. !IsNil(symField2)
-				WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:Throw()
-			ENDIF
-		ELSE
-			WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
-		ENDIF
-
-		SELF:Clear()
-		SELF:IsBusy := TRUE
-		IF SELF:lIsComboBox
-			SELF:__ComboBox:BeginUpdate()
-		ELSE
-			SELF:__ListBox:BeginUpdate()
-		ENDIF
-		IF (wArrLen := ALen(aContents)) > 0
-			FOR wIndex := 1 UPTO wArrLen
-				uElement := aContents[wIndex]
-				IF IsArray(uElement)
-					wElemLen := ALen(uElement)
-					IF wElemLen = 2
-						uDisplayValue := uElement[1]
-						uRetValue := uElement[2]
-					ELSEIF wElemLen = 1
-						uDisplayValue := uElement[1]
-						uRetValue := uElement[1]
-					ELSE
-						WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
-					ENDIF
-				ELSE
-					uDisplayValue := uElement
-					uRetValue := uElement
-				ENDIF
-				IF !IsString(uDisplayValue)
-					cDisplayValue := AsString(uDisplayValue)
-				ELSE
-					cDisplayValue := (STRING) uDisplayValue
-				ENDIF
-				IF IsInstanceOf(SELF, #COMBOBOXEX)
-					SELF:AddItem( cDisplayValue)
-				ELSE
-					SUPER:AddItem(cDisplayValue, ,uRetValue)
-				ENDIF
-			NEXT
-		ENDIF
-		IF SELF:lIsComboBox
-			SELF:__ComboBox:EndUpdate()
-		ELSE
-			SELF:__ListBox:EndUpdate()
-		ENDIF
-		SELF:IsBusy := FALSE
-		RETURN SELF
-
-/// <include file="Gui.xml" path="doc/ListBox.FirstSelected/*" />
-	METHOD FirstSelected ( ) AS LONG
-		// nItem = 1-based index in collection
-		LOCAL iResult AS LONG
-		TRY
-			IF SELF:__Items:Count > 0
-				IF SELF:lIsComboBox
-					iResult :=  SELF:__ComboBox:SelectedIndex+1
-				ELSE
-					IF __ListBox:SelectedIndex >= 0
-						wSelectNum := 1
-						IF wSelectNum <= __ListBox:SelectedIndices:Count
-							iResult := (INT) __ListBox:SelectedIndices[wSelectNum-1]+1
-						ENDIF
-					ENDIF
-				ENDIF
-			ENDIF
-		CATCH  AS Exception
-			iResult := 0
-		END TRY
-		RETURN iResult
+        end set
+    end property
 
 
-/// <include file="Gui.xml" path="doc/ListBox.ctor/*" />
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
-		SUPER(oOwner, xID, oPoint, oDimension, kStyle, TRUE)
-		RETURN
+    /// <include file="Gui.xml" path="doc/ListBox.CurrentText/*" />
+    assign CurrentText(cNewText as string)
+        self:__SetText(cNewText)
+        return
 
-/// <include file="Gui.xml" path="doc/ListBox.IsSelected/*" />
-	METHOD IsSelected(iIdx AS LONG)
-		// nItem = 1-based index in collection
-		LOCAL lResult AS LOGIC
-		IF SELF:ValidateControl()
-			IF ! SELF:MultiSelection
-				lResult := (iIdx == SELF:CurrentItemNo)
-			ELSEIF ! SELF:lIsComboBox
-				lResult := SELF:__ListBox:SelectedIndices:Contains(iIdx-1)
-			ENDIF
-		ENDIF
+    /// <include file="Gui.xml" path="doc/ListBox.DeleteItem/*" />
+    method DeleteItem(nItem := 0 as long) as logic
+        // nItem = 1-based index in collection
+        local lReturnValue as logic
+        lReturnValue := super:DeleteItem(nItem)
+        return lReturnValue
 
-		RETURN lResult
+    /// <include file="Gui.xml" path="doc/ListBox.DeselectItem/*" />
+    method DeselectItem(nItem as long) as logic
+        // nItem = 1-based index in collection
+        if self:ValidateControl() .and. self:IsListBox
+            if self:__ListBox:SelectedIndices:Contains(nItem-1)
+                self:__ListBox:SelectedIndices:Remove(nItem-1)
+                return true
+            endif
+        endif
 
-/// <include file="Gui.xml" path="doc/ListBox.ItemCount/*" />
-	ACCESS ItemCount AS LONG
-		RETURN (LONG) SELF:__Items:Count
+        return false
 
-/// <include file="Gui.xml" path="doc/ListBox.ListFiles/*" />
-	METHOD ListFiles(sStartDir, oFixedText, FileTypes)
-		//Todo ListFiles
-		RETURN SELF
-		//LOCAL pPath AS PSZ
-		//LOCAL i,iRet AS INT
-		//LOCAL dwFileTypes AS DWORD
-		//LOCAL w AS DWORD
+    /// <include file="Gui.xml" path="doc/ListBox.EnableItemDrag/*" />
+    method EnableItemDrag() as void
+        //Todo EnableItemDrag
+        //IF IsInstanceOf(oFormSurface, #DialogWindow)
+        //	Send(oFormSurface, #__SubClassForDragList)
+        //ENDIF
+        //SELF:setstyle(LBS_SORT, FALSE)
+        //RETURN MakeDragList(SELF:Handle())
 
-		//DEFAULT( REF sStartDir, "*.*")
+    /// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
+    method FillUsingBySortedList(oList as System.Collections.Generic.SortedList<string,usual>) as void strict
+        if self:IsListBox
+            self:__BeginUpdate()
+            self:Clear()
+            if oList:Count > 0 // aus irgendeinem Grund geht er bei leerer Liste trotzdem in die SChleife
+                foreach kvp as System.Collections.Generic.KeyValuePair<string,usual> in oList
+                    super:AddItem(kvp:Key, ,kvp:Value)
+                next
+            endif
+            self:__EndUpdate()
+        endif
 
-		//pPath := StringAlloc(sStartDir)
-		//pPath := MemRealloc(pPath, 261)
+    /// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
+    method FillUsing(aContents, symField1, symField2)
+        local wElemLen as dword
+        local uDisplayValue as usual
+        local cDisplayValue as string
+        local uRetValue as usual
 
-		//IF !IsNil(FileTypes)
-		//	dwFileTypes := FileTypes
-		//ELSE
-		//	dwFileTypes := _OR(DDL_DIRECTORY, DDL_DRIVES)
-		//ENDIF
+        if aContents is DataServer var oDS
+            aContents := oDs:GetLookUpTable( Math.Min(0x7FFF, (long) IVarGet(aContents, #RecCount)), symField1, symField2)
+        elseif IsArray(aContents)
+            if !IsNil(symField1) .or. !IsNil(symField2)
+                WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:Throw()
+            endif
+        else
+            WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
+        endif
 
-		//IF !IsNil(oFixedText)
-		//	w := oFixedText:ControlID
-		//ENDIF
+        self:Clear()
+        self:IsBusy := true
+        self:__BeginUpdate()
+        if ALen(aContents) > 0
+            foreach var uElement in aContents
+                if IsArray(uElement)
+                    wElemLen := ALen(uElement)
+                    if wElemLen == 2
+                        uDisplayValue   := uElement[1]
+                        uRetValue       := uElement[2]
+                    elseif wElemLen == 1
+                        uDisplayValue := uElement[1]
+                        uRetValue := uElement[1]
+                    else
+                        WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
+                    endif
+                else
+                    uDisplayValue := uElement
+                    uRetValue := uElement
+                endif
+                if !IsString(uDisplayValue)
+                    cDisplayValue := AsString(uDisplayValue)
+                else
+                    cDisplayValue := (string) uDisplayValue
+                endif
+                if IsInstanceOf(self, #COMBOBOXEX)
+                    self:AddItem( cDisplayValue)
+                else
+                    super:AddItem(cDisplayValue, ,uRetValue)
+                endif
+            next
+        endif
+        self:__EndUpdate()
+        self:IsBusy := false
+        return self
 
-		////iRet := call(fpListFiles, oParent:Handle(), pPath, wID, w, dwFileTypes)
-		//iRet := DlgDirList(oParent:Handle(), pPath, INT(wID), INT(w), dwFileTypes)
+    /// <include file="Gui.xml" path="doc/ListBox.FirstSelected/*" />
+    method FirstSelected ( ) as long
+        // nItem = 1-based index in collection
+        local iResult as long
+        try
+            if self:__Items:Count > 0
+                if self:IsComboBox
+                    iResult :=  self:__ComboBox:SelectedIndex+1
+                else
+                    if __ListBox:SelectedIndex >= 0
+                        wSelectNum := 1
+                        if wSelectNum <= __ListBox:SelectedIndices:Count
+                            iResult := (int) __ListBox:SelectedIndices[wSelectNum-1]+1
+                        endif
+                    endif
+                endif
+            endif
+        catch  as Exception
+            iResult := 0
+        end try
+        return iResult
 
-		//MemFree(pPath)
-		//iRet := SUPER:ItemCount
-		////RvdH 050602, Bug [12898] Now fill aRetValues and aDisplayValues array with the file names
-		//aRetValues 		:= ArrayNew(iRet)
-		//aDisplayValues := ArrayNew(iRet)
-		//FOR i := 1 TO iRet
-		//	aRetValues[i] 		:= SELF:GetItem(i)
-		//	aDisplayValues[i] := aRetValues[i]
-		//NEXT
 
-		//RETURN (iRet != 0)
+    /// <include file="Gui.xml" path="doc/ListBox.ctor/*" />
+    constructor(oOwner, xID, oPoint, oDimension, kStyle)
+        super(oOwner, xID, oPoint, oDimension, kStyle, true)
+        return
 
-/// <include file="Gui.xml" path="doc/ListBox.MultiSelection/*" />
-	ACCESS MultiSelection AS LOGIC
-		LOCAL lMulti AS LOGIC
-		IF SELF:ValidateControl() .and. ! SELF:lIsComboBox
-			lMulti := __ListBox:SelectionMode == System.Windows.Forms.SelectionMode.MultiSimple .or. ;
-					 __ListBox:SelectionMode == System.Windows.Forms.SelectionMode.MultiExtended
-		ENDIF
-		RETURN lMulti
+    /// <include file="Gui.xml" path="doc/ListBox.IsSelected/*" />
+    method IsSelected(iIdx as long) as logic
+        // nItem = 1-based index in collection
+        local lResult as logic
+        if self:ValidateControl()
+            if ! self:MultiSelection
+                lResult := (iIdx == self:CurrentItemNo)
+            elseif self:IsListBox
+                lResult := self:__ListBox:SelectedIndices:Contains(iIdx-1)
+            endif
+        endif
 
-/// <include file="Gui.xml" path="doc/ListBox.NextSelected/*" />
-	METHOD NextSelected() AS LONG
-		// RETURNS 1-based index in collection
-		LOCAL iResult AS LONG
-		IF SELF:__Items:Count > 0
+        return lResult
 
-			IF SELF:lIsComboBox
-				iResult := 0
-			ELSE
-				wSelectNum 	:= wSelectNum + 1
-				IF SELF:ValidateControl() .AND. wSelectNum <= SELF:__ListBox:SelectedIndices:Count
-					iResult 	:= (INT) SELF:__ListBox:SelectedIndices[wSelectNum-1] +1
-				ENDIF
-			ENDIF
-		ENDIF
-		RETURN iResult
+    /// <include file="Gui.xml" path="doc/ListBox.ItemCount/*" />
+    access ItemCount as long
+        return (long) self:__Items:Count
 
-/// <include file="Gui.xml" path="doc/ListBox.SelectedCount/*" />
-	ACCESS SelectedCount AS LONG
-		LOCAL liNumSelected := 0 AS LONGINT
 
-		IF SELF:ValidateControl()  .and. ! SELF:lIsComboBox
-			liNumSelected := __ListBox:SelectedItems:Count
+    /// <include file="Gui.xml" path="doc/ListBox.MultiSelection/*" />
+    access MultiSelection as logic
+        local lMulti as logic
+        if self:ValidateControl() .and. self:IsListBox
+            lMulti := __ListBox:SelectionMode == System.Windows.Forms.SelectionMode.MultiSimple .or. ;
+                __ListBox:SelectionMode == System.Windows.Forms.SelectionMode.MultiExtended
+        endif
+        return lMulti
 
-		ENDIF
+    /// <include file="Gui.xml" path="doc/ListBox.NextSelected/*" />
+    method NextSelected() as long
+        // RETURNS 1-based index in collection
+        local iResult as long
+        if self:__Items:Count > 0
 
-		RETURN liNumSelected
+            if self:IsComboBox
+                iResult := 0
+            else
+                wSelectNum 	:= wSelectNum + 1
+                if self:ValidateControl() .and. wSelectNum <= self:__ListBox:SelectedIndices:Count
+                    iResult 	:= (int) self:__ListBox:SelectedIndices[wSelectNum-1] +1
+                endif
+            endif
+        endif
+        return iResult
 
-/// <include file="Gui.xml" path="doc/ListBox.SelectedFile/*" />
-	ACCESS SelectedFile AS STRING
-		//Todo SelectedFile
-		//LOCAL pPath AS PSZ
-		//LOCAL sRet AS STRING
-		//pPath := MemAlloc(261)
-		//MemSet(pPath, 0, 261)
-		////call(fpSelectedFile, oParent:Handle(), pPath,	260, wID)
-		//__DlgDirSelectEx(((Window) oParent):Handle(), pPath,	260, wID)
-		//sRet := Psz2String(pPath)
-		//MemFree(pPath)
-		//RETURN sRet
-		RETURN NULL_STRING
+    /// <include file="Gui.xml" path="doc/ListBox.SelectedCount/*" />
+    access SelectedCount as long
+        local liNumSelected := 0 as longint
 
-/// <include file="Gui.xml" path="doc/ListBox.SelectItem/*" />
-	METHOD SelectItem(nItemId AS LONG) AS LOGIC
-		// nItemID =  1-based index in collection
-		IF SELF:ValidateControl()
-			IF SELF:ItemCount >= nItemId .and. nItemId > 0
-				IF SELF:lIsComboBox
-					SELF:__ComboBox:SelectedIndex := nItemId-1
-				ELSE
-					SELF:__ListBox:SelectedIndex := nItemId-1
-				ENDIF
-				RETURN TRUE
-			ENDIF
-		ENDIF
-		RETURN FALSE
+        if self:ValidateControl()  .and. self:IsListBox
+            liNumSelected := __ListBox:SelectedItems:Count
+        endif
 
-	// not supported anymore
-	[obsolete];
-	METHOD SetTabs(aTabs AS ARRAY) AS VOID
-		RETURN
+        return liNumSelected
 
-	// Estimates optimal Width of the control by Measuring the Displayvalues
-	METHOD GetOptimalWidth() AS DWORD
-		LOCAL nMaxlen:= 0 AS DWORD
-		FOREACH oVal AS ListBoxItemValue IN SELF:__Items
-			nMaxlen := 100 // Max( System.Windows.Forms.TextRenderer.MeasureText(oVal:DisplayValue,oCtrl:Font,System.Drawing.Size{0,0},SupportFunctions.lsbTextflags):Width,nMaxlen)
-		NEXT
-		nMaxlen += 20 // Offset for Vertical Scrollbar
-		RETURN nMaxlen
+    /// <include file="Gui.xml" path="doc/ListBox.SelectedFile/*" />
+    access SelectedFile as string
+        //Todo SelectedFile
+        //LOCAL pPath AS PSZ
+        //LOCAL sRet AS STRING
+        //pPath := MemAlloc(261)
+        //MemSet(pPath, 0, 261)
+    ////call(fpSelectedFile, oParent:Handle(), pPath,	260, wID)
+    //__DlgDirSelectEx(((Window) oParent):Handle(), pPath,	260, wID)
+    //sRet := Psz2String(pPath)
+    //MemFree(pPath)
+    //RETURN sRet
+    return null_string
 
-/// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
-	ACCESS TextValue AS STRING
-		LOCAL nItem AS LONG
-		LOCAL oItem AS ListBoxItemValue
-		IF SELF:ValidateControl()
+    /// <include file="Gui.xml" path="doc/ListBox.SelectItem/*" />
+    method SelectItem(nItemId as long) as logic
+        // nItemID =  1-based index in collection
+        if self:ValidateControl()
+            if self:ItemCount >= nItemId .and. nItemId > 0
+                if self:IsComboBox
+                    self:__ComboBox:SelectedIndex := nItemId-1
+                else
+                    self:__ListBox:SelectedIndex := nItemId-1
+                endif
+                return true
+            endif
+        endif
+        return false
 
-			IF SELF:lIsComboBox
-				nItem := SELF:__ComboBox:SelectedIndex
-				IF nItem < 0
-					RETURN SELF:__ComboBox:Text
-				ENDIF
-			ELSE
-				nItem := SELF:__ListBox:SelectedIndex
-			ENDIF
-			IF nItem != -1
-				oItem := (ListBoxItemValue) SELF:__Items[nItem]
-				RETURN oItem:DisplayValue
-			ENDIF
-		ENDIF
-		RETURN ""
 
-/// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
-	ASSIGN TextValue(cNewText AS STRING)
-		LOCAL cSelValue AS STRING
-		LOCAL dwIndex AS LONG
-		LOCAL oItem AS ListBoxItemValue
-		IF SELF:ValidateControl()
+        // Estimates optimal Width of the control by Measuring the Displayvalues
+    method GetOptimalWidth() as dword
+        local nMaxlen:= 0 as dword
+        foreach oVal as ListBoxItemValue in self:__Items
+            nMaxlen := 100 // Max( System.Windows.Forms.TextRenderer.MeasureText(oVal:DisplayValue,oCtrl:Font,System.Drawing.Size{0,0},SupportFunctions.lsbTextflags):Width,nMaxlen)
+        next
+        nMaxlen += 20 // Offset for Vertical Scrollbar
+        return nMaxlen
 
-			cSelValue := cNewText
-			IF (dwIndex := SELF:FindItem(cSelValue, TRUE, 1)) > 0
-				oItem := SELF:__Items[dwIndex-1]
-				uValue := oItem:Value
-				SELF:__List:SelectedIndex := dwIndex-1
-			ELSE
-				IF (dwIndex := SELF:FindItem(cSelValue, FALSE, 1)) > 0
-					oItem := SELF:__Items[dwIndex-1]
-					uValue := oItem:Value
-					SELF:__List:SelectedIndex := dwIndex-1
-				ELSE
-					SELF:__List:SelectedIndex := -1
-					uValue := NIL
-				ENDIF
-			ENDIF
-		ENDIF
-		RETURN
+        // not supported anymore
+    method SetTabs(aTabs as array) as void
+        local dwTabs as dword
+        local dwI    as dword
+        //PP-030319 From S Ebert
+        if (dwTabs := ALen(aTabs)) > 0
+            var pTabs := int[]{(int) dwTabs}
+            for dwI := 1 upto dwTabs
+                pTabs[dwI] := aTabs[dwI]
+            next  // dwI
+            GuiWin32.SendMessage(hWnd, LB_SETTABSTOPS, dwTabs, @pTabs)
+        endif
+        return
 
-END CLASS
+
+    /// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
+    access TextValue as string
+        local nItem as long
+        local oItem as ListBoxItemValue
+        if self:ValidateControl()
+
+            if self:IsComboBox
+                nItem := self:__ComboBox:SelectedIndex
+                if nItem < 0
+                    return self:__ComboBox:Text
+                endif
+            else
+                nItem := self:__ListBox:SelectedIndex
+            endif
+            if nItem != -1
+                oItem := (ListBoxItemValue) self:__Items[nItem]
+                return oItem:DisplayValue
+            endif
+        endif
+        return ""
+
+    /// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
+    assign TextValue(cNewText as string)
+        local cSelValue as string
+        local dwIndex as long
+        local oItem as ListBoxItemValue
+        if self:ValidateControl()
+
+            cSelValue := cNewText
+            if (dwIndex := self:FindItem(cSelValue, true, 1)) > 0
+                oItem := self:__Items[dwIndex-1]
+                uValue := oItem:Value
+                self:__List:SelectedIndex := dwIndex-1
+            else
+                if (dwIndex := self:FindItem(cSelValue, false, 1)) > 0
+                    oItem := self:__Items[dwIndex-1]
+                    uValue := oItem:Value
+                    self:__List:SelectedIndex := dwIndex-1
+                else
+                    self:__List:SelectedIndex := -1
+                    uValue := nil
+                endif
+            endif
+        endif
+        return
+
+#region Obsolete Methods
+    /// <exclude  />
+    [Obsolete];
+    method __AddItem(cItem as string, uRetValue as usual, dwPosition as long) as void strict
+        return
+
+    /// <include file="Gui.xml" path="doc/ListBox.ListFiles/*" />
+    [Obsolete];
+    method ListFiles(sStartDir, oFixedText, FileTypes)
+        //Todo ListFiles
+        return self
+        //LOCAL pPath AS PSZ
+        //LOCAL i,iRet AS INT
+        //LOCAL dwFileTypes AS DWORD
+        //LOCAL w AS DWORD
+
+        //DEFAULT( REF sStartDir, "*.*")
+
+        //pPath := StringAlloc(sStartDir)
+        //pPath := MemRealloc(pPath, 261)
+
+        //IF !IsNil(FileTypes)
+        //	dwFileTypes := FileTypes
+        //ELSE
+        //	dwFileTypes := _OR(DDL_DIRECTORY, DDL_DRIVES)
+        //ENDIF
+
+        //IF !IsNil(oFixedText)
+        //	w := oFixedText:ControlID
+        //ENDIF
+
+////iRet := call(fpListFiles, oParent:Handle(), pPath, wID, w, dwFileTypes)
+        //iRet := DlgDirList(oParent:Handle(), pPath, INT(wID), INT(w), dwFileTypes)
+
+        //MemFree(pPath)
+        //iRet := SUPER:ItemCount
+////RvdH 050602, Bug [12898] Now fill aRetValues and aDisplayValues array with the file names
+        //aRetValues 		:= ArrayNew(iRet)
+        //aDisplayValues := ArrayNew(iRet)
+        //FOR i := 1 TO iRet
+        //	aRetValues[i] 		:= SELF:GetItem(i)
+        //	aDisplayValues[i] := aRetValues[i]
+        //NEXT
+
+        //RETURN (iRet != 0)
+#endregion
+
+
+end class
 
 //_DLL FUNCTION __DlgDirSelectEx( hDlg AS PTR, lpString AS PSZ, nCOunt AS INT, nIDListBox AS INT) AS LOGIC PASCAL:USER32.DlgDirSelectExA
 

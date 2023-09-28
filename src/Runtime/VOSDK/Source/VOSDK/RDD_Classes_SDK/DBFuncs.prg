@@ -388,7 +388,7 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 		ENDIF
 
 
-		VODBSelect( dwFrom, REF dwTo )
+		VODBSelect( dwFrom, out dwTo )
 
 
       cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
@@ -482,7 +482,7 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 	ENDIF
 
 
-	VODBSelect( dwFrom, REF dwTo )
+	VODBSelect( dwFrom, out dwTo )
 
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
@@ -570,7 +570,7 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 	ENDIF
 
 
-	VODBSelect( dwFrom, REF dwTo )
+	VODBSelect( dwFrom, out dwTo )
 
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
@@ -667,7 +667,7 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 	ENDIF
 
 
-	VODBSelect( dwFrom1, REF dwTo )
+	VODBSelect( dwFrom1, out dwTo )
 
 
 	pJoinList:uiDestSel := dwTo
@@ -797,7 +797,7 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
 	ENDIF
 
 
-	VODBSelect( dwFrom, REF dwTo )
+	VODBSelect( dwFrom, out dwTo )
 
 
 	lRetCode := VODBSort( dwTo, fnFieldNames, uCobFor, uCobWhile, nNext, nRec, lRest, fnSortNames )
@@ -904,7 +904,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 	ENDIF
 
 
-	VODBSelect( dwFrom, REF dwTo )
+	VODBSelect( dwFrom, out dwTo )
 
 
 	n := Len( aFldNum )

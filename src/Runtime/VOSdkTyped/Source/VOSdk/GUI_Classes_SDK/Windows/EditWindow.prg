@@ -28,11 +28,12 @@ CLASS EditWindow INHERIT ControlWindow
         RETURN oMle:GetLine(nLineNumber, nMaxLength)
 
     /// <include file="Gui.xml" path="doc/EditWindow.ctor/*" />
-    CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+#ifndef DOCUMENTATION
+    constructor(oOwner, xID, oPoint, oDimension)
         oMle := MultiLineEdit{oOwner,xID,oPoint,oDimension}
-        SUPER(oMle)
-        RETURN
-
+        super(oMle)
+        return
+#endif
     /// <include file="Gui.xml" path="doc/EditWindow.Length/*" />
     PROPERTY Length AS LONG => oMle:Length
 

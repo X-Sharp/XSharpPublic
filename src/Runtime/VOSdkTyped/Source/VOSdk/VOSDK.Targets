@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <PropertyGroup>
-    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <BinariesDir>$(SolutionDir)..\Artifacts\</BinariesDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
+    <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
     <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
 	 <OutputType>Library</OutputType>
+    <CommonDir>$(Solutiondir)Common\</CommonDir>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VO</RootNamespace>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -15,12 +16,16 @@
     <Nologo>true</Nologo>
     <Nostandarddefs>True</Nostandarddefs>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <AssemblyOriginatorKeyFile>$(Solutiondir)Runtime\vosdk\source\sharedbinaries\vulcanstrongnamekey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(CommonDir)XSharp.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <Prefer32Bit>False</Prefer32Bit>
     <CommandLineOption />
     <PPO>false</PPO>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ErrorReport>prompt</ErrorReport>
+    <CommonInclude>$(CommonDir)</CommonInclude>
     <AZ>false</AZ>
     <CS>true</CS>
     <LB>false</LB>
@@ -45,6 +50,7 @@
     <vo15>false</vo15>
     <VO16>false</VO16>
     <XPP1>false</XPP1>
+    <IncludePaths>$(CommonDir)</IncludePaths>
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
     <ErrorReport>prompt</ErrorReport>
@@ -52,12 +58,10 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <IncludePaths>$(Solutiondir)Common</IncludePaths>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
-    <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>

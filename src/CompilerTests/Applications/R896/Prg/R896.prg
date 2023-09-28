@@ -1,4 +1,4 @@
-/*
+
 // https://github.com/X-Sharp/XSharpPublic/issues/1288
 #xcommand WP [/<x:S,F,SF,FS>] [/<y:CAPS,C>] [/<m:MUTE,M>] [/OBJ <obj> = <mes> [,<objn> = <mesn> ]] <list,...> [<file>] ;
 => wpRouter({<list>},<(x)>,<file>,<(y)>,<(m)>,{[{<"obj">,{|o| <mes>}}] [,{<"objn">,{|o| <mesn>} }] })
@@ -9,19 +9,19 @@ procedure Main()
     wp a,b,c
     wp /sf /m a,b,c
     return
-*/
+/*
 procedure Main()
     local o
 
-    o := DerivedExample():new()
+    o := DerivedExample896():new()
     ? o:a
-    ? o:Example:a // Runtime error in X# 2.14
+    ? o:Example896:a // Runtime error in X# 2.14
     ? o:Name()
-    ? o:Example:Name() // Runtime error in X# 2.14
+    ? o:Example896:Name() // Runtime error in X# 2.14
 
     return
 
-class DerivedExample from Example
+class DerivedExample896 from Example896
 exported:
     inline method Init()
         super:Init()
@@ -36,7 +36,7 @@ exported:
 endclass
 
 
-class Example
+class Example896
 exported:
     inline method Init()
         ::a := 3
@@ -47,3 +47,4 @@ exported:
 
     var a
 endclass
+*/

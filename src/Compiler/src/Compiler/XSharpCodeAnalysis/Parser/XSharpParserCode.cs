@@ -381,6 +381,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(MemberFlags.ClipperCallingConvention); }
                 set { setFlags(MemberFlags.ClipperCallingConvention, value); }
             }
+            public bool HasDeclaredParameters => HasParametersStmt || HasLParametersStmt || HasFormalParameters;
             public bool HasParametersStmt
             {
                 get { return flags.HasFlag(MemberFlags.HasParametersStmt); }
@@ -1130,10 +1131,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public string ShortName => Id.GetText();
 
         }
-
         public partial class NamedArgumentContext
         {
-            internal bool IsMissing => Expr == null && Id == null && Null == null;
+            internal bool missing;
+            internal bool IsMissing => missing;
         }
         public partial class UnnamedArgumentContext
         {
@@ -1175,17 +1176,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public int Count => _ImpliedVars.Count;
         }
-        public partial class FoxlocaldeclContext : IMultiElementContext
+        public partial class FoxlparametersContext : IMultiElementContext
         {
-            public int Count => this._LParameters.Count + this._DimVars.Count;
+            public int Count => this._LParameters.Count;
         }
         public partial class MemvardeclContext : IMultiElementContext
         {
-            public int Count => this._XVars.Count + this._Vars.Count;
+            public int Count => this._Vars.Count;
         }
         public partial class FoxmemvardeclContext : IMultiElementContext
         {
-            public int Count => this._FoxVars.Count + this._Vars.Count + this._DimVars.Count;
+            public int Count => this._FoxVars.Count;
         }
         public partial class ClassvarsContext : IMultiElementContext
         {

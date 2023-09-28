@@ -27,7 +27,18 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     IF IsString(nDefine)
         local cDefine := nDefine as STRING
         IF ! Enum.TryParse(cDefine, TRUE, OUT nSetting)
-            throw Error.ArgumentError(__FUNCTION__,nameof(nDefine), "Invalid argument: "+cDefine+". This could not be translated to a valid setting in the Set enum")
+            // match start of define ?
+            LOCAL found := FALSE AS LOGIC
+            FOREACH setting AS STRING IN Enum.GetNames(TYPEOF(XSharp.Set))
+                IF setting:StartsWith(cDefine,StringComparison.OrdinalIgnoreCase)
+                    Enum.TryParse(setting, TRUE, OUT nSetting)
+                    found := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF ! found
+                THROW Error.ArgumentError(__FUNCTION__,NAMEOF(nDefine), "Invalid argument: "+cDefine+". This could not be translated to a valid setting in the Set enum")
+            ENDIF
         ENDIF
     ELSEIF ! IsNumeric(nDefine)
         throw Error.ArgumentError(__FUNCTION__, nameof(nDefine), "Invalid argument: "+AsString(nDefine)+". This should be a number, Set Enum value or a string")

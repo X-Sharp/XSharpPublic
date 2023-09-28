@@ -1,0 +1,28 @@
+GraphMenu MENU
+Begin
+	POPUP "&File"
+	BEGIN
+		MENUITEM "&New\tCtrl+N", 21208
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit\tAlt+F4", 21210
+	END
+	POPUP "&Type"
+	BEGIN
+		MENUITEM "&Column\tCtrl+C", 32000
+		MENUITEM "&Bar\tCtrl+B", 21213
+		MENUITEM "&Pie\tCtrl+P", 21214
+	END
+	POPUP "&Data"
+	BEGIN
+		MENUITEM "Sample Set &1\tCtrl+1", 21216
+		MENUITEM "Sample Set &2\tCtrl+2", 21217
+		MENUITEM "Sample Set &3\tCtrl+3", 21218
+	END
+	POPUP "&Window"
+	BEGIN
+		MENUITEM "&Cascade\tF4", 21220
+		MENUITEM "&Tile\tShift+F4", 21221
+		MENUITEM "Close &All", 21222
+	END
+End
+ 

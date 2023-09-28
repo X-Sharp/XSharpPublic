@@ -28,7 +28,7 @@ CLASS Bitmap INHERIT VObject IMPLEMENTS IResource
 
 
     /// <include file="Gui.xml" path="doc/Bitmap.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL  CLIPPER
 
         IF (oImage != NULL_OBJECT)
             oImage:Dispose()
@@ -60,7 +60,7 @@ CLASS Bitmap INHERIT VObject IMPLEMENTS IResource
         ELSEIF IsPtr(xResourceID) //
             oImage := System.Drawing.Image.FromHbitmap((IntPtr) xResourceID)
             RETURN
-        ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+        ELSEIF ! (xResourceID IS ResourceID)
             WCError{#Init, #Bitmap, __WCSTypeError, xResourceID, 1}:Throw()
             GC.SuppressFinalize( SELF )
         ELSE

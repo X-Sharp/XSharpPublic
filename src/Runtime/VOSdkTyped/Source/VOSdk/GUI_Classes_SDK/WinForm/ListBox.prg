@@ -15,7 +15,7 @@ USING SWF := System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 USING System.Collections
 
-class VOListBox inherit SWF.ListBox implements IVOControlProperties
+CLASS VOListBox INHERIT SWF.ListBox IMPLEMENTS IVOControlProperties, IBaseListBox
 
 #region fields
 	PROTECTED lBusy AS LOGIC
@@ -32,8 +32,6 @@ class VOListBox inherit SWF.ListBox implements IVOControlProperties
     END PROPERTY
 
     NEW PROPERTY Items           AS IList GET SUPER:Items
-    NEW PROPERTY SelectedIndices AS IList GET SUPER:SelectedIndices
-    NEW PROPERTY SelectedItems   AS IList GET SUPER:SelectedItems
 
 #endregion
 	#include "PropControl.xh"
@@ -41,13 +39,10 @@ class VOListBox inherit SWF.ListBox implements IVOControlProperties
 
 #region Helper methods
 	METHOD Initialize AS VOID STRICT
-		SELF:DisplayMember         := "DisplayValue"
-		SELF:ValueMember           := "Value"
-		SELF:DrawMode              := SWF.DrawMode.OwnerDrawFixed
-		//SELF:DrawItem += SupportFunctions.listBox_DrawItem
-        SELF:oProperties:OnWndProc += OnWndProc
-
-		RETURN
+		self:DisplayMember         := "DisplayValue"
+		self:ValueMember           := "Value"
+        self:oProperties:OnWndProc += OnWndProc
+		return
 
 	METHOD IncrementalSearch( ch AS CHAR) AS LOGIC
 		LOCAL nItem AS INT
@@ -211,7 +206,7 @@ class VOListBox inherit SWF.ListBox implements IVOControlProperties
 
 END CLASS
 
-class VOComboBox inherit SWF.ComboBox implements IVOControlProperties
+CLASS VOComboBox INHERIT SWF.ComboBox IMPLEMENTS IVOControlProperties, IBaseListBox
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
@@ -220,15 +215,14 @@ class VOComboBox inherit SWF.ComboBox implements IVOControlProperties
 	#include "PropControlStyle.xh"
 
 	METHOD Initialize AS VOID STRICT
-		SELF:DisplayMember	:= "DisplayValue"
-		SELF:ValueMember	:= "Value"
+		self:DisplayMember	:= "DisplayValue"
+		self:ValueMember	:= "Value"
 		SELF:FlatStyle		:= SWF.FlatStyle.System
-		SELF:Margin			:= SWF.Padding{0}
-		RETURN
+        self:Margin			:= SWF.Padding{0}
+		return
 
     NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (SWF.AutoCompleteSource) VALUE
-    NEW PROPERTY Items           AS IList GET SUPER:Items
-
+    NEW Property Items as IList GET SuPER:Items
 	PROPERTY Text AS STRING
 		GET
 			IF SELF:IsDisposed
@@ -269,9 +263,6 @@ class VOComboBox inherit SWF.ComboBox implements IVOControlProperties
 		SELF:Sorted:= lSorted
 		SELF:Initialize()
 		SELF:SetVisualStyle()
-		SELF:DrawMode := SWF.DrawMode.OwnerDrawFixed
-		//SELF:DrawItem += SupportFunctions.comboBox_DrawItem
-
 
 	method IncrementalSearch( ch as char) as logic
 		LOCAL nItem AS INT

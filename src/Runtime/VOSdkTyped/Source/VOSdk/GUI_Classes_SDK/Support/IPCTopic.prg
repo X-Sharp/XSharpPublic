@@ -42,7 +42,7 @@ CLASS IpcTopic INHERIT VObject
 
 		RETURN SELF
 
-	METHOD Destroy() AS USUAL 
+	METHOD Destroy() AS USUAL  CLIPPER
 		
 
 		cTopicName := NULL_STRING
@@ -79,7 +79,7 @@ CLASS IpcTopicData INHERIT VObject
 
 		RETURN ptrData
 
-	METHOD Destroy() AS USUAL 
+	METHOD Destroy() AS USUAL clipper
 		
 
 		IF ptrData!= NULL_PTR .and. lWasAlloc

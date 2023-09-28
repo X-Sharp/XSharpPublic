@@ -1790,7 +1790,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		SELF:__EndEditField(0)
 		IF oCtrl != NULL_OBJECT
 			__DataGridView:RowEnter -=  OnRowEnter
@@ -2383,7 +2383,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Show/*" />
-	METHOD Show() AS VOID STRICT
+	METHOD Show() AS VOID CLIPPER
 		IF oDataServer != NULL_OBJECT
 			IF !lIsShown
 				SELF:__BuildBuffer()
@@ -2899,7 +2899,7 @@ CLASS DataColumn INHERIT VObject
 		RETURN SELF:symDataField
 
 /// <include file="Gui.xml" path="doc/DataColumn.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		IF SELF:oDataGridColumn != NULL_OBJECT
 			SELF:oDataGridColumn:Dispose()
 			GC.SuppressFinalize(SELF:oDataGridColumn)

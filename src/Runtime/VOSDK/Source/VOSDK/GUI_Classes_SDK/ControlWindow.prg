@@ -86,7 +86,7 @@ ACCESS HyperLabel
 CONSTRUCTOR(oControl)
 
 
-	IF !IsInstanceOfUsual(oControl,#Control)
+	IF ! (oControl IS Control)
 		WCError{#Init,#ControlWindow,__WCSTypeError,oControl,1}:Throw()
 	ENDIF
 

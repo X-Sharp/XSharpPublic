@@ -193,15 +193,12 @@ CLASS App INHERIT VObject
         [Obsolete];
     METHOD SetMdiClientWindow(hNewMdiClientWnd AS IntPtr) AS VOID
         RETURN
-
-
 #endregion
-
-
 END CLASS
 
 GLOBAL glCAPaintInit := FALSE AS LOGIC
-global gsymBrowserDef := #DataBrowser as symbol
+GLOBAL gsymBrowserDef := #DataBrowser AS SYMBOL
+//GLOBAL gsymBrowserDef := #DataListView AS SYMBOL
 global oApp as App
 
 /// <include file="Gui.xml" path="doc/ApplicationExec/*" />

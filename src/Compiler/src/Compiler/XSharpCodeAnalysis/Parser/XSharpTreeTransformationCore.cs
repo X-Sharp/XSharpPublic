@@ -43,7 +43,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public List<MemVarFieldInfo> FileWidePublics;
             public object LastMember;
             public bool LastIsStatic;
-            public List<Tuple<int, String>> InitProcedures;
+            public bool HasSlen = false;
+            public List<Tuple<int, string>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
             public List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings;
             public List<PragmaOption> PragmaOptions;
@@ -1572,7 +1573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax r =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute(true) : default,
+                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,
                 modifiers: modifiers.ToList<SyntaxToken>(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -1631,7 +1632,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax classdecl =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute(true) : default,
+                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,
                 modifiers: modifiers.ToList<SyntaxToken>(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -2705,7 +2706,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 string className = GlobalClassName + GetStaticGlobalClassname();
                 AddUsingWhenMissing(className, true, null);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, false, GlobalEntities.StaticGlobalClassMembers));
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, true, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();
             }
         }
@@ -4619,14 +4620,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                        right);
         }
 
-        internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
+        internal SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute()
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
-            //if (lWithGlobalScope)
-            //{
-            //    GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGlobalScope);
-            //}
             var compilerGenerated = attributeLists.ToList();
             _pool.Free(attributeLists);
             return compilerGenerated;
@@ -6471,6 +6468,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Conditional Statements
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
+            if (context.el != null && context.ElseStmtBlk != null)
+            {
+                context.ElseStmtBlk.Start = context.el;
+            }
             ExitConditionalStatement(context, context._IfBlocks, context.ElseStmtBlk);
         }
         public override void ExitCondBlock([NotNull] XP.CondBlockContext context)
@@ -6481,6 +6482,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
         {
+            if (context.oth != null && context.OtherwiseStmtBlk != null)
+            {
+                context.OtherwiseStmtBlk.Start = context.oth;
+            }
             ExitConditionalStatement(context, context._CaseBlocks, context.OtherwiseStmtBlk);
         }
 
@@ -6510,7 +6515,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
-        private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions, XP.StatementBlockContext elseBlock)
+        private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions,
+            XP.StatementBlockContext elseBlock)
         {
             // Convert CASE blocks and ELSEIF blocks to avoid nesting too deep which may cause a stack error
             // if (condition1)
@@ -6546,6 +6552,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    otherwisestatements
             // }
             //
+            
             if (conditions.Count == 1)
             {
                 CreateSimpleIfStatement(context, conditions.First(), elseBlock);
@@ -6773,8 +6780,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var trykwd = context.T.SyntaxKeyword();
             var finkwd = context.F?.SyntaxKeyword();
-            StatementSyntax tryStmt =
-            _syntaxFactory.TryStatement(
+            if (context.F != null && context.FinBlock != null)
+            {
+                context.FinBlock.Start = context.F;
+            }
+            StatementSyntax tryStmt = _syntaxFactory.TryStatement(
                 attributeLists: default,
                 trykwd,
                 context.StmtBlk.Get<BlockSyntax>(),
@@ -7797,11 +7807,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateAltD(context))
                         return;
                     break;
-                case XSharpIntrinsicNames.SLen:
-                    if (GenerateSLen(context))
-                        return;
-                    break;
-
                 case XSharpIntrinsicNames.GetInst:
                     if (GenerateGetInst(context))
                         return;
@@ -7885,37 +7890,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var expr = GenerateMethodCall(name, argList);
             context.Put(GenerateExpressionStatement(expr, context));
-        }
-
-        private bool GenerateSLen(XP.MethodCallContext context)
-        {
-            // Pseudo function SLen
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                return false;
-            }
-            if (argList.Arguments.Count != 1)
-                return false;
-            expr = argList.Arguments[0].Expression;
-            expr = MakeCastTo(_stringType, expr);
-            var cond = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression,
-                        expr,
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken),
-                        GenerateLiteralNull());
-            var left = GenerateLiteral(0);
-            var right = MakeSimpleMemberAccess(expr, GenerateSimpleName("Length"));
-            expr = MakeConditional(cond, left, right);
-            expr = MakeCastTo(_uintType, expr, true);
-            expr.XGenerated = true;
-            expr.XNoTypeWarning = true;
-            context.Put(expr);
-            return true;
         }
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)
         {
@@ -8571,6 +8545,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitArgumentList([NotNull] XP.ArgumentListContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
+            if (context._Args.Count == 0 ||
+                (context._Args.Count == 1 && context._Args[0].IsMissing))
+            {
+                context.Put(EmptyArgumentList());
+                return;
+            }
             var openParen = SyntaxFactory.OpenParenToken;
             var closeParen = SyntaxFactory.CloseParenToken;
             foreach (var argCtx in context._Args)
@@ -8614,6 +8594,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Expr == null)
             {
+                context.missing = true;
                 context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }
@@ -8632,7 +8613,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             context.Put(_syntaxFactory.Argument(
-                context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.ColonToken),
+                context.Name == null ? null :
+                _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.ColonToken),
                 refKeyword, expr));
         }
 

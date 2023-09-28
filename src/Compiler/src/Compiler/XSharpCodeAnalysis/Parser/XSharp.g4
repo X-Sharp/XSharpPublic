@@ -392,7 +392,6 @@ arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression
                       // Accessors
                     END PROPERTY
 
-
                     2) Single Line
                     PROPERTY Foo as STRING GET "42"
                     // You can specify Accessors with single expression.
@@ -401,6 +400,13 @@ arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression
                     PROPERTY Foo AS STRING AUTO
                     - You can specify GET/SET/INIT accessor on the same line
                     PROPERTY Foo AS STRING AUTO GET SET
+
+                    They all start with [attributes] [modifiers] PROPERTY (SELF|Id) [params] AS [Type]
+                    The variation is after as TYPE:
+                    1) AUTO ... (on the same line)
+                    2) GET/SET LineAccessorsSingle (on the same line)
+                    3) Multi Line Accessors (recognized by an EOS after the type clause)
+                    We have merged this in one rule.
                     */
 
 property            : (Attributes=attributes)? (Modifiers=memberModifiers)?
@@ -504,10 +510,7 @@ constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)
                       (END c2=CONSTRUCTOR End=EOS)?
                     ;
 
-constructorchain    : (SELF | SUPER)
-                        ( (LPAREN RPAREN)
-                        | (LPAREN ArgList=argumentList RPAREN)
-                        ) eos
+constructorchain    : (SELF | SUPER) LPAREN ArgList=argumentList RPAREN eos
                     ;
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
@@ -589,17 +592,18 @@ globalAttributeTarget : Token=ID COLON      // We'll Check for ASSEMBLY and MODU
 
 
 filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
-                    | {!IsFox }? Token=PUBLIC XVars+=memvar (COMMA XVars+=memvar)*  end=EOS
-                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar (COMMA FoxVars+=foxmemvar)*  end=EOS
+                    | {!IsFox }? Token=PUBLIC XVars+=memvar[$Token] (COMMA XVars+=memvar[$Token])*  end=EOS 
+                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=EOS
                     ;
 
-
+ 
 statement           : Decl=localdecl                            #declarationStmt
-                    | {IsFox}? Decl=foxlocaldecl                #foxlocaldeclStmt    // Local declarations FoxPro specific
+                    | {IsFox}? Decl=foxlparameters              #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
                     | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt  // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt
                     | {IsFox && HasMemVars}?  Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
+                    | {IsFox}? Decl=foxdimvardecl                #foxdimvardeclStmt        // DIMENSION this.Field(10)
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
                       (e=END (DO|WHILE)? | e=ENDDO) eos	#whileStmt
@@ -617,12 +621,12 @@ statement           : Decl=localdecl                            #declarationStmt
 
                     | i=IF IfBlocks += condBlock[$i]
                       (e=ELSEIF IfBlocks += condBlock[$e])*
-                      (ELSE eos ElseStmtBlk=statementBlock)? 
+                      (el=ELSE eos ElseStmtBlk=statementBlock)? 
                       (e=END IF? | e=ENDIF)   eos                      #ifStmt
 
                     | DO CASE end=eos
                       (c=CASE CaseBlocks +=condBlock[$c])*
-                      (OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
+                      (oth=OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
                       (e=END CASE? | e=ENDCASE)   eos                   #caseStmt
 
                     | Key=EXIT end=eos                                  #jumpStmt
@@ -636,7 +640,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
-                      (FINALLY eos FinBlock=statementBlock)?
+                      (F=FINALLY eos FinBlock=statementBlock)?
                       e=END (SEQUENCE)? eos                             #seqStmt
                     //
                     // New in Vulcan 
@@ -774,66 +778,61 @@ impliedvar         : (Const=CONST)? Id=varidentifier Op=assignoperator Expressio
 fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
                    ;
 
-// Old Style xBase declarations
-// FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect. The varidentifierrule has the M DOT clause
+                    // Old Style xBase declarations
+                    // FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect. The varidentifierrule has the M DOT clause
                     //  Not for FoxPro !
                     //  NOTE: The parent rule already filters out so this is not called when MEMVARS are not enabled
                     // This is only the list of names
-memvardecl         : T=MEMVAR     Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
-                   | T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
                       // This includes the optional initializer or array dimension
-                   |  T=PRIVATE   XVars+=memvar (COMMA XVars+=memvar)*  end=eos
-                   |  T=PUBLIC    XVars+=memvar (COMMA XVars+=memvar)*  end=eos
-                    ;
+memvardecl         : T=(MEMVAR|PARAMETERS|PRIVATE|PUBLIC)
+                      Vars+=memvar[$T] (COMMA Vars+=memvar[$T] )* end=eos  // MEMVAR  Foo, Bar
+                   ;
 
 // For the variable list for Private and Public
-memvar            : (Amp=AMP)?  Id=varidentifierName
-                      (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
-                  ;
+memvar[IToken T]  : (Amp=AMP)?  Id=varidentifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+                   ;
 
 
 //
 // Only for the FoxPro dialect
-// LPARAMETERS may have AS Type clause
 // DIMENSION  may have AS Type clause and either parens or brackets (see DimensionVar)
 // The parent rule already filters out so this is not called when MEMVARS are not enabled
 
+                                        
+foxmemvardecl       :  T=( MEMVAR |PARAMETERS | PRIVATE | PUBLIC ) FoxVars+=foxmemvar[$T]  (COMMA FoxVars+=foxmemvar[$T])*  end=eos 
+                    ;
+
                     // This includes array indices and optional type per name
-foxmemvardecl       :  T=DIMENSION  DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
-                    |  T=DECLARE    DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
-                    // This has names, and no ampersand
-                    // FoxPro does not have MEMVAR but it does not hurt to declare it here
-                    |  T=MEMVAR Vars+=varidentifierName XT=foxtypedecl?  (COMMA Vars+=varidentifierName XT=foxtypedecl? )*  end=eos
-                      // This has names and optional types
-                    |  T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName XT=foxtypedecl?)* end=eos
-                    // This has names and optional ampersands
-                    |  T=PRIVATE FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
-                    |  T=PUBLIC  FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
+foxdimvardecl       :  T=(DIMENSION | DECLARE )  DimVars += foxdimvar[$T] (COMMA DimVars+=foxdimvar[$T])* end=eos
                     // This has names and dimensions
-                    |  T=PUBLIC (ARRAY)? DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
-                   ;
-
+                    |  T=PUBLIC (ARRAY)? DimVars += foxdimvar[$T] (COMMA DimVars+=foxdimvar[$T])*    end=eos
+                    |  T=LOCAL ARRAY     DimVars += foxdimvar[$T] (COMMA DimVars+=foxdimvar[$T])*    end=eos
+                    ;
 
 
                     // This includes array indices and optional type per name
-foxlocaldecl        : T=LPARAMETERS LParameters+=foxlparameter (COMMA LParameters+=foxlparameter )* end=eos
+foxlparameters      : T=LPARAMETERS LParameters+=foxlparameter[$T] (COMMA LParameters+=foxlparameter[$T] )* end=eos
                     // This has names and optional ampersands
-                    | T=LOCAL ARRAY DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
                     ;
 
                     // FoxPro dimension statement allows the AS Type per variable name
                     // AS Type OF ClassLib is ignored in FoxPro too, except when calling COM components
-foxdimvar           : (Amp=AMP)?  Id=varidentifierName
+                    // second variation to redim class members
+foxdimvar[IToken T]  : (Amp=AMP)? Id=varidentifierName
+                        ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
+                        | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
+                        XT=foxtypedecl?
+                    | Expr=expression 
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?
                     ;
-
+                    
 foxclasslib        : Of=OF ClassLib=identifierName
                    ;
 
-foxlparameter       : Name=varidentifierName XT=foxtypedecl?
-                    ;
+foxlparameter[IToken T] : Name=varidentifierName XT=foxtypedecl?
+                        ;
 
                       // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
 foxtypedecl         : As=AS Type=datatype foxclasslib?
@@ -841,10 +840,10 @@ foxtypedecl         : As=AS Type=datatype foxclasslib?
 
                        // For the variable list for Private and Public
                        // We have added the initializer that FoxPro does not have
-foxmemvar          : (Amp=AMP)?  Id=varidentifierName
+foxmemvar[IToken T] : (Amp=AMP)?  Id=varidentifierName
                       (Op=assignoperator Expression=expression)?
                       XT=foxtypedecl?  // is ignored in FoxPro too
-                    ;
+                   ;
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=funcproctype Sig=signature
@@ -876,14 +875,15 @@ localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #accessMember           // member access.
-                    |    Op=(DOT|COLON|COLONCOLON)   Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
-                    | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
-                                                                                                        // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
-                    | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName   // aa:&Name  Expr must evaluate to a string which is the ivar name
-                    | Expr=expression LPAREN                      RPAREN        #methodCall             // method call, no params
+expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
+                    | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
+                    // Latebound member access with a ampersand and a name or an expression that evaluates to a string
+                    | Left=expression Op=(DOT|COLON) AMP 
+                      ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
+                    | Op=(DOT|COLON|COLONCOLON) AMP 
+                        ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
+  
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
-                    | XFunc=xbaseFunc LPAREN RPAREN                             #xFunctionExpression    // Array() or Date() no params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
@@ -934,7 +934,6 @@ primary             : Key=SELF                                                  
                     | Query=linqQuery                                           #queryExpression        // LINQ
                     | {ExpectToken(LCURLY)}? Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
-                    | {ExpectToken(LCURLY)}? Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | {ExpectToken(LCURLY)}? Type=datatype LCURLY ArgList=argumentList  RCURLY
                                                    Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
@@ -962,7 +961,6 @@ primary             : Key=SELF                                                  
                     ;
 
 boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName             #boundAccessMember	// member access The ? is new
-                    | Expr=boundExpression LPAREN                      RPAREN           #boundMethodCall	// method call, no params
                     | Expr=boundExpression LPAREN ArgList=argumentList RPAREN           #boundMethodCall	// method call, with params
                     | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT    #boundArrayAccess	// Array element access
                     | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression #boundCondAccessExpr	// expr ? expr

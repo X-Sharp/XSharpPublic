@@ -13,6 +13,16 @@ using SD    := System.Drawing
 using System.Collections
 using System.Collections.Generic
 
+/// <summary>
+/// Interface with common properties that both the listbox and combobox class have
+/// </summary>
+INTERFACE IBaseListBox
+    PROPERTY SelectedIndex AS LONG GET SET
+    PROPERTY Items AS IList GET
+    METHOD FindStringExact(cSearch AS STRING, nStart AS INT) AS INT
+    METHOD FindString(cSearch AS STRING, nStart AS INT) AS INT
+END INTERFACE
+
 
 interface IVOUIObject
     property ClientRectangle as SD.Rectangle get
@@ -31,11 +41,27 @@ interface IVOUIObject
     method SuspendLayout as void strict
 end interface
 
-
+/// <summary>
+/// This interface declares the link between a Windows Forms Control and the matching VOSDK.Control
+/// </summary>
 interface IVOControlProperties inherit IVOControl
+    /// <summary>
+    /// The VOSDK.Control object that this Windows Forms Control is linked to
+    /// </summary>
     property Control            as VOSDK.Control get
+    /// <summary>
+    /// An object with some properties, such as the Control, its owning window, style, exstyle etc.
+    /// </summary>
     property ControlProperties  as VOControlProperties get
-    method SetVisualStyle as void strict
+    /// <summary>
+    /// This method is used to change the Visual Style of the control to match with the definition of the
+    /// original VO control
+    /// </summary>
+    method SetVisualStyle() as void strict
+    /// <summary>
+    /// This method is called to link the Windows.Forms control to the VO Control
+    /// </summary>
+    /// <param name="Owner">The Owning VO Control</param>
     method SetOwner(Owner as VOSDK.Control) as void
 end interface
 
@@ -84,6 +110,9 @@ interface IVOControl inherit IVOUIObject
 
 end interface
 
+/// <summary>
+/// This interface is implemented by controls that need special initialization, such as the TabControl and RTF Control
+/// </summary>
 interface IVOControlInitialize inherit IVOControlProperties
     method Initialize as void strict
 end interface
@@ -125,8 +154,10 @@ interface IGuiObject
     property HyperLabel as HyperLabel get set
     property NameSym	as symbol get
     property __Handle   as IntPtr get
-    method   Destroy()	as usual
-    method   Show()     as void strict
+    method   Destroy()	as usual clipper
+#ifndef DOCUMENTATION
+    method   Show()     as void clipper
+#endif
     method   Hide()     as void strict
     method   SetFocus() as void strict
 
@@ -156,7 +187,7 @@ interface IDataBrowser
     method Use(oServer as DataServer) as logic
     method __NotifyChanges(kNotify as dword) as usual
     property ContextMenu as Menu get set
-    method   Destroy()	as usual
+    METHOD   Destroy()	AS USUAL CLIPPER
     method RestoreUpdate() as void strict
     method SuspendUpdate() as void strict
     property __Control as IVOControl get
@@ -166,6 +197,6 @@ end interface
 
 interface IResource
     method Handle() as IntPtr strict
-    method Destroy()	as usual
+    method Destroy()	as usual clipper
         property Size as Dimension get
 end interface

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\XSharp\DevPublic\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
+// Generated from C:\XSharp\Dev\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -784,21 +784,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStackAllocExpression([NotNull] XSharpParser.StackAllocExpressionContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>accessMemberLateName</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>accessMemberLateName</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAccessMemberLateName([NotNull] XSharpParser.AccessMemberLateNameContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>binaryExpression</c>
@@ -1806,6 +1791,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitFoxtextoutStmt([NotNull] XSharpParser.FoxtextoutStmtContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>foxdimvardeclStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFoxdimvardeclStmt([NotNull] XSharpParser.FoxdimvardeclStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>foxdimvardeclStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFoxdimvardeclStmt([NotNull] XSharpParser.FoxdimvardeclStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>doStmt</c>
 	/// labeled alternative in <see cref="XSharpParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1864,6 +1864,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRepeatStmt([NotNull] XSharpParser.RepeatStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>foxlparametersStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFoxlparametersStmt([NotNull] XSharpParser.FoxlparametersStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>foxlparametersStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFoxlparametersStmt([NotNull] XSharpParser.FoxlparametersStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>foxexpressionStmt</c>
@@ -1984,21 +1999,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWithBlock([NotNull] XSharpParser.WithBlockContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>foxlocaldeclStmt</c>
-	/// labeled alternative in <see cref="XSharpParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFoxlocaldeclStmt([NotNull] XSharpParser.FoxlocaldeclStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>foxlocaldeclStmt</c>
-	/// labeled alternative in <see cref="XSharpParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFoxlocaldeclStmt([NotNull] XSharpParser.FoxlocaldeclStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ifStmt</c>
@@ -3227,17 +3227,30 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitFoxmemvardecl([NotNull] XSharpParser.FoxmemvardeclContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.foxlocaldecl"/>.
+	/// Enter a parse tree produced by <see cref="XSharpParser.foxdimvardecl"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFoxlocaldecl([NotNull] XSharpParser.FoxlocaldeclContext context) { }
+	public virtual void EnterFoxdimvardecl([NotNull] XSharpParser.FoxdimvardeclContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.foxlocaldecl"/>.
+	/// Exit a parse tree produced by <see cref="XSharpParser.foxdimvardecl"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFoxlocaldecl([NotNull] XSharpParser.FoxlocaldeclContext context) { }
+	public virtual void ExitFoxdimvardecl([NotNull] XSharpParser.FoxdimvardeclContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.foxlparameters"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFoxlparameters([NotNull] XSharpParser.FoxlparametersContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.foxlparameters"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFoxlparameters([NotNull] XSharpParser.FoxlparametersContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.foxdimvar"/>.

@@ -10,7 +10,7 @@
 /// The return value is NULL_OBJECT when the class does not exist. </returns>
 function ClassObject(cClassName as string) as ClassObject
     local oResult as ClassObject
-    oResult := ClassObject.FindClass(cClassName, false)
+    oResult := ClassHelpers.FindClass(cClassName, false)
     return oResult
 
 
@@ -29,8 +29,8 @@ function ClassDestroy(uObject) as logic clipper
     local oObject as object
     if IsObject(uObject)
         oObject := uObject
-        if oObject is ClassObject var rtClass
-            return ClassObject.DeleteClass(rtClass)
+        if oObject is DynamicClassObject var rtClass
+            return ClassHelpers.DeleteClass(rtClass)
         endif
     elseif IsString(uObject)
         oObject := ClassObject((string) uObject)
@@ -58,9 +58,9 @@ function ClassCreate(cClassName , aSuperClasses , aMember , aMethod ) as usual c
     EnforceType(ref aSuperClasses, array)
     EnforceType(ref aMember, array)
     EnforceType(ref aMethod, array)
-    var descriptor := ClassObject.CreateClassDescriptor(cClassName, aSuperClasses, aMember, aMethod)
-    return ClassObject.ImplementClass(descriptor)
-   
+    var descriptor := ClassHelpers.CreateClassDescriptor(cClassName, aSuperClasses, aMember, aMethod)
+    return ClassHelpers.ImplementClass(descriptor)
+
 
 
 

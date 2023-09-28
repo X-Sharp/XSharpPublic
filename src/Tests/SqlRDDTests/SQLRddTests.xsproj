@@ -121,6 +121,11 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj">
+      <Name>XSharp.SQLRDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9373}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data">

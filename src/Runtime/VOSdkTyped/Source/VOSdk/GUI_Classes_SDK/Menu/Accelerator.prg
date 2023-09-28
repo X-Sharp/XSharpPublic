@@ -5,211 +5,211 @@
 //
 
 
-USING System.Collections.Generic
+using System.Collections.Generic
 
 /// <include file="Gui.xml" path="doc/AcceleratorKey/*" />
-CLASS AcceleratorKey
-    INTERNAL Flags	as WORD
-    INTERNAL ASCII	as Word
-    INTERNAL ID		as WORD
+class AcceleratorKey
+    internal Flags	as word
+    internal ASCII	as word
+    internal ID		as word
     /// <include file="Gui.xml" path="doc/AcceleratorKey.ctor/*" />
-    CONSTRUCTOR(wFlags as WORD, wASCII as word, wID as WORD)
+    constructor(wFlags as word, wASCII as word, wID as word)
         Flags := wFlags
         ASCII := wASCII
         ID	  := wID
     /// <include file="Gui.xml" path="doc/AcceleratorKey.ShortCut/*" />
-    ACCESS Shortcut as System.Windows.Forms.Shortcut
-        LOCAL iKey as LONG
-        if _AND(Flags, FALT) == FALT
+    access Shortcut as System.Windows.Forms.Shortcut
+        local iKey as long
+        if _and(Flags, FALT) == FALT
             iKey += System.Windows.Forms.Keys.Alt
-        ENDIF
-        if _AND(Flags, FCONTROL) == FCONTROL
+        endif
+        if _and(Flags, FCONTROL) == FCONTROL
             iKey += System.Windows.Forms.Keys.Control
-        ENDIF
-        if _AND(Flags, FSHIFT) == FSHIFT
+        endif
+        if _and(Flags, FSHIFT) == FSHIFT
             iKey += System.Windows.Forms.Keys.Shift
-        ENDIF
-        IF _AND(Flags, FVIRTKEY) == FVIRTKEY
+        endif
+        if _and(Flags, FVIRTKEY) == FVIRTKEY
             iKey += ASCII
-        ELSE
+        else
             iKey += ASCII
-        ENDIF
-        RETURN (System.Windows.Forms.Shortcut) iKey
+        endif
+        return (System.Windows.Forms.Shortcut) iKey
 
 
 
-END CLASS
+end class
 
 /// <include file="Gui.xml" path="doc/Accelerator/*" />
-CLASS Accelerator INHERIT VObject
-    PROTECT hAccel  AS IntPtr
-    PROTECT aKeys	as List<AcceleratorKey>
+class Accelerator inherit VObject
+    protect hAccel  as IntPtr
+    protect aKeys	as List<AcceleratorKey>
 
 
     /// <exclude />
-    METHOD __AddKeys(hTable as IntPtr) as LOGIC
-        LOCAL dwI     AS DWORD
-        LOCAL dwCount AS DWORD
-        LOCAL pAccel  AS _winAccel
-        LOCAL pMem    AS _winAccel
-        IF hTable != NULL_PTR
+    method __AddKeys(hTable as IntPtr) as logic
+        local dwI     as dword
+        local dwCount as dword
+        local pAccel  as _winAccel
+        local pMem    as _winAccel
+        if hTable != null_ptr
 
-            dwCount := DWORD(GuiWin32.CopyAcceleratorTable(hTable, NULL_PTR, 0l))
-            IF dwCount > 1
-                IF (pMem := MemAlloc(_SIZEOF(_winAccel)*dwCount)) != NULL_PTR
-                    GuiWin32.CopyAcceleratorTable(hTable, pMem, INT(_CAST,dwCount))
+            dwCount := dword(GuiWin32.CopyAcceleratorTable(hTable, null_ptr, 0l))
+            if dwCount > 1
+                if (pMem := MemAlloc(_sizeof(_winAccel)*dwCount)) != null_ptr
+                    GuiWin32.CopyAcceleratorTable(hTable, pMem, int(_cast,dwCount))
                     pAccel := pMem
-                    FOR dwI := 1 UPTO dwCount
+                    for dwI := 1 upto dwCount
                         aKeys:Add(AcceleratorKey{pAccel:fVirt, pAccel:key, pAccel:cmd})
                         pAccel += 1
-                    NEXT //dwI
+                    next //dwI
                     MemFree(pMem)
-                ENDIF
-                RETURN TRUE
-            ENDIF
-        ENDIF
-        RETURN FALSE
+                endif
+                return true
+            endif
+        endif
+        return false
 
     /// <include file="Gui.xml" path="doc/Accelerator.Keys/*" />
-    ACCESS Keys as IList<AcceleratorKey>
-        if aKeys == NULL_OBJECT
+    access Keys as IList<AcceleratorKey>
+        if aKeys == null_object
             aKeys :=  List<AcceleratorKey>{}
-        ENDIF
+        endif
         if aKeys:Count == 0
-            SELF:__AddKeys(hAccel)
-        ENDIF
+            self:__AddKeys(hAccel)
+        endif
         return aKeys
     /// <include file="Gui.xml" path="doc/Accelerator.AddAccelerator/*" />
 
-    METHOD AddAccelerator(oAccelerator as Accelerator) as LOGIC
-        IF hAccel == NULL_PTR
-            SELF:__AddKeys(oAccelerator:Handle())
-            RETURN TRUE
-        ENDIF
-        RETURN FALSE
+    method AddAccelerator(oAccelerator as Accelerator) as logic
+        if hAccel == null_ptr
+            self:__AddKeys(oAccelerator:Handle())
+            return true
+        endif
+        return false
 
     /// <include file="Gui.xml" path="doc/Accelerator.AddKey/*" />
-    METHOD AddKey(nMenuItemId AS DWORD, xKeyId := NIL AS USUAL, lCtrl:= FALSE AS LOGIC, lAlt:= FALSE AS LOGIC, lShift:= FALSE AS LOGIC)
-        LOCAL fVirt AS DWORD
-        LOCAL wKey  AS DWORD
-        LOCAL wCmd  AS DWORD
+    method AddKey(nMenuItemId as dword, xKeyId := nil as usual, lCtrl:= false as logic, lAlt:= false as logic, lShift:= false as logic)
+        local fVirt as dword
+        local wKey  as dword
+        local wCmd  as dword
 
 
-        IF hAccel == NULL_PTR
+        if hAccel == null_ptr
 
             fVirt := 0
 
-            IF IsLogic(lAlt) .AND. lAlt
-                fVirt := _OR(fVirt, FALT)
-            ENDIF
+            if IsLogic(lAlt) .and. lAlt
+                fVirt := _or(fVirt, FALT)
+            endif
 
-            IF IsLogic(lCtrl) .AND. lCtrl
-                fVirt := _OR(fVirt, FCONTROL)
-            ENDIF
+            if IsLogic(lCtrl) .and. lCtrl
+                fVirt := _or(fVirt, FCONTROL)
+            endif
 
-            IF IsLogic(lShift) .AND. lShift
-                fVirt := _OR(fVirt, FSHIFT)
-            ENDIF
+            if IsLogic(lShift) .and. lShift
+                fVirt := _or(fVirt, FSHIFT)
+            endif
 
-            IF IsNumeric(xKeyId)
-                fVirt := _OR(fVirt, FVIRTKEY)
+            if IsNumeric(xKeyId)
+                fVirt := _or(fVirt, FVIRTKEY)
                 wKey  := xKeyId
-            ELSE
-                IF fVirt > 0
-                    fVirt := _OR(fVirt, FVIRTKEY)
-                    wKey  := WORD(Asc(Upper(xKeyId)))
-                ELSE
-                    wKey  := WORD(Asc(xKeyId))
-                ENDIF
-            ENDIF
+            else
+                if fVirt > 0
+                    fVirt := _or(fVirt, FVIRTKEY)
+                    wKey  := word(Asc(Upper(xKeyId)))
+                else
+                    wKey  := word(Asc(xKeyId))
+                endif
+            endif
 
             wCmd := nMenuItemId
 
-            aKeys:Add(AcceleratorKey{(WORD) fVirt, (WORD) wKey, (WORD) wCmd})
-            RETURN TRUE
-        ENDIF
+            aKeys:Add(AcceleratorKey{(word) fVirt, (word) wKey, (word) wCmd})
+            return true
+        endif
 
-        RETURN FALSE
+        return false
 
     /// <include file="Gui.xml" path="doc/Accelerator.Create/*" />
-    METHOD Create() STRICT
-        LOCAL dwCount AS LONG
-        LOCAL pAccel  AS _winAccel
-        LOCAL pMem    AS _winAccel
+    method Create() strict
+        local dwCount as long
+        local pAccel  as _winAccel
+        local pMem    as _winAccel
 
 
-        IF hAccel == NULL_PTR
-            IF (dwCount := aKeys:Count) > 0
-                IF (pMem := MemAlloc(_SIZEOF(_winAccel)*dwCount)) != NULL_PTR
+        if hAccel == null_ptr
+            if (dwCount := aKeys:Count) > 0
+                if (pMem := MemAlloc(_sizeof(_winAccel)*dwCount)) != null_ptr
                     pAccel := pMem
-                    FOREACH IMPLIED oKey in aKeys
-                        pAccel:fVirt := (BYTE) oKey:Flags
+                    foreach implied oKey in aKeys
+                        pAccel:fVirt := (byte) oKey:Flags
                         pAccel:key   := oKey:ASCII
                         pAccel:cmd   := oKey:ID
                         pAccel += 1
-                    NEXT //dwI
-                    hAccel := GuiWin32.CreateAcceleratorTable(pMem, INT(_CAST,dwCount))
+                    next //dwI
+                    hAccel := GuiWin32.CreateAcceleratorTable(pMem, int(_cast,dwCount))
                     MemFree(pMem)
-                ENDIF
+                endif
                 aKeys:Clear()
-            ENDIF
-        ENDIF
+            endif
+        endif
 
-        RETURN NIL
+        return nil
 
     /// <include file="Gui.xml" path="doc/Accelerator.Destroy/*" />
-    METHOD Destroy() AS USUAL
-        IF hAccel != NULL_PTR
+    method Destroy() as usual CLIPPER
+        if hAccel != null_ptr
             GuiWin32.DestroyAcceleratorTable(hAccel)
-            hAccel := NULL_PTR
-        ENDIF
+            hAccel := null_ptr
+        endif
 
-        SUPER:Destroy()
+        super:Destroy()
 
-        RETURN NIL
+        return nil
 
 
     /// <include file="Gui.xml" path="doc/Accelerator.Handle/*" />
-    METHOD Handle() AS IntPtr STRICT
-        IF hAccel == NULL_PTR
-            SELF:Create()
-        ENDIF
+    method Handle() as IntPtr strict
+        if hAccel == null_ptr
+            self:Create()
+        endif
 
-        RETURN hAccel
+        return hAccel
 
     /// <include file="Gui.xml" path="doc/Accelerator.ctor/*" />
-    CONSTRUCTOR(xResourceID AS USUAL)
-        LOCAL hInst AS PTR
+    constructor(xResourceID as usual)
+        local hInst as ptr
         local lpTableName as ptr
         local oResourceId as ResourceId
 
-        SUPER()
+        super()
 
-        IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
+        if IsNumeric(xResourceID) .or. IsSymbol(xResourceID) .or. IsString(xResourceID)
             xResourceID := ResourceID{xResourceID}
-        ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
+        elseif xResourceID is ResourceID
             // Ok
-                            NOP
-        ELSEIF IsNil(xResourceID) .OR. IsInstanceOfUsual(xResourceID, #Accelerator) //SE-060525
+            nop
+        elseif IsNil(xResourceID) .or. xResourceID is Accelerator
             aKeys := List<AcceleratorKey>{}
-            hAccel  := NULL_PTR
-            IF ! IsNil(xResourceID)
-                SELF:AddAccelerator(xResourceID)
-            ENDIF
-            RETURN
-        ELSE
+            hAccel  := null_ptr
+            if xResourceID is Accelerator var oAcc
+                self:AddAccelerator(oAcc)
+            endif
+            return
+        else
             WCError{#Init, #Accelerator, __WCSTypeError, xResourceID, 1}:Throw()
-        ENDIF
+        endif
 
-        aKeys := NULL_OBJECT
+        aKeys := null_object
         oResourceId := xResourceID
         hInst := oResourceId:Handle()
         lpTableName := oResourceId:Address()
 
         hAccel := GuiWin32.LoadAccelerators(hInst, lpTableName)
 
-        RETURN
+        return
 
-END CLASS
+end class
 
 

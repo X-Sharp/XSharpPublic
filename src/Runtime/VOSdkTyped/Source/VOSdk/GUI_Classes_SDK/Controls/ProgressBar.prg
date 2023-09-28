@@ -53,7 +53,7 @@ CLASS ProgressBar INHERIT Control
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 
 		DEFAULT( REF lDataAware, TRUE)
-		IF IsInstanceOfUsual(xID, #ResourceID)
+		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, lDataAware)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, "msctls_progress32", kStyle, lDataAware)

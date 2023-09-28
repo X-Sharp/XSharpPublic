@@ -28,7 +28,7 @@ CLASS CheckBox INHERIT Button
 
 
     /// <exclude />
-    PROPERTY __CheckBox AS VOCheckBox GET (VOCheckBox ) oCtrl
+    property __CheckBox as VOCheckBox get (VOCheckBox) oCtrl
 
     METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
         IF oNewImage IS ButtonImageList
@@ -71,7 +71,7 @@ CLASS CheckBox INHERIT Button
         END SET
     END PROPERTY
     /// <include file="Gui.xml" path="doc/CheckBox.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF SELF:__IsValid
             lSavedChecked := SELF:Checked
         ENDIF

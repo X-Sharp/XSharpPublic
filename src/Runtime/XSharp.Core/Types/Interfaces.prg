@@ -50,4 +50,8 @@ BEGIN NAMESPACE XSharp
         PROPERTY Closed as LOGIC GET
     END INTERFACE
 
+    INTERFACE ICurrency
+        PROPERTY @@Value    AS System.Decimal	GET
+    END INTERFACE
+
 END NAMESPACE

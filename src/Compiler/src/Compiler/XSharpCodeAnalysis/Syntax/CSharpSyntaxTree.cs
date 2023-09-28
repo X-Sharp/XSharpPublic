@@ -258,10 +258,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Our line numbers are 1 based and column numbers are zero based..
 
                     var xNode = snode.XNode as XSharpParserRuleContext;
-                    if (xNode is not XP.StatementContext )
+                    if (xNode is not XP.StatementContext)
                     {
                         switch (xNode.Parent)
                         {
+                            case XP.CommonLocalDeclContext:
+                            case XP.VarLocalDeclContext:
+                            case XP.MemvardeclContext:
+                            case XP.FoxmemvardeclContext:
+                            case XP.FoxlparametersContext:
+                            case XP.FilewidememvarContext:
+
+                            case XP.ClassvarsContext:
+                            case XP.VoglobalContext:
+                            case XP.XppclassvarsContext:
+                            case XP.FoxclassvarsContext:
+                                // We want to set the error on the variable and not the statement
+                                break;
                             case XP.CaseStmtContext:
                             case XP.IfStmtContext:
                                 // sequence point on the block condition

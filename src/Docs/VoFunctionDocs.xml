@@ -4464,7 +4464,7 @@
         <summary>
             Create an object.
         </summary>
-
+        <param name="type">The type object that descrives the the object that needs to be created.</param>
         <param name="symClassName">The name of the class for which you want to create an object.</param>
         <param name="InitArgList">
             A comma-separated list of arguments to pass to the Init() method of <paramref name="symClassName" /> (see example below).
@@ -5016,7 +5016,10 @@
 
             The default value is TRUE.
         </param>
-        <returns>
+      <param name="uArea">
+        <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
+      </param>
+      <returns>
             TRUE if successful; otherwise, FALSE.  <br/>
 
             If successfully added, each field in the record is set to the empty value for its data type, and the new record becomes the current record.
@@ -5940,6 +5943,9 @@
         <seealso cref='O:XSharp.RT.Functions.RddSetDefault'>RDDSetDefault</seealso>
     </dbcreateorder>
     <dbdelete>
+      <param name="uArea">
+        <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
+      </param>
         <summary>
             Mark the current record for deletion.
         </summary>
@@ -7009,7 +7015,10 @@
         <seealso cref='O:XSharp.RT.Functions.RddInfo'>RDDInfo</seealso>
     </dbrecordinfo>
     <dbreindex>
-        <summary>
+      <param name="uArea">
+        <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
+      </param>
+      <summary>
             Rebuild all orders in the order list of a work area.
         </summary>
         <returns>
@@ -7833,8 +7842,11 @@
         <summary>
             Move the record pointer relative to the current record.
         </summary>
+      <param name="uArea">
+        <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
+      </param>
 
-        <param name="nRecords">
+      <param name="nRecords">
             The number of logical records to move, relative to the current record.<br/>
             A positive value means to skip forward, and a negative value means to skip backward.<br/>
             If <paramref name="nRecords" /> is omitted, a value of 1 is assumed.
@@ -8111,8 +8123,14 @@
         <seealsocmd>SORT</seealsocmd>
     </dbtrans>
     <dbunlock>
-        <summary>
-            Release all locks for a work area.
+      <param name="uArea">
+        <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
+      </param>
+      <param name="nRecord">
+        The record number of the record to be locked.<br/>
+      </param>
+      <summary>
+            Release all locks or a specified lock for a work area.
         </summary>
         <returns>
             TRUE if successful; otherwise, FALSE.

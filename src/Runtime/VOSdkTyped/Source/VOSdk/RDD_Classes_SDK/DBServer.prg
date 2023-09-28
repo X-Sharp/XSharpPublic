@@ -7,920 +7,847 @@
 #pragma warnings(165, off)
 /// <include file="Rdd.xml" path="doc/DbServer/*" />
 [XSharp.Internal.TypesChanged];
-PARTIAL CLASS DbServer INHERIT DataServer
-	PROTECT lShared AS LOGIC
-	PROTECT lReadOnly AS LOGIC
-	PROTECT symAlias AS SYMBOL
-	PROTECT wWorkArea AS DWORD
-	PROTECT cRDDName AS STRING
-	PROTECT oFileSpec AS FileSpec
-	PROTECT aOriginalBuffer AS ARRAY
-	//PROTECT aRLockVerifyBuffer AS ARRAY
-	PROTECT siSuspendNotification AS SHORTINT
-	PROTECT lRelationsActive AS LOGIC
-	PROTECT lCDXSelectionActive AS LOGIC
-	PROTECT aRelationChildren AS ARRAY
-	PROTECT lSelectionActive AS LOGIC
-	PROTECT oDBSelectionParent AS OBJECT
-	PROTECT wSelectionWorkArea AS DWORD
-	PROTECT cbSelectionParentExpression AS USUAL
-	PROTECT uSelectionValue AS USUAL
-	PROTECT cbSelectionIndexingExpression AS USUAL
-	PROTECT siSelectionStatus AS SHORTINT
-	PROTECT lActiveScope AS LOGIC
-	PROTECT cbStoredForBlock AS USUAL
-	PROTECT cbStoredWhileBlock AS USUAL
-	PROTECT uStoredScope AS USUAL
-	PROTECT nStoredNextCount AS LONGINT
-	PROTECT lStoredAllRecords AS USUAL
-	PROTECT lStoredRestOfFile AS LOGIC
-	PROTECT wLastSelectionRec AS DWORD
-	PROTECT oErrorInfo AS Error
-	PROTECT lErrorFlag AS LOGIC
-	PROTECT nEffectiveCCMode AS DWORD
-	PROTECT aCurrentBuffer AS ARRAY
-	PROTECT lCCOptimisticRecChg AS LOGIC
-	PROTECT aStruct AS ARRAY
-	PROTECT aRdds AS ARRAY
-	PROTECT nRetries AS DWORD
-	PROTECT oRDD AS XSharp.RDD.IRdd
+partial class DbServer inherit DataServer
+    protect lShared as logic
+    protect lReadOnly as logic
+    protect symAlias as symbol
+    protect wWorkArea as dword
+    protect cRDDName as string
+    protect oFileSpec as FileSpec
+    protect aOriginalBuffer as array
+        //PROTECT aRLockVerifyBuffer AS ARRAY
+    protect siSuspendNotification as shortint
+    protect lRelationsActive as logic
+    protect lCDXSelectionActive as logic
+    protect aRelationChildren as array
+    protect lSelectionActive as logic
+    protect oDBSelectionParent as object
+    protect wSelectionWorkArea as dword
+    protect cbSelectionParentExpression as usual
+    protect uSelectionValue as usual
+    protect cbSelectionIndexingExpression as usual
+    protect siSelectionStatus as shortint
+    protect lActiveScope as logic
+    protect cbStoredForBlock as usual
+    protect cbStoredWhileBlock as usual
+    protect uStoredScope as usual
+    protect nStoredNextCount as longint
+    protect lStoredAllRecords as usual
+    protect lStoredRestOfFile as logic
+    protect wLastSelectionRec as dword
+    protect oErrorInfo as Error
+    protect lErrorFlag as logic
+    protect nEffectiveCCMode as dword
+    protect aCurrentBuffer as array
+    protect lCCOptimisticRecChg as logic
+    protect aStruct as array
+    protect aRdds as array
+    protect nRetries as dword
+    protect oRDD as XSharp.RDD.IRdd
 
 
 
 
- /// <exclude />
-METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWORD, cbSelection AS USUAL) AS VOID STRICT
+    /// <exclude />
+    method __AcceptSelectiveRelation( oDBParent as DbServer, wParentWorkArea as dword, cbSelection as usual) as void strict
 
 
-	LOCAL cIndexExt AS STRING
-	LOCAL dwCurrentWorkArea AS DWORD
+        local cIndexExt as string
+        local dwCurrentWorkArea as dword
 
 
 
 
-	oDBSelectionParent := oDBParent
-	wSelectionWorkArea := wParentWorkArea
+        oDBSelectionParent := oDBParent
+        wSelectionWorkArea := wParentWorkArea
 
 
-	cbSelectionParentExpression := cbSelection
+        cbSelectionParentExpression := cbSelection
 
 
-	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        VoDbSelect( wWorkArea, out dwCurrentWorkArea )
 
 
-	cIndexExt := IndexExt( )
+        cIndexExt := IndexExt( )
 
 
-	IF Instr( "MDX", cIndexExt )
-		lSelectionActive := TRUE
-		siSelectionStatus := DBSELECTIONNULL
-		cbSelectionIndexingExpression := DBSelectionIndex{ SELF, __DBSDbOrderInfo( DBOI_EXPRESSION, "", 0 ), (LONG) wWorkArea }
-	ELSE
-		lCDXSelectionActive := TRUE
-	ENDIF
+        if Instr( "MDX", cIndexExt )
+            lSelectionActive := true
+            siSelectionStatus := DBSELECTIONNULL
+            cbSelectionIndexingExpression := DBSelectionIndex{ self, __DBSDbOrderInfo( DBOI_EXPRESSION, "", 0 ), (long) wWorkArea }
+        else
+            lCDXSelectionActive := true
+        endif
 
 
-   __DBSSetSelect( dwCurrentWorkArea  )
+        __DBSSetSelect( dwCurrentWorkArea  )
 
 
-	RETURN
+        return
 
 
- /// <exclude />
-METHOD __BuildDataField( a AS ARRAY ) AS DataField STRICT
-	LOCAL oRet := NULL AS DataField
+    /// <exclude />
+    method __BuildDataField( a as array ) as DataField strict
+        local oRet := null as DataField
 
 
-	IF IsArray( a )
-		oRet := DataField{ (STRING) a[ DBS_NAME ], FieldSpec{ (STRING) a[ DBS_NAME ] , a[ DBS_TYPE ],  ;
-			(DWORD) a[ DBS_LEN ], (DWORD)  a[ DBS_DEC ] } }
-	ENDIF
-	RETURN oRet
+        if IsArray( a )
+            oRet := DataField{ (string) a[ DBS_NAME ], FieldSpec{ (string) a[ DBS_NAME ] , a[ DBS_TYPE ],  ;
+                (dword) a[ DBS_LEN ], (dword)  a[ DBS_DEC ] } }
+        endif
+        return oRet
 
 
- /// <exclude />
-METHOD __ClearChildRelation( oChild AS DbServer ) AS VOID STRICT
-	LOCAL w AS DWORD
-	LOCAL wLen AS DWORD
+    /// <exclude />
+    method __ClearChildRelation( oChild as DbServer ) as void strict
+        local w as dword
+        local wLen as dword
 
 
 
 
-	IF ! ( ( w := AScan( aRelationChildren, oChild ) ) == 0 )
-		IF ALen( aRelationChildren ) == 1
-			lRelationsActive := FALSE
-			aRelationChildren := { }
-		ELSE
-			wLen := ALen( aRelationChildren )
-			aRelationChildren[w] := aRelationChildren[wLen]
-			ASize( aRelationChildren, wLen - 1 )
-		ENDIF
-	ENDIF
+        if ! ( ( w := AScan( aRelationChildren, oChild ) ) == 0 )
+            if ALen( aRelationChildren ) == 1
+                lRelationsActive := false
+                aRelationChildren := { }
+            else
+                wLen := ALen( aRelationChildren )
+                aRelationChildren[w] := aRelationChildren[wLen]
+                ASize( aRelationChildren, wLen - 1 )
+            endif
+        endif
+
+
+        return
+
+
+    /// <exclude />
+    method __ClearLocks( )  as void strict
+        local uVOVal as usual
+
+
+        do case
+        case nEffectiveCCMode == ccOptimistic
+            self:__OptimisticFlush( )
+
+
+        case nEffectiveCCMode == ccStable
+            if ! VoDbInfo( DBI_ISFLOCK, ref uVOVal )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            if ! uVOVal
+                self:UnLock( nLastLock )
+            endif
+
+
+        case nEffectiveCCMode == ccRepeatable
+            if ! VoDbInfo( DBI_ISFLOCK, ref uVOVal )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            if ! uVOVal
+                self:UnLock( )
+            endif
+
+
+        case nEffectiveCCMode == ccFile
+            self:UnLock( )
+        endcase
+
+
+
+
+        return
+
+
+    /// <exclude />
+    method __DbServerEval( uBlock as usual, uCobFor as usual, uCobWhile as usual, ;
+            nNext as usual, nRecno as usual, lRest as logic, lCC as logic, lCCUpdate as logic ) as logic strict
+        local lRetCode := true as logic
+        local lLimit as logic
+        local lBlock as logic
+        local lFor as logic
+        local lWhile as logic
+        local lInternalError as logic
+        local iRecno as int
+        local dwCurrentWorkArea as dword
+        local uRC as usual
+        local oError as usual
+        local nCurrRec as dword
+        local uFLock as usual
+        local lRestore	as logic
+
+        // Make sure we restore the workarea
+        // The codeblocks may select another workarea
+        lRestore	:= DbSetRestoreWorkarea(true)
+
+        VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+
+
+        lErrorFlag := false
+        begin sequence
+
+
+            if ! IsNil( nNext ) .and. nNext != 0
+                lLimit := true
+                iRecno := nNext
+                if iRecno < 1
+                    oHLStatus := HyperLabel{ #BadNext, __CavoStr( __CAVOSTR_DBFCLASS_BADNEXT_CAPTION ),  ;
+                        __CavoStr( __CAVOSTR_DBFCLASS_BADNEXT ) }
+                    lInternalError := true
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+            else
+                lLimit := false
+                if IsNil( uCobWhile ) .and. ! lRest .and. ! self:GoTop( )
+                    oHLStatus := HyperLabel{ #NoGoTop, __CavoStr( __CAVOSTR_DBFCLASS_NOGOTOP_CAPTION ),  ;
+                        __CavoStr( __CAVOSTR_DBFCLASS_NOGOTOP ) }
+                    lInternalError := true
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+            endif
+
+            lBlock 	:= ! IsNil( uBlock )
+            lFor 		:= ! IsNil( uCobFor )
+            lWhile 	:= ! IsNil( uCobWhile )
+
+            if ! VoDbInfo( DBI_ISFLOCK, ref uFLock )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            do while ! VoDbEof( )
+                if lWhile .and. ! Eval( uCobWhile )
+                    exit
+                endif
+                if ( ! lFor .or. Eval( uCobFor ) ) .and. lBlock
+                    if lCC
+                        if nEffectiveCCMode = ccOptimistic
+                            if lCCUpdate .and. ! uFLock
+                                nCurrRec := VoDbRecno( )
+                                VoDbRlock( nCurrRec )
+                            endif
+                        else
+                            if nEffectiveCCMode = ccStable .and. lCCUpdate .and. ! uFLock
+                                if nLastLock != 0
+                                    VoDbUnlock( nLastLock )
+                                endif
+                                nLastLock := (int) VoDbRecno( )
+                                if ! VoDbEof( )
+                                    lRetCode := VoDbRlock( nLastLock )
+                                else
+                                    nLastLock := 0
+                                endif
+                            elseif nEffectiveCCMode = ccRepeatable
+                                if ! VoDbEof( )
+                                    lRetCode := VoDbRlock( VoDbRecno( ) )
+                                endif
+                            endif
+                        endif
+                    endif
+
+
+                    uRC := Eval( uBlock )
+                    if lCC .and. nEffectiveCCMode = ccOptimistic .and. lCCUpdate .and. ! uFLock
+                        VoDbUnlock( nCurrRec )
+                    endif
+
+
+                    if IsLogic( uRC )
+                        lRetCode := lRetCode .and. uRC
+                        if ! lRetCode
+                            exit
+                        endif
+                    endif
+                endif
+
+
+                if lLimit .and. ( --iRecno = 0 )
+                    exit
+                endif
 
 
-	RETURN
+                if ! VoDbSkip( 1 )
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+            enddo
+        recover using oError
+            oErrorInfo := oError
+            if ! lInternalError
+                __DBSSetSelect(dwCurrentWorkArea  )
+                self:Error( oErrorInfo, #__DbServerEval )
+            endif
+            lRetCode := false
+        end sequence
+        __DBSSetSelect( dwCurrentWorkArea )
+        DbSetRestoreWorkarea(lRestore)
+        return lRetCode
 
 
- /// <exclude />
-METHOD __ClearLocks( )  AS VOID STRICT
-	LOCAL uVOVal AS USUAL
+    /// <exclude />
+    method __GenerateStatusHL( oError as  Error) as HyperLabel strict
+        local oRet as HyperLabel
+        local cDesc as string
+        if oError == null_object
+            oError := Error{}
+        endif
 
 
-	DO CASE
-	CASE nEffectiveCCMode == ccOptimistic
-		SELF:__OptimisticFlush( )
+        lErrorFlag := true
 
 
-	CASE nEffectiveCCMode == ccStable
-		IF ! VoDbInfo( DBI_ISFLOCK, REF uVOVal )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-		IF ! uVOVal
-			SELF:UnLock( nLastLock )
-		ENDIF
-
-
-	CASE nEffectiveCCMode == ccRepeatable
-		IF ! VoDbInfo( DBI_ISFLOCK, REF uVOVal )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-		IF ! uVOVal
-			SELF:UnLock( )
-		ENDIF
-
-
-	CASE nEffectiveCCMode == ccFile
-		SELF:UnLock( )
-	ENDCASE
-
-
-
-
-	RETURN
-
-
- /// <exclude />
-METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
-	nNext AS USUAL, nRecno AS USUAL, lRest AS LOGIC, lCC AS LOGIC, lCCUpdate AS LOGIC ) AS LOGIC STRICT
-	LOCAL lRetCode := TRUE AS LOGIC
-	LOCAL lLimit AS LOGIC
-	LOCAL lBlock AS LOGIC
-	LOCAL lFor AS LOGIC
-	LOCAL lWhile AS LOGIC
-	LOCAL lInternalError AS LOGIC
-	LOCAL iRecno AS INT
-	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRC AS USUAL
-	LOCAL oError AS USUAL
-	LOCAL nCurrRec AS DWORD
-	LOCAL uFLock AS USUAL
-   LOCAL lRestore	AS LOGIC
-
-
-   // Make sure we restore the workarea
-   // The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)
-
-
-	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-
-
-		IF ! IsNil( nNext ) .AND. nNext != 0
-			lLimit := TRUE
-			iRecno := nNext
-			IF iRecno < 1
-				oHLStatus := HyperLabel{ #BadNext, __CavoStr( __CAVOSTR_DBFCLASS_BADNEXT_CAPTION ),  ;
-					__CavoStr( __CAVOSTR_DBFCLASS_BADNEXT ) }
-				lInternalError := TRUE
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
-		ELSE
-			lLimit := FALSE
-			IF IsNil( uCobWhile ) .AND. ! lRest .AND. ! SELF:GoTop( )
-				oHLStatus := HyperLabel{ #NoGoTop, __CavoStr( __CAVOSTR_DBFCLASS_NOGOTOP_CAPTION ),  ;
-					__CavoStr( __CAVOSTR_DBFCLASS_NOGOTOP ) }
-				lInternalError := TRUE
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
-		ENDIF
+        cDesc := Symbol2String( ClassName(self) ) + ": "
+        if Len( oError:Description ) > 0
+            cDesc += oError:Description
+        else
+            cDesc += ErrString( oError:Gencode )
+        endif
+        if  SLen(oError:SubCodeText) > 0
+            cDesc += " ("+oError:SubCodeText+")"
+        endif
 
 
-		lBlock 	:= ! IsNil( uBlock )
-		lFor 		:= ! IsNil( uCobFor )
-		lWhile 	:= ! IsNil( uCobWhile )
+        if oError:OSCode != 0
+            cDesc += ":" + DosErrString( oError:OSCode )
+        endif
 
 
+        oRet := HyperLabel{ oError:FuncSym, AsString( oError:Gencode ), cDesc }
 
 
-		IF ! VoDbInfo( DBI_ISFLOCK, REF uFLock )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-		DO WHILE ! VoDbEof( )
-			IF lWhile .AND. ! Eval( uCobWhile )
-				EXIT
-			ENDIF
-			IF ( ! lFor .OR. Eval( uCobFor ) ) .AND. lBlock
-				IF lCC
-					IF nEffectiveCCMode = ccOptimistic
-						IF lCCUpdate .AND. ! uFLock
-							nCurrRec := VoDbRecno( )
-							VoDbRlock( nCurrRec )
-						ENDIF
-					ELSE
-						IF nEffectiveCCMode = ccStable .AND. lCCUpdate .AND. ! uFLock
-							IF nLastLock != 0
-								VoDbUnlock( nLastLock )
-							ENDIF
-							nLastLock := (INT) VoDbRecno( )
-							IF ! VoDbEof( )
-								lRetCode := VoDbRlock( nLastLock )
-							ELSE
-								nLastLock := 0
-							ENDIF
-						ELSEIF nEffectiveCCMode = ccRepeatable
-							IF ! VoDbEof( )
-								lRetCode := VoDbRlock( VoDbRecno( ) )
-							ENDIF
-						ENDIF
-					ENDIF
-				ENDIF
 
 
-				uRC := Eval( uBlock )
-				IF lCC .AND. nEffectiveCCMode = ccOptimistic .AND. lCCUpdate .AND. ! uFLock
-					VoDbUnlock( nCurrRec )
-				ENDIF
+        return oRet
 
 
-				IF IsLogic( uRC )
-					lRetCode := lRetCode .AND. uRC
-					IF ! lRetCode
-						EXIT
-					ENDIF
-				ENDIF
-			ENDIF
+    /// <exclude />
+    method __InitRecordBuf( ) as void strict
+        local i as dword
+        local x as usual
 
 
-			IF lLimit .AND. ( --iRecno = 0 )
-				EXIT
-			ENDIF
+        for i := 1 to self:wFieldCount
+            if VoDbFieldGet( i, ref x )
+                //Mark as BLOB when fieldtype = 'M' and not string
+                aOriginalBuffer[BUFFER_VALUE, i] 			:= x
+                if ! IsString(x) .and. self:aStruct[i,DBS_TYPE] == "M"
+                    aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= true
+                else
+                    aOriginalBuffer[BUFFER_IS_BLOB, i] 	:= false
+                endif
+            else
+                // If VoDbFieldGet() fails this may be a BLOB field > 64 Kb
+                aOriginalBuffer[BUFFER_VALUE, i] 			:= nil
+                aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= true
+            endif
+            aCurrentBuffer[BUFFER_IS_CHANGED, i] := false
+        next  // i
 
 
-			IF ! VoDbSkip( 1 )
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
-		ENDDO
-	RECOVER USING oError
-		oErrorInfo := oError
-		IF ! lInternalError
-			__DBSSetSelect(dwCurrentWorkArea  )
-			SELF:Error( oErrorInfo, #__DbServerEval )
-		ENDIF
-		lRetCode := FALSE
-	END SEQUENCE
 
 
-	__DBSSetSelect( dwCurrentWorkArea )
+        return
 
 
 
 
-   DbSetRestoreWorkarea(lRestore)
-	RETURN lRetCode
+    /// <exclude />
+    method __Notify( kNotification, uDescription )  as usual clipper
+        local uRetValue as usual
+        local oError as usual
 
 
- /// <exclude />
-METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
-	LOCAL oRet AS HyperLabel
-	LOCAL cDesc AS STRING
-    IF oError == NULL_OBJECT
-        oError := Error{}
-    ENDIF
+        begin sequence
+            uRetValue := self:Notify( kNotification, uDescription )
+        recover using oError
+            oErrorInfo := oError
+            oHLStatus := self:__GenerateStatusHL( oError )
+        end sequence
 
 
-	lErrorFlag := TRUE
+        return uRetValue
 
 
-	cDesc := Symbol2String( ClassName(SELF) ) + ": "
-	IF Len( oError:Description ) > 0
-		cDesc += oError:Description
-	ELSE
-		cDesc += ErrString( oError:Gencode )
-	ENDIF
-	IF  SLen(oError:SubCodeText) > 0
-		cDesc += " ("+oError:SubCodeText+")"
-	ENDIF
+    /// <exclude />
+    method __NotifyBufferFlush( ) as void strict
+        local dwCurrentWorkArea  as dword
 
 
-	IF oError:OSCode != 0
-		cDesc += ":" + DosErrString( oError:OSCode )
-	ENDIF
 
 
-	oRet := HyperLabel{ oError:FuncSym, AsString( oError:Gencode ), cDesc }
+        ASend( aRelationChildren, #__NotifyBufferFlush )
+        VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+        self:__OptimisticFlush( )
+        __DBSSetSelect( dwCurrentWorkArea  )
 
 
 
 
-	RETURN oRet
+        return
 
 
- /// <exclude />
-METHOD __InitRecordBuf( ) AS VOID STRICT
-	LOCAL i AS DWORD
-	LOCAL x AS USUAL
+    /// <exclude />
+    method __OptimisticFlush() as void strict
+        local w as dword
+        local uFLock as usual
+        local uValue as usual
+        local nCurRec as dword
+        local uIsRLock as usual
+        local nOrgBuffLen as dword
+        local cFieldType	as string
 
 
-    FOR i := 1 TO SELF:wFieldCount
-		IF VoDbFieldGet( i, REF x )
-			//Mark as BLOB when fieldtype = 'M' and not string
-			aOriginalBuffer[BUFFER_VALUE, i] 			:= x
-			IF ! IsString(x) .AND. SELF:aStruct[i,DBS_TYPE] == "M"
-				aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= TRUE
-			ELSE
-				aOriginalBuffer[BUFFER_IS_BLOB, i] 	:= FALSE
-			ENDIF
-		ELSE
-			// If VoDbFieldGet() fails this may be a BLOB field > 64 Kb
-			aOriginalBuffer[BUFFER_VALUE, i] 			:= NIL
-			aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= TRUE
-		ENDIF
-		aCurrentBuffer[BUFFER_IS_CHANGED, i] := FALSE
-	NEXT  // i
 
 
+        if nEffectiveCCMode == ccOptimistic .and. lCCOptimisticRecChg
+            nCurRec := VoDbRecno( )
 
 
-	RETURN
+            if ! VoDbRecordInfo( DBRI_LOCKED, 0, ref uIsRLock )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
 
 
+            if ! uIsRLock
+                if self:__RLockVerify( )
+                    if ! VoDbInfo( DBI_ISFLOCK, ref uFLock )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    for w := 1 upto wFieldCount
+                        cFieldType := self:aStruct[w, DBS_TYPE]
+                        if aCurrentBuffer[BUFFER_IS_CHANGED, w] .and. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
+                            uValue := aCurrentBuffer[BUFFER_VALUE, w]
+                            if ! VoDbFieldPut( w, uValue )
+                                break ErrorBuild( _VoDbErrInfoPtr( ) )
+                            endif
+                            if ! uFLock
+                                // Memo Fields must NOT be padded !
+                                if cFieldType != "M" .and. IsString( aOriginalBuffer[BUFFER_VALUE, w] )
+                                    nOrgBuffLen := SLen( aOriginalBuffer[BUFFER_VALUE, w] )
+                                    aOriginalBuffer[BUFFER_VALUE, w] := PadR( uValue, nOrgBuffLen )
+                                else
+                                    aOriginalBuffer[BUFFER_VALUE, w] := uValue
+                                endif
+                            endif
+                            aCurrentBuffer[BUFFER_VALUE, w]   := nil
+                            aCurrentBuffer[BUFFER_IS_CHANGED, w] := false
+                        endif
+                    next
+
+
+                    lCCOptimisticRecChg := false
+
+
+                    if ! uFLock
+                        VoDbUnlock( nCurRec )
+                    endif
+                else
+                    if oErrorInfo = null_object
+                        break DbError{ self, #Optimistic_Buffer_flush, EG_LOCK,  ;
+                            __CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED ) }
+                    else
+                        break oErrorInfo
+                    endif
+                endif
+            endif
+        endif
+
+
+
+
+        return
+
+
+    /// <exclude />
+    method __OptimisticFlushNoLock( ) as void strict
+        local w as dword
+        local uValue as usual
+        if nEffectiveCCMode == ccOptimistic .and. lCCOptimisticRecChg
+            for w := 1 upto wFieldCount
+                if aCurrentBuffer[BUFFER_IS_CHANGED, w] .and. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
+                    uValue := aCurrentBuffer[BUFFER_VALUE, w]
+                    if ! VoDbFieldPut( w, uValue )
+                        break ErrorBuild( _VoDbErrInfoPtr( ) )
+                    endif
+                    aCurrentBuffer[BUFFER_VALUE, w]		:= nil
+                    aCurrentBuffer[BUFFER_IS_CHANGED, w]	:= false
+                endif
+            next
+            lCCOptimisticRecChg := false
+        endif
+
+
+
+
+        return
+
+
+    /// <exclude />
+    method __ProcessConcurrency( lBreak as logic) as logic strict
+        local uVOVal as usual
+        local lError as logic
+        local lRetCode as logic
+
+        lError := false
+        if self:nEffectiveCCMode = ccStable
+            if VoDbInfo( DBI_ISFLOCK, ref uVOVal )
+                if ! uVOVal
+                    if nLastLock != 0
+                        VoDbUnlock( self:nLastLock )
+                    endif
+                    nLastLock := (int) VoDbRecno( )
+                    if ! VoDbEof( )
+                        lRetCode := VoDbRlock( self:nLastLock )
+                    else
+                        self:nLastLock := 0
+                    endif
+                else
+                    self:nLastLock := 0
+                endif
+            else
+                lError := true
+            endif
+
+        elseif self:nEffectiveCCMode = ccRepeatable
+            if ! VoDbEof( )
+                if VoDbInfo( DBI_ISFLOCK, ref uVOVal )
+                    if ! uVOVal
+                        lRetCode := VoDbRlock( VoDbRecno( ) )
+                    endif
+                else
+                    lError := true
+                endif
+            endif
+        else
+            lRetCode := true
+        endif
+
+        if lBreak .and. (lError .or. ! lRetCode) .and. CanBreak()
+            break ErrorBuild( _VoDbErrInfoPtr( ) )
+        endif
+        return lRetCode
+
+
+    /// <exclude />
+    method __RLockVerify( ) as logic strict
+        local w as dword
+        local siCurrentRec as dword
+        local uWasLocked as usual
+        local uVOVal as usual
+        local lRetCode as logic
+        local nDiff	as float
+        local uValue	as usual
+        local aRLockVerifyBuffer as array
+
+
+
+
+        lRetCode := true
+        siCurrentRec := VoDbRecno( )
+        if ! VoDbInfo( DBI_ISFLOCK, ref uVOVal )
+            break ErrorBuild( _VoDbErrInfoPtr( ) )
+        endif
+        if ! VoDbRecordInfo( DBRI_LOCKED, 0, ref uWasLocked )
+            break ErrorBuild( _VoDbErrInfoPtr( ) )
+        endif
+        uWasLocked := uWasLocked .or. uVOVal
+        if ! uWasLocked
+            lRetCode := VoDbRlock( siCurrentRec )
+        endif
+        if ! lRetCode
+            break ErrorBuild( _VoDbErrInfoPtr( ) )
+        else
+            // Store our 'current record'
+            aRLockVerifyBuffer := ArrayNew( wFieldCount )
+            for w := 1 upto wFieldCount
+                aRLockVerifyBuffer[w] := __DBSFieldGet(w)
+            next
+            // Get the current record buffer from disk and compare the fields
+            // in the current buffer with our values.
+            VoDbBuffRefresh( )
+            for w := 1 upto wFieldCount
+                uValue := __DBSFieldGet( w )
+                //
+                if aOriginalBuffer[BUFFER_IS_BLOB, w]
+                    // Field was a blob. Compare field types
+                    if UsualType(aOriginalBuffer[BUFFER_VALUE, w]) != UsualType(uValue)
+                        lRetCode := false
+                    endif
+                elseif ! ( aOriginalBuffer[BUFFER_VALUE, w] == uValue )
+                    // Field has changed.
+                    // Test for float fields with non-relevant differences
+                    if IsFloat(uValue)
+                        nDiff := 10 ^ -(aStruct[w, DBS_DEC])
+                        if Abs(aOriginalBuffer[BUFFER_VALUE, w] - uValue) > nDiff
+                            lRetCode := false
+                        endif
+                    else
+                        lRetCode := false
+                    endif
+                    //ELSE
+                    // The field has not changed
+                endif
+                if ! lRetCode
+                    oHLStatus := HyperLabel{ #RECORDCHANGED,  ;
+                        __CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED_CAPTION ),  ;
+                        __CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED ), nil }
+                    oErrorInfo := null_object
+                    lErrorFlag := true
+                    exit
+                endif
+            next
+            // restore the 'current record' in the buffer
+            for w := 1 upto wFieldCount
+                if ! VoDbFieldPut( w, aRLockVerifyBuffer[w] )
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+            next
+
+
+            if ! lRetCode .and. ! uWasLocked
+                VoDbUnlock( siCurrentRec )
+            endif
+        endif
+
+        return lRetCode
+
+
+    /// <exclude />
+    method __SetAlias( cName as string, aField as array, nField as dword) as void strict
+        local cAlias as string
+        local oFSpec as FieldSpec
+
+        cAlias := "_" + cName
+        oFSpec := FieldSpec{ cAlias, aField[DBS_TYPE], aField[DBS_LEN], aField[DBS_DEC] }
+        self:aDataFields[nField] := DataField{ cName, oFSpec }
+
+        return
+
+
+    /// <exclude />
+    method __SetStatusHL( uFuncSym as usual, uGenCode as usual, uMessage as usual ) as void strict
+
+
+        lErrorFlag := true
+        oErrorInfo := null_object
+        if ! IsString( uGenCode )
+            uGenCode := AsString( uGenCode )
+        endif
+        oHLStatus := HyperLabel{ uFuncSym, uGenCode, uMessage, nil }
+
+        return
+
+
+    /// <exclude />
+    method __SetupLocks( )  as void strict
+        local w as dword
+        local uFlock as usual
+
+        nLastLock := 0
+        do case
+        case nEffectiveCCMode == ccNone
+            //nothing to do
+            nop
+
+        case nEffectiveCCMode == ccOptimistic
+            for w := 1 upto wFieldCount
+                aCurrentBuffer[BUFFER_VALUE, w]   := nil
+                aCurrentBuffer[BUFFER_IS_CHANGED, w] := false
+            next
+            lCCOptimisticRecChg := false
+            self:__InitRecordBuf()
+
+
+        case nEffectiveCCMode == ccStable .or. nEffectiveCCMode == ccRepeatable
+            if ! VoDbInfo( DBI_ISFLOCK, ref uFlock )
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
+            if ! uFlock
+                nLastLock := (long) self:RecNo
+                if ! self:RLock( nLastLock )
+                    nLastLock := 0
+                    oHLStatus := self:Status
+                endif
+            endif
+
+            case nEffectiveCCMode == ccFile
+            if ! self:FLock( )
+                oHLStatus := self:Status
+            endif
+
+        otherwise
+            oErrorInfo := DbError{ self, #ConcurrencyControl, EG_ARG,  ;
+                __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nCCMode, "nCCMode" }
+            self:Error( oErrorInfo, #ConcurrencyControl )
+        endcase
+
+        return
+    /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+    constructor( cFile as string, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
+        self(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD )
+
+
+    /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+    constructor( cFile as usual, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
+        if cFile is FileSpec var oFs
+            self(oFs, lShareMode, lReadOnlyMode , xDriver, aRDD )
+        elseif cFile is string var strFile
+            self(strFile, lShareMode, lReadOnlyMode , xDriver, aRDD )
+        endif
+        break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  cFile, "cFile" }
+
+    /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+    constructor( oFS := null as FileSpec, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
+        local dwCurrentWorkArea := 0 as dword
+        local cFileName as string
+        local w as dword
+        local n as dword
+        local oError as usual
+        local cTemp as string
+        local rddList as _RddList
+        local uTemp as usual
+        local aField as array
+        local uProps as usual
+        local wProps as dword
+        local lRetCode as logic
+
+        super( )
+
+        aRelationChildren := { }
+
+        lErrorFlag := false
+        begin sequence
+            siSuspendNotification := 0
+            dwCurrentWorkArea := VoDbGetSelect( )
+            if oFS == null
+                break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
+                    nil, "oFs" }
+            endif
+
+            if Empty( oFS:Extension )
+                oFS:Extension := ".DBF"
+            endif
+            oFileSpec := oFS
+
+
+            cFileName := oFileSpec:FileName
+
+
+            symAlias := self:ConstructUniqueAlias( cFileName )
+
+
+            if lShareMode  == null
+                self:lShared := ! SetExclusive( )
+            elseif lShareMode is logic var lSh
+                self:lShared := lSh
+            else
+                break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  lShareMode, "lShareMode" }
+            endif
+
+
+            if lReadOnlyMode == null
+                lReadOnly := false
+            elseif lReadOnlyMode is logic
+                lReadOnly := (logic) lReadOnlyMode
+            else
+                break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
+                    lReadOnlyMode, "lReadOnlyMode" }
+            endif
 
 
- /// <exclude />
-METHOD __Notify( kNotification, uDescription )  AS USUAL CLIPPER
-   LOCAL uRetValue AS USUAL
-   LOCAL oError AS USUAL
+            cTemp := Symbol2String( ClassName( self ) )
+            oHyperLabel := HyperLabel{ cFileName, cFileName,  ;
+                cTemp + ": " + cFileName + " " +  ;
+                VO_Sprintf( __CAVOSTR_DBFCLASS_ALIAS, Symbol2String( symAlias ) ),  ;
+                cTemp + "_" + cFileName }
 
 
-	BEGIN SEQUENCE
-		uRetValue := SELF:Notify( kNotification, uDescription )
-	RECOVER USING oError
-		oErrorInfo := oError
-		oHLStatus := SELF:__GenerateStatusHL( oError )
-	END SEQUENCE
+            oHLStatus := nil
 
 
-   RETURN uRetValue
+            self:wWorkArea := VoDbSetSelect( -1 )
 
 
- /// <exclude />
-METHOD __NotifyBufferFlush( ) AS VOID STRICT
-	LOCAL dwCurrentWorkArea  AS DWORD
+            if ! ( IsArray( xDriver ) .or. IsString( xDriver ) )
+                xDriver := RddName( )
+            endif
 
 
+            self:aRdds := __RDDList( xDriver, aRDD )
+            rddList := __AllocRddList( aRdds )
 
 
-	ASend( aRelationChildren, #__NotifyBufferFlush )
-	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-	SELF:__OptimisticFlush( )
-	__DBSSetSelect( dwCurrentWorkArea  )
+            lRetCode := VoDbUseArea( false, rddList, oFileSpec:FullPath, Symbol2String( symAlias ),  ;
+                lShared, lReadOnly )
 
 
+            if ! lRetCode
+                break ErrorBuild( _VoDbErrInfoPtr( ) )
+            endif
 
 
-	RETURN
+            self:cRDDName := RddName( )
+            self:oRDD     := (XSharp.RDD.IRdd) DbInfo(DBI_RDD_OBJECT)
 
 
- /// <exclude />
-METHOD __OptimisticFlush() AS VOID STRICT
-	LOCAL w AS DWORD
-	LOCAL uFLock AS USUAL
-	LOCAL uValue AS USUAL
-	LOCAL nCurRec AS DWORD
-	LOCAL uIsRLock AS USUAL
-	LOCAL nOrgBuffLen AS DWORD
-	LOCAL cFieldType	AS STRING
+            self:nCCMode := self:nEffectiveCCMode := DbGetDefaultLockMode()
+            if lReadOnly .or. ! lShared
+                self:nEffectiveCCMode := ccNone
+            endif
 
 
+            wFieldCount := FCount( )
 
 
-	IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg
-		nCurRec := VoDbRecno( )
+            aStruct := ArrayCreate( wFieldCount )
 
 
-		IF ! VoDbRecordInfo( DBRI_LOCKED, 0, REF uIsRLock )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
+            for w := 1 upto wFieldCount
+                uProps := nil
+                if ! VoDbFieldInfo( DBS_PROPERTIES, w, ref uProps )
+                    break ErrorBuild( _VoDbErrInfoPtr( ) )
+                endif
+                wProps := uProps
+                aField := ArrayCreate( wProps )
+                for n := 1 upto wProps
+                    VoDbFieldInfo( n, w, ref uTemp )
+                    aField[n] := uTemp
+                next
+                aStruct[w] := aField
+            next
 
 
-		IF ! uIsRLock
-			IF SELF:__RLockVerify( )
-				IF ! VoDbInfo( DBI_ISFLOCK, REF uFLock )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				FOR w := 1 UPTO wFieldCount
-					cFieldType := SELF:aStruct[w, DBS_TYPE]
-					IF aCurrentBuffer[BUFFER_IS_CHANGED, w] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
-						uValue := aCurrentBuffer[BUFFER_VALUE, w]
-						IF ! VoDbFieldPut( w, uValue )
-							BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-						ENDIF
-						IF ! uFLock
-							// Memo Fields must NOT be padded !
-							IF cFieldType != "M" .AND. IsString( aOriginalBuffer[BUFFER_VALUE, w] )
-								nOrgBuffLen := SLen( aOriginalBuffer[BUFFER_VALUE, w] )
-								aOriginalBuffer[BUFFER_VALUE, w] := PadR( uValue, nOrgBuffLen )
-							ELSE
-								aOriginalBuffer[BUFFER_VALUE, w] := uValue
-							ENDIF
-						ENDIF
-						aCurrentBuffer[BUFFER_VALUE, w]   := NIL
-						aCurrentBuffer[BUFFER_IS_CHANGED, w] := FALSE
-					ENDIF
-				NEXT
+            aDataFields := ArrayNew( wFieldCount )
 
 
-				lCCOptimisticRecChg := FALSE
+            aOriginalBuffer := ArrayNew( 2, wFieldCount )
+            aCurrentBuffer  := ArrayNew( 2, wFieldCount )
+            self:__InitRecordBuf( )
 
 
-				IF ! uFLock
-					VoDbUnlock( nCurRec )
-				ENDIF
-			ELSE
-				IF oErrorInfo = NULL_OBJECT
-					BREAK DbError{ SELF, #Optimistic_Buffer_flush, EG_LOCK,  ;
-						         __CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED ) }
-				ELSE
-					BREAK oErrorInfo
-				ENDIF
-			ENDIF
-		ENDIF
-	ENDIF
 
 
+            __DBSSetSelect(dwCurrentWorkArea)
 
 
-	RETURN
+        recover using oError
+            oErrorInfo := oError
+            if Used( )
+                VoDbCloseArea( )
+            endif
+            wWorkArea := 0
+            __DBSSetSelect(dwCurrentWorkArea)
+            oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
+                __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE ) }
+            self:Error( oErrorInfo, #Init )
+        end sequence
 
 
- /// <exclude />
-METHOD __OptimisticFlushNoLock( ) AS VOID STRICT
-	LOCAL w AS DWORD
-	LOCAL uValue AS USUAL
-	IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg
-		FOR w := 1 UPTO wFieldCount
-			IF aCurrentBuffer[BUFFER_IS_CHANGED, w] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, w]
-				uValue := aCurrentBuffer[BUFFER_VALUE, w]
-				IF ! VoDbFieldPut( w, uValue )
-					BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-				ENDIF
-				aCurrentBuffer[BUFFER_VALUE, w]		:= NIL
-				aCurrentBuffer[BUFFER_IS_CHANGED, w]	:= FALSE
-			ENDIF
-		NEXT
-		lCCOptimisticRecChg := FALSE
-	ENDIF
+        self:nRetries := LockTries( )
 
 
+        return
 
 
-	RETURN
 
 
- /// <exclude />
-METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
-	LOCAL uVOVal AS USUAL
-	LOCAL lError AS LOGIC
-	LOCAL lRetCode AS LOGIC
-
-
-
-
-	lError := FALSE
-	IF SELF:nEffectiveCCMode = ccStable
-		IF VoDbInfo( DBI_ISFLOCK, REF uVOVal )
-			IF ! uVOVal
-				IF nLastLock != 0
-					VoDbUnlock( SELF:nLastLock )
-				ENDIF
-				nLastLock := (INT) VoDbRecno( )
-				IF ! VoDbEof( )
-					lRetCode := VoDbRlock( SELF:nLastLock )
-				ELSE
-					SELF:nLastLock := 0
-				ENDIF
-			ELSE
-				SELF:nLastLock := 0
-			ENDIF
-		ELSE
-			lError := TRUE
-		ENDIF
-
-
-	ELSEIF SELF:nEffectiveCCMode = ccRepeatable
-		IF ! VoDbEof( )
-			IF VoDbInfo( DBI_ISFLOCK, REF uVOVal )
-				IF ! uVOVal
-					lRetCode := VoDbRlock( VoDbRecno( ) )
-				ENDIF
-			ELSE
-				lError := TRUE
-			ENDIF
-		ENDIF
-	ELSE
-		lRetCode := TRUE
-	ENDIF
-
-
-	IF lBreak .AND. (lError .OR. ! lRetCode) .AND. CanBreak()
-		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-	ENDIF
-
-
-	RETURN lRetCode
-
-
- /// <exclude />
-METHOD __RLockVerify( ) AS LOGIC STRICT
-	LOCAL w AS DWORD
-	LOCAL siCurrentRec AS DWORD
-	LOCAL uWasLocked AS USUAL
-	LOCAL uVOVal AS USUAL
-	LOCAL lRetCode AS LOGIC
-   LOCAL nDiff	AS FLOAT
-	LOCAL uValue	AS USUAL
-	LOCAL aRLockVerifyBuffer AS ARRAY
-
-
-
-
-	lRetCode := TRUE
-	siCurrentRec := VoDbRecno( )
-	IF ! VoDbInfo( DBI_ISFLOCK, REF uVOVal )
-		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-	ENDIF
-	IF ! VoDbRecordInfo( DBRI_LOCKED, 0, REF uWasLocked )
-		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-	ENDIF
-	uWasLocked := uWasLocked .OR. uVOVal
-	IF ! uWasLocked
-		lRetCode := VoDbRlock( siCurrentRec )
-	ENDIF
-	IF ! lRetCode
-		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-	ELSE
-		// Store our 'current record'
- 		aRLockVerifyBuffer := ArrayNew( wFieldCount )
- 		FOR w := 1 UPTO wFieldCount
- 			aRLockVerifyBuffer[w] := __DBSFieldGet(w)
- 		NEXT
-		// Get the current record buffer from disk and compare the fields
-		// in the current buffer with our values.
-		VoDbBuffRefresh( )
-		FOR w := 1 UPTO wFieldCount
-			uValue := __DBSFieldGet( w )
-			//
-			IF aOriginalBuffer[BUFFER_IS_BLOB, w]
-				// Field was a blob. Compare field types
-				IF UsualType(aOriginalBuffer[BUFFER_VALUE, w]) != UsualType(uValue)
-					lRetCode := FALSE
-				ENDIF
-			ELSEIF ! ( aOriginalBuffer[BUFFER_VALUE, w] == uValue )
-				// Field has changed.
-				// Test for float fields with non-relevant differences
-				IF IsFloat(uValue)
-				   nDiff := 10 ^ -(aStruct[w, DBS_DEC])
-				   IF Abs(aOriginalBuffer[BUFFER_VALUE, w] - uValue) > nDiff
-					   lRetCode := FALSE
-				   ENDIF
-				ELSE
-				   lRetCode := FALSE
-				ENDIF
-			//ELSE
-				// The field has not changed
-			ENDIF
-			IF ! lRetCode
-				oHLStatus := HyperLabel{ #RECORDCHANGED,  ;
-					__CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED_CAPTION ),  ;
-					__CavoStr( __CAVOSTR_DBFCLASS_RECORDCHANGED ), NIL }
-				oErrorInfo := NULL_OBJECT
-				lErrorFlag := TRUE
-				EXIT
-			ENDIF
-		NEXT
-      // restore the 'current record' in the buffer
- 		FOR w := 1 UPTO wFieldCount
- 			IF ! VoDbFieldPut( w, aRLockVerifyBuffer[w] )
- 				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
- 			ENDIF
- 		NEXT
-
-
-		IF ! lRetCode .AND. ! uWasLocked
-			VoDbUnlock( siCurrentRec )
-		ENDIF
-	ENDIF
-
-
-
-
-	RETURN lRetCode
-
-
- /// <exclude />
-METHOD __SetAlias( cName AS STRING, aField AS ARRAY, nField AS DWORD) AS VOID STRICT
-	LOCAL cAlias AS STRING
-	LOCAL oFSpec AS FieldSpec
-
-
-
-
-	cAlias := "_" + cName
-	oFSpec := FieldSpec{ cAlias, aField[DBS_TYPE], aField[DBS_LEN], aField[DBS_DEC] }
-	SELF:aDataFields[nField] := DataField{ cName, oFSpec }
-
-
-
-
-	RETURN
-
-
- /// <exclude />
-METHOD __SetStatusHL( uFuncSym AS USUAL, uGenCode AS USUAL, uMessage AS USUAL ) AS VOID STRICT
-
-
-	lErrorFlag := TRUE
-	oErrorInfo := NULL_OBJECT
-	IF ! IsString( uGenCode )
-		uGenCode := AsString( uGenCode )
-	ENDIF
-	oHLStatus := HyperLabel{ uFuncSym, uGenCode, uMessage, NIL }
-
-
-	RETURN
-
-
- /// <exclude />
-METHOD __SetupLocks( )  AS VOID STRICT
-	LOCAL w AS DWORD
-	LOCAL uFlock AS USUAL
-
-
-
-
-	nLastLock := 0
-	DO CASE
-	CASE nEffectiveCCMode == ccNone
-		//nothing to do
-        NOP
-
-	CASE nEffectiveCCMode == ccOptimistic
-		FOR w := 1 UPTO wFieldCount
-			aCurrentBuffer[BUFFER_VALUE, w]   := NIL
-			aCurrentBuffer[BUFFER_IS_CHANGED, w] := FALSE
-		NEXT
-		lCCOptimisticRecChg := FALSE
-		SELF:__InitRecordBuf()
-
-
-	CASE nEffectiveCCMode == ccStable .OR. nEffectiveCCMode == ccRepeatable
-		IF ! VoDbInfo( DBI_ISFLOCK, REF uFlock )
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-		IF ! uFlock
-			nLastLock := (LONG) SELF:RecNo
-			IF ! SELF:RLock( nLastLock )
-				nLastLock := 0
-				oHLStatus := SELF:Status
-			ENDIF
-		ENDIF
-
-
-	CASE nEffectiveCCMode == ccFile
-		IF ! SELF:FLock( )
-			oHLStatus := SELF:Status
-		ENDIF
-
-
-	OTHERWISE
-		oErrorInfo := DbError{ SELF, #ConcurrencyControl, EG_ARG,  ;
-			__CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nCCMode, "nCCMode" }
-		SELF:Error( oErrorInfo, #ConcurrencyControl )
-	ENDCASE
-
-	RETURN
-/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
-    SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD )
-
-
-/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
-	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL cFileName AS STRING
-	LOCAL w AS DWORD
-	LOCAL n AS DWORD
-	LOCAL oError AS USUAL
-	LOCAL symTemp AS SYMBOL
-	LOCAL cTemp AS STRING
-	LOCAL rddList AS _RddList
-	LOCAL uTemp AS USUAL
-	LOCAL aField AS ARRAY
-	LOCAL uProps AS USUAL
-	LOCAL wProps AS DWORD
-	LOCAL lRetCode AS LOGIC
-
-
-
-
-	SUPER( )
-
-
-	aRelationChildren := { }
-
-
-	lErrorFlag := FALSE
-	BEGIN SEQUENCE
-		siSuspendNotification := 0
-		dwCurrentWorkArea := VoDbGetSelect( )
-        IF oFS == NULL
-		    BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
-			    NIL, "oFs" }
-        ENDIF
-
-
-		IF Empty( oFS:Extension )
-			oFS:Extension := ".DBF"
-		ENDIF
-		oFileSpec := oFS
-
-
-		cFileName := oFileSpec:FileName
-
-
-		symAlias := SELF:ConstructUniqueAlias( cFileName )
-
-
-		IF lShareMode  == NULL
-			SELF:lShared := ! SetExclusive( )
-		ELSEIF lShareMode  IS LOGIC
-			SELF:lShared := (LOGIC) lShareMode
-		ELSEIF lShareMode IS SYMBOL VAR symShareMode
-			IF symShareMode = #Shared
-				SELF:lShared := TRUE
-			ELSEIF symShareMode = #Exclusive
-				SELF:lShared := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
-					lShareMode, "lShareMode" }
-			ENDIF
-
-
-		ELSEIF lShareMode IS STRING VAR strShareMode
-			symTemp := String2Symbol( strShareMode )
-			IF symTemp = #Shared
-				SELF:lShared := TRUE
-			ELSEIF symTemp = #Exclusive
-				SELF:lShared := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
-					lShareMode, "lShareMode" }
-			ENDIF
-		ELSE
-			BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADSHAREMODE ),  ;
-				lShareMode, "lShareMode" }
-		ENDIF
-
-
-		IF lReadOnlyMode == NULL
-			lReadOnly := FALSE
-		ELSEIF lReadOnlyMode IS LOGIC
-			lReadOnly := (LOGIC) lReadOnlyMode
-		ELSEIF lReadOnlyMode  IS SYMBOL VAR symReadOnlyMode
-			IF symReadOnlyMode = #ReadOnly
-				lReadOnly := TRUE
-			ELSEIF symReadOnlyMode = #ReadWrite
-				lReadOnly := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
-					lReadOnlyMode, "lReadOnlyMode" }
-			ENDIF
-		ELSEIF lReadOnlyMode IS STRING VAR strReadOnlyMode
-			symTemp := String2Symbol( strReadOnlyMode)
-			IF symTemp = #ReadOnly
-				lReadOnly := TRUE
-			ELSEIF symTemp = #ReadWrite
-				lReadOnly := FALSE
-			ELSE
-				BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
-					lReadOnlyMode, "lReadOnlyMode" }
-			ENDIF
-		ELSE
-			BREAK DbError{ SELF, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADREADONLYMODE ),  ;
-				lReadOnlyMode, "lReadOnlyMode" }
-		ENDIF
-
-
-		cTemp := Symbol2String( ClassName( SELF ) )
-		oHyperLabel := HyperLabel{ cFileName, cFileName,  ;
-			cTemp + ": " + cFileName + " " +  ;
-			VO_Sprintf( __CAVOSTR_DBFCLASS_ALIAS, Symbol2String( symAlias ) ),  ;
-			cTemp + "_" + cFileName }
-
-
-		oHLStatus := NIL
-
-
-		SELF:wWorkArea := VoDbSetSelect( -1 )
-
-
-		IF ! ( IsArray( xDriver ) .OR. IsString( xDriver ) )
-			xDriver := RddName( )
-		ENDIF
-
-
-		SELF:aRdds := __RDDList( xDriver, aRDD )
-		rddList := __AllocRddList( aRdds )
-
-
-		lRetCode := VoDbUseArea( FALSE, rddList, oFileSpec:FullPath, Symbol2String( symAlias ),  ;
-			lShared, lReadOnly )
-
-
-		IF ! lRetCode
-			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-		ENDIF
-
-
-		SELF:cRDDName := RddName( )
-        SELF:oRDD     := (XSharp.RDD.IRdd) DbInfo(DBI_RDD_OBJECT)
-
-
-        SELF:nCCMode := SELF:nEffectiveCCMode := DbGetDefaultLockMode()
-		IF lReadOnly .OR. ! lShared
-			SELF:nEffectiveCCMode := ccNone
-		ENDIF
-
-
-		wFieldCount := FCount( )
-
-
-		aStruct := ArrayCreate( wFieldCount )
-
-
-		FOR w := 1 UPTO wFieldCount
-			uProps := NIL
-			IF ! VoDbFieldInfo( DBS_PROPERTIES, w, REF uProps )
-				BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
-			ENDIF
-			wProps := uProps
-			aField := ArrayCreate( wProps )
-			FOR n := 1 UPTO wProps
-				VoDbFieldInfo( n, w, REF uTemp )
-				aField[n] := uTemp
-			NEXT
-			aStruct[w] := aField
-		NEXT
-
-
-		aDataFields := ArrayNew( wFieldCount )
-
-
-		aOriginalBuffer := ArrayNew( 2, wFieldCount )
-		aCurrentBuffer  := ArrayNew( 2, wFieldCount )
-		SELF:__InitRecordBuf( )
-
-
-
-
-		__DBSSetSelect(dwCurrentWorkArea)
-
-
-	RECOVER USING oError
-		oErrorInfo := oError
-		IF Used( )
-			VoDbCloseArea( )
-		ENDIF
-		wWorkArea := 0
-		__DBSSetSelect(dwCurrentWorkArea)
-		oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
-			__CavoStr( __CAVOSTR_DBFCLASS_NOTABLE ) }
-		SELF:Error( oErrorInfo, #Init )
-	END SEQUENCE
-
-
-	SELF:nRetries := LockTries( )
-
-
-	RETURN
-
-
-
-
-END CLASS
+end class
 
 

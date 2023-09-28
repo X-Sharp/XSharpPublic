@@ -85,7 +85,7 @@ CLASS TextControl INHERIT Control
 		IF SELF:Modified
 			cText := SELF:TextValue
 			uOldValue := AsString(uValue)
-			IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+			if self:FieldSpec != null_object
 
 				uValue := SELF:FieldSpec:Val(cText)
 
@@ -128,13 +128,8 @@ CLASS TextControl INHERIT Control
 /// <include file="Gui.xml" path="doc/TextControl.ControlFont/*" />
 	ACCESS ControlFont as Font
 		LOCAL oControl AS TextControl
-		IF (oFont == NULL_OBJECT)
-			IF IsInstanceOf(oParent, #TextControl)
-				oControl := (OBJECT) oParent
-				IF oControl:ControlFont != NULL_OBJECT
-					RETURN oControl:ControlFont
-				ENDIF
-			ELSEIF IsAccess(oParent, #Font)
+		if (self:oFont == null_object)
+			if IsAccess(oParent, #Font)
 				oFont := IVarGet(oParent,#Font)
 				IF oFont != NULL_OBJECT
 					RETURN oFont
@@ -187,7 +182,7 @@ CLASS TextControl INHERIT Control
 		cCurrentText := SELF:__SetText(cNewText)
 		cOldValue := AsString(uValue)
 
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+		if self:FieldSpec != null_object
 			uValue := SELF:FieldSpec:Val(cCurrentText)
 			SELF:ValueChanged := !(cOldValue == AsString(uValue))
 		ELSE
@@ -198,7 +193,7 @@ CLASS TextControl INHERIT Control
 		RETURN
 
 /// <include file="Gui.xml" path="doc/TextControl.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		oFont		:= NULL_OBJECT
 		oToolTip	:= NULL_OBJECT
 		SUPER:Destroy()
@@ -218,7 +213,7 @@ CLASS TextControl INHERIT Control
 		LOCAL hFont AS PTR
 
 		IF !IsNil(oNewFont)
-			IF !IsInstanceOfUsual(oNewFont, #Font)
+			if !(oNewFont is Font)
 				WCError{#Font, #TextControl, __WCSTypeError, oNewFont,1}:Throw()
 			ENDIF
 		ENDIF
@@ -356,7 +351,7 @@ CLASS TextControl INHERIT Control
 		cTextValue := SELF:__SetText(cNewCaption)
 		cOldValue := AsString(uValue)
 
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
+		IF SELF:FieldSpec != NULL_OBJECT
 			uValue := SELF:FieldSpec:Val(cTextValue)
 			SELF:ValueChanged := !(cOldValue == AsString(uValue))
 		ELSE

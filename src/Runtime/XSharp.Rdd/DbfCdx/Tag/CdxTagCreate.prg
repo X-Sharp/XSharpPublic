@@ -34,6 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !_ordCondInfo:Scoped
                 LOCAL orderInfo AS DbOrderInfo
                 orderInfo := DbOrderInfo{}
+                // This clears the current order
                 SELF:_oRdd:OrderListFocus(orderInfo)
             ENDIF
             IF _ordCondInfo:ForBlock != NULL

@@ -11,15 +11,9 @@ CLASS AppCommandEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
+constructor(args params usual[])
+    super(args)
+return
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsControl/*" />
@@ -87,15 +81,10 @@ CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 	//SE-060519
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.IsChanged/*" />
@@ -234,15 +223,10 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.Name/*" />
@@ -293,16 +277,11 @@ CLASS ControlFocusChangeEvent INHERIT FocusChangeEvent
 
 
 /// <include file="Gui.xml" path="doc/ControlFocusChangeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
-END CLASS
+end class
 
 
 /// <include file="Gui.xml" path="doc/ControlNotifyEvent/*" />
@@ -316,15 +295,10 @@ ACCESS Control AS Control STRICT
 
 
 /// <include file="Gui.xml" path="doc/ControlNotifyEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ControlNotifyEvent.NotifyCode/*" />
@@ -349,15 +323,10 @@ END CLASS
 CLASS DateTimeSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/DateTimeSelectionEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimeSelectionEvent.SelectedDate/*" />
@@ -463,16 +432,10 @@ METHOD FileName(nfile)
 
 /// <include file="Gui.xml" path="doc/DragEvent.ctor/*" />
 CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-	SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-	IF !IsPtr(_hWnd)
-		IF IsInstanceOfUsual(_uMsg, #Control)
-			SELF:oControl := _uMsg
+	super(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	if !IsPtr(_hWnd)
+		if _uMsg is Control var oC
+			self:oControl := oC
 		ENDIF
 	ENDIF
 
@@ -522,16 +485,11 @@ CLASS EditFocusChangeEvent INHERIT ControlEvent
 
 
 /// <include file="Gui.xml" path="doc/EditFocusChangeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
-END CLASS
+end class
 
 
 /// <include file="Gui.xml" path="doc/Event/*" />
@@ -553,10 +511,6 @@ CLASS @@Event //inherit object
 
 /// <include file="Gui.xml" path="doc/Event.ctor/*" />
 CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-	LOCAL oEvent AS @@Event
-
-
-
 
 	//super:Init()
 	IF IsPtr(_hWnd)
@@ -565,10 +519,7 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 		wParam := _wParam
 		lParam := _lParam
 		oWindow := _oWindow
-	ELSE
-		oEvent := _hWnd
-
-
+	elseif _hWnd is @@Event var oEvent
 		hWnd := oEvent:hWnd
 		uMsg := oEvent:uMsg
 		wParam := oEvent:wParam
@@ -640,16 +591,11 @@ CLASS ExposeEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/ExposeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
-END CLASS
+end class
 
 
 /// <include file="Gui.xml" path="doc/FocusChangeEvent/*" />
@@ -663,16 +609,11 @@ CLASS FocusChangeEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/FocusChangeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
-END CLASS
+end class
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent/*" />
@@ -755,8 +696,8 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
        IF oObject != NULL_OBJECT
           IF sHelpInfo:iContextType == HELPINFO_WINDOW
-   			 IF IsInstanceOf(oObject, #Control)
-   				 oHL := oObject:Hyperlabel
+   			 if oObject is Control var oC
+   				 oHL := oC:Hyperlabel
    				 IF oHL != NULL_OBJECT .AND. oHL:HelpContext == NULL_STRING
    				    IF IsInstanceOf(oObject, #TabControl)
    				       oObject := oObject:CurrentPage
@@ -765,7 +706,7 @@ ACCESS HyperLabel AS HyperLabel STRICT
    				    ENDIF
    				 ENDIF
    	       ENDIF
-   			 IF IsInstanceOf(oObject,#Window)
+   			 if oObject is Window
    				 IF IsInstanceOf(oObject,#__DocApp) .OR.;
    					 IsInstanceOf(oObject,#__WindApp) .OR.;
    		 	       IsInstanceOf(oObject,#__FormDialogWindow)
@@ -806,15 +747,10 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.ItemID/*" />
@@ -897,15 +833,10 @@ CLASS KeyEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/KeyEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/KeyEvent.KeyCode/*" />
@@ -940,15 +871,10 @@ END CLASS
 CLASS ListViewColumnClickEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewColumnClickEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumnClickEvent.ListViewColumn/*" />
@@ -972,31 +898,21 @@ CLASS ListViewDeleteEvent INHERIT ListViewItemEvent
 
 
 /// <include file="Gui.xml" path="doc/ListViewDeleteEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
-END CLASS
+end class
 
 
 /// <include file="Gui.xml" path="doc/ListViewDragEvent/*" />
 CLASS ListViewDragEvent INHERIT ListViewItemEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewDragEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewDragEvent.IsLeftButton/*" />
@@ -1087,15 +1003,10 @@ ACCESS EditText AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.ListViewItem/*" />
@@ -1120,15 +1031,9 @@ END CLASS
 CLASS ListViewItemEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewItemEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
+	constructor(args params usual[])
+    super(args)
+return
 
 
 /// <include file="Gui.xml" path="doc/ListViewItemEvent.ListViewItem/*" />
@@ -1157,15 +1062,10 @@ END CLASS
 CLASS ListViewKeyEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewKeyEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewKeyEvent.KeyCode/*" />
@@ -1463,43 +1363,32 @@ CLASS MenuCommandEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	PROTECT oMenu AS Menu
 
-
  /// <exclude />
 	METHOD __SetMenu(oParam AS OBJECT) AS MenuCommandEvent STRICT
-	//PP-030828 Strong typing
-	LOCAL oParent AS Window
-	LOCAL oObject AS OBJECT
 
-
-
-
-
-
-	IF uMsg == WM_SYSCOMMAND .AND. IsInstanceOf(oWindow, #AppWindow)
-		omenu := oWindow:__SysMenu
+	if uMsg == WM_SYSCOMMAND .and. oWindow is AppWindow var appWin
+		omenu := appWin:__SysMenu
 	ELSE
 		// Was Menu Passed?
-		IF IsInstanceOfUsual(oParam, #Menu)
-			oMenu := oParam
+		if oParam is Menu var menu
+			oMenu := menu
 			// Window was passed
-		ELSEIF (oParam:ContextMenu != NULL_OBJECT) .AND. (oParam:ContextMenu:HyperLabel(SELF:ItemID) != NULL_OBJECT)
-			oMenu := oParam:ContextMenu
-		ELSE
-			oMenu := oParam:Menu
-			// PRAAN02: Make sure the window is not a control
-			IF !IsInstanceOf(oParam, #Control)
-				oParent := oParam
-				DO WHILE (oMenu == NULL_OBJECT) .AND. IsInstanceOf(oObject := oParent:Owner, #Window)
-					oParent := oObject
-					IF (oParent:ContextMenu != NULL_OBJECT) .AND. (oParent:ContextMenu:HyperLabel(SELF:ItemID) != NULL_OBJECT)
-						oMenu := oParent:ContextMenu
-					ELSE
-						oMenu := oParent:Menu
-					ENDIF
-				ENDDO
-			ENDIF
-		ENDIF
-	ENDIF
+        elseif oParam is Window var oWin .and. oWin:ContextMenu!= null_object .and. oWin:ContextMenu:HyperLabel(self:ItemID) != null_object
+			oMenu := oWin:ContextMenu
+        elseif oParam is Control var oC .and. oC:ContextMenu!= null_object .and. oC:ContextMenu:HyperLabel(self:ItemID) != null_object
+			oMenu := oC:ContextMenu
+        elseif oParam is Window var oParent
+			oMenu := oParent:Menu
+			do while (oMenu == null_object) .and. oParent:Owner is Window var oWindow
+				oParent := oWindow
+				if (oParent:ContextMenu != null_object) .and. (oParent:ContextMenu:HyperLabel(self:ItemID) != null_object)
+					oMenu := oParent:ContextMenu
+				else
+					oMenu := oParent:Menu
+				endif
+			enddo
+		endif
+	endif
 
 
 	RETURN SELF
@@ -1511,110 +1400,63 @@ METHOD AsString() AS STRING STRICT
 	LOCAL cString AS STRING
 	LOCAL liLength AS LONGINT
 
-
-
-
-
-
 	pszBuffer := MemAlloc(256)
 	liLength := GetMenuString(SELF:Menu:Handle(), wParam, pszBuffer, 256, MF_BYCOMMAND)
 
-
-	IF (liLength != 0)
+	if (liLength != 0)
 		cString := Psz2String(pszBuffer)
 	ENDIF
 
-
 	MemFree(pszBuffer)
 
-
-	RETURN cString
+	return cString
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.HyperLabel/*" />
 ACCESS HyperLabel AS HyperLabel STRICT
 	LOCAL oHL AS HyperLabel
-
-
-
-
-
-
-	IF IsInstanceOf(oMenu, #Menu)
+	if oMenu != null
 		oHL := oMenu:HyperLabel(SELF:ItemID)
 	ENDIF
-
-
-	RETURN oHL
+	return oHL
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
+constructor(args params usual[])
+    super(args)
+return
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.ItemID/*" />
 ACCESS ItemID AS LONGINT STRICT
-
-
-
-
-	RETURN LoWord(wParam)
+	return LoWord(wParam)
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.Menu/*" />
 ACCESS Menu AS MENU STRICT
-
-
-
-
-	RETURN oMenu
+	return oMenu
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.Name/*" />
 ACCESS Name AS STRING STRICT
 	LOCAL oHL AS HyperLabel
-
-
-
-
-
-
-	oHL := SELF:HyperLabel
-
-
-	IF IsInstanceOf(oHL,#HyperLabel)
+	oHL := self:HyperLabel
+	if oHL != null_object
 		RETURN oHL:Name
 	ENDIF
-
-
-	RETURN NULL_STRING
+	return null_string
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.NameSym/*" />
 ACCESS NameSym AS SYMBOL STRICT
 	LOCAL oHL AS HyperLabel
 
-
-
-
-
-
-	oHL := SELF:HyperLabel
-	IF IsInstanceOf(oHL,#HyperLabel)
+	oHL := self:HyperLabel
+	if oHL != null_object
 		RETURN oHL:NameSym
 	ENDIF
 
-
-	RETURN NULL_SYMBOL
-
+	return null_symbol
 
 END CLASS
 
@@ -1623,15 +1465,9 @@ END CLASS
 CLASS MenuInitEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MenuInitEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-	SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-	RETURN
+constructor(args params usual[])
+    super(args)
+return
 
 
 /// <include file="Gui.xml" path="doc/MenuInitEvent.Menu/*" />
@@ -1692,15 +1528,10 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-
-
-	SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.ItemID/*" />
@@ -1767,15 +1598,10 @@ END CLASS
 CLASS MinMaxInfoEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxPosition/*" />
@@ -1878,15 +1704,10 @@ CLASS MonthCalSelectionEvent INHERIT ControlNotifyEvent
 
 
 /// <include file="Gui.xml" path="doc/MonthCalSelectionEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/MonthCalSelectionEvent.Selection/*" />
@@ -1952,15 +1773,10 @@ ACCESS Height AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsControlButton/*" />
@@ -2129,15 +1945,10 @@ END CLASS
 CLASS MoveEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MoveEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/MoveEvent.Origin/*" />
@@ -2163,16 +1974,11 @@ CLASS PrinterErrorEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/PrinterErrorEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
-END CLASS
+end class
 
 
 /// <include file="Gui.xml" path="doc/PrinterExposeEvent/*" />
@@ -2188,15 +1994,10 @@ CLASS PrinterExposeEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/PrinterExposeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/PrinterExposeEvent.PageNo/*" />
@@ -2221,15 +2022,10 @@ CLASS ResizeEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/ResizeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ResizeEvent.Size/*" />
@@ -2251,15 +2047,10 @@ END CLASS
 CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/RichEditProtectEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEditProtectEvent.Selection/*" />
@@ -2302,15 +2093,10 @@ END CLASS
 CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/RichEditSelectionEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEditSelectionEvent.Selection/*" />
@@ -2360,15 +2146,10 @@ END CLASS
 CLASS ScrollEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ScrollEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.IsWindowScroll/*" />
@@ -2623,15 +2404,10 @@ END CLASS
 CLASS SliderEvent INHERIT ScrollEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/SliderEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+	constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/SliderEvent.IsWindowScroll/*" />
@@ -2655,15 +2431,10 @@ END CLASS
 CLASS SpinnerEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/SpinnerEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.OldPosition/*" />
@@ -2825,15 +2596,10 @@ CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
 
 
 /// <include file="Gui.xml" path="doc/SysLinkSelectEvent.ctor/*" />
-CONSTRUCTOR(oControlNotifyEvent)
+constructor(args params usual[])
+    super(args)
+return
 
-
-
-
-	SUPER(oControlNotifyEvent)
-
-
-	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SysLinkSelectEvent.LinkIndex/*" />
@@ -2861,15 +2627,10 @@ END CLASS
 CLASS TreeViewDeleteEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewDeleteEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDeleteEvent.TreeViewItem/*" />
@@ -2896,15 +2657,10 @@ END CLASS
 CLASS TreeViewDragEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.IsLeftButton/*" />
@@ -3007,15 +2763,10 @@ ACCESS EditText  AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.TreeViewItem/*" />
@@ -3072,15 +2823,10 @@ ACCESS Expanded  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandedEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandedEvent.TreeViewItem/*" />
@@ -3107,15 +2853,10 @@ END CLASS
 CLASS TreeViewExpandingEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewExpandingEvent.ctor/*" />
-   CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandingEvent.TreeViewItem/*" />
@@ -3142,15 +2883,10 @@ END CLASS
 CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewKeyEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewKeyEvent.KeyCode/*" />
@@ -3496,15 +3232,10 @@ END CLASS
 CLASS TreeViewSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+constructor(args params usual[])
+    super(args)
+return
 
-
-    SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
-
-
-
-
-RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.KeyBoardAction/*" />

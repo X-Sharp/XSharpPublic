@@ -2623,8 +2623,16 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbGoTop()
 			Assert.Equal(3, (INT) OrdKeyCount())
 			DbGoBottom()
-			Assert.True( DbDelete() )
-			DbGoTop()
+            Assert.True( DbDelete() )
+            XSharp.RuntimeState.AutoLock    := AutoLock
+            XSharp.RuntimeState.AutoUnLock  := AutoUnLock
+
+            DELETE IN (cDbf)
+            XSharp.RuntimeState.AutoLock    := NULL
+            XSharp.RuntimeState.AutoUnLock  := NULL
+            DELETE IN (cDbf)
+
+            DbGoTop()
 			Assert.Equal(2, (INT) OrdKeyCount())
 
 			DO WHILE ! Eof()
@@ -2635,7 +2643,10 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 			DbCloseArea()
 		RETURN
-
+        METHOD AutoLock() AS VOID
+            RETURN
+        METHOD AutoUnLock() AS VOID
+            RETURN
 
         [Fact, Trait("Category", "DBF")];
 		METHOD CDX_DeletedScope() AS VOID
@@ -3845,11 +3856,11 @@ RETURN
 			DbUseArea(TRUE, "DBFCDX", cDbf)
 
 			LOCAL cPrevious := "" AS STRING
-			Assert.False(VoDbOrdSetFocus("",123,REF cPrevious))
-			Assert.False(VoDbOrdSetFocus("","abc",REF cPrevious))
-			Assert.False(VoDbOrdSetFocus("abc","",REF cPrevious))
-			Assert.True(VoDbOrdSetFocus("",1,REF cPrevious))
-			Assert.True(VoDbOrdSetFocus("",1,REF cPrevious))
+			Assert.False(VoDbOrdSetFocus("",123,out cPrevious))
+			Assert.False(VoDbOrdSetFocus("","abc",out cPrevious))
+			Assert.False(VoDbOrdSetFocus("abc","",out cPrevious))
+			Assert.True(VoDbOrdSetFocus("",1,out cPrevious))
+			Assert.True(VoDbOrdSetFocus("",1,out cPrevious))
 			Assert.Equal("ORDER1", cPrevious)
 			DbCloseArea()
 
@@ -5537,6 +5548,106 @@ RETURN
 			Assert.Equal(44U, AliasClient->RecNo())
 			? AliasClient->RecNo()
 			DbCloseAll()
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetIndex_wrong_controlling_order() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1341
+
+			LOCAL cDbf AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cDbf, {{ "NFIELD", "N", 8, 0 }} )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbAppend();FieldPut(1,2)
+			DbAppend();FieldPut(1,3)
+			DbAppend();FieldPut(1,1)
+			DbAppend();FieldPut(1,5)
+			DbAppend();FieldPut(1,4)
+			DbCreateOrder("ORD1",cDbf + "ord1", "NFIELD")
+			DbCreateOrder("ORD2",cDbf + "ord2", "-NFIELD")
+			DbCreateOrder("ORD3",cDbf + "ord3", "NFIELD % 5")
+			DbCloseArea()
+
+			DbUseArea(TRUE,"DBFCDX",cDbf)
+		
+			VoDbOrdListAdd(cDbf + "ord1",NIL)
+			? DbOrderInfo(DBOI_FULLPATH) // testord1, OK
+			Assert.True( Instr("ord1" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 1, OK
+			Assert.Equal(1, (INT)FieldGet(1))
+		
+			VoDbOrdListAdd(cDbf + "ord2",NIL)
+			? DbOrderInfo(DBOI_FULLPATH) // testord1, OK
+			Assert.True( Instr("ord1" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 1, OK
+			Assert.Equal(1, (INT)FieldGet(1))
+		
+			DbSetOrder(2)
+			? DbOrderInfo(DBOI_FULLPATH) // testord2, OK
+			Assert.True( Instr("ord2" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 5, OK
+			Assert.Equal(5, (INT)FieldGet(1))
+				
+//			VoDbOrdListAdd(cDbf + "ord3",NIL)
+			DbSetIndex(cDbf + "ord3")
+			? DbOrderInfo(DBOI_FULLPATH) // testord1, NOT OK (should remain testord2)
+			Assert.True( Instr("ord2" , DbOrderInfo(DBOI_FULLPATH)) )
+			DbGoTop()
+			? FieldGet(1) // 1, wrong, should remain 5
+			Assert.Equal(5, (INT)FieldGet(1))
+		
+			DbCloseArea()
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD Incorrect_index_scope_visibility() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1238
+
+			LOCAL cDbf AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cDbf, {{"COL1", "N", 4, 0}} )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbCreateOrder("ORDER1", cDbf, "STR(COL1,4)", {|| Str(_FIELD->COL1, 4)}, FALSE)
+			DbCloseArea()
+
+			DbUseArea(TRUE,"DBFCDX",cDbf)
+
+			LOCAL CONST nScopeVal := 1 AS INT
+			LOCAL cS := Str(nScopeVal, 4) AS STRING
+		
+			OrdScope(TOPSCOPE, cS)
+			OrdScope(BOTTOMSCOPE, cS)
+			VoDbGoTop()
+		
+			LOCAL CONST nNumberOfTestRecords := 15 AS INT // any number greater than 1
+		
+			// Filling with data
+			FOR LOCAL i := 1 AS INT UPTO nNumberOfTestRecords + 1
+				VoDbAppend(FALSE)
+				FieldPutSym(#COL1, nScopeVal)
+			NEXT
+		
+			VoDbCommit()
+			VoDbUnlock(NIL)
+		
+			// Test
+			LOCAL nCountInCurrentScope := 0 AS INT
+			VoDbGoTop()
+			DO WHILE !VoDbEof()
+				nCountInCurrentScope++
+				VoDbSkip(1)
+			ENDDO
+		
+			? nCountInCurrentScope // must be <nNumberOfTestRecords + 1>, instead 1
+			Assert.Equal(nNumberOfTestRecords + 1, nCountInCurrentScope)
+		
+			DbCloseArea()
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

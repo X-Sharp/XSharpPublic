@@ -408,7 +408,7 @@ CLASS StandardFolderDialog INHERIT StandardDialog
         DEFAULT( REF sStartFolder, "")
 
 
-        IF IsInstanceOf(oOwner, #Window)
+        if oOwner is Window 
             SELF:oOwner := oOwner
         ENDIF
 

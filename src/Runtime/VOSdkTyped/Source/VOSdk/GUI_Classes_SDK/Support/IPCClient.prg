@@ -101,7 +101,7 @@ METHOD DataUpdate(oIpcDataUpdateEvent)
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.Destroy/*" />
-METHOD Destroy() AS USUAL
+METHOD Destroy() AS USUAL clipper
 	/*
 	LOCAL i, dwLen AS DWORD
 	LOCAL hConv AS PTR

@@ -7,14 +7,14 @@
 procedure Main()
     local o
     local p
-    o := DerivedExample():new()
+    o := DerivedExample889():new()
     ? o:SayHello()
     xAssert(o:SayHello() == "Hello, I am DerivedExample")
-    o:Example:SayHello()
-    ? Example():Test()
-    xAssert(Example():Test() == "Test")
-    ? Example():ClassVar
-    xAssert(Example():ClassVar == 42)
+    o:Example889:SayHello()
+    ? Example889():Test()
+    xAssert(Example889():Test() == "Test")
+    ? Example889():ClassVar
+    xAssert(Example889():ClassVar == 42)
     p := PartList():New()
     p:Add("a",11)
     p:Add("b",20)
@@ -27,14 +27,14 @@ procedure Main()
     return
 
 
-class DerivedExample from Example
+class DerivedExample889 from Example889
 exported:
     inline method Name()
         return "DerivedExample"
 endclass
 
 
-class Example
+class Example889
 exported:
     inline class method Test()
         return "Test"

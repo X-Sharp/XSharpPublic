@@ -278,7 +278,7 @@ CLASS SplitView INHERIT Control
 
 	PROPERTY deferPaintCount AS DWORD GET SELF:dwDeferPaintCount
 
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL clipper
 		LOCAL liPane  AS LONGINT
 		LOCAL liCount AS LONGINT
 

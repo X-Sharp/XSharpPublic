@@ -25,7 +25,7 @@ CLASS ResourceString INHERIT VObject
 
         IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID)
             oResourceID := ResourceID{xResourceID} // , GetNatDLLHandle()}
-        ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
+        ELSEIF xResourceID IS ResourceID
             oResourceID := xResourceID
         ELSE
             WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:Throw()

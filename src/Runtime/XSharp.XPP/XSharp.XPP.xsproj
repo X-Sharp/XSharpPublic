@@ -57,11 +57,13 @@
     <Compile Include="Types\Abstract.prg" />
     <Compile Include="Types\ClassObject.prg" />
     <Compile Include="Types\Collations.prg" />
+    <Compile Include="Types\StaticClassObject.prg" />
     <Compile Include="Types\DataObject.prg" />
     <Compile Include="Types\RuntimeClasses.prg" />
     <Compile Include="Types\XAction.prg" />
     <Compile Include="Types\XError.prg" />
     <Compile Include="Types\XDocument.prg" />
+    <Compile Include="Types\WrappedObject.prg" />
     <Compile Include="XPPCollations.Designer.prg">
       <DependentUpon>XPPCollations.resx</DependentUpon>
     </Compile>

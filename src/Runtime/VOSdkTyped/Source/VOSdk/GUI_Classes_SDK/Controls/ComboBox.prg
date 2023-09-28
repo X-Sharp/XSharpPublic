@@ -8,7 +8,7 @@
 CLASS ComboBox INHERIT ListBox
 	PROTECT liComboType AS LONG	// BOXSIMPLE, BOXDROPDOWN or BOXDROPDOWNLIST
 
-    PROPERTY ControlType AS ControlType GET ControlType.ComboBox
+    property ControlType as ControlType get ControlType.ComboBox
 
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
@@ -16,6 +16,12 @@ CLASS ComboBox INHERIT ListBox
 		oCombo:DropDownHeight := oSize:Height
 		RETURN
  /// <exclude />
+
+
+    protected method __BeginUpdate() as void
+        self:__ComboBox:BeginUpdate()
+    protected method __EndUpdate() as void
+        self:__ComboBox:EndUpdate()
 
 	METHOD __EditChange() AS VOID STRICT
 		SELF:Modified := TRUE
@@ -33,7 +39,7 @@ CLASS ComboBox INHERIT ListBox
 		LOCAL nIndex AS LONG
 		IF SELF:__IsValid .and. SELF:Modified
 			cOldValue := AsString(uValue)
-			IF (nIndex := SELF:__List:SelectedIndex) >= 0
+			IF (nIndex := SELF:__ComboBox:SelectedIndex) >= 0
 				oItem := SELF:__Items[nIndex]
 				uValue := oItem:Value
 			ELSEIF SELF:__ComboBox:DropDownStyle != System.Windows.Forms.ComboBoxStyle.DropDownList
@@ -53,8 +59,8 @@ CLASS ComboBox INHERIT ListBox
     SET
 		LOCAL cCurrentText AS STRING
 		cCurrentText := SELF:__SetText(value)
-		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-			uValue := ((FieldSpec)SELF:FieldSpec):Val(cCurrentText)
+		if self:FieldSpec != null_object
+			uValue := SELF:FieldSpec:Val(cCurrentText)
 		ELSE
 			uValue := cCurrentText
 		ENDIF

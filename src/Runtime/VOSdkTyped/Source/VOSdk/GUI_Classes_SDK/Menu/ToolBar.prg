@@ -994,7 +994,7 @@ CLASS ToolBar INHERIT Control
 		RETURN NIL
 
 /// <include file="Gui.xml" path="doc/ToolBar.Destroy/*" />
-	METHOD Destroy() AS USUAL
+	METHOD Destroy() AS USUAL CLIPPER
 		//PP-040417 from S Ebert
 		//SE-050729
 		//RvdH 0702056 Changed to use ToolBarChild

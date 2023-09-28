@@ -897,12 +897,8 @@ METHOD __SetupNonDataControl(oDC AS Control) AS DataWindow STRICT
 METHOD __StatusMessage(uDescription AS USUAL, nMode AS LONGINT) AS DataWindow STRICT
 	//PP-030828 Strong typing
 	LOCAL uTemp AS USUAL
-
-
-
-
-	IF IsInstanceOfUsual(uDescription, #HyperLabel)
-		uTemp := uDescription:Description
+	if uDescription is HyperLabel var oHL
+		uTemp := oHL:Description
 		IF Empty(uTemp) .OR. IsNil(uTemp)
 			uTemp := NULL_STRING
 		ENDIF
@@ -1415,14 +1411,14 @@ METHOD CheckStatus()
 /// <include file="Gui.xml" path="doc/DataWindow.Clear/*" />
 METHOD Clear()
 
-	IF sCurrentView == #FormView
-		IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #EditWindow)
-			oDCCurrentControl:__SetText(NULL_STRING)
-		ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-			IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Clear)
-				oDCCurrentControl:Control:__SetText(NULL_STRING)
+    if sCurrentView == #FormView
+		if oDCCurrentControl is Edit var oEdit
+            oEdit:__SetText("")
+        elseif oDCCurrentControl is EditWindow var oEW
+            oEW:Clear()
+		elseif oDCCurrentControl is ControlWindow var oCW
+			if oCW:Control != null_object .and. IsMethod(oCW:Control, #Clear)
+				oCW:Control:__SetText(null_string)
 			ENDIF
 		ENDIF
 	ELSEIF sCurrentView == #BrowseView
@@ -1431,10 +1427,7 @@ METHOD Clear()
 		ENDIF
 	ENDIF
 
-
-	RETURN SELF
-
-
+	return self
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.ClearRelations/*" />
@@ -1706,14 +1699,14 @@ METHOD Copy()
 
 
 
-	IF (sCurrentView == #FormView)
-		IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #EditWindow)
-			oDCCurrentControl:Copy()
-		ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-			IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Copy)
-				oDCCurrentControl:Control:Copy()
+    if (sCurrentView == #FormView)
+		if oDCCurrentControl is Edit var oEdit
+            oEdit:Copy()
+        elseif oDCCurrentControl is EditWindow var oEW
+            oEW:Copy()
+		elseif oDCCurrentControl is ControlWindow var oCW
+			if oCW:Control != null_object .and. IsMethod(oCW:Control, #Copy)
+				oCW:Control:Copy()
 			ENDIF
 		ENDIF
 	ELSEIF (sCurrentView == #BrowseView)
@@ -1746,14 +1739,15 @@ ACCESS CurrentView
 METHOD Cut()
 
 
-	IF (sCurrentView == #FormView)
-		IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #EditWindow)
-			oDCCurrentControl:Cut()
-		ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-			IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Cut)
-				oDCCurrentControl:Control:Cut()
+    if (sCurrentView == #FormView)
+		if oDCCurrentControl is Edit var oEdit
+            oEdit:Cut()
+        elseif oDCCurrentControl is EditWindow var oEW
+            oEW:Cut()
+
+		elseif oDCCurrentControl is ControlWindow var oCW
+			if oCW:Control != null_object .and. IsMethod(oCW:Control, #Cut)
+				oCW:Control:Cut()
 			ENDIF
 		ENDIF
 	ELSEIF (sCurrentView == #BrowseView)
@@ -1813,7 +1807,7 @@ METHOD Delete()
 		nRecno := SELF:SERVER:Recno
 		nLastRec:= SELF:SERVER:LASTREC
 		fBrowse := SELF:SCurrentView = #BROWSE
-		fSQL := IsInstanceOfUsual( SELF:SERVER, #SQLSELECT)
+		fSQL := IsInstanceOf(self:SERVER, #SQLSELECT)
 
 
 		// IF(fSQL)
@@ -2154,9 +2148,9 @@ METHOD FIELDGET(uFieldID)
 			ELSE
 				RETURN NIL
 			ENDIF
-		ELSEIF IsInstanceOf(oFieldObject, #CheckBox)
-			uValue := oFieldObject:Checked
-		ELSEIF IsInstanceOf(oFieldObject, #RadioButton)
+		elseif oFieldObject is CheckBox var oCheck
+			uValue := oCheck:Checked
+		elseif oFieldObject is RadioButton var oRB
 			uValue := oFieldObject:Pressed
 		ELSE
 			uValue := oFieldObject:Value
@@ -2948,13 +2942,13 @@ METHOD Paste()
 
 
 	IF sCurrentView == #FormView
-		IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-				IsInstanceOf(oDCCurrentControl, #EditWindow)
-			oDCCurrentControl:Paste()
-		ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-			IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Paste)
-				oDCCurrentControl:Control:Paste()
+		if oDCCurrentControl is Edit var oEdit
+            oEdit:Paste()
+        elseif oDCCurrentControl is EditWindow var oEW
+            oEW:Paste()
+		elseif oDCCurrentControl is ControlWindow var oCW
+			if oCW:Control != null_object .and. IsMethod(oDCCurrentControl, #Paste)
+				oCW:Control:Paste()
 			ENDIF
 		ENDIF
 	ELSEIF sCurrentView == #BrowseView
@@ -3436,20 +3430,12 @@ METHOD SkipPrevious()
 
 /// <include file="Gui.xml" path="doc/DataWindow.Status/*" />
 ACCESS Status
-
-
-	RETURN SELF:oHLStatus
-
-
+	return self:oHLStatus
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.Status/*" />
 ASSIGN Status(oStatus)
-
-
-
-
-	IF !IsInstanceOfUsual(oStatus,#Hyperlabel)
+	if !(oStatus is Hyperlabel)
 		WCError{#Status,#DataWindow,__WCSTypeError,oStatus,1}:Throw()
 	ENDIF
 
@@ -3639,7 +3625,7 @@ METHOD Use(oDataServer)
 
 
 
-	IF lDeferUse .AND. IsInstanceOfUsual(oDataServer, #DATASERVER)
+	if lDeferUse .and. oDataServer is DataServer
 		oDeferUseServer := oDataServer
 		RETURN TRUE
 	ENDIF

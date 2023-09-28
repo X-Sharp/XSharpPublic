@@ -174,7 +174,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF SELF:oSurface != NULL_OBJECT
             IF (WC.AppGetDialogWindow() == SELF:oSurface)
                 WC.AppSetDialogWindow(NULL_OBJECT)
@@ -238,7 +238,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
     /// <include file="Gui.xml" path="doc/DialogWindow.ctor/*" />
     CONSTRUCTOR(oOwner, xResourceID, lModal)
 
-        IF IsInstanceOfUsual(oOwner, #App)
+        IF oOwner IS App
             oOwner := NIL
         ENDIF
 
@@ -328,7 +328,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Show/*" />
-    METHOD Show(kShowState := SHOWCENTERED AS LONG ) AS VOID
+    method Show(kShowState) as void clipper
+        default(ref kShowState, SHOWCENTERED)
         IF bModal
             oWnd:StartPosition := SELF:__GetStartPosFromShowState(kShowState)
             SELF:ShowModal(TRUE)

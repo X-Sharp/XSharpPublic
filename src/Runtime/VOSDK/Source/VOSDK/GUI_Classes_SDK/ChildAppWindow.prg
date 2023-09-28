@@ -68,45 +68,27 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 /// <include file="Gui.xml" path="doc/ChildAppWindow.EnableBorder/*" />
 METHOD EnableBorder(kBorderStyle)
-	LOCAL oWnd AS AppWindow
-
-
-
-
-	IF IsInstanceOf(oImp, #AppWindow)
-		oWnd := OBJECT(oImp)
-		oWnd:EnableBorder(kBorderStyle)
+	if oImp is AppWindow var appWnd
+		appWnd:EnableBorder(kBorderStyle)
 	ENDIF
-
-
-	RETURN NIL
+	return nil
 
 
 
 
 /// <include file="Gui.xml" path="doc/ChildAppWindow.EnableHorizontalScroll/*" />
 METHOD EnableHorizontalScroll(lEnable)
-
-
-
-
-	IF oImp IS AppWindow VAR appWnd
+	if oImp is AppWindow var appWnd
 		RETURN appWnd:EnableHorizontalScroll( lEnable)
 	ENDIF
-
-
-	RETURN NULL_OBJECT
+	return null_object
 
 
 
 
 /// <include file="Gui.xml" path="doc/ChildAppWindow.EnableStatusBar/*" />
 METHOD EnableStatusBar(lEnable)
-
-
-
-
-	IF oImp IS AppWindow VAR appWnd
+	if oImp is AppWindow var appWnd
 		RETURN appWnd:EnableStatusBar( lEnable)
 	ENDIF
 	//RvdH 050810 Suggestion from S.Ebert

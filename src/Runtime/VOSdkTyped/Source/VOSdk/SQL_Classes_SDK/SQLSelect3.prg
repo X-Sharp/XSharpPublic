@@ -339,7 +339,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.GetLookupTable/*" />
-	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY CLIPPER
+	METHOD GetLookupTable(nMaxRows,uField1,uField2, uSearch) AS ARRAY CLIPPER
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
 		IF IsNil(nMaxRows)
@@ -400,7 +400,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD GetTimeString( uFieldPos AS USUAL ) AS STRING
 		LOCAL cVal AS STRING
 		cVal := SELF:GetTimeStamp( uFieldPos )
-		IF Slen(cVal) > 0
+		if SLen(cVal) > 0
 			cVal := Left( cVal, 12 )
 		ENDIF
 		RETURN cVal

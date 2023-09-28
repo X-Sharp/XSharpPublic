@@ -6,46 +6,45 @@
 /// <include file="Gui.xml" path="doc/FixedImage/*" />
 
 PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
-	protect oImage as IResource
+    PROTECT oImage AS IResource
 
     /// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.FixedImage
 
-/// <include file="Gui.xml" path="doc/FixedImage.ctor/*" />
-	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
-		if uID is ResourceID
-			SUPER(uOwner,uID,,,,,FALSE)
-		ELSEIF IsLong(uID)
-			SUPER(uOwner, uID,	uPoint, uDimension, "Static", , FALSE)
+    /// <include file="Gui.xml" path="doc/FixedImage.ctor/*" />
+    CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
+        IF uID IS ResourceID
+            SUPER(uOwner,uID,,,,,FALSE)
+        ELSEIF IsLong(uID)
+            SUPER(uOwner, uID,	uPoint, uDimension, "Static", , FALSE)
 
-			if uResID is ResourceId var oResID
-				self:__SetImage(oResID)
-				cWindowName:="#"+LTrim(AsString(oResID:ID))
-			ENDIF
-		ELSE
-			WCError{#Init,#FixedImage,__WCSTypeError}:Throw()
-		ENDIF
+            IF uResID IS ResourceId VAR oResID
+                SELF:__SetImage(oResID)
+                cWindowName:="#"+LTrim(AsString(oResID:ID))
+            ENDIF
+        ELSE
+            WCError{#Init,#FixedImage,__WCSTypeError}:Throw()
+        ENDIF
 
-		RETURN
+        RETURN
 
-
-    /// <exclude />
-	ACCESS __Label AS VOLabel
-		RETURN (VOLabel) oCtrl
 
     /// <exclude />
-	ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT
+    PROPERTY __Label AS VOLabel GET (VOLabel) oCtrl
 
     /// <exclude />
-	METHOD Destroy() AS USUAL
+    ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT
 
-		IF (oImage != NULL_OBJECT)
-			oImage:Destroy()
-			oImage := NULL_OBJECT
-		ENDIF
-		SUPER:Destroy()
+    /// <exclude />
+    METHOD Destroy() AS USUAL CLIPPER
 
-		RETURN SELF
+        IF (oImage != NULL_OBJECT)
+            oImage:Destroy()
+            oImage := NULL_OBJECT
+        ENDIF
+        SUPER:Destroy()
+
+        RETURN SELF
 
 
 END CLASS

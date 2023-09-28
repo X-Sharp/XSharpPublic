@@ -11,16 +11,16 @@ CLASS Menu INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Menu.Accelerator/*" />
-ACCESS Accelerator 
+access Accelerator
 	RETURN oAccelerator
 
 
 /// <include file="Gui.xml" path="doc/Menu.Accelerator/*" />
-ASSIGN Accelerator(oNewAccelerator) 
+assign Accelerator(oNewAccelerator)
 	oAccelerator := oNewAccelerator
 
 
-	RETURN 
+	return
 
 
 /// <include file="Gui.xml" path="doc/Menu.Items/*" />
@@ -29,7 +29,7 @@ ACCESS Items
 
 
 /// <include file="Gui.xml" path="doc/Menu.AddChild/*" />
-METHOD AddChild(oMenu) 
+method AddChild(oMenu)
 	AAdd(aChildren, oMenu)
 
 
@@ -37,29 +37,29 @@ METHOD AddChild(oMenu)
 
 
 /// <include file="Gui.xml" path="doc/Menu.AppendItem/*" />
-METHOD AppendItem(nItemID, xNewItem) 
-	LOCAL lRetVal AS LOGIC                
+method AppendItem(nItemID, xNewItem)
+	local lRetVal as logic
 	LOCAL cNewItem AS STRING
 
 
-	IF IsInstanceOfUsual(nItemID, #Menu)
-		nItemID:SetParent(SELF)
-		SELF:AddChild(nItemID)
-		cNewItem := xNewItem 
-		lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_POPUP, MF_ENABLED), DWORD(_CAST, nItemID:Handle()), String2Psz(cNewItem))
+	if nItemID is Menu var oItem
+		oItem:SetParent(self)
+		self:AddChild(oItem)
+		cNewItem := xNewItem
+		lRetVal := AppendMenu(hMenu, _or(MF_BYCOMMAND, MF_POPUP, MF_ENABLED), dword(_cast, oItem:Handle()), String2Psz(cNewItem))
 	ELSEIF IsNumeric(nItemID)
 		IF nItemID == MENUSEPARATOR
 			lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_SEPARATOR), 0, NULL_PSZ)
 		ELSE
-			IF IsInstanceOfUsual(xNewItem, #HyperLabel)
-				cNewItem := xNewItem:Caption
+			if xNewItem is HyperLabel var oHL
+				cNewItem := oHL:Caption
 				lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_STRING, MF_ENABLED), nItemID, String2Psz(cNewItem))
 				AAdd(aItem, {nItemID, xNewItem})
-			ELSEIF IsString(xNewItem)
-				cNewItem := xNewItem
+			elseif xNewItem is string var strItem
+				cNewItem := strItem
 				lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_STRING, MF_ENABLED), nItemID, String2Psz(cNewItem))
-			ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
-				lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_BITMAP, MF_ENABLED), nItemID, xNewItem:Handle())
+			elseif xNewItem is Bitmap var oBmp
+				lRetVal := AppendMenu(hMenu, _or(MF_BYCOMMAND, MF_BITMAP, MF_ENABLED), nItemID, oBmp:Handle())
 			ENDIF
 		ENDIF
 	ENDIF
@@ -69,9 +69,9 @@ METHOD AppendItem(nItemID, xNewItem)
 
 
 /// <include file="Gui.xml" path="doc/Menu.CheckItem/*" />
-METHOD CheckItem(nItemID) 
-	
-	
+method CheckItem(nItemID)
+
+
 
 
 	RETURN CheckMenuItem(hMenu, nItemID, _OR(MF_CHECKED, MF_BYCOMMAND))
@@ -83,7 +83,7 @@ ACCESS Children() AS ARRAY
 
 
 /// <include file="Gui.xml" path="doc/Menu.DeleteChild/*" />
-METHOD DeleteChild(oMenu)  
+method DeleteChild(oMenu)
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -102,7 +102,7 @@ METHOD DeleteChild(oMenu)
 
 
 /// <include file="Gui.xml" path="doc/Menu.DeleteItem/*" />
-METHOD DeleteItem(xItemIdOrMenu) 
+method DeleteItem(xItemIdOrMenu)
 	LOCAL retVal AS LOGIC
 	LOCAL i AS DWORD
 	LOCAL hTmp AS PTR
@@ -136,8 +136,8 @@ METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL wIndex AS DWORD
 	LOCAL wLen AS DWORD
 	LOCAL oSubMenu AS Menu
-	
-	
+
+
 	IF hMenu != 0
 		DestroyMenu(hMenu)
 	ENDIF
@@ -153,7 +153,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 		ENDIF
 		wLen := ALen(aChildren)
 		FOR wIndex := 1 UPTO wLen
-		    oSubMenu := aChildren[wIndex] 
+		    oSubMenu := aChildren[wIndex]
 			oSubMenu:SetParent(NULL_OBJECT)
 			oSubMenu:Destroy()
 		NEXT  // wIndex
@@ -171,9 +171,9 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/Menu.DisableItem/*" />
-METHOD DisableItem(nItemID) 
-	
-	
+method DisableItem(nItemID)
+
+
 
 
 	IF (oToolBar != NULL_OBJECT)
@@ -183,7 +183,7 @@ METHOD DisableItem(nItemID)
 
 
 /// <include file="Gui.xml" path="doc/Menu.DisableAutoUpdate/*" />
-METHOD DisableAutoUpdate() 
+method DisableAutoUpdate()
 
 
 	// DHer: 18/12/2008
@@ -194,9 +194,9 @@ RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/Menu.EnableItem/*" />
-METHOD EnableItem(nItemID) 
-	
-	
+method EnableItem(nItemID)
+
+
 
 
 	IF (oToolBar != NULL_OBJECT)
@@ -208,18 +208,18 @@ METHOD EnableItem(nItemID)
 
 
 /// <include file="Gui.xml" path="doc/Menu.GetAutoUpdate/*" />
-METHOD GetAutoUpdate() 
-	
-	
+method GetAutoUpdate()
+
+
 
 
 	RETURN iAutoPosition
 
 
 /// <include file="Gui.xml" path="doc/Menu.GetSubMenu/*" />
-METHOD GetSubMenu(nIndex) 
-	
-	
+method GetSubMenu(nIndex)
+
+
 
 
 	RETURN GetSubMenu(hMenu,nIndex)
@@ -227,15 +227,15 @@ METHOD GetSubMenu(nIndex)
 
 /// <include file="Gui.xml" path="doc/Menu.Handle/*" />
 METHOD Handle() AS PTR
-	
-	
+
+
 
 
 	RETURN hMenu
 
 
 /// <include file="Gui.xml" path="doc/Menu.HyperLabel/*" />
-METHOD HyperLabel(nItemID) 
+method HyperLabel(nItemID)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 	LOCAL dwCount AS DWORD
@@ -243,8 +243,8 @@ METHOD HyperLabel(nItemID)
 	LOCAL oChildMenu AS Menu
 
 
-	
-	
+
+
 
 
 	dwCount := ALen(aItem)
@@ -269,13 +269,13 @@ METHOD HyperLabel(nItemID)
 
 
 /// <include file="Gui.xml" path="doc/Menu.ctor/*" />
-CONSTRUCTOR(xResourceID) 
+constructor(xResourceID)
 	LOCAL hInst AS PTR
 	LOCAL lpszMenu AS PTR
 
 
-	
-	
+
+
 	SUPER()
 
 
@@ -304,38 +304,38 @@ CONSTRUCTOR(xResourceID)
 
 
 	__WCRegisterMenu(SELF, hMenu)
-	
-	
 
 
-	RETURN 
+
+
+	return
 
 
 /// <include file="Gui.xml" path="doc/Menu.InsertItem/*" />
-METHOD InsertItem(nItemID, xNewItem, nBeforeID) 
+method InsertItem(nItemID, xNewItem, nBeforeID)
 	LOCAL retVal AS LOGIC
 	LOCAL cNewItem AS STRING
-	
-	
 
 
-	IF IsInstanceOfUsual(nItemID, #Menu)
-		nItemID:SetParent(SELF)
-		SELF:AddChild(nItemID) 
+
+
+	if nItemID is Menu var oItem
+		oItem:SetParent(self)
+		self:AddChild(oItem)
 		cNewItem := xNewItem
-		retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_POPUP), MF_ENABLED), DWORD(_CAST, nItemID:Handle()), String2Psz(cNewItem))
+		retVal := InsertMenu(hMenu, nBeforeID, _or(_or(MF_BYCOMMAND, MF_POPUP), MF_ENABLED), dword(_cast, oItem:Handle()), String2Psz(cNewItem))
 	ELSEIF IsNumeric(nItemID)
 		IF (nItemID == MENUSEPARATOR)
 			retVal := InsertMenu(hMenu, nBeforeID, _OR(MF_BYCOMMAND, MF_SEPARATOR), 0, NULL_PSZ)
 		ELSE
-			IF IsInstanceOfUsual(xNewItem, #HyperLabel)
-				cNewItem := xNewItem:Caption
+			if xNewItem is HyperLabel var oHL
+				cNewItem := oHL:Caption
 				retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_STRING), MF_ENABLED), nItemID, String2Psz(cNewItem))
-			ELSEIF IsString(xNewItem)
-				cNewItem := xNewItem
+			elseif xNewItem is string var StrItem
+				cNewItem := StrItem
 				retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_STRING), MF_ENABLED), nItemID, String2Psz(cNewItem))
-			ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
-				retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_BITMAP), MF_ENABLED), nItemID, PSZ(_CAST, xNewItem:Handle()))
+			elseif xNewItem is Bitmap var oBMp
+				retVal := InsertMenu(hMenu, nBeforeID, _or(_or(MF_BYCOMMAND, MF_BITMAP), MF_ENABLED), nItemID, psz(_cast, oBMp:Handle()))
 			ENDIF
 		ENDIF
 	ENDIF
@@ -345,7 +345,7 @@ METHOD InsertItem(nItemID, xNewItem, nBeforeID)
 
 
 /// <include file="Gui.xml" path="doc/Menu.MakeMenuRtol/*" />
-METHOD MakeMenuRtol(lRToL) 
+method MakeMenuRtol(lRToL)
 	LOCAL strcMII IS _winMENUITEMINFO
 	LOCAL pszBuffer AS PSZ
 
@@ -381,8 +381,8 @@ METHOD MakeMenuRtol(lRToL)
 
 
 	RETURN SELF
-	
-	
+
+
 /// <include file="Gui.xml" path="doc/Menu.MenuItems/*" />
 ACCESS MenuItems AS ARRAY
 	RETURN aItem
@@ -391,12 +391,12 @@ ACCESS MenuItems AS ARRAY
 
 
 /// <include file="Gui.xml" path="doc/Menu.Name/*" />
-METHOD Name(nItemID) 
+method Name(nItemID)
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL := SELF:HyperLabel(nItemID)
@@ -409,12 +409,12 @@ METHOD Name(nItemID)
 
 
 /// <include file="Gui.xml" path="doc/Menu.NameSym/*" />
-METHOD NameSym(nItemID) 
+method NameSym(nItemID)
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL:=SELF:HyperLabel(nItemID)
@@ -429,25 +429,25 @@ METHOD NameSym(nItemID)
 
 
 /// <include file="Gui.xml" path="doc/Menu.PostInit/*" />
-METHOD PostInit() 
+method PostInit()
      RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/Menu.PreInit/*" />
-METHOD PreInit() 
+method PreInit()
      RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/Menu.RegisterItem/*" />
-METHOD RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition) 
+method RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition)
 	LOCAL hMenu AS PTR
 	LOCAL lResult AS LOGIC
 	LOCAL cCaption AS STRING
 	//PP-040110 return logic value from ModifyMenu
 
 
-	
-	
+
+
 
 
 	IF IsLong(nItemID)
@@ -474,7 +474,7 @@ METHOD RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition)
 
 
 /// <include file="Gui.xml" path="doc/Menu.SetAutoUpdate/*" />
-METHOD SetAutoUpdate(nMenuNumber) 
+method SetAutoUpdate(nMenuNumber)
 
 
 	iAutoPosition := nMenuNumber
@@ -482,9 +482,9 @@ METHOD SetAutoUpdate(nMenuNumber)
 
 
 /// <include file="Gui.xml" path="doc/Menu.SetParent/*" />
-METHOD SetParent(oMenu) 
-	
-	
+method SetParent(oMenu)
+
+
 
 
 	oParent := oMenu
@@ -494,7 +494,7 @@ METHOD SetParent(oMenu)
 
 
 /// <include file="Gui.xml" path="doc/Menu.ShowAsPopup/*" />
-METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap) 
+method ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	LOCAL hPopUpMenu  AS PTR
 	LOCAL strucPoint  IS _winPoint
 	LOCAL strucTPM    IS _winTPMParams
@@ -508,7 +508,7 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	//PP-041001 Update from S. Ebert
 
 
-	IF !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #Control)
+	if !(oOwner is Window) .and. !(oOwner is Control)
 		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:Throw()
 	ENDIF
 
@@ -517,14 +517,14 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	Default(@kAlignment, PM_ALIGNLEFT)
 
 
-	IF IsInstanceOfUsual(oPoint, #Point)
-		strucPoint:x := oPoint:X
+	if oPoint is Point var oPT
+		strucPoint:x := oPT:X
 		IF strucPoint:x > GetSystemMetrics(SM_CXScreen)
 			strucPoint:x := GetSystemMetrics(SM_CXScreen)
 		ELSEIF strucPoint:x < 0
 			strucPoint:x := 0
 		ENDIF
-		strucPoint:y := oPoint:Y
+		strucPoint:y := oPT:Y
 		IF WCGetCoordinateSystem()
 			strucPoint:y := GetSystemMetrics(SM_CYSCREEN) - strucPoint:y
 		ENDIF
@@ -542,11 +542,11 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 
 
 	IF strucPoint:x = -1 .AND. strucPoint:y = -1 //Keyboard call
-		hWnd := oOwner:Handle()
 		GetCursorPos(@strucPoint)
 		GetWindowRect(hWnd, @sRect)
 		DO CASE
-		CASE IsInstanceOfUsual(oOwner, #ListView)
+        case oOwner is ListView var oLV
+            hWnd := oLV:Handle()
 			liItem := ListView_GetNextItem(hWnd, -1, LV_GNIBYITEM+LVNI_FOCUSED)
 			IF liItem >= 0 .AND. liItem >= ListView_GetTopIndex(hWnd)
 				sRectItem:left := LVIR_LABEL
@@ -556,7 +556,8 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 					ScreenToClient(hWnd, @strucPoint)
 				ENDIF
 			ENDIF
-		CASE IsInstanceOfUsual(oOwner, #TreeView)
+        case oOwner is TreeView var oTV
+            hWnd := oTV:Handle()
 			liItem := LONGINT(_CAST, TreeView_GetNextItem(hWnd, -1, TVGN_CARET))
 			IF liItem >= 0
 				sRectItem:left := liItem
@@ -574,13 +575,13 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(oNotOverlap, #Control) .OR. IsInstanceOfUsual(oNotOverlap, #Window)
+	if oNotOverlap is Control .or. oNotOverlap is Window
 		strucTPM:cbSize := _SIZEOF(_winTPMParams)
 		GetWindowRect(oNotOverlap:Handle(), @strucTPM:rcExclude)
 		pTPM := @strucTPM
-	ELSEIF IsInstanceOfUsual(oNotOverlap, #BoundingBox)
+	elseif oNotOverlap is BoundingBox var oBB
 		strucTPM:cbSize := _SIZEOF(_winTPMParams)
-		SetRect(@strucTPM:rcExclude,oNotOverlap:Left,oNotOverlap:Top,oNotOverlap:Right,oNotOverlap:Bottom)
+		SetRect(@strucTPM:rcExclude,oBB:Left,oBB:Top,oBB:Right,oBB:Bottom)
 		IF WCGetCoordinateSystem()
 			strucTPM:rcExclude:Top    := GetSystemMetrics(SM_CYSCREEN) - strucTPM:rcExclude:Top
 			strucTPM:rcExclude:Bottom := GetSystemMetrics(SM_CYSCREEN) - strucTPM:rcExclude:Bottom
@@ -604,30 +605,30 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 
 
 /// <include file="Gui.xml" path="doc/Menu.ToolBar/*" />
-ACCESS ToolBar 
-	
-	
+access ToolBar
+
+
 
 
 	RETURN oToolBar
 
 
 /// <include file="Gui.xml" path="doc/Menu.ToolBar/*" />
-ASSIGN ToolBar(oNewToolBar) 
-	
-	
+assign ToolBar(oNewToolBar)
+
+
 	RETURN oToolBar := oNewToolBar
 
 
 /// <include file="Gui.xml" path="doc/Menu.UncheckItem/*" />
-METHOD UncheckItem(nItemID) 
-	
-	
+method UncheckItem(nItemID)
+
+
 	RETURN CheckMenuItem(hMenu, nItemID, _OR(MF_UNCHECKED, MF_BYCOMMAND))
 
 
 /// <include file="Gui.xml" path="doc/Menu.UnregisterItem/*" />
-METHOD UnregisterItem(nItemID)  
+method UnregisterItem(nItemID)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 	LOCAL dwCount AS DWORD
@@ -635,8 +636,8 @@ METHOD UnregisterItem(nItemID)
 	// Sabo, 09/26/95
 	// Workaround for export locals not working yet
 	STATIC LOCAL nItemIDKludge AS DWORD
-	
-	
+
+
 	nItemIDKludge:=nItemID
 
 
@@ -666,8 +667,8 @@ CLASS SystemMenu INHERIT Menu
 
 /// <include file="Gui.xml" path="doc/SystemMenu.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -680,15 +681,15 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/SystemMenu.ctor/*" />
-CONSTRUCTOR(oOwner) 
-	
-	
+constructor(oOwner)
+
+
 
 
 	SUPER(GetSystemMenu(oOwner:Handle(), FALSE))
 
 
-	RETURN 
+	return
 END CLASS
 
 

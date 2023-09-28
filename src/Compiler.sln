@@ -82,6 +82,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\set.xh = Common\set.xh
 		Common\version.Targets = Common\version.Targets
 		Common\version.xh = Common\version.xh
+		Compiler\eng\Versions.props = Compiler\eng\Versions.props
 		Common\VFPProperties.xh = Common\VFPProperties.xh
 		Common\XbasePPCmd.xh = Common\XbasePPCmd.xh
 		Common\XSharp.snk = Common\XSharp.snk

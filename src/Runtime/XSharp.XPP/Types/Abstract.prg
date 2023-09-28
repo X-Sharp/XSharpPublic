@@ -11,19 +11,25 @@ USING XSharp.Internal
 [AllowLateBinding];
 abstract class XSharp.XPP.Abstract
     PRIVATE inSend := FALSE AS LOGIC
-    PRIVATE STATIC classObjects AS Dictionary<System.Type, ILateBound>
+    private static classObjects as Dictionary<System.Type, ClassObject>
 
-    INTERNAL STATIC METHOD GetClassObject(type AS System.Type) AS ILateBound
+    internal static method GetClassObject(type as System.Type) as ClassObject
         IF classObjects:ContainsKey(type)
             RETURN classObjects[type]
         ENDIF
         var result := XSharp.XPP.StaticClassObject{type}
         classObjects:Add(type, result)
         RETURN result
+    internal static method RemoveClassObject(type as System.Type) as logic
+        if classObjects:ContainsKey(type)
+            classObjects:Remove(type)
+            return true
+        endif
+        return false
 
 
     STATIC CONSTRUCTOR
-        classObjects := Dictionary<System.Type, ILateBound>{}
+        classObjects := Dictionary<System.Type, ClassObject>{}
 
     /// <summary>Retrieves the name of the class an object belongs to.</summary>
     /// <returns>The method returns a character string representing the name of a class.</returns>
@@ -52,14 +58,14 @@ abstract class XSharp.XPP.Abstract
         RETURN IVarGetInfo(SELF, cName) != 0
 
     VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
-        IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
-            RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
+        if ClassHelpers.IsInstanceofRuntimeClass(self)
+            return ClassHelpers.CallIVarGet(self, cName)
         ENDIF
         RETURN NIL
 
     VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
-        IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
-            XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
+        if ClassHelpers.IsInstanceofRuntimeClass(self)
+            ClassHelpers.CallIVarPut(self, cName, uValue)
         ENDIF
         RETURN
 
@@ -87,8 +93,8 @@ abstract class XSharp.XPP.Abstract
         IF ! SELF:inSend
             SELF:inSend := TRUE
             TRY
-                IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
-                    RETURN XSharp.XPP.ClassObject.CallMethod(SELF, cMethod, _ARGS())
+                if ClassHelpers.IsInstanceofRuntimeClass(self)
+                    return ClassHelpers.CallMethod(self, cMethod, _ARGS())
                 ENDIF
                 RETURN __InternalSend(SELF, cMethod,  _ARGS())
             FINALLY

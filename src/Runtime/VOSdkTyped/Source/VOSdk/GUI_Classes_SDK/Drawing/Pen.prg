@@ -11,7 +11,7 @@ CLASS Pen INHERIT VObject
 
     /// <inheritdoc />
 
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF (hPen != NULL_OBJECT)
             hPen:Dispose()
             hPen := NULL_OBJECT
@@ -20,14 +20,14 @@ CLASS Pen INHERIT VObject
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/Pen.Handle/*" />
-    METHOD Handle  as System.Drawing.Pen STRICT
+    METHOD Handle  AS System.Drawing.Pen STRICT
         RETURN hPen
 
     /// <include file="Gui.xml" path="doc/Pen.ctor/*" />
     CONSTRUCTOR(uColor, uLineStyle, uWidth)
         LOCAL liStyle AS LONGINT
-        LOCAL oColor as Color
-        LOCAL liWidth as LONGINT
+        LOCAL oColor AS Color
+        LOCAL liWidth AS LONGINT
 
         SUPER()
         IF !IsNil(uColor)
@@ -37,7 +37,6 @@ CLASS Pen INHERIT VObject
             oColor := uColor
         ELSE
             oColor:=Color{0}
-            oColor:ColorRef := 0
         ENDIF
 
         IF !IsNil(uLineStyle)
@@ -55,9 +54,8 @@ CLASS Pen INHERIT VObject
         ELSE
             liWidth:=1
         ENDIF
-        hPen:=System.Drawing.Pen{oColor}
-        hPen:Width := liWidth
-        if liStyle != 0
+        hPen:=System.Drawing.Pen{oColor, liWidth}
+        IF liStyle != 0
             hPen:DashStyle := (System.Drawing.Drawing2D.DashStyle) liStyle
         ENDIF
         RETURN

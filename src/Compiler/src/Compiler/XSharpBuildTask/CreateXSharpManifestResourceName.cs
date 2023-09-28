@@ -233,7 +233,10 @@ namespace XSharp.Build
             int index = contents.IndexOf("/*");
             while (index >= 0 && contents.Length > 0)
             {
-                sb.Append(contents.Substring(0, index - 1));
+                if (index > 0)
+                {
+                    sb.Append(contents.Substring(0, index - 1));
+                }
                 contents = contents.Substring(index + 2);
                 index = contents.IndexOf("*/");
                 if (index >= 0)

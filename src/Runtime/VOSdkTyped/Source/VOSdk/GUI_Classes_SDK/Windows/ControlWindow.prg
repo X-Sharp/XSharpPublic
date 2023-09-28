@@ -19,7 +19,7 @@ CLASS ControlWindow INHERIT Window
     PROPERTY ControlID AS LONG GET oCtrl:ControlID
 
     /// <include file="Gui.xml" path="doc/ControlWindow.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF oCtrl:__IsValid
             oCtrl:Destroy()
         ENDIF
@@ -48,11 +48,8 @@ CLASS ControlWindow INHERIT Window
     PROPERTY HyperLabel AS HyperLabel GET oCtrl:HyperLabel
 
     /// <include file="Gui.xml" path="doc/ControlWindow.ctor/*" />
-    CONSTRUCTOR(oControl)
-
-        IF !IsInstanceOfUsual(oControl,#Control)
-            WCError{#Init,#ControlWindow,__WCSTypeError,oControl,1}:Throw()
-        ENDIF
+#ifndef DOCUMENTATION
+    constructor(oControl as Control)
 
         oCtrl := oControl
         SUPER(oCtrl:Owner)
@@ -66,7 +63,7 @@ CLASS ControlWindow INHERIT Window
         oSurface:Visible := TRUE
 
         RETURN
-
+#endif
     /// <include file="Gui.xml" path="doc/ControlWindow.Modified/*" />
     PROPERTY Modified AS LOGIC
         GET
@@ -107,7 +104,7 @@ CLASS ControlWindow INHERIT Window
         ENDIF
         RETURN
 
-    METHOD Show(nShowState AS LONG ) AS VOID
+    method Show() as void clipper
         oSurface:Show()
         RETURN
 

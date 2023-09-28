@@ -79,7 +79,7 @@ METHOD __FocusTV AS ExplorerWindow STRICT
 	RETURN SELF
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.Destroy/*" />
-METHOD Destroy() AS USUAL
+METHOD Destroy() AS USUAL CLIPPER
 	SELF:LabelLeft := NULL_OBJECT
 	SELF:LabelRight := NULL_OBJECT
 	SELF:TreeView := NULL_OBJECT

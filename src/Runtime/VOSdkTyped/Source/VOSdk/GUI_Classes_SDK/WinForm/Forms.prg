@@ -82,10 +82,8 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 		SELF:Cursor := System.Windows.Forms.Cursors.Arrow
 
 
-    METHOD AddControl (oCtrl AS IVOControl) AS VOID
-        IF oCtrl IS System.Windows.Forms.Control VAR oC
-            SELF:Controls:Add( oC)
-        ENDIF
+    method AddControl (oCtrl as System.Windows.Forms.Control) as void
+        self:Controls:Add( oCtrl)
 
     METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
         IF oCtrl IS System.Windows.Forms.Control VAR oC

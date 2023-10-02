@@ -165,7 +165,7 @@ CLASS TextControl INHERIT Control
 		RETURN
 
 /// <include file="Gui.xml" path="doc/TextControl.Create/*" />
-	METHOD Create() AS IVOControl STRICT
+	METHOD Create() AS System.Windows.Forms.Control STRICT
 		RETURN SUPER:Create()
 
 

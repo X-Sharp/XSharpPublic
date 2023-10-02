@@ -270,9 +270,9 @@ class DataBrowser inherit VOSDK.Control implements IDataBrowser
 	VIRTUAL PROTECTED METHOD OnEditingControlShowing(sender AS OBJECT, e AS DataGridViewEditingControlShowingEventArgs) AS VOID
 		LOCAL chilf AS STRING
 		IF SELF:CurrentColumn != NULL .AND. TypeOf(System.Windows.Forms.TextBox):isAssignableFrom(e:Control:GetType())
-			e:Control:PreviewKeyDown += OnEditControlPreviewKeyDown
-			SELF:oVOEditControl := SingleLineEdit{e:Control}
-			SELF:oVOEditControl:RegisterEvents((VOTextBox)e:Control)
+            e:Control:PreviewKeyDown += OnEditControlPreviewKeyDown
+			self:oVOEditControl := SingleLineEdit{e:Control}
+			SELF:oVOEditControl:RegisterEvents(e:Control)
 			chilf := SELF:oVOEditControl:TextValue
 			SELF:oVOEditControl:FieldSpec := SELF:CurrentColumn:FieldSpec
 			SELF:oVOEditControl:TextValue := chilf

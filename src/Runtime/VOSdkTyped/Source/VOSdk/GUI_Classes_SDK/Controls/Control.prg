@@ -9,8 +9,8 @@ USING SWF := System.Windows.Forms
 /// <include file="Gui.xml" path="doc/Control/*" />
 [XSharp.Internal.TypesChanged];
 CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
-    PROTECT oCtrl                AS IVOControl
-    protect oParent              as Window
+    protect oCtrl                as SWF.Control
+    protect oParent              as IControlParent
 
         // The surface window that owns the control. This is the same as oParent except
         // when oParent                                   is a data window. Then oFormSurface is the DataWindow's dialog
@@ -83,13 +83,13 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         lIsDestroyed := TRUE
         RETURN
 
-    METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
+    method __CreateControl(liStyle as long, liExStyle as long) as SWF.Control
         RETURN GuiFactory.Instance:CreateControl(SELF:ControlType, SELF, liStyle, liExStyle)
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
         RETURN
 
-    PROPERTY __Control AS IVOControl GET oCtrl
+    property __Control as SWF.Control get oCtrl
 
     METHOD __AddTool(oControl AS Control) AS LOGIC STRICT
         RETURN oParent:__AddTool(oControl)
@@ -200,7 +200,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <exclude />
-    property __Parent as Window get oParent
+    property __Parent as Window get (Window) oParent
 
 
     /// <exclude />
@@ -410,12 +410,12 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         END SET
     END PROPERTY
 
-    PROPERTY SWFControl AS IVOControl GET oCtrl
+    property SWFControl as IVOControl get oCtrl astype IVOControl
     /// <include file="Gui.xml" path="doc/Control.ControlID/*" />
     PROPERTY ControlID AS LONG GET SELF:wId
 
     METHOD CreateWindowEx(dwExStyle AS LONG, sCaption AS STRING, dwStyle AS LONG,;
-            nX AS LONG, nY AS LONG, nWidth AS LONG, nHeight AS LONG, oOwner AS Window) AS IVOControl
+            nX as long, nY as long, nWidth as long, nHeight as long, oOwner as Window) as SWF.Control
         oCtrl  := 	SELF:__CreateControl(dwStyle , dwExStyle )
 
         IF oCtrl != NULL_OBJECT
@@ -451,7 +451,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN oCtrl
 
     /// <include file="Gui.xml" path="doc/Control.Create/*" />
-    METHOD Create() AS IVOControl STRICT
+    method Create() as SWF.Control strict
         LOCAL oDlgItem AS ResourceDialogItem
         LOCAL oFont AS System.Drawing.Font
         LOCAL oDevPoint as Point
@@ -512,7 +512,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 WCError{#Create,#Control,__WCSCreateCtlFailed,SELF}:Throw()
             ENDIF
         ENDIF
-        RETURN oCtrl
+        return oCtrl
 
     /// <include file="Gui.xml" path="doc/Control.DataField/*" />
     PROPERTY DataField  AS SYMBOL GET SELF:symDataField
@@ -851,7 +851,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         super()
         if oOwner != null_object
             local oOwnerObject := oOwner as OBJECT
-            IF oOwnerObject IS IVOControl VAR ownerControl
+            if oOwnerObject is SWF.Control var ownerControl
                 SELF:oCtrl    := ownerControl
                 SELF:oOrigin  := oCtrl:Location
                 SELF:oSize	  := oCtrl:Size
@@ -1021,7 +1021,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     /// <include file="Gui.xml" path="doc/Control.IsReadOnly/*" />
     METHOD IsReadOnly() AS LOGIC STRICT
         IF SELF:__IsValid .AND. SELF IS Edit
-            RETURN ((VOTextBox) SELF:oCtrl):ReadOnly
+            return ((SWF.TextBox) self:oCtrl):ReadOnly
         ELSE
             RETURN FALSE
         ENDIF
@@ -1182,9 +1182,9 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         SET
             IF (oCtrl == NULL_OBJECT)
                 SELF:oOrigin := Point{value:X, value:Y}
-            ELSE
+            elseif oCtrl is IVOUIObject var oGui
                 value := value - SELF:__OwnerOffSet
-                WC.MoveWindow(oCtrl, value, TRUE)
+                WC.MoveWindow(oGui, value, true)
             ENDIF
         END SET
     END PROPERTY
@@ -1194,7 +1194,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Owner/*" />
-    access Owner as Window
+    access Owner as object
         return self:oParent
 
     STATIC METHOD OwnerAlignmentHandledByWinForms(oC AS IVOControl, iNewType AS USUAL) AS LOGIC
@@ -1241,7 +1241,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     /// <include file="Gui.xml" path="doc/Control.OwnerAlignment/*" />
     ASSIGN OwnerAlignment(iNewType AS USUAL)
 
-        IF ! Control.OwnerAlignmentHandledByWinForms(oCtrl, iNewType)
+        if oCtrl is IVOControl var oVC .and. ! Control.OwnerAlignmentHandledByWinForms(oVC, iNewType)
             IF oFormSurface IS Window
                 oFormSurface:__AddAlign(SELF, iNewType)
             ELSE

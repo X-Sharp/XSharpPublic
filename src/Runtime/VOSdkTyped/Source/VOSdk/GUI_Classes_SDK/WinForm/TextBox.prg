@@ -10,227 +10,227 @@
 //
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
-USING SWF := System.Windows.Forms
-USING System.Windows.Forms
-USING VOSDK := XSharp.VO.SDK
+using SWF := System.Windows.Forms
+using System.Windows.Forms
+using VOSDK := XSharp.VO.SDK
 
 class VOTextBox inherit SWF.TextBox   implements IVOControlProperties
-	PROPERTY oEdit		AS VOSDK.Edit GET (VOSDK.Edit) SELF:Control
+    property oEdit		as VOSDK.Edit get (VOSDK.Edit) self:Control
 #undef DEFAULTVISUALSTYLE
-	#include "PropControl.xh"
-	method Initialize() as void strict
-		SELF:AutoSize			:= FALSE
-        SELF:oProperties:OnWndProc += OnWndProc
-		RETURN
+#include "PropControl.xh"
+    method Initialize() as void strict
+        self:AutoSize			:= false
+        self:oProperties:OnWndProc += OnWndProc
+        return
 
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
-		SUPER()
-			oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
-		SELF:Initialize()
-		SELF:SetVisualStyle()
-
-
-	METHOD SetVisualStyle AS VOID STRICT
-		IF SELF:oProperties != NULL_OBJECT
-			LOCAL dwStyle AS LONG
-			dwStyle					    := _AND(oProperties:Style , _NOT(oProperties:NotStyle))
-			SELF:TabStop			    := _AND(dwStyle, WS_TABSTOP) == WS_TABSTOP
-			SELF:UseSystemPasswordChar	:= _AND(dwStyle, ES_PASSWORD) == ES_PASSWORD
-			SELF:AcceptsReturn		    := _AND(dwStyle, ES_WANTRETURN) == ES_WANTRETURN
-			SELF:Multiline			    := _AND(dwStyle, ES_MULTILINE) == ES_MULTILINE
-		ENDIF
-
-	VIRTUAL PROPERTY Text AS STRING GET SUPER:Text SET SUPER:Text := Value
-
-	#region Event Handlers
-	VIRTUAL PROTECT METHOD OnTextChanged(e AS EventArgs) AS VOID
-		LOCAL oWindow AS Window
-		LOCAL oEvent AS ControlEvent
-		SUPER:OnTextChanged(e)
-		IF oProperties != NULL_OBJECT .and. SELF:oEdit != NULL_OBJECT
-			oEvent := ControlEvent{SELF:oEdit}
-			oWindow := (Window) SELF:oEdit:Owner
-			IF oWindow != NULL_OBJECT
-				oWindow:EditChange(oEvent)
-			ENDIF
-		ENDIF
-		RETURN
-
-	VIRTUAL PROTECT METHOD OnLeave(e AS EventArgs) AS VOID
-		LOCAL oWindow AS Window
-		LOCAL oEvent AS EditFocusChangeEvent
-		SUPER:OnLeave(e)
-		IF oProperties != NULL_OBJECT .and. SELF:oEdit != NULL_OBJECT
-			oEvent := EditFocusChangeEvent{SELF:oEdit, FALSE}
-			oWindow := (Window) SELF:oEdit:Owner
-			IF oWindow != NULL_OBJECT
-				oWindow:EditFocusChange(oEvent)
-			ENDIF
-		ENDIF
-		RETURN
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
+        super()
+        oProperties := VOControlProperties{self, Owner, dwStyle, dwExStyle}
+        self:Initialize()
+        self:SetVisualStyle()
 
 
-	VIRTUAL PROTECT METHOD OnEnter(e AS EventArgs) AS VOID
-		LOCAL oWindow AS Window
-		LOCAL oEvent AS EditFocusChangeEvent
-		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
-		SUPER:OnEnter(e)
-		IF oProperties != NULL_OBJECT .and. SELF:oEdit != NULL_OBJECT
-			oEvent := EditFocusChangeEvent{SELF:oEdit, TRUE}
-			oWindow := (Window) SELF:oEdit:Owner
-			IF oWindow != NULL_OBJECT
-				oWindow:EditFocusChange(oEvent)
-			ENDIF
-		ENDIF
-		RETURN
+    method SetVisualStyle as void strict
+        if self:oProperties != null_object
+            local dwStyle as long
+            dwStyle					    := _and(oProperties:Style , _not(oProperties:NotStyle))
+            self:TabStop			    := _and(dwStyle, WS_TABSTOP) == WS_TABSTOP
+            self:UseSystemPasswordChar	:= _and(dwStyle, ES_PASSWORD) == ES_PASSWORD
+            self:AcceptsReturn		    := _and(dwStyle, ES_WANTRETURN) == ES_WANTRETURN
+            self:Multiline			    := _and(dwStyle, ES_MULTILINE) == ES_MULTILINE
+        endif
 
-	PROTECT _lInPaint AS LOGIC
+    virtual property Text as string get super:Text set super:Text := value
 
-	METHOD OnWndProc(msg REF SWF.Message) AS VOID
-		IF msg:Msg == WM_PASTE .AND. SELF:oEdit != NULL_OBJECT
-			IF IsInstanceOf(oEdit, #SingleLineEdit)
-				LOCAL oSle AS SingleLineEdit
-				oSle := (SingleLineEdit) oEdit
-				IF oSle:__EditString != NULL_OBJECT
-					oSle:Paste(NULL)
-				ENDIF
-			ENDIF
-		ENDIF
-		RETURN
-	#endregion
+#region Event Handlers
+    virtual protect method OnTextChanged(e as EventArgs) as void
+        local oWindow as Window
+        local oEvent as ControlEvent
+        super:OnTextChanged(e)
+        if oProperties != null_object .and. self:oEdit != null_object
+            oEvent := ControlEvent{self:oEdit}
+            oWindow := (Window) self:oEdit:Owner
+            if oWindow != null_object
+                oWindow:EditChange(oEvent)
+            endif
+        endif
+        return
 
-END CLASS
-
-CLASS VOHotKeyTextBox INHERIT VOTextBox
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
-		SUPER(Owner, dwStyle, dwExStyle)
-
-	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
-		GET
-			LOCAL IMPLIED result := SUPER:CreateParams
-			result:ClassName := HOTKEY_CLASS
-			RETURN result
-		END GET
-	END PROPERTY
-END CLASS
-
-CLASS VOMLETextBox INHERIT VOTextBox
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
-		SUPER(Owner,dwStyle,dwExStyle )
-		SELF:Multiline := TRUE
-
-	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
-		GET
-			LOCAL IMPLIED result := SUPER:CreateParams
-			result:style |= (LONG)WS_VSCROLL
-			RETURN result
-		END GET
-	END PROPERTY
-
-	PROTECTED METHOD OnKeyDown (e AS SWF.KeyEventArgs) AS VOID STRICT
-		// Suppress Escape. Was in VO in MultiLineEdit:Dispatch()
-		IF e:KeyCode != SWF.Keys.Escape
-			SUPER:OnKeyDown(e)
-		ENDIF
-
-END CLASS
+    virtual protect method OnLeave(e as EventArgs) as void
+        local oWindow as Window
+        local oEvent as EditFocusChangeEvent
+        super:OnLeave(e)
+        if oProperties != null_object .and. self:oEdit != null_object
+            oEvent := EditFocusChangeEvent{self:oEdit, false}
+            oWindow := (Window) self:oEdit:Owner
+            if oWindow != null_object
+                oWindow:EditFocusChange(oEvent)
+            endif
+        endif
+        return
 
 
+    virtual protect method OnEnter(e as EventArgs) as void
+        local oWindow as Window
+        local oEvent as EditFocusChangeEvent
+        //Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+        super:OnEnter(e)
+        if oProperties != null_object .and. self:oEdit != null_object
+            oEvent := EditFocusChangeEvent{self:oEdit, true}
+            oWindow := (Window) self:oEdit:Owner
+            if oWindow != null_object
+                oWindow:EditFocusChange(oEvent)
+            endif
+        endif
+        return
 
-CLASS VOIPAddressTextBox INHERIT VOTextBox
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
-		SUPER(Owner,dwStyle,dwExStyle )
+    protect _lInPaint as logic
 
-	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
-		GET
-			LOCAL IMPLIED result := SUPER:CreateParams
-			result:ClassName := "SysIPAddress32"
-			RETURN result
-		END GET
-    END PROPERTY
-END CLASS
+    method OnWndProc(msg ref SWF.Message) as void
+        if msg:Msg == WM_PASTE .and. self:oEdit != null_object
+            if IsInstanceOf(oEdit, #SingleLineEdit)
+                local oSle as SingleLineEdit
+                oSle := (SingleLineEdit) oEdit
+                if oSle:__EditString != null_object
+                    oSle:Paste(null)
+                endif
+            endif
+        endif
+        return
+#endregion
+
+end class
+
+class VOHotKeyTextBox inherit VOTextBox
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
+        super(Owner, dwStyle, dwExStyle)
+
+    override protected property CreateParams as SWF.CreateParams
+        get
+            local implied result := super:CreateParams
+            result:ClassName := HOTKEY_CLASS
+            return result
+        end get
+    end property
+end class
+
+class VOMLETextBox inherit VOTextBox
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
+        super(Owner,dwStyle,dwExStyle )
+        self:Multiline := true
+
+    override protected property CreateParams as SWF.CreateParams
+        get
+            local implied result := super:CreateParams
+            result:style |= (long)WS_VSCROLL
+            return result
+        end get
+    end property
+
+    protected method OnKeyDown (e as SWF.KeyEventArgs) as void strict
+        // Suppress Escape. Was in VO in MultiLineEdit:Dispatch()
+        if e:KeyCode != SWF.Keys.Escape
+            super:OnKeyDown(e)
+        endif
+
+end class
+
+
+
+class VOIPAddressTextBox inherit VOTextBox
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
+        super(Owner,dwStyle,dwExStyle )
+
+    override protected property CreateParams as SWF.CreateParams
+        get
+            local implied result := super:CreateParams
+            result:ClassName := "SysIPAddress32"
+            return result
+        end get
+    end property
+end class
 
 
 class VORichTextBox inherit SWF.RichTextBox implements IVOControlInitialize
-    #include "PropControlStyle.xh"
-	method Initialize() as void strict
-		SELF:AutoSize			:= FALSE
-		RETURN
+#include "PropControlStyle.xh"
+    method Initialize() as void strict
+        self:AutoSize			:= false
+        return
 
 
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
-		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
-		SUPER()
-		SELF:Initialize()
-		SELF:SetVisualStyle()
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
+        oProperties := VOControlProperties{self, Owner, dwStyle, dwExStyle}
+        super()
+        self:Initialize()
+        self:SetVisualStyle()
 
 
 
-END CLASS
+end class
 
 
 class VOSpinnerTextBox inherit SWF.NumericUpDown implements IVOControlProperties
-	PROPERTY oEdit		AS VOSDK.SpinnerEdit GET (VOSDK.SpinnerEdit) SELF:Control
-    #include "PropControlStyle.xh"
+    property oEdit		as VOSDK.SpinnerEdit get (VOSDK.SpinnerEdit) self:Control
+#include "PropControlStyle.xh"
 
-	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
-		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
-		SUPER()
-		SELF:Minimum := 0
-		SELF:Maximum := System.Int32.MaxValue
-		SELF:SetVisualStyle()
-
-
-	VIRTUAL PROTECT METHOD OnTextChanged(e AS EventArgs) AS VOID
-		LOCAL oWindow AS Window
-		LOCAL oEvent AS ControlEvent
-		SUPER:OnTextChanged(e)
-		IF oProperties != NULL_OBJECT .and. SELF:oEdit != NULL_OBJECT
-			oEvent := ControlEvent{SELF:oEdit}
-			oWindow := (Window) SELF:oEdit:Owner
-			IF oWindow != NULL_OBJECT
-				oWindow:EditChange(oEvent)
-			ENDIF
-		ENDIF
-
-	VIRTUAL PROTECT METHOD OnEnter(e AS EventArgs) AS VOID
-		LOCAL oWindow AS Window
-		LOCAL oEvent AS EditFocusChangeEvent
-		SUPER:OnEnter(e)
-		IF oProperties != NULL_OBJECT
-			oEvent := EditFocusChangeEvent{SELF:oEdit, FALSE}
-			oWindow := (Window) SELF:oEdit:Owner
-			IF oWindow != NULL_OBJECT
-				oWindow:EditFocusChange(oEvent)
-			ENDIF
-		ENDIF
-		RETURN
+    constructor(Owner as VOSDK.Control, dwStyle as long, dwExStyle as long)
+        oProperties := VOControlProperties{self, Owner, dwStyle, dwExStyle}
+        super()
+        self:Minimum := 0
+        self:Maximum := System.Int32.MaxValue
+        self:SetVisualStyle()
 
 
-	VIRTUAL PROTECT METHOD OnLeave(e AS EventArgs) AS VOID
-		LOCAL oWindow AS Window
-		LOCAL oEvent AS EditFocusChangeEvent
-		//Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
-		SUPER:OnLeave(e)
-		IF oProperties != NULL_OBJECT
-			oEvent := EditFocusChangeEvent{SELF:oEdit, TRUE}
-			oWindow := (Window) SELF:oEdit:Owner
-			IF oWindow != NULL_OBJECT
-				oWindow:EditFocusChange(oEvent)
-			ENDIF
-		ENDIF
-		RETURN
-	PROPERTY Text AS STRING
-		GET
-			RETURN SUPER:Text
-		END GET
-		SET
-			IF STRING.IsNullOrWhiteSpace(VALUE)
-				Value := SELF:Minimum:ToString()
-			ENDIF
-			SUPER:Text := VALUE
-		END SET
-    END PROPERTY
-END CLASS
+    virtual protect method OnTextChanged(e as EventArgs) as void
+        local oWindow as Window
+        local oEvent as ControlEvent
+        super:OnTextChanged(e)
+        if oProperties != null_object .and. self:oEdit != null_object
+            oEvent := ControlEvent{self:oEdit}
+            oWindow := (Window) self:oEdit:Owner
+            if oWindow != null_object
+                oWindow:EditChange(oEvent)
+            endif
+        endif
+
+    virtual protect method OnEnter(e as EventArgs) as void
+        local oWindow as Window
+        local oEvent as EditFocusChangeEvent
+        super:OnEnter(e)
+        if oProperties != null_object
+            oEvent := EditFocusChangeEvent{self:oEdit, false}
+            oWindow := (Window) self:oEdit:Owner
+            if oWindow != null_object
+                oWindow:EditFocusChange(oEvent)
+            endif
+        endif
+        return
+
+
+    virtual protect method OnLeave(e as EventArgs) as void
+        local oWindow as Window
+        local oEvent as EditFocusChangeEvent
+        //Debout("TextBox:OnGotFocus", SELF:Control:NameSym,SELF:Control:ControlID, CRLF)
+        super:OnLeave(e)
+        if oProperties != null_object
+            oEvent := EditFocusChangeEvent{self:oEdit, true}
+            oWindow := (Window) self:oEdit:Owner
+            if oWindow != null_object
+                oWindow:EditFocusChange(oEvent)
+            endif
+        endif
+        return
+    property Text as string
+        get
+            return super:Text
+        end get
+        set
+            if STRING.IsNullOrWhiteSpace(value)
+                value := self:Minimum:ToString()
+            endif
+            super:Text := value
+        end set
+    end property
+end class
 
 

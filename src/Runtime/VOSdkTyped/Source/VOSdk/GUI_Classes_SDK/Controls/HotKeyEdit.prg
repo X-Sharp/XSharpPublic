@@ -105,14 +105,14 @@ CLASS HotKeyEdit INHERIT TextControl
 		RETURN GuiWin32.SendMessage(oWindow:__Handle, WM_SETHOTKEY, dwHotKey, 0)
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.Create/*" />
-	METHOD Create() AS IVOControl STRICT
+	method Create() as System.Windows.Forms.Control strict
 		IF (SUPER:Create() != NULL_OBJECT)
 			IF oHotKeyRule != NULL_OBJECT
 				SELF:__SetRule(oHotKeyRule)
 			ENDIF
 		ENDIF
 
-		RETURN oCtrl
+		return oCtrl
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.HotKey/*" />

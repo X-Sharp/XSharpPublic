@@ -120,7 +120,7 @@ end interface
 
 interface IVOControlContainer inherit IVOUIObject
     property AllowDrop as logic get set
-    method AddControl(oCtrl as IVOControl) as void
+    method AddControl(oCtrl as System.Windows.Forms.Control) as void
     method SetChildIndex(oCtrl as IVOControl, nIndex as long) as void
 
 end interface
@@ -190,7 +190,7 @@ interface IDataBrowser
     METHOD   Destroy()	AS USUAL CLIPPER
     method RestoreUpdate() as void strict
     method SuspendUpdate() as void strict
-    property __Control as IVOControl get
+    property __Control as System.Windows.Forms.Control get
     method __Unlink(oDataServer := null_object as DataServer) as Control strict
 end interface
 

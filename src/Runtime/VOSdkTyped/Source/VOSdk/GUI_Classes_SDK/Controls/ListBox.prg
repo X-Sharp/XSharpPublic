@@ -188,7 +188,7 @@ class ListBox inherit BaseListBox
         return false
 
     /// <include file="Gui.xml" path="doc/ListBox.Create/*" />
-    method Create() as IVOControl strict
+    method Create() as System.Windows.Forms.Control strict
         if oCtrl ==  null_object  .and. !IsInstanceOf(self, #ComboBox)
             self:SetStyle(_or(LBS_Notify, LBS_NoIntegralHeight))
         endif

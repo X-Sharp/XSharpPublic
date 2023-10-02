@@ -187,7 +187,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
                 oRect:Size     	:= oForm:Size
             else
                 local oCtrl as IVOControl
-                oCtrl			:= ((VOSDK.Control) oControl):__Control
+                oCtrl			:= ((VOSDK.Control) oControl):__Control ASTYPE IVOControl
                 oRect			:= oCtrl:DisplayRectangle
                 oRect:Location  := oCtrl:Location
             endif
@@ -345,7 +345,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
                 oCtl	:= ((Window) oResize):__Form
                 oOwnerOffSet := Point{0,0}
             else
-                oCtl	:= ((Control) oResize):__Control
+                oCtl	:= ((Control) oResize):__Control astype IVOUIObject
                 oOwnerOffSet := ((Control) oResize):__OwnerOffSet
             endif
             uType   := element:Type

@@ -44,7 +44,6 @@ CLASS GuiFactory
             oRes := VOSpinnerTextBox{owner, liStyle, liExStyle}
 
         CASE ControlType.FixedText
-        CASE ControlType.HyperLink
             oRes := VOOwnerDrawnLabel{owner, liStyle, liExStyle}
 
         CASE ControlType.Panel
@@ -204,7 +203,6 @@ ENUM ControlType
     MEMBER DataBrowser
     MEMBER DataListView
     MEMBER MonthCalendar
-    MEMBER HyperLink
-    MEMBER SplitContainer
+    member SplitContainer
 end enum
 

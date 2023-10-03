@@ -17,7 +17,7 @@ USING VOSDK := XSharp.VO.SDK
 CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 	PROPERTY Window AS VOSDK.Window AUTO
 	PROPERTY SuppressMovingControls AS LOGIC AUTO
-    PROPERTY ReturnAllKeys	AS LOGIC AUTO 
+    property ReturnAllKeys	as logic auto
     PROPERTY Pen AS Pen AUTO
 	PROTECT oToolTip AS VOToolTip
 	PROTECT lToolTipsEnabled AS LOGIC
@@ -27,10 +27,8 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 	PROTECT _aRBGroups      AS SortedList<INT,VOGroupBox>
 	PROTECT _aFramepanels   AS SortedList<INT,VOFramepanel>
 
-   METHOD AddControl (oCtrl AS IVOControl) AS VOID
-        IF oCtrl IS SWF.Control VAR oC
-            SELF:Controls:Add( oC)
-        ENDIF
+   method AddControl (oCtrl as SWF.Control) as void
+        self:Controls:Add( oCtrl)
 
    METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
         IF oCtrl IS SWF.Control VAR oC

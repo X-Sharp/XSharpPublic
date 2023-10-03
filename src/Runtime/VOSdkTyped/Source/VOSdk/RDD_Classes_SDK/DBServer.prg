@@ -679,19 +679,17 @@ partial class DbServer inherit DataServer
         endcase
 
         return
-    /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-    constructor( cFile as string, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
-        self(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD )
-
+ 
 
     /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
     constructor( cFile as usual, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)
         if cFile is FileSpec var oFs
             self(oFs, lShareMode, lReadOnlyMode , xDriver, aRDD )
         elseif cFile is string var strFile
-            self(strFile, lShareMode, lReadOnlyMode , xDriver, aRDD )
+            self(FileSpec{strFile}, lShareMode, lReadOnlyMode , xDriver, aRDD )
+        else
+            break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  cFile, "cFile" }
         endif
-        break DbError{ self, #Init, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  cFile, "cFile" }
 
     /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
     constructor( oFS := null as FileSpec, lShareMode := null as object, lReadOnlyMode := null as object, xDriver:= "" as string, aRDD := null_array as array)

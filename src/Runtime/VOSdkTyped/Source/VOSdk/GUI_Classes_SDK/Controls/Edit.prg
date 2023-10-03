@@ -30,7 +30,15 @@ class Edit inherit TextControl
 		RETURN
 
     /// <exclude />
-	PROPERTY __TextBox AS VOTextBox GET (VOTextBox) oCtrl
+    property __TextBox as System.Windows.Forms.TextBox
+        get
+            if (oCtrl is System.Windows.Forms.TextBox  var oTB)
+                return oTB
+            endif
+            return null_object
+        end get
+    end property
+
 
 
     /// <exclude />
@@ -331,11 +339,11 @@ CLASS SingleLineEdit INHERIT Edit
 	PROTECT _iLen				AS LONG // because the DotNet textBox changes the selection when a mouse button is clicked.
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
-		VAR oTextBox := (VOTextBox) oC
+		var oTextBox := (System.Windows.Forms.TextBox) oC
 		SELF:RegisterEvents(oTextBox)
 		RETURN
 
-	METHOD RegisterEvents(oTb AS VOTextBox) AS VOID STRICT
+	method RegisterEvents(oTb as System.Windows.Forms.Control) as void strict
 		oTb:KeyDown += OnKeyDown
 		oTb:KeyPress += OnKeyPress
 		oTb:GotFocus += OnGotFocus
@@ -775,7 +783,7 @@ CLASS strucPictureFuncFlags
 END CLASS
 
 CLASS SpinnerEdit INHERIT SingleLineEdit
-	PROTECT oTextBox AS VOTextBox
+	PROTECT oTextBox AS System.Windows.Forms.TextBox
 
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		LOCAL oSpinner  AS VOSpinnerTextBox

@@ -116,9 +116,8 @@ CLASS ComboBox INHERIT ListBox
 		RETURN uRet
 
 
-	METHOD Create() AS IVOControl STRICT
-		LOCAL oWnd AS IVOControl
-		oWnd := SUPER:Create()
+	method Create() as System.Windows.Forms.Control strict
+		var oWnd := super:Create()
 		SELF:__SetComboStyle()
 		RETURN oWnd
 

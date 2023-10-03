@@ -792,7 +792,7 @@ CLASS ToolBar INHERIT Control
 		RETURN NIL
 
 /// <include file="Gui.xml" path="doc/ToolBar.Create/*" />
-	METHOD Create() AS IVOControl STRICT
+	method Create() as System.Windows.Forms.Control strict
 		//PP-040505 Update from S Ebert
 		//SE-050929
 		//RvdH 070206 Changed to use ToolBarUpdate class
@@ -963,9 +963,11 @@ CLASS ToolBar INHERIT Control
 		LOCAL oOwner AS Window
 		oOwner := (OBJECT) oParent
 		IF oOwner != NULL_OBJECT .and. oOwner:__Form != NULL_OBJECT
-			oOwner:__Form:AddControl(oCtrl)
-			oOwner:__Form:SetChildIndex(oCtrl, 0)
-		ENDIF
+            oOwner:__Form:AddControl(oCtrl)
+            if oCtrl is IVOControl var oVC
+                oOwner:__Form:SetChildIndex(oVC, 0)
+            endif
+		endif
 		RETURN oCtrl
 
 /// <include file="Gui.xml" path="doc/ToolBar.DeleteItem/*" />

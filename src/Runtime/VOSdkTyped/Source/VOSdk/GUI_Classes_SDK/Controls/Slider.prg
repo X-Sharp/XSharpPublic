@@ -49,7 +49,7 @@ CLASS SelectionSlider INHERIT Slider
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
     /// <exclude />
-    METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
+    method __CreateControl(liStyle as long, liExStyle as long) as System.Windows.Forms.Control
         RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_ENABLESELRANGE, liExStyle)
 
     /// <include file="Gui.xml" path="doc/SelectionSlider.ClearSelection/*" />
@@ -220,7 +220,7 @@ CLASS VerticalSelectionSlider INHERIT SelectionSlider
         RETURN
 
     /// <exclude />
-    METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
+    METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS System.Windows.Forms.Control
         RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_VERT, liExStyle)
 
     /// <include file="Gui.xml" path="doc/VerticalSelectionSlider.ctor/*" />

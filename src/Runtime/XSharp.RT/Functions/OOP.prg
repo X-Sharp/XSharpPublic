@@ -330,22 +330,24 @@ internal static class OOPHelpers
         sb:AppendLine(i"Found {found:Count} overloads")
         var current := 0
 
-        foreach var overload in found
+        foreach overload as MethodBase in found
             current += 1
             sb:Append( ei"{current}. {overload:DeclaringType:Name}:{overload:Name}")
-            var args := overload:GetGenericArguments()
-            if (args != null .and. args:Length > 0)
-                sb:Append(  "<")
-                var firstArg := true
-                foreach var type in args
-                    if firstArg
-                        firstArg := false
-                    else
-                        sb:Append( ", ")
-                    endif
-                    sb:Append( type:Name)
-                next
-                sb:Append( ">")
+            if overload:IsGenericMethod
+                var args := overload:GetGenericArguments()
+                if (args != null .and. args:Length > 0)
+                    sb:Append(  "<")
+                    var firstArg := true
+                    foreach var type in args
+                        if firstArg
+                            firstArg := false
+                        else
+                            sb:Append( ", ")
+                        endif
+                        sb:Append( type:Name)
+                    next
+                    sb:Append( ">")
+                endif
             endif
             sb:Append( "(")
 

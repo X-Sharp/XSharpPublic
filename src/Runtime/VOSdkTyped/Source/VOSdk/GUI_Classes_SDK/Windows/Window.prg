@@ -155,9 +155,8 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
             self:SetAlignStartSize(null_object)
         endif
 
-        lDelete := (IsLong(iType) .and. (int) iType = OA_NO)
+        lDelete := IsLong(iType) .and. (int) iType = OA_NO
 
-        //SE-060525
         dwCount := ALen(aAlignes)
         lFound  := false
         for dwI := 1 upto dwCount
@@ -171,7 +170,7 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
                     element:Type := iType
                 endif
                 dwI := 0
-                exit //SE-070919 bug fix
+                exit
             endif
         next
 
@@ -185,18 +184,12 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
                 oRect 			:= oForm:ClientRectangle
                 oRect:Location 	:= oControl:Origin
                 oRect:Size     	:= oForm:Size
-            else
-                local oCtrl as IVOControl
-                oCtrl			:= ((VOSDK.Control) oControl):__Control ASTYPE IVOControl
+            elseif oControl is VOSDK.Control var oC .and. oC:__Control is IVOControl var oCtrl
                 oRect			:= oCtrl:DisplayRectangle
                 oRect:Location  := oCtrl:Location
             endif
             AAdd(aAlignes,VOAlignElement{oControl, iType, oRect:left, oRect:top, oRect:Width, oRect:Height})
         endif
-
-        //IF lOldAlign
-        //	SELF:__AlignControls()
-        //ENDIF
 
         return true
 
@@ -488,7 +481,6 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         local symNameSym as symbol
         local oWindow as Window
         local oReport as object
-        local o as object
 
         symNameSym := oEvent:NameSym
         oWindow := self
@@ -513,18 +505,16 @@ partial class Window inherit @@EventContext implements IGuiObject, IControlParen
         enddo
 
         if IsClassOf(symNameSym, #Window)
-            if self is ChildAppWindow var oChild
-                oWindow:=self
-                do while oWindow:Owner is Window
-                    oWindow:= oWindow:Owner
+            local o as Window
+            local oOwner as Window
+            oOwner:=self
+            if oOwner is ChildAppWindow
+                do while oOwner:Owner is Window
+                    oOwner:= oOwner:Owner
                 enddo
-                o := CreateInstance(symNameSym, oWindow)
-                Send(o,#show)
-                // (CreateInstance(symNameSym, oWindow)):Show()
-            else
-                o := CreateInstance(symNameSym, self)
-                Send(o,#Show)
             endif
+            o := (Window) CreateInstance(symNameSym, oOwner)
+            o:Show()
             return true
         elseif IsClassOf(symNameSym, #ReportQueue)
             oReport := CreateInstance(symNameSym, self)

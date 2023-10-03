@@ -48,16 +48,16 @@ class Accelerator inherit VObject
 
     /// <exclude />
     method __AddKeys(hTable as IntPtr) as logic
-        local dwI     as dword
-        local dwCount as dword
+        local dwI     as long
+        local dwCount as long
         local pAccel  as _winAccel
         local pMem    as _winAccel
         if hTable != null_ptr
 
-            dwCount := dword(GuiWin32.CopyAcceleratorTable(hTable, null_ptr, 0l))
-            if dwCount > 1
+            dwCount := GuiWin32.CopyAcceleratorTable(hTable, null_ptr, 0l)
+            if dwCount >0
                 if (pMem := MemAlloc(_sizeof(_winAccel)*dwCount)) != null_ptr
-                    GuiWin32.CopyAcceleratorTable(hTable, pMem, int(_cast,dwCount))
+                    GuiWin32.CopyAcceleratorTable(hTable, pMem, dwCount)
                     pAccel := pMem
                     for dwI := 1 upto dwCount
                         aKeys:Add(AcceleratorKey{pAccel:fVirt, pAccel:key, pAccel:cmd})
@@ -99,15 +99,15 @@ class Accelerator inherit VObject
 
             fVirt := 0
 
-            if IsLogic(lAlt) .and. lAlt
+            if lAlt
                 fVirt := _or(fVirt, FALT)
             endif
 
-            if IsLogic(lCtrl) .and. lCtrl
+            if lCtrl
                 fVirt := _or(fVirt, FCONTROL)
             endif
 
-            if IsLogic(lShift) .and. lShift
+            if lShift
                 fVirt := _or(fVirt, FSHIFT)
             endif
 
@@ -115,7 +115,7 @@ class Accelerator inherit VObject
                 fVirt := _or(fVirt, FVIRTKEY)
                 wKey  := xKeyId
             else
-                if fVirt > 0
+                if fVirt != 0
                     fVirt := _or(fVirt, FVIRTKEY)
                     wKey  := word(Asc(Upper(xKeyId)))
                 else

@@ -425,7 +425,8 @@ CLASS Menu INHERIT VObject
         IF oAccelerator != NULL_OBJECT
             FOREACH IMPLIED oKey IN oAccelerator:Keys
                 LOCAL IMPLIED oItem := SELF:__Menu:GetItemByID(oKey:ID)
-                IF oItem != NULL_OBJECT
+                if oItem != null_object
+                    // Some shortcuts require special handling
                     oItem:SetShortCut(oKey:Shortcut)
                 ENDIF
             NEXT

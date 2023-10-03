@@ -56,16 +56,16 @@ CLASS VOMenu INHERIT SWF.MainMenu
 				oItems:Add(oItem)
 			NEXT
 		ENDIF
-		RETURN oItems:ToArray()
+		return oItems:ToArray()
 
 	METHOD AsContextMenu AS SWF.ContextMenu STRICT
 		RETURN SWF.ContextMenu{SELF:MenuItemArray}
 
-
+#ifdef DEBUG
     PROTECTED METHOD ProcessCmdKey (msg REF SWF.Message , keyData AS SWF.Keys ) AS LOGIC
         System.Diagnostics.Debug.WriteLine(keyData:ToString())
         RETURN SUPER:ProcessCmdKey(REF msg, keyData)
-
+#endif
 END CLASS
 
 CLASS VOMenuItem INHERIT SWF.MenuItem

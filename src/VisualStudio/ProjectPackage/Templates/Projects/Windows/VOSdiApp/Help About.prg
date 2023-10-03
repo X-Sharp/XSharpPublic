@@ -1,46 +1,46 @@
 #region DEFINES
-STATIC DEFINE HELPABOUT_ABOUTTEXT := 100
-STATIC DEFINE HELPABOUT_PUSHBUTTON1 := 101
-STATIC DEFINE HELPABOUT_FIXEDBITMAP1 := 102
+static define HELPABOUT_ABOUTTEXT := 100
+static define HELPABOUT_PUSHBUTTON1 := 101
+static define HELPABOUT_FIXEDBITMAP1 := 102
 #endregion
 
-PARTIAL CLASS HelpAbout INHERIT DIALOGWINDOW
-	PROTECT oDCAboutText AS FIXEDTEXT
-	PROTECT oCCPushButton1 AS PUSHBUTTON
-	PROTECT oDCFixedBitmap1 AS FIXEDBITMAP
+partial class HelpAbout inherit DIALOGWINDOW
+	protect oDCAboutText as FIXEDTEXT
+	protect oCCPushButton1 as PUSHBUTTON
+	protect oDCFixedBitmap1 as FIXEDBITMAP
 
 	// {{%UC%}} User code starts here (DO NOT remove this line)
 
-CONSTRUCTOR(oParent,uExtra)
+constructor(oParent,uExtra)
 
-	SELF:PreInit(oParent,uExtra)
+	self:PreInit(oParent,uExtra)
 
-	SUPER(oParent , ResourceID{"HelpAbout" , _GetInst()} , TRUE)
+	super(oParent , ResourceID{"HelpAbout" , _GetInst()} , true)
 
-	SELF:oDCAboutText := FIXEDTEXT{SELF , ResourceID{ HELPABOUT_ABOUTTEXT  , _GetInst() } }
+	self:oDCAboutText := FIXEDTEXT{self , ResourceID{ HELPABOUT_ABOUTTEXT  , _GetInst() } }
 	SELF:oDCAboutText:HyperLabel := HyperLabel{#AboutText , "VO SDI Application" , NULL_STRING , NULL_STRING}
 
-	SELF:oCCPushButton1 := PUSHBUTTON{SELF , ResourceID{ HELPABOUT_PUSHBUTTON1  , _GetInst() } }
-	SELF:oCCPushButton1:HyperLabel := HyperLabel{#PushButton1 , "OK" , NULL_STRING , NULL_STRING}
+	self:oCCPushButton1 := PUSHBUTTON{self , ResourceID{ HELPABOUT_PUSHBUTTON1  , _GetInst() } }
+	self:oCCPushButton1:HyperLabel := HyperLabel{#PushButton1 , "OK" , null_string , null_string}
 
-	SELF:oDCFixedBitmap1 := FIXEDBITMAP{SELF , ResourceID{ HELPABOUT_FIXEDBITMAP1  , _GetInst() } }
-	SELF:oDCFixedBitmap1:HyperLabel := HyperLabel{#FixedBitmap1 , "POWXSHARPBMP" , NULL_STRING , NULL_STRING}
+	self:oDCFixedBitmap1 := FIXEDBITMAP{self , ResourceID{ HELPABOUT_FIXEDBITMAP1  , _GetInst() } }
+	self:oDCFixedBitmap1:HyperLabel := HyperLabel{#FixedBitmap1 , "POWXSHARPBMP" , null_string , null_string}
 
-	SELF:Caption := "About Standard Application"
-	SELF:HyperLabel := HyperLabel{#HelpAbout , "About Standard Application" , NULL_STRING , NULL_STRING}
+	self:Caption := "About Standard Application"
+	self:HyperLabel := HyperLabel{#HelpAbout , "About Standard Application" , null_string , null_string}
 
-	SELF:PostInit(oParent,uExtra)
+	self:PostInit(oParent,uExtra)
 
-RETURN
+return
 
 
-METHOD PostInit(oParent,uExtra)
-	LOCAL sVer AS STRING
-	LOCAL oSysLink AS SysLink
-	LOCAL oFT1 AS FixedText
-	LOCAL oHL1 AS HyperLink
-	LOCAL oFont1 AS Font
-	LOCAL s AS STRING
+method PostInit(oParent,uExtra)
+	local sVer as string
+	local oSysLink as SysLink
+	local oFT1 as FixedText
+	local oHL1 as HyperLink
+	local oFont1 as Font
+	local s as string
 
 	sVer := Version()
 	sVer := SubStr(sVer, RAt2(" ", sVer)+1)
@@ -48,37 +48,42 @@ METHOD PostInit(oParent,uExtra)
 		+" X# Version "+sVer+_CHR(13)+_CHR(13);
 		+" Copyright (c) XSharp BV 2015-2022"
 
-	IF IsThemeEnabled()
+	var point := oCCPushButton1:Origin
+    point:x := self:oDCFixedBitmap1:Origin:x
+	var size := Dimension{300,20}
+
+
+	if IsThemeEnabled()
 		s := "Visit <A HREF="+_CHR(34)+;
-			"http://www.xsharp.eu"+_CHR(34)+">X#</A> on the web!"
-		oSysLink := SysLink{SELF, -1, Point{10,5}, Dimension{300,20}, s}
+			"https://www.xsharp.eu"+_CHR(34)+">X#</A> on the web!"
+		oSysLink := SysLink{self, -1, point, size, s}
 		oSysLink:Show()
-	ELSE
+	else
 
 		s := "Visit X# on the web:"
-		oFT1 := FixedText{SELF, -1, Point{10,25}, dimension{200,20}, s}
+		oFT1 := FixedText{self, -1, point, dimension{200,20}, s}
 		oFT1:show()
 
 		oFont1 := Font{,8,"Microsoft Sans Serif"}
-		oFont1:Underline := TRUE
+		oFont1:Underline := true
 
-		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.xsharp.eu"}
+		oHL1 := HyperLink{self,-1,point,size,"https://www.xsharp.eu"}
 		oHL1:font(oFont1)
-		oHL1:size := dimension{150,20}
+		oHL1:size := size
 		oHL1:textcolor := color{COLORBLUE}
-		oHL1:font():underline := TRUE
+		oHL1:font():underline := true
 		oHL1:show()
 
-	ENDIF
+	endif
 
 
-	RETURN NIL
+	return nil
 
 
-METHOD PushButton1()
+method PushButton1()
 
-	SELF:EndDialog()
+	self:EndDialog()
 
-RETURN SELF
+return self
 
-END CLASS
+end class

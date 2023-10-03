@@ -48,23 +48,28 @@ METHOD PostInit(oParent,uExtra)
 		+" X# Version "+sVer+_CHR(13)+_CHR(13);
 		+" Copyright (c) XSharp BV 2015-2022"
 
+	var point := oCCPushButton1:Origin
+    point:x := self:oDCFixedBitmap1:Origin:x
+	var size := Dimension{300,20}
+
+
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_CHR(34)+;
-			"http://www.xsharp.eu"+_CHR(34)+">X#</A> on the web!"
-		oSysLink := SysLink{SELF, -1, Point{10,5}, Dimension{300,20}, s}
+			"https://www.xsharp.eu"+_CHR(34)+">X#</A> on the web!"
+		oSysLink := SysLink{self, -1, point, size, s}
 		oSysLink:Show()
 	ELSE
 
 		s := "Visit X# on the web:"
-		oFT1 := FixedText{SELF, -1, Point{10,25}, dimension{200,20}, s}
+		oFT1 := FixedText{self, -1, point, dimension{200,20}, s}
 		oFT1:show()
 
 		oFont1 := Font{,8,"Microsoft Sans Serif"}
 		oFont1:Underline := TRUE
 
-		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.xsharp.eu"}
+		oHL1 := HyperLink{self,-1,point,size,"https://www.xsharp.eu"}
 		oHL1:font(oFont1)
-		oHL1:size := dimension{150,20}
+		oHL1:size := size
 		oHL1:textcolor := color{COLORBLUE}
 		oHL1:font():underline := TRUE
 		oHL1:show()

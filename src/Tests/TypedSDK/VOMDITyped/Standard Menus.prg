@@ -238,6 +238,10 @@ CONSTRUCTOR( oOwner )
 	oTB:AppendItem(IDT_VGBROWSE , IDM_StandardShellMenu_View_Table_ID)
 	oTB:AddTipText(IDT_VGBROWSE , IDM_StandardShellMenu_View_Table_ID , "Browse View")
 
+	oTB:AppendItem(IDT_SEPARATOR)
+
+	oTB:AppendItem(IDT_HELP , IDM_StandardShellMenu_Help_About_ID)
+
 
 	SELF:ToolBar := oTB
 	SELF:Accelerator := StandardShellMenu_Accelerator{ }

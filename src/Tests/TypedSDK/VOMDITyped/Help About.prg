@@ -9,7 +9,7 @@ PARTIAL CLASS HelpAbout INHERIT DIALOGWINDOW
 	PROTECT oCCPushButton1 AS PUSHBUTTON
 	PROTECT oDCFixedBitmap1 AS FIXEDBITMAP
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)  
+	// {{%UC%}} User code starts here (DO NOT remove this line)
 
 CONSTRUCTOR(oParent,uExtra)
 
@@ -34,7 +34,7 @@ CONSTRUCTOR(oParent,uExtra)
 RETURN
 
 
-METHOD PostInit(oParent,uExtra) 
+method PostInit(oParent,uExtra)
 	LOCAL sVer AS STRING
 	LOCAL oSysLink AS SysLink
 	LOCAL oFT1 AS FixedText
@@ -46,14 +46,14 @@ METHOD PostInit(oParent,uExtra)
 	sVer := SubStr(sVer, RAt2(" ", sVer)+1)
 	oDCAboutText:CurrentText := _CHR(13)+" VOMDIApp4"+_CHR(13)+_CHR(13);
 		+" X# Version "+sVer+_CHR(13)+_CHR(13);
-		+" Copyright (c) XSharp BV 2015-2020"
+		+" Copyright (c) XSharp BV 2015-"+Left(Dtos(ToDay()),4)
 	VAR point := oCCPushButton1:Origin
     point:x := SELF:oDCFixedBitmap1:Origin:x
-		
+	var size := Dimension{300,20}
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_CHR(34)+;
 			"http://www.xsharp.info"+_CHR(34)+">X#</A> on the web!"
-		oSysLink := SysLink{SELF, -1, point, Dimension{300,20}, s}
+		oSysLink := SysLink{self, -1, point, size , s}
 		oSysLink:Show()
 	ELSE
 		s := "Visit X# on the web:"
@@ -62,24 +62,23 @@ METHOD PostInit(oParent,uExtra)
 
 		oFont1 := Font{,8,"Microsoft Sans Serif"}
 		oFont1:Underline := TRUE
-		point:x := SELF:oDCAboutText:Origin:x
-		oHL1 := HyperLink{SELF,-1,point,dimension{300,20},"www.xsharp.info"}
-		oHL1:size := dimension{300,20}
-		//oHL1:textcolor := color{COLORBLUE}
-		//oHL1:font():underline := TRUE
+        point:x := self:oDCAboutText:Origin:x
+        size := Dimension{400,20}
+		oHL1 := HyperLink{self,-1,point, size,"http://www.xsharp.eu"}
+		oHL1:textcolor := color{COLORBLUE}
 		oHL1:font(oFont1)
 		oHL1:show()
-	
+
 	ENDIF
 
 
 	RETURN NIL
 
 
-METHOD PushButton1() 
+method PushButton1()
 
 	SELF:EndDialog()
-	
-RETURN SELF	
+
+return self
 
 END CLASS

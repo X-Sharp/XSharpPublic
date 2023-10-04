@@ -30,7 +30,7 @@ CLASS Button INHERIT TextControl
 
 
     /// <exclude />
-    PROPERTY __Button AS VOButton GET (VOButton) oCtrl
+    property __Button as ButtonBase get (ButtonBase) oCtrl
 
     /// <exclude />
     METHOD __GetImage()  AS Object
@@ -41,18 +41,17 @@ CLASS Button INHERIT TextControl
 
     /// <exclude />
     METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
-        IF oNewImage IS ButtonImageList VAR oBIL
+        self:oImage := oNewImage
+        if oNewImage is ButtonImageList var oBIL
             oImage := oNewImage
-            // Todo Implement Button Image
-            //SELF:__Button:Image := oBIL:Image:__Image
-            SELF:__Button:FlatStyle := FlatStyle.Standard
-            SELF:__Button:Text := ""
+            self:__Button:ImageList := oBIL
+            self:__Button:FlatStyle := FlatStyle.Standard
+            self:__Button:Text := ""
             RETURN TRUE
         ELSEIF oNewImage IS Bitmap VAR oBM
-            oImage := oNewImage
-            SELF:__Button:Image := oBM
-            SELF:__Button:FlatStyle := FlatStyle.Standard
-            SELF:__Button:Text := ""
+            self:__Button:Image := oBM
+            self:__Button:FlatStyle := FlatStyle.Standard
+            self:__Button:Text := ""
 
             RETURN TRUE
         ENDIF

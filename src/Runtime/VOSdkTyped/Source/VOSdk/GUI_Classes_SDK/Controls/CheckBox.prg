@@ -30,27 +30,7 @@ CLASS CheckBox INHERIT Button
     /// <exclude />
     property __CheckBox as VOCheckBox get (VOCheckBox) oCtrl
 
-    METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
-        IF oNewImage IS ButtonImageList
-            LOCAL oBIL AS ButtonImageList
-            oImage := oNewImage
-            oBIL := (ButtonImageList) oNewImage
-            // Todo CheckBox Image
-            //SELF:__CheckBox:Image := oBIL:Image:__Image
-            SELF:__CheckBox:Text := ""
-            SELF:__CheckBox:FlatStyle := System.Windows.Forms.FlatStyle.Flat
-            RETURN TRUE
-        ELSEIF oNewImage IS Bitmap
-            LOCAL oBM AS Bitmap
-            oImage := oNewImage
-            oBM := (Bitmap) oNewImage
-            SELF:__CheckBox:Image := oBM
-            SELF:__CheckBox:Text := ""
-            SELF:__CheckBox:FlatStyle := System.Windows.Forms.FlatStyle.Flat
-            RETURN TRUE
-        ENDIF
 
-        RETURN FALSE
 
     /// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
     PROPERTY Checked AS LOGIC
@@ -77,23 +57,6 @@ CLASS CheckBox INHERIT Button
         ENDIF
 
         RETURN SUPER:Destroy()
-
-    /// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
-    PROPERTY Image  AS VObject
-        GET
-            RETURN SELF:__GetImage()
-        END GET
-        SET
-            IF ! SELF:__SetImage(value)
-                SUPER:Image := value
-            ENDIF
-        END SET
-    END PROPERTY
-
-
-
-
-
 
     /// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
     PROPERTY TextValue  AS STRING

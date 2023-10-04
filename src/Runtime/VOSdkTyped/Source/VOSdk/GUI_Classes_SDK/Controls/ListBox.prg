@@ -18,8 +18,6 @@ class ListBox inherit BaseListBox
         self:__CurrentItemNo := nItem
 
 
-
-
     protected method __BeginUpdate() as void
         self:__ListBox:BeginUpdate()
     protected method __EndUpdate() as void

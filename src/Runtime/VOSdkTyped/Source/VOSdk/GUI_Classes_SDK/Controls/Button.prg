@@ -107,11 +107,6 @@ CLASS Button INHERIT TextControl
     /// <include file="Gui.xml" path="doc/Button.ImageList/*" />
     PROPERTY ImageList AS ImageList GET oImage ASTYPE ImageList SET SELF:__SetImage(value)
 
-
-    /// <include file="Gui.xml" path="doc/Button.SetStyle/*" />
-    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC) AS VOID
-        SUPER:SetStyle(kStyle, lEnable)
-
 END CLASS
 
 /// <include file="Gui.xml" path="doc/ButtonImageList/*" />

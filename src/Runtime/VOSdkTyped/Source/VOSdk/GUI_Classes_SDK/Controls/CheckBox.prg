@@ -24,7 +24,8 @@ CLASS CheckBox INHERIT Button
     METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
         SUPER:OnHandleCreated(o, e)
         GuiWin32.SetWindowStyle(SELF:hWnd, dwStyle)
-        RETURN
+        GuiWin32.SetWindowExStyle(self:hWnd, dwExStyle)
+        return
 
 
     /// <exclude />

@@ -2153,9 +2153,6 @@
     </summary>
     <value>A logical value that is set to TRUE when the user clicks on a button, and reset to FALSE when the mouse button is released.</value>
   </Button.Modified>
-  <Button.SetStyle>
-    <inheritdoc />
-  </Button.SetStyle>
   <ButtonImageList>
     <summary>
       Create an image list for use with buttons.

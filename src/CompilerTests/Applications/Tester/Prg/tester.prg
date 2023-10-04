@@ -1,31 +1,28 @@
-USING System
-USING System.Collections.Generic
-USING System.Text
+procedure Main()
+    local o := SomeClass():new()
 
-BEGIN NAMESPACE VFP_ConsoleApplication8
+    o:Hello()
+    _wait()
+return
 
-	/// <summary>
-	/// The Class1 class.
-	/// </summary>
-	CLASS Class1
 
-		PUBLIC MyTab AS USUAL
+class SomeClass from Base
+exported:
+    inline method Init()
+        ::a := "abc"
+        return super:Init()
 
-		CONSTRUCTOR()
-
-			// This does not work
-			DIMENSION this.MyTab(3)
-            MyTab = 42
-			// Same inside a WITH clause
-			WITH This
-				DIMENSION .MyTab(4)
-			END WITH
-            ShowArray(This.MyTab) // shows 3 x 42 and 1 x NIL
-			RETURN
-
-	END CLASS
-END NAMESPACE // VFP_ConsoleApplication8
-FUNCTION Start() as void
-    Class1{}
+    inline method Hello()
+        ? "Hello", ::a
     return
 
+    var a
+endclass
+
+
+class Base
+exported:
+    inline method Init()
+        ? "Base"
+        return
+endclass

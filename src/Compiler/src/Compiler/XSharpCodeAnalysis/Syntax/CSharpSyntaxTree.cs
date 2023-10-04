@@ -309,6 +309,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         start = symbol.StartIndex;
                         length = symbol.StopIndex - start + 1;
                         var pos = symbol.OriginalTokenIndex;
+                        if (pos < 0)    // happens sometimes with tokens from header files. See #1213
+                        {
+                            pos = 0;
+                        }
                         while (pos < cs.XTokens.Size)
                         {
                             var token = cs.XTokens.Get(pos);

@@ -1896,7 +1896,7 @@ OVERRIDE METHOD ForceRel() AS LOGIC
 		SELF:_RelInfoPending := NULL
     //
 		isOK := SELF:RelEval( currentRelation )
-		IF isOK .AND. !((DBF)currentRelation:Parent):EoF
+		if isOK .and. !currentRelation:Parent:EoF
 			TRY
 				gotoRec := Convert.ToInt32( SELF:_EvalResult )
 			CATCH ex AS InvalidCastException
@@ -1911,7 +1911,24 @@ OVERRIDE METHOD ForceRel() AS LOGIC
 	ENDIF
 RETURN isOK
 
+protected method _RelSeek(currentRelation as DbRelInfo) as logic
 
+var isOk := self:RelEval( currentRelation )
+
+if isOk .and. !currentRelation:Parent:EoF
+    try
+        local seekInfo as DbSeekInfo
+        seekInfo := DbSeekInfo{}
+        seekInfo:Value := self:_EvalResult
+        seekInfo:SoftSeek := false
+        isOk := self:Seek(seekInfo)
+
+    catch ex as InvalidCastException
+        self:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBF.ForceRel")
+
+    end try
+endif
+return isOk
     /// <inheritdoc />
 OVERRIDE METHOD RelArea(nRelNum AS DWORD) AS DWORD
 RETURN SUPER:RelArea(nRelNum)

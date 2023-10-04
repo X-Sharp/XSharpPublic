@@ -35,6 +35,14 @@ namespace XSharp.LanguageService
                 return CommandProgression.Continue;
             });
         }
+        private static (int, int) swapNumbers(int start, int end)
+        {
+            if (start > end)
+            {
+                return (end, start);
+            }
+            return (start, end);
+        }
 
         private static void Comment(DocumentView doc)
         {
@@ -42,14 +50,7 @@ namespace XSharp.LanguageService
             // in that case surround with /* */
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
-            var start = sel.Start.Position.Position;
-            var end = sel.End.Position.Position;
-            if (start > end)
-            {
-                var tmp = start;
-                start = end;
-                end = tmp;
-            }
+            var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
                 var startLine = snapshot.GetLineFromPosition(start);
@@ -81,16 +82,15 @@ namespace XSharp.LanguageService
         {
             var snapshot = doc.TextBuffer.CurrentSnapshot;
             var sel = doc.TextView.Selection;
-            var start = sel.Start.Position.Position;
-            var end = sel.End.Position.Position;
+            var (start, end) = swapNumbers(sel.Start.Position.Position, sel.End.Position.Position);
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
                 bool done = false;
                 // check to see if we are on a mle token
                 var xdoc = doc.TextBuffer.GetDocument();
-                var line = snapshot.GetLineFromPosition(start);
                 do
                 {
+                    var line = snapshot.GetLineFromPosition(start);
                     if (xdoc.LineState.Get(line.LineNumber, out var state))
                     {
                         if (state.HasFlag(LineFlags.MultiLineComments))
@@ -157,10 +157,10 @@ namespace XSharp.LanguageService
                                 Span commentCharSpan = new Span(pos, lenToDelete);
                                 editsession.Delete(commentCharSpan);
                             }
-                            start = line.EndIncludingLineBreak.Position;
-                            if (start == end)
-                                break;
                         }
+                        start = line.EndIncludingLineBreak.Position;
+                        if (start == end)
+                            break;
                     }
                 } while (!done && start < end);
 

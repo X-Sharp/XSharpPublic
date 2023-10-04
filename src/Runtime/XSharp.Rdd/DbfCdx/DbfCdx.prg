@@ -433,28 +433,13 @@ BEGIN NAMESPACE XSharp.RDD
                 // Save the current context
                 LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
                 SELF:_RelInfoPending := NULL
-                VAR oParent := (DBFCDX) currentRelation:Parent
-                IF oParent:EoF
+                if currentRelation:Parent:EoF
                     //
                     isOk := SELF:GoTo( 0 )
                 ELSE
-                    isOk := SELF:RelEval( currentRelation )
-
-                    IF isOk .AND. !((DBFCDX)currentRelation:Parent):EoF
-                        TRY
-                            LOCAL seekInfo AS DbSeekInfo
-                            seekInfo := DbSeekInfo{}
-                            seekInfo:Value := SELF:_EvalResult
-                            seekInfo:SoftSeek := FALSE
-                            isOk := SELF:Seek(seekInfo)
-
-                        CATCH ex AS InvalidCastException
-                            SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBFNTX.ForceRel")
-
-                        END TRY
-                    ENDIF
+                    isOk := super:_RelSeek(currentRelation )
                 ENDIF
-            ENDIF
+            endif
 
             RETURN isOk
             #endregion

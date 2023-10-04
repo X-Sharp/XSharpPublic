@@ -86,7 +86,7 @@ namespace XSharp.LanguageService
             using (var editsession = doc.TextBuffer.CreateEdit())
             {
                 bool done = false;
-                // check to see if we are on a mle token
+                // check to see if we are on a MultiLine commenttoken
                 var xdoc = doc.TextBuffer.GetDocument();
                 do
                 {
@@ -158,10 +158,8 @@ namespace XSharp.LanguageService
                                 editsession.Delete(commentCharSpan);
                             }
                         }
-                        start = line.EndIncludingLineBreak.Position;
-                        if (start == end)
-                            break;
                     }
+                    start = line.EndIncludingLineBreak.Position;
                 } while (!done && start < end);
 
                 editsession.Apply();

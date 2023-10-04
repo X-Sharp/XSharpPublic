@@ -826,6 +826,23 @@ namespace XSharp.CodeDom
             return false;
         }
 
+
+        private CodeExpression[] BuildArgumentList(XSharpParser.ArgumentListContext args)
+        {
+            List<CodeExpression> exprlist = new List<CodeExpression>();
+            if (args != null)
+            {
+                foreach (var arg in args._Args)
+                {
+                    if (arg.Expr != null)
+                    {
+                        // We should handle arg.Name if arg.ASSIGN_OP is not null...
+                        exprlist.Add(BuildExpression(arg.Expr, true));
+                    }
+                }
+            }
+            return exprlist.ToArray();
+        }
         private CodeExpression BuildPrimaryExpression(XSharpParser.PrimaryExpressionContext expression)
         {
             CodeExpression expr = null;
@@ -860,16 +877,8 @@ namespace XSharp.CodeDom
             else if (ctx is XSharpParser.CtorCallContext ctor)
             {
                 XCodeTypeReference ctr = BuildDataType(ctor.Type);
-                List<CodeExpression> exprlist = new List<CodeExpression>();
-                if (ctor.ArgList != null)
-                {
-                    foreach (var arg in ctor.ArgList._Args)
-                    {
-                        // We should handle arg.Name if arg.ASSIGN_OP is not null...
-                        exprlist.Add(BuildExpression(arg.Expr, true));
-                    }
-                }
-                expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist.ToArray());
+                var exprlist = BuildArgumentList(ctor.ArgList);
+                expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist);
             }
             else if (ctx is XSharpParser.TypeOfExpressionContext toec)
             {
@@ -959,15 +968,7 @@ namespace XSharp.CodeDom
 
             // target: for example SELF:Controls:Add
             CodeExpression target = BuildExpression(meth.Expr, false);
-
-            List<CodeExpression> exprlist = new List<CodeExpression>();
-            if (meth.ArgList != null)
-            {
-                foreach (var arg in meth.ArgList._Args)
-                {
-                    exprlist.Add(BuildExpression(arg.Expr, true));
-                }
-            }
+            var exprlist = BuildArgumentList(meth.ArgList);
             // When we cannot find a field then we always map something like
             // SELF:Controls:Add to a propertyReferenceExpression
             // Change it to a method call now
@@ -975,13 +976,13 @@ namespace XSharp.CodeDom
             {
                 var lhs = cmr.TargetObject;
                 var methodName = cmr.MethodName;
-                expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist.ToArray());
+                expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist);
             }
             else if (target is CodePropertyReferenceExpression cpr)
             {
                 var lhs = cpr.TargetObject;
                 var methodName = cpr.PropertyName;
-                expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist.ToArray());
+                expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist);
             }
             // can't be a variable ref: this will have only one element and not two
             // can't be a field ref: cannot have a field with the same name as a method
@@ -1001,7 +1002,7 @@ namespace XSharp.CodeDom
 
         private CodeExpression BuildLiteralArray(XSharpParser.LiteralArrayExpressionContext context)
         {
-            CodeArrayCreateExpression ac = null;
+            CodeArrayCreateExpression ac;
             var array = context.LiteralArray;
             var elements = new List<CodeExpression>();
             if (array._Elements.Count > 0)
@@ -1011,7 +1012,7 @@ namespace XSharp.CodeDom
                     elements.Add(BuildExpression(expr.Expr, false));
                 }
             }
-            XCodeTypeReference typeRef = null;
+            XCodeTypeReference typeRef;
             if (array.Type != null)
             {
                 typeRef = BuildDataType(array.Type);
@@ -1922,35 +1923,38 @@ namespace XSharp.CodeDom
         internal static string SourceText(this XSharpParserRuleContext context, bool noComments = false)
         {
             StringBuilder result = new StringBuilder();
-            foreach (var token in context.children)
+            if (context?.ChildCount > 0)
             {
-                if (token is XSharpParserRuleContext rule)
+                foreach (var token in context.children)
                 {
-                    result.Append(rule.SourceText());
-                }
-                else if (token is XSharpToken xtoken)
-                {
-                    if (!noComments)
+                    if (token is XSharpParserRuleContext rule)
                     {
-                        result.Append(xtoken.TriviaAsText);
+                        result.Append(rule.SourceText());
                     }
-                    result.Append(xtoken.Text);
-                    result.Append(' ');
-                }
-                else if (token.Payload is XSharpToken xtoken2)
-                {
-                    if (!noComments)
+                    else if (token is XSharpToken xtoken)
                     {
-                        result.Append(xtoken2.TriviaAsText);
+                        if (!noComments)
+                        {
+                            result.Append(xtoken.TriviaAsText);
+                        }
+                        result.Append(xtoken.Text);
+                        result.Append(' ');
                     }
+                    else if (token.Payload is XSharpToken xtoken2)
+                    {
+                        if (!noComments)
+                        {
+                            result.Append(xtoken2.TriviaAsText);
+                        }
 
-                    result.Append(xtoken2.Text);
-                    result.Append(' ');
+                        result.Append(xtoken2.Text);
+                        result.Append(' ');
 
-                }
-                else
-                {
-                    result.Append(token.GetText());
+                    }
+                    else
+                    {
+                        result.Append(token.GetText());
+                    }
                 }
             }
             return result.ToString();

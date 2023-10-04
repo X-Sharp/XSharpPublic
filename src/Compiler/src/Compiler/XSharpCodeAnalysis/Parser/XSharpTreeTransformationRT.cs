@@ -2582,11 +2582,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         errcode = ErrorCode.WRN_NoReturnValueAllowed;
                         if (context.Expr.GetLiteralToken() == null) // no  literal so we must evaluate the expression
                         {
-                            var declstmt = GenerateReturnVar(_impliedType, expr);
-                            declstmt.XNode = context;
+                            StatementSyntax stmt;
+                            if (expr.Kind == SyntaxKind.InvocationExpression)
+                            {
+                                stmt = GenerateExpressionStatement(expr, context.Expr, false);
+                            }
+                            else
+                            {
+                                var declstmt = GenerateReturnVar(_impliedType, expr);
+                                declstmt.XGenerated = true;
+                                declstmt.XNode = context;
+                                stmt = declstmt;
+                            }
                             var retstmt = GenerateReturn(null);
                             retstmt.XNode = context;
-                            var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
+                            var block = MakeBlock(MakeList<StatementSyntax>(stmt, retstmt));
                             context.Put(block);
                         }
                         else

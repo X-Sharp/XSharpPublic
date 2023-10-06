@@ -7,14 +7,13 @@ function Start() as void strict
         ENDTEXT
         var cText := MemoRead("test.txt")
         ? cText
-        xAssert(Alltrim(MemoLine(cText, 80, 2)) == "some")
-        xAssert(Alltrim(MemoLine(cText, 80, 3)) == "text in here")
-        xAssert(Alltrim(MemoLine(cText, 80, 4)) == "!!!!")
+        xAssert(AllTrim(MemoLine(cText, 80, 2)) == "some")
+        xAssert(AllTrim(MemoLine(cText, 80, 3)) == "text in here")
+        xAssert(AllTrim(MemoLine(cText, 80, 4)) == "!!!!")
     catch e as exception
         ? e:Message
     end try
 
-    _wait()
 
 
 PROC xAssert(l AS LOGIC)

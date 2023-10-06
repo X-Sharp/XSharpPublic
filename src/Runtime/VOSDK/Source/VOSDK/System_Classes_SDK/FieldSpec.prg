@@ -120,8 +120,9 @@ PROTECT lNullable AS LOGIC
         ENDIF
 
 
-        IF IsString( uType )
-            cType := Left(Upper(uType),1)
+        if  uType  is string var strType
+            self:lNullable := strType:IndexOf(":0") > 0
+            cType := Left(Upper(strType),1)
             SWITCH cType
             CASE "C"            // Char
             CASE "M"            // Memo

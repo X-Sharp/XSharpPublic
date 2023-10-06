@@ -107,8 +107,9 @@ constructor( oHLName as HyperLabel, uType:= nil as usual, uLength := 0 as dword,
 	oHyperLabel := oHLName
 
 
-	IF IsString( uType )
-		cType := Upper(Left(uType,1))
+    if uType  is string var strType
+        self:lNullable := strType:IndexOf(":0") > 0
+		cType := Upper(Left(strType,1))
         switch cType
         case "C"
             wType := __UsualType.String
@@ -193,7 +194,7 @@ ACCESS Length AS DWORD
 
 
 /// <include file="System.xml" path="doc/FieldSpec.Maximum/*" />
-ACCESS Maximum   AS USUAL
+access Maximum   as usual 
 	RETURN SELF:uMax
 
 
@@ -208,7 +209,7 @@ ACCESS MinLength AS DWORD
 
 
 /// <include file="System.xml" path="doc/FieldSpec.Nullable/*" />
-ACCESS Nullable  AS LOGIC
+access Nullable  as logic
 	RETURN SELF:lNullable
 
 
@@ -378,8 +379,7 @@ ACCESS Picture  AS STRING
 
 
 /// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
-ASSIGN Picture( cNewPicture AS STRING)
-	//ASSERT _DYNCHECKERRORBOX( )
+assign Picture( cNewPicture as string)
 	cPicture := cNewPicture
 
 

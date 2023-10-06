@@ -192,7 +192,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         var oTd   := SqlDbTableDef{TableName, oCols}
         return oTd
 
-    method GetStructureForTable(TableName as string,longFieldNames as logic) as SqlDbTableDef
+    method GetStructureForTable(TableName as string,longFieldNames as logic, cColumnNames as string) as SqlDbTableDef
         if self:Schema:ContainsKey(TableName)
             return self:Schema[TableName]
         endif
@@ -202,7 +202,13 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             if String.IsNullOrEmpty(self:Provider:QuotePrefix) .and. TableName:IndexOf(" ") > 0
                 table := SqlDbProvider.DefaultQuotePrefix+TableName+SqlDbProvider.DefaultQuoteSuffix
             endif
-            var list  := RaiseListEvent(self, SqlRDDEventReason.ColumnList, TableName, List<string>{}{"*"})
+            local list as IList<string>
+            if ! String.IsNullOrEmpty(cColumnNames)
+                list := String2List(cColumnNames)
+            else
+                list := List<string>{}{"*"}
+            endif
+            list  := RaiseListEvent(self, SqlRDDEventReason.ColumnList, TableName, list)
             var columnList := List2String(list)
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"

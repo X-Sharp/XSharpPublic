@@ -16,29 +16,27 @@ begin namespace XSharp.RDD.SqlRDD
 /// The Expression class.
 /// </summary>
 class SqlDbExpression inherit SqlDbObject
-#ifdef DEBUG
-    static public SqlTranslator as TranslateFunctionDelegate
-#endif
-    property Owner      as object auto
-    property VoKey		as string auto
+    property Owner      as SqlDbOrder auto
+    property XsKey		as string auto
     property Tokens		as IList<SqlDbToken> auto
     property Funcs		as IList<SqlDbToken> auto
     property HasFunctions	as logic auto
     property CurToken 	as int auto
-    property KeyLen		as int get self:VoKey:Length
+    property KeyLen		as int get self:XsKey:Length
     property ColumnList as List<string> auto
     property Translated as logic auto
     property Segments	as IList<SqlDbSegment> auto
     property Widths		as IList<long> auto
+    private _provider  as SqlDbProvider
 
     property OrderListString as string => SELF:List2String(self:OrderList)
     property ColumnListString as string => SELF:List2String(self:ColumnList)
 
 
-    constructor(oOwner as object, cIndexExpr as string)
+    constructor(oOwner as SqlDbOrder, cIndexExpr as string)
         super(cIndexExpr)
         self:Owner := oOwner
-        self:VoKey := self:TranslateField(cIndexExpr)
+        self:XsKey := self:TranslateField(cIndexExpr)
         // Parse the expression and create a column list (for index on)
         // and an OrderList (for Orderby clauses)
         // and more
@@ -46,13 +44,10 @@ class SqlDbExpression inherit SqlDbObject
         self:Tokens  	:= List<SqlDbToken>{}
         self:Funcs	  	:= List<SqlDbToken>{}
         self:ColumnList := List<string>{}
-        self:Segments   := self:GetSegments( self:VoKey)
-        self:ParseVoKey()
-#ifdef DEBUG
-        //oCb				:= oOwner:oWorkArea:oConnInfo:oCallBack
-        //SELF:TranslateFunctions(oCb)
-        self:TranslateFunctions(SqlTranslator)
-#endif
+        self:Segments   := self:GetSegments( self:XsKey)
+        _provider := oOwner:Provider
+        self:ParseXsKey()
+        self:TranslateFunctions()
         if self:Segments:Count > 1
             foreach var oSeg in self:Segments
                 var oExp 			:= SqlDbExpression{oOwner, oSeg:Key}
@@ -100,7 +95,7 @@ class SqlDbExpression inherit SqlDbObject
                 oToken:SQLName 	:= cName:Replace(".","")
             elseif IsValidToken(cName)
                 oToken:Type := TokenType.Token
-                self:ColumnList:Add(cName)
+                self:ColumnList:Add( _provider.QuotePrefix+cName +_provider.QuoteSuffix)
             else
                 oToken:Type := TokenType.Literal
             endif
@@ -212,7 +207,7 @@ class SqlDbExpression inherit SqlDbObject
 
     protect method NextToken as SqlDbToken
         local oToken := null	as SqlDbToken
-        if self:CurToken <= self:Tokens:Count
+        if self:CurToken < self:Tokens:Count
             oToken := self:Tokens[self:CurToken]
         endif
         return oToken
@@ -313,14 +308,14 @@ class SqlDbExpression inherit SqlDbObject
         if token:Length >0
             self:AddToken(symType, token)
         endif
-    protect method ParseVoKey() as void
+    protect method ParseXsKey() as void
         var token    := StringBuilder{self:KeyLen}
         var symType  := TokenType.None
         var aPars	  	:= List<TokenType>{}
         local cEnd	:= '\0'	as char
         self:AddToken(TokenType.BoExpr,"")
         var lInString := false
-        foreach var cChar in self:VoKey
+        foreach var cChar in self:XsKey
             var lClear 	:= false
             do case
             case lInString
@@ -340,6 +335,7 @@ class SqlDbExpression inherit SqlDbObject
                 lClear := true
             case cChar == c'\'' .or. cChar == c'\"'
                 // Start of string
+                self:AddTokenWhenNotEmpty(token, symType)
                 lInString 	 := true
                 token:Clear()
                 token:Append(cChar)
@@ -415,7 +411,7 @@ class SqlDbExpression inherit SqlDbObject
         return
     access SegmentCount as long
         return self:Segments:Count
-    method TranslateFunctions(oDel as TranslateFunctionDelegate) as void
+    method TranslateFunctions() as void
         foreach var token in self:Tokens
             switch token:Type
             case TokenType.BoFunc
@@ -423,12 +419,14 @@ class SqlDbExpression inherit SqlDbObject
                     token:SQLName := "(%1%)"
                     token:Descend := true
                 else
-                    token:SQLName := oDel(token:Name:ToUpper())
+                    token:SQLName := _provider:GetFunction(token:Name:ToUpper())
                 endif
             case TokenType.Operator
                 if token:Name:Trim() = "+"
-                    token:SQLName := oDel("+")
+                    token:SQLName := _provider:GetFunction("+")
                 endif
+            case TokenType.Token
+                token:SQLName := _provider.QuotePrefix+token:Name+_provider.QuoteSuffix
             end switch
         next
         self:Translated := true

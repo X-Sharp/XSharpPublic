@@ -25,17 +25,26 @@ class SQLRDD inherit DBFVFP
     protect _creatingIndex  as logic
     protect _incrementKey   as long
     protect _incrementColumn as DataColumn
-    protect _recnoColumn     as long
+        //protect _recnoColumn     as long
     protect _deletedColumn   as long
     protect _tableMode      as TableMode
     protect _rowNum         as long
+    protect _maxRec         as long
     protect _hasData        as logic
     protect _realOpen       as logic
     protect _connection     as SqlDbConnection
     protect _oTd            as SqlDbTableDef
     protect _obuilder       as SqlDbTableCommandBuilder
     protect _command        as SqlDbCommand
+    protect _currentOrder   as SqlDbOrder
+    protect _trimValues     as logic
+    protect _oIni           as IniFile
 
+    new internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
+    internal property Connection         as SqlDbConnection get _connection
+    internal property Provider           as SqlDbProvider get _connection:Provider
+    internal property Command            as SqlDbCommand get _command
+    internal property IniFile            as IniFile get _oIni
 #region Overridden properties
     override property Driver as string get "SQLRDD"
 #endregion
@@ -47,8 +56,11 @@ class SQLRDD inherit DBFVFP
         _ReadOnly        := true
         _connection      := null
         _obuilder        := null
-        _recnoColumn     := -1
+        //_recnoColumn     := -1
         _deletedColumn   := -1
+        _maxRec          := -1
+        _oIni            := IniFile{"SQLRDD.INI"}
+        self:_creatingIndex := true // pad field values
         return
 
     private method TempFileName() as string
@@ -63,9 +75,13 @@ class SQLRDD inherit DBFVFP
 
     private method GetTableInfo(cTable as string) as logic
         // First check to see if there is a tableDef for this table in the connection
-        self:_obuilder := SqlDbTableCommandBuilder{cTable, self:_connection}
-        self:_oTd := _obuilder:FetchInfo()
+        self:_obuilder  := SqlDbTableCommandBuilder{cTable, self}
+        self:_oTd       := _obuilder:FetchInfo(self)
+        if XSharp.RuntimeState.AutoOpen
+            _obuilder:SetProductionIndex()
+        endif
         return true
+
 
     override method Open(info as DbOpenInfo) as logic
         var query := info:FileName
@@ -95,18 +111,16 @@ class SQLRDD inherit DBFVFP
         else
             self:_tableMode := TableMode.Table
             if ! self:GetTableInfo(query)
-                  throw Exception{}
+                throw Exception{}
             endif
-
-
-
         endif
 
         // Get the structure
         var oFields := List<RddFieldInfo>{}
         foreach var oCol in _oTd:Columns
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
-                self:_recnoColumn := oCol:ColumnInfo:Ordinal+1
+                //self:_recnoColumn := oCol:ColumnInfo:Ordinal+1
+                nop
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
                 self:_deletedColumn := oCol:ColumnInfo:Ordinal+1
             endif
@@ -133,8 +147,6 @@ class SQLRDD inherit DBFVFP
         _command:CommandText := query
         self:_realOpen := true
         return true
-
-
 
     /// <inheritdoc />
     override method SetFieldExtent(nFields as long) as logic
@@ -311,80 +323,395 @@ class SQLRDD inherit DBFVFP
 
     /// <inheritdoc />
     override method OrderCreate(orderInfo as DbOrderCreateInfo ) as logic
-        self:_creatingIndex := true
         var result := super:OrderCreate(orderInfo)
-        self:_creatingIndex := false
         return result
 
     /// <inheritdoc />
     override method OrderListRebuild() as logic
-        self:_creatingIndex := true
         var result := super:OrderListRebuild()
-        self:_creatingIndex := false
         return result
 
-    method PrepareToMove() as void
+    override method OrderListFocus(orderInfo as DbOrderInfo) as logic
         if self:_tableMode != TableMode.Table
-            return
+            return super:OrderListFocus(orderInfo)
+        endif
+        self:_hasData := false
+        return self:_obuilder:OrderListFocus(orderInfo)
+
+
+
+    method ForceOpen() as logic
+        if self:_tableMode != TableMode.Table
+            return true
         endif
         if self:_hasData
-            return
+            return true
         endif
-        var query := self:BuildSqlStatement()
-        _command:CommandText := query
-        self:_hasData    := true
-        self:DataTable   := _command:GetDataTable(self:Alias)
+        return self:OpenTable("")
 
-    method BuildSqlStatement() as string
-        var query := self:_oTd:SelectStatement
+    method OpenTable(sWhereClause as string) as logic
+        try
+            var query := self:BuildSqlStatement(sWhereClause)
+            _command:CommandText := query
+            self:_hasData    := true
+            self:DataTable   := _command:GetDataTable(self:Alias)
+        catch e as Exception
+            return false
+        end try
+        return true
+
+
+    method BuildSqlStatement(sWhereClause as string) as string
+        local query as string
         if ! self:_realOpen
             query := self:_oTd:EmptySelectStatement
+        else
+            if self:_tableMode == TableMode.Table
+                query := _obuilder:BuildSqlStatement(sWhereClause)
+            else
+                query := self:_oTd:SelectStatement
+            endif
         endif
         // create filter from seek
         // add server side filter
-        query := Self:_connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _oTd:Name, query)
+        query := self:_connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _oTd:Name, query)
         return query
 
     override method GoTop() as logic
-        if ! self:_hasData
-            self:PrepareToMove()
-            return true
-        else
-            return super:GoTop()
+        if !self:ForceOpen()
+            return false
         endif
+        return super:GoTop()
     override method GoBottom() as logic
-        if ! self:_hasData
-            self:PrepareToMove()
+        if !self:ForceOpen()
+            return false
         endif
         return super:GoBottom()
     override method SkipRaw(move as long) as logic
-        if ! self:_hasData
-            self:PrepareToMove()
+        if !self:ForceOpen()
+            return false
         endif
         return super:SkipRaw(move)
-
-
-        override property RecNo		as int
-            get
-                self:ForceRel()
-                if self:_recnoColumn != 0
-                    return (int) self:GetValue(self:_recnoColumn)
-                else
-                    return super:RecNo
-                endif
-	        end get
-        end property
-
-override property Deleted		as logic
-	get
-		self:ForceRel()
-        if self:_deletedColumn != 0
-            return (logic) self:GetValue(self:_deletedColumn)
-        else
-            return super:Deleted
+    override method GoTo(nRec as long) as logic
+        if !self:ForceOpen()
+            return false
         endif
-	end get
-end property
+        //         if self:_recnoColumn != 0
+        //             // find the row based on the value of _recnoColumn
+        //             local result := -1 as long
+        //             for var i := 0 to _table:Rows:Count -1
+        //                 var row := _table:Rows[i]
+        //                 var recno := (long) row[_recnoColumn-1]
+        //                 if (recno == nRec)
+        //                     result := i
+        //                     exit
+        //                 endif
+        //             next
+        //             nRec := result
+        //             return super:GoTo(nRec)
+        //         else
+        return super:GoTo(nRec)
+        //         endif
+
+    override property RecNo		as int
+        get
+            self:ForceRel()
+            //             if self:_recnoColumn != 0
+            //                 return (int) self:GetValue(self:_recnoColumn)
+            //             else
+            return super:RecNo
+            //             endif
+        end get
+    end property
+
+    override method Seek(seekInfo as DbSeekInfo) as logic
+        local oKey as object
+        oKey := seekInfo:Value
+        if oKey == null         // Seek NIL
+            if seekInfo:Last
+                return self:GoBottom()
+            else
+                return self:GoTop()
+            endif
+        endif
+        if self:CurrentOrder == null
+            self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER )
+            return false
+        endif
+        var cSeekExpr := CurrentOrder:SeekExpression(seekInfo )
+        self:OpenTable(cSeekExpr)
+        return true
+    override method OrderInfo(nOrdinal as dword , info as DbOrderInfo ) as object
+        local isOk := true as logic
+        local oBag := null as SqlDbOrderBag
+        var hasBagName := ! String.IsNullOrEmpty(info:BagName)
+        if self:_tableMode != TableMode.Table
+            return super:OrderInfo(nOrdinal, info)
+        endif
+        local workOrder as SqlDbOrder
+        if !info:IsEmpty
+            workOrder := self:_obuilder:FindOrder(info)
+        else
+            workOrder := self:CurrentOrder
+        endif
+        begin switch nOrdinal
+        case DBOI_DEFBAGEXT
+            info:Result := SqlDbOrderBag.BAG_EXTENSION
+        case DBOI_CONDITION
+            if workOrder != null
+                info:Result := workOrder:Condition
+            else
+                info:Result := ""
+            endif
+        case DBOI_EXPRESSION
+            if workOrder != null
+                info:Result := workOrder:Expression
+            else
+                info:Result := ""
+            endif
+        case DBOI_ORDERCOUNT
+            if oBag == null
+                if hasBagName
+                    info:Result := 0
+                else
+                    info:Result := self:_indexList:Count
+                endif
+            else
+                info:Result := oBag:Tags:Count
+            endif
+//         case DBOI_POSITION
+//         case DBOI_RECNO
+//             var oState := self:_GetState()
+//             if workOrder == null
+//                 info:Result := self:RecNo
+//             else
+//                 isOk := workOrder:_getRecPos( ref result)
+//                 if isOk
+//                     info:Result := result
+//                 endif
+//             endif
+//             self:_SetState(oState)
+//         case DBOI_KEYCOUNT
+//             result := 0
+//             var oState := self:_GetState()
+//             if workOrder != null
+//                 info:Result := 0
+//                 isOk := workOrder:_CountRecords(ref result)
+//             else
+//                 isOk := true
+//             endif
+//             if isOk
+//                 info:Result := result
+//             endif
+//             self:_SetState(oState)
+//         case DBOI_NUMBER
+//             info:Result := self:_indexList:OrderPos(workOrder)
+        case DBOI_BAGEXT
+            // according to the docs this should always return the default extension and not the actual extension
+            if workOrder != null
+                info:Result := System.IO.Path.GetExtension(workOrder:OrderBag:FullPath)
+            else
+                info:Result := SqlDbOrderBag.BAG_EXTENSION
+            endif
+        case DBOI_FULLPATH
+            if workOrder != null
+                info:Result := workOrder:OrderBag:FullPath
+            else
+                info:Result := String.Empty
+            endif
+        case DBOI_BAGCOUNT
+            info:Result := self:_indexList:BagCount
+        case DBOI_BAGNAME
+            //CASE DBOI_INDEXNAME // alias
+            if info:Order is long var nOrder
+                info:Result := self:_indexList:BagName(nOrder)
+            elseif workOrder != null
+                info:Result := workOrder:FileName
+            else
+                info:Result :=String.Empty
+            endif
+
+        case DBOI_NAME
+            if workOrder != null
+                info:Result := workOrder:Name
+            else
+                info:Result := String.Empty
+            endif
+//         case DBOI_COLLATION
+//             info:Result := ""
+//             if workOrder != null
+//                 local collation as VfpCollation
+//                 collation := workOrder:Collation
+//                 if collation  != null
+//                     info:Result := collation:Name
+//                 endif
+//             endif
+
+//         case DBOI_FILEHANDLE
+//             if workOrder != null
+//                 info:Result := workOrder:OrderBag:Handle
+//             else
+//                 info:Result := IntPtr.Zero
+//             endif
+//         case DBOI_FILESTREAM
+//             if workOrder != null
+//                 info:Result := workOrder:OrderBag:Stream
+//             else
+//                 info:Result := null
+//             endif
+        case DBOI_ISDESC
+            if workOrder != null
+                var oldValue  := workOrder:Descending
+                if info:Result is logic var descend
+                    workOrder:Descending := descend
+                endif
+                info:Result := oldValue
+            else
+                info:Result := false
+            endif
+        case DBOI_ISCOND
+            if workOrder != null
+                info:Result := workOrder:Conditional
+            else
+                info:Result := false
+            endif
+//         case DBOI_KEYTYPE
+//             if workOrder != null
+//                 info:Result := workOrder:KeyType
+//             else
+//                 info:Result := 0
+//             endif
+        case DBOI_KEYSIZE
+            if workOrder != null
+                info:Result := workOrder:KeyLength
+            else
+                info:Result := 0
+            endif
+        case DBOI_KEYDEC
+            info:Result := 0
+        case DBOI_HPLOCKING
+            info:Result := false
+        case DBOI_UNIQUE
+            if workOrder != null
+                info:Result := workOrder:Unique
+            else
+                info:Result := false
+            endif
+//         case DBOI_LOCKOFFSET
+//             if workOrder != null
+//                 info:Result := workOrder:OrderBag:_LockOffSet
+//             else
+//                 info:Result := 0
+//             endif
+         case DBOI_SETCODEBLOCK
+             if workOrder != null
+                 info:Result := workOrder:KeyCodeBlock
+             endif
+         case DBOI_KEYVAL
+            if workOrder != null
+                isOk := true
+                try
+                    info:Result := self:EvalBlock(workOrder:KeyCodeBlock)
+                catch ex as Exception
+                    isOk := false
+                    self:_dbfError(ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFCDX.OrderInfo")
+                end try
+                if !isOk
+                    info:Result := DBNull.Value
+                endif
+            else
+                info:Result := DBNull.Value
+            endif
+        case DBOI_SCOPETOPCLEAR
+        case DBOI_SCOPEBOTTOMCLEAR
+            if workOrder != null
+                workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                self:_hasData := false
+            endif
+            info:Result := null
+        case DBOI_SCOPETOP
+        case DBOI_SCOPEBOTTOM
+            if workOrder != null
+                local oldValue as object
+                if nOrdinal == DBOI_SCOPETOP
+                    oldValue := workOrder:TopScope
+                elseif nOrdinal == DBOI_SCOPEBOTTOM
+                    oldValue := workOrder:BottomScope
+                else
+                    oldValue := DBNull.Value
+                endif
+                if info:Result != null
+                    workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
+                endif
+                info:Result := oldValue
+                self:_hasData := false
+            else
+                info:Result := DBNull.Value
+            endif
+//         case DBOI_KEYADD
+//             if workOrder != null
+//                 info:Result := workOrder:AddKey(self:RecNo)
+//             else
+//                 info:Result := false
+//             endif
+//         case DBOI_KEYDELETE
+//             if workOrder != null
+//                 info:Result := workOrder:DeleteKey(self:RecNo)
+//             else
+//                 info:Result := false
+//             endif
+//         case DBOI_CUSTOM
+//             if workOrder != null
+//                 local lOld as logic
+//                 lOld := workOrder:Custom
+//                 if info:Result is logic var custom
+//                     if custom
+//                         workOrder:SetCustom()
+//                     endif
+//                 endif
+//                 info:Result := lOld
+//             else
+//                 info:Result := false
+//             endif
+//
+//         case DBOI_USER + 42
+//         case DBOI_DUMP
+//             // Dump Cdx to Txt file
+//             var oState := self:_GetState()
+//             if workOrder != null
+//                 workOrder:_dump()
+//             endif
+//             self:_SetState(oState)
+//         case DBOI_VALIDATE
+//             // Validate integrity of the current Order
+//             var oState := self:_GetState()
+//             if workOrder != null
+//                 info:Result := workOrder:_validate()
+//             endif
+//             self:_SetState(oState)
+//         case DBOI_SKIPUNIQUE
+//             if workOrder != null
+//                 local nToSkip := 1 as long
+//                 if info:Result is long var nNum
+//                     nToSkip := nNum
+//                 endif
+//                 info:Result := workOrder:SkipUnique(nToSkip)
+//             endif
+        otherwise
+            super:OrderInfo(nOrdinal, info)
+        end switch
+        return info:Result
+
+    override property Deleted		as logic
+        get
+            self:ForceRel()
+            if self:_deletedColumn > 0
+                return (logic) self:GetValue(self:_deletedColumn)
+            else
+                return super:Deleted
+            endif
+        end get
+    end property
 
 
 end class

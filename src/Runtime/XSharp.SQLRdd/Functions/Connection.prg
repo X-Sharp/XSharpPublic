@@ -5,6 +5,7 @@
 //
 
 using XSharp.RDD.SqlRDD
+using XSharp.RDD.Support
 using System.Collections.Generic
 using System.Text
 /// <summary>
@@ -110,5 +111,30 @@ function List2String(list as IList<string>) as string
         sb:Append(item)
     next
     return sb:ToString()
+
+function String2List(names as string) as IList<string>
+    var list := names:Split(<char>{','})
+    var result := List<string>{}
+    foreach var element in list
+        result:Add(element:Trim())
+    next
+    return result
+
+
+function XsValueToSqlValue(oValue as object)  as string
+    switch oValue
+    case strValue as string
+        return "'"+strValue:Replace("'","''")+"'"
+    case dDate as IDate
+        return "'"+DToS(dDate)+"'"
+    case iValue as long
+        return iValue:ToString()
+    case dFloat as IFloat
+        return dFloat:Value:ToString()
+    end switch
+    return oValue:ToString()
+
+    function DToS(dDate as IDate) as string
+        return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
 
 

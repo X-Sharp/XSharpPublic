@@ -43,7 +43,7 @@ class Oracle inherit SqlDbProvider
         endif
         return aFuncs
 
-    override property SelectTopStatement     as string => "select * from (select "+ColumnsMacro+" from "+FromClauseMacro+" ) where RowNum <= "+TopCountMacro
+    override property SelectTopStatement     as string => "select * from (select "+ColumnsMacro+" from "+TableNameMacro+" ) where RowNum <= "+TopCountMacro
 
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

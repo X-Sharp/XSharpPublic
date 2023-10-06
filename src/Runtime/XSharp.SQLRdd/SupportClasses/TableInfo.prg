@@ -53,7 +53,8 @@ class SqlTableInfo inherit SqlDbTableDef
     constructor(cName as string)
         super(cName)
         MaxRecords := 1000
-        RecnoColumn := "xs_pk"
+        //RecnoColumn := "xs_pk"
+        RecnoColumn   := ""
         DeletedColumn := "xs_deleted"
         ServerFilter := ""
         AllowUpdates := true

@@ -46,7 +46,7 @@ class MySql inherit SqlDbProvider
         endif
         return aFuncs
 
-    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+FromClauseMacro+" limit "+TopCountMacro
+    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
 
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

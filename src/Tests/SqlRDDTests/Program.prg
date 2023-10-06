@@ -9,7 +9,7 @@ global options := "TrimTrailingSpaces=True;UseNulls=False;" as STRING
 global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;"+options as STRING
 global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;"+options as STRING
 global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
-
+global showEvents as logic
 
 function Start as void
     //TestProviders()
@@ -32,12 +32,63 @@ function TestTable() as void
         SqlDbSetProvider("SQLSERVER")
         var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
         VoDbUseArea(true, typeof(SQLRDD),"Customers","Customers",true, true)
+        ? "SetDeleted(TRUE)"
+        SetDeleted(true)
         dbGoTop()
-        do while ! Eof()
-            ? Recno(), FieldGet(1)
+        do while ! Eof() .and. Recno() < 10
+            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
             DbSkip(1)
         enddo
+        wait
+        ? "SetDeleted(FALSE)"
+        SetDeleted(false)
+        dbGoTop()
+        do while ! Eof() .and. Recno() < 10
+            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+            DbSkip(1)
+        enddo
+        wait
+        ? "Order by address"
+        DbSetOrder("Address")
+        dbGoTop()
+        do while ! Eof() .and. Recno() < 10
+            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3),  FieldGetSym(#Country),  FieldGetSym(#City)
+            DbSkip(1)
+        enddo
+        ListSeek()
+        wait
+        ListBrazil()
         VODbCloseArea()
+
+
+function ListSeek as void
+        ? "Seek Customer with key ALFKI"
+        DbSetOrder("Customers_Pk")
+        DbSeek("ALFKI")
+        do while ! Eof() .and. Recno() < 10
+            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+            DbSkip(1)
+        enddo
+        ? "Seek Customer with key GOURL"
+        DbSeek("GOURL")
+        do while ! Eof() .and. Recno() < 10
+            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+            DbSkip(1)
+        enddo
+
+
+function ListBrazil as void
+        ? "Scope Customers in Brazil and Canada"
+        DbSetOrder("Address")
+        DBOrderInfo(DBOI_SCOPETOP,,,"BRAZIL")
+        DBOrderInfo(DBOI_SCOPEBOTTOM,,,"CANADA")
+        DbGoTop()
+        do while ! Eof()
+            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3), FieldGetSym(#Country)
+            DbSkip(1)
+        enddo
+    return
+
 
 function TestParametersODBC() AS VOID
     local conn := null as SqlDbConnection
@@ -229,7 +280,7 @@ Function DumpConnection(conn as SqlDbConnection) as void
         var tables := conn:GetTables("TABLE")
         ? "Tables: ", tables:Count
         foreach var name in tables
-            DumpStructure(conn:GetStructure(name))
+            DumpStructure(conn:GetStructureForTable(name, true,"*"))
         next
     ENDIF
     ? Seconds() - secs
@@ -242,14 +293,15 @@ function DumpStructure(oTd as SqlDbTableDef) as VOID
 
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     local strValue as string
-    if e:Value is IList<String>  var listValue
+    if e:Value is IList<string>  var listValue
         strValue := List2String(listValue)
     else
         strValue := e:Value:ToString()
     endif
-
-    ? "Event", e:Reason:ToString(), e:Table, strValue
-    RETURN e:Value
+    if showEvents
+        ? "Event", e:Reason:ToString(), e:Table, strValue
+    endif
+    return e:Value
 
 function TestProviders as void
     local oProv as SqlDbProvider
@@ -268,18 +320,18 @@ function TestProviders as void
     next
     wait
 
-FUNCTION Start1(args AS STRING[]) AS VOID
-    local oExpr as SqlDbExpression
-    SqlDbExpression.SqlTranslator := SqlTranslator
-    oExpr := SqlDbExpression{NULL, "LASTNAME+FIRSTNAME"}
-    DumpExpression(oExpr)
-    SqlDbExpression{NULL, "STR(CUSTNO)+DESCEND(DTOS(ORDERDATE))"}
-    DumpExpression(oExpr)
-    oExpr := SqlDbExpression{NULL, "STR(CUSTNO)+IIF(EMPTY(LASTNAME),REPL('Z',10), LEFT(LASTNAME,10))"}
-    DumpExpression(oExpr)
+// FUNCTION Start1(args AS STRING[]) AS VOID
+//     local oExpr as SqlDbExpression
+//     SqlDbExpression.SqlTranslator := SqlTranslator
+//     oExpr := SqlDbExpression{NULL, "LASTNAME+FIRSTNAME"}
+//     DumpExpression(oExpr)
+//     SqlDbExpression{NULL, "STR(CUSTNO)+DESCEND(DTOS(ORDERDATE))"}
+//     DumpExpression(oExpr)
+//     oExpr := SqlDbExpression{NULL, "STR(CUSTNO)+IIF(EMPTY(LASTNAME),REPL('Z',10), LEFT(LASTNAME,10))"}
+//     DumpExpression(oExpr)
+//
 
-
-    WAIT
+//    WAIT
 
 
 FUNCTION SqlTranslator(cFunc as String) as String
@@ -292,7 +344,7 @@ FUNCTION SqlTranslator(cFunc as String) as String
 
 
 Function DumpExpression(oExpr as SqlDbExpression) AS VOID
-    ? "Expression", oExpr:VoKey
+    ? "Expression", oExpr:XsKey
     foreach var oSeg in oExpr:Segments
         ? "Seg", oSeg:Key
     next

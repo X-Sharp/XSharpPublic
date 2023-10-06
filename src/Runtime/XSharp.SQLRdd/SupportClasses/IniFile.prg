@@ -15,8 +15,13 @@ begin namespace XSharp.RDD.SqlRDD
 internal class IniFile
     protected cFileName as string
     property FullName as string get cFileName
+    property Exists   as logic get System.IO.File.Exists(cFileName)
     constructor(cFile as string)
         cFileName := cFile
+        if File(cFile)
+            cFileName := FPathName()
+        endif
+
         return
 
     method Create() as logic strict

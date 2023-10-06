@@ -174,7 +174,7 @@ abstract class SqlDbProvider inherit SqlDbObject
     virtual property DropTableStatement     as string => "drop table "+TableNameMacro
     virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"_"+IndexNameMacro
     virtual property DeleteAllRowsStatement as string => "delete from "+TableNameMacro
-    virtual property SelectTopStatement     as string => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+FromClauseMacro
+    virtual property SelectTopStatement     as string => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+TableNameMacro
     virtual property InsertStatement        as string => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
     virtual property OrderByClause          as string => " order by "+ColumnsMacro+" "
     virtual property MaxRows                as int    => 1000
@@ -196,7 +196,6 @@ abstract class SqlDbProvider inherit SqlDbObject
     public const TableNameMacro  := "%T%" as string
     public const UniqueMacro     := "%U%" as string
     public const FieldDefinitionListMacro := "%FDL%" as string
-    public const FromClauseMacro := "%FROM%" as string
     public const ColumnsMacro    := "%C%" as string
     public const ValuesMacro     := "%V%" as string
 

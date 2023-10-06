@@ -29,7 +29,7 @@ class SqlServer inherit SqlDbProvider
             aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
                 {"STR(%1%,%2%,%3%)"			,"STR(%1%,%2%,%3%)"},;
                 {"STR(%1%,%2%)"				,"STR(%1%,%2%,0)"},;
-                {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%,%3%)"},;
+                {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%2%,%3%)"},;
                 {"DTOS(%1%)"				,"CONVERT(char(8), %1%,11)"},;
                 {"IIF(%1%,%2%,%3%)"			,"CASE WHEN %1% THEN %2% ELSE %3% END"},;
                 {"TODAY()"					,"GETDATE()"},;

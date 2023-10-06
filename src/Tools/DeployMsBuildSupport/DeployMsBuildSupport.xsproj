@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="$(SolutionDir)Tools\Common.props" Condition="'$(SolutionDir)'!=''" />
+  <Import Project="..\Tools.props" />
   <PropertyGroup>
     <ProjectGuid>f6dea3ea-186c-4868-859a-c2ebbee0d981</ProjectGuid>
     <OutputType>Exe</OutputType>

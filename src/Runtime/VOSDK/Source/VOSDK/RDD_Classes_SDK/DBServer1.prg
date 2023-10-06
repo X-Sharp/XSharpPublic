@@ -1359,12 +1359,14 @@ METHOD Close( )
 			SELF:Notify( NOTIFYCLOSE )
 			VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 			SELF:__OptimisticFlush( )
-			IF ! IsNil( oDBSelectionParent )
-				Send(oDBSelectionParent,#__ClearChildRelation, SELF )
-				oDBSelectionParent := NULL_OBJECT
-			ENDIF
-			SELF:ClearRelation( )
-			VODBCloseArea( )
+            if oDBSelectionParent is DbServer var dbS
+                dbS:__ClearChildRelation(self)
+				oDBSelectionParent := null_object
+            endif
+            if self:Used
+			    self:ClearRelation( )
+                VODBCloseArea( )
+            endif
 			__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 			UnregisterAxit( SELF )
 			SELF:wWorkArea := 0
@@ -1376,8 +1378,7 @@ METHOD Close( )
 			SELF:aOriginalBuffer := NULL_ARRAY
 			SELF:aCurrentBuffer := NULL_ARRAY
 			SELF:aStruct := NULL_ARRAY
-            SELF:wWorkArea := 0
-            SELF:oRDD := NULL
+            self:oRDD := null
 			oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_NOTABLE2 ), "DbServer_NoTable" }
 		ENDIF

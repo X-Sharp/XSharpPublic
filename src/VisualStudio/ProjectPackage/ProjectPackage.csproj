@@ -763,7 +763,7 @@
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>all</IncludeAssets>
-      <Version>1.0.117</Version>
+      <Version>1.0.118</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj2">
       <Version>7.0.5001</Version>

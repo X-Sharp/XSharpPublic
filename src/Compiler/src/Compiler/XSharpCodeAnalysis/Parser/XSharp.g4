@@ -1014,7 +1014,7 @@ initializerMember   : Init=complexInitExpr
 collectioninitializer : LCURLY Members+=initializerMember (COMMA Members+=initializerMember)* RCURLY
                       ;
 
-bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
+bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)* 
                       ;
 
                       // NOTE: Separate rule for bracketedarguments because they cannot use identifierName syntax
@@ -1026,7 +1026,7 @@ argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
 
                     // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-namedArgument       :  {AllowNamedArgs}? Name=identifierName Op=ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
+namedArgument       :  {AllowNamedArgs}? Name=identifierName Op=ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression
                     |   RefOut=OUT Var=VAR Id=varidentifier
                     |   RefOut=OUT Id=varidentifier AS Type=datatype
                     |   RefOut=OUT Null=NULL

@@ -1144,7 +1144,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 			IF nClients > 0
                 FOREACH oClient AS USUAL IN aClients
                     uRetValue := Send(oClient, #Notify, kNotification, uDescription )
-                    IF ! uRetValue
+                    if IsLogic(uRetValue) .and. ! uRetValue
                         EXIT
                     ENDIF
                 NEXT
@@ -1154,7 +1154,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 			IF uRetValue .AND. lRelationsActive
 				FOREACH oChild AS USUAL IN aRelationChildren
                     uRetValue := Send(oChild, #Notify, kNotification , uDescription)
-                    IF ! uRetValue
+                    if IsLogic(uRetValue) .and. ! uRetValue
 						EXIT
 					ENDIF
 				NEXT  // nChild

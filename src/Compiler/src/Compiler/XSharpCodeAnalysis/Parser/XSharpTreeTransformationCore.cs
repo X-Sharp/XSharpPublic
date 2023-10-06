@@ -7363,24 +7363,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBoundArrayAccess([NotNull] XP.BoundArrayAccessContext context)
         {
+            var args = context.ArgList?.Get<BracketedArgumentListSyntax>() ?? EmptyBracketedArgumentList();
             context.Put(_syntaxFactory.ElementAccessExpression(
-                context.Expr.Get<ExpressionSyntax>(),
-                context.ArgList?.Get<BracketedArgumentListSyntax>()
-                    ?? _syntaxFactory.BracketedArgumentList(
-                        SyntaxFactory.OpenBracketToken,
-                        default(SeparatedSyntaxList<ArgumentSyntax>),
-                        SyntaxFactory.CloseBracketToken)));
+                context.Expr.Get<ExpressionSyntax>(), args));
         }
 
         public override void ExitBoundMethodCall([NotNull] XP.BoundMethodCallContext context)
         {
+            var args = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+            context.HasRefArguments = HasRefArguments(args, context);
             context.Put(_syntaxFactory.InvocationExpression(
-                context.Expr.Get<ExpressionSyntax>(),
-                context.ArgList?.Get<ArgumentListSyntax>()
-                    ?? _syntaxFactory.ArgumentList(
-                        SyntaxFactory.OpenParenToken,
-                        default(SeparatedSyntaxList<ArgumentSyntax>),
-                        SyntaxFactory.CloseParenToken)));
+                context.Expr.Get<ExpressionSyntax>(), args));
         }
 
         public override void ExitBoundCondAccessExpr([NotNull] XP.BoundCondAccessExprContext context)
@@ -8537,13 +8530,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Expr == null)
             {
                 context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
-                return;
             }
-            context.Put(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+            else
+            {
+                context.Put(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+            }
         }
 
         public override void ExitArgumentList([NotNull] XP.ArgumentListContext context)
         {
+            // argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
+            //                     ;
+            // namedArgument may match an empty argument.
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
             if (context._Args.Count == 0 ||
                 (context._Args.Count == 1 && context._Args[0].IsMissing))
@@ -8566,11 +8564,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context)
         {
             /*
-           namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=ASSIGN_OP ( RefOut=(REF | OUT) )? Expr=expression?
-                                |   RefOut=OUT Var=VAR  Id=identifier
+                               // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
+            namedArgument       :  {AllowNamedArgs}? Name=identifierName Op=ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression
+                                |   RefOut=OUT Var=VAR Id=varidentifier
+                                |   RefOut=OUT Id=varidentifier AS Type=datatype
                                 |   RefOut=OUT Null=NULL
                                 |  ( RefOut=(REF | OUT) )? Expr=expression?
-                              ;
+                                ;
+
            */
             var refKeyword = context.RefOut?.SyntaxKeyword();
             if (context.Null != null || context.Id != null)
@@ -8594,7 +8595,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Expr == null)
             {
-                context.missing = true;
                 context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }

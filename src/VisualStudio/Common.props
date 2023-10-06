@@ -3,15 +3,17 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-	<!-- Location of output and intermediate -->
+    <!-- Location of output and intermediate -->
     <!-- Note: All directories in this list end with a back slash -->
-	<ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
+    <VSTarget Condition=" '$(VSTarget)' == '' ">Common</VSTarget>
+    <ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
     <VsExternalDir>$(ArtifactsDir)Shared\Debug\</VsExternalDir>
-	<BinariesDir>$(ArtifactsDir)$(VSTarget)\</BinariesDir>
+    <BinariesDir>$(ArtifactsDir)$(VSTarget)\</BinariesDir>
+    <RTBinariesDir>$(ArtifactsDir)</RTBinariesDir>
     <BaseIntermediateOutputPath>$(BinariesDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
     <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <RTOutputPath>$(RTBinariesDir)$(Configuration)\</RTOutputPath>
     <CommonDir>$(Solutiondir)Common\</CommonDir>
-    <VSTarget Condition=" '$(VSTarget)' == '' ">2019</VSTarget>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,5 +41,6 @@
     <MSBuildWarningsAsMessages>
       $(MSBuildWarningsAsMessages);MSB3277;
     </MSBuildWarningsAsMessages>
+
   </PropertyGroup>
 </Project>

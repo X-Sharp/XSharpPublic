@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NuGet.Config = NuGet.Config
 		VisualStudio\README.md = VisualStudio\README.md
 		Todo.txt = Todo.txt
+		Tools\Tools.props = Tools\Tools.props
 		Common\XSharpConstants.cs = Common\XSharpConstants.cs
 	EndProjectSection
 EndProject

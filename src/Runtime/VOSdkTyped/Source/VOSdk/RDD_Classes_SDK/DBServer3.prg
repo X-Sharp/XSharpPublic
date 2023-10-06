@@ -1002,7 +1002,7 @@ partial class DbServer
                 if nClients > 0
                     foreach oClient as usual in aClients
                         uRetValue := Send(oClient,#Notify, kNotification, uDescription )
-                        if ! uRetValue
+                        if IsLogic(uRetValue) .and. ! uRetValue
                             exit
                         endif
                     next
@@ -1012,7 +1012,7 @@ partial class DbServer
                 if uRetValue .and. lRelationsActive
                     foreach oChild as usual in aRelationChildren
                         uRetValue := Send(oChild, #Notify, kNotification , uDescription)
-                        if ! uRetValue
+                        if IsLogic(uRetValue) .and. ! uRetValue
                             exit
                         endif
                     next  // nChild

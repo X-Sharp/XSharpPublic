@@ -36,8 +36,7 @@ BEGIN NAMESPACE XSharp
 	/// <seealso cref="T:XSharp.RDD.DbFloat"/>
 	INTERFACE IFloat
 		/// <summary>Double value of the Float</summary>
-		/// <returns>Integer value</returns>
-		PROPERTY @@Value    AS REAL8 GET
+		property @@Value    as real8 get
 		/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
 		/// <returns>Integer value</returns>
 		PROPERTY Digits	  AS INT  GET
@@ -49,9 +48,12 @@ BEGIN NAMESPACE XSharp
     INTERFACE IClosedRDD
         PROPERTY Closed as LOGIC GET
     END INTERFACE
-
-    INTERFACE ICurrency
-        PROPERTY @@Value    AS System.Decimal	GET
-    END INTERFACE
+    /// <summary>
+    /// This interface is used to return Decimal values from the RDD system
+    /// </summary>
+    interface ICurrency
+		/// <summary>Decimal value of the Currency</summary>
+        property @@Value    as System.Decimal	get
+    end interface
 
 END NAMESPACE

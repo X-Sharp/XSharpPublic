@@ -37,6 +37,7 @@ RecentReference = Browse:C:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll
 RecentReference = Browse:C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.XPP.dll
 RecentReference = GAC:Microsoft.CSharp,v4,4.0.0.0
 RecentReference = Browse:C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VFP.dll
+RecentReference = Browse:C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -45343,7 +45344,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
-ReferenceGAC = XSharp.VO,1,0,2.0.2.0
+ReferenceBrowse = C:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
 [C397 - Strange issue with pointers and alias expressions Resources]
 [C397 - Strange issue with pointers and alias expressions Native Resources]
 [C397 - Strange issue with pointers and alias expressions License files]
@@ -115300,7 +115301,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = XBasePP
+Dialect = VO
 Folder = %ProjectPath%\Applications\Tester\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources

@@ -170,19 +170,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 return;
             }
-            if (node.Method.ParameterRefKinds != null)
+            if (node.Method.ParameterRefKinds != null && node.Syntax.XNode is XSharpParser.ICallContext icc)
             {
-                var xNode = node.Syntax?.XNode as XSharpParser.MethodCallContext;
-                var refkinds = node.Method.ParameterRefKinds;
-                for (var i = 0; i < node.Method.ParameterCount;i++)
+                var args = icc.Arguments;
+                if (args != null)
                 {
-                    if (refkinds[i] == RefKind.Out && xNode.ArgList._Args.Count > i)
+                    var refkinds = node.Method.ParameterRefKinds;
+                    for (var i = 0; i < node.Method.ParameterCount; i++)
                     {
-                        var arg = xNode.ArgList._Args[i];
-                        if (arg.RefOut?.Type != XSharpLexer.OUT)
+                        if (refkinds[i] == RefKind.Out && args._Args.Count > i)
                         {
-                            var argnode = node.Arguments[i];
-                            Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);
+                            var arg = args._Args[i];
+                            if (arg.RefOut?.Type != XSharpLexer.OUT)
+                            {
+                                var argnode = node.Arguments[i];
+                                Error(ErrorCode.WRN_AutomaticRefGeneration, argnode, i + 1, refkinds[i]);
+                            }
                         }
                     }
                 }

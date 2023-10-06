@@ -38,15 +38,14 @@ xAssert(i == NIL)
 
 
 function xlangext_AssignTuple(src) as usual
-    local i
-    local len
-    local args := _ARGS()   AS USUAL[]
+    local i   as int
+    local len as int
     // src contains the array
     // the other parameters are passed by reference in the Xs$Args array from
     // position 2 on
     len := min(len(src), pCount() - 1)
     for i := 1 to len
-        args[i+1] := src[i]
+        _ARGS()[i+1] := src[i]
     next
 return NIL
 

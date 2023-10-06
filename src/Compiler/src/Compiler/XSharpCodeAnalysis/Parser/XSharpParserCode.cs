@@ -261,6 +261,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ICallContext
         {
             public bool HasRefArguments { get; set; }
+            public ArgumentListContext Arguments { get; }
         }
         public interface IMemberWithCC
         {
@@ -543,15 +544,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class MethodCallContext : ICallContext
         {
             public bool HasRefArguments { get; set; }
+            public ArgumentListContext Arguments => ArgList;
+
+        }
+        public partial class BoundMethodCallContext : ICallContext
+        {
+            public bool HasRefArguments { get; set; }
+            public ArgumentListContext Arguments => ArgList;
         }
         public partial class CtorCallContext: ICallContext
         {
             public bool HasRefArguments { get; set; }
+            public ArgumentListContext Arguments => ArgList;
         }
 
         public partial class DoStmtContext : ICallContext
         {
             public bool HasRefArguments { get; set; }
+            public ArgumentListContext Arguments => ArgList;
         }
         public partial class SourceContext : ISourceContext
         {
@@ -1133,8 +1143,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class NamedArgumentContext
         {
-            internal bool missing;
-            internal bool IsMissing => missing;
+            internal bool IsMissing => this.ChildCount == 0;
         }
         public partial class UnnamedArgumentContext
         {

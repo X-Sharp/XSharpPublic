@@ -10,7 +10,8 @@ using System.Collections.Generic
 using System.Text
 using XSharp.RDD.SqlRDD
 using System.Data.Common
-
+using XSharp.RDD.Enums
+using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
@@ -48,6 +49,7 @@ class OleDb inherit SqlDbProvider
                 {"+"						,"+"}}
         endif
         return aFuncs
-
+   override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+       return super:GetSqlColumnInfo(oInfo)
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

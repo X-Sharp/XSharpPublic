@@ -31,20 +31,21 @@ class SqlDbTableCommandBuilder
         _orderBags       := List<SqlDbOrderBag>{}
         _connection      := oRdd:Connection
         return
-    method FetchInfo(oRdd as SQLRDD) as SqlDbTableDef
+    method FetchInfo(oRdd as SQLRDD) as SqlTableInfo
         // build initial information needed for SQL Query for a table
         local oInfo as SqlTableInfo
         local cTable as string
         local columnNames := "*" as string
         cTable := self:_cTable
-        oInfo := SqlTableInfo{_cTable}
+        oInfo := SqlTableInfo{_cTable, _connection}
 
         if oRdd:IniFile:Exists
             local ini := oRdd:IniFile as IniFile
-            oInfo:MaxRecords    := ini:GetInt(cTable, "MaxRecords", oInfo:MaxRecords)
-            oInfo:RecnoColumn   := ini:GetString(cTable, "RecnoColumn", oInfo:RecnoColumn)
-            oInfo:DeletedColumn   := ini:GetString(cTable, "DeletedColumn", oInfo:DeletedColumn)
-            oInfo:LongFieldNames  := ini:GetLogic(cTable, "LongFieldNames", oInfo:LongFieldNames)
+            oInfo:MaxRecords    := ini:GetInt(cTable, nameof(oInfo:MaxRecords), oInfo:MaxRecords)
+            oInfo:RecnoColumn   := ini:GetString(cTable, nameof(oInfo:RecnoColumn), oInfo:RecnoColumn)
+            oInfo:DeletedColumn   := ini:GetString(cTable, nameof(oInfo:DeletedColumn), oInfo:DeletedColumn)
+            oInfo:LongFieldNames  := ini:GetLogic(cTable, nameof(oInfo:LongFieldNames), oInfo:LongFieldNames)
+            oInfo:TrimTrailingSpaces := ini:GetLogic(cTable, nameof(oInfo:TrimTrailingSpaces), oInfo:TrimTrailingSpaces)
             columnNames          := ini:GetString(cTable, "ColumnList", columnNames)
         endif
 
@@ -53,6 +54,7 @@ class SqlDbTableCommandBuilder
         oInfo:RecnoColumn       := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.RecnoColumn,cTable, oInfo:RecnoColumn)
         oInfo:DeletedColumn     := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.DeletedColumn,cTable, oInfo:DeletedColumn)
         oInfo:LongFieldNames    := Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.LongFieldNames,cTable, oInfo:LongFieldNames)
+        oInfo:TrimTrailingSpaces:= Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.TrimTrailingSpaces,cTable, oInfo:TrimTrailingSpaces)
         var oTd := Connection:GetStructureForTable(cTable, oInfo:LongFieldNames,columnNames)
         oInfo:CopyFromTd(oTd)
         self:AdjustSelects(oInfo)
@@ -196,18 +198,14 @@ class SqlDbTableCommandBuilder
             else
                 sb:Append(", ")
             endif
-            sb:Append(Provider.QuotePrefix)
-            sb:Append(c:ColumnInfo:ColumnName)
-            sb:Append(Provider.QuoteSuffix)
+            sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
 
             list:Add(c:ColumnInfo:ColumnName, c)
         next
         if !String.IsNullOrEmpty(oInfo:RecnoColumn)
             if !list:ContainsKey(oInfo:RecnoColumn)
                 sb:Append(", ")
-                sb:Append(Provider.QuotePrefix)
-                sb:Append(oInfo:RecnoColumn)
-                sb:Append(Provider.QuoteSuffix)
+                sb:Append(Provider.QuoteIdentifier(oInfo:RecnoColumn))
                 list:Add(oInfo:RecnoColumn, null)
             else
                 var col := list[oInfo:RecnoColumn]
@@ -218,9 +216,7 @@ class SqlDbTableCommandBuilder
         if !String.IsNullOrEmpty(oInfo:DeletedColumn)
             if !list:ContainsKey(oInfo:DeletedColumn)
                 sb:Append(", ")
-                sb:Append(Provider.QuotePrefix)
-                sb:Append(oInfo:DeletedColumn)
-                sb:Append(Provider.QuoteSuffix)
+                sb:Append(Provider.QuoteIdentifier(oInfo:DeletedColumn))
                 list:Add(oInfo:DeletedColumn,null)
             else
                 var col := list[oInfo:DeletedColumn]
@@ -233,9 +229,7 @@ class SqlDbTableCommandBuilder
         sb:Append(SqlDbProvider.SelectClause)
         sb:Append(self:ColumnList(oInfo))
         sb:Append(SqlDbProvider.FromClause)
-        sb:Append(Provider.QuotePrefix)
-        sb:Append(oInfo:Name)
-        sb:Append(Provider.QuoteSuffix)
+        sb:Append(Provider.QuoteIdentifier(oInfo:Name))
         oInfo:SelectStatement := sb:ToString()
         sb:Append(SqlDbProvider.WhereClause)
         sb:Append("1=0")

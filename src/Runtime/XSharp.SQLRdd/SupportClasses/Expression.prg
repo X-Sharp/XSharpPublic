@@ -95,7 +95,7 @@ class SqlDbExpression inherit SqlDbObject
                 oToken:SQLName 	:= cName:Replace(".","")
             elseif IsValidToken(cName)
                 oToken:Type := TokenType.Token
-                self:ColumnList:Add( _provider.QuotePrefix+cName +_provider.QuoteSuffix)
+                self:ColumnList:Add( _provider:QuoteIdentifier(cName))
             else
                 oToken:Type := TokenType.Literal
             endif
@@ -426,7 +426,7 @@ class SqlDbExpression inherit SqlDbObject
                     token:SQLName := _provider:GetFunction("+")
                 endif
             case TokenType.Token
-                token:SQLName := _provider.QuotePrefix+token:Name+_provider.QuoteSuffix
+                token:SQLName := _provider.QuoteIdentifier(token:Name)
             end switch
         next
         self:Translated := true

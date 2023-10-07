@@ -3,12 +3,13 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#define TEST
 using XSharp.RDD.Enums
 using XSharp.RDD.Support
 using System.IO
 using System.Collections.Generic
 using System.Data
+using System.Text
 using System.Diagnostics
 using System.Reflection
 using System.Data.Common
@@ -23,8 +24,8 @@ class SQLRDD inherit DBFVFP
     protect _table          as DataTable
     protect _phantomRow     as DataRow
     protect _creatingIndex  as logic
-    protect _incrementKey   as long
-    protect _incrementColumn as DataColumn
+    protect _identityKey   as long
+    protect _identityColumn as DataColumn
         //protect _recnoColumn     as long
     protect _deletedColumn   as long
     protect _tableMode      as TableMode
@@ -38,7 +39,10 @@ class SQLRDD inherit DBFVFP
     protect _command        as SqlDbCommand
     protect _currentOrder   as SqlDbOrder
     protect _trimValues     as logic
-    protect _oIni           as IniFile
+    private _oIni           as IniFile
+    private _creating       as logic
+    private _cTable         as string
+    private _emptyValues    as object[]
 
     new internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
     internal property Connection         as SqlDbConnection get _connection
@@ -50,7 +54,7 @@ class SQLRDD inherit DBFVFP
 #endregion
     constructor()
         super()
-        _incrementKey    := -1
+        _identityKey    := -1
         _creatingIndex   := false
         _tableMode       := TableMode.Query
         _ReadOnly        := true
@@ -60,10 +64,12 @@ class SQLRDD inherit DBFVFP
         _deletedColumn   := -1
         _maxRec          := -1
         _oIni            := IniFile{"SQLRDD.INI"}
-        self:_creatingIndex := true // pad field values
+        self:_trimValues := true // trim String Valuess
         return
+    destructor()
+        Command:Close()
 
-    private method TempFileName() as string
+    private method TempFileName(info as DbOpenInfo) as string
         local result as string
         repeat
             var folder := Path.GetTempPath()
@@ -71,29 +77,31 @@ class SQLRDD inherit DBFVFP
             var name := i"SQL"+nId:ToInt32():ToString("X5")
             result := Path.Combine(folder, name+".DBF")
         until ! File.Exists(result)
+        info:FileName := Path.Combine(Path.GetDirectoryName(result), Path.GetFileNameWithoutExtension(result))
+        info:Extension := ".DBF"
         return result
 
     private method GetTableInfo(cTable as string) as logic
         // First check to see if there is a tableDef for this table in the connection
         self:_obuilder  := SqlDbTableCommandBuilder{cTable, self}
-        self:_oTd       := _obuilder:FetchInfo(self)
+        self:_cTable    := cTable
+        var info        := _obuilder:FetchInfo(self)
+        self:_oTd       := info
+        self:_trimValues:= info:TrimTrailingSpaces
         if XSharp.RuntimeState.AutoOpen
             _obuilder:SetProductionIndex()
         endif
         return true
 
-
-    override method Open(info as DbOpenInfo) as logic
+    private method __PrepareOpen(info as DbOpenInfo) as logic
         var query := info:FileName
         local strConnection as string
         local pos as int
         strConnection := SqlDbConnection.DefaultConnection
         _connection := SqlDbGetConnection(strConnection)
         if _connection == null
-            // Exception
-            nop
+            return false
         endif
-        _connection:AddRdd(self)
         _command    := SqlDbCommand{info:Alias, _connection}
         pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
         if pos > 0
@@ -101,7 +109,55 @@ class SQLRDD inherit DBFVFP
             query := query:Substring(pos+2)
             info:FileName := query
         endif
+        return true
+    override method Create(info as DbOpenInfo) as logic
+        _cTable := System.IO.Path.GetFileName(info:FileName)
+        if ! self:__PrepareOpen(info)
+            return false
+        endif
+        self:_tableMode := TableMode.Table
+        self:TempFileName(info)
+        self:_creating := true
+        // save the case of of the column names
+        var fields := self:_Fields
+        var lResult := super:Create(info)
+        self:_creating := false
+        self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
+        // create SQL table Now
+        self:CreateSqlFields(fields)
 
+        return lResult
+
+    method CreateSqlFields(aFields as RddFieldInfo[]) as logic
+        var sb := System.Text.StringBuilder{}
+        var first := true
+        foreach var fld in aFields
+            if first
+                first := false
+            else
+                sb:Append(", ")
+            endif
+            sb:Append(self:Provider:GetSqlColumnInfo(fld))
+        next
+        var columns := sb:ToString()
+        sb:Clear()
+        sb:Append(Provider:DropTableStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider.QuoteIdentifier(_cTable))
+        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        _command.ExecuteScalar()
+        sb:Clear()
+        sb:Append(Provider:CreateTableStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider.QuoteIdentifier(_cTable))
+        sb:Replace(SqlDbProvider.FieldDefinitionListMacro, columns)
+        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        _command.ExecuteScalar()
+        return true
+
+    override method Open(info as DbOpenInfo) as logic
+        if ! self:__PrepareOpen(info)
+            return false
+        endif
+        var query := info:FileName
         // Determine if this is a single table name or a query (select or Execute)
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(query)
         if (selectStmt)
@@ -128,10 +184,8 @@ class SQLRDD inherit DBFVFP
             oFields:Add(oCol:ColumnInfo)
         next
         var aFields := oFields:ToArray()
-        var tempFile   := self:TempFileName()
+        var tempFile   := self:TempFileName(info)
         CoreDb.Create(tempFile,aFields,typeof(DBFVFP),true,"SQLRDD-TEMP","",false,false)
-        info:FileName := Path.Combine(Path.GetDirectoryName(tempFile), Path.GetFileNameWithoutExtension(tempFile))
-        info:Extension := ".DBF"
         info:ReadOnly := false
         self:_realOpen := false
         super:Open(info)
@@ -153,26 +207,68 @@ class SQLRDD inherit DBFVFP
         var result := super:SetFieldExtent(nFields)
         return result
 
-    /// <inheritdoc />
-
-    override method Create(info as DbOpenInfo) as logic
-        var lResult := super:Create(info)
-        self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
-        return lResult
 
     /// <inheritdoc />
+
+    private method GetEmptyValues() as logic
+        var values := List<object>{}
+            foreach col as DataColumn in self:DataTable:Columns
+                if col:AutoIncrement
+                    values.Add(DBNull.Value)
+                    loop
+                endif
+                switch Type.GetTypeCode(col.DataType)
+                case TypeCode.String
+                    values.Add("")
+                case TypeCode.Byte
+                case TypeCode.Char
+                case TypeCode.Double
+                case TypeCode.Single
+                case TypeCode.Int16
+                case TypeCode.Int32
+                case TypeCode.Int64
+                case TypeCode.UInt16
+                case TypeCode.UInt32
+                case TypeCode.UInt64
+                case TypeCode.Decimal
+                case TypeCode.SByte
+                    values.Add(0)
+                case TypeCode.Boolean
+                    values.Add(false)
+                case TypeCode.DateTime
+                    values.Add(DateTime.MinValue)
+                otherwise
+                    values.Add(DBNull.Value)
+                end switch
+            next
+            _emptyValues := values:ToArray()
+            return true
     override method Append(lReleaseLock as logic) as logic
+        self:ForceOpen()
         var lResult := super:Append(lReleaseLock)
         if lResult
-            var row := _table:NewRow()
-            if _incrementColumn != null
-                row[_incrementColumn] := _incrementKey
-                _incrementKey -= 1
+            var key := _identityKey
+            var row := self:DataTable:NewRow()
+            if _identityColumn != null
+                _identityKey -= 1
             endif
             if row is IDbRow var dbRow
                 dbRow:RecNo := super:RecNo
             endif
-            _table:Rows:Add(row)
+            _RecNo := super:RecNo
+            self:DataTable:Rows:Add(row)
+            if _emptyValues == null
+                self:GetEmptyValues()
+            endif
+            var values := (object[])_emptyValues:Clone()
+            foreach c as DataColumn in self:DataTable:Columns
+                if c:AutoIncrement
+                    row[c] := key
+                else
+                    row[c] := values[c:Ordinal]
+                endif
+            next
+            self:_Hot := true
         endif
         return lResult
     override method FieldIndex(fieldName as string) as int
@@ -196,13 +292,13 @@ class SQLRDD inherit DBFVFP
             nFldPos -= 1
             local result as object
             if !self:EoF
-                var row := _table:Rows[self:_RecNo -1]
+                var row := self:DataTable:Rows[self:_RecNo -1]
                 result  := row[nFldPos]
             else
                 result := _phantomRow[nFldPos]
             endif
             if result is string var strValue .and. ! _creatingIndex
-                if self:_connection:TrimTrailingSpaces
+                if self:_trimValues
                     result := strValue:TrimEnd()
                 else
                     result := strValue:PadRight(_Fields[nFldPos]:Length,' ')
@@ -234,12 +330,154 @@ class SQLRDD inherit DBFVFP
         endif
         var result := false
         if nFldPos > 0 .and. nFldPos <= self:FieldCount
-            var row := _table:Rows[self:_RecNo -1]
+            var row := self:DataTable:Rows[self:_RecNo -1]
             row[nFldPos-1] := oValue
             result := true
+            self:_Hot := true
         endif
         return result
 
+    override method GoCold() as logic
+        local lWasHot := self:_Hot as logic
+        local lOk := super:GoCold() as logic
+        if lWasHot .and. self:DataTable != null .and. self:DataTable:Rows:Count >=self:_RecNo
+            var row := self:DataTable:Rows[self:_RecNo-1]
+            switch row:RowState
+            case DataRowState.Added
+                lOk := _ExecuteInsertStatement(row)
+            case DataRowState.Deleted
+                lOk := _ExecuteDeleteStatement(row)
+            case DataRowState.Modified
+                lOk := _ExecuteUpdateStatement(row)
+            case DataRowState.Unchanged
+            case DataRowState.Detached
+                lOk := true
+                if super:Deleted
+                    lOk := _ExecuteDeleteStatement(row)
+                endif
+            end switch
+            if lOk
+                self:DataTable:AcceptChanges()
+            endif
+        endif
+        return lOk
+
+    private method _ExecuteInsertStatement(row as DataRow) as logic
+        var sbColumns  := StringBuilder{}
+        var sbValues   := StringBuilder{}
+        local iCounter := 1 as long
+        _command:ClearParameters()
+        foreach c as DataColumn in DataTable:Columns
+            if c:AutoIncrement
+                loop
+            endif
+            if sbColumns:Length > 0
+                sbColumns:Append(", ")
+                sbValues:Append(", ")
+            endif
+            sbColumns:Append(Provider.QuoteIdentifier(c:ColumnName))
+            var name := i"@p{iCounter}"
+            sbValues:Append(name)
+            _command:AddParameter(name, row[c])
+            ++iCounter
+        next
+        _command:BindParameters()
+        var sb := StringBuilder{}
+        sb:Append(Provider:InsertStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        sb:Replace(SqlDbProvider.ColumnsMacro, sbColumns:ToString())
+        sb:Replace(SqlDbProvider.ValuesMacro, sbValues:ToString())
+        var hasGetIdentity := false
+        if self:_identityColumn != null .and. !String.IsNullOrEmpty(Provider:GetIdentity)
+            sb:Append("; ")
+            sb:Append(Provider:GetIdentity)
+            hasGetIdentity := true
+        endif
+        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        var res := _command:ExecuteScalar()
+        if hasGetIdentity
+            row[_identityColumn] := res
+        endif
+        return true
+
+    private method _GetWhereClause(row as DataRow) as string
+        var sbWhere    := StringBuilder{}
+        local iCounter := 1 as long
+        foreach c as DataColumn in DataTable:Columns
+            var oldname := i"@o{iCounter}"
+            if sbWhere:Length > 0
+                sbWhere:Append(SqlDbProvider.AndClause)
+            endif
+            sbWhere:Append(Provider:QuoteIdentifier(c:ColumnName))
+            var colValue := row[c,DataRowVersion.Original]
+            if colValue == DBNull.Value
+                sbWhere:Append(" is null")
+            else
+                sbWhere:Append(" = ")
+                sbWhere:Append(oldname)
+                _command:AddParameter(oldname, colValue)
+            endif
+            ++iCounter
+        next
+        return sbWhere:ToString()
+
+    private method _ExecuteUpdateStatement(row as DataRow) as logic
+        var sbColumns  := StringBuilder{}
+        local iCounter := 1 as long
+        _command:ClearParameters()
+        foreach c as DataColumn in DataTable:Columns
+            if c:AutoIncrement
+                loop
+            endif
+            var name    := i"@p{iCounter}"
+            if sbColumns:Length > 0
+                sbColumns:Append(", ")
+            endif
+            sbColumns:Append(Provider:QuoteIdentifier(c:ColumnName))
+            sbColumns:Append(" = ")
+            sbColumns:Append(name)
+            _command:AddParameter(name, row[c])
+            ++iCounter
+        next
+        var strWhere := _GetWhereClause(row)
+        _command:BindParameters()
+        var sb := StringBuilder{}
+        sb:Append(Provider:UpdateStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        sb:Replace(SqlDbProvider.ColumnsMacro, sbColumns:ToString())
+        sb:Replace(SqlDbProvider.WhereMacro, strWhere)
+        var hasRowCount := false
+        if ! String.IsNullOrEmpty(Provider:GetRowCount)
+            sb:Append("; ")
+            sb:Append(Provider:GetRowCount)
+            hasRowCount := true
+        endif
+        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        var res := _command:ExecuteScalar()
+        if (hasRowCount)
+            return res is int var i .and. i == 1
+        endif
+        return true
+    private method _ExecuteDeleteStatement(row as DataRow) as logic
+        _command:ClearParameters()
+        var strWhere := _GetWhereClause(row)
+        _command:BindParameters()
+        var sb := StringBuilder{}
+        sb:Append(Provider:DeleteStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        sb:Replace(SqlDbProvider.WhereMacro, strWhere)
+        var hasRowCount := false
+        if ! String.IsNullOrEmpty(Provider:GetRowCount)
+            sb:Append("; ")
+            sb:Append(Provider:GetRowCount)
+            hasRowCount := true
+        endif
+        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        var res := _command:ExecuteScalar()
+        if (hasRowCount)
+            return res is int var i .and. i == 1
+        endif
+        return true
     /// <summary>
     /// This property returns the DataTable object that is used to cache the results locally
     /// </summary>
@@ -274,7 +512,8 @@ class SQLRDD inherit DBFVFP
                 self:_phantomRow[index] := blank
                 dbColumn:Caption     := oColumn:Caption
                 if oColumn:AutoIncrement
-                    _incrementColumn := oColumn
+                    _identityColumn := oColumn
+                    oColumn:ReadOnly := false
                 endif
                 if !oColumn:AllowDBNull
                     oColumn:AllowDBNull := true
@@ -297,13 +536,14 @@ class SQLRDD inherit DBFVFP
     override method Close() as logic
         local lOk as logic
         // This method deletes the temporary file after the file is closed
-        local cFileName := self:_FileName as string
-        local cMemoName := "" as string
         _connection:RemoveRdd(self)
+        lOk := super:Close()
+#ifndef TEST
+        local cMemoName := "" as string
         if self:_Memo is AbstractMemo var memo
             cMemoName := memo:FileName
         endif
-        lOk := super:Close()
+        local cFileName := self:_FileName as string
         if lOk
             if File(cFileName)
                 FErase(FPathName())
@@ -312,7 +552,22 @@ class SQLRDD inherit DBFVFP
                 FErase(FPathName())
             endif
         endif
+#endif
         return lOk
+
+    override method Delete() as logic
+        if self:_deletedColumn >= 0
+            return self:PutValue(self:_deletedColumn, 1)
+        else
+            return super:Delete()
+        endif
+
+    override method Recall() as logic
+        if self:_deletedColumn >= 0
+            return self:PutValue(self:_deletedColumn, 0)
+        else
+            return super:Recall()
+        endif
 
     /// <inheritdoc />
     override method Info(uiOrdinal as long, oNewValue as object) as object
@@ -342,6 +597,9 @@ class SQLRDD inherit DBFVFP
 
     method ForceOpen() as logic
         if self:_tableMode != TableMode.Table
+            return true
+        endif
+        if self:_creating
             return true
         endif
         if self:_hasData
@@ -410,6 +668,7 @@ class SQLRDD inherit DBFVFP
         //             nRec := result
         //             return super:GoTo(nRec)
         //         else
+        self:_RecNo := nRec
         return super:GoTo(nRec)
         //         endif
 
@@ -479,33 +738,33 @@ class SQLRDD inherit DBFVFP
             else
                 info:Result := oBag:Tags:Count
             endif
-//         case DBOI_POSITION
-//         case DBOI_RECNO
-//             var oState := self:_GetState()
-//             if workOrder == null
-//                 info:Result := self:RecNo
-//             else
-//                 isOk := workOrder:_getRecPos( ref result)
-//                 if isOk
-//                     info:Result := result
-//                 endif
-//             endif
-//             self:_SetState(oState)
-//         case DBOI_KEYCOUNT
-//             result := 0
-//             var oState := self:_GetState()
-//             if workOrder != null
-//                 info:Result := 0
-//                 isOk := workOrder:_CountRecords(ref result)
-//             else
-//                 isOk := true
-//             endif
-//             if isOk
-//                 info:Result := result
-//             endif
-//             self:_SetState(oState)
-//         case DBOI_NUMBER
-//             info:Result := self:_indexList:OrderPos(workOrder)
+            //         case DBOI_POSITION
+            //         case DBOI_RECNO
+            //             var oState := self:_GetState()
+            //             if workOrder == null
+            //                 info:Result := self:RecNo
+            //             else
+            //                 isOk := workOrder:_getRecPos( ref result)
+            //                 if isOk
+            //                     info:Result := result
+            //                 endif
+            //             endif
+            //             self:_SetState(oState)
+            //         case DBOI_KEYCOUNT
+            //             result := 0
+            //             var oState := self:_GetState()
+            //             if workOrder != null
+            //                 info:Result := 0
+            //                 isOk := workOrder:_CountRecords(ref result)
+            //             else
+            //                 isOk := true
+            //             endif
+            //             if isOk
+            //                 info:Result := result
+            //             endif
+            //             self:_SetState(oState)
+            //         case DBOI_NUMBER
+            //             info:Result := self:_indexList:OrderPos(workOrder)
         case DBOI_BAGEXT
             // according to the docs this should always return the default extension and not the actual extension
             if workOrder != null
@@ -537,28 +796,28 @@ class SQLRDD inherit DBFVFP
             else
                 info:Result := String.Empty
             endif
-//         case DBOI_COLLATION
-//             info:Result := ""
-//             if workOrder != null
-//                 local collation as VfpCollation
-//                 collation := workOrder:Collation
-//                 if collation  != null
-//                     info:Result := collation:Name
-//                 endif
-//             endif
+            //         case DBOI_COLLATION
+            //             info:Result := ""
+            //             if workOrder != null
+            //                 local collation as VfpCollation
+            //                 collation := workOrder:Collation
+            //                 if collation  != null
+            //                     info:Result := collation:Name
+            //                 endif
+            //             endif
 
-//         case DBOI_FILEHANDLE
-//             if workOrder != null
-//                 info:Result := workOrder:OrderBag:Handle
-//             else
-//                 info:Result := IntPtr.Zero
-//             endif
-//         case DBOI_FILESTREAM
-//             if workOrder != null
-//                 info:Result := workOrder:OrderBag:Stream
-//             else
-//                 info:Result := null
-//             endif
+            //         case DBOI_FILEHANDLE
+            //             if workOrder != null
+            //                 info:Result := workOrder:OrderBag:Handle
+            //             else
+            //                 info:Result := IntPtr.Zero
+            //             endif
+            //         case DBOI_FILESTREAM
+            //             if workOrder != null
+            //                 info:Result := workOrder:OrderBag:Stream
+            //             else
+            //                 info:Result := null
+            //             endif
         case DBOI_ISDESC
             if workOrder != null
                 var oldValue  := workOrder:Descending
@@ -575,12 +834,12 @@ class SQLRDD inherit DBFVFP
             else
                 info:Result := false
             endif
-//         case DBOI_KEYTYPE
-//             if workOrder != null
-//                 info:Result := workOrder:KeyType
-//             else
-//                 info:Result := 0
-//             endif
+            //         case DBOI_KEYTYPE
+            //             if workOrder != null
+            //                 info:Result := workOrder:KeyType
+            //             else
+            //                 info:Result := 0
+            //             endif
         case DBOI_KEYSIZE
             if workOrder != null
                 info:Result := workOrder:KeyLength
@@ -597,17 +856,17 @@ class SQLRDD inherit DBFVFP
             else
                 info:Result := false
             endif
-//         case DBOI_LOCKOFFSET
-//             if workOrder != null
-//                 info:Result := workOrder:OrderBag:_LockOffSet
-//             else
-//                 info:Result := 0
-//             endif
-         case DBOI_SETCODEBLOCK
-             if workOrder != null
-                 info:Result := workOrder:KeyCodeBlock
-             endif
-         case DBOI_KEYVAL
+            //         case DBOI_LOCKOFFSET
+            //             if workOrder != null
+            //                 info:Result := workOrder:OrderBag:_LockOffSet
+            //             else
+            //                 info:Result := 0
+            //             endif
+        case DBOI_SETCODEBLOCK
+            if workOrder != null
+                info:Result := workOrder:KeyCodeBlock
+            endif
+        case DBOI_KEYVAL
             if workOrder != null
                 isOk := true
                 try
@@ -648,55 +907,55 @@ class SQLRDD inherit DBFVFP
             else
                 info:Result := DBNull.Value
             endif
-//         case DBOI_KEYADD
-//             if workOrder != null
-//                 info:Result := workOrder:AddKey(self:RecNo)
-//             else
-//                 info:Result := false
-//             endif
-//         case DBOI_KEYDELETE
-//             if workOrder != null
-//                 info:Result := workOrder:DeleteKey(self:RecNo)
-//             else
-//                 info:Result := false
-//             endif
-//         case DBOI_CUSTOM
-//             if workOrder != null
-//                 local lOld as logic
-//                 lOld := workOrder:Custom
-//                 if info:Result is logic var custom
-//                     if custom
-//                         workOrder:SetCustom()
-//                     endif
-//                 endif
-//                 info:Result := lOld
-//             else
-//                 info:Result := false
-//             endif
-//
-//         case DBOI_USER + 42
-//         case DBOI_DUMP
-//             // Dump Cdx to Txt file
-//             var oState := self:_GetState()
-//             if workOrder != null
-//                 workOrder:_dump()
-//             endif
-//             self:_SetState(oState)
-//         case DBOI_VALIDATE
-//             // Validate integrity of the current Order
-//             var oState := self:_GetState()
-//             if workOrder != null
-//                 info:Result := workOrder:_validate()
-//             endif
-//             self:_SetState(oState)
-//         case DBOI_SKIPUNIQUE
-//             if workOrder != null
-//                 local nToSkip := 1 as long
-//                 if info:Result is long var nNum
-//                     nToSkip := nNum
-//                 endif
-//                 info:Result := workOrder:SkipUnique(nToSkip)
-//             endif
+            //         case DBOI_KEYADD
+            //             if workOrder != null
+            //                 info:Result := workOrder:AddKey(self:RecNo)
+            //             else
+            //                 info:Result := false
+            //             endif
+            //         case DBOI_KEYDELETE
+            //             if workOrder != null
+            //                 info:Result := workOrder:DeleteKey(self:RecNo)
+            //             else
+            //                 info:Result := false
+            //             endif
+            //         case DBOI_CUSTOM
+            //             if workOrder != null
+            //                 local lOld as logic
+            //                 lOld := workOrder:Custom
+            //                 if info:Result is logic var custom
+            //                     if custom
+            //                         workOrder:SetCustom()
+            //                     endif
+            //                 endif
+            //                 info:Result := lOld
+            //             else
+            //                 info:Result := false
+            //             endif
+            //
+            //         case DBOI_USER + 42
+            //         case DBOI_DUMP
+            //             // Dump Cdx to Txt file
+            //             var oState := self:_GetState()
+            //             if workOrder != null
+            //                 workOrder:_dump()
+            //             endif
+            //             self:_SetState(oState)
+            //         case DBOI_VALIDATE
+            //             // Validate integrity of the current Order
+            //             var oState := self:_GetState()
+            //             if workOrder != null
+            //                 info:Result := workOrder:_validate()
+            //             endif
+            //             self:_SetState(oState)
+            //         case DBOI_SKIPUNIQUE
+            //             if workOrder != null
+            //                 local nToSkip := 1 as long
+            //                 if info:Result is long var nNum
+            //                     nToSkip := nNum
+            //                 endif
+            //                 info:Result := workOrder:SkipUnique(nToSkip)
+            //             endif
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch

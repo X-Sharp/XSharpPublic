@@ -129,7 +129,12 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             nullFld:Length := (BYTE) nLen
         ENDIF
-        lOk := SUPER:CreateFields(aFields)
+        lOk := super:CreateFields(aFields)
+        for var i := 0 to aFields:Length -1
+            var fld := self:_Fields[i]
+            self:_Fields[i] := aFields[i]
+        next
+
         RETURN lOk
 
         OVERRIDE PROPERTY FieldCount AS LONG

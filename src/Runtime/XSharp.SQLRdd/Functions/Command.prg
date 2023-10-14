@@ -27,7 +27,7 @@ function SqlDbGetStatement(hStmt as IntPtr) as SqlDbCommand
 function SqlDbExecuteSQLDirect(hStmt as IntPtr, sCommandText as string) as object
     var oCmd := SqlDbGetStatement(hStmt)
     if oCmd != null
-        oCmd:CommandText := sCommandText
+        oCmd:CommandText := oCmd:Connection:RaiseStringEvent(oCmd,SqlRDDEventReason.CommandText,"",sCommandText)
         return oCmd:ExecuteScalar()
     endif
     return null
@@ -35,7 +35,7 @@ function SqlDbExecuteSQLDirect(hStmt as IntPtr, sCommandText as string) as objec
 function SqlDbExecuteQueryDirect(hStmt as IntPtr, sCommandText as string) as DataTable
     var oCmd := SqlDbGetStatement(hStmt)
     if oCmd != null
-        oCmd:CommandText := sCommandText
+        oCmd:CommandText := oCmd:Connection:RaiseStringEvent(oCmd,SqlRDDEventReason.CommandText,"",sCommandText)
         return oCmd:GetDataTable("Table")
     endif
     return null

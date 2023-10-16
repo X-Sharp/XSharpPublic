@@ -175,7 +175,7 @@ BEGIN NAMESPACE XSharp
             SELF:SubSystem := ex:Source
         ENDIF
         VAR sStack       := ErrorStack( StackTrace{ex,TRUE},UInt32.MaxValue)
-        IF !sStack:StartsWith("*EmptyCallStack*")
+        IF !sStack:StartsWith(EMPTY_ERRORSTACK)
             SELF:_StackTrace := sStack + SELF:_StackTrace
         ENDIF
     ENDIF

@@ -1099,7 +1099,7 @@ internal static class OOPHelpers
             try
                 if mi:ReturnType == typeof(usual)
                     if lCallBase
-                        // Call the base methoud using a helper dynamic method
+                        // Call the base method using a helper dynamic method
                         result := InvokeNotOverriddenMethod(mi, oObject, oArgs)
                     else
                         result := mi:Invoke(oObject, oArgs)
@@ -1107,7 +1107,7 @@ internal static class OOPHelpers
                 else
                     local oResult as object
                     if lCallBase
-                        // Call the base methoud using a helper dynamic method
+                        // Call the base method using a helper dynamic method
                         oResult := InvokeNotOverriddenMethod(mi, oObject, oArgs)
                     else
                         oResult := mi:Invoke(oObject, oArgs)
@@ -1122,29 +1122,33 @@ internal static class OOPHelpers
                 endif
             catch as Error
                 throw
-            catch e as TargetInvocationException
-                if e:InnerException is WrappedException
-                    throw e:InnerException
-                endif
-                throw Error{e:GetInnerException()}
             catch e as Exception
                 if e:InnerException is WrappedException
                     throw e:InnerException
                 endif
                 if e:InnerException != null
-                    var ex := Error{e:GetInnerException()}
+                    var org := e
+                    var ex := Error{e:InnerException}
                     local stack := ex:StackTrace as string
+                    var sb := System.Text.StringBuilder{}
+                    sb:Append(stack)
                     if stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase) == -1
                         // we have stripped too many layers. Strip until we see the method name we are trying to call
-                        do while e:InnerException != null .and. stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase ) ==  -1
+                         do while e:InnerException != null .and. stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase ) ==  -1
                             e := e:InnerException
-                            stack := e:StackTrace
+                            var s := ErrorStack(StackTrace{e,true},0)
+                            if !s:StartsWith(EMPTY_ERRORSTACK)
+                                sb:Insert(0, s)
+                            endif
                         enddo
-                        ex := Error{e}
-                        if e is Error var er
-                            ex:Args := er:Args
-                        endif
                     endif
+                    if org:InnerException is AggregateException var aex
+                        var base := aex:GetBaseException()
+                        ex:Description := base:Message
+                        var s := ErrorStack(StackTrace{base,true},UInt32.MaxValue)
+                        sb:Insert(0,s)
+                    endif
+                    ex:Stack := sb:ToString()
                     throw ex
                 endif
                 throw // rethrow exception

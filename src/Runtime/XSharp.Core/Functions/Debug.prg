@@ -9,6 +9,7 @@ USING System.Reflection
 USING System.Diagnostics
 USING System.Runtime.InteropServices
 
+define EMPTY_ERRORSTACK := "*EmptyCallStack*"
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/debout32/*" />
 FUNCTION DebOut32( pszText AS STRING ) AS VOID
@@ -131,7 +132,7 @@ FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
 			    name := mi:Name:ToUpperInvariant()
             ELSE
     	        name := String.Concat( mi:DeclaringType:Name, iif (mi:IsStatic, ".", ":"), mi:Name ):ToUpperInvariant()
-    
+
             ENDIF
         ENDIF
     ENDIF
@@ -174,8 +175,7 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
 
     IF ErrorStackSettings.ErrorStackVOFormat
 	    IF wStart <= oStackTrace:FrameCount - 1
-            VAR voFormat := ErrorStackSettings.ErrorStackVOFormat
-		    FOR VAR i := wStart UPTO (oStackTrace:FrameCount - 1)
+		    for var i := wStart upto (oStackTrace:FrameCount - 1)
 			    VAR oFrame := oStackTrace:GetFrame((INT)i)
 			    VAR oMethod := oFrame:GetMethod()
 			    VAR cStackLine := oMethod:Name:ToUpper()
@@ -187,15 +187,10 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
 				    oInnerType := oInnerType:DeclaringType
 			    ENDDO
 			    cStackLine += " (Line: " + oFrame:GetFileLineNumber():ToString() + ")" + CRLF
-                if voFormat .and.  cStackLine:Contains("<>")
-                    // suppress lambda quotes on the stack
-                    nop
-                else
-			        cResult += " "+cStackLine
-                endif
+    	        cResult += " "+cStackLine
 		    NEXT
-	    ELSE
-		    cResult := "*EmptyCallStack*" + CRLF
+	    else
+		    cResult := EMPTY_ERRORSTACK + CRLF
 	    ENDIF
     ELSE
         cResult := oStackTrace:ToString()

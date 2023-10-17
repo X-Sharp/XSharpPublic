@@ -141,6 +141,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Runtime", "Runtime", "{935AAD1E-99DE-46E5-B5CC-73125A1A8BE6}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core", "Runtime\XSharp.Core\XSharp.Core.xsproj", "{535DFF14-EFB7-43F5-A4E1-71C1C4280040}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2175700A-1AAE-4204-A89A-054C5AB9A21A} = {2175700A-1AAE-4204-A89A-054C5AB9A21A}
+	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RT", "Runtime\XSharp.RT\XSharp.RT.xsproj", "{EF8D2BF2-E81A-479A-BA4F-294C4C348B66}"
 EndProject

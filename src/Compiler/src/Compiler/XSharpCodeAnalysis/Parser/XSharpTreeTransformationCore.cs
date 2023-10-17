@@ -1560,7 +1560,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected MemberDeclarationSyntax GenerateGlobalClass(string className, bool bInternalClass, bool withAttribs, SyntaxList<MemberDeclarationSyntax> members)
+        protected MemberDeclarationSyntax GenerateGlobalClass(string className, bool bInternalClass, SyntaxList<MemberDeclarationSyntax> members)
         {
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
@@ -1573,7 +1573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax r =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute() : default,
+                attributeLists: default,
                 modifiers: modifiers.ToList<SyntaxToken>(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -2603,7 +2603,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var generated = ClassEntities.Pop();
             if (generated.Members.Count > 0)
             {
-                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, generated.Members));
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
             }
             generated.Free();
 
@@ -2698,7 +2698,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (GlobalEntities.GlobalClassMembers.Count > 0)
             {
                 AddUsingWhenMissing(GlobalClassName, true, null);
-                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, false, GlobalEntities.GlobalClassMembers));
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, GlobalEntities.GlobalClassMembers));
                 GlobalEntities.GlobalClassMembers.Clear();
 
             }
@@ -2706,7 +2706,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 string className = GlobalClassName + GetStaticGlobalClassname();
                 AddUsingWhenMissing(className, true, null);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, true, GlobalEntities.StaticGlobalClassMembers));
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, true, GlobalEntities.StaticGlobalClassMembers));
                 GlobalEntities.StaticGlobalClassMembers.Clear();
             }
         }

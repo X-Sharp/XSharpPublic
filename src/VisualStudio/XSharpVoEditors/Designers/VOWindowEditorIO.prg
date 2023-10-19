@@ -8,6 +8,7 @@ USING System.Text
 USING System.Xml
 USING System.IO
 USING Xide
+
 CLASS VOWEDItem
     EXPORT cName AS STRING
     EXPORT nOrder AS INT
@@ -233,7 +234,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         TRY
             DO WHILE oNode != NULL
                 IF oNode:Name:ToUpper() == "WINDOW" .or. oNode:Name:ToUpper() == "CONTROL"
-                    oItem := SELF:OpenXmlItem(oNode)
+                    oItem := OpenXmlItem(oNode, REF SELF:lAlreadySavedBefore)
                     IF oNode:Name:ToUpper() == "WINDOW"
                         IF .not. SELF:CreateNewWindow(oItem:cControl , "Name")
                             THROW VODesignersException{"Could not find template definition for window type: " + oItem:cControl}
@@ -296,7 +297,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
         RETURN lSuccess
 
-    METHOD OpenXmlItem(oBaseNode AS XmlNode) AS VOWEDItem
+    STATIC METHOD OpenXmlItem(oBaseNode AS XmlNode, lSavedBefore REF LOGIC) AS VOWEDItem
         LOCAL oPage AS VOTabPageOptions
         LOCAL oPageNode AS XmlNode
         LOCAL oPropNode AS XmlNode
@@ -378,13 +379,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                 END DO
             CASE cName == "SAVEDONCE"
                 IF cValue:ToUpper() == "YES"
-                    SELF:lAlreadySavedBefore := TRUE
+                    lSavedBefore := TRUE
                 END IF
             END CASE
             oNode := oNode:NextSibling
         END DO
 
-        SELF:AdjustStylesOnLoad(oItem)
+        AdjustStylesOnLoad(oItem)
 
         RETURN oItem
 
@@ -681,7 +682,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         oItem:dStyles := oReader:ReadUInt32()
         oItem:dExStyles := oReader:ReadUInt32()
 
-        SELF:AdjustStylesOnLoad(oItem)
+        AdjustStylesOnLoad(oItem)
 
         nPropLength := oReader:ReadUInt16()
 
@@ -782,7 +783,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "_Height" , nWindowBottom - nMargin})
         RETURN
 
-    METHOD AdjustStylesOnLoad(oItem AS VOWEDItem) AS VOID
+    STATIC METHOD AdjustStylesOnLoad(oItem AS VOWEDItem) AS VOID
         // Workaround to include styles that were not being saved in builds <= 161.1
         DO CASE
         CASE oItem:cClass:StartsWith("CONTROL:SCROLLBAR:VERTICALSCROLLBAR")

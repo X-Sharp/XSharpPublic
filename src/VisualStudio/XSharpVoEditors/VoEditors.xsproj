@@ -92,6 +92,7 @@
     <Compile Include="Designers\VOWindowEditor.prg" />
     <Compile Include="Designers\VOWindowEditorIO.prg" />
     <Compile Include="Designers\Win32.prg" />
+    <Compile Include="Designers\WinFormsConverter.prg" />
     <Compile Include="DesignWindowItem.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="XSharp_DED.prg" />

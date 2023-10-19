@@ -4,14 +4,15 @@ using MySql.Data.MySqlClient
 using Advantage.Data
 using System.Collections.Generic
 
-global options := "TrimTrailingSpaces=True;UseNulls=False;" as STRING
+global options := "TrimTrailingSpaces=False;UseNulls=False;" as STRING
 
 global SqlConnStr := "Server=(local);Initial catalog=Northwind;Trusted_Connection=True;"+options as STRING
 global ODBCConnStr := "Driver={SQL Server};Server=(local);Database=Northwind;Trusted_Connection=Yes;"+options as STRING
 global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=Northwind;Integrated Security=SSPI;"+options as STRING
-global showEvents as logic
+global showEvents := true as logic
 
 function Start as void
+    RegisteredRDD.Add( RegisteredRDD{"SQLRDD", typeof(SQLRDD)})
     //TestProviders()
     //TestSqlServer()
     //TestODBC()
@@ -25,13 +26,57 @@ function Start as void
     //TestParametersODBC()
     //TestParametersSQL()
     TestTable()
+    //testCreate()
     wait
     return
+
+function TestCreate() as void
+    local aStruct as array
+    SqlDbSetProvider("SQLSERVER")
+    var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
+    aStruct := {{"Key","I:+",4,0},{"FirstName","C",10,0},{"LastName","C",10,0},{"DOB","D",8,0}, {"Salary","Y",10,2},{"Married","L",1,0},{"Notes","M",10,0}}
+    ? DbCreate("TEST",aStruct,"SQLRDD")
+    VoDbUseArea(true, "SQLRDD","TEST","TEST",true, false)
+    ? DbAppend()
+    FieldPut(2, "John")
+    FieldPut(3, "Doe")
+    FieldPut(4, 1960.01.01)
+    FieldPut(5, $12345)
+    FieldPut(6, true)
+    FieldPut(7, "Some Notes")
+    ? "Key before",FieldGet(1)
+    DbCommit()
+    ? "Key after",FieldGet(1)
+    DbGoTop()
+    FieldPut(2, "Jane")
+    FieldPut(4, 1962.02.02)
+    DbCommit()
+    for var i:= 1 to 10
+        DbAppend()
+        FieldPut(2, "F"+NTrim(i))
+        FieldPut(3, "L"+NTrim(i))
+        FieldPut(4, 1970.01.01+i)
+        FieldPut(7, "Notes "+Str(i))
+        ? "Key before",FieldGet(1)
+        DbCommit()
+        ? "Key after",FieldGet(1)
+    next
+    ? "LastRec",LastRec()
+    for var i:= 1 to 10 step 2
+        DbGoto(i)
+        ? "Delete Recno", Recno()
+        RLock()
+        DbDelete()
+        ? DbCommit()
+    next
+    ? "LastRec",LastRec()
+    DbCloseArea()
+    wait
 
 function TestTable() as void
         SqlDbSetProvider("SQLSERVER")
         var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
-        VoDbUseArea(true, typeof(SQLRDD),"Customers","Customers",true, true)
+        VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
         ? "SetDeleted(TRUE)"
         SetDeleted(true)
         dbGoTop()
@@ -227,7 +272,7 @@ function TestRDDOLEDB() as void
     testRDD("OLEDB", OleDbConnStr)
 
 function DumpCustomers() as VOID
-    VoDbUseArea(TRUE, typeof(SQLRDD),"Select * from Customers","Customers",TRUE, TRUE)
+    VoDbUseArea(true, "SQLRDD","Select * from Customers","Customers",true, true)
     ? FCount(), RecCount()
     local nI as DWORD
     For nI  := 1 to FCount()
@@ -316,7 +361,6 @@ function TestProviders as void
         ? "Left()    ", oProv:GetFunction("LEFT(%1%,%2%)")
         ? "Alltrim() ", oProv:GetFunction("ALLTRIM(%1%)")
         ? "DTOS()    ", oProv:GetFunction("DTOS(%1%)")
-        ? "Delimiters", oProv:QuotePrefix, oProv:QuoteSuffix
     next
     wait
 

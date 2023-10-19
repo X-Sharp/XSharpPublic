@@ -10,7 +10,8 @@ using System.Collections.Generic
 using XSharp.RDD.SqlRDD
 using System.Data.Common
 using System.Reflection
-
+using XSharp.RDD.Enums
+using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
@@ -44,6 +45,7 @@ class Oracle inherit SqlDbProvider
         return aFuncs
 
     override property SelectTopStatement     as string => "select * from (select "+ColumnsMacro+" from "+TableNameMacro+" ) where RowNum <= "+TopCountMacro
-
+    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+        return super:GetSqlColumnInfo(oInfo)
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

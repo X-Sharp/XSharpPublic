@@ -622,8 +622,7 @@ BEGIN NAMESPACE XSharp.RDD
             BEGIN LOCK SELF
                 LOCAL result AS LOGIC
                 IF move == 0 .AND. (SUPER:_fLocked .OR. SUPER:_Locks:Contains(SUPER:RecNo)) .AND. SUPER:_BufferValid
-                    SELF:GoCold()
-                    RETURN TRUE
+                    return self:GoCold()
                 ELSEIF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:SkipRaw(move)
                     SELF:_CheckEofBof()

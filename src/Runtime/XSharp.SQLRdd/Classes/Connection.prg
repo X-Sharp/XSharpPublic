@@ -197,11 +197,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             return self:Schema[TableName]
         endif
         try
-            var table := self:Provider:QuotePrefix+TableName+self:Provider:QuoteSuffix
-
-            if String.IsNullOrEmpty(self:Provider:QuotePrefix) .and. TableName:IndexOf(" ") > 0
-                table := SqlDbProvider.DefaultQuotePrefix+TableName+SqlDbProvider.DefaultQuoteSuffix
-            endif
+            var table := self:Provider:QuoteIdentifier(TableName)
             local list as IList<string>
             if ! String.IsNullOrEmpty(cColumnNames)
                 list := String2List(cColumnNames)

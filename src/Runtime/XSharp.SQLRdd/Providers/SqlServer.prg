@@ -10,7 +10,8 @@ using System.Collections.Generic
 using System.Text
 using XSharp.RDD.SqlRDD
 using System.Data.Common
-
+using XSharp.RDD.Enums
+using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
@@ -19,6 +20,8 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 class SqlServer inherit SqlDbProvider
     override property DllName as string => "System.Data.dll"
     override property TypeName as string => "System.Data.SqlClient.SqlClientFactory"
+    override property GetIdentity            as string => "select @@IDENTITY"
+    override property GetRowCount            as string => "select @@ROWCOUNT"
 
     constructor() strict
         super("SqlServer")
@@ -41,5 +44,26 @@ class SqlServer inherit SqlDbProvider
                 {"+"						,"+"}}
         endif
         return aFuncs
+    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+        local sResult as string
+        switch oInfo:FieldType
+        case DbFieldType.Character
+        case DbFieldType.VarChar
+            sResult := i"[{QuoteIdentifier(oInfo.ColumnName)}] nvarchar ({oInfo.Length}) default ''"
+            if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
+                sResult += " null "
+            endif
+       case DbFieldType.Integer
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
+            if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
+                sResult += " identity "
+            else
+                sResult += "default 0"
+            endif
+
+        otherwise
+            sResult := super:GetSqlColumnInfo(oInfo)
+        end switch
+        return sResult
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

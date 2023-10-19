@@ -12,20 +12,16 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Diagnostics; // PLEASE DO NOT REMOVE THIS!!!!
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using System.ComponentModel;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
-    using Microsoft.CodeAnalysis.Text;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {

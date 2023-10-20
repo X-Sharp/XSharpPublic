@@ -875,7 +875,10 @@ internal static class OOPHelpers
         oError:Description := oError:Message+" '"+cIVar+"'"
         throw oError
 
-    static property EmulateSelf as logic auto
+        // This property is set in the constructor of Dynamic Classes
+        // To allow the codeblock for the INIT method to access hidden/private fields
+
+    internal static property EmulateSelf as logic auto
     static method IVarPut(oObject as object, cIVar as string, oValue as object, lSelf as logic)  as void
         local t as Type
         if oObject == null_object
@@ -1540,9 +1543,25 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     // when we call IvarGet within a method of the same type as oObject
     // we should allow to access private/hidden properties
     // see https://github.com/X-Sharp/XSharpPublic/issues/1335
-    var mi := OOPHelpers.GetCallingMethod()
-    var lSelf := mi:DeclaringType == oObject:GetType()
-    return OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
+    var lSelf := false
+    local uResult as usual
+    try
+        uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
+    catch  as Exception when lSelf
+        // retry for hidden properties/fields ?
+        var mi := OOPHelpers.GetCallingMethod()
+        if mi:DeclaringType == oObject:GetType()
+            uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, true)
+        else
+            // different type: rethrow exception
+            throw
+        endif
+    catch
+        // already with lSelf rethrow exception
+        throw
+    end try
+    return uResult
+
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
@@ -1626,13 +1645,23 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as 
     if String.IsNullOrEmpty(symInstanceVar)
         throw Error.NullArgumentError(__function__, nameof(symInstanceVar),2)
     endif
-    // when we call IvarGet within a method of the same type as oObject
-    // we should allow to access private/hidden properties
-    // see https://github.com/X-Sharp/XSharpPublic/issues/1335
-    VAR mi := OOPHelpers.GetCallingMethod()
-    VAR lSelf := mi:DeclaringType == oObject:GetType()
-    OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, lSelf)
-    RETURN uValue
+    var lSelf := false
+    try
+        OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, lSelf)
+    catch as Exception when lSelf
+        // when we call IVarPut within a method of the same type as oObject
+        // we should allow to access private/hidden properties
+        // see https://github.com/X-Sharp/XSharpPublic/issues/1335
+        var mi := OOPHelpers.GetCallingMethod()
+        if mi:DeclaringType == oObject:GetType()
+            OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, true)
+        else
+            throw // other type: rethrow exception
+        endif
+    catch 
+        throw // rethrow exception
+    end try
+    return uValue
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 

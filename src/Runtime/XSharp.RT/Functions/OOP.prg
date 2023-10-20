@@ -809,12 +809,7 @@ internal static class OOPHelpers
         local t as Type
         local result as object
         lSelf := lSelf .or. EmulateSelf
-        if oObject == null_object
-            throw Error.NullArgumentError(__function__, nameof(oObject),1)
-        endif
-        if String.IsNullOrEmpty(cIVar)
-            throw Error.NullArgumentError(__function__, nameof(cIVar),2)
-        endif
+  
         // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             return oDynamic:NoIvarGet(cIVar)
@@ -881,13 +876,7 @@ internal static class OOPHelpers
     internal static property EmulateSelf as logic auto
     static method IVarPut(oObject as object, cIVar as string, oValue as object, lSelf as logic)  as void
         local t as Type
-        if oObject == null_object
-            throw Error.NullArgumentError(__function__, nameof(oObject),1)
-        endif
-        if String.IsNullOrEmpty(cIVar)
-            throw Error.NullArgumentError(__function__, nameof(cIVar),2)
-        endif
-        // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
+         // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             oDynamic:NoIvarPut(cIVar, oValue)
             return
@@ -1547,7 +1536,7 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     local uResult as usual
     try
         uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
-    catch  as Exception when lSelf
+    catch  as Exception when !lSelf
         // retry for hidden properties/fields ?
         var mi := OOPHelpers.GetCallingMethod()
         if mi:DeclaringType == oObject:GetType()
@@ -1648,7 +1637,7 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as 
     var lSelf := false
     try
         OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, lSelf)
-    catch as Exception when lSelf
+    catch as Exception when !lSelf
         // when we call IVarPut within a method of the same type as oObject
         // we should allow to access private/hidden properties
         // see https://github.com/X-Sharp/XSharpPublic/issues/1335
@@ -1658,7 +1647,7 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as 
         else
             throw // other type: rethrow exception
         endif
-    catch 
+    catch
         throw // rethrow exception
     end try
     return uValue

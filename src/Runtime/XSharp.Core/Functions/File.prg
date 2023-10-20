@@ -202,7 +202,7 @@ BEGIN NAMESPACE XSharp.IO
         RETURN NULL
 
         STATIC PRIVATE METHOD hasStream(pStream AS IntPtr) AS LOGIC
-        RETURN streams:ContainsKey(pStream)
+            return streams:ContainsKey(pStream)
 
         STATIC PRIVATE METHOD addStream(pStream AS IntPtr, oStream AS FileStream, attributes AS DWORD) AS LOGIC
             BEGIN LOCK streams
@@ -223,10 +223,7 @@ BEGIN NAMESPACE XSharp.IO
         RETURN FALSE
 
         STATIC PRIVATE METHOD removeStream(pStream AS IntPtr) AS LOGIC
-            IF streams:ContainsKey(pStream)
-                RETURN streams:TryRemove(pStream, OUT NULL)
-            ENDIF
-        RETURN FALSE
+            return streams:TryRemove(pStream, out null)
 
         STATIC PRIVATE METHOD createManagedFileStream(cFile AS STRING, oMode AS VOFileMode) AS FileStream
             LOCAL oStream := NULL AS FileStream

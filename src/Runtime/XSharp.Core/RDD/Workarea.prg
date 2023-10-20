@@ -549,9 +549,9 @@ BEGIN NAMESPACE XSharp.RDD
 
 			/// <inheritdoc />
 		VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
-            IF SELF:_fieldNames:ContainsKey(fieldName)
-                RETURN SELF:_fieldNames[fieldName]+1
-            ENDIF
+            if self:_fieldNames:TryGetValue(fieldName, out var fieldPos)
+                return fieldPos+1
+            endif
             RETURN 0
 
 			/// <exclude/>

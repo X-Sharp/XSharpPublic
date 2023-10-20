@@ -744,7 +744,8 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
                 IF !oAccelerator:IsEmpty
                     cLine := e"\t"
                     cLine += oAccelerator:KeyValue:ToString() + ", "
-                    cLine += oDesign:GetVODefineRc() + ", "
+                    //cLine += oDesign:GetVODefineRc() + ", "
+                    cLine += oDesign:GetMenuID() + ", "
                     //					cLine += oDesign:GetProperty("MenuID"):TextValue + ", "
                     IF oAccelerator:Control
                         cLine += "CONTROL ,"
@@ -791,7 +792,8 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
             IF oDesign:IsSeparator
                 cLine += "MENUITEM SEPARATOR"
             ELSEIF oNode:Nodes:Count == 0
-                cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + cAccelerator + e"\" , " + oDesign:GetVODefineRc()
+                // cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , false ) + cAccelerator + e"\" , " + oDesign:GetVODefineRc()
+                cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , false ) + cAccelerator + e"\" , " + oDesign:GetMenuID()
                 //				cLine += e"MENUITEM \"" + oDesign:GetProperty("Caption"):TextValue + cAccelerator + e"\" , " + oDesign:GetProperty("MenuID"):TextValue
             ELSE
                 cLine += e"POPUP \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + e"\""
@@ -2196,7 +2198,11 @@ CLASS DesignMenuItem INHERIT DesignItem
         FOR n := 0 UPTO cDefine:Length - 1
             cChar := cDefine[n]
             IF cChar > 127 //.and. cChar:ToString():ToUpper() == cChar:ToString()
-                cTemp += "_" + ((INT)cChar):ToString() + "_"
+                //cTemp += "_" + ((int)cChar):ToString() + "_"
+                if n == 0
+                    cTemp += "_"
+                endif
+                cTemp += ((int)cChar):ToString("X") + "_"
             ELSE
                 cTemp += cChar:ToString()
             END IF

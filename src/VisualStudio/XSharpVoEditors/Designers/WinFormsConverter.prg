@@ -42,15 +42,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		END IF
 
         oNode := oWindowNode:FirstChild
-        LOCAL lDummy AS LOGIC
-        #warning Robert, I think we have a new syntax that avoids the dummy REF var below?
-		oItem := OpenXmlItem(oNode, REF lDummy)
+		oItem := OpenXmlItem(oNode)
 		oCurrentWed := WedDescriptor{oItem, NULL}
 		oMainWed := oCurrentWed
 
 		oNode := oNode:NextSibling
 		DO WHILE oNode != NULL
-			oItem := OpenXmlItem(oNode, REF lDummy)
+			oItem := OpenXmlItem(oNode)
 			oCurrentWed := WedDescriptor{oItem, oMainWed}
 			oMainWed:Controls:Add(oCurrentWed)
 			oNode := oNode:NextSibling
@@ -171,9 +169,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 		LOCAL cControlIVar AS STRING
 		cControlIVar := oControl:Name
-		IF FALSE
-			cControlIVar := "o" + cControlIVar
-		END IF
+// 		IF FALSE
+// 			cControlIVar := "o" + cControlIVar
+// 		END IF
 
 		aClassCode:Add(String.Format(e"\tPRIVATE {0} AS {1}" , cControlIVar, oControl:Type) )
 

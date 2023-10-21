@@ -1388,7 +1388,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
         FOREACH oDesign AS DesignMenuItem IN aControls
             //		cOrigName := oDesign:Name
-            cName := SELF:GetNameFromTree(oDesign:oNode)
+            cName := self:GetNameFromTree(oDesign:oNode)
             oDesign:cNameIDcode := MenuCharMap.Get(cName)
 
             cName := SELF:AdjustName(cName)
@@ -1515,7 +1515,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
             LOCAL cFirst AS CHAR
             cFirst := c[0]
-            IF cFirst == '_' .OR. (cFirst >= 'A' .AND. cFirst <= 'Z') .OR. (cFirst >= 'a' .AND. cFirst <= 'z')
+            IF cFirst == '_' .OR. (cFirst >= 'A' .AND. cFirst <= 'Z') .OR. (cFirst >= 'a' .AND. cFirst <= 'z') .OR. (DWORD)cFirst > 255 // international character
                 RETURN c
             ENDIF
 

@@ -21,6 +21,7 @@ begin namespace XSharp.RDD.SqlRDD
 [DebuggerDisplay("SQLRDD ({Alias,nq})")];
 class SQLRDD inherit DBFVFP
     protect _table          as DataTable
+    protect _query          as string
     protect _phantomRow     as DataRow
     protect _creatingIndex  as logic
     protect _incrementKey   as long
@@ -60,7 +61,6 @@ class SQLRDD inherit DBFVFP
         _deletedColumn   := -1
         _maxRec          := -1
         _oIni            := IniFile{"SQLRDD.INI"}
-        self:_creatingIndex := true // pad field values
         return
 
     private method TempFileName() as string
@@ -87,6 +87,7 @@ class SQLRDD inherit DBFVFP
         var query := info:FileName
         local strConnection as string
         local pos as int
+        self:_OpenInfo := info
         strConnection := SqlDbConnection.DefaultConnection
         _connection := SqlDbGetConnection(strConnection)
         if _connection == null
@@ -106,6 +107,7 @@ class SQLRDD inherit DBFVFP
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(query)
         if (selectStmt)
             self:_tableMode := TableMode.Query
+            self:_query      := query
             var longFieldNames := _connection:RaiseLogicEvent(_connection, SqlRDDEventReason.LongFieldNames,query,true)
             self:_oTd := _connection:GetStructureForQuery(query,"QUERY",longFieldNames)
         else
@@ -145,6 +147,8 @@ class SQLRDD inherit DBFVFP
             self:_hasData := false
         endif
         _command:CommandText := query
+        self:DataTable := _command:GetDataTable(info:Alias)
+
         self:_realOpen := true
         return true
 
@@ -341,7 +345,10 @@ class SQLRDD inherit DBFVFP
 
 
     method ForceOpen() as logic
-        if self:_tableMode != TableMode.Table
+        if ! _realOpen
+            return true
+        endif
+        if self:_tableMode != TableMode.Table .and. self:DataTable != null
             return true
         endif
         if self:_hasData

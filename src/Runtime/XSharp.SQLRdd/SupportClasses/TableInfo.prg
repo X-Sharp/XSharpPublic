@@ -48,17 +48,25 @@ class SqlTableInfo inherit SqlDbTableDef
     /// What is the maximum number of records that the RDD should fetch when unfiltered.
     /// </summary>
     property MaxRecords     as long auto
+    /// <summary>
+    /// Should trailing spaces for string columns be trimmed?
+    /// </summary>
+    property TrimTrailingSpaces as logic auto
 
+    protected _connection as SqlDbConnection
 
-    constructor(cName as string)
+    constructor(cName as string, oConn as SqlDbConnection)
         super(cName)
+        _connection := oConn
         MaxRecords := 1000
         //RecnoColumn := "xs_pk"
         RecnoColumn   := ""
-        DeletedColumn := "xs_deleted"
+        DeletedColumn := ""
         ServerFilter := ""
         AllowUpdates := true
-        LongFieldNames := true
+        LongFieldNames := oConn:UseLongNames
+        TrimTrailingSpaces := oConn:TrimTrailingSpaces
+
         return
 
     method CopyFromTd(oTd as SqlDbTableDef) as void

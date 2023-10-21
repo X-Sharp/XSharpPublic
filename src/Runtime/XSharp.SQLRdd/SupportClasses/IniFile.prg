@@ -11,8 +11,8 @@ using System.Text
 using System.Runtime.InteropServices
 
 begin namespace XSharp.RDD.SqlRDD
-
-internal class IniFile
+    
+    class IniFile
     protected cFileName as string
     property FullName as string get cFileName
     property Exists   as logic get System.IO.File.Exists(cFileName)

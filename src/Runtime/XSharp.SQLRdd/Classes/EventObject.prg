@@ -23,6 +23,9 @@ class SqlDbEventObject inherit SqlDbHandleObject
 
     public event CallBack as SqlRDDEventHandler
     internal method RaiseEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as object) as object
+        if String.IsNullOrEmpty(cTable)
+            cTable := oObject:Name
+        endif
         var oArgs := SqlRddEventArgs{ nEvent, cTable, oValue}
         if @@CallBack != null
             var result := @@CallBack ( oObject, oArgs )

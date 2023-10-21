@@ -4,40 +4,40 @@ USING System.Reflection
 /// <seealso cref="O:XSharp.VFP.Functions.CursorGetProp" />
 /// <seealso cref="O:XSharp.VFP.Functions.CursorSetProp" />
 
-ENUM XSharp.RDD.CursorProperty 
-    MEMBER ADOBookmark               
-    MEMBER ADOCodePage              
-    MEMBER ADORecordset             
-    MEMBER AllowSimultaneousFetch   
-    MEMBER AutoIncError             
-    MEMBER BatchUpdateCount         
-    MEMBER Buffering                
-    MEMBER CompareMemo              
-    MEMBER ConnectHandle            
-    MEMBER ConnectName              
-    MEMBER Database                 
-    MEMBER FetchAsNeeded            
-    MEMBER FetchIsComplete          
-    MEMBER FetchMemo                
-    MEMBER FetchSize                
-    MEMBER KeyFieldList             
-    MEMBER MapBinary                
-    MEMBER MapVarchar               
-    MEMBER MaxRecords               
-    MEMBER ParameterList            
-    MEMBER Prepared                 
-    MEMBER RecordsFetched           
-    MEMBER Refresh                  
-    MEMBER SendUpdates              
-    MEMBER SourceName               
-    MEMBER SourceType               
-    MEMBER SQL                      
-    MEMBER Tables                    
-    MEMBER UpdatableFieldList        
-    MEMBER UpdateNameList            
-    MEMBER UpdateType                
-    MEMBER UseMemoSize               
-    MEMBER WhereType                 
+enum XSharp.RDD.CursorProperty
+    member ADOBookmark
+    member ADOCodePage
+    member ADORecordset
+    member AllowSimultaneousFetch
+    member AutoIncError
+    member BatchUpdateCount
+    member Buffering
+    member CompareMemo
+    member ConnectHandle
+    member ConnectName
+    member Database
+    member FetchAsNeeded
+    member FetchIsComplete
+    member FetchMemo
+    member FetchSize
+    member KeyFieldList
+    member MapBinary
+    member MapVarchar
+    member MaxRecords
+    member ParameterList
+    member Prepared
+    member RecordsFetched
+    member Refresh
+    member SendUpdates
+    member SourceName
+    member SourceType
+    member SQL
+    member Tables
+    member UpdatableFieldList
+    member UpdateNameList
+    member UpdateType
+    member UseMemoSize
+    member WhereType
 END ENUM
 
 INTERNAL GLOBAL cursorProperties AS Dictionary<STRING, LONG>
@@ -51,9 +51,9 @@ FUNCTION GetCursorProperty(propertyName as STRING) AS LONG
             cursorProperties:Add(name, (LONG) enumvalue)
         NEXT
     ENDIF
-    IF cursorProperties:ContainsKey(propertyName)
-        return cursorProperties[propertyName]
+    if cursorProperties:TryGetValue(propertyName, out var prop)
+        return prop
     ENDIF
     RETURN -1
-    
-    
+
+

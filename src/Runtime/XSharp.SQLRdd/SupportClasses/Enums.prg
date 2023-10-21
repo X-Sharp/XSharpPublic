@@ -27,6 +27,7 @@ enum SqlRDDEventReason
     member RecnoColumn
     member DeletedColumn
     member LongFieldNames
+    member TrimTrailingSpaces
     member IndexTags
     member IndexInfo
 end enum

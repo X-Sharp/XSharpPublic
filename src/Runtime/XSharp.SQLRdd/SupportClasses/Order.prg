@@ -121,7 +121,6 @@ class SqlDbOrder inherit SqlDbObject
             endif
             return cFirst + SqlDbProvider.AndClause+cLast
         endif
-        return ""
 
     method SeekExpression(seekInfo as DbSeekInfo) as string
         local cComp as string

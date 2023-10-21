@@ -71,6 +71,10 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD.App", "Runtime\XSharp.RDD.App\XSharp.RDD.App.xsproj", "{13E1266E-D868-4A7D-BF68-EE1E4AA2D308}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK", "VOSDK", "{FABD1B90-611A-48D5-9D69-BC148E103030}"
+	ProjectSection(SolutionItems) = preProject
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Runtime\VOSDK\Source\VOSDK\VOSDKDocs.Targets = Runtime\VOSDK\Source\VOSDK\VOSDKDocs.Targets
+	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOConsoleClasses", "Runtime\VOSDK\Source\VOSDK\Console_Classes_SDK\VOConsoleClasses.xsproj", "{D0A5DA23-00B5-41FD-8564-96246B1E222F}"
 EndProject
@@ -111,6 +115,10 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.Tests", "Runtime\XSharp.VFP.Tests\XSharp.VFP.Tests.xsproj", "{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK-Typed", "VOSDK-Typed", "{D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}"
+	ProjectSection(SolutionItems) = preProject
+		Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Targets = Runtime\VOSdkTyped\Source\VOSdk\VOSDK.Targets
+		Runtime\VOSdkTyped\Source\VOSdk\VOSDKDocs.Targets = Runtime\VOSdkTyped\Source\VOSdk\VOSDKDocs.Targets
+	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.ConsoleClasses", "Runtime\VOSdkTyped\Source\VOSdk\Console_Classes_SDK\XSharp.VO.ConsoleClasses.xsproj", "{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A}"
 EndProject

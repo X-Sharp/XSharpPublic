@@ -32,8 +32,8 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
     /// <typeparam name="T">Expected return type for the value</typeparam>
     /// <returns>The value from the collection or an empty value of the right type.</returns>
     METHOD GetValue<T> (key as DatabasePropertyType) AS T
-        IF SELF:ContainsKey(key)
-            return (T) SELF[key]
+        if self:TryGetValue(key, out var result)
+            return (T) result
         ENDIF
         RETURN default(T)
 
@@ -183,8 +183,8 @@ INTERNAL STATIC METHOD GetDatabasePropertyNumber(propertyName as STRING) AS LONG
             databasePropertyNames:Add(name, (LONG) enumvalue)
         NEXT
     ENDIF
-    IF databasePropertyNames:ContainsKey(propertyName)
-        return databasePropertyNames[propertyName]
+    if databasePropertyNames:TryGetValue(propertyName, out var result)
+        return result
     ENDIF
     RETURN -1
 

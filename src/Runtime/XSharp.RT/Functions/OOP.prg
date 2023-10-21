@@ -809,12 +809,7 @@ internal static class OOPHelpers
         local t as Type
         local result as object
         lSelf := lSelf .or. EmulateSelf
-        if oObject == null_object
-            throw Error.NullArgumentError(__function__, nameof(oObject),1)
-        endif
-        if String.IsNullOrEmpty(cIVar)
-            throw Error.NullArgumentError(__function__, nameof(cIVar),2)
-        endif
+  
         // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             return oDynamic:NoIvarGet(cIVar)
@@ -875,16 +870,13 @@ internal static class OOPHelpers
         oError:Description := oError:Message+" '"+cIVar+"'"
         throw oError
 
-    static property EmulateSelf as logic auto
+        // This property is set in the constructor of Dynamic Classes
+        // To allow the codeblock for the INIT method to access hidden/private fields
+
+    internal static property EmulateSelf as logic auto
     static method IVarPut(oObject as object, cIVar as string, oValue as object, lSelf as logic)  as void
         local t as Type
-        if oObject == null_object
-            throw Error.NullArgumentError(__function__, nameof(oObject),1)
-        endif
-        if String.IsNullOrEmpty(cIVar)
-            throw Error.NullArgumentError(__function__, nameof(cIVar),2)
-        endif
-        // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
+         // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             oDynamic:NoIvarPut(cIVar, oValue)
             return
@@ -1099,7 +1091,7 @@ internal static class OOPHelpers
             try
                 if mi:ReturnType == typeof(usual)
                     if lCallBase
-                        // Call the base methoud using a helper dynamic method
+                        // Call the base method using a helper dynamic method
                         result := InvokeNotOverriddenMethod(mi, oObject, oArgs)
                     else
                         result := mi:Invoke(oObject, oArgs)
@@ -1107,7 +1099,7 @@ internal static class OOPHelpers
                 else
                     local oResult as object
                     if lCallBase
-                        // Call the base methoud using a helper dynamic method
+                        // Call the base method using a helper dynamic method
                         oResult := InvokeNotOverriddenMethod(mi, oObject, oArgs)
                     else
                         oResult := mi:Invoke(oObject, oArgs)
@@ -1122,29 +1114,33 @@ internal static class OOPHelpers
                 endif
             catch as Error
                 throw
-            catch e as TargetInvocationException
-                if e:InnerException is WrappedException
-                    throw e:InnerException
-                endif
-                throw Error{e:GetInnerException()}
             catch e as Exception
                 if e:InnerException is WrappedException
                     throw e:InnerException
                 endif
                 if e:InnerException != null
-                    var ex := Error{e:GetInnerException()}
+                    var org := e
+                    var ex := Error{e:InnerException}
                     local stack := ex:StackTrace as string
+                    var sb := System.Text.StringBuilder{}
+                    sb:Append(stack)
                     if stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase) == -1
                         // we have stripped too many layers. Strip until we see the method name we are trying to call
-                        do while e:InnerException != null .and. stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase ) ==  -1
+                         do while e:InnerException != null .and. stack:IndexOf(mi:Name,StringComparison.OrdinalIgnoreCase ) ==  -1
                             e := e:InnerException
-                            stack := e:StackTrace
+                            var s := ErrorStack(StackTrace{e,true},0)
+                            if !s:StartsWith(EMPTY_ERRORSTACK)
+                                sb:Insert(0, s)
+                            endif
                         enddo
-                        ex := Error{e}
-                        if e is Error var er
-                            ex:Args := er:Args
-                        endif
                     endif
+                    if org:InnerException is AggregateException var aex
+                        var base := aex:GetBaseException()
+                        ex:Description := base:Message
+                        var s := ErrorStack(StackTrace{base,true},UInt32.MaxValue)
+                        sb:Insert(0,s)
+                    endif
+                    ex:Stack := sb:ToString()
                     throw ex
                 endif
                 throw // rethrow exception
@@ -1536,9 +1532,25 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     // when we call IvarGet within a method of the same type as oObject
     // we should allow to access private/hidden properties
     // see https://github.com/X-Sharp/XSharpPublic/issues/1335
-    var mi := OOPHelpers.GetCallingMethod()
-    var lSelf := mi:DeclaringType == oObject:GetType()
-    return OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
+    var lSelf := false
+    local uResult as usual
+    try
+        uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
+    catch  as Exception when !lSelf
+        // retry for hidden properties/fields ?
+        var mi := OOPHelpers.GetCallingMethod()
+        if mi:DeclaringType == oObject:GetType()
+            uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, true)
+        else
+            // different type: rethrow exception
+            throw
+        endif
+    catch
+        // already with lSelf rethrow exception
+        throw
+    end try
+    return uResult
+
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
@@ -1622,13 +1634,23 @@ function IVarPut(oObject as object,symInstanceVar as string,uValue as usual) as 
     if String.IsNullOrEmpty(symInstanceVar)
         throw Error.NullArgumentError(__function__, nameof(symInstanceVar),2)
     endif
-    // when we call IvarGet within a method of the same type as oObject
-    // we should allow to access private/hidden properties
-    // see https://github.com/X-Sharp/XSharpPublic/issues/1335
-    VAR mi := OOPHelpers.GetCallingMethod()
-    VAR lSelf := mi:DeclaringType == oObject:GetType()
-    OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, lSelf)
-    RETURN uValue
+    var lSelf := false
+    try
+        OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, lSelf)
+    catch as Exception when !lSelf
+        // when we call IVarPut within a method of the same type as oObject
+        // we should allow to access private/hidden properties
+        // see https://github.com/X-Sharp/XSharpPublic/issues/1335
+        var mi := OOPHelpers.GetCallingMethod()
+        if mi:DeclaringType == oObject:GetType()
+            OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, true)
+        else
+            throw // other type: rethrow exception
+        endif
+    catch
+        throw // rethrow exception
+    end try
+    return uValue
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 

@@ -205,8 +205,8 @@ STATIC CLASS SQLHelpers
         LOCAL lLastWasOk AS LOGIC
         LOCAL cResult AS STRING
         LOCAL cWork		AS STRING
-        IF aFieldNames:ContainsKey(cColumnName)
-            RETURN aFieldNames[cColumnName]
+        if aFieldNames:TryGetValue(cColumnName, out var name)
+            RETURN name
         ENDIF
         // return only allowed characters
         sb  := System.Text.StringBuilder{}

@@ -10,15 +10,14 @@ using System.Reflection
 using System.Collections.Generic
 using System.Text
 using System.Data.Common
+using XSharp.RDD.Enums
+using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
 /// The Provider class.
 /// </summary>
 abstract class SqlDbProvider inherit SqlDbObject
-
-    internal const DefaultQuotePrefix       := """" as string
-    internal const DefaultQuoteSuffix       := """" as string
 
 #region Static fields and methods
     static _ProviderClasses as IDictionary<string, System.Type>
@@ -115,6 +114,7 @@ abstract class SqlDbProvider inherit SqlDbObject
 
 #endregion
     private _Factory as DbProviderFactory
+    private _cmdBuilder as DbCommandBuilder
 
     property Factory as DbProviderFactory
         get
@@ -138,13 +138,14 @@ abstract class SqlDbProvider inherit SqlDbObject
         return cFunction
     constructor(cName as string)
         super(cName)
-        var cmdBuilder := self:CreateCommandBuilder()
-        self:QuotePrefix := cmdBuilder:QuotePrefix
-        self:QuoteSuffix := cmdBuilder:QuoteSuffix
+        _cmdBuilder := self:CreateCommandBuilder()
 
 
 #region Methods and Properties from the factory
     property CanCreateDataSourceEnumerator as logic get Factory:CanCreateDataSourceEnumerator
+
+    method QuoteIdentifier(cId as string) as string
+        return _cmdBuilder:QuoteIdentifier(cId)
 
     method CreateCommand() as DbCommand
         return Factory:CreateCommand()
@@ -171,15 +172,17 @@ abstract class SqlDbProvider inherit SqlDbObject
 #region Virtual Properties with statements etc
     virtual property CreateTableStatement   as string => "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )"
     virtual property CreateIndexStatement   as string => "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
-    virtual property DropTableStatement     as string => "drop table "+TableNameMacro
-    virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"_"+IndexNameMacro
+    virtual property DropTableStatement     as string => "drop table if exists "+TableNameMacro
+    virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"."+IndexNameMacro
     virtual property DeleteAllRowsStatement as string => "delete from "+TableNameMacro
     virtual property SelectTopStatement     as string => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+TableNameMacro
     virtual property InsertStatement        as string => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
+    virtual property UpdateStatement        as string => "update "+TableNameMacro+" set "+ColumnsMacro+" where "+WhereMacro
+    virtual property DeleteStatement        as string => "delete from "+TableNameMacro+" where "+WhereMacro
     virtual property OrderByClause          as string => " order by "+ColumnsMacro+" "
     virtual property MaxRows                as int    => 1000
-    virtual property QuotePrefix            as string auto := "["
-    virtual property QuoteSuffix            as string auto := "]"
+    virtual property GetIdentity            as string => ""
+    virtual property GetRowCount            as string => ""
 
 #endregion
 
@@ -198,6 +201,7 @@ abstract class SqlDbProvider inherit SqlDbObject
     public const FieldDefinitionListMacro := "%FDL%" as string
     public const ColumnsMacro    := "%C%" as string
     public const ValuesMacro     := "%V%" as string
+    public const WhereMacro      := "%W%" as string
 
     public const ConnectionDelimiter := "::" as string
     public const IndexExt            := "SQX" as string
@@ -206,6 +210,49 @@ abstract class SqlDbProvider inherit SqlDbObject
 
 
 #endregion
+    virtual method GetSqlColumnInfo(cName as string, cType as string, nLen as int, nDec as int) as string
+        var oInfo := RddFieldInfo{cName, cType, nLen, nDec}
+        return GetSqlColumnInfo(oInfo)
+
+    virtual method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+        local sResult := "" as string
+        var name := i"{QuoteIdentifier(oInfo.ColumnName)}"
+        switch oInfo:FieldType
+        case DbFieldType.Character
+        case DbFieldType.VarChar
+            sResult := i"{name} varchar ({oInfo.Length}) default ''"
+        case DbFieldType.Date
+            sResult := i"{name} date"
+        case DbFieldType.Logic
+            sResult := i"{name} bit default 0"
+        case DbFieldType.Memo
+            sResult := i"{name} varchar (max) default ''"
+        case DbFieldType.Number
+            sResult := i"{name} Numeric ({oInfo.Length}, {oInfo.Decimals}) default 0"
+        case DbFieldType.Currency
+            sResult := i"{name} decimal default 0"
+        case DbFieldType.DateTime
+            sResult := i"{name} datetime "
+        case DbFieldType.Double
+        case DbFieldType.Float
+            sResult := i"{name} float default 0"
+        case DbFieldType.Integer
+            sResult := i"{name} int "
+            sResult += "default 0"
+        case DbFieldType.Blob
+        case DbFieldType.General
+        case DbFieldType.Picture
+        case DbFieldType.VarBinary
+            sResult := i"{name} binary "
+        case DbFieldType.NullFlags
+            sResult := ""
+        end switch
+        if !String.IsNullOrEmpty(sResult)
+            if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
+                sResult += " null "
+            endif
+        endif
+        return sResult
 
 end class
 

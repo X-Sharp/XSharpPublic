@@ -12,20 +12,16 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Diagnostics; // PLEASE DO NOT REMOVE THIS!!!!
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using System.ComponentModel;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
-    using Microsoft.CodeAnalysis.Text;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
@@ -2688,9 +2684,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected string GetStaticGlobalClassname()
         {
             string filename = PathUtilities.GetFileName(_fileName);
+            var filepath = PathUtilities.GetDirectoryName(_fileName);
             filename = PathUtilities.RemoveExtension(filename);
             filename = RemoveUnwantedCharacters(filename);
-            return "$" + filename + "$";
+            filename = "$" + filename + "_" + filepath.GetHashCode().ToString("X8") + "$";
+            return filename;
         }
 
         public void FinalizeGlobalEntities()
@@ -3867,7 +3865,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var result = _syntaxFactory.ConstructorInitializer(chain.Start.CtorInitializerKind(),
                                             SyntaxFactory.ColonToken,
                                             chain.Start.SyntaxKeyword(),
-                                            chain.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList());
+                                            GetArguments(chain.ArgList));
                 chain.Put(result);
                 return result;
             }
@@ -7370,7 +7368,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBoundMethodCall([NotNull] XP.BoundMethodCallContext context)
         {
-            var args = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+            var args = GetArguments(context.ArgList);
             context.HasRefArguments = HasRefArguments(args, context);
             context.Put(_syntaxFactory.InvocationExpression(
                 context.Expr.Get<ExpressionSyntax>(), args));
@@ -7395,7 +7393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitBindArrayAccess([NotNull] XP.BindArrayAccessContext context)
         {
             context.Put(_syntaxFactory.ElementBindingExpression(
-                context.ArgList?.Get<BracketedArgumentListSyntax>() ?? EmptyBracketedArgumentList()
+                context?.Get<BracketedArgumentListSyntax>() ?? EmptyBracketedArgumentList()
             ));
         }
 
@@ -7613,15 +7611,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private bool GenerateAltD(XP.MethodCallContext context)
         {
             // Pseudo function AltD()
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                argList = EmptyArgumentList();
-            }
+            ArgumentListSyntax argList = GetArguments(context.ArgList);
             var stmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.DebuggerBreak, argList), context);
             var cond = MakeSimpleMemberAccess(
                         GenerateQualifiedName(SystemQualifiedNames.Debugger),
@@ -7633,16 +7623,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private bool GenerateGetInst(XP.MethodCallContext context)
         {
             // Pseudo function _GetInst()
-            ArgumentListSyntax argList;
+            ArgumentListSyntax argList = GetArguments(context.ArgList);
             ExpressionSyntax expr;
-            if (context.ArgList != null)
+            if (argList.Arguments.Count != 0)
             {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-                if (argList.Arguments.Count != 0)
-                {
-                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, "_getInst", argList.Arguments.Count)));
-                    return true;
-                }
+                context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, "_getInst", argList.Arguments.Count)));
+                return true;
             }
 
             TypeSyntax globaltype = GenerateQualifiedName(GlobalClassName);
@@ -7658,22 +7644,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private bool GenerateChr(XP.MethodCallContext context)
         {
             // Pseudo function _Chr and Chr()
-            ArgumentListSyntax argList;
+            ArgumentListSyntax argList = GetArguments(context.ArgList);
             ExpressionSyntax expr;
             int count = 0;
             if (context.ArgList != null)
             {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
                 count = argList.Arguments.Count;
-            }
-            else
-            {
-                argList = null;
             }
             if (count != 1)
             {
                 expr = context.Expr.Get<ExpressionSyntax>();
-                string name = String.Empty;
+                string name = string.Empty;
                 if (expr is IdentifierNameSyntax ins)
                 {
                     name = ins.Identifier.Text;
@@ -7810,15 +7791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return;
                     break;
             }
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                argList = EmptyArgumentList();
-            }
+            ArgumentListSyntax argList = GetArguments(context.ArgList);
             context.HasRefArguments = HasRefArguments(argList, context);
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 
@@ -7844,15 +7817,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var name = context.Id.Id.GetText();
             var isAmp = context.Amp != null;
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                argList = EmptyArgumentList();
-            }
+            ArgumentListSyntax argList = GetArguments(context.ArgList);
             // DO .. WITH ...,... passes arguments by reference
             if (argList.Arguments.Count > 0 || isAmp)
             {
@@ -7889,16 +7854,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!(context.Type is XP.ArrayDatatypeContext))
             {
                 var type = context.Type.Get<TypeSyntax>();
-                ArgumentListSyntax argList;
+                ArgumentListSyntax argList = GetArguments(context.ArgList);
                 InitializerExpressionSyntax init = null;
-                if (context.ArgList != null)
-                {
-                    argList = context.ArgList.Get<ArgumentListSyntax>();
-                }
-                else
-                {
-                    argList = EmptyArgumentList();
-                }
                 context.HasRefArguments = HasRefArguments(argList, context);
                 if (context.Init != null)
                 {
@@ -8472,6 +8429,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return _emptyArgs;
         }
+        private ArgumentListSyntax GetArguments(XP.ArgumentListContext context)
+        {
+            return context?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+        }
 
         private static BracketedArgumentListSyntax _emptyBracketedArgs = null;
         protected BracketedArgumentListSyntax EmptyBracketedArgumentList()
@@ -8543,7 +8504,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //                     ;
             // namedArgument may match an empty argument.
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
-            if (context._Args.Count == 0 ||
+            if (context._Args == null || context._Args.Count == 0 ||
                 (context._Args.Count == 1 && context._Args[0].IsMissing))
             {
                 context.Put(EmptyArgumentList());

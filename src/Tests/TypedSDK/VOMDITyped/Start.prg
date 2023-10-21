@@ -1,7 +1,8 @@
 [STAThread];
 FUNCTION Start() AS INT
 	LOCAL oXApp AS XApp
-	TRY
+    try
+        RddSetDefault("DBFVFP")
 		oXApp := XApp{}
 		oXApp:Start()
 	CATCH oException AS Exception
@@ -10,7 +11,7 @@ FUNCTION Start() AS INT
 RETURN 0
 
 CLASS XApp INHERIT App
-	METHOD Start() 
+	method Start()
 		LOCAL oMainWindow AS StandardShellWindow
 		oMainWindow := StandardShellWindow{SELF}
 		oMainWindow:Show(SHOWCENTERED)

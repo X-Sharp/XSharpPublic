@@ -1,28 +1,10 @@
-procedure Main()
-    local o := SomeClass():new()
-
-    o:Hello()
-    _wait()
-return
-
-
-class SomeClass from Base
-exported:
-    inline method Init()
-        ::a := "abc"
-        return super:Init()
-
-    inline method Hello()
-        ? "Hello", ::a
+function Start as void
+    test (1,,2,,3)
     return
 
-    var a
-endclass
 
-
-class Base
-exported:
-    inline method Init()
-        ? "Base"
-        return
-endclass
+function test Clipper
+    foreach var arg in _Args()
+        ? arg
+    next
+    return nil

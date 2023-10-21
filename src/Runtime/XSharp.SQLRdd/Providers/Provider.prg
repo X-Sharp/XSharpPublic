@@ -113,8 +113,8 @@ abstract class SqlDbProvider inherit SqlDbObject
         return null
 
 #endregion
-    private _Factory as DbProviderFactory
-    private _cmdBuilder as DbCommandBuilder
+    protected _Factory as DbProviderFactory
+    protected _cmdBuilder as DbCommandBuilder
 
     property Factory as DbProviderFactory
         get
@@ -147,22 +147,22 @@ abstract class SqlDbProvider inherit SqlDbObject
     method QuoteIdentifier(cId as string) as string
         return _cmdBuilder:QuoteIdentifier(cId)
 
-    method CreateCommand() as DbCommand
+    virtual method CreateCommand() as DbCommand
         return Factory:CreateCommand()
 
-    method CreateCommandBuilder() as DbCommandBuilder
+    virtual method CreateCommandBuilder() as DbCommandBuilder
         return Factory:CreateCommandBuilder()
 
-    method CreateConnection() as DbConnection
+    virtual method CreateConnection() as DbConnection
         return Factory:CreateConnection()
 
-    method CreateConnectionStringBuilder() as DbConnectionStringBuilder
+    virtual method CreateConnectionStringBuilder() as DbConnectionStringBuilder
         return Factory:CreateConnectionStringBuilder()
 
-    method CreateParameter() as DbParameter
+    virtual method CreateParameter() as DbParameter
         return Factory:CreateParameter()
 
-    method CreateDataSourceEnumerator() as DbDataSourceEnumerator
+    virtual method CreateDataSourceEnumerator() as DbDataSourceEnumerator
         if Factory:CanCreateDataSourceEnumerator
             return Factory:CreateDataSourceEnumerator()
         endif
@@ -210,9 +210,6 @@ abstract class SqlDbProvider inherit SqlDbObject
 
 
 #endregion
-    virtual method GetSqlColumnInfo(cName as string, cType as string, nLen as int, nDec as int) as string
-        var oInfo := RddFieldInfo{cName, cType, nLen, nDec}
-        return GetSqlColumnInfo(oInfo)
 
     virtual method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         local sResult := "" as string

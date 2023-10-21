@@ -106,6 +106,11 @@ class SQLRDD inherit DBFVFP
         pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
         if pos > 0
             strConnection := query:Substring(0, pos)
+            var oNewConn := SqlDbGetConnection(strConnection)
+            if oNewConn == null
+                return false
+            endif
+            _connection := oNewConn
             query := query:Substring(pos+2)
             info:FileName := query
         endif
@@ -118,7 +123,6 @@ class SQLRDD inherit DBFVFP
         self:_tableMode := TableMode.Table
         self:TempFileName(info)
         self:_creating := true
-        // save the case of of the column names
         var fields := self:_Fields
         var lResult := super:Create(info)
         self:_creating := false

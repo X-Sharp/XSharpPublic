@@ -83,7 +83,7 @@ METHOD DrawBar()
 	iStep  := (iCanvasY / iDatas) / 3
 	iY     := iStep / 2
 	for i := 1 to iDatas
-		iX := ((oSize:Width - 45) * aData[i][1]) / fMaxData
+		iX := (dword) (((oSize:Width - 45) * aData[i][1]) / fMaxData)
 		self:Draw(RectangleObject{Point{10, iY}, Dimension{iX, iStep * 2}, oBlackPen, aBrushes[MOD(i-1, MAX_COLORS)+1]})
 		self:Draw(TextObject{Point{12, iY+2}, aData[i][2], oArial10})
 		self:Draw(TextObject{Point{iX + 12, iY+2}, NTrim(aData[i][1]), oArial10 })
@@ -109,7 +109,7 @@ METHOD DrawColumn()
 	iStep  := ((DWORD(oSize:Width) / iDatas) / 3)
 	iX     := iStep / 2
 	for i := 1 to iDatas
-		iY := ((iCanvasY - 40) * aData[i][1]) / fMaxData
+		iY := (dword) (((iCanvasY - 40) * aData[i][1]) / fMaxData)
 		self:Draw(RectangleObject{Point{iX, 30}, Dimension{iStep * 2, iY}, oBlackPen, aBrushes[MOD(i-1, MAX_COLORS)+1]})
 		self:Draw(TextObject{Point{iX, 10}, aData[i][2], oArial10})
 		self:Draw(TextObject{Point{iX+2, 10 + iY}, NTrim(aData[i][1]), oArial10})

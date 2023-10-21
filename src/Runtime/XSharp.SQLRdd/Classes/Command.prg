@@ -19,7 +19,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// Connection class.
 /// </summary>
-class SqlDbCommand inherit SqlDbEventObject implements IDisposable
+class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
 
 #region Properties
     property Connection     as SqlDbConnection auto

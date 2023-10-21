@@ -25,7 +25,7 @@ function Start as void
     //TestCommandOLEDB()
     //TestParametersODBC()
     //TestParametersSQL()
-    TestTable()
+    //TestTable()
     //testCreate()
     wait
     return
@@ -323,18 +323,20 @@ Function DumpConnection(conn as SqlDbConnection) as void
         //             ? Name
         //         next
         var tables := conn:GetTables("TABLE")
-        ? "Tables: ", tables:Count
+        ? "# of Tables : ", tables:Count
         foreach var name in tables
-            DumpStructure(conn:GetStructureForTable(name, true,"*"))
+            try
+                DumpStructure(conn:GetStructureForTable(name, true,"*"))
+            end try
         next
     ENDIF
     ? Seconds() - secs
 function DumpStructure(oTd as SqlDbTableDef) as VOID
-    //     ? "Table", oTd:Name, "Columns", oTd:Columns:Count
-    //     Foreach oCol as SqlDbColumnDef in oTd:Columns
-    //         ? oCol:Name, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
-    //     next
-    //     ?
+        ? "Table", oTd:Name, "Columns", oTd:Columns:Count
+        foreach oCol as SqlDbColumnDef in oTd:Columns
+            ? oCol:Name, oCol:ColumnInfo:ColumnName, oCol:ColumnInfo:FieldTypeFlags, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
+        next
+        ?
 
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     local strValue as string
@@ -352,15 +354,25 @@ function TestProviders as void
     local oProv as SqlDbProvider
     local oProvider := MySqlClientFactory.Instance
     oProvider := Advantage.Data.Provider.AdsFactory.Instance
-    local aTest := {"Advantage","ODBC","OLEDB","SQLSERVER","MySql"}
+    local aTest := {"Advantage","ODBC","OLEDB","SQLSERVER","MySql","ORACLE"}
     foreach strProv as STRING in aTest
-        SqlDbSetProvider(strProv)
-        oProv := SqlDbGetProvider()
-        ? "Name      ", oProv:Name
-        ? "TopStmt   ", oProv:SelectTopStatement
-        ? "Left()    ", oProv:GetFunction("LEFT(%1%,%2%)")
-        ? "Alltrim() ", oProv:GetFunction("ALLTRIM(%1%)")
-        ? "DTOS()    ", oProv:GetFunction("DTOS(%1%)")
+        if SqlDbSetProvider(strProv)
+            oProv := SqlDbGetProvider()
+            ? "Name      ", oProv:Name
+            ? "TopStmt   ", oProv:SelectTopStatement
+            ? "Left()    ", oProv:GetFunction("LEFT(%1%,%2%)")
+            ? "Alltrim() ", oProv:GetFunction("ALLTRIM(%1%)")
+            ? "DTOS()    ", oProv:GetFunction("DTOS(%1%)")
+            try
+                ? "Quotes    ", oProv:QuoteIdentifier("somename")
+            catch e as exception
+                ? "NO Quotes for ", strProv, e:Message
+            end try
+            ?
+        else
+            ? "Could not load provider "+strProv
+            wait
+         endif
     next
     wait
 

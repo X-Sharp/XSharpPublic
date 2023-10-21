@@ -158,14 +158,10 @@ class SqlDbTableCommandBuilder
         endif
         return currentOrder
     method BuildSqlStatement(sWhereClause as string) as string
-        var stmt := Provider:SelectTopStatement
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var currentOrder := _oRdd:CurrentOrder
-        sb:Append(stmt)
-        sb:Replace(SqlDbProvider.TopCountMacro, _oInfo:MaxRecords:ToString())
-        sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList(_oInfo))
-        sb:Replace(SqlDbProvider.TableNameMacro, self:_cTable)
+        sb:Append(Provider:QuoteIdentifier(self:_cTable))
         if currentOrder != null
             scopeWhere := currentOrder:GetScopeClause()
         endif
@@ -187,7 +183,14 @@ class SqlDbTableCommandBuilder
             cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
             sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         endif
-        return sb:ToString()
+        var selectStmt := sb:ToString()
+        sb:Clear()
+        sb:Append(Provider:SelectTopStatement)
+        sb:Replace(SqlDbProvider.TopCountMacro, _oInfo:MaxRecords:ToString())
+        sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList(_oInfo))
+        sb:Replace(SqlDbProvider.TableNameMacro, selectStmt)
+
+        return _connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
     method ColumnList(oInfo as SqlTableInfo) as string
         var sb := StringBuilder{}
         var list  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}

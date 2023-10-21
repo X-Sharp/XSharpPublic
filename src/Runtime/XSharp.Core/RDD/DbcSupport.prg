@@ -309,8 +309,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         PRIVATE METHOD FindObject<T>(oColl as Dictionary<String, T>, cName as STRING) AS T WHERE T IS DbcObject
-            IF oColl:ContainsKey(cName)
-                var oObject := oColl[cName]
+            if oColl:TryGetValue(cName, out var oObject)
                 oObject:GetData()
                 RETURN oObject
             ENDIF

@@ -97,36 +97,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="XSharp.CodeAnalysis">
-      <Name>XSharp.CodeAnalysis</Name>
-      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-        <HintPath>$(XsiDir)XSharp.CodeAnalysis.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.Core">
-      <Name>XSharp.Core</Name>
-      <AssemblyName>XSharp.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>$(RtOutPutDir)XSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.RT">
-      <Name>XSharp.RT</Name>
-      <AssemblyName>XSharp.RT.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>$(RtOutPutDir)XSharp.RT.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.Scripting">
-      <Name>XSharp.Scripting</Name>
-      <AssemblyName>XSharp.Scripting.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>$(XsiDir)XSharp.Scripting.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ExecScript.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -140,6 +110,28 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Scripting\XSharpScripting\XSharpScripting.csproj">
+      <Name>XSharpScripting</Name>
+      <Project>{014963ae-d6d1-4ff8-8d8a-8d417f5d8d1f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Name>XSharpCodeAnalysis</Name>
+      <Project>{f738fd65-ffaf-4f52-8efc-5affd1c42846}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

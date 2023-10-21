@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return token;
         }
         internal static SyntaxToken MakeToken(SyntaxKind kind, string text) => Token(WS, kind, text, text, WS);
-        internal static SyntaxToken MakeIdentifier(string text) => Identifier(WS, text, WS);
+        internal static SyntaxToken MakeIdentifier(string text) => Identifier(text);
     }
     [FlagsAttribute]
     enum XNodeFlags : short

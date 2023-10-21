@@ -4,8 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Collections.Generic
-USING System.Diagnostics
+using System.Collections.Generic
+using System.Diagnostics
 USING System.Linq
 #undef AUTOCLOSETIMER
 #translate IsValidArea (<nArea>) => (<nArea> > 0 .and. <nArea> <= MaxWorkareas)
@@ -18,7 +18,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     PUBLIC CONST MaxWorkareas := 4096 AS DWORD
     #endregion
     // This is a table across threads that has all the RDDs and Workareas
-    STATIC PROTECTED _AllRDDs   AS Dictionary<IRdd, Workareas>
+    static protected _AllRDDs   as Dictionary<IRdd, Workareas>
 #ifdef AUTOCLOSETIMER
     STATIC PRIVATE _oTimer       as System.Threading.Timer
 
@@ -73,25 +73,20 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RETURN
 
     STATIC METHOD _Remove(oRDD AS IRdd) AS LOGIC
-        BEGIN LOCK _AllRDDs
-            IF _AllRDDs:ContainsKey(oRDD)
+        begin lock _AllRDDs
+            if _AllRDDs:ContainsKey(oRDD)
                 _AllRDDs:Remove(oRDD)
-                RETURN TRUE
-            ENDIF
-        END LOCK
-        RETURN FALSE
+                return true
+            endif
+        end lock
+        return false
 
     STATIC METHOD _FindRDD (oRDD AS IRdd, oWa OUT Workareas) AS LOGIC
-        oWa  := NULL
-        BEGIN LOCK _AllRDDs
-            IF _AllRDDs:ContainsKey(oRDD)
-                oWa  := _AllRDDs[oRDD]
-                RETURN TRUE
-            ENDIF
-        END LOCK
-        RETURN FALSE
+        begin lock _AllRDDs
+        return _AllRDDs:TryGetValue(oRDD, out oWa)
+        end lock
 
-    STATIC METHOD _CloseArea(oRDD AS IRdd) AS LOGIC
+    static method _CloseArea(oRDD as IRdd) as logic
         LOCAL oWa  AS Workareas
         IF Workareas._FindRDD(oRDD, OUT oWa)
             RETURN oWa:CloseArea(oRDD:Area)
@@ -228,8 +223,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
         BEGIN LOCK RDDs
             IF !String.IsNullOrEmpty(sAlias)
-                IF Aliases != NULL .AND. Aliases:ContainsKey(sAlias)
-                    RETURN Aliases[sAlias]
+                if Aliases != null .and. Aliases:TryGetValue(sAlias, out var area)
+                    return area
                 ENDIF
             ENDIF
         END LOCK
@@ -263,8 +258,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     PUBLIC METHOD GetAlias( nArea AS DWORD) AS STRING
         IF ISVALIDAREA(nArea)
             BEGIN LOCK RDDs
-                IF RDDs:ContainsKey(nArea) .AND. RDDs[nArea] != NULL
-                    RETURN RDDs[nArea]:Alias
+                if RDDs:TryGetValue(nArea, out var rdd) .and. rdd != null
+                    return rdd:Alias
                 ENDIF
             END LOCK
         ENDIF
@@ -290,12 +285,12 @@ ABSTRACT CLASS XSharp.RDD.Workareas
             IF ! String.IsNullOrEmpty(sAlias)
                 sAlias := sAlias:ToUpperInvariant()
             ENDIF
-            IF Aliases:ContainsKey(sAlias) .AND. Aliases[sAlias] != nArea
+            if Aliases:TryGetValue(sAlias, out var nFoundArea) .and. nFoundArea != nArea
                 RETURN FALSE
             ENDIF
             BEGIN LOCK RDDs
-                IF RDDs:ContainsKey(nArea) .AND. RDDs [nArea] != NULL
-                    Workareas._Remove(RDDs [nArea])
+                if RDDs:TryGetValue(nArea, out var rdd) .and. rdd != null
+                    Workareas._Remove(rdd)
                 ENDIF
                 RDDs[ nArea] 	:= oRDD
                 IF ! Aliases:ContainsKey(sAlias)
@@ -336,8 +331,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
             nArea := iCurrentWorkarea
             IF IsValidArea(nArea)
                 BEGIN LOCK RDDs
-                    IF RDDs:ContainsKey(nArea)
-                        RETURN RDDs[ nArea]
+                    if RDDs:TryGetValue(nArea, out var rdd)
+                        return rdd
                     ENDIF
                 END LOCK
             ENDIF
@@ -348,8 +343,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
 
     PUBLIC METHOD GetCargo(nArea AS DWORD) AS OBJECT
         IF IsValidArea(nArea)
-            IF SELF:cargo:ContainsKey(nArea)
-                RETURN SELF:cargo[nArea]
+            if self:cargo:TryGetValue(nArea, out var result)
+                return result
             ENDIF
         ENDIF
         RETURN NULL
@@ -357,9 +352,9 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     PUBLIC METHOD SetCargo(nArea AS DWORD, newCargo AS OBJECT) AS VOID
         IF IsValidArea(nArea)
             IF newCargo == NULL
-                    IF SELF:cargo:ContainsKey(nArea)
-                        SELF:cargo:Remove(nArea)
-                ENDIF
+                if self:cargo:ContainsKey(nArea)
+                    self:cargo:Remove(nArea)
+                endif
             ELSE
                 SELF:cargo[nArea] := newCargo
             ENDIF

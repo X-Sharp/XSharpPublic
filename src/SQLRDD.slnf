@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "Runtime.sln",
+    "projects": [
+      "Runtime\\MacroCompiler\\MacroCompiler.csproj",
+      "Runtime\\XSharp.Core\\XSharp.Core.xsproj",
+      "Runtime\\XSharp.RT\\XSharp.RT.xsproj",
+      "Runtime\\XSharp.Rdd\\XSharp.RDD.xsproj",
+      "Runtime\\XSharp.SQLRdd\\XSharp.SQLRDD.xsproj",
+      "Runtime\\XSharp.VO\\XSharp.VO.xsproj",
+      "Tests\\SqlRDDTests\\SQLRddTests.xsproj"
+    ]
+  }
+}

@@ -57,6 +57,7 @@
     <Compile Include="$(CommonDir)XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
+    <Compile Include="Controls\Styling.cs" />
     <Compile Include="DebuggerUIPackage.cs" />
     <Compile Include="Controls\GlobalsControl.xaml.cs">
       <DependentUpon>GlobalsControl.xaml</DependentUpon>

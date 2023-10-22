@@ -25,7 +25,7 @@ namespace XSharp.Debugger.UI
             this.IsVisibleChanged += MemvarsControl_IsVisibleChanged;
         }
 
-        private void MemvarsControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+         private void MemvarsControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (this.Visibility == Visibility.Visible)
             {
@@ -70,6 +70,7 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
+            this.SetTheme(lvMemVars, tbNotLoaded);
 
             if (View.IsRTLoaded)
             {

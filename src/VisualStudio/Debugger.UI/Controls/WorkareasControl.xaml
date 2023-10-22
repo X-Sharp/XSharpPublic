@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
-             toolkit:Themes.UseVsTheme="False"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              >
+
+
     <Grid>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -23,11 +24,12 @@
         <Separator Grid.Row="1" />
         <TextBox  Grid.Row="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
         <ListView Grid.Row="2" Name="lvAreas" Width="Auto" ItemsSource="{Binding SelectedItems}">
-            <ListView.Resources>
+             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">
                     <Setter Property="HorizontalContentAlignment" Value="Left" />
                     <Setter Property="Visibility" Value="Visible" />
                 </Style>
+
             </ListView.Resources>
             <ListView.View>
                 <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Workareas">
@@ -38,9 +40,12 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="125" Header="Area" DisplayMemberBinding="{Binding Area}" />
-                    <GridViewColumn Width="125" Header="Alias" DisplayMemberBinding="{Binding Alias}" />
-                    <GridViewColumn Width="125" Header="RDD" DisplayMemberBinding="{Binding RDD}" />
+                    <GridViewColumn Width="125" Header="Area" 
+                       DisplayMemberBinding="{Binding Area}" />
+                    <GridViewColumn Width="125" Header="Alias" 
+                                    DisplayMemberBinding="{Binding Alias}" />
+                    <GridViewColumn Width="125" Header="RDD" 
+                                    DisplayMemberBinding="{Binding RDD}" />
                 </GridView>
             </ListView.View>
 

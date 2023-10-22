@@ -300,7 +300,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
     static method OpenXmlItem(oBaseNode as XmlNode) as VOWEDItem
         local lDummy := false as logic
         RETURN OpenXmlItem(oBaseNode, REF lDummy)
-    static method OpenXmlItem(oBaseNode as XmlNode, lSavedBefore ref logic) as VOWEDItem
+    STATIC METHOD OpenXmlItem(oBaseNode AS XmlNode, lSavedBefore REF LOGIC) AS VOWEDItem
         LOCAL oPage AS VOTabPageOptions
         LOCAL oPageNode AS XmlNode
         LOCAL oPropNode AS XmlNode

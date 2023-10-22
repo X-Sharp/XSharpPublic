@@ -25,6 +25,7 @@ namespace XSharp.Debugger.UI
             this.IsVisibleChanged += LvSettings_IsVisibleChanged;
         }
 
+
         private void LvSettings_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (this.Visibility == Visibility.Visible)
@@ -68,7 +69,7 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
-
+            this.SetTheme(lvSettings, tbNotLoaded);
             if (View.IsRTLoaded)
             {
                 lvSettings.Visibility = Visibility.Visible;

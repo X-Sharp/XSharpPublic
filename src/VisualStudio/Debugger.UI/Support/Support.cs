@@ -25,6 +25,7 @@ namespace XSharp.Debugger.UI
         internal static DkmProcess currentProcess = null;
         internal static bool? IsRtLoaded = null;
         internal static bool IsRunning = false;
+        internal static bool errorIsShown = false;
         static IList<IDebuggerToolWindow> windows;
         static ILogger Logger => XSettings.Logger;
 
@@ -43,6 +44,11 @@ namespace XSharp.Debugger.UI
             {
                 if (str.IndexOf(RtLink.ErrorPrefix) == -1)
                 {
+                    if (errorIsShown)
+                    {
+                        VS.StatusBar.ShowMessageAsync("").FireAndForget();
+                        errorIsShown = false;
+                    }
                     if (str.StartsWith("\"") && str.EndsWith("\""))
                     {
                         str = str.Substring(1, str.Length - 2);
@@ -51,6 +57,7 @@ namespace XSharp.Debugger.UI
                 else
                 {
                     VS.StatusBar.ShowMessageAsync(str).FireAndForget();
+                    errorIsShown = true;
                     str = "";
                 }
             }
@@ -134,7 +141,8 @@ namespace XSharp.Debugger.UI
 
         internal static async Task<string> ExecExpressionAsync(string source)
         {
-            if (XDebuggerSettings.DebuggerMode != DebuggerMode.Break)
+            if (XDebuggerSettings.DebuggerMode != DebuggerMode.Break &&
+                XDebuggerSettings.DebuggerMode != DebuggerMode.Design)
             {
                 return "";
             }

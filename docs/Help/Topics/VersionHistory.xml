@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-10-20T16:44:46.171-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-10-22T11:25:45.330+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -98,6 +98,7 @@
       <li styleclass="Normal">Fixed design time display issue with CheckBox and RadioButton captions with specific fonts in the VOWED (#796)</li>
       <li styleclass="Normal">Fixed problem with the VOWED editor changing all existing classes in the prg to PARTIAL (#814)</li>
       <li styleclass="Body Text">Fixed problem with incorrectly adding constructor code to instantiate the DataBrowser in the VOWED, even when there are no (non-deleted) data columns (#1365)</li>
+      <li styleclass="Body Text">Fixed several problems in the VOMED with menu item define names in source code and resource files (#1374)</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">New features</para>

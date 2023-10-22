@@ -27,6 +27,7 @@ namespace XSharp.Debugger.UI
             this.IsVisibleChanged += GlobalsControl_IsVisibleChanged;
         }
 
+ 
         private void GlobalsControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (this.Visibility == Visibility.Visible)
@@ -68,6 +69,8 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
+            this.SetTheme(lvGlobals, tbNotLoaded);
+
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 if (View.IsRTLoaded)

@@ -361,7 +361,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
         LOCAL eViewMode AS ViewMode
         LOCAL cColumnsInherit AS STRING
-        LOCAL cBrowserInherit AS STRING
+        local cBrowserInherit as string
+        local lContainsColumns as logic
+
         eViewMode := SELF:ViewMode
         cColumnsInherit := SELF:oWindowDesign:ColumnsInheritClassName
         cBrowserInherit := SELF:oWindowDesign:BrowserInheritClassName
@@ -502,7 +504,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             FOR n := 0 UPTO aColumns:Count - 1
                 //				oDesign := (DesignWindowItem)aDesign[n]
                 oDesign := (DesignWindowItem)aColumns[n]
-                IF oDesign:Column != NULL .AND. oDesign:BrowseIndex != -1
+                if oDesign:Column != null .and. oDesign:BrowseIndex != -1
+                    lContainsColumns := true
                     cLine := e"\t"
                     IF lExpCtls
                         cLine += "EXPORT "
@@ -694,10 +697,12 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 
         // databrowser - columns
-        IF eViewMode != ViewMode.Auto
-            cLine := e"\tSELF:Browser := " + cBrowserInherit + "{SELF}"
-            aConstructor:Add(cLine)
-            aConstructor:Add("")
+        if eViewMode != ViewMode.Auto
+            if lContainsColumns
+                cLine := e"\tSELF:Browser := " + cBrowserInherit + "{SELF}"
+                aConstructor:Add(cLine)
+                aConstructor:Add("")
+            endif
 
             //			FOR n := 0 UPTO aDesign:Count - 1
             //				oDesign := (DesignWindowItem)aDesign[n]

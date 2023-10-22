@@ -198,7 +198,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
         oGenerator:BeginCode()
         oGenerator:Clear()
         XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
-        SELF:_WriteDefines(oGenerator, oCode)
+        // SELF:_WriteDefines(oGenerator, oCode) // don't do that, we will directly use the define values
         FOREACH cResource AS STRING IN oCode:aResource
             oGenerator:AddLine(cResource)
         NEXT
@@ -209,7 +209,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
             oGenerator:BeginCode()
             oGenerator:Clear()
             XFuncs.WriteHeader(oGenerator, "XSharp.MenuEditor")
-            SELF:_WriteDefines(oGenerator, oCode)
+            // SELF:_WriteDefines(oGenerator, oCode)
             FOREACH cResource AS STRING IN oCode:aAccelResource
                 oGenerator:AddLine(cResource)
             NEXT

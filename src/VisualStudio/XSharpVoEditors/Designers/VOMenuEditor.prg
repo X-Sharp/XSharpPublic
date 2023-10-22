@@ -1520,7 +1520,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
             LOCAL cFirst AS CHAR
             cFirst := c[0]
-            IF cFirst == '_' .OR. (cFirst >= 'A' .AND. cFirst <= 'Z') .OR. (cFirst >= 'a' .AND. cFirst <= 'z') .OR. (DWORD)cFirst > 255 // international character
+            if cFirst == '_' .or. (cFirst >= 'A' .and. cFirst <= 'Z') .or. (cFirst >= 'a' .and. cFirst <= 'z') .or. (DWORD)cFirst > 128 // international character
                 RETURN c
             ENDIF
 

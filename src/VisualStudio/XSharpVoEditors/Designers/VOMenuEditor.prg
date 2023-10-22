@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -9,7 +9,7 @@ USING System.Windows.Forms
 USING System.Drawing
 USING System.IO
 USING System.Text
-using System.Globalization
+USING System.Globalization
 
 PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
     //	PROTECT aAffected AS List<STRING>
@@ -793,7 +793,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
                 cLine += "MENUITEM SEPARATOR"
             ELSEIF oNode:Nodes:Count == 0
                 // cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , false ) + cAccelerator + e"\" , " + oDesign:GetVODefineRc()
-                cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , false ) + cAccelerator + e"\" , " + oDesign:GetMenuID()
+                cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + cAccelerator + e"\" , " + oDesign:GetMenuID()
                 //				cLine += e"MENUITEM \"" + oDesign:GetProperty("Caption"):TextValue + cAccelerator + e"\" , " + oDesign:GetProperty("MenuID"):TextValue
             ELSE
                 cLine += e"POPUP \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + e"\""
@@ -914,7 +914,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
             cEventName := oDesign:GetProperty("EventName"):TextValue:Trim()
             IF cEventName == ""
                 //				cEventName := oDesign:Name
-                cEventName := oDesign:cNameIDcode
+                cEventName := oDesign:cNameIDcodeNoMenu
             ENDIF
             oAccelerator := (MenuAccelerator)oDesign:GetProperty("Accelerator"):Value
             IF oAccelerator:IsEmpty
@@ -1162,7 +1162,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         FOREACH oDesign AS DesignMenuItem IN aControls
             LOCAL oProp AS VODesignProperty
             oProp := (VODesignProperty)oDesign:GetProperty("ButtonBmp")
-            IF oProp != null
+            IF oProp != NULL
                 oProp:ApplyThumb()
             ENDIF
         NEXT
@@ -1388,7 +1388,10 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
         FOREACH oDesign AS DesignMenuItem IN aControls
             //		cOrigName := oDesign:Name
-            cName := self:GetNameFromTree(oDesign:oNode)
+            cName := SELF:GetNameFromTree(oDesign:oNode, TRUE)
+            oDesign:cNameIDcodeNoMenu := MenuCharMap.Get(cName)
+
+            cName := SELF:GetNameFromTree(oDesign:oNode)
             oDesign:cNameIDcode := MenuCharMap.Get(cName)
 
             cName := SELF:AdjustName(cName)
@@ -1501,9 +1504,11 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
         RETURN cRet
 
-    METHOD GetNameFromTree(oNode AS TreeNode) AS STRING
-        RETURN SELF:GetNameFromTree(oNode , oNode:Text)
-    METHOD GetNameFromTree(oNode AS TreeNode , cName AS STRING) AS STRING
+	METHOD GetNameFromTree(oNode AS TreeNode) AS STRING
+	RETURN SELF:GetNameFromTree(oNode , oNode:Text, FALSE)
+	METHOD GetNameFromTree(oNode AS TreeNode, lExcludeMainMenu AS LOGIC) AS STRING
+	RETURN SELF:GetNameFromTree(oNode , oNode:Text, lExcludeMainMenu)
+	METHOD GetNameFromTree(oNode AS TreeNode , cName AS STRING, lExcludeMainMenu AS LOGIC) AS STRING
 
         LOCAL FUNCTION PrefixName(c AS STRING) AS STRING
             DO WHILE c:Length != 0 .AND. c[0] == '&'
@@ -1525,6 +1530,9 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         cName := PrefixName(cName)
         DO WHILE !oNode:Parent == NULL
             oNode := oNode:Parent
+            IF lExcludeMainMenu .and. oNode:Parent == NULL
+            	EXIT
+            END IF
             cName := PrefixName(oNode:Text) + "_" + cName
         ENDDO
         cName := cName:Replace(' ' , '_')
@@ -2073,6 +2081,7 @@ CLASS DesignMenuItem INHERIT DesignItem
     PROTECT oEditor AS VOMenuEditor
 
     EXPORT cNameIDcode := "" AS STRING
+    EXPORT cNameIDcodeNoMenu := "" AS STRING
     EXPORT cNameIDrc := "" AS STRING
     CONSTRUCTOR(_nType AS INT , _oNode AS DesignTreeNode , _oEditor AS VOMenuEditor)
 
@@ -2199,10 +2208,10 @@ CLASS DesignMenuItem INHERIT DesignItem
             cChar := cDefine[n]
             IF cChar > 127 //.and. cChar:ToString():ToUpper() == cChar:ToString()
                 //cTemp += "_" + ((int)cChar):ToString() + "_"
-                if n == 0
+                IF n == 0
                     cTemp += "_"
-                endif
-                cTemp += ((int)cChar):ToString("X") + "_"
+                ENDIF
+                cTemp += ((INT)cChar):ToString("X") + "_"
             ELSE
                 cTemp += cChar:ToString()
             END IF

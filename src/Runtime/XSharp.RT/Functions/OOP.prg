@@ -92,13 +92,13 @@ internal static class OOPHelpers
         end if
 
         if lOurAssembliesOnly
-            if cacheClassesOurAssemblies:ContainsKey(cName)
-                return cacheClassesOurAssemblies[cName]
+            if cacheClassesOurAssemblies:TryGetValue(cName, out ret)
+                return ret
             end if
             aAssemblies := OOPHelpers.FindOurAssemblies()
         else
-            if cacheClassesAll:ContainsKey(cName)
-                return cacheClassesAll[cName]
+            if cacheClassesAll:TryGetValue(cName, out ret)
+                return ret
             end if
             aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
         end if
@@ -722,10 +722,8 @@ internal static class OOPHelpers
 
 
     static method GetMember(t as Type, cName as string) as MemberInfo
-        if t != null .and. ! String.IsNullOrEmpty(cName) .and. fieldPropCache:ContainsKey(t)
-            var fields := fieldPropCache[t]
-            if fields:ContainsKey(cName)
-                var result := fields[cName]
+        if t != null .and. ! String.IsNullOrEmpty(cName) .and. fieldPropCache:TryGetValue(t, out var fields)
+            if fields:TryGetValue(cName, out var result)
                 return result
             endif
         endif
@@ -733,10 +731,11 @@ internal static class OOPHelpers
 
     static method AddMember(t as Type, cName as string, mi as MemberInfo) as logic
         if t != null .and. ! String.IsNullOrEmpty(cName)
-            if ! fieldPropCache:ContainsKey(t)
-                fieldPropCache:Add( t, Dictionary<string, MemberInfo> {StringComparison.OrdinalIgnoreCase})
+            local fields as Dictionary<string, MemberInfo>
+            if ! fieldPropCache:TryGetValue(t, out fields)
+                fields := Dictionary<string, MemberInfo> {StringComparison.OrdinalIgnoreCase}
+                fieldPropCache:Add( t, fields)
             endif
-            var fields := fieldPropCache[t]
             if !fields:ContainsKey(cName)
                 fields:Add(cName, mi)
                 return true
@@ -809,7 +808,7 @@ internal static class OOPHelpers
         local t as Type
         local result as object
         lSelf := lSelf .or. EmulateSelf
-  
+
         // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             return oDynamic:NoIvarGet(cIVar)
@@ -961,20 +960,19 @@ internal static class OOPHelpers
         if t == null .or. String.IsNullOrEmpty(cMethod)
             return null
         endif
-        if overloadCache:ContainsKey(t)
-            var type := overloadCache[t]
-            if type:ContainsKey(cMethod)
-                var result := type[cMethod]
+        if overloadCache:TryGetValue(t, out var type)
+            if type:TryGetValue(cMethod, out var result)
                 return result
             endif
         endif
         return null
 
     static method CacheOverLoads(t as System.Type, cMethod as string, ml as IList<MethodInfo>) as logic
-        if !overloadCache:ContainsKey(t)
-            overloadCache:Add(t, Dictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase})
+        local type as Dictionary<string, IList<MethodInfo> >
+        if !overloadCache:TryGetValue(t, out type)
+            type := Dictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase}
+            overloadCache:Add(t, type)
         endif
-        var type := overloadCache[t]
         if type:ContainsKey(cMethod)
             return false
         endif
@@ -1043,9 +1041,7 @@ internal static class OOPHelpers
         if dynamicMethodCache == null
             dynamicMethodCache := Dictionary<MethodInfo,DynamicMethod>{}
         endif
-        if dynamicMethodCache:ContainsKey(methodInfo)
-            dynamicMethod := dynamicMethodCache[methodInfo]
-        else
+        if .not. dynamicMethodCache:TryGetValue(methodInfo, out dynamicMethod)
             local returnType := null as System.Type
             if (methodInfo:ReturnType != typeof(void))
                 returnType := methodInfo:ReturnType

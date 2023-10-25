@@ -69,8 +69,8 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
 
 
     INTERNAL STATIC METHOD FindGroup(nGroup AS DWORD) AS MemGroup
-        IF Groups:ContainsKey(nGroup)
-            RETURN Groups[nGroup]
+        IF Groups:TryGetValue(nGroup, out var ret)
+            RETURN ret
         ENDIF
         RETURN NULL_OBJECT
 

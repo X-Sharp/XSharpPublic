@@ -110,8 +110,8 @@ PUBLIC STRUCTURE __Symbol ;
 
     /// <exclude />
     METHOD SysGetAtomName() AS PSZ
-        IF PszDict:ContainsKey(_index)
-            RETURN PszDict[_index]
+        IF PszDict:TryGetValue(_index, OUT VAR ret)
+            RETURN ret
         ENDIF
         LOCAL pszAtom AS PSZ
         pszAtom := __Psz.CreatePsz(_value)
@@ -298,7 +298,7 @@ PUBLIC STRUCTURE __Symbol ;
         INTERNAL STATIC METHOD Add(strValue AS STRING) AS DWORD
             LOCAL index := 0 AS DWORD
             BEGIN LOCK sync
-                IF (LookupTable:ContainsKey(strValue))
+                IF (LookupTable:TryGetValue(strValue, OUT index))
                     index := LookupTable[strValue]
                 ELSE
                     index := (DWORD) LookupTable:Count

@@ -62,16 +62,16 @@ CLASS XSharp.Globals
     STATIC METHOD Find(cVarName AS STRING) AS FieldInfo
         IF Cache:Count > 0
             FOREACH VAR pair IN Cache
-                IF pair:Value != NULL .AND. pair:Value:ContainsKey(cVarName)
-                    RETURN pair:Value[cVarName]
+                IF pair:Value != NULL .AND. pair:Value:TryGetValue(cVarName, OUT VAR res)
+                    RETURN res
                 ENDIF
             NEXT
         ENDIF
         // Load Assemblies and try again when there are new assemblies
         IF LoadAssemblies()
             FOREACH VAR pair IN Cache
-                IF pair:Value != NULL .AND. pair:Value:ContainsKey(cVarName)
-                    RETURN pair:Value[cVarName]
+                IF pair:Value != NULL .AND. pair:Value:TryGetValue(cVarName, OUT VAR res)
+                    RETURN res
                 ENDIF
             NEXT
         ENDIF

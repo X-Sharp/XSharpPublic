@@ -32,6 +32,7 @@
       <li styleclass="Body Text">Fixed problem with ::new() not working properly in class methods (Xbase++ dialect) (#1350)</li>
       <li styleclass="Body Text">Fixed an exception when an error occurred for a token that was defined in a header file</li>
       <li styleclass="Body Text">Fixed a compiler error when returning super:Init() from a XBase++ method (#1357)</li>
+      <li styleclass="Body Text">Fixed a problem with STATIC DEFINEs in same named .prg files (#1361)</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

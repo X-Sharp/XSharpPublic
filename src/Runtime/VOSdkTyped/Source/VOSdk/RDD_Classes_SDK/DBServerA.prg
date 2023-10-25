@@ -27,6 +27,9 @@ PARTIAL CLASS DbServer
 
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
+        IF ! SELF:Used
+            RETURN FALSE
+        ENDIF
 
 
         IF lSelectionActive
@@ -101,6 +104,9 @@ PARTIAL CLASS DbServer
 /// <include file="Rdd.xml" path="doc/DbServer.DBStruct/*" />
     PROPERTY DBStruct  AS ARRAY
         GET
+	    IF ! SELF:Used
+	        RETURN {}
+	    ENDIF
         IF ALen(aStruct) == 0
             SELF:Error( __MakeErrObj(0), #DBSTRUCT )
         ENDIF
@@ -124,6 +130,9 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal           AS USUAL
         LOCAL oError            AS USUAL
+    IF ! SELF:Used
+        RETURN FALSE
+    ENDIF
 
 
 
@@ -162,6 +171,9 @@ PARTIAL CLASS DbServer
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
+	    IF ! SELF:Used
+	        RETURN FALSE
+	    ENDIF
 
 
 
@@ -205,7 +217,9 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
-
+	    IF ! SELF:Used
+	        RETURN ""
+	    ENDIF
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
@@ -231,7 +245,6 @@ PARTIAL CLASS DbServer
 /// <include file="Rdd.xml" path="doc/DbServer.Filter/*" />
     ASSIGN Filter( uFilterBlock AS USUAL)
         SELF:SetFilter( uFilterBlock )
-
 
         RETURN
 
@@ -267,6 +280,9 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL lRetCode          AS LOGIC
+	    IF ! SELF:Used
+	        RETURN FALSE
+	    ENDIF
         IF lSelectionActive
             RETURN siSelectionStatus == DBSELECTIONFOUND
         ENDIF
@@ -301,6 +317,9 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
+	    IF ! SELF:Used
+	        RETURN 0
+	    ENDIF
 
 
 
@@ -334,6 +353,9 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uOrdVal           AS USUAL
+	    IF ! SELF:Used
+	        RETURN ""
+	    ENDIF
 
 
 
@@ -370,7 +392,9 @@ PARTIAL CLASS DbServer
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL liRecno AS LONGINT
-
+	    IF ! SELF:Used
+	        RETURN 0
+	    ENDIF
 
 
 
@@ -388,16 +412,19 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
+	    IF ! SELF:Used
+	        RETURN NULL_DATE
+	    ENDIF
 
 
 
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                IF ! VoDbInfo(DBI_LASTUPDATE, REF uInfo)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            IF ! VoDbInfo(DBI_LASTUPDATE, REF uInfo)
+                BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -440,13 +467,16 @@ PARTIAL CLASS DbServer
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
 
+	    IF ! SELF:Used
+	        RETURN uRetVal
+	    ENDIF
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                IF ! VoDbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, REF uRetVal)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            IF ! VoDbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, REF uRetVal)
+                BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -501,17 +531,19 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
-
+	    IF ! SELF:Used
+	        RETURN uRetVal
+	    ENDIF
 
 
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                //uRetVal := OrdKeyVal()
-                IF ! VoDbOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            //uRetVal := OrdKeyVal()
+            IF ! VoDbOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
+                BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -533,17 +565,19 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
-
+	    IF ! SELF:Used
+	        RETURN uRetVal
+	    ENDIF
 
 
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                //uRetVal := DbOrderInfo(DBOI_Scopetop)
-                IF ! VoDbOrderInfo(DBOI_SCOPETOP, "", NIL, REF uRetVal)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            //uRetVal := DbOrderInfo(DBOI_Scopetop)
+            IF ! VoDbOrderInfo(DBOI_SCOPETOP, "", NIL, REF uRetVal)
+                BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -569,16 +603,16 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                n := DBOI_SCOPETOP
-                IF IsNil(uValue)
-                    n := DBOI_SCOPETOPCLEAR
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            n := DBOI_SCOPETOP
+            IF IsNil(uValue)
+                n := DBOI_SCOPETOPCLEAR
+            ENDIF
 
 
-                IF ! VoDbOrderInfo(n, "", NIL, REF uValue)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+			IF ! VoDbOrderInfo(n, "", NIL, REF uValue)
+				BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -645,23 +679,26 @@ PARTIAL CLASS DbServer
 
 
         LOCAL oError                    AS USUAL
+	    IF ! SELF:Used
+	        RETURN 0
+	    ENDIF
 
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 IF lSelectionActive
-                        IF siSelectionStatus == DBSELECTIONEMPTY
-                            iRetVal := 0
-                        ELSE
-                            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                            nCurrentRecord          := VoDbRecno( )
-                            siCurrentSelectionStatus:= siSelectionStatus
-                            iRetVal                 := SELF:Count( )
-                            IF ! VoDbGoto( nCurrentRecord )
-                                BREAK ErrorBuild(_VoDbErrInfoPtr())
-                            ENDIF
-                            __DBSSetSelect( dwCurrentWorkArea )
-                            siSelectionStatus       := siCurrentSelectionStatus
+                    IF siSelectionStatus == DBSELECTIONEMPTY
+                        iRetVal := 0
+                    ELSE
+                        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+                        nCurrentRecord          := VoDbRecno( )
+                        siCurrentSelectionStatus:= siSelectionStatus
+                        iRetVal                 := SELF:Count( )
+                        IF ! VoDbGoto( nCurrentRecord )
+                            BREAK ErrorBuild(_VoDbErrInfoPtr())
+                        ENDIF
+                        __DBSSetSelect( dwCurrentWorkArea )
+                        siSelectionStatus       := siCurrentSelectionStatus
                     ENDIF
                 ELSE
                     VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -690,11 +727,14 @@ PARTIAL CLASS DbServer
         LOCAL wRetCode      AS DWORD
         LOCAL oError        AS USUAL
 
+	    IF ! SELF:Used
+	        RETURN 0
+	    ENDIF
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                wRetCode := VoDbRecno()
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            wRetCode := VoDbRecno()
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -745,10 +785,10 @@ PARTIAL CLASS DbServer
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                IF ! VoDbRecordInfo(DBRI_RECSIZE, 0, REF uVoVal)
-                    BREAK ErrorBuild(_VoDbErrInfoPtr())
-                ENDIF
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            IF ! VoDbRecordInfo(DBRI_RECSIZE, 0, REF uVoVal)
+                BREAK ErrorBuild(_VoDbErrInfoPtr())
+            ENDIF
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -805,12 +845,15 @@ PARTIAL CLASS DbServer
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL aLockList := { }  AS ARRAY
+	    IF ! SELF:Used
+	        RETURN aLockList
+	    ENDIF
 
 
         lErrorFlag := FALSE
         BEGIN SEQUENCE
-                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-                aLockList := DbRLockList()
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            aLockList := DbRLockList()
             __DBSSetSelect( dwCurrentWorkArea )
         RECOVER USING oError
             oErrorInfo := oError
@@ -882,8 +925,15 @@ PARTIAL CLASS DbServer
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.TableExt/*" />
-    PROPERTY TableExt AS STRING GET SELF:Info(DBI_TABLEEXT)
-
+PROPERTY TableExt as STRING
+GET
+	// DHer: 18/12/2008
+    IF ! SELF:Used
+        RETURN ""
+    ENDIF
+RETURN SELF:Info(DBI_TABLEEXT)
+END GET
+END PROPERTY
 
 /// <include file="Rdd.xml" path="doc/DbServer.Used/*" />
     PROPERTY Used AS LOGIC

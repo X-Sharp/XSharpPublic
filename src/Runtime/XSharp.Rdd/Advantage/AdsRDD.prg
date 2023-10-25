@@ -213,7 +213,7 @@ PROTECTED METHOD _FieldSub() AS LOGIC
     LOCAL wDecimals AS WORD
     LOCAL wFields AS WORD
     SELF:_CheckError(ACE.AdsGetNumFields(SELF:_Table, OUT wFields),EG_OPEN)
-    IF !SELF:SetFieldExtent(wFields)
+    IF !SELF:SetFieldExtent(wFields) .or. SELF:_Table == IntPtr.Zero
         RETURN FALSE
     ENDIF
     _fieldCount := wFields
@@ -537,6 +537,9 @@ RETURN isOk
     #endregion
   #region Navigation
 METHOD RecordMovement() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT VAR atBOF),EG_READ)
     SUPER:BoF := (atBOF == 1)
     SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
@@ -559,18 +562,27 @@ RETURN TRUE
 
     /// <inheritdoc />
 OVERRIDE METHOD GoBottom() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_SynchronizeVODeletedFlag()
     SELF:_CheckError(ACE.AdsGotoBottom(SELF:CurrentOrder),EG_READ)
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 OVERRIDE METHOD GoTop() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_SynchronizeVODeletedFlag()
     SELF:_CheckError(ACE.AdsGotoTop(SELF:CurrentOrder),EG_READ)
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 OVERRIDE METHOD GoTo(lRec AS LONG) AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:GoCold()
     SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR recordnum),EG_READ)
     IF recordnum == lRec
@@ -588,6 +600,9 @@ RETURN SELF:RecordMovement()
     /// <inheritdoc />
 OVERRIDE METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
     LOCAL recNum AS LONG
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     TRY
         recNum := System.Convert.ToInt32(oRecnum)
     CATCH e AS Exception
@@ -624,11 +639,17 @@ RETURN flag
     /// <inheritdoc />
 OVERRIDE METHOD SkipFilter(lCount AS LONG) AS LOGIC
     // ADS has no difference with normal skip
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
 RETURN SELF:Skip(lCount)
 
     /// <inheritdoc />
 OVERRIDE METHOD SkipRaw(lCount AS LONG) AS LOGIC
     // ADS has no difference with normal skip
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
 RETURN SELF:Skip(lCount)
 
 
@@ -672,16 +693,25 @@ INTERNAL METHOD _SetScope(hIndex AS System.IntPtr, usScopeOption AS WORD, lClear
 
   /// <inheritdoc />
 OVERRIDE METHOD Flush() AS LOGIC
+IF SELF:_Table == IntPtr.Zero
+    RETURN FALSE
+ENDIF
 RETURN SELF:GoCold()
 
   /// <inheritdoc />
 OVERRIDE METHOD Refresh() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table),EG_READ)
     SELF:_Hot           := FALSE
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 OVERRIDE METHOD GoCold() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     IF SELF:_Hot
         SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_READ)
     ENDIF
@@ -692,6 +722,9 @@ RETURN SELF:RecordMovement()
 OVERRIDE METHOD GoHot() AS LOGIC
     LOCAL dwRecNo AS DWORD
     LOCAL result AS DWORD
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     //
     SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_WRITE)
     // GoHot must have lock when not exclusive
@@ -727,6 +760,10 @@ RETURN TRUE
 
     /// <inheritdoc />
 OVERRIDE METHOD Zap() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
+
     SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_WRITE)
     // Only allowed when opened exclusively
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
@@ -743,6 +780,9 @@ RETURN SELF:GoTop()
     /// <inheritdoc />
 OVERRIDE METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
     LOCAL result        AS DWORD
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:GoCold()
     IF fReleaseLocks
         SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT VAR handleType),EG_APPENDLOCK)
@@ -766,24 +806,45 @@ OVERRIDE METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
 RETURN SELF:RecordMovement()
 
 OVERRIDE METHOD Delete() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_CheckError(ACE.AdsDeleteRecord(SELF:_Table),EG_WRITE)
     SELF:_Hot           := TRUE
 RETURN TRUE
 
 OVERRIDE METHOD Recall() AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_CheckError(ACE.AdsRecallRecord(SELF:_Table),EG_WRITE)
     SELF:_Hot           := TRUE
 RETURN SELF:RecordMovement()
 
     #endregion
 
-  #region Read and Write
+    #region Read and Write
+INTERNAL VIRTUAL METHOD _GetColumn(nFldPos AS LONG) AS AdsColumn
+	LOCAL nArrPos := nFldPos -1 AS LONG
+    IF nArrPos >= 0 .AND. nArrPos < SELF:_Fields:Length
+        RETURN (AdsColumn) SELF:_Fields[ nArrPos ]
+    ENDIF
+    SELF:ADSERROR(EDB_FIELDINDEX, EG_ARG)
+    RETURN NULL
 OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
-    VAR column   := (AdsColumn ) SELF:_Fields[nFldPos-1]
-    RETURN column:GetValue()
-
+    IF SELF:_Table == IntPtr.Zero
+       RETURN NULL
+    ENDIF
+    var column := SELF:_GetColumn(nFldPos)
+    if column != null
+        RETURN column:GetValue()
+    endif
+    return NULL
 
 OVERRIDE METHOD Pack () AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+       RETURN FALSE
+    ENDIF
     SELF:GoCold()
     SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_READ)
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
@@ -798,11 +859,17 @@ OVERRIDE METHOD Pack () AS LOGIC
 RETURN SELF:GoTop()
 
 OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+    IF SELF:_Table == IntPtr.Zero
+       RETURN FALSE
+    ENDIF
     IF ! SELF:GoHot()
         RETURN FALSE
     ENDIF
-    VAR column := (AdsColumn) SELF:_Fields[nFldPos-1]
-    RETURN column:PutValue(oValue)
+    var column := SELF:_GetColumn(nFldPos)
+    if column != null
+        RETURN column:PutValue(oValue)
+    ENDIF
+    RETURN FALSE
     #endregion
 
   #region Properties
@@ -847,6 +914,9 @@ END PROPERTY
 
 OVERRIDE PROPERTY RecCount AS LONG
     GET
+        IF SELF:_Table == IntPtr.Zero
+           RETURN 0
+        ENDIF
         SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwCount),EG_READ)
         RETURN (LONG) dwCount
     END GET
@@ -855,6 +925,9 @@ OVERRIDE PROPERTY RecNo AS LONG GET (LONG) SELF:_RecNo
 PROPERTY _RecNo AS DWORD
     GET
         LOCAL result AS DWORD
+        IF SELF:_Table == IntPtr.Zero
+           RETURN 0
+        ENDIF
         result := ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwRecno)
         IF result == ACE.AE_NO_CURRENT_RECORD
             dwRecno := 0
@@ -876,6 +949,9 @@ OVERRIDE METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
     LOCAL lRecno := 0 AS DWORD
     LOCAL result := 0 AS DWORD
       //
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     lockInfo:Result := FALSE
     IF lockInfo:RecId == NULL
         lRecno := SELF:_RecNo
@@ -913,6 +989,9 @@ RETURN TRUE
 OVERRIDE METHOD UnLock(recordID AS OBJECT) AS LOGIC
     LOCAL result AS DWORD
     LOCAL dwRecno := 0 AS DWORD
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     TRY
         dwRecno := System.Convert.ToUInt32(recordID)
     CATCH e AS Exception
@@ -961,6 +1040,9 @@ RETURN SUPER:SetFieldExtent(fieldCount)
 OVERRIDE METHOD SetFilter(fi AS DbFilterInfo) AS LOGIC
     LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     SELF:_SynchronizeSettings()
     IF String.IsNullOrEmpty(fi:FilterText)
         // clear filter
@@ -989,6 +1071,9 @@ RETURN TRUE
     /// <inheritdoc />
 OVERRIDE METHOD ClearRel() AS LOGIC
     VAR lOk := SUPER:ClearRel()
+    IF SELF:_Table == IntPtr.Zero
+        RETURN FALSE
+    ENDIF
     IF SELF:_Table != System.IntPtr.Zero
         SELF:_CheckError(ACE.AdsClearRelation(SELF:_Table))
     ENDIF
@@ -1014,6 +1099,9 @@ RETURN lOk
     /// <inheritdoc />
 OVERRIDE METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
     LOCAL result AS DWORD
+    IF SELF:_Table == IntPtr.Zero
+        RETURN NULL
+    ENDIF
     SWITCH uiOrdinal
     CASE DBS_BLOB_TYPE
         SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, (DWORD)uiPos  ,  OUT VAR FieldType))
@@ -1046,6 +1134,9 @@ RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
 
 OVERRIDE METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL dwRecno AS DWORD
+    IF SELF:_Table == IntPtr.Zero
+        RETURN NULL
+    ENDIF
       //
     SWITCH (DbRecordInfo) uiOrdinal
     CASE DbRecordInfo.DBRI_LOCKED
@@ -1079,6 +1170,9 @@ RETURN SUPER:RecInfo( uiOrdinal, iRecID, oNewValue)
       /// <inheritdoc />
 OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
     LOCAL result AS DWORD
+    IF SELF:_Table == IntPtr.Zero
+        RETURN SUPER:Info(uiOrdinal, oNewValue)
+    ENDIF
     SWITCH (DbInfo)uiOrdinal
     CASE DbInfo.DBI_ISDBF
         RETURN !SELF:IsADT

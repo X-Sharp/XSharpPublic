@@ -18,7 +18,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
     /// <summary>Create instance of the RDD </summary>
     CONSTRUCTOR()
-        SELF:_hStatement := System.IntPtr.Zero
+        SELF:_hStatement := IntPtr.Zero
         SUPER:_Driver := "AXSQLRDD"
 
     /// <inheritdoc />
@@ -26,9 +26,9 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         IF ! SUPER:Close()
             RETURN FALSE
         ENDIF
-        IF SELF:_hStatement != System.IntPtr.Zero
+        IF SELF:_hStatement != IntPtr.Zero
             SUPER:_CheckError(ACE.AdsCloseSQLStatement(SELF:_hStatement))
-            SELF:_hStatement := System.IntPtr.Zero
+            SELF:_hStatement := IntPtr.Zero
         ENDIF
         RETURN TRUE
 
@@ -50,7 +50,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
                 local nRes := 0 AS DWORD
                 SELF:GoCold()
                 IF SELF:_Table != IntPtr.Zero
-                    
+
                     nRes := ACE.AdsCloseTable(SELF:_Table)
                     SELF:_Table := IntPtr.Zero
                 ENDIF
@@ -221,7 +221,8 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
     OVERRIDE METHOD RecInfo( uiOrdinal AS INT, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
         LOCAL isLive AS BYTE
         LOCAL recNum AS DWORD
-        IF uiOrdinal != DbRecordInfo.DBRI_UPDATED
+
+        IF uiOrdinal != DbRecordInfo.DBRI_UPDATED .or. SELF:_Table == IntPtr.Zero
             RETURN SUPER:RecInfo(uiOrdinal, iRecID, oNewValue)
         ENDIF
         IF ACEUNPUB.AdsSqlPeekStatement(SUPER:_Table, OUT isLive) == 0 .AND. isLive == 0

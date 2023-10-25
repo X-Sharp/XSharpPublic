@@ -86,8 +86,7 @@ INTERNAL CLASS XSharp.MemVarLevel
 
         // find local and value returns TRUE when found (value could also be NIL !)
     INTERNAL METHOD FindLocal(cName AS STRING, uValue OUT USUAL) AS LOGIC
-        IF Locals != NULL .AND. Locals:ContainsKey(cName)
-            uValue := Locals[cName]
+        IF Locals != NULL .AND. Locals:TryGetValue(cName, OUT uValue)
             RETURN TRUE
         ENDIF
         uValue := NIL
@@ -95,8 +94,8 @@ INTERNAL CLASS XSharp.MemVarLevel
 
         // Get local or NIL
     INTERNAL METHOD GetLocal(cName AS STRING) AS USUAL
-        IF Locals != NULL .AND. Locals:ContainsKey(cName)
-            RETURN Locals[cName]
+        IF Locals != NULL .AND. Locals:TryGetValue(cName, OUT VAR ret)
+            RETURN ret
         ENDIF
         RETURN NIL
 

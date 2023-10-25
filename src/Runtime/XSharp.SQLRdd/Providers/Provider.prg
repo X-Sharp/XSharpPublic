@@ -91,8 +91,8 @@ abstract class SqlDbProvider inherit SqlDbObject
         endif
         return null
     static method GetProvider(Name as string) as SqlDbProvider
-        if _ProviderObjects:ContainsKey(Name)
-            return _ProviderObjects[Name]
+        if _ProviderObjects:TryGetValue(Name, out var result)
+            return result
         endif
         if ! _ProviderClasses:ContainsKey(Name)
             return null
@@ -132,8 +132,8 @@ abstract class SqlDbProvider inherit SqlDbObject
     abstract method GetFunctions() as Dictionary<string, string>
     method GetFunction(cFunction as string) as string
         var funcs := GetFunctions()
-        if funcs:ContainsKey(cFunction)
-            return funcs[cFunction]
+        if funcs:TryGetValue(cFunction, out var oFunc)
+            return oFunc
         endif
         return cFunction
     constructor(cName as string)

@@ -21,6 +21,11 @@ class Oracle inherit SqlDbProvider
     override property DllName as string => "System.Data.OracleClient.dll"
     override property TypeName as string => "System.Data.OracleClient.OracleClientFactory"
 
+    override property GetIdentity            as string => "select LAST_INSERT_ID()"
+    override property GetRowCount            as string => "select SQL%ROWCOUNT"
+    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
+
+
     constructor()
         super("Oracle")
         return
@@ -44,8 +49,40 @@ class Oracle inherit SqlDbProvider
         endif
         return aFuncs
 
-    override property SelectTopStatement     as string => "select * from (select "+ColumnsMacro+" from "+TableNameMacro+" ) where RowNum <= "+TopCountMacro
     override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
-        return super:GetSqlColumnInfo(oInfo)
+        local sResult as string
+        switch oInfo:FieldType
+        case DbFieldType.Character
+        case DbFieldType.VarChar
+            sResult := i"[{QuoteIdentifier(oInfo.ColumnName)}] NVARCHAR ({oInfo.Length}) default ''"
+            if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
+                sResult += " null "
+            endif
+        case DbFieldType.DateTime
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TIMESTAMP "
+
+        case DbFieldType.Double
+        case DbFieldType.Float
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} FLOAT ({oInfo.Decimals}) DEFAULT 0"
+
+        case DbFieldType.Number
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NUMBER ({oInfo.Length}, {oInfo.Decimals}) DEFAULT 0"
+        case DbFieldType.Integer
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NUMBER (10,0) "
+            if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
+                sResult += " GENERATED ALWAYS AS IDENTITY "
+            else
+                sResult += "default 0"
+            endif
+        case DbFieldType.Blob
+        case DbFieldType.General
+        case DbFieldType.Picture
+        case DbFieldType.VarBinary
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
+
+        otherwise
+            sResult := super:GetSqlColumnInfo(oInfo)
+        end switch
+        return sResult
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

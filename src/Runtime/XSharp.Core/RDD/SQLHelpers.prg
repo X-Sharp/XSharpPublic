@@ -36,7 +36,7 @@ STATIC CLASS SQLHelpers
             nLen    := nSize
             // Automatically Convert Long Strings to Memos
             IF nLen  > 255 .OR. nLen < 0
-                nLen    := 4
+                nLen    := 10
                 cType   := "M"
             ENDIF
             result := DbColumnInfo{columnName,cType,nLen ,0 }

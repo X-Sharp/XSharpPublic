@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-10-22T12:55:04.072-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-10-26T12:27:22.965+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -59,11 +59,14 @@
       <li styleclass="Normal">Fixed problem with updating index keys in the DBFCDX driver when the key expression was of type DATE.</li>
       <li styleclass="Normal">Fixed a problem when Str() and StrZero() had a built-in maximum string length of 30.(#1352)</li>
       <li styleclass="Normal">The RegisteredRDD Class now uses a ConcurrentDictionary.</li>
-      <li styleclass="Normal">We have added a DbCurrency type that is returned from the RDD when a currency field is read.</li>
+      <li styleclass="Normal">Fixed a bug in the RDD TransRec() method when a field is missing in the target table (#1372)</li>
+      <li styleclass="Normal">Fixed a problem in the Advantage RDD to prevent ADS functions from being called when the table is closed</li>
+      <li styleclass="Normal">Fixed a problem in the Advantage RDD that could occur when an field with an incorrect name was read</li>
     </list>
     <para styleclass="Heading3">New features</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Added support for accessing indexers in the USUAL type (#1296 )</li>
+      <li styleclass="Normal">We have added a DbCurrency type that is returned from the RDD when a currency field is read.</li>
       <li styleclass="Normal">Implemented the TEXT TO FILE command (#1304)</li>
       <li styleclass="Normal">Now the RDD reports an error (dialog) when tagname &gt; maximum length when creating an index order (#1305)</li>
       <li styleclass="Normal">Added a function _CreateInstance() that accepts a System.Type parameter</li>
@@ -72,6 +75,7 @@
       <li styleclass="Normal">The mapping of several DBF / Workarea / Cursor related UDCs has been changed to be more FoxPro compatible.</li>
       <li styleclass="Normal">We have added runtime support for the FoxPro CAST expression</li>
       <li styleclass="Normal">We have done some small code optimizations w.r.t. dictionaries(#1371)</li>
+      <li styleclass="Normal">Several DbServer properties no longer call into the RDD when the server is closed, but return blank values instead.</li>
     </list>
     <para styleclass="Heading2">Typed SDK classes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -83,6 +87,7 @@
       <li styleclass="Normal">Fixed error when opening a datawindow with an assigned server (#1332)</li>
       <li styleclass="Normal">Fixed runtime error when instantiating a DBServer object with an untyped FileSpec object as first argument (#1348)</li>
       <li styleclass="Normal">Fixed problem with displaying items in Comboboxes and Listboxes (#1347)</li>
+      <li styleclass="Normal">Several DbServer properties no longer call into the RDD when the server is closed, but return blank values instead.</li>
     </list>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -93,6 +98,7 @@
       <li styleclass="Normal">Fixed probelm with block commenting a code snippet in a single line (#1336)</li>
       <li styleclass="Normal">Fixed failing project build when the project file contains a property &lt;GenerateAssemblyInfo&gt;True&lt;/GenerateAssemblyInfo&gt; (#1344)</li>
       <li styleclass="Normal">Fixed a problem in the Parser that was causing errors parsing DebuggerDisplay attributes in the expression evaluator.</li>
+      <li styleclass="Normal">The new debugger windows were not following the current windows theme. This is now partially fixed. (#1375)</li>
     </list>
     <para styleclass="Heading3">VO Compatible Editors</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

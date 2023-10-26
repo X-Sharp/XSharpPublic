@@ -48,6 +48,7 @@ namespace XSharp.Project
         public const int idRebuildIntellisense = 0x010D;
         public const int idViewInDisassembler = 0x010E;
         public const int idEditProjectFile = 0x010F;
+        public const int idGenerateWinForm = 0x0120;
         public const int idExporterSubMenu = 0x1030;
         public const int idExporterGroup = 0x1040;
         public const int idDebuggerSubMenu = 0x1050;

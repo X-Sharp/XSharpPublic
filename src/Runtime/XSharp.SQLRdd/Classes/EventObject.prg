@@ -22,7 +22,7 @@ class SqlDbEventObject inherit SqlDbHandleObject
         return
 
     public event CallBack as SqlRDDEventHandler
-    internal method RaiseEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as object) as object
+    internal method RaiseEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as object) as object
         if String.IsNullOrEmpty(cTable)
             cTable := oObject:Name
         endif
@@ -32,25 +32,25 @@ class SqlDbEventObject inherit SqlDbHandleObject
             return result
         endif
         return oArgs:Value
-    internal method RaiseStringEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as string) as string
+    internal method RaiseStringEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as string) as string
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is string var strValue
             return strValue
         endif
         return oValue
-    internal method RaiseIntEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as int) as int
+    internal method RaiseIntEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as int) as int
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is int var intValue
             return intValue
         endif
         return oValue
-    internal method RaiseListEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as IList<string>) as IList<string>
+    internal method RaiseListEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as IList<string>) as IList<string>
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is IList<string> var listValue
             return listValue
         endif
         return oValue
-    internal method RaiseLogicEvent(oObject as SqlDbEventObject, nEvent as SqlRDDEventReason, cTable as string, oValue as logic) as logic
+    internal method RaiseLogicEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as logic) as logic
         var result := RaiseEvent(oObject, nEvent, cTable, oValue)
         if result is logic var logValue
             return logValue

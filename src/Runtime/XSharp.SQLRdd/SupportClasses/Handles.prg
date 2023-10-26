@@ -43,8 +43,8 @@ static class SqlDbHandles
 
     static method Remove(oObject as SqlDbHandleObject) as logic
         begin lock Objects
-            if Objects:ContainsKey(oObject:Handle)
-                if Objects[oObject:Handle] == oObject
+            if Objects:TryGetValue(oObject:Handle, out var result)
+                if result == oObject
                     Objects:Remove(oObject:Handle)
                     return true
                 endif
@@ -52,8 +52,8 @@ static class SqlDbHandles
         end lock
         return false
     static method FindById(nId as IntPtr) as SqlDbHandleObject
-        if Objects:ContainsKey(nId)
-            return Objects[nId]
+        if Objects:TryGetValue(nId, out var result)
+            return result
         endif
         return null
 

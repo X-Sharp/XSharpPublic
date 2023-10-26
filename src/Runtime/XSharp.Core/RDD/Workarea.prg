@@ -954,10 +954,12 @@ BEGIN NAMESPACE XSharp.RDD
                     result      := oDest:PutRec(buffer)
                 ELSE
                     FOREACH oItem AS DbTransItem IN info:Items
-                        oValue := SELF:GetValue(oItem:Source)
-                        result := oDest:PutValue(oItem:Destination, oValue)
-                        IF ! result
-                            EXIT
+                        IF oItem:Source > 0 .and. oItem:Destination > 0
+                            oValue := SELF:GetValue(oItem:Source)
+                            result := oDest:PutValue(oItem:Destination, oValue)
+                            IF ! result
+                                EXIT
+                            ENDIF
                         ENDIF
                     NEXT
                 ENDIF

@@ -193,8 +193,8 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         return oTd
 
     method GetStructureForTable(TableName as string,longFieldNames as logic, cColumnNames as string) as SqlDbTableDef
-        if self:Schema:ContainsKey(TableName)
-            return self:Schema[TableName]
+        if self:Schema:TryGetValue(TableName, out var result)
+            return result
         endif
         try
             var table := self:Provider:QuoteIdentifier(TableName)

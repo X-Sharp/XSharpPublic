@@ -74,7 +74,10 @@ FUNCTION CurDir() AS STRING
 	LOCAL cDir AS STRING
 	LOCAL index AS INT
 	cDir := System.Environment.CurrentDirectory
-	index := cDir:IndexOf(Path.VolumeSeparatorChar)
+    index := cDir:IndexOf(Path.VolumeSeparatorChar)
+    if cDir:StartsWith("\\") 
+        return cDir
+    endif
 	IF index > 0
 		cDir := cDir:Substring(index+1)
 	ENDIF

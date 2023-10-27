@@ -4516,9 +4516,9 @@ BEGIN NAMESPACE XSharp.ADS
 
     PUBLIC STATIC METHOD  AdsMgGetServerType( hMgmtHandle AS IntPtr, pusServerType REF WORD ) AS DWORD
         IF Is32Bits
-            RETURN ACE32.AdsMgGetServerType( hMgmtHandle, REF pusServerType)
+            RETURN ACE32.AdsMgGetServerType( hMgmtHandle, OUT pusServerType)
         ELSE
-            RETURN ACE64.AdsMgGetServerType( hMgmtHandle, REF pusServerType)
+            RETURN ACE64.AdsMgGetServerType( hMgmtHandle, OUT pusServerType)
         ENDIF
 
 

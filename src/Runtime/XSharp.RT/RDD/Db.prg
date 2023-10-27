@@ -542,11 +542,9 @@ FUNCTION DbRUnLock(uRecID) AS LOGIC CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbselect/*" />
 FUNCTION DbSelect(nNew) AS DWORD CLIPPER
 
-    LOCAL nOld := 0 AS DWORD
-
     @@Default( REF nNew, 0)
 
-    VoDb.Select(nNew, REF nOld)
+    VoDb.Select(nNew, OUT VAR nOld)
 
     RETURN nOld
 
@@ -1065,8 +1063,7 @@ FUNCTION DbCopyXStruct(cTargetFile AS STRING) AS LOGIC STRICT
         aStruct := DbStruct()
 
         n := Len(aStruct)
-        siSaveSel := 0
-        VoDb.Select(0, REF siSaveSel)
+        VoDb.Select(0, OUT siSaveSel)
 
         _DbCreate(cTargetFile)
 

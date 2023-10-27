@@ -552,7 +552,7 @@ CLASS XSharp.CoreDb
             RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
         ELSEIF aStruct == NULL
             RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(aStruct), 2 ,NULL)
-        ELSEIF lNew && ! ( ret := CoreDb.Select( 0, REF uiOldArea ) )
+        ELSEIF lNew && ! ( ret := CoreDb.Select( 0, OUT uiOldArea ) )
             RddError.PostError( __FUNCTION__, EG_CREATE, EDB_NOAREAS )
         ELSE
             ret := TRUE

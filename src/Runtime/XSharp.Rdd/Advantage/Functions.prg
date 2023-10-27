@@ -98,9 +98,7 @@ FUNCTION GetAceTableHandle() AS IntPtr
 /// volume name as well. For example, use "\\server\share" or "\\server\vol:"..</param>
 /// <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
 FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC //
-    LOCAL usLoaded AS WORD
-    usLoaded := 0
-    ACE.AdsIsServerLoaded  (  cFileName , REF usLoaded )
+    ACE.AdsIsServerLoaded  (  cFileName , OUT VAR usLoaded )
     RETURN ( usLoaded == ACE.ADS_REMOTE_SERVER  .OR. usLoaded = ACE.ADS_AIS_SERVER )
 
 /// <summary>Indicates the percent completion of an index build</summary>
@@ -205,7 +203,6 @@ FUNCTION AX_SetSQLTablePasswords( aPasswords AS OBJECT ) AS VOID
 /// <param name="iAction">The parameter can be: AX_BEGIN_TRANSACTION, AX_COMMIT_TRANSACTION, AX_ROLLBACK_TRANSACTION, AX_ISACTIVE_TRANSACTION</param>
 /// <returns>True if the command was successful, False if not.</returns>
 FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
-    LOCAL usInTrans AS WORD
     LOCAL ulRetVal AS DWORD
     //
     // Transaction Processing function.  The parameter can be
@@ -214,7 +211,6 @@ FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
     //   AX_ROLLBACK_TRANSACTION
     //   AX_ISACTIVE_TRANSACTION
     //
-    usInTrans := 0
 
     SWITCH iAction
         CASE AX_BEGIN_TRANSACTION
@@ -224,7 +220,7 @@ FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
         CASE AX_ROLLBACK_TRANSACTION
             ulRetVal := ACE.AdsRollbackTransaction( 0 )
         CASE AX_ISACTIVE_TRANSACTION
-            ulRetVal := ACE.AdsInTransaction( 0, REF usInTrans )
+            ulRetVal := ACE.AdsInTransaction( 0, OUT VAR usInTrans )
             RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
         OTHERWISE
             ulRetVal := 1
@@ -235,9 +231,8 @@ FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
 
 /// <summary>Is a transaction pending </summary>
 FUNCTION AX_Transaction( ) AS LOGIC // Transaction call
-    LOCAL usInTrans := 0 AS WORD
     LOCAL ulRetVal AS DWORD
-    ulRetVal := ACE.AdsInTransaction( 0, REF usInTrans )
+    ulRetVal := ACE.AdsInTransaction( 0, OUT VAR usInTrans )
     RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
 
 

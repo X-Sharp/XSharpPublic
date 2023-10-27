@@ -168,7 +168,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // For methods node.Type is the return type of the method
                     XsCheckMemberAccess(node, node.ReceiverOpt, amc, null, node.Method);
                 }
-                return;
             }
             if (node.Method.ParameterRefKinds != null && node.Syntax.XNode is XSharpParser.ICallContext icc)
             {

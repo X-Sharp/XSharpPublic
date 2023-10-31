@@ -144,8 +144,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD Suspend() AS VOID
             ModelWalker.suspendLevel++
             IF (_projects:Count > 0)
-                LOCAL project := NULL AS XProject
-                IF _projects:TryPeek(REF project)
+                IF _projects:TryPeek(OUT VAR _)
                     XSolution.SetStatusBarText("")
                 ENDIF
             ENDIF

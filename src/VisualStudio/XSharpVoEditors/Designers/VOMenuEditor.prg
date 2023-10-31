@@ -1375,7 +1375,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         LOCAL nMaxOriginalDefineValue := 0 AS INT
         FOREACH oDesign AS DesignMenuItem IN aControls
             LOCAL nOriginalDefineValue := 0 AS INT
-            Int32.TryParse(oDesign:GetProperty("OriginalDefineValue"):TextValue, REF nOriginalDefineValue)
+            Int32.TryParse(oDesign:GetProperty("OriginalDefineValue"):TextValue, OUT nOriginalDefineValue)
             IF nOriginalDefineValue > nMaxOriginalDefineValue
                 nMaxOriginalDefineValue := nOriginalDefineValue
             ENDIF
@@ -1414,7 +1414,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
             oDesign:GetProperty("MenuID"):Value := SELF:GetNewMenuID()
             END IF*/
             LOCAL nValueToUse := 0 AS INT
-            Int32.TryParse(oDesign:GetProperty("OriginalDefineValue"):TextValue, REF nValueToUse)
+            Int32.TryParse(oDesign:GetProperty("OriginalDefineValue"):TextValue, OUT nValueToUse)
             IF nValueToUse == 0
                 nValueToUse := nId
                 nId ++

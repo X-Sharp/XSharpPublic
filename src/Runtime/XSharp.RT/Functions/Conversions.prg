@@ -23,8 +23,8 @@ internal static class XSharp.ConversionHelpers
         local nKey as int
         local cFormat as string
         nKey := nLen * 100 + nDec
-        if formatStrings:ContainsKey(nKey)
-            return formatStrings[nKey]
+        if formatStrings:TryGetValue(nKey, out var result)
+            return result
         endif
         if nDec != 0
             cFormat := "0."

@@ -50,6 +50,11 @@ class OleDb inherit SqlDbProvider
         endif
         return aFuncs
    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
-       return super:GetSqlColumnInfo(oInfo)
+        return super:GetSqlColumnInfo(oInfo)
+    override method CreateCommandBuilder() as DbCommandBuilder
+        var cmdBuilder := super:CreateCommandBuilder()
+        cmdBuilder:QuotePrefix := """"
+        cmdBuilder:QuoteSuffix := """"
+        return cmdBuilder
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

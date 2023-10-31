@@ -14,6 +14,9 @@ ACCESS Alias
 		#IFDEF __DEBUG__
 			DBFDebug(__ENTITY__, Symbol2String( symAlias ))
 		#ENDIF
+       IF ! SELF:Used
+            RETURN ""
+        ENDIF
 		RETURN Symbol2String( symAlias )
 
 
@@ -24,6 +27,9 @@ ACCESS AliasSym
 		#IFDEF __DEBUG__
 			DBFDebug(__ENTITY__, Symbol2String( symAlias ))
 		#ENDIF
+        IF ! SELF:Used
+            RETURN NULL_SYMBOL
+        ENDIF
 		RETURN symAlias
 
 
@@ -33,7 +39,11 @@ ACCESS AliasSym
 ACCESS BoF
 		//SE-060601
 		LOCAL dwCurrentWorkArea AS DWORD
-		LOCAL lRetVal AS LOGIC
+        LOCAL lRetVal AS LOGIC
+        IF ! SELF:Used
+            RETURN FALSE
+        ENDIF
+
 
 
 		IF lSelectionActive
@@ -62,7 +72,7 @@ ACCESS ConcurrencyControl
 ASSIGN ConcurrencyControl( nMode)
 	LOCAL newMode := nMode
 	LOCAL dwCurrentWorkArea  AS DWORD
-	LOCAL oError            AS USUAL
+    LOCAL oError            AS USUAL
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(nMode))
 	#ENDIF
@@ -92,7 +102,7 @@ ASSIGN ConcurrencyControl( nMode)
 		SELF:Error( oErrorInfo, #ConcurrencyControl )
 	ELSEIF newMode != SELF:nCCMode
 		BEGIN SEQUENCE
-			VODBSelect( wWorkArea, out dwCurrentWorkArea )
+			VoDbSelect( wWorkArea, out dwCurrentWorkArea )
 			SELF:__ClearLocks()
 			SELF:nEffectiveCCMode := newMode
 			IF lReadOnly .OR. ! lShared
@@ -117,6 +127,9 @@ ASSIGN ConcurrencyControl( nMode)
 /// <include file="Rdd.xml" path="doc/DbServer.DBStruct/*" />
 ACCESS DBStruct    // dcaton 070307 changed case to match overridden parent property
 
+    IF ! SELF:Used
+        RETURN {}
+    ENDIF
 
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -133,6 +146,9 @@ ACCESS DBStruct    // dcaton 070307 changed case to match overridden parent prop
 ACCESS DbStructure
 	// DHer: 18/12/2008
 	// This returns the original structure array
+    IF ! SELF:Used
+        RETURN {}
+    ENDIF
 RETURN SELF:aStruct
 
 
@@ -166,6 +182,9 @@ ACCESS Deleted
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal           AS USUAL
 	LOCAL oError            AS USUAL
+    IF ! SELF:Used
+        RETURN FALSE
+    ENDIF
 
 
 	#IFDEF __DEBUG__
@@ -175,8 +194,8 @@ ACCESS Deleted
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		uRetVal := VODBDeleted()
+		VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+		uRetVal := VoDbDeleted()
 
 
 	RECOVER USING oError
@@ -201,6 +220,9 @@ ACCESS Driver
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
+    IF ! SELF:Used
+        RETURN ""
+    ENDIF
 
 
 	RETURN SELF:cRDDName
@@ -213,6 +235,9 @@ ACCESS EoF
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetVal AS LOGIC
+    IF ! SELF:Used
+        RETURN FALSE
+    ENDIF
 
 
 
@@ -220,8 +245,8 @@ ACCESS EoF
 	IF lSelectionActive
 		RETURN siSelectionStatus == DBSELECTIONEOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 	ENDIF
-	VODBSelect( wWorkArea, out dwCurrentWorkArea )
-	lRetVal := VODBEof()
+	VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+	lRetVal := VoDbEof()
 	__DBSSetSelect( dwCurrentWorkArea )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(lRetVal))
@@ -259,7 +284,7 @@ ACCESS FCount
 	// ACCESS: like FCount( )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(SELF:wFieldCount))
-	#ENDIF
+    #ENDIF
 	RETURN SELF:wFieldCount
 
 
@@ -267,7 +292,6 @@ ACCESS FCount
 
 /// <include file="Rdd.xml" path="doc/DbServer.FieldDesc/*" />
 ACCESS FieldDesc
-
 
 	LOCAL   aRet AS ARRAY
 	#IFDEF __DEBUG__
@@ -300,13 +324,15 @@ ACCESS Filter
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-
+    IF ! SELF:Used
+        RETURN ""
+    ENDIF
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		IF !VODBInfo(DBI_DBFILTER, REF uInfo)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
+		VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+		IF !VoDbInfo(DBI_DBFILTER, REF uInfo)
+			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -327,9 +353,8 @@ ACCESS Filter
 ASSIGN Filter( uFilterBlock )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(uFilterBlock))
-	#ENDIF
+    #ENDIF
 	SELF:SetFilter( uFilterBlock )
-
 
 	RETURN
 
@@ -340,7 +365,8 @@ ASSIGN Filter( uFilterBlock )
 ACCESS ForBlock
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
-	#ENDIF
+    #ENDIF
+
 	RETURN cbStoredForBlock
 
 
@@ -371,6 +397,9 @@ ACCESS Found
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL lRetCode          AS LOGIC
+    IF ! SELF:Used
+        RETURN FALSE
+    ENDIF
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
@@ -383,8 +412,8 @@ ACCESS Found
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		lRetCode:=VODBFound()
+		VoDbSelect( wWorkArea, out dwCurrentWorkArea )
+		lRetCode:=VoDbFound()
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
@@ -408,6 +437,9 @@ ACCESS Header
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
+    IF ! SELF:Used
+        RETURN 0
+    ENDIF
 
 
 	#IFDEF __DEBUG__
@@ -417,10 +449,10 @@ ACCESS Header
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		IF ! VODBInfo(DBI_GETHEADERSIZE, REF uInfo)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
-		ENDIF
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        IF ! VoDbInfo(DBI_GETHEADERSIZE, REF uInfo)
+           BREAK ErrorBuild(_VoDbErrInfoPtr())
+        ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -440,6 +472,9 @@ ACCESS IndexExt
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uOrdVal           AS USUAL
+    IF ! SELF:Used
+        RETURN ""
+    ENDIF
 
 
 	#IFDEF __DEBUG__
@@ -449,9 +484,9 @@ ACCESS IndexExt
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		IF ! VODBOrderInfo(DBOI_BAGEXT, "", NIL, REF uOrdVal)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        IF ! VoDbOrderInfo(DBOI_BAGEXT, "", NIL, REF uOrdVal)
+            BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -470,7 +505,7 @@ ACCESS IndexExt
 
 /// <include file="Rdd.xml" path="doc/DbServer.IndexList/*" />
 ACCESS IndexList
-	LOCAL aRet  AS ARRAY
+    LOCAL aRet  AS ARRAY
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
@@ -485,15 +520,17 @@ ACCESS LastRec
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL liRecno AS LONGINT
-
+    IF ! SELF:Used
+        RETURN 0
+    ENDIF
 
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 
 
-	VODBSelect( wWorkArea, out dwCurrentWorkArea )
-	liRecno := VODBLastRec()
+    VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+    liRecno := VoDbLastRec()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN liRecno
 
@@ -504,6 +541,9 @@ ACCESS Lupdate
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
+    IF ! SELF:Used
+        RETURN NULL_DATE
+    ENDIF
 
 
 	#IFDEF __DEBUG__
@@ -513,10 +553,10 @@ ACCESS Lupdate
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		IF ! VODBInfo(DBI_LASTUPDATE, REF uInfo)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
-		ENDIF
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        IF ! VoDbInfo(DBI_LASTUPDATE, REF uInfo)
+            BREAK ErrorBuild(_VoDbErrInfoPtr())
+        ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -560,9 +600,12 @@ RETURN "DFL"
 ACCESS OrderBottomScope
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+    LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 
+    IF ! SELF:Used
+        RETURN uRetVal
+    ENDIF
 
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -571,10 +614,10 @@ ACCESS OrderBottomScope
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		IF ! VODBOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, REF uRetVal)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
-		ENDIF
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        IF ! VoDbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, REF uRetVal)
+            BREAK ErrorBuild(_VoDbErrInfoPtr())
+        ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -606,16 +649,15 @@ ASSIGN OrderBottomScope(uValue)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		//uRetVal := OrdScope(BottomScope,uValue)
+		VoDbSelect( wWorkArea, out dwCurrentWorkArea )
 		n := DBOI_SCOPEBOTTOM
 		IF IsNil(uValue)
 			n := DBOI_SCOPEBOTTOMCLEAR
 		ENDIF
 
 
-		IF ! VODBOrderInfo(n, "", NIL, REF uValue)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
+		IF ! VoDbOrderInfo(n, "", NIL, REF uValue)
+			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 
@@ -725,9 +767,11 @@ ASSIGN OrderKeyNo(nKeyPos)
 ACCESS OrderKeyVal
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
-
+    IF ! SELF:Used
+        RETURN uRetVal
+    ENDIF
 
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -736,11 +780,11 @@ ACCESS OrderKeyVal
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		//uRetVal := OrdKeyVal()
-		IF ! VODBOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
-		ENDIF
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        //uRetVal := OrdKeyVal()
+        IF ! VoDbOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
+            BREAK ErrorBuild(_VoDbErrInfoPtr())
+        ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -759,9 +803,11 @@ ACCESS OrderKeyVal
 ACCESS OrderTopScope
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+    LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
-
+    IF ! SELF:Used
+        RETURN uRetVal
+    ENDIF
 
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -770,11 +816,11 @@ ACCESS OrderTopScope
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		//uRetVal := DBOrderInfo(DBOI_Scopetop)
-		IF ! VODBOrderInfo(DBOI_SCOPETOP, "", NIL, REF uRetVal)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
-		ENDIF
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        //uRetVal := DbOrderInfo(DBOI_Scopetop)
+        IF ! VoDbOrderInfo(DBOI_SCOPETOP, "", NIL, REF uRetVal)
+            BREAK ErrorBuild(_VoDbErrInfoPtr())
+        ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -808,7 +854,7 @@ ASSIGN OrderTopScope(uValue)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, out dwCurrentWorkArea )
 		//uRetVal := OrdScope(TopScope,uValue)
 		n := DBOI_SCOPETOP
 		IF IsNil(uValue)
@@ -842,7 +888,6 @@ ACCESS  PaintedStructure
 		DBFDebug(__ENTITY__)
 	#ENDIF
 
-
 	aFDesc := SELF:FieldDesc
 	nField := ALen(aFDesc)
 
@@ -867,6 +912,9 @@ ACCESS RddName
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, cRDDName)
 	#ENDIF
+    IF ! SELF:Used
+        RETURN ""
+    ENDIF
 	RETURN cRDDName
 
 
@@ -877,7 +925,7 @@ ACCESS Rdds
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(aRdds))
 	#ENDIF
-	RETURN aRdds
+    RETURN aRdds
 
 
 
@@ -899,6 +947,9 @@ ACCESS RecCount
 	LOCAL iRetVal                   AS INT
 	LOCAL dwCurrentWorkArea          AS DWORD
 	LOCAL oError                    AS USUAL
+    IF ! SELF:Used
+        RETURN 0
+    ENDIF
 
 
 	#IFDEF __DEBUG__
@@ -912,20 +963,20 @@ ACCESS RecCount
 			IF siSelectionStatus == DBSELECTIONEMPTY
 				iRetVal := 0
 			ELSE
-				VODBSelect( wWorkArea, out dwCurrentWorkArea )
-				nCurrentRecord          := VODBRecno( )
-				siCurrentSelectionStatus:= siSelectionStatus
-				iRetVal                 := SELF:Count( )
-				IF ! VODBGoTo( nCurrentRecord )
-					BREAK ErrorBuild(_VODBErrInfoPtr())
-				ENDIF
+                VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+                nCurrentRecord          := VoDbRecno( )
+                siCurrentSelectionStatus:= siSelectionStatus
+                iRetVal                 := SELF:Count( )
+                IF ! VoDbGoto( nCurrentRecord )
+                    BREAK ErrorBuild(_VoDbErrInfoPtr())
+                ENDIF
 				__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 				siSelectionStatus       := siCurrentSelectionStatus
 			ENDIF
 		ELSE
-			VODBSelect( wWorkArea, out dwCurrentWorkArea )
-			iRetVal := VODBLastRec()
-			__DBSSetSelect( dwCurrentWorkArea )
+            VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+            iRetVal := VoDbLastRec()
+            __DBSSetSelect( dwCurrentWorkArea )
 		ENDIF
 
 
@@ -950,6 +1001,9 @@ ACCESS RecNo
 	LOCAL wRetCode      AS DWORD
 	LOCAL oError        AS USUAL
 
+    IF ! SELF:Used
+        RETURN 0
+    ENDIF
 
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -958,8 +1012,8 @@ ACCESS RecNo
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		wRetCode := VODBRecno()
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        wRetCode := VoDbRecno()
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -1019,10 +1073,10 @@ ACCESS RecSize
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		IF ! VODBRecordInfo(DBRI_RECSIZE, 0, REF uVoVal)
-			BREAK ErrorBuild(_VODBErrInfoPtr())
-		ENDIF
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        IF ! VoDbRecordInfo(DBRI_RECSIZE, 0, REF uVoVal)
+            BREAK ErrorBuild(_VoDbErrInfoPtr())
+        ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -1038,13 +1092,6 @@ ACCESS RecSize
 
 
 
-/// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
-ACCESS Retries
-	//  UH 01/05/2000
-	#IFDEF __DEBUG__
-		DBFDebug(__ENTITY__)
-	#ENDIF
-	RETURN SELF:nRetries
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.RelationChildren/*" />
@@ -1070,6 +1117,15 @@ RETURN SELF:aRelationChildren
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
+ACCESS Retries
+	//  UH 01/05/2000
+	#IFDEF __DEBUG__
+		DBFDebug(__ENTITY__)
+    #ENDIF
+	RETURN SELF:nRetries
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
 ASSIGN Retries  (n)
 	//  UH 01/05/2000
 	#IFDEF __DEBUG__
@@ -1092,14 +1148,17 @@ ACCESS RLockList
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
+    IF ! SELF:Used
+        RETURN aLockList
+    ENDIF
 
 
 
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, out dwCurrentWorkArea )
-		aLockList := DBRLockList()
+        VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
+        aLockList := DbRLockList()
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
 		oErrorInfo := oError
@@ -1196,6 +1255,9 @@ RETURN SELF:oHLStatus
 /// <include file="Rdd.xml" path="doc/DbServer.TableExt/*" />
 ACCESS TableExt
 	// DHer: 18/12/2008
+    IF ! SELF:Used
+        RETURN ""
+    ENDIF
 RETURN SELF:Info(DBI_TABLEEXT)
 
 
@@ -1205,14 +1267,13 @@ ACCESS Used
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetVal AS LOGIC
 
-
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	IF SELF:wWorkArea == 0
 		RETURN FALSE
 	ENDIF
-	VODBSelect( wWorkArea, out dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, out dwCurrentWorkArea )
 	lRetVal := Used()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN lRetVal

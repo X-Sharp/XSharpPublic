@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -13,7 +13,7 @@ USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.RDD.Support
 
-/// <summary>Helper class for the RDD system to store field information</summary> 
+/// <summary>Helper class for the RDD system to store field information</summary>
 CLASS RddFieldInfo
     /// <summary>Name, normally max 10 characters</summary>
 	PUBLIC Name 		AS STRING
@@ -44,7 +44,37 @@ CLASS RddFieldInfo
         END SET
     END PROPERTY
     PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
-    PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+    property HasProperties as logic get _lazyProperties != null
+    property FieldTypeFlags as string
+        get
+            if self:Flags == DBFFieldFlags.None
+                return ((char) self:FieldType):ToString()
+            endif
+            var sb := System.Text.StringBuilder{}
+            sb:Append((char) self:FieldType)
+            sb:Append(':')
+            if self:Flags:HasFlag(DBFFieldFlags.Nullable)
+                sb:Append('0')
+            endif
+            if self:Flags:HasFlag(DBFFieldFlags.Binary)
+                sb:Append('B')
+            endif
+            if self:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
+                sb:Append('+')
+            endif
+            if self:Flags:HasFlag(DBFFieldFlags.Compressed)
+                sb:Append('Z')
+            endif
+            if self:Flags:HasFlag(DBFFieldFlags.Encrypted)
+                sb:Append('E')
+            endif
+            if self:Flags:HasFlag(DBFFieldFlags.Unicode)
+                sb:Append('U')
+            endif
+            return sb:ToString()
+        end get
+
+    end property
     /// <summary>Construct a RddFieldInfo object.</summary>
     /// <param name="sName">Name</param>
     /// <param name="sType">Type, may also contain flags in the form of a colon follwed by N,0,B,+,Z,E,U</param>
@@ -57,7 +87,7 @@ CLASS RddFieldInfo
 		Decimals 	:= nDecimals
         Flags       := DBFFieldFlags.None
 		FieldType := (DbFieldType) Char.ToUpper(sType[0])
-		IF FieldType:IsBinary() 
+		if FieldType:IsBinary()
 			Flags |= DBFFieldFlags.Binary
 		ENDIF
         IF sType:IndexOf(":") >= 0
@@ -96,7 +126,7 @@ CLASS RddFieldInfo
     /// <param name="nOffSet">Offset in record buffer (optional)</param>
     /// <param name="nFlags">Flags (optional)</param>
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DBFFieldFlags.None AS DBFFieldFlags)
-		SELF:Name 		:= sName                                
+		self:Name 		:= sName
 		SELF:FieldType 	:= nType
 		SELF:Length 	:= nLength
 		SELF:Decimals 	:= nDecimals
@@ -118,18 +148,18 @@ CLASS RddFieldInfo
    /// <remarks>Only the fields will be copied.</remarks>
     METHOD CopyValues(oInfo AS RddFieldInfo) AS VOID
         VAR oFields    := typeof(RddFieldInfo):GetFields()
-        FOREACH VAR oField IN oFields  
+        foreach var oField in oFields
             oField:SetValue(SELF, oField:GetValue(oInfo))
         NEXT
 		IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
         	SELF:Decimals 	:= oInfo:Decimals
         ENDIF
-        RETURN    
+        return
     /// <summary>Return the blank (non null) value of the column.</summary>
     METHOD BlankValue() AS OBJECT
      SWITCH SELF:FieldType
      CASE DbFieldType.Character
-     CASE DbFieldType.VarChar    
+     case DbFieldType.VarChar
      CASE DbFieldType.Memo
          RETURN String.Empty
      CASE DbFieldType.Date
@@ -152,16 +182,16 @@ CLASS RddFieldInfo
          RETURN 0.0
         END SWITCH
         RETURN NULL
-    /// <summary>Clone a RddFieldInfo object.</summary>        
+    /// <summary>Clone a RddFieldInfo object.</summary>
 	METHOD Clone() AS RddFieldInfo
         VAR info := (RddFieldInfo) SELF:MemberwiseClone()
         RETURN info
 
-    /// <summary>Check if two fields match in type, length and decimals.</summary>        
+    /// <summary>Check if two fields match in type, length and decimals.</summary>
     METHOD SameType(oFld AS RddFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 
-    /// <summary>Validate combinations of type, length and decimals.</summary>        
+    /// <summary>Validate combinations of type, length and decimals.</summary>
     VIRTUAL METHOD Validate() AS LOGIC
         SWITCH SELF:FieldType
             CASE DbFieldType.Date
@@ -181,29 +211,29 @@ CLASS RddFieldInfo
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Flags:ToString("G")+")"
 
-    /// <summary>Field type as 1 character string.</summary>        
+    /// <summary>Field type as 1 character string.</summary>
     PROPERTY FieldTypeStr       AS STRING GET ((CHAR) SELF:FieldType):ToString()
-    /// <summary>Is it a memo ?</summary>        
+    /// <summary>Is it a memo ?</summary>
     PROPERTY IsMemo             AS LOGIC GET SELF:FieldType:IsMemo()
-    /// <summary>Is it binary ?</summary>        
+    /// <summary>Is it binary ?</summary>
     PROPERTY IsBinary           AS LOGIC GET SELF:FieldType:IsBinary() .OR. SELF:Flags:HasFlag(DBFFieldFlags.Binary)
-    /// <summary>Is it nullable ?</summary>        
+    /// <summary>Is it nullable ?</summary>
     PROPERTY IsNullable         AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Nullable)
-    /// <summary>Is it an autoincrement ?</summary>        
+    /// <summary>Is it an autoincrement ?</summary>
     PROPERTY IsAutoIncrement    AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-    /// <summary>Is it a standard Dbase 3 field (CDLMN) ?</summary>        
+    /// <summary>Is it a standard Dbase 3 field (CDLMN) ?</summary>
     PROPERTY IsStandard         AS LOGIC GET SELF:FieldType:IsStandard()
-    /// <summary>Is it a VFP extended field ?</summary>        
+    /// <summary>Is it a VFP extended field ?</summary>
     PROPERTY IsVfp              AS LOGIC GET SELF:FieldType:IsVfp()
-    /// <summary>Is it a variable length field ?</summary>        
+    /// <summary>Is it a variable length field ?</summary>
     PROPERTY IsVarLength        AS LOGIC GET SELF:FieldType:IsVarLength()
-    /// <summary>Is it a unicode text ?</summary>        
+    /// <summary>Is it a unicode text ?</summary>
     PROPERTY IsUnicode          AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Unicode)
-    /// <summary>Is it an encryped field (not implemented yet)?</summary>        
+    /// <summary>Is it an encryped field (not implemented yet)?</summary>
     PROPERTY IsEncrypted        AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Encrypted)
-    /// <summary>Is it a  compressed field (not implemented yet) ?</summary>        
+    /// <summary>Is it a  compressed field (not implemented yet) ?</summary>
     PROPERTY IsCompressed       AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Compressed)
-    /// <summary>Can the field be sorted?</summary>        
+    /// <summary>Can the field be sorted?</summary>
     PROPERTY CanSort            AS LOGIC
         GET
             SWITCH SELF:FieldType
@@ -223,7 +253,7 @@ CLASS RddFieldInfo
                 ENDIF
             END SWITCH
             RETURN FALSE
-                
+
         END GET
     END PROPERTY
 
@@ -231,15 +261,15 @@ CLASS RddFieldInfo
     PROPERTY Caption      AS STRING ;
         GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.Caption) DEFAULT SELF:Name;
         SET SELF:Properties:Add(DatabasePropertyType.Caption, value)
-            
+
     PROPERTY Description  AS STRING ;
         GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.Comment)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.Comment, value)
-            
+
     PROPERTY InputMask    AS STRING ;
         GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.InputMask)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.InputMask, value)
-            
+
     PROPERTY Format       AS STRING ;
         GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.Format)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.Format, value)

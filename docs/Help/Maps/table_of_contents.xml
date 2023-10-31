@@ -134,6 +134,9 @@
     <topicref type="topic" id="448114788158439" modified="2022-09-07T14:49:53.067Z" icon="0" href="__FoxProOnly">
       <caption translate="true">__FoxPro</caption>
     </topicref>
+    <topicref type="topic" id="452217451269321" build="ALL" modified="2023-10-22T12:59:43.223Z" icon="0" href="__SeeAlsoExitLoop">
+      <caption translate="true">__SeeAlsoExitLoop</caption>
+    </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
@@ -1366,6 +1369,9 @@
           </topicref>
           <topicref type="topic" id="436999313841944" build="ALL" modified="2019-09-24T14:19:27.452Z" icon="0" href="command_TRY_CATCH">
             <caption translate="true">TRY CATCH Statement</caption>
+          </topicref>
+          <topicref type="topic" id="452216963134192" build="ALL" modified="2023-10-22T13:04:40.172Z" icon="0" href="command_WITH">
+            <caption translate="true">WITH command</caption>
           </topicref>
           <topicref type="topic" id="437526355445228" build="ALL" modified="2019-10-14T12:34:05.369Z" icon="0" href="command_YIELD">
             <caption translate="true">YIELD Statement</caption>

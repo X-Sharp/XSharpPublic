@@ -288,7 +288,11 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBI_RM_HANDLE           := 159
 		// 160 - 169 missing
 		/// <summary>if area represents result of a query, obtain expression of this query </summary>
-		MEMBER DBI_QUERY				:= 170
+        member DBI_QUERY				:= 170
+
+        /// <summary>Refresh the current data in the SQLRDD</summary>
+        member DBI_REFRESH		        := 171
+
 		// 171 - 200 missing
 		/// <summary></summary>
 		MEMBER BLOB_INFO_HANDLE		:= 201
@@ -391,7 +395,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		// advantage
 		MEMBER DBI_GET_ACE_TABLE_HANDLE  := DBI_USER + 110
 		MEMBER DBI_GET_ACE_STMT_HANDLE   := DBI_USER + 111
-
+        // SQL RDD
 
 	END	 ENUM
 

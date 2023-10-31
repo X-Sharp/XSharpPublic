@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-10-22T13:02:57.103-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SWITCH Statement</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -37,7 +37,7 @@
     <para styleclass="Body Text">If you do not have a WHEN filter then each CASE line must be &quot;unique&quot;, so no two CASEs can have the same constantvalue or same datatype. If you add a WHEN filter then this is allowed.</para>
     <para styleclass="Body Text">The compiler may (and will) rearrange the order of the CASE labels when generating code for example to combine two CASEs with the same constant value and a WHEN filter. These may be combined into one CASE label with an embedded IF statement.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">Execution proceeds until the next CASE, OTHERWISE, or ENDCASE is encountered, and control then branches to the first statement following the next ENDCASE statement.</para>
+    <para styleclass="Body Text">Execution proceeds until the next CASE, OTHERWISE, or END SWITCH is encountered, and control then branches to the first statement following the next ENDCASE statement.</para>
     <para styleclass="Body Text">Control structures can be nested to any depth. The only requirement is that each control structure be properly nested.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading2">Examples</para>

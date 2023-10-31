@@ -1378,8 +1378,8 @@ METHOD Close( )
 			SELF:aOriginalBuffer := NULL_ARRAY
 			SELF:aCurrentBuffer := NULL_ARRAY
 			SELF:aStruct := NULL_ARRAY
-            self:oRDD := null
-			oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
+            SELF:oRDD := null
+			SELF:oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_NOTABLE2 ), "DbServer_NoTable" }
 		ENDIF
 		lRetCode := TRUE

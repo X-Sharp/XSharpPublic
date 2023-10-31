@@ -58,7 +58,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
                     nRes := SetParameters(oParams)
                 ENDIF
                 if nRes == 0
-                    nRes := ACE.AdsExecuteSQL(SELF:_hStatement, REF _Table)
+                    nRes := ACE.AdsExecuteSQL(SELF:_hStatement, OUT _Table)
                 endif
                 IF nRes != 0
                     local err := NULL as Exception
@@ -95,7 +95,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             RETURN FALSE
         ENDIF
 
-        SELF:_CheckError(ACE.AdsCreateSQLStatement(SELF:_Connection, REF SELF:_hStatement),EG_OPEN,"AdsCreateSQLStatement")
+        SELF:_CheckError(ACE.AdsCreateSQLStatement(SELF:_Connection, OUT SELF:_hStatement),EG_OPEN,"AdsCreateSQLStatement")
 
         SELF:_CheckError(ACE.AdsStmtSetTableType(SELF:_hStatement, SELF:_TableType),EG_OPEN,"AdsStmtSetTableType")
 
@@ -137,7 +137,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             nRes := SetParameters(oParams)
         endif
         if nRes == 0
-            nRes := ACE.AdsExecuteSQL(SELF:_hStatement, REF _Table)
+            nRes := ACE.AdsExecuteSQL(SELF:_hStatement, OUT _Table)
         endif
         IF nRes != 0
             local err := NULL as Exception
@@ -154,7 +154,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             SELF:Close()
             RETURN FALSE
         ENDIF
-        SELF:_CheckError(ACE.AdsGetTableType(SELF:_Table, REF _TableType),EG_OPEN,"AdsGetTableType")
+        SELF:_CheckError(ACE.AdsGetTableType(SELF:_Table, OUT _TableType),EG_OPEN,"AdsGetTableType")
         IF ! SELF:_FieldSub()
             SELF:Close()
             RETURN FALSE

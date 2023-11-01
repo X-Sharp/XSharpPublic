@@ -18,7 +18,13 @@ FUNCTION AllTrim(cString AS STRING) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-FUNCTION Asc(cString AS STRING) AS DWORD
+/// <remarks>
+/// AscA() always uses the current Ansi codepage, and ignores the setting of SetAnsi()
+/// </remarks>
+/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.ChrA'>ChrA</seealso>
+FUNCTION AscA(cString AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
 	if ( !String.IsNullOrEmpty(cString) )
@@ -49,13 +55,59 @@ FUNCTION Asc(cString AS STRING) AS DWORD
 		ENDIF
 	ENDIF
 	RETURN ascValue
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
+/// <remarks>
+/// The return value of Asc() in XSharp depends on the setting of SetAnsi().<br/>
+/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the result.<br/>
+/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the result.<br/>
+/// This is different from the behior in most single byte versions of Xbase where Asc() simply returnes the
+/// byte value of the 1st character of the string.
+/// </remarks>
+/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+FUNCTION Asc(cString AS STRING) AS DWORD
+	LOCAL ascValue := 0 AS DWORD
+	LOCAL chValue AS CHAR
+	if ( !String.IsNullOrEmpty(cString) )
+		chValue := cString[0]
+		ascValue := (DWORD) chValue
+		IF ascValue > 127
+			LOCAL encoding AS Encoding
+            IF RuntimeState.Ansi
+                encoding := StringHelpers.WinEncoding
+            ELSE
+                encoding := StringHelpers.DosEncoding
+            ENDIF
+			LOCAL buffer AS BYTE[]
+			VAR chars := <CHAR> {chValue}
+			IF encoding:IsSingleByte
+				buffer := BYTE[]{1}
+				encoding:GetBytes(chars,0,1,buffer,0)
+				ascValue := buffer[0]
+			ELSE
+				buffer := BYTE[]{2}
+				IF encoding:GetBytes(chars,0,1,buffer,0) == 1
+					ascValue := buffer[0]
+				ELSE
+					IF BitConverter.IsLittleEndian
+						LOCAL tmp := buffer[0] AS BYTE
+						buffer[0] := buffer[1]
+						buffer[1] := tmp
+					ENDIF
+					ascValue := BitConverter.ToUInt16( buffer, 0 )
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+	RETURN ascValue
 /// <summary>
 /// Convert a character to its Unicode ASCII value.
 /// </summary>
 /// <param name="c"></param>
-/// <returns>
-/// </returns>
+/// <returns>Number of the Unicode character</returns>
+/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.ChrW'>ChrW</seealso>
 FUNCTION AscW(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
@@ -278,6 +330,7 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
 FUNCTION ChrA(dwChar AS DWORD) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
@@ -305,6 +358,7 @@ FUNCTION ChrA(dwChar AS DWORD) AS STRING
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
 FUNCTION ChrW(dwChar AS DWORD) AS STRING
    IF dwChar > 0xFFFF
       THROW Error.ArgumentError( __ENTITY__, nameof(dwChar), "Number too High")

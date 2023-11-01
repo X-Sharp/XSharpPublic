@@ -475,11 +475,9 @@ INTERNAL CLASS UnSafeNativeMethods
 
     STATIC METHOD DoEvents() AS VOID
         local msg    as xMessage
-        local handle as HandleRef
         msg     := xMessage{}
-        handle  := HandleRef{}
-        DO WHILE UnSafeNativeMethods.PeekMessage( REF msg,handle, 0,0, PM_NOREMOVE)
-            IF UnSafeNativeMethods.GetMessage( REF msg, handle,0,0 )
+        DO WHILE UnSafeNativeMethods.PeekMessage( REF msg,IntPtr.Zero, 0,0, PM_NOREMOVE)
+            IF UnSafeNativeMethods.GetMessage( REF msg, IntPtr.Zero,0,0 )
                 UnSafeNativeMethods.TranslateMessage(REF msg)
                 UnSafeNativeMethods.DispatchMessage(REF msg)
             ENDIF
@@ -495,11 +493,11 @@ INTERNAL CLASS UnSafeNativeMethods
 
     // Private Helper methods
     [DllImport("User32.dll", CharSet := CharSet.Ansi)];
-    PRIVATE STATIC METHOD PeekMessage(msg REF xMessage, hwnd as HandleRef, msgMin as INT, msgMax as INT, iremove as Int) AS LOGIC
+    PRIVATE STATIC METHOD PeekMessage(msg REF xMessage, hwnd as IntPtr, msgMin as INT, msgMax as INT, iremove as Int) AS LOGIC
         [DllImport("User32.dll", CharSet := CharSet.Unicode)];
-    PRIVATE STATIC METHOD PostMessage(msg AS xMessage, hwnd as HandleRef, imsg as INT, wParam AS IntPtr, lParam as IntPtr) AS LOGIC
+    PRIVATE STATIC METHOD PostMessage(msg AS xMessage, hwnd as IntPtr, imsg as INT, wParam AS IntPtr, lParam as IntPtr) AS LOGIC
         [DllImport("User32.dll", CharSet := CharSet.Unicode)];
-    PRIVATE STATIC METHOD GetMessage(msg REF xMessage, hwnd as HandleRef, msgMin as INT, msgMax as INT) AS LOGIC
+    PRIVATE STATIC METHOD GetMessage(msg REF xMessage, hwnd as IntPtr, msgMin as INT, msgMax as INT) AS LOGIC
         [DllImport("User32.dll", CharSet := CharSet.Unicode)];
     PRIVATE STATIC METHOD TranslateMessage(msg REF xMessage) AS LOGIC
         [DllImport("User32.dll", CharSet := CharSet.Unicode)];

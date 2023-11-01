@@ -1455,12 +1455,15 @@ CLASS XSharp.CoreDb
             if oOrder != NULL .and. SystemTypeToUsualType(oOrder:GetType()) == __UsualType.Symbol
                 oOrder := oOrder:ToString()
             endif
-            cBagName     := cBagName?:Trim()
-            info:BagName := cBagName
-            info:Order   := oOrder
-            VAR isOk := oRdd:OrderListFocus(info)
-            IF HasEvents .AND. ! info:IsEmpty
-                RAISE OrderChanged info:Result
+            VAR isOk := TRUE
+            if (! info:IsEmpty)
+                cBagName     := cBagName?:Trim()
+                info:BagName := cBagName
+                info:Order   := oOrder
+                isOk := oRdd:OrderListFocus(info)
+                IF HasEvents .AND. ! info:IsEmpty
+                    RAISE OrderChanged info:Result
+                ENDIF
             ENDIF
             RETURN isOk
         })

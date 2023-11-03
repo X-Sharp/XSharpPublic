@@ -1,16 +1,8 @@
-﻿FUNCTION Start as VOID
-    RddSetDefault("DBFCDX")
-    ? DbCreate("TEst", {{"FLD1","C",10,0}})
-    ? DbUseArea(TRUE, , "Test")
-    ? OrdCreate("TEST","FLD1","FLD1")
-    ? OrdSetFocus()
-    ? OrdSetFocus()
+﻿FUNCTION Start() AS VOID
+    ? DbUseArea(,"DBFCDX","C:\TEMP\INIFILE")
+    ? RecCount()
+    ? LastRec()
+    ? DbSeek("BASE    CONNECT STRING")
+    ? RecNo(), FieldGet(1), FieldGet(2)
     ? DbCloseArea()
-
     WAIT
-    RETURN
-
-
-FUNCTION MemWalker(pMem as IntPtr, nSize as DWORD) AS LOGIC
-    ? "Walk", pMem, nSize
-    RETURN TRUE

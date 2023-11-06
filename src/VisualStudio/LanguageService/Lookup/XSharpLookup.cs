@@ -67,7 +67,12 @@ namespace XSharp.LanguageService
                 {
                     var pars = member.Parameters.Where(x => StringEquals(x.Name, name)).ToList();
                     if (pars.Count >0)
-                        result.AddRange(pars);
+                    {
+                        foreach (var par in pars)
+                        {
+                            result.Add(par.Clone());
+                        }
+                    }
                 }
                 if (result.Count == 0)
                 {
@@ -79,7 +84,7 @@ namespace XSharp.LanguageService
                         var local = member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine <= location.LineNumber).LastOrDefault();
                         if (local != null)
                         {
-                            result.Add(local);
+                            result.Add(local.Clone());
                         }
                     }
                 }
@@ -273,9 +278,7 @@ namespace XSharp.LanguageService
             if (name.EndsWith("[]"))
             {
                 name = name.Substring(0, name.Length - 2);
-                if (arrayTypes.ContainsKey(name))
-                    oType = arrayTypes[name];
-                else
+                if (!arrayTypes.TryGetValue(name, out oType))
                 {
                     oType = GetArrayType(location, name);
                     arrayTypes.Add(name, oType);
@@ -1921,8 +1924,11 @@ namespace XSharp.LanguageService
                 int i = 0;
                 foreach (var result in results)
                 {
-                    ++i;
-                    Logger.Information($"{i}: {result.Kind} {result.Prototype}");
+                    if (result != null)
+                    {
+                        ++i;
+                        Logger.Information($"{i}: {result.Kind} {result.Prototype}");
+                    }
                 }
             }
         }

@@ -1506,7 +1506,7 @@
 
         <param name="cString">The character to convert to a number.</param>
         <returns>
-            A number from 0 to 255, representing the ASCII code of <paramref name=" cString " />.
+            A number from 0 to 255, representing the ASCII code of <paramref name="cString" />.
         </returns>
         <remarks>
             Asc() is a character conversion function that returns the ASCII value of the leftmost character in a string.<br/>

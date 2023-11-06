@@ -43,6 +43,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeTests.prg" />
     <Compile Include="DateTimeTests.prg" />
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FileSearchTest.prg" />

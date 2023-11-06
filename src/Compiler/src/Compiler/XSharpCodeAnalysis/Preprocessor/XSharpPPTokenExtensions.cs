@@ -395,6 +395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.LOGIC_NOT:
                 case XSharpLexer.FOX_NOT:
                 case XSharpLexer.NOT:
+                case XSharpLexer.AMP:               // see xsharp.g4 macroName
                     return true;
             }
             return false;

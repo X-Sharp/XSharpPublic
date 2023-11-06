@@ -277,9 +277,9 @@ namespace XSharp.LanguageService
                             if (expression.Length == 0)
                             {
                                 expression = token.Text;
-                                if (locals != null && locals.ContainsKey(expression))
+                                if (locals != null && locals.TryGetValue(expression, out var local))
                                 {
-                                    expression = locals[expression].Name;
+                                    expression = local.Name;
                                 }
                             }
                             else

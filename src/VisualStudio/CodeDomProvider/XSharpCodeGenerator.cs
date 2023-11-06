@@ -1818,11 +1818,11 @@ namespace XSharp.CodeDom
                 return "System.Object";
             }
 
-            if (SystemToXSharp.ContainsKey(baseType))
+            if (SystemToXSharp.TryGetValue(baseType, out var typeName))
             {
-                return FormatKeyword(SystemToXSharp[baseType]);
+                return FormatKeyword(typeName);
             }
-            if (XSharpToSystem.ContainsKey(baseType))
+            if (XSharpToSystem.TryGetValue(baseType, out var _))
             {
                 return FormatKeyword(baseType);
             }

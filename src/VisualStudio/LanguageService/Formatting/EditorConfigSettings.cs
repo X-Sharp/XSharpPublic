@@ -58,9 +58,9 @@ namespace XSharp.LanguageService
                 if (configuration.InsertFinalNewline.HasValue)
                     settings.InsertFinalNewline = configuration.InsertFinalNewline.Value;
 
-                if (configuration.Properties.ContainsKey(KEYWORDCASE))
+                if (configuration.Properties.TryGetValue(KEYWORDCASE, out var temp))
                 {
-                    var temp = configuration.Properties[KEYWORDCASE].ToLower();
+                    temp = temp.ToLower();
                     switch (temp)
                     {
                         case UPPER:

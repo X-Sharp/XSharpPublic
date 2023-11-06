@@ -226,9 +226,8 @@ namespace XSharp.CodeDom
 
         private void addFields(XCodeTypeDeclaration newClass, XSharpParserRuleContext context)
         {
-            if (FieldList.ContainsKey(context))
+            if (FieldList.TryGetValue(context, out var fields))
             {
-                var fields = FieldList[context];
                 foreach (var f in fields)
                 {
                     newClass.Members.Add(f);
@@ -748,8 +747,8 @@ namespace XSharp.CodeDom
             }
             if (expr is CodeVariableReferenceExpression cvr)
             {
-                if (_locals.ContainsKey(cvr.VariableName))
-                    return _locals[cvr.VariableName];
+                if (_locals.TryGetValue(cvr.VariableName, out var local))
+                    return local;
             }
             return null;
         }

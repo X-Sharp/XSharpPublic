@@ -6415,9 +6415,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitWithBlock([NotNull] XP.WithBlockContext context)
         {
-
             var stmts = new List<StatementSyntax>();
-            var declstmt = GenerateLocalDecl(context.VarName, _impliedType, context.Expr.Get<ExpressionSyntax>());
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            if (context.DataType != null)
+            {
+                expr = MakeCastTo(context.DataType.Get<TypeSyntax>(), expr);
+            }
+            var declstmt = GenerateLocalDecl(context.VarName, _impliedType, expr);
             if (_options.Dialect == XSharpDialect.FoxPro)
             {
                 // For FoxPro we add a Push of the local to stack in the runtime

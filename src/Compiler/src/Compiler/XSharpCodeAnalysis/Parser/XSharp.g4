@@ -684,7 +684,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       StmtBlk=statementBlock
                       e=END FIXED? eos						                        #blockStmt
 
-                    | WITH Expr=expression end=eos
+                    | WITH Expr=expression (As=AS DataType=datatype foxclasslib?  )?  end=eos
                       StmtBlk=statementBlock
                       e=END WITH? eos                                  #withBlock
 

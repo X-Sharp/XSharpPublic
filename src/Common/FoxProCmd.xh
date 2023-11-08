@@ -88,11 +88,11 @@
 #command GATHER FROM <arrayName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
           => __GatherArray(<arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
-#command GATHER FROM NAME <objectName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
+#command GATHER NAME <objectName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
           => __GatherObject(<objectName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
 //GATHER MemVar must be last, otherwise the compiler thinks that MEMVAR is the name of an array
-#command GATHER FROM MEMVAR [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
+#command GATHER MEMVAR [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
           => __GatherMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
 ***

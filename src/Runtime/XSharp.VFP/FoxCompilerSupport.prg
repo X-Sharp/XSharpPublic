@@ -16,6 +16,7 @@ USING System.Collections.Generic
 USING System.Reflection
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
+    oVFPErrorMessage := __VfpStr
     InitFoxState()
 RETURN
 

@@ -1,7 +1,7 @@
 // Win32.prg
 // Created by    : robert
 // Creation Date : 1/9/2020 11:01:41 AM
-// Created for   : 
+// Created for   :
 // WorkStation   : ARTEMIS
 
 
@@ -12,8 +12,8 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.Data
 
-    INTERNAL STATIC CLASS Win32
-    
+    INTERNAL STATIC CLASS XWin32
+
         INTERNAL CONST SQL_DRIVER_NOPROMPT	:=	0 AS WORD
         INTERNAL CONST SQL_DRIVER_COMPLETE	:=	1 AS WORD
         INTERNAL CONST SQL_DRIVER_PROMPT	:=	2 AS WORD
@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.Data
 
         [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
         INTERNAL STATIC METHOD GetActiveWindow() AS IntPtr PASCAL
-        
+
         [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
         INTERNAL STATIC METHOD GetDesktopWindow() AS IntPtr PASCAL
 
@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.Data
             szConnStrIn AS STRING,cbConnStrIn AS SHORT, szConnStrOut AS StringBuilder, ;
             cbConnStrOutMax AS SHORT,pcbConnStrOut OUT SHORT ,;
             fDriverCompletion AS WORD) AS SHORTINT PASCAL
-        
+
         [DllImport("ODBC32.dll")];
         INTERNAL STATIC METHOD SQLDisconnect(hdbc AS IntPtr) AS SHORTINT PASCAL
 
@@ -64,7 +64,7 @@ BEGIN NAMESPACE XSharp.Data
 
 
         [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE)] ;
-        INTERNAL STATIC METHOD SetParent( hWndChild AS IntPtr, hWndNewParent AS IntPtr) AS IntPtr 
+        INTERNAL STATIC METHOD SetParent( hWndChild AS IntPtr, hWndNewParent AS IntPtr) AS IntPtr
 
 
 

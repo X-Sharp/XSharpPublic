@@ -37,25 +37,25 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         UniqueId := 0
         Factory  := XSharp.Data.Functions.GetSqlFactory()
         DefaultValues := Dictionary<SQLProperty, OBJECT>{}
-        DefaultValues.Add(SQLProperty.Asynchronous       ,FALSE)
-        DefaultValues.Add(SQLProperty.BatchMode          ,TRUE)
-        DefaultValues.Add(SQLProperty.ConnectBusy        ,FALSE)
-        DefaultValues.Add(SQLProperty.ConnectString      ,"")
-        DefaultValues.Add(SQLProperty.ConnectTimeOut     ,15)
-        DefaultValues.Add(SQLProperty.DataSource         ,"")
-        DefaultValues.Add(SQLProperty.DisconnectRollback ,FALSE)
-        DefaultValues.Add(SQLProperty.DispLogin          ,DB_PROMPTCOMPLETE)
-        DefaultValues.Add(SQLProperty.DispWarnings       ,FALSE)
-        DefaultValues.Add(SQLProperty.IdleTimeout        ,0)
+        DefaultValues:Add(SQLProperty.Asynchronous       ,FALSE)
+        DefaultValues:Add(SQLProperty.BatchMode          ,TRUE)
+        DefaultValues:Add(SQLProperty.ConnectBusy        ,FALSE)
+        DefaultValues:Add(SQLProperty.ConnectString      ,"")
+        DefaultValues:Add(SQLProperty.ConnectTimeOut     ,15)
+        DefaultValues:Add(SQLProperty.DataSource         ,"")
+        DefaultValues:Add(SQLProperty.DisconnectRollback ,FALSE)
+        DefaultValues:Add(SQLProperty.DispLogin          ,DB_PROMPTCOMPLETE)
+        DefaultValues:Add(SQLProperty.DispWarnings       ,FALSE)
+        DefaultValues:Add(SQLProperty.IdleTimeout        ,0)
         //DefaultValues.Add(SQLProperty.ODBChdbc           ,NULL)
         //DefaultValues.Add(SQLProperty.ODBChstmt          ,NULL)
-        DefaultValues.Add(SQLProperty.PacketSize         ,4096)
+        DefaultValues:Add(SQLProperty.PacketSize         ,4096)
         //DefaultValues.Add(SQLProperty.Password           ,"")
-        DefaultValues.Add(SQLProperty.QueryTimeOut       ,0)
+        DefaultValues:Add(SQLProperty.QueryTimeOut       ,0)
         //DefaultValues.Add(SQLProperty.Shared             ,
-        DefaultValues.Add(SQLProperty.Transactions       ,DB_TRANSAUTO)
+        DefaultValues:Add(SQLProperty.Transactions       ,DB_TRANSAUTO)
         //DefaultValues.Add(SQLProperty.UserId             ,"")
-        DefaultValues.Add(SQLProperty.WaitTime           ,100)
+        DefaultValues:Add(SQLProperty.WaitTime           ,100)
 
     STATIC METHOD GetDefault<T>(nDef AS SQLProperty) AS T
         IF DefaultValues:ContainsKey(nDef)
@@ -104,7 +104,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         LOCAL cNewProp AS STRING
         cNewProp := GetPartialEnumName(cProperty, typeof(SQLProperty))
         IF String.IsNullOrEmpty(cNewProp)
-            VAR cMessage := __VfpStr(VFPErrors.PROPERTY_UNKNOWN, cProperty)
+            VAR cMessage := i"Unknown property : '{cProperty}', or the property name is not long enough to be distinctive"
             THROW Error{cMessage}
         ENDIF
         var nProperty := (SQLProperty) GetSQLProperty(cNewProp)

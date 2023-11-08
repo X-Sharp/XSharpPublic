@@ -428,6 +428,7 @@ CLASS CursorAdapter
                             endif
                         endif
                     endif
+                    XSharp.RuntimeState.Workareas:SetCargo(ir:Area, SELF)
                 endif
             endif
             RETURN nResult > 0
@@ -435,6 +436,34 @@ CLASS CursorAdapter
             RETURN TRUE
         PRIVATE METHOD CursorFillSQL(lUseCursorSchema AS LOGIC, lNoData AS LOGIC) as LOGIC
             RETURN TRUE
+
+    /// <include file="VFPClasses.xml" path="doc/CursorAdapter.CursorAttach/*" />
+    METHOD CursorAttach(cAlias, lInheritCursorProperties  ) AS LOGIC CLIPPER
+        local lcAlias := SELF:Alias AS STRING
+        local lInherit := FALSE AS LOGIC
+        local lOk  := FALSE as LOGIC
+        IF ! IsNil(cAlias)
+            lcAlias  := cAlias
+        ENDIF
+        IF ! IsNil(lInheritCursorProperties)
+            lInherit := lInheritCursorProperties
+        ENDIF
+        local nArea    := VoDbGetSelect(lcAlias) as dword
+        if nArea != 0
+            local cargo :=  XSharp.RuntimeState.Workareas:GetCargo(nArea) as object
+            if cargo is CursorAdapter var ca .and. ca != SELF
+                lOk := FAlSE
+            else
+                XSharp.RuntimeState.Workareas:SetCargo(nArea, SELF)
+                lOk := TRUE
+            endif
+        else
+            lOk := FALSE
+        endif
+        RETURN lOk
+
+
+
 
 END CLASS
 END NAMESPACE // XSharp.RDD

@@ -4640,7 +4640,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     left = GenerateLiteral(0);
-                    left = left.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    if (_options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        left = left.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxMissingWithStatement));
+                    }
+                    else
+                    {
+                        left = left.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    }
                 }
             }
             ExpressionSyntax right; 

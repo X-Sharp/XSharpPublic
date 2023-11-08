@@ -7570,6 +7570,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_MissingWithStatement" xml:space="preserve">
     <value>Cannot locate WITH block for member access expression without left hand side.</value>
   </data>
+  <data name="ERR_FoxMissingWithStatement" xml:space="preserve">
+    <value>Cannot locate WITH block for member access expression without left hand side. Enable 'Late Binding' to allow resolving the WITH expression at runtime.</value>
+  </data>
   <data name="WRN_MissingWithStatement" xml:space="preserve">
     <value>Cannot locate WITH block for member access expression without left hand side. This will be resolved into a late bound call at runtime and may cause an exception when no active WITH block is found.</value>
   </data>

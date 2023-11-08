@@ -7429,8 +7429,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parent = FindWithBlock(context);
                 if (parent is XP.WithBlockContext wb)
                 {
-                    var VarName = GenerateSimpleName(wb.VarName);
-                    context.Put(MakeSimpleMemberAccess(VarName, context.Name.Get<SimpleNameSyntax>()));
+                    var varName = GenerateSimpleName(wb.VarName);
+                    context.Put(MakeSimpleMemberAccess(varName, context.Name.Get<SimpleNameSyntax>()));
                 }
                 else if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.LateBinding, context, PragmaOptions))
                 {
@@ -7443,7 +7443,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     var expr = GenerateLiteral(0);
-                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    if (_options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxMissingWithStatement));
+                    }
+                    else
+                    {
+                        expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    }
                     context.Put(expr);
                 }
             }

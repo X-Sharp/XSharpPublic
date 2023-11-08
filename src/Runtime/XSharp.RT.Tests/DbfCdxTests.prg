@@ -3822,6 +3822,7 @@ RETURN
 			DbCloseArea()
 			DbUseArea(TRUE, "DBFCDX", cDbf)
 
+            Assert.Equal("NUMFIELD", IndexKey())
 			Assert.Equal("ORDER1", (STRING)OrdSetFocus(0))
 			Assert.Equal("", (STRING)OrdSetFocus(0))
 			DbGoTop()
@@ -5570,28 +5571,28 @@ RETURN
 			DbCloseArea()
 
 			DbUseArea(TRUE,"DBFCDX",cDbf)
-		
+
 			VoDbOrdListAdd(cDbf + "ord1",NIL)
 			? DbOrderInfo(DBOI_FULLPATH) // testord1, OK
 			Assert.True( Instr("ord1" , DbOrderInfo(DBOI_FULLPATH)) )
 			DbGoTop()
 			? FieldGet(1) // 1, OK
 			Assert.Equal(1, (INT)FieldGet(1))
-		
+
 			VoDbOrdListAdd(cDbf + "ord2",NIL)
 			? DbOrderInfo(DBOI_FULLPATH) // testord1, OK
 			Assert.True( Instr("ord1" , DbOrderInfo(DBOI_FULLPATH)) )
 			DbGoTop()
 			? FieldGet(1) // 1, OK
 			Assert.Equal(1, (INT)FieldGet(1))
-		
+
 			DbSetOrder(2)
 			? DbOrderInfo(DBOI_FULLPATH) // testord2, OK
 			Assert.True( Instr("ord2" , DbOrderInfo(DBOI_FULLPATH)) )
 			DbGoTop()
 			? FieldGet(1) // 5, OK
 			Assert.Equal(5, (INT)FieldGet(1))
-				
+
 //			VoDbOrdListAdd(cDbf + "ord3",NIL)
 			DbSetIndex(cDbf + "ord3")
 			? DbOrderInfo(DBOI_FULLPATH) // testord1, NOT OK (should remain testord2)
@@ -5599,7 +5600,7 @@ RETURN
 			DbGoTop()
 			? FieldGet(1) // 1, wrong, should remain 5
 			Assert.Equal(5, (INT)FieldGet(1))
-		
+
 			DbCloseArea()
 
 		[Fact, Trait("Category", "DBF")];
@@ -5619,22 +5620,22 @@ RETURN
 
 			LOCAL CONST nScopeVal := 1 AS INT
 			LOCAL cS := Str(nScopeVal, 4) AS STRING
-		
+
 			OrdScope(TOPSCOPE, cS)
 			OrdScope(BOTTOMSCOPE, cS)
 			VoDbGoTop()
-		
+
 			LOCAL CONST nNumberOfTestRecords := 15 AS INT // any number greater than 1
-		
+
 			// Filling with data
 			FOR LOCAL i := 1 AS INT UPTO nNumberOfTestRecords + 1
 				VoDbAppend(FALSE)
 				FieldPutSym(#COL1, nScopeVal)
 			NEXT
-		
+
 			VoDbCommit()
 			VoDbUnlock(NIL)
-		
+
 			// Test
 			LOCAL nCountInCurrentScope := 0 AS INT
 			VoDbGoTop()
@@ -5642,10 +5643,10 @@ RETURN
 				nCountInCurrentScope++
 				VoDbSkip(1)
 			ENDDO
-		
+
 			? nCountInCurrentScope // must be <nNumberOfTestRecords + 1>, instead 1
 			Assert.Equal(nNumberOfTestRecords + 1, nCountInCurrentScope)
-		
+
 			DbCloseArea()
 
 
@@ -5658,7 +5659,7 @@ RETURN
 
 			cDbf := DbfTests.GetTempFileName()
 			LOCAL aStruct AS ARRAY
-		
+
 			aStruct := {;
 				{"NMON", "N", 1, 0},;
 				{"FORWHAT", "N", 1, 0},;
@@ -5675,7 +5676,7 @@ RETURN
 			DbCloseArea()
 
 			DbUseArea(TRUE,"DBFCDX",cDbf,,FALSE) // EXCLUSIVE
-			
+
 			LOCAL aRecList AS ARRAY
 
 			aRecList := {;
@@ -5814,7 +5815,7 @@ RETURN
 				{"2790902857", 1204},;
 				{"2976703257", 1220};
 			}
-			
+
 			FOR LOCAL n := 1 AS INT UPTO ALen(aRecList)
 				Assert.True( DbAppend() )
 				FieldPutSym(#FORWHAT, 0)
@@ -5822,15 +5823,15 @@ RETURN
 				FieldPutSym(#TIN, aRecList[n, 1])
 				FieldPutSym(#TN, aRecList[n, 2])
 			NEXT
-			
-			Assert.True( DbPack() )
+
+            Assert.True( DbPack() )
 
 			Assert.True( DbAppend() )
 			FieldPutSym(#FORWHAT, 0)
 			FieldPutSym(#NMON, 2)
 			FieldPutSym(#TIN, "2259415237")
 			FieldPutSym(#TN, 303)
-		
+
 			Assert.True( DbAppend() )
 			FieldPutSym(#FORWHAT, 0)
 			FieldPutSym(#NMON, 2)

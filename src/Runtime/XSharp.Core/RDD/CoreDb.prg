@@ -1456,10 +1456,10 @@ CLASS XSharp.CoreDb
                 oOrder := oOrder:ToString()
             endif
             VAR isOk := TRUE
+            cBagName     := cBagName?:Trim()
+            info:BagName := cBagName
+            info:Order   := oOrder
             if (! info:IsEmpty)
-                cBagName     := cBagName?:Trim()
-                info:BagName := cBagName
-                info:Order   := oOrder
                 isOk := oRdd:OrderListFocus(info)
                 IF HasEvents .AND. ! info:IsEmpty
                     RAISE OrderChanged info:Result

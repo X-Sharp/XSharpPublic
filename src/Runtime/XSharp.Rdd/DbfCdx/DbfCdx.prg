@@ -163,7 +163,16 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
 
                     SELF:GoCold()
-                    RETURN SELF:_indexList:Rebuild() .and. RuntimeState.LastRddError == null
+                    local current := SELF:CurrentOrder as CdxTag
+                    var lOk := SELF:_indexList:Rebuild() .and. RuntimeState.LastRddError == null
+                    IF lOk .and. current != null
+                        var orderInfo := DbOrderInfo{}
+                        orderInfo:BagName := current:OrderBag:FullPath
+                        orderInfo:Order   := current:OrderName
+                        SELF:OrderListFocus(orderInfo)
+                    ENDIF
+                    RETURN lOk
+
                 END LOCK
 
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
@@ -643,17 +652,16 @@ BEGIN NAMESPACE XSharp.RDD
         #REGION GoCold, GoHot, Flush
         OVERRIDE METHOD GoCold() AS LOGIC
             LOCAL isOk AS LOGIC
-
             isOk := TRUE
             BEGIN LOCK SELF
                 IF !SELF:IsHot
                     RETURN isOk
                 ENDIF
-                isOk := SELF:_indexList:GoCold()
-                IF !isOk
-                    RETURN isOk
-                ENDIF
-                RETURN SUPER:GoCold()
+                    isOk := SELF:_indexList:GoCold()
+                    IF isOk
+                        isOk := SUPER:GoCold()
+                    ENDIF
+                RETURN isOk
             END LOCK
 
          OVERRIDE METHOD GoHot() AS LOGIC

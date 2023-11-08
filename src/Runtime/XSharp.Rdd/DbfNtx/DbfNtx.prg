@@ -78,7 +78,15 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN FALSE
                 ENDIF
                 SELF:GoCold()
-                RETURN SELF:_indexList:Rebuild()  .and. RuntimeState.LastRddError == null
+                local current := SELF:CurrentOrder as NtxOrder
+                var lOk := SELF:_indexList:Rebuild()  .and. RuntimeState.LastRddError == null
+                IF lOk .and. current != null
+                    var orderInfo := DbOrderInfo{}
+                    orderInfo:BagName := current:FullPath
+                    orderInfo:Order   := current:OrderName
+                    SELF:OrderListFocus(orderInfo)
+                ENDIF
+                RETURN lOk
             END LOCK
 
         OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT

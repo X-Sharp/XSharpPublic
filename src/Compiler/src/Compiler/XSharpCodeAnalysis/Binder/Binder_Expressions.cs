@@ -124,36 +124,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var arrayType = Compilation.ArrayType();
                 var usualType = Compilation.UsualType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                if (cf.IsPszType())
-                {
-                    ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
-                    foreach (var arg in analyzedArguments.Arguments)
-                    {
-                        var specialType = Compilation.Options.XSharpRuntime ? SpecialType.System_Int32 : SpecialType.System_UInt32;
-                        BoundExpression newarg = arg;
-                        if (arg.Type.SpecialType != specialType)
-                        {
-                            newarg = CreateConversion(arg, Compilation.GetSpecialType(specialType), diagnostics);
-                            newarg.WasCompilerGenerated = true;
-                            if (newarg.HasErrors)
-                            {
-                                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
-                            }
-                        }
-                        // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
-                        // we assume that all other dialects are closer to VO
-                        if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
-                        {
-                            newarg = SubtractIndex(newarg, diagnostics, specialType);
-                            newarg.WasCompilerGenerated = true;
-                        }
-                        argsBuilder.Add(newarg);
-                    }
-                    var newArgs = AnalyzedArguments.GetInstance();
-                    newArgs.Arguments.AddRange(argsBuilder.ToImmutableAndFree());
-                    return BindIndexerAccess(node, expr, newArgs, diagnostics);
+                //if (cf.IsPszType())
+                //{
+                //    ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                //    foreach (var arg in analyzedArguments.Arguments)
+                //    {
+                //        var specialType = Compilation.Options.XSharpRuntime ? SpecialType.System_Int32 : SpecialType.System_UInt32;
+                //        BoundExpression newarg = arg;
+                //        if (arg.Type.SpecialType != specialType)
+                //        {
+                //            newarg = CreateConversion(arg, Compilation.GetSpecialType(specialType), diagnostics);
+                //            newarg.WasCompilerGenerated = true;
+                //            if (newarg.HasErrors)
+                //            {
+                //                Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
+                //            }
+                //        }
+                //        // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
+                //        // we assume that all other dialects are closer to VO
+                //        if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
+                //        {
+                //            newarg = SubtractIndex(newarg, diagnostics, specialType);
+                //            newarg.WasCompilerGenerated = true;
+                //        }
+                //        argsBuilder.Add(newarg);
+                //    }
+                //    var newArgs = AnalyzedArguments.GetInstance();
+                //    newArgs.Arguments.AddRange(argsBuilder.ToImmutableAndFree());
+                //    return BindIndexerAccess(node, expr, newArgs, diagnostics);
 
-                }
+                //}
                 var indexerType = Compilation.IndexerType();
                 var namedIndexerType = Compilation.NamedIndexerType();
                 var indexedPropsType = Compilation.IndexedPropertiesType();
@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         numericParams = true;
                     }
                 }
-                if (cf.IsArrayType() || numericParams)
+                if (cf.IsArrayType() || cf.IsPszType() || numericParams)
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -234,7 +234,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
                                 }
                             }
-                            if (!Compilation.Options.HasOption(CompilerOption.ArrayZero, node))
+                            var arZero = Compilation.Options.HasOption(CompilerOption.ArrayZero, node)
+                                || (cf.IsPszType() && Compilation.Options.Dialect == XSharpDialect.Vulcan);
+                            if (!arZero)
                             {
                                 newarg = SubtractIndex(newarg, diagnostics, specialType);
                                 newarg.WasCompilerGenerated = true;

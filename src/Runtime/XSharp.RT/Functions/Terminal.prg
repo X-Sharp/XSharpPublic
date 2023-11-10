@@ -6,7 +6,7 @@
 
 using System.Collections.Generic
 using System.Runtime.InteropServices
-
+using XSharp.Internal
 
 #define PM_NOREMOVE   0x0000
 #define MB_TOPMOST              0x00040000
@@ -483,12 +483,20 @@ INTERNAL CLASS UnSafeNativeMethods
             ENDIF
         ENDDO
         RETURN
-    PRIVATE STRUCT xMessage
-        PRIVATE hWnd   AS IntPtr
-        PRIVATE msg    AS LONG
-        PRIVATE wParam as IntPtr
-        PRIVATE lParam as IntPtr
-        PRIVATE result as IntPtr
+
+    [VoStruct(28, 4)];
+    INTERNAL STRUCT xMessage
+        INTERNAL hWnd   AS IntPtr
+        INTERNAL msg    AS LONG
+        INTERNAL wParam as IntPtr
+        INTERNAL lParam as IntPtr
+        INTERNAL result as IntPtr
+        INTERNAL pt     as xPoint
+        END STRUCT
+    [VoStruct(8, 4)];
+    INTERNAL STRUCT xPoint
+        INTERNAL x AS LONG
+        INTERNAL y AS LONG
     END STRUCT
 
     // Private Helper methods

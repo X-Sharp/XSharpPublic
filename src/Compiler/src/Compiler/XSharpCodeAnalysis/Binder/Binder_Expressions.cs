@@ -126,10 +126,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
                 if (cf.IsPszType())
                 {
-                    var arZero = Compilation.Options.HasOption(CompilerOption.ArrayZero, node);
+                    var zerobasedArray = Compilation.Options.HasOption(CompilerOption.ArrayZero, node);
                     if (Compilation.Options.Dialect == XSharpDialect.Vulcan)
                     {
-                        arZero = true;
+                        zerobasedArray = true;
                     }
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
                         // we assume that all other dialects are closer to VO
-                        if (!arZero)
+                        if (!zerobasedArray)
                         {
                             newarg = SubtractIndex(newarg, diagnostics, specialType);
                             newarg.WasCompilerGenerated = true;

@@ -5807,6 +5807,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(MakeList<StatementSyntax>(context._ImpliedVars));
         }
 
+        public override void ExitVarLocalDesignation([NotNull] XP.VarLocalDesignationContext context)
+        {
+            context.SetSequencePoint();
+            var memberinit = _syntaxFactory.AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                context.Designation.Get<ExpressionSyntax>(),
+                SyntaxFactory.EqualsToken,
+                context.Expression.Get<ExpressionSyntax>());
+            var decl = GenerateExpressionStatement(memberinit, context);
+            context.PutList(MakeList<StatementSyntax>(decl));
+        }
+
+        public override void ExitTypeLocalDesignation([NotNull] XP.TypeLocalDesignationContext context)
+        {
+            context.SetSequencePoint();
+            var memberinit = _syntaxFactory.AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                context.DesignationType.Get<ExpressionSyntax>(),
+                SyntaxFactory.EqualsToken,
+                context.Expression.Get<ExpressionSyntax>());
+            var decl = GenerateExpressionStatement(memberinit, context);
+            context.PutList(MakeList<StatementSyntax>(decl));
+        }
+
         public override void ExitLocalvar([NotNull] XP.LocalvarContext context)
         {
             // nvk: Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
@@ -10140,21 +10164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
-        public override void ExitVarDesignationExpression([NotNull] XP.VarDesignationExpressionContext context)
-        {
-            var variables = _pool.AllocateSeparated<VariableDesignationSyntax>();
-            foreach (var id in context._Ids)
-            {
-                if (variables.Count > 0)
-                    variables.AddSeparator(SyntaxFactory.CommaToken);
-                variables.Add(_syntaxFactory.SingleVariableDesignation(id.Get<SyntaxToken>()));
-            }
-            var vardes = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
-            _pool.Free(variables);
-            context.Put(_syntaxFactory.DeclarationExpression(_impliedType, vardes));
-        }
-
-        public override void ExitLocalDesignationExpression([NotNull] XP.LocalDesignationExpressionContext context)
+        public override void ExitDesignationTypeExpr([NotNull] XP.DesignationTypeExprContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
             foreach (var loc in context._Locals)
@@ -10166,6 +10176,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
             _pool.Free(args);
+        }
+        public override void ExitDesignationExpr([NotNull] XP.DesignationExprContext context)
+        {
+            var variables = _pool.AllocateSeparated<VariableDesignationSyntax>();
+            foreach (var id in context._Ids)
+            {
+                if (variables.Count > 0)
+                    variables.AddSeparator(SyntaxFactory.CommaToken);
+                variables.Add(_syntaxFactory.SingleVariableDesignation(id.Get<SyntaxToken>()));
+            }
+            var vardes = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
+            _pool.Free(variables);
+            context.Put(_syntaxFactory.DeclarationExpression(_impliedType, vardes));
         }
         #endregion
 

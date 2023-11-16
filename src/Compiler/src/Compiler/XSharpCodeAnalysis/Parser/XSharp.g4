@@ -760,6 +760,10 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*   end=eos #varLocalDecl
                    | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
                    | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+                   | ( VAR | LOCAL? IMPLIED ) Designation=designationExpr
+                      Op=assignoperator Expression=expression end=eos                                                #varLocalDesignation // VAR ( ID[, ID, ...] ) := EXPR
+                   | LOCAL DesignationType=designationTypeExpr
+                      Op=assignoperator Expression=expression end=eos                                                #typeLocalDesignation // LOCAL ( ID AS TYPE[,ID AS TYPE,...] ) := EXPR
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?
@@ -884,7 +888,6 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP 
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
-                    | VAR LPAREN Ids+=varidentifier (COMMA Ids+=varidentifier)* RPAREN #varDesignationExpression // VAR ( ID[,ID,...] )
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
@@ -960,7 +963,6 @@ primary             : Key=SELF                                                  
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
                     | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
-                    | LPAREN Locals+=localDesignation (COMMA Locals+=localDesignation)* RPAREN #localDesignationExpression // ( ID AS TYPE[,ID AS TYPE,...] )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 
@@ -1123,9 +1125,14 @@ tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
                     ;
 
-localDesignation    : Id=varidentifier AS Type=datatype
+designationExpr     : LPAREN Ids+=varidentifier (COMMA Ids+=varidentifier)* RPAREN
                     ;
 
+designationTypeExpr : LPAREN Locals+=localDesignation (COMMA Locals+=localDesignation)* RPAREN
+                    ;
+
+localDesignation    : Id=varidentifier AS Type=datatype
+                    ;
 
 // Codeblocks & Lambda Expressions
 

@@ -201,21 +201,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitParenExpression([NotNull] XSharpParser.ParenExpressionContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>localDesignationExpression</c>
-	/// labeled alternative in <see cref="XSharpParser.primary"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLocalDesignationExpression([NotNull] XSharpParser.LocalDesignationExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>localDesignationExpression</c>
-	/// labeled alternative in <see cref="XSharpParser.primary"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLocalDesignationExpression([NotNull] XSharpParser.LocalDesignationExpressionContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>superExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.primary"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -754,21 +739,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPrimaryExpression([NotNull] XSharpParser.PrimaryExpressionContext context) { }
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>varDesignationExpression</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterVarDesignationExpression([NotNull] XSharpParser.VarDesignationExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>varDesignationExpression</c>
-	/// labeled alternative in <see cref="XSharpParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitVarDesignationExpression([NotNull] XSharpParser.VarDesignationExpressionContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>condAccessExpr</c>
@@ -1416,6 +1386,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitCommonLocalDecl([NotNull] XSharpParser.CommonLocalDeclContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>varLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVarLocalDesignation([NotNull] XSharpParser.VarLocalDesignationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>varLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVarLocalDesignation([NotNull] XSharpParser.VarLocalDesignationContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>varLocalDecl</c>
 	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1429,6 +1414,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>typeLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTypeLocalDesignation([NotNull] XSharpParser.TypeLocalDesignationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>typeLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTypeLocalDesignation([NotNull] XSharpParser.TypeLocalDesignationContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>xppclsvisibility</c>
@@ -3898,6 +3898,32 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTupleExprArgument([NotNull] XSharpParser.TupleExprArgumentContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.designationExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDesignationExpr([NotNull] XSharpParser.DesignationExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.designationExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDesignationExpr([NotNull] XSharpParser.DesignationExprContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.designationTypeExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDesignationTypeExpr([NotNull] XSharpParser.DesignationTypeExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.designationTypeExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDesignationTypeExpr([NotNull] XSharpParser.DesignationTypeExprContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.localDesignation"/>.

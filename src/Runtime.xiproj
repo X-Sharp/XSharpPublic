@@ -1,6 +1,6 @@
 [General]
 PROJECT = Runtime
-IDEVersion = 2.17
+IDEVersion = 2.18
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
@@ -36,7 +36,7 @@ DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
 
 ; ************** APPLICATION XSharp.Core *************
 Application = XSharp.Core
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -581,7 +581,7 @@ ENDApplication = XSharp.Core
 
 ; ************** APPLICATION XSharp.VO *************
 Application = XSharp.VO
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -777,7 +777,7 @@ ENDApplication = XSharp.VO
 
 ; ************** APPLICATION Xide.Tests *************
 Application = Xide.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -901,7 +901,7 @@ ENDApplication = Xide.Tests
 
 ; ************** APPLICATION Xide.Unit *************
 Application = Xide.Unit
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1023,7 +1023,7 @@ ENDApplication = Xide.Unit
 
 ; ************** APPLICATION XSharp.Core.Tests *************
 Application = XSharp.Core.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1191,7 +1191,7 @@ ENDApplication = XSharp.Core.Tests
 
 ; ************** APPLICATION XSharp.VO.Tests *************
 Application = XSharp.VO.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1331,7 +1331,7 @@ ENDApplication = XSharp.VO.Tests
 
 ; ************** APPLICATION XSharp.Rdd *************
 Application = XSharp.Rdd
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1931,7 +1931,7 @@ ENDApplication = XSharp.Rdd
 
 ; ************** APPLICATION XSharp.Rdd.Tests *************
 Application = XSharp.Rdd.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2060,7 +2060,7 @@ ENDApplication = XSharp.Rdd.Tests
 
 ; ************** APPLICATION XSharp.RT *************
 Application = XSharp.RT
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2462,7 +2462,7 @@ ENDApplication = XSharp.RT
 
 ; ************** APPLICATION XSharp.XPP *************
 Application = XSharp.XPP
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2618,6 +2618,11 @@ FileGUID = 789FFD50-000B-4021-801B-469375DCCCB3
 FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Types\StaticClassObject.prg
+FileGUID = 779978F6-F02F-4ABF-8ADF-24BBC043607C
+FileFileGroup = DD6D2B09-BDFB-48E2-9381-2BAAA81894D6
+FileType = Code
+CopyToBin = 0
 [XSharp.XPP References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
@@ -2695,7 +2700,7 @@ ENDApplication = XSharp.XPP
 
 ; ************** APPLICATION MacroCompiler *************
 Application = MacroCompiler
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3054,7 +3059,7 @@ ENDApplication = MacroCompiler
 
 ; ************** APPLICATION XSharp.Data *************
 Application = XSharp.Data
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3062,7 +3067,7 @@ Target = 2
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = VO
 Folder = %ProjectPath%\Runtime\XSharp.Data\
 PrgSubFolder = 
 ResourcesSubFolder = 
@@ -3093,6 +3098,8 @@ FileGroup = RDD
 FileGroupGUID = F24A02E4-BAD3-427B-9A2B-000AA6D33FD6
 FileGroup = SQL
 FileGroupGUID = A53C1523-0F7D-4DD0-A004-6F6BC407D181
+FileGroup = FoxPro
+FileGroupGUID = 8E6FEBCF-8088-4233-A58E-B2B63C046247
 [XSharp.Data Files]
 File = %ProjectPath%\Runtime\XSharp.Data\Win32.prg
 FileGUID = 0BF1AB86-5DDE-42B2-B4C1-5AAF33487EE8
@@ -3162,10 +3169,51 @@ File = %AppPath%\DbDataFunctions.prg
 FileGUID = 424D27CD-B09E-496A-B985-0108CF06EE22
 FileType = Code
 CopyToBin = 0
+File = %ProjectPath%\Common\commonAssemblyInfo.prg
+FileGUID = 44DF51E4-A980-4D88-9827-2D679891C50D
+FileFileGroup = 3CE85B23-B04F-4230-991C-60B9F419B5B4
+FileType = Code
+CopyToBin = 0
+File = %ProjectPath%\Common\constants.prg
+FileGUID = 8D24EA96-5A16-4D47-AE3D-FC5846E9B7C3
+FileFileGroup = 3CE85B23-B04F-4230-991C-60B9F419B5B4
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxPro\Enums.prg
+FileGUID = 8AB3A77B-E39B-4CEA-A824-F044F145C3E8
+FileFileGroup = 8E6FEBCF-8088-4233-A58E-B2B63C046247
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxPro\SQLConnection.prg
+FileGUID = 83661E5D-0916-4B64-A373-F6554639E1CF
+FileFileGroup = 8E6FEBCF-8088-4233-A58E-B2B63C046247
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxPro\SQLFunctions.prg
+FileGUID = 73321562-E145-4B4C-B195-D471FFD59CF5
+FileFileGroup = 8E6FEBCF-8088-4233-A58E-B2B63C046247
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxPro\SQLReflection.prg
+FileGUID = 05A8F7F5-B912-4BA0-9245-41DE9DBCACA1
+FileFileGroup = 8E6FEBCF-8088-4233-A58E-B2B63C046247
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxPro\SQLStatement.prg
+FileGUID = 97C2941B-CD68-4300-86A8-A609DD1444D0
+FileFileGroup = 8E6FEBCF-8088-4233-A58E-B2B63C046247
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxPro\SQLSupport.prg
+FileGUID = 3C496988-7F58-4CC5-A7DB-19E3BF650D34
+FileFileGroup = 8E6FEBCF-8088-4233-A58E-B2B63C046247
+FileType = Code
+CopyToBin = 0
 [XSharp.Data References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core
+ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.Data Resources]
 [XSharp.Data Native Resources]
 [XSharp.Data License files]
@@ -3237,7 +3285,7 @@ ENDApplication = XSharp.Data
 
 ; ************** APPLICATION XSharp.VFP *************
 Application = XSharp.VFP
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3390,28 +3438,8 @@ FileGUID = 1FB13D6D-6D0E-4B17-88D5-99D2732CD65B
 FileFileGroup = CF7CED17-6A78-4331-8AE8-0A0E6EDD3C38
 FileType = Code
 CopyToBin = 0
-File = %AppPath%\SQL\SQLConnection.prg
-FileGUID = FBC5EAB1-FC0F-4829-A0CA-E1CB041198AF
-FileFileGroup = 1CDB7509-54EE-4BD6-9381-EEF930315927
-FileType = Code
-CopyToBin = 0
 File = %AppPath%\SQL\SQLFunctions.prg
 FileGUID = 6564D171-0BC3-4CBA-8CA8-BC1B9FA37413
-FileFileGroup = 1CDB7509-54EE-4BD6-9381-EEF930315927
-FileType = Code
-CopyToBin = 0
-File = %AppPath%\SQL\SQLReflection.prg
-FileGUID = 0D6570B9-ACD1-4F02-B900-BCCEE3373069
-FileFileGroup = 1CDB7509-54EE-4BD6-9381-EEF930315927
-FileType = Code
-CopyToBin = 0
-File = %AppPath%\SQL\SQLStatement.prg
-FileGUID = DC9A834E-E7EE-46EC-9F26-56363A50FFA2
-FileFileGroup = 1CDB7509-54EE-4BD6-9381-EEF930315927
-FileType = Code
-CopyToBin = 0
-File = %AppPath%\SQL\SQLSupport.prg
-FileGUID = C856878F-1800-44BD-A5CA-5499626229D2
 FileFileGroup = 1CDB7509-54EE-4BD6-9381-EEF930315927
 FileType = Code
 CopyToBin = 0
@@ -3572,7 +3600,7 @@ ENDApplication = XSharp.VFP
 
 ; ************** APPLICATION XSharp.VFP.Tests *************
 Application = XSharp.VFP.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3719,7 +3747,7 @@ ENDApplication = XSharp.VFP.Tests
 
 ; ************** APPLICATION XSharp.RT.Tests *************
 Application = XSharp.RT.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3934,7 +3962,7 @@ ENDApplication = XSharp.RT.Tests
 
 ; ************** APPLICATION XSharp.XPP.Tests *************
 Application = XSharp.XPP.Tests
-IDEVersion = 2.17
+IDEVersion = 2.18
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

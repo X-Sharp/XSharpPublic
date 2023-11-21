@@ -84,6 +84,7 @@
     <Compile Include="Keyboard.prg" />
     <Compile Include="NotSupported.prg" />
     <Compile Include="PrinterFunctions.prg" />
+    <Compile Include="SQL\EmbeddedSql.prg" />
     <Compile Include="SQL\SQLFunctions.prg" />
     <Compile Include="ToDo-TUVWX.prg" />
     <Compile Include="ToDo-S.prg" />

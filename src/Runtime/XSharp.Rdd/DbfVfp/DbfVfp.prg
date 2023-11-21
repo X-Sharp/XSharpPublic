@@ -25,6 +25,27 @@ CLASS DBFVFP INHERIT DBFCDX
 	OVERRIDE PROPERTY Driver         AS STRING GET nameof(DBFVFP)
     INTERNAL PROPERTY DbcName        AS STRING AUTO
     INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
+    INTERNAL PROPERTY DeleteOnClose  AS LOGIC AUTO
+
+    OVERRIDE METHOD Close() AS LOGIC
+        LOCAL lOk AS LOGIC
+        // This method deletes the temporary file after the file is closed
+        LOCAL cFileName := SELF:_FileName AS STRING
+        LOCAL cMemoName := "" AS STRING
+
+        IF SELF:_Memo IS AbstractMemo VAR memo
+            cMemoName := memo:FileName
+        ENDIF
+        lOk := SUPER:Close()
+        IF lOk .and. SELF:DeleteOnClose
+            IF File(cFileName)
+                FErase(FPathName())
+            ENDIF
+            IF ! String.IsNullOrEmpty(cMemoName) .AND. File(cMemoName)
+                FErase(FPathName())
+            ENDIF
+        ENDIF
+        RETURN lOk
 
     OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
         LOCAL isOk AS LOGIC
@@ -130,10 +151,6 @@ CLASS DBFVFP INHERIT DBFCDX
             nullFld:Length := (BYTE) nLen
         ENDIF
         lOk := super:CreateFields(aFields)
-        for var i := 0 to aFields:Length -1
-            self:_Fields[i] := aFields[i]
-        next
-
         RETURN lOk
 
         OVERRIDE PROPERTY FieldCount AS LONG
@@ -246,6 +263,20 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
         ENDIF
         RETURN isOk
+
+    OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+    LOCAL oResult AS OBJECT
+        oResult := NULL
+        BEGIN SWITCH nOrdinal
+        CASE DbInfo.DBI_ISTEMPORARY
+            oResult := SELF:DeleteOnClose
+            IF oNewValue IS LOGIC VAR lValue
+                SELF:DeleteOnClose := lValue
+            ENDIF
+        OTHERWISE
+            oResult := SUPER:Info(nOrdinal, oNewValue)
+        END SWITCH
+        RETURN oResult
 
     OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC
         LOCAL lOk AS LOGIC

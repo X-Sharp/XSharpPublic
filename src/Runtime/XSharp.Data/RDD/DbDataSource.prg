@@ -38,7 +38,13 @@ CONSTRUCTOR(oRDD AS IRdd)
     SELF:_index      := -1
     SupportsSorting  := TRUE
     SELF:_sorted     := FALSE
-RETURN
+    RETURN
+
+DESTRUCTOR
+    IF ! String.IsNullOrEmpty(_indexFile)
+        System.IO.File.Delete(_indexFile)
+    ENDIF
+
 /// <summary>Should the Deleted Flag be included as "virtual column"</summary>
 PROPERTY ShowDeleted AS LOGIC AUTO := TRUE
 /// <summary>Should the Record number be included as "virtual column"</summary>
@@ -128,7 +134,9 @@ PRIVATE METHOD createOrder(fldName AS STRING, lDesc AS LOGIC) AS LOGIC
     info:Expression     := fldName
     cond:Descending     := lDesc
     info:OrdCondInfo 	:= cond
-RETURN SELF:_oRDD:OrderCreate(info)
+    var result := SELF:_oRDD:OrderCreate(info)
+    _indexFile := (String) SELF:_oRDD:OrderInfo(DBOI_BAGNAME,DbOrderInfo{})
+    RETURN result
 
 PRIVATE METHOD setOrder(cName AS STRING, lDesc AS LOGIC) AS LOGIC
     VAR info := DbOrderInfo{}

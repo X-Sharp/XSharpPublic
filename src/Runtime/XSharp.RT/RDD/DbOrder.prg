@@ -90,6 +90,8 @@ FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 	LOCAL uRetVal   AS USUAL
     IF Used()
         uRetVal := DbOrderInfo(DBOI_EXPRESSION, "", nPosition)
+    ELSE
+        uRetVal := NIL
     ENDIF
 	RETURN uRetVal
 

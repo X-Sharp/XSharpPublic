@@ -31,6 +31,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER()
             _incrementKey    := -1
             _creatingIndex      := FALSE
+            SELF:DeleteOnClose := TRUE
             RETURN
 
         /// <inheritdoc />
@@ -98,7 +99,7 @@ BEGIN NAMESPACE XSharp.RDD
 
          OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // nFldPos is 1 based, the RDD compiles with /az+
-            var result := FALSE 
+            var result := FALSE
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 var row := _table:Rows[SELF:_RecNo -1]
                 row[nFldPos-1] := oValue
@@ -154,25 +155,6 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
 
-        /// <inheritdoc />
-        OVERRIDE METHOD Close() AS LOGIC
-            LOCAL lOk AS LOGIC
-            // This method deletes the temporary file after the file is closed
-            LOCAL cFileName := SELF:_FileName AS STRING
-            LOCAL cMemoName := "" AS STRING
-            IF SELF:_Memo IS AbstractMemo VAR memo
-                cMemoName := memo:FileName
-            ENDIF
-            lOk := SUPER:Close()
-            IF lOk
-                IF File(cFileName)
-                    FErase(FPathName())
-                ENDIF
-                IF ! String.IsNullOrEmpty(cMemoName) .AND. File(cMemoName)
-                    FErase(FPathName())
-                ENDIF
-            ENDIF
-            RETURN lOk
 
     /// <inheritdoc />
     OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT

@@ -1834,7 +1834,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                 // After these keywords we expect an ID
                 // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
-
+                case STRUCTURE when keyword == WHERE:
+                    return WHERE;
                 case METHOD:
                 case PROCEDURE:
                 case FUNCTION:

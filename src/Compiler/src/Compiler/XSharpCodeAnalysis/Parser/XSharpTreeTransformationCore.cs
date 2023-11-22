@@ -141,6 +141,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
         #endregion
+        #region Properties
+        protected TypeSyntax PtrType => GenerateQualifiedName(SystemQualifiedNames.IntPtr);
+
+        #endregion
 
         #region Fields
         protected static object gate = new();
@@ -152,7 +156,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly XSharpParser _parser;
         protected readonly CSharpParseOptions _options;
         protected readonly TypeSyntax _impliedType;
-        protected readonly TypeSyntax _ptrType = null;
         protected readonly TypeSyntax _intType = null;
         protected readonly TypeSyntax _uintType = null;
         protected readonly TypeSyntax _decimalType = null;
@@ -276,7 +279,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _longType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
-            _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
             PragmaOptions = new List<PragmaOption>();
             PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();
         }
@@ -806,7 +808,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.CharKeyword));
                         break;
                     case XP.NULL_PTR:
-                        type = _ptrType;
+                        type = PtrType;
                         break;
                     default:
                         if (XSharpLexer.IsString(token.Type))
@@ -831,7 +833,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             && pe.Expr is XP.LiteralExpressionContext le
                             && le.Literal.Token.IsZeroLiteral()) // treat PTR(_CAST,0) as NULL_PTR
                         {
-                            type = _ptrType;
+                            type = PtrType;
                         }
                     }
                     else if (e.XType != null)
@@ -991,7 +993,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 }
             }
-            else if (type == _ptrType)
+            else if (type.IsPtrType())
             {
                 isConst = true;
             }
@@ -5795,7 +5797,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint();
             foreach (var lvCtx in context._LocalVars)
+            {
+                lvCtx.SetSequencePoint();
                 VisitLocalvar(lvCtx);
+            }
             // do not make a block, otherwise locals will be scoped to that block!
             context.PutList(MakeList<StatementSyntax>(context._LocalVars));
         }

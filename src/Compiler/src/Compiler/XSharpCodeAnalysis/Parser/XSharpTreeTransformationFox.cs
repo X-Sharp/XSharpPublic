@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
-        protected readonly TypeSyntax _foxarrayType;
+        protected TypeSyntax FoxarrayType => GenerateQualifiedName(XSharpQualifiedTypeNames.FoxArray);
 
         protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
         {
@@ -29,7 +29,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {
-            _foxarrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.FoxArray);
 
         }
         XP.FuncprocContext _defaultEntity = null;
@@ -437,7 +436,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var p in context._LParameters)
                 {
                     var name = p.Name.Id.GetText();
-                    var type = _usualType;
+                    var type = UsualType;
                     if (p.XT != null && p.XT.Type != null)
                     {
                         type = getDataType(p.XT.Type);
@@ -478,7 +477,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (!fieldInfo.IsCreated)
                     {
-                        var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
+                        var decl = GenerateLocalDecl(name, FoxarrayType, GenerateLiteralNull());
                         decl.XNode = context;
                         stmts.Add(decl);
                         fieldInfo.IsCreated = true;
@@ -1025,7 +1024,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Fld != null)
             {
-                var flddecl = createField(context.F.Name.GetText(), _usualType, context.Modifiers);
+                var flddecl = createField(context.F.Name.GetText(), UsualType, context.Modifiers);
                 if (flddecl != null)
                 {
                     context.Put(flddecl);
@@ -1033,7 +1032,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var propdecl = createProperty(context.F.Name.GetText(), _usualType, context, context.Modifiers);
+                var propdecl = createProperty(context.F.Name.GetText(), UsualType, context, context.Modifiers);
                 if (propdecl != null)
                 {
                     context.Put(propdecl);

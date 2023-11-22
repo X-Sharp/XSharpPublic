@@ -16,6 +16,8 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Microsoft.CodeAnalysis;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 #if !VSPARSER
 using MCT = Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
@@ -1517,7 +1519,36 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
         }
-
+        internal static bool IsUsualType(this InternalSyntax.TypeSyntax type)
+        {
+            return type is InternalSyntax.QualifiedNameSyntax ns &&
+                ns.Right is InternalSyntax.IdentifierNameSyntax ins &&
+                ins.Identifier.Text == OurTypeNames.UsualType;
+        }
+        internal static bool IsArrayType(this InternalSyntax.TypeSyntax type)
+        {
+            return type is InternalSyntax.QualifiedNameSyntax ns &&
+                ns.Right is InternalSyntax.IdentifierNameSyntax ins &&
+                ins.Identifier.Text == OurTypeNames.ArrayType;
+        }
+        internal static bool IsPszType(this InternalSyntax.TypeSyntax type)
+        {
+            return type is InternalSyntax.QualifiedNameSyntax ns &&
+                ns.Right is InternalSyntax.IdentifierNameSyntax ins &&
+                ins.Identifier.Text == OurTypeNames.PszType;
+        }
+        internal static bool IsSymbolType(this InternalSyntax.TypeSyntax type)
+        {
+            return type is InternalSyntax.QualifiedNameSyntax ns &&
+                ns.Right is InternalSyntax.IdentifierNameSyntax ins &&
+                ins.Identifier.Text == OurTypeNames.SymbolType;
+        }
+        internal static bool IsPtrType(this InternalSyntax.TypeSyntax type)
+        {
+            return type is InternalSyntax.QualifiedNameSyntax ns &&
+                ns.Right is InternalSyntax.IdentifierNameSyntax ins &&
+                ins.Identifier.Text == "IntPtr";
+        }
         internal static bool IsStatic(this InternalSyntax.ConstructorDeclarationSyntax ctordecl)
         {
             return ctordecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);

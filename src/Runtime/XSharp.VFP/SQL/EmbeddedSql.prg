@@ -64,7 +64,7 @@ FUNCTION __SqlInsertFromArray(sTable as STRING, aValues as ARRAY) AS LOGIC
     DbUnLock()
     RETURN Used()
 
-FUNCTION __SqlInsertValues(sCommand as STRING, sTable as STRING, aFields as ARRAY, aValues as ARRAY) AS LOGIC
+FUNCTION __SqlInsertValues(sTable as STRING, aFields as ARRAY, aValues as ARRAY) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
     // what does foxpro do when aValues > # of fields
     // what does foxpro do when aValues < # of fields

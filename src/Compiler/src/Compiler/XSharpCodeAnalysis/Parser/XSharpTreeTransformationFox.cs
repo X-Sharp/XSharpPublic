@@ -68,7 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     Start = new XSharpToken(XP.AS, "AS"),
                     Stop = new XSharpToken(XP.VOID, "VOID")
                 };
-                sig.Type.Put(_voidType);
+                sig.Type.Put(VoidType);
                 sig.AddChild(sig.Type);
             }
             func.Attributes = new XP.AttributesContext(func, 0);
@@ -762,7 +762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.RealType == XP.ASSIGN)
                 {
-                    returntype = VoidType();
+                    returntype = VoidType;
                 }
                 else  // method and access
                 {
@@ -784,7 +784,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Assign does not need a return.
                 // So do not add missing returns
-                returntype = VoidType();
+                returntype = VoidType;
             }
             else if (context.StmtBlk != null && !hasNoBody)
             {
@@ -1109,7 +1109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     body.XGenerated = true;
                     var mods = TokenList(SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword);
                     var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.InitProperties);
-                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, _voidType, null, id,
+                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, VoidType, null, id,
                         null, EmptyParameterList(), null, body, null, SyntaxFactory.SemicolonToken);
                     members.Add(mem);
                     stmts.Clear();
@@ -1163,16 +1163,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 result = type.GetText().ToLower() switch
                 {
-                    "integer" => _intType,
+                    "integer" => IntType,
                     "single" => _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword)),
                     "double" => _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword)),
-                    "string" => _stringType,
+                    "string" => StringType,
                     _ => type.Get<TypeSyntax>(),
                 };
             }
             else
             {
-                result = _voidType;
+                result = VoidType;
             }
             result.XCanBeVoStruct = true;
             return result;
@@ -1207,7 +1207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: id,
                 @default: null);
 
-            if (type == _stringType && context.Address != null)
+            if (type == StringType && context.Address != null)
             {
                 par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxDeclareDLLStringByReference));
             }

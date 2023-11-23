@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var propdef = _syntaxFactory.PropertyDeclaration(
                 MakeCompilerGeneratedAttribute(),
                 publicMod,
-                _objectType,
+                ObjectType,
                 null,
                 SyntaxFactory.MakeIdentifier(baseType.XNode.GetText()),
                 MakeAccessorList(accessor),

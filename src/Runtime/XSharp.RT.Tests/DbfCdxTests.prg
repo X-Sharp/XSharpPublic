@@ -5842,6 +5842,46 @@ RETURN
 
 			DbCloseArea()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD AllRecordsDeleted() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1370
+			LOCAL cDbf AS STRING
+			LOCAL lDeleted := SetDeleted(TRUE) AS LOGIC
+
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			LOCAL aStruct AS ARRAY
+
+			aStruct := {;
+				{"CFIELD", "C", 10, 0};
+			}
+			DbfTests.CreateDatabase(cDbf, aStruct )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbAppend()
+			FieldPut(1,"asd")
+			DbDelete()
+			DbAppend()
+			FieldPut(1,"zxc")
+			DbDelete()
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+
+            Assert.True( Bof() )
+            Assert.True( Eof() )
+            Assert.False( Deleted() )
+            
+            DbSkip()
+
+            Assert.False( Bof() )
+            Assert.True( Eof() )
+            Assert.False( Deleted() )
+
+			DbCloseArea()
+			
+			SetDeleted(lDeleted)
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

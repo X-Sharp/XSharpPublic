@@ -52,8 +52,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			//Assert.Equal("DriveInfo",ClassName(fi))
 		//RETURN
 		[Fact, Trait("Category", "Misc")];
-		METHOD CurDriveTest() AS VOID
-			Assert.Equal("C",CurDrive():ToUpper())
+        METHOD CurDriveTest() AS VOID
+            var cDir := System.Environment.CurrentDirectory[0]:ToString():ToUpper()
+
+			Assert.Equal(cDir,CurDrive():ToUpper())
 		[Fact, Trait("Category", "Misc")];
 		METHOD GetFAttrTest() AS VOID
 			Assert.Equal((DWORD) FA_VOLUME, GetFAttr("V"))

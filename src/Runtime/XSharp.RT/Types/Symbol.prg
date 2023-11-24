@@ -7,6 +7,7 @@
 USING System
 USING System.Collections
 USING System.Collections.Generic
+USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Runtime.CompilerServices
 USING System.Runtime.Serialization
@@ -34,7 +35,7 @@ PUBLIC STRUCTURE __Symbol ;
 
 #region fields
     [NOSHOW] PRIVATE INITONLY _index		AS DWORD
-    [NOSHOW] PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
+    [NOSHOW] PRIVATE STATIC _PszDict		AS ConcurrentDictionary<DWORD, PSZ>
 #endregion
 
 #region constrúctors
@@ -77,10 +78,10 @@ PUBLIC STRUCTURE __Symbol ;
         RETURN SymbolTable.GetString(SELF:_index)
     END GET
     END PROPERTY
-    [NOSHOW] INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
+    [NOSHOW] INTERNAL STATIC PROPERTY PszDict AS ConcurrentDictionary<DWORD, PSZ>
     GET
         IF _PszDict == NULL
-            _PszDict := Dictionary<DWORD, PSZ>{}
+            _PszDict := ConcurrentDictionary<DWORD, PSZ>{}
         ENDIF
         RETURN _PszDict
     END GET
@@ -115,7 +116,7 @@ PUBLIC STRUCTURE __Symbol ;
         ENDIF
         LOCAL pszAtom AS PSZ
         pszAtom := __Psz.CreatePsz(_value)
-        PszDict:Add(_index, pszAtom)
+        PszDict:TryAdd(_index, pszAtom)
         RETURN pszAtom
 
 #endregion
@@ -280,7 +281,7 @@ PUBLIC STRUCTURE __Symbol ;
 #region fields
         // Note that we are not using a ConcurrentDictionary since we want to keep the LookupTable and List
         // in sync. Therefore we handle our own locking in this class
-        STATIC INTERNAL LookupTable AS Dictionary<STRING,DWORD>
+        STATIC INTERNAL LookupTable AS ConcurrentDictionary<STRING,DWORD>
         STATIC INTERNAL Strings		AS List<STRING>
         STATIC PRIVATE sync AS OBJECT
 #endregion
@@ -288,9 +289,9 @@ PUBLIC STRUCTURE __Symbol ;
 #region constructors
         STATIC METHOD Initialize() AS VOID
             sync		:= OBJECT{}
-            LookupTable := Dictionary<STRING,DWORD>{}
+            LookupTable := ConcurrentDictionary<STRING,DWORD>{}
             Strings := List<STRING>{}
-            LookupTable:Add("", 0)
+            LookupTable:TryAdd("", 0)
             Strings:Add("")
 #endregion
 
@@ -302,7 +303,7 @@ PUBLIC STRUCTURE __Symbol ;
                     index := LookupTable[strValue]
                 ELSE
                     index := (DWORD) LookupTable:Count
-                    LookupTable:Add(strValue, index)
+                    LookupTable:TryAdd(strValue, index)
                     Strings:Add(strValue)
                 ENDIF
             END LOCK

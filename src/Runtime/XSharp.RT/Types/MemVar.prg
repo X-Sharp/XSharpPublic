@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+USING System.Collections.Concurrent
 USING System.Collections.Generic
 USING System.Collections
 USING System.Linq
@@ -15,8 +16,8 @@ USING System.Threading
 // Class that holds the memvars for a certain level on the callstack
 [DebuggerDisplay("{DebuggerDisplay(),nq}")];
 INTERNAL CLASS XSharp.MemVarLevel
-    INTERNAL PROPERTY Variables      AS Dictionary<STRING, XSharp.MemVar> AUTO
-    INTERNAL PROPERTY Locals         AS Dictionary<STRING, USUAL>   AUTO
+    INTERNAL PROPERTY Variables      AS ConcurrentDictionary<STRING, XSharp.MemVar> AUTO
+    INTERNAL PROPERTY Locals         AS ConcurrentDictionary<STRING, USUAL>   AUTO
     INTERNAL PROPERTY Depth          AS INT     AUTO GET PRIVATE SET
     INTERNAL PROPERTY SystemLevel    AS LOGIC   AUTO GET PRIVATE SET
 #ifdef DEBUG
@@ -26,7 +27,7 @@ INTERNAL CLASS XSharp.MemVarLevel
         PRIVATE  _localsUpdated AS LOGIC
         // We mark MemvarLevels declared in the runtime with TRUE
     INTERNAL CONSTRUCTOR (nDepth AS INT, lSystem AS LOGIC)
-        Variables   := Dictionary<STRING, XSharp.MemVar>{StringComparer.OrdinalIgnoreCase}
+        Variables   := ConcurrentDictionary<STRING, XSharp.MemVar>{StringComparer.OrdinalIgnoreCase}
         Depth       := nDepth
         SystemLevel := lSystem
 #ifdef DEBUG
@@ -36,7 +37,7 @@ INTERNAL CLASS XSharp.MemVarLevel
 
     INTERNAL METHOD Add(variable AS XSharp.MemVar) AS VOID
         variable:Level := SELF
-        Variables:Add(variable:Name, variable)
+        Variables:TryAdd(variable:Name, variable)
         RETURN
 
     INTERNAL METHOD ContainsKey(cName AS STRING) AS LOGIC
@@ -46,7 +47,7 @@ INTERNAL CLASS XSharp.MemVarLevel
         RETURN Variables:TryGetValue(cName, OUT oMemVar )
 
     INTERNAL METHOD Remove(cName AS STRING) AS LOGIC
-        RETURN Variables:Remove(cName)
+        RETURN Variables:TryRemove(cName, out var _)
 
     INTERNAL PROPERTY SELF[Name AS STRING] AS XSharp.MemVar
     GET
@@ -57,7 +58,7 @@ INTERNAL CLASS XSharp.MemVarLevel
     END GET
     END PROPERTY
 
-    INTERNAL PROPERTY Keys AS IEnumerable<STRING> GET Variables:Keys
+    INTERNAL PROPERTY Keys AS ICollection<STRING> GET Variables:Keys
 
     INTERNAL METHOD Clear() AS VOID STRICT
         Variables:Clear()
@@ -73,7 +74,7 @@ INTERNAL CLASS XSharp.MemVarLevel
         // Set value for local
     INTERNAL METHOD SetLocal(cName AS STRING, uValue AS USUAL) AS VOID
         IF Locals == NULL
-            Locals := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
+            Locals := ConcurrentDictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
         ENDIF
         Locals[cName] := uValue    // overwrite variable if it already exists
         RETURN

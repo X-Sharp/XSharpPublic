@@ -5842,6 +5842,84 @@ RETURN
 
 			DbCloseArea()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD AllRecordsDeleted() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1370
+			LOCAL cDbf AS STRING
+			LOCAL lDeleted := SetDeleted(TRUE) AS LOGIC
+
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			LOCAL aStruct AS ARRAY
+
+			aStruct := {;
+				{"CFIELD", "C", 10, 0};
+			}
+			DbfTests.CreateDatabase(cDbf, aStruct )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbAppend()
+			FieldPut(1,"asd")
+			DbDelete()
+			DbAppend()
+			FieldPut(1,"zxc")
+			DbDelete()
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+
+            Assert.True( Bof() )
+            Assert.True( Eof() )
+            Assert.False( Deleted() )
+            
+            DbSkip()
+
+            Assert.False( Bof() )
+            Assert.True( Eof() )
+            Assert.False( Deleted() )
+
+			DbCloseArea()
+			
+			SetDeleted(lDeleted)
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD OrdSetFocus_without_argumetns() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1362
+			LOCAL cDbf AS STRING
+
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			LOCAL aStruct AS ARRAY
+
+			aStruct := {;
+				{"CFIELD", "C", 10, 0};
+			}
+			DbfTests.CreateDatabase(cDbf, aStruct )
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			DbAppend()
+			FieldPut(1,"asd")
+			DbAppend()
+			FieldPut(1,"zxc")
+			DbCreateOrder("ORD1",cDbf, "CFIELD" )
+			DbCreateOrder("ORD2",cDbf, "Left(CFIELD,1)" )
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+
+			Assert.Equal("ORD1", (STRING)OrdSetFocus() )
+			Assert.Equal("ORD1", (STRING)OrdSetFocus() )
+			Assert.True( DbSetOrder(2) )
+			Assert.Equal("ORD2", (STRING)OrdSetFocus() )
+			Assert.Equal("ORD2", (STRING)OrdSetFocus() )
+            
+			OrdScope(TOPSCOPE,"A")
+			Assert.Equal("A", (STRING) OrdScope(TOPSCOPE) )
+			Assert.Equal("A", (STRING) OrdScope(TOPSCOPE) )
+
+			DbCloseArea()
+			
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

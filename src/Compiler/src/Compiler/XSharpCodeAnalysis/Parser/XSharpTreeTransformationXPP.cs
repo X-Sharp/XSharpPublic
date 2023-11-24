@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var propdef = _syntaxFactory.PropertyDeclaration(
                 MakeCompilerGeneratedAttribute(),
                 publicMod,
-                _objectType,
+                ObjectType,
                 null,
                 SyntaxFactory.MakeIdentifier(baseType.XNode.GetText()),
                 MakeAccessorList(accessor),
@@ -282,7 +282,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var func = _syntaxFactory.MethodDeclaration(
                 attributeLists: MakeCompilerGeneratedAttribute(),
                 modifiers: TokenListWithDefaultVisibility(false, SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword),
-                returnType: _usualType,
+                returnType: UsualType,
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,

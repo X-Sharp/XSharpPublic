@@ -1694,9 +1694,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                                     // Properties that are generated from an ACCESS and ASSIGN need special handling
                                     // for their location. We have added a ErrorLocation property for this.
-                                    // We also suppress the error for fields with the [IsInstance] attribute
-                                    bool suppressError = lastSym.Kind == SymbolKind.Field && 
-                                        lastSym.DeclaredAccessibility <= Accessibility.Protected;
+                                    // We also suppress the error for protected fields when the conflicting member is a property
+                                    bool suppressError = false;
+                                    if (symbol.Kind == SymbolKind.Property)
+                                    {
+                                        suppressError = lastSym.Kind == SymbolKind.Field && lastSym.DeclaredAccessibility <= Accessibility.Protected;
+                                    }
+                                    else if (symbol.Kind == SymbolKind.Field)
+                                    {
+                                        suppressError = lastSym.Kind == SymbolKind.Property && symbol.DeclaredAccessibility <= Accessibility.Protected;
+                                    }
                                     if (!suppressError)
                                     {
                                         if (symbol is SourcePropertySymbol ps)

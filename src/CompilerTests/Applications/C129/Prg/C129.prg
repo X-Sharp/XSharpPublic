@@ -5,6 +5,6 @@
 FUNCTION Start() AS VOID
 LOCAL n,m,k AS INT
 n := 1;m := 1;k := 1
-? Math.DivRem( n, m, REF k )
+? Math.DivRem( n, m, OUT k )
 ? k
 

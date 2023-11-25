@@ -3,8 +3,10 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+//#define DUMP_TREE
 #nullable disable
 using System;
+using System.Diagnostics;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -16,6 +18,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal XSharpErrorStrategy() : base()
         {
 
+        }
+        void TraceContext(Parser recognizer, string error)
+        {
+#if DEBUG && DUMP_TREE
+            RuleContext ctx = recognizer._ctx;
+            Trace.WriteLine(string.Format("{0} {1}", error, ctx.GetType()));
+            while (ctx.Parent != null)
+            {
+                ctx = ctx.Parent;
+                Trace.WriteLine(string.Format("  => {0}", ctx.GetType()));
+            }
+#endif
         }
         protected internal override void ReportUnwantedToken(Parser recognizer)
         {
@@ -57,6 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     msg += Missing(missing);
                 }
             }
+            TraceContext(recognizer, "ReportUnwantedToken");
             recognizer.NotifyErrorListeners(t, msg, null);
         }
         protected internal override void ReportInputMismatch(Parser recognizer, InputMismatchException e)
@@ -75,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     msg += Missing("closing ')' or '}'");
                 }
             }
+            TraceContext(recognizer, "ReportInputMismatch");
             NotifyErrorListeners(recognizer, msg, e);
         }
         protected internal override void ReportNoViableAlternative(Parser recognizer, NoViableAltException e)
@@ -169,6 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     input = input.Substring(0, 50);      
                 msg = "unexpected input " + EscapeWSAndQuote(input);
             }
+            TraceContext(recognizer, "ReportNoViableAlternative");
             NotifyErrorListeners(recognizer, msg, e);
         }
         protected internal override string EscapeWSAndQuote(string s)

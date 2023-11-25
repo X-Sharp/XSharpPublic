@@ -1834,7 +1834,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
                 // After these keywords we expect an ID
                 // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
-
+                case STRUCTURE when keyword == WHERE:
+                    return WHERE;
                 case METHOD:
                 case PROCEDURE:
                 case FUNCTION:
@@ -2173,7 +2174,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // normal keywords
                     // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
                     // We handle that in XBasePPCmd.xh
-                    {"ENDFOR",   NEXT },
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
                     {"READONLY",READONLY },
@@ -2242,7 +2242,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var vfpKeyWordAbbrev = new XSharpKeywords
                 {
                     {"ENDDEFINE", ENDDEFINE },
-                    {"ENDFOR", NEXT },
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },
@@ -2371,6 +2370,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "STRUCT", STRUCTURE},
                     { "THROW", THROW},
                     { "TRY", TRY},
+                    { "TUPLE", TUPLE},
                     { "TYPEOF", TYPEOF},
                     { "UNTIL", UNTIL},
                     { "VALUE", VALUE},

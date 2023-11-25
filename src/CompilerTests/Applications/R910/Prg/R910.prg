@@ -30,16 +30,18 @@ FUNCTION Start() as void
 
 			// This does not work
 			DIMENSION this.MyTab(3)
+			local uThis := this as usual
             MyTab = 42
 			// Same inside a WITH clause
-			WITH This
+			WITH uThis as Class1
 				DIMENSION .MyTab(4)
 			END WITH
             ShowArray(This.MyTab) // shows 3 x 42 and 1 x NIL
 			RETURN
 
 	END CLASS
-
+    class Class2 inherit Class1
+    end class
 
 PROC xAssert(l AS LOGIC)
 IF l

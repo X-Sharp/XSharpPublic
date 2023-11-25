@@ -141,6 +141,110 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
         #endregion
+        // XBase Type Names
+        #region Properties
+        protected TypeSyntax UsualType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Usual)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
+        protected TypeSyntax FloatType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Float)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Float);
+        protected TypeSyntax CurrencyType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Currency)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
+        protected TypeSyntax BinaryType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Binary)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
+        protected TypeSyntax DateType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Date)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Date);
+        protected TypeSyntax SymbolType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
+        protected TypeSyntax PszType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Psz)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Psz);
+        protected TypeSyntax CodeblockType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
+        protected TypeSyntax ArrayType =>
+            _options.XSharpRuntime
+            ? GenerateQualifiedName(XSharpQualifiedTypeNames.Array)
+            : GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
+        protected ArrayTypeSyntax ArrayOfUsual
+        {
+            get
+            {
+                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
+                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                                SyntaxFactory.OpenBracketToken,
+                                emptysizes,
+                                SyntaxFactory.CloseBracketToken);
+                _pool.Free(emptysizes);
+                return _syntaxFactory.ArrayType(UsualType, emptyrank);
+            }
+        }
+        protected ArrayTypeSyntax ArrayOfString
+        {
+            get
+            {
+                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
+                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                                SyntaxFactory.OpenBracketToken,
+                                emptysizes,
+                                SyntaxFactory.CloseBracketToken);
+                _pool.Free(emptysizes);
+                return _syntaxFactory.ArrayType(StringType, emptyrank);
+            }
+        }
+
+        #endregion
+        #region Properties
+        protected TypeSyntax PtrType => GenerateQualifiedName(SystemQualifiedNames.IntPtr);
+        protected TypeSyntax _impliedType =>
+            GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
+        protected TypeSyntax IntType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+        protected TypeSyntax UintType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
+        protected TypeSyntax DecimalType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
+        protected TypeSyntax UlongType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword));
+        protected TypeSyntax LongType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
+        protected TypeSyntax StringType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+        protected TypeSyntax VoidType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
+        protected TypeSyntax ObjectType =>
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
+        protected ArrayTypeSyntax ByteArrayType
+        {
+            get
+            {
+                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
+                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                                 SyntaxFactory.OpenBracketToken,
+                                 emptysizes,
+                                 SyntaxFactory.CloseBracketToken);
+                _pool.Free(emptysizes);
+                return _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), emptyrank);
+            }
+        }
+
+        #endregion
 
         #region Fields
         protected static object gate = new();
@@ -151,17 +255,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         protected readonly XSharpParser _parser;
         protected readonly CSharpParseOptions _options;
-        protected readonly TypeSyntax _impliedType;
-        protected readonly TypeSyntax _ptrType = null;
-        protected readonly TypeSyntax _intType = null;
-        protected readonly TypeSyntax _uintType = null;
-        protected readonly TypeSyntax _decimalType = null;
-        protected readonly TypeSyntax _ulongType = null;
-        protected readonly TypeSyntax _longType = null;
-        protected readonly TypeSyntax _stringType = null;
-        protected readonly TypeSyntax _voidType;
-        protected readonly TypeSyntax _objectType;
-        protected readonly ArrayTypeSyntax _byteArrayType;
 
         protected string _fileName;
         protected bool _isScript;
@@ -257,26 +350,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _isScript = options.Kind == SourceCodeKind.Script;
             GlobalClassName = GetGlobalClassName(_options.TargetDLL);
             GlobalEntities = CreateEntities();
-            var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
-            emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
-            var emptyrank = _syntaxFactory.ArrayRankSpecifier(
-                             SyntaxFactory.OpenBracketToken,
-                             emptysizes,
-                             SyntaxFactory.CloseBracketToken);
-            _pool.Free(emptysizes);
-            _byteArrayType = _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword)), emptyrank);
-            _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
             _entryPoint = !_isScript ? "Start" : null;
-            _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
-            _uintType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
-            _decimalType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
-            _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-            _ulongType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword));
-            _longType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
-            _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
-            _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
-            _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
             PragmaOptions = new List<PragmaOption>();
             PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();
         }
@@ -749,19 +824,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected TypeSyntax VoidType()
-        {
-            return _voidType;
-        }
-
         protected virtual TypeSyntax DefaultType()
         {
-            return _objectType;
+            return ObjectType;
         }
 
         protected TypeSyntax MissingType()
         {
-            return _objectType
+            return ObjectType
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
@@ -782,36 +852,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // call SyntaxLiteralValue because it inspects the size of the number
                         SyntaxToken val = token.SyntaxLiteralValue(_options);
                         if (val.Value is int)
-                            type = _intType;
+                            type = IntType;
                         else if (val.Value is uint)
-                            type = _uintType;
+                            type = UintType;
                         else if (val.Value is double)
                             type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
                         else if (val.Value is float)
                             type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
                         else if (val.Value is decimal)
-                            type = _decimalType;
+                            type = DecimalType;
                         else if (val.Value is ulong)
-                            type = _ulongType;
+                            type = UlongType;
                         else if (val.Value is long)
-                            type = _longType;
+                            type = LongType;
                         else
-                            type = _objectType;
+                            type = ObjectType;
                         break;
 
                     case XP.INVALID_NUMBER:
-                        type = _objectType;
+                        type = ObjectType;
                         break;
                     case XP.CHAR_CONST:
                         type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.CharKeyword));
                         break;
                     case XP.NULL_PTR:
-                        type = _ptrType;
+                        type = PtrType;
                         break;
                     default:
                         if (XSharpLexer.IsString(token.Type))
                         {
-                            type = _stringType;
+                            type = StringType;
                         }
                         break;
 
@@ -831,7 +901,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             && pe.Expr is XP.LiteralExpressionContext le
                             && le.Literal.Token.IsZeroLiteral()) // treat PTR(_CAST,0) as NULL_PTR
                         {
-                            type = _ptrType;
+                            type = PtrType;
                         }
                     }
                     else if (e.XType != null)
@@ -872,21 +942,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (prim.Expr is XP.CodeblockExpressionContext)
                 {
-                    if (_options.XSharpRuntime)
-                        type = GenerateQualifiedName(XSharpQualifiedTypeNames.Codeblock);
-                    else
-                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
+                    type = CodeblockType;
                 }
                 else if (prim.Expr is XP.LiteralArrayExpressionContext)
                 {
-                    if (_options.XSharpRuntime)
-                        type = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
-                    else
-                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
+                    type = ArrayType;
                 }
                 else if (prim.Expr is XP.UsualTypeNameExpressionContext)
                 {
-                    type = _intType;
+                    type = IntType;
                     isConst = true;
                 }
                 else if (prim.Expr is XP.TypeExpressionContext)
@@ -933,7 +997,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    if (type == _objectType)
+                    if (type == ObjectType)
                     {
                         type = type2;
                     }
@@ -949,7 +1013,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    if (type == _objectType)
+                    if (type == ObjectType)
                     {
                         type = type2;
                     }
@@ -959,13 +1023,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var e = expr as XP.PrefixExpressionContext;
                 if (e.Op.Type == XP.ADDROF)
-                    type = _syntaxFactory.PointerType(_voidType, SyntaxFactory.AmpersandToken);
+                    type = _syntaxFactory.PointerType(VoidType, SyntaxFactory.AmpersandToken);
                 else
                     type = GetExpressionType(e.Expr, ref isConst);
             }
             if (type == null)
             {
-                type = _objectType;
+                type = ObjectType;
             }
             if (type is PredefinedTypeSyntax)
             {
@@ -991,7 +1055,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 }
             }
-            else if (type == _ptrType)
+            else if (type.IsPtrType())
             {
                 isConst = true;
             }
@@ -1677,7 +1741,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 suffix = XSharpSpecialNames.AssignSuffix;
-                returntype = _voidType;
+                returntype = VoidType;
             }
             var nobody = context.ExpressionBody != null;
             var name = SyntaxFactory.Identifier(context.Id.GetText() + suffix);
@@ -2201,7 +2265,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var s = context.GetType().ToString();
             s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
             s = s.Replace("Context","");
-            Debug.WriteLine("{0}=> ({1},{2}) {3} [{4}] <{5}>",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text,XP.DefaultVocabulary.GetSymbolicName(context.Start.Type));
+            Trace.WriteLine(string.Format("{0}=> ({1},{2}) {3} [{4}] <{5}>",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text,XP.DefaultVocabulary.GetSymbolicName(context.Start.Type)));
 #endif
 
             if (context is XP.IEntityContext ent)
@@ -2406,7 +2470,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: EmptyParameterList(),
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
                     block: null,
-                    expressionBody: MakeDefault(_objectType));
+                    expressionBody: MakeDefault(ObjectType));
             }
             /*if (_options.HasRuntime)
             {
@@ -4221,7 +4285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.RealType == XP.ASSIGN)
                 {
-                    returntype = VoidType();
+                    returntype = VoidType;
                 }
                 else  // method and access
                 {
@@ -4243,7 +4307,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Assign does not need a return.
                 // So do not add missing returns
-                returntype = VoidType();
+                returntype = VoidType;
             }
             else if (context.StmtBlk != null && !hasNoBody)
             {
@@ -4857,7 +4921,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var nobody = context.Sig.ExpressionBody != null;
             var body = nobody ? null : processEntityBody(context);
             var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
-            var returntype = isprocedure ? _voidType : context.ReturnType.Get<TypeSyntax>();
+            var returntype = isprocedure ? VoidType : context.ReturnType.Get<TypeSyntax>();
             returntype.XCanBeVoStruct = true;
             var id = context.Id.Get<SyntaxToken>();
             SyntaxList<AttributeListSyntax> attributes = default;
@@ -5356,12 +5420,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        returntype = _voidType;
+                        returntype = VoidType;
                     }
                 }
                 else if (context.Data.IsEntryPoint)
                 {
-                    returntype = _voidType;
+                    returntype = VoidType;
                 }
             }
 
@@ -5614,7 +5678,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             entrypointExpr = GenerateLiteral(entrypoint);
 
-            var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Token.Type == XP.FUNCTION ? _getMissingType() : VoidType());
+            var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Token.Type == XP.FUNCTION ? _getMissingType() : VoidType);
             returnType.XCanBeVoStruct = true;
 
             var parameters = getParameters(context.ParamList);
@@ -5795,7 +5859,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint();
             foreach (var lvCtx in context._LocalVars)
+            {
+                lvCtx.SetSequencePoint();
                 VisitLocalvar(lvCtx);
+            }
             // do not make a block, otherwise locals will be scoped to that block!
             context.PutList(MakeList<StatementSyntax>(context._LocalVars));
         }
@@ -5805,6 +5872,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint();
             // do not make a block, otherwise locals will be scoped to that block!
             context.PutList(MakeList<StatementSyntax>(context._ImpliedVars));
+        }
+
+        public override void ExitVarLocalDesignation([NotNull] XP.VarLocalDesignationContext context)
+        {
+            context.SetSequencePoint();
+            var memberinit = _syntaxFactory.AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                context.Designation.Get<ExpressionSyntax>(),
+                SyntaxFactory.EqualsToken,
+                context.Expression.Get<ExpressionSyntax>());
+            var decl = GenerateExpressionStatement(memberinit, context);
+            context.PutList(MakeList<StatementSyntax>(decl));
+        }
+
+        public override void ExitTypeLocalDesignation([NotNull] XP.TypeLocalDesignationContext context)
+        {
+            context.SetSequencePoint();
+            var memberinit = _syntaxFactory.AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                context.DesignationType.Get<ExpressionSyntax>(),
+                SyntaxFactory.EqualsToken,
+                context.Expression.Get<ExpressionSyntax>());
+            var decl = GenerateExpressionStatement(memberinit, context);
+            context.PutList(MakeList<StatementSyntax>(decl));
         }
 
         public override void ExitLocalvar([NotNull] XP.LocalvarContext context)
@@ -5848,7 +5939,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var zerobasedArray = _options.HasOption(CompilerOption.ArrayZero, sub, PragmaOptions);
                 // create for loop
-                stmt = GenerateLocalDecl(XSharpSpecialNames.LocalPrefix, _intType);
+                stmt = GenerateLocalDecl(XSharpSpecialNames.LocalPrefix, IntType);
                 stmt.XNode = sub.Parent as XSharpParserRuleContext;
                 stmt.XGenerated = true;
                 stmts.Add(stmt);
@@ -6028,9 +6119,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     field = _syntaxFactory.FieldDeclaration(
                             default,
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
-                            _syntaxFactory.VariableDeclaration(_objectType,
+                            _syntaxFactory.VariableDeclaration(ObjectType,
                                 MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(lockName),
-                                        CreateObject(_objectType, EmptyArgumentList())))),
+                                        CreateObject(ObjectType, EmptyArgumentList())))),
                             SyntaxFactory.SemicolonToken);
                     field.XNode = context;
                     currentclass.Members.Add(field);
@@ -6395,7 +6486,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             StatementSyntax forStmt = _syntaxFactory.ForEachStatement(
                 attributeLists: default,
-                awaitKeyword: null,
+                awaitKeyword: context.a?.SyntaxKeyword(),
                 foreachKwd,
                 SyntaxFactory.OpenParenToken,
                 dt,
@@ -6415,9 +6506,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitWithBlock([NotNull] XP.WithBlockContext context)
         {
-
             var stmts = new List<StatementSyntax>();
-            var declstmt = GenerateLocalDecl(context.VarName, _impliedType, context.Expr.Get<ExpressionSyntax>());
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            if (context.DataType != null)
+            {
+                expr = MakeCastTo(context.DataType.Get<TypeSyntax>(), expr);
+            }
+            var declstmt = GenerateLocalDecl(context.VarName, _impliedType, expr);
             if (_options.Dialect == XSharpDialect.FoxPro)
             {
                 // For FoxPro we add a Push of the local to stack in the runtime
@@ -6550,7 +6645,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    otherwisestatements
             // }
             //
-            
+
             if (conditions.Count == 1)
             {
                 CreateSimpleIfStatement(context, conditions.First(), elseBlock);
@@ -7425,8 +7520,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parent = FindWithBlock(context);
                 if (parent is XP.WithBlockContext wb)
                 {
-                    var VarName = GenerateSimpleName(wb.VarName);
-                    context.Put(MakeSimpleMemberAccess(VarName, context.Name.Get<SimpleNameSyntax>()));
+                    var varName = GenerateSimpleName(wb.VarName);
+                    context.Put(MakeSimpleMemberAccess(varName, context.Name.Get<SimpleNameSyntax>()));
                 }
                 else if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.LateBinding, context, PragmaOptions))
                 {
@@ -7439,7 +7534,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     var expr = GenerateLiteral(0);
-                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    if (_options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxMissingWithStatement));
+                    }
+                    else
+                    {
+                        expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    }
                     context.Put(expr);
                 }
             }
@@ -7465,6 +7567,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        public override void ExitAccessMemberWith([NotNull] XP.AccessMemberWithContext context)
+        {
+            var expr = context.Rigth.Get<ExpressionSyntax>();
+            var e = _syntaxFactory.ParenthesizedLambdaExpression(
+                modifiers: default,
+                parameterList: MakeParameterList(new List<ParameterSyntax>() { MakeParameter("__this", null) }),
+                arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                block: null,
+                expressionBody: expr);
+            context.Put(_syntaxFactory.InvocationExpression(e, MakeArgumentList(MakeArgument(context.Left.Get<ExpressionSyntax>()))));
+        }
         #endregion
 
         #region Common Expressions
@@ -7546,7 +7659,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         goto default;
 
                     SyntaxToken token = GetRShiftToken(context.Op, context.Gt);
-                    right = MakeCastTo(_intType, right, true);
+                    right = MakeCastTo(IntType, right, true);
                     context.Put(_syntaxFactory.BinaryExpression(
                         SyntaxKind.RightShiftExpression,
                         left,
@@ -7556,7 +7669,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XP.RSHIFT:
                 case XP.LSHIFT:
-                    right = MakeCastTo(_intType, right, true);
+                    right = MakeCastTo(IntType, right, true);
                     goto default;
                 default:
                     // Note
@@ -7585,7 +7698,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.ASSIGN_LSHIFT:
                 case XSharpParser.ASSIGN_RSHIFT:
-                    rhs = MakeCastTo(_intType, rhs, true);
+                    rhs = MakeCastTo(IntType, rhs, true);
                     goto default;
                 default:
                     context.Put(_syntaxFactory.AssignmentExpression(
@@ -7983,7 +8096,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool usesDiscard = false;
                 ExpressionSyntax expr;
                 // create statements too so we can set breakpoint info
-                var decl = GenerateLocalDecl("_", _objectType);
+                var decl = GenerateLocalDecl("_", ObjectType);
                 statements.Add(decl);
                 var name = GenerateSimpleName("_");
                 statements.Add(GenerateExpressionStatement(MakeSimpleAssignment(name, GenerateLiteralNull()), context));
@@ -8331,7 +8444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (mask != 0)
                 {
-                    var destType = signed ? _intType : _uintType;
+                    var destType = signed ? IntType : UintType;
                     expr = MakeCastTo(destType, expr);
                     expr = MakeChecked(expr, false);
                 }
@@ -8774,6 +8887,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.NullableType(context.TypeName.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.QuestionToken)));
         }
 
+        public override void ExitTupleDatatype([NotNull] XP.TupleDatatypeContext context)
+        {
+            context.Put(context.TupleType.Get<TupleTypeSyntax>());
+        }
+
         public override void ExitTypeName([NotNull] XP.TypeNameContext context)
         {
             if (context.NativeType != null)
@@ -9164,7 +9282,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     var bin = _syntaxFactory.ArrayCreationExpression(
                         SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                            _byteArrayType,
+                            ByteArrayType,
                             _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                                 SyntaxFactory.OpenBraceToken,
                                 MakeSeparatedList<ExpressionSyntax>(values.ToArray()),
@@ -9486,6 +9604,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             context.Put(amd);
+        }
+        #endregion
+
+        #region Tuples
+        public override void ExitTupleExpression([NotNull] XP.TupleExpressionContext context)
+        {
+            context.Put(context.TupleExpr.Get<TupleExpressionSyntax>());
+        }
+
+        public override void ExitTupleType([NotNull] XP.TupleTypeContext context)
+        {
+            var openParen = SyntaxFactory.OpenParenToken;
+            var closeParen = SyntaxFactory.CloseParenToken;
+            var elements = MakeSeparatedList<TupleElementSyntax>(context._Elements);
+            context.Put(_syntaxFactory.TupleType(openParen, elements, closeParen));
+        }
+
+        public override void ExitTupleTypeElement([NotNull] XP.TupleTypeElementContext context)
+        {
+            var type = context.datatype().Get<TypeSyntax>();
+            var ident = context.identifierName()?.Get<IdentifierNameSyntax>().Identifier;
+            context.Put(_syntaxFactory.TupleElement(type, ident));
+        }
+
+        public override void ExitTupleExpr([NotNull] XP.TupleExprContext context)
+        {
+            var openParen = SyntaxFactory.OpenParenToken;
+            var closeParen = SyntaxFactory.CloseParenToken;
+            var args = MakeSeparatedList<ArgumentSyntax>(context._Args);
+            context.Put(_syntaxFactory.TupleExpression(openParen, args, closeParen));
+        }
+
+        public override void ExitTupleExprArgument([NotNull] XP.TupleExprArgumentContext context)
+        {
+            NameColonSyntax nameOpt = null;
+            if (context.Name != null)
+                nameOpt = _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.ColonToken);
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            context.Put(_syntaxFactory.Argument(nameOpt, null, expr));
         }
         #endregion
 
@@ -9862,7 +10019,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Token.Type)
             {
                 case XP.PTR:
-                    context.Put(_syntaxFactory.PointerType(VoidType(), SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
+                    context.Put(_syntaxFactory.PointerType(VoidType, SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
                     break;
                 case XP.DYNAMIC:
                     context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
@@ -10084,6 +10241,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Init.Get<ExpressionSyntax>());
         }
         #endregion
+
+        public override void ExitDesignationTypeExpr([NotNull] XP.DesignationTypeExprContext context)
+        {
+            var args = _pool.AllocateSeparated<ArgumentSyntax>();
+            foreach (var loc in context._Locals)
+            {
+                if (args.Count > 0)
+                    args.AddSeparator(SyntaxFactory.CommaToken);
+                var locdes = _syntaxFactory.SingleVariableDesignation(loc.Id.Get<SyntaxToken>());
+                args.Add(MakeArgument(_syntaxFactory.DeclarationExpression(loc.Type.Get<TypeSyntax>(), locdes)));
+            }
+            context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
+            _pool.Free(args);
+        }
+        public override void ExitDesignationExpr([NotNull] XP.DesignationExprContext context)
+        {
+            var variables = _pool.AllocateSeparated<VariableDesignationSyntax>();
+            foreach (var id in context._Ids)
+            {
+                if (variables.Count > 0)
+                    variables.AddSeparator(SyntaxFactory.CommaToken);
+                variables.Add(_syntaxFactory.SingleVariableDesignation(id.Get<SyntaxToken>()));
+            }
+            var vardes = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
+            _pool.Free(variables);
+            context.Put(_syntaxFactory.DeclarationExpression(_impliedType, vardes));
+        }
         #endregion
 
         #region ExpressionParser

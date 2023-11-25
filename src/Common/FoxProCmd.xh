@@ -14,6 +14,8 @@
 #ifndef FOXPROCMD_XH
 #define FOXPROCMD_XH
 
+#xcommand FOR EACH [<*any*>] => FOREACH
+#xcommand ENDFOR [<*any*>]   => NEXT
 #xcommand ENDFUNC [<*any*>] => END FUNCTION
 #xcommand ENDPROC [<*any*>] => END PROCEDURE
 #xcommand ENDSCAN [<*any*>] => END SCAN

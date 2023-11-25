@@ -396,6 +396,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.FOX_NOT:
                 case XSharpLexer.NOT:
                 case XSharpLexer.AMP:               // see xsharp.g4 macroName
+                case XSharpLexer.DOT:               // inside a WITH construct
+                case XSharpLexer.COLON:             // we should support REPLACE Foo with .BAR
+                case XSharpLexer.COLONCOLON:
                     return true;
             }
             return false;

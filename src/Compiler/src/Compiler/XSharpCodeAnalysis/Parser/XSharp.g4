@@ -650,7 +650,8 @@ statement           : Decl=localdecl                            #declarationStmt
                       UNTIL Expr=expression
                       eos                                               #repeatStmt
 
-                    | (f=FOREACH | f=FOR EACH)
+                    | f=FOREACH
+                      a=AWAIT?
                       ( V=IMPLIED Id=varidentifier
                       | Id=varidentifier (AS Type=datatype)?
                       | V=VAR Id=varidentifier
@@ -684,7 +685,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       StmtBlk=statementBlock
                       e=END FIXED? eos						                        #blockStmt
 
-                    | WITH Expr=expression end=eos
+                    | WITH Expr=expression (As=AS DataType=datatype foxclasslib?  )?  end=eos
                       StmtBlk=statementBlock
                       e=END WITH? eos                                  #withBlock
 
@@ -759,6 +760,10 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*   end=eos #varLocalDecl
                    | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
                    | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+                   | ( VAR | LOCAL? IMPLIED ) Designation=designationExpr
+                      Op=assignoperator Expression=expression end=eos                                                #varLocalDesignation // VAR ( ID[, ID, ...] ) := EXPR
+                   | LOCAL DesignationType=designationTypeExpr
+                      Op=assignoperator Expression=expression end=eos                                                #typeLocalDesignation // LOCAL ( ID AS TYPE[,ID AS TYPE,...] ) := EXPR
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?
@@ -877,12 +882,12 @@ assignoperator      : Op = (ASSIGN_OP | EQ)
 
 expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
                     | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
+                    | Left=expression Op=(DOT|COLON) LPAREN Rigth=expression RPAREN #accessMemberWith // member access with left expression.
                     // Latebound member access with a ampersand and a name or an expression that evaluates to a string
                     | Left=expression Op=(DOT|COLON) AMP 
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP 
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
-  
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
@@ -894,7 +899,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
-                    | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
+                    | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC | EXP) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
                     | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
@@ -929,6 +934,7 @@ primary             : Key=SELF                                                  
                     | Literal=parserLiteralValue                                #parserLiteralExpression		// literals created by the preprocessor
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
                     | AnonType=anonType                                         #anonTypeExpression		// CLASS { id := expr [, id := expr] }
+                    | TupleExpr=tupleExpr                                       #tupleExpression      // TUPLE { id := expr [, id := expr] }
                     | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | AnoExpr=anonymousMethodExpression                         #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery                                           #queryExpression        // LINQ
@@ -1070,6 +1076,7 @@ datatype            : ARRAY OF TypeName=typeName                                
                     | TypeName=typeName (Ranks+=arrayRank)+                         #arrayDatatype
                     | TypeName=typeName                                             #simpleDatatype
                     | TypeName=typeName QMARK                                       #nullableDatatype
+                    | TupleType=tupleType                                           #tupleDatatype
                     ;
 
 arrayRank           : LBRKT (Commas+=COMMA)* RBRKT
@@ -1103,6 +1110,29 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
                     | Expr=expression
                     ;
 
+// Tuples
+
+tupleType           : TUPLE LCURLY (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RCURLY
+                    ;
+
+tupleTypeElement    : (identifierName AS)? datatype
+                    ;
+
+tupleExpr           : TUPLE LCURLY (Args+=tupleExprArgument (COMMA Args+=tupleExprArgument)*)? RCURLY
+                    ;
+
+tupleExprArgument   : Name=identifierName Op=assignoperator Expr=expression
+                    | Expr=expression
+                    ;
+
+designationExpr     : LPAREN Ids+=varidentifier (COMMA Ids+=varidentifier)* RPAREN
+                    ;
+
+designationTypeExpr : LPAREN Locals+=localDesignation (COMMA Locals+=localDesignation)* RPAREN
+                    ;
+
+localDesignation    : Id=varidentifier AS Type=datatype
+                    ;
 
 // Codeblocks & Lambda Expressions
 
@@ -1296,7 +1326,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
                     | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
                     | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE
-                    | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL
+                    | STEP | STRICT | TO | THISCALL | TUPLE |  UPTO | USING | WINCALL
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
                     // but when they code event->(DoSomething()) we still need them in this rule...
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP

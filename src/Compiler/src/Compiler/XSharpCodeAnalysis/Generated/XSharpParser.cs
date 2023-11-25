@@ -13783,7 +13783,7 @@ public partial class XSharpParser : Parser {
 	public partial class AccessMemberWithContext : ExpressionContext {
 		public ExpressionContext Left;
 		public IToken Op;
-		public ExpressionContext Rigth;
+		public ExpressionContext Right;
 		public ITerminalNode LPAREN() { return GetToken(XSharpParser.LPAREN, 0); }
 		public ITerminalNode RPAREN() { return GetToken(XSharpParser.RPAREN, 0); }
 		public ExpressionContext[] expression() {
@@ -14621,7 +14621,7 @@ public partial class XSharpParser : Parser {
 							Consume();
 						}
 						State = 2570; Match(LPAREN);
-						State = 2571; ((AccessMemberWithContext)_localctx).Rigth = expression(0);
+						State = 2571; ((AccessMemberWithContext)_localctx).Right = expression(0);
 						State = 2572; Match(RPAREN);
 						}
 						break;

@@ -7569,7 +7569,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMemberWith([NotNull] XP.AccessMemberWithContext context)
         {
-            var expr = context.Rigth.Get<ExpressionSyntax>();
+            var expr = context.Right.Get<ExpressionSyntax>();
             var e = _syntaxFactory.ParenthesizedLambdaExpression(
                 modifiers: default,
                 parameterList: MakeParameterList(new List<ParameterSyntax>() { MakeParameter("__this", null) }),

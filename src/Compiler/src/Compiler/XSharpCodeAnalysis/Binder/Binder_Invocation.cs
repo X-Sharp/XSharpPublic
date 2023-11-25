@@ -141,6 +141,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 result = BindArgListOperator(node, diagnostics, analyzedArguments);
             }
+            else if (node.Expression.Kind() == SyntaxKind.ParenthesizedLambdaExpression)
+            {
+                UnboundLambda unboundLambda = BindAnonymousFunction((AnonymousFunctionExpressionSyntax)node.Expression, diagnostics);
+                var t = TypeWithAnnotations.Create(analyzedArguments.Arguments[0].Type);
+                var ts = new TypeWithAnnotations[] { t, TypeWithAnnotations.Create(Compilation.GetSpecialType(SpecialType.System_Object)) };
+                var action = Compilation.GetWellKnownType(WellKnownType.System_Func_T2).ConstructIfGeneric(ts.ToImmutableArray());
+                BoundLambda boundLambda = unboundLambda.BindForReturnTypeInference(action);
+                ts[1] = boundLambda.InferredReturnType.TypeWithAnnotations;
+                action = Compilation.GetWellKnownType(WellKnownType.System_Func_T2).ConstructIfGeneric(ts.ToImmutableArray());
+                BoundExpression boundLambdaExpression = unboundLambda.Bind(action);
+                BoundExpression boundExpression = new BoundDelegateCreationExpression(node, boundLambdaExpression, methodOpt: null, isExtensionMethod: false, type: action);
+                boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
+                string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
+                result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
+            }
             else
             {
                 if (node.XIsChr && analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].ConstantValue != null)

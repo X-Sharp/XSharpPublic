@@ -283,7 +283,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             if (IsTupleType)
             {
+#if XSHARP
+                var result = GetMembers().WhereAsArray((m, name) => XSharpString.Equals(m.Name, name), name);
+#else
                 var result = GetMembers().WhereAsArray((m, name) => m.Name == name, name);
+#endif
                 cacheResult(result);
                 return result;
             }
@@ -309,8 +313,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // cache of size 8 seems reasonable here.
                 // considering that substituted methods have about 10 reference fields,
                 // reusing just one may make the cache profitable.
+#if XSHARP
+                var cache = _lazyMembersByNameCache ??
+                            (_lazyMembersByNameCache = new ConcurrentCache<string, ImmutableArray<Symbol>>(8, XSharpString.Comparer));
+#else
                 var cache = _lazyMembersByNameCache ??
                             (_lazyMembersByNameCache = new ConcurrentCache<string, ImmutableArray<Symbol>>(8));
+#endif
 
                 cache.TryAdd(name, result);
             }

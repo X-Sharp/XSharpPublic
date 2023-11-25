@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\XSharp\Dev\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
+// Generated from E:\XSharp\Dev\src\Compiler\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 by ANTLR 4.6.1-SNAPSHOT
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -186,6 +186,19 @@ public interface IXSharpListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSuperExpression([NotNull] XSharpParser.SuperExpressionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleExpression([NotNull] XSharpParser.TupleExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleExpression([NotNull] XSharpParser.TupleExpressionContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>sizeOfExpression</c>
@@ -578,6 +591,19 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitPtrDatatype([NotNull] XSharpParser.PtrDatatypeContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>tupleDatatype</c>
+	/// labeled alternative in <see cref="XSharpParser.datatype"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleDatatype([NotNull] XSharpParser.TupleDatatypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>tupleDatatype</c>
+	/// labeled alternative in <see cref="XSharpParser.datatype"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleDatatype([NotNull] XSharpParser.TupleDatatypeContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>arrayDatatype</c>
 	/// labeled alternative in <see cref="XSharpParser.datatype"/>.
 	/// </summary>
@@ -641,6 +667,19 @@ public interface IXSharpListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitAwaitExpression([NotNull] XSharpParser.AwaitExpressionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>accessMemberWith</c>
+	/// labeled alternative in <see cref="XSharpParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAccessMemberWith([NotNull] XSharpParser.AccessMemberWithContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>accessMemberWith</c>
+	/// labeled alternative in <see cref="XSharpParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAccessMemberWith([NotNull] XSharpParser.AccessMemberWithContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>xFunctionExpression</c>
@@ -1163,6 +1202,19 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitCommonLocalDecl([NotNull] XSharpParser.CommonLocalDeclContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>varLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVarLocalDesignation([NotNull] XSharpParser.VarLocalDesignationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>varLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVarLocalDesignation([NotNull] XSharpParser.VarLocalDesignationContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>varLocalDecl</c>
 	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
 	/// </summary>
@@ -1174,6 +1226,19 @@ public interface IXSharpListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>typeLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTypeLocalDesignation([NotNull] XSharpParser.TypeLocalDesignationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>typeLocalDesignation</c>
+	/// labeled alternative in <see cref="XSharpParser.localdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTypeLocalDesignation([NotNull] XSharpParser.TypeLocalDesignationContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>xppclsvisibility</c>
@@ -3233,6 +3298,83 @@ public interface IXSharpListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitAnonMember([NotNull] XSharpParser.AnonMemberContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleType([NotNull] XSharpParser.TupleTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleType([NotNull] XSharpParser.TupleTypeContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleTypeElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleTypeElement([NotNull] XSharpParser.TupleTypeElementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleTypeElement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleTypeElement([NotNull] XSharpParser.TupleTypeElementContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleExpr([NotNull] XSharpParser.TupleExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleExpr([NotNull] XSharpParser.TupleExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.tupleExprArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleExprArgument([NotNull] XSharpParser.TupleExprArgumentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.tupleExprArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleExprArgument([NotNull] XSharpParser.TupleExprArgumentContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.designationExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDesignationExpr([NotNull] XSharpParser.DesignationExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.designationExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDesignationExpr([NotNull] XSharpParser.DesignationExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.designationTypeExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDesignationTypeExpr([NotNull] XSharpParser.DesignationTypeExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.designationTypeExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDesignationTypeExpr([NotNull] XSharpParser.DesignationTypeExprContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XSharpParser.localDesignation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLocalDesignation([NotNull] XSharpParser.LocalDesignationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XSharpParser.localDesignation"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLocalDesignation([NotNull] XSharpParser.LocalDesignationContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.codeblock"/>.

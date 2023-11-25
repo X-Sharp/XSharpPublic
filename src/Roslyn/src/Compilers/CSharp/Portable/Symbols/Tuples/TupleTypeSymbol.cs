@@ -297,7 +297,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var sourceName = sourceNames[i];
                 var wasInferred = noInferredNames ? false : inferredNames[i];
 
+#if XSHARP
+                if (sourceName != null && !wasInferred && (allMissing || string.Compare(destinationNames[i], sourceName, XSharpString.Comparison) != 0))
+#else
                 if (sourceName != null && !wasInferred && (allMissing || string.CompareOrdinal(destinationNames[i], sourceName) != 0))
+#endif
                 {
                     diagnostics.Add(ErrorCode.WRN_TupleLiteralNameMismatch, literal.Arguments[i].Syntax.Parent!.Location, sourceName, destination);
                 }
@@ -467,13 +471,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // Returns -1 otherwise.
             static int matchesCanonicalElementName(string name)
             {
+#if XSHARP
+                if (name.StartsWith("Item", XSharpString.Comparison))
+#else
                 if (name.StartsWith("Item", StringComparison.Ordinal))
+#endif
                 {
                     string tail = name.Substring(4);
                     int number;
                     if (int.TryParse(tail, out number))
                     {
+#if XSHARP
+                        if (number > 0 && String.Equals(name, TupleMemberName(number), XSharpString.Comparison))
+#else
                         if (number > 0 && String.Equals(name, TupleMemberName(number), StringComparison.Ordinal))
+#endif
                         {
                             return number;
                         }
@@ -869,7 +881,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             else
             {
                 Debug.Assert(names1.Length == names2.Length);
+#if XSHARP
+                mergedNames = names1.ZipAsArray(names2, (n1, n2) => XSharpString.Compare(n1, n2) == 0 ? n1 : null)!;
+#else
                 mergedNames = names1.ZipAsArray(names2, (n1, n2) => string.CompareOrdinal(n1, n2) == 0 ? n1 : null)!;
+#endif
 
                 if (mergedNames.All(n => n is null))
                 {
@@ -949,7 +965,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 return other is object
+#if XSHARP
+                    && ((this.ElementNames.IsDefault && other.ElementNames.IsDefault) || (!this.ElementNames.IsDefault && !other.ElementNames.IsDefault && this.ElementNames.SequenceEqual(other.ElementNames, XSharpString.Comparer)))
+#else
                     && areEqual(this.ElementNames, other.ElementNames)
+#endif
                     && areEqual(this.ElementLocations, other.ElementLocations)
                     && areEqual(this.ErrorPositions, other.ErrorPositions);
 

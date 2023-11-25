@@ -718,6 +718,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return BadExpression(node);
             }
 
+            if (this.ContainingMemberOrLambda is LambdaSymbol ls && ls.ParameterCount == 1 && ls.Parameters[0].Name == "__this" && node.Identifier.ValueText != "__this" && node is IdentifierNameSyntax)
+            {
+                var syntax = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, SyntaxFactory.IdentifierName("__this"), SyntaxFactory.IdentifierName(node.Identifier.ValueText));
+                DiagnosticBag loc_diagnostics = DiagnosticBag.GetInstance();
+                BoundExpression e = BindMemberAccess(syntax, false, false, loc_diagnostics);
+                bool valid = true;
+                if (e is BoundMethodGroup m)
+                {
+                    valid = m.Methods.Count() > 0;
+                }
+                if (!loc_diagnostics.HasAnyErrors() && valid)
+                {
+                    syntax = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, SyntaxFactory.IdentifierName("__this"), node);
+                    return BindMemberAccess(syntax, false, false, diagnostics);
+                }
+            }
+
             // A simple-name is either of the form I or of the form I<A1, ..., AK>, where I is a
             // single identifier and <A1, ..., AK> is an optional type-argument-list. When no
             // type-argument-list is specified, consider K to be zero. The simple-name is evaluated

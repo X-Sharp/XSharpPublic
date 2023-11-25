@@ -17,11 +17,12 @@
 // Adding a reference to an assembly is enough to make code visible
 // even in the macro compiler
 
-#command REQUEST  <id1> [,<idn> ]   =>
-#command ANNOUNCE <id1> [,<idn> ]   =>
+#xcommand REQUEST  <id1> [,<idn> ]   =>
+#xcommand ANNOUNCE <id1> [,<idn> ]   =>
 
 // XBase++ Allows ENDSEQUENCE as alternative for END SEQUENCE
 // In the Xbase++ header file this is mapped to END, but we prefer to match it to END SEQUENCE
-#command ENDSEQUENCE                => END SEQUENCE
+#xcommand ENDSEQUENCE  <*any*>  => END SEQUENCE
+#xcommand ENDFOR <*any*>  => NEXT
 
 #endif

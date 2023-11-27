@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -86,22 +86,33 @@ BEGIN NAMESPACE XSharp.RT.Tests
             LOCAL pBytes2 AS BYTE PTR
 	        pBytes := MemAlloc(10)
             MemSet(pBytes, 42, 10)
-            FOR VAR i := 1 to 10
+            FOR VAR i := 1 TO 10
                 Assert.True(pBytes[i] == 42)
             NEXT
             pBytes2 := MemRealloc(pBytes, 5)
             Assert.True(pBytes == pBytes2)
-            FOR VAR i := 1 to 5
+            FOR VAR i := 1 TO 5
                 Assert.True(pBytes2[i] == 42)
             NEXT
             pBytes2 := MemRealloc(pBytes, 10)
             Assert.True(pBytes != pBytes2)
-            FOR VAR i := 1 to 5
+            FOR VAR i := 1 TO 5
                 Assert.True(pBytes2[i] == 42)
             NEXT
-            FOR VAR i := 6 to 10
+            FOR VAR i := 6 TO 10
                 Assert.True(pBytes2[i] == 0)
             NEXT
 
+        [Fact, Trait("Category", "Memory")];
+        UNSAFE METHOD Mem2String2MemRaw() AS VOID
+			LOCAL c := "test" AS STRING
+			LOCAL p AS PSZ
+			
+			p := __String2MemRaw(c)
+			Assert.Equal("test", Psz2String(p))
+			
+			c := __Mem2StringRaw(p, (DWORD)c:Length)
+			Assert.Equal("test", c)
+			
 	END CLASS
 END NAMESPACE

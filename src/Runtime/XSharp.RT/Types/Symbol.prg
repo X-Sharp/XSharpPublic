@@ -35,6 +35,8 @@ PUBLIC STRUCTURE __Symbol ;
 
 #region fields
     [NOSHOW] PRIVATE INITONLY _index		AS DWORD
+    // This dictionary is only used when symbols are retrievd with SysGetAtomName
+    // We are caching these because we do not know when they can be freed.
     [NOSHOW] PRIVATE STATIC _PszDict		AS ConcurrentDictionary<DWORD, PSZ>
 #endregion
 
@@ -67,8 +69,7 @@ PUBLIC STRUCTURE __Symbol ;
 
 #endregion
     INTERNAL STATIC METHOD Find(sValue AS STRING ) AS __Symbol
-        IF SymbolTable.LookupTable:ContainsKey(sValue)
-            VAR index := __Symbol.SymbolTable.LookupTable[sValue]
+        IF SymbolTable.TryGetValue(sValue, out var index)
             RETURN __Symbol{index}
         ENDIF
         RETURN __Symbol{0}
@@ -279,10 +280,8 @@ PUBLIC STRUCTURE __Symbol ;
 #region INTERNAL types
     INTERNAL STATIC  CLASS SymbolTable
 #region fields
-        // Note that we are not using a ConcurrentDictionary since we want to keep the LookupTable and List
-        // in sync. Therefore we handle our own locking in this class
-        STATIC INTERNAL LookupTable AS ConcurrentDictionary<STRING,DWORD>
-        STATIC INTERNAL Strings		AS List<STRING>
+        STATIC PRIVATE LookupTable AS ConcurrentDictionary<STRING,DWORD>
+        STATIC PRIVATE Strings		AS List<STRING>
         STATIC PRIVATE sync AS OBJECT
 #endregion
 
@@ -300,7 +299,7 @@ PUBLIC STRUCTURE __Symbol ;
             LOCAL index := 0 AS DWORD
             BEGIN LOCK sync
                 IF (LookupTable:TryGetValue(strValue, OUT index))
-                    index := LookupTable[strValue]
+                    NOP
                 ELSE
                     index := (DWORD) LookupTable:Count
                     LookupTable:TryAdd(strValue, index)
@@ -310,9 +309,11 @@ PUBLIC STRUCTURE __Symbol ;
             RETURN index
 
         INTERNAL STATIC METHOD GetString(index AS DWORD) AS STRING
-            IF (INT) index < Strings:Count
-                RETURN Strings[(INT) index]
-            ENDIF
+            BEGIN LOCK sync
+                IF (INT) index < Strings:Count
+                    RETURN Strings[(INT) index]
+                ENDIF
+            END LOCK
             RETURN ""
 
         INTERNAL STATIC PROPERTY Count AS LONG
@@ -320,6 +321,12 @@ PUBLIC STRUCTURE __Symbol ;
             RETURN LookupTable:Count
         END GET
         END PROPERTY
+
+        INTERNAL STATIC METHOD TryGetValue(s AS STRING, index OUT DWORD) AS LOGIC
+            BEGIN LOCK sync
+                RETURN LookupTable:TryGetValue(s, OUT index)
+            END LOCK
+        END METHOD
 
 #endregion
 

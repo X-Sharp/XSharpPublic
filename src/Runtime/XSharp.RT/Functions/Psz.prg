@@ -152,7 +152,7 @@ FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
       len := s:Length
       ret := (BYTE PTR) MemAlloc( (DWORD)( len + 1 ) )
       FOR x := 0 UPTO len -1
-         ret[x] := (BYTE)( s[0] & 0xFF )
+         ret[x] := (BYTE)( s[x] & 0xFF )
       NEXT
    ENDIF
 

@@ -132,7 +132,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         LOCAL cXmlDoc   := "" AS STRING
         VAR cmtTokens  := XSolution.CommentTokens
         Log(i"Start")
-
+        if lLocals
+            // this makes sure that locals declared in catch blocks or case blocks are also discovered
+            lBlocks := true
+        endif
         _collectLocals := lLocals
         _collectBlocks := lBlocks
         _tokens        := tokens

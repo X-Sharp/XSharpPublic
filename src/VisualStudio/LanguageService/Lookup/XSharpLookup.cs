@@ -726,7 +726,7 @@ namespace XSharp.LanguageService
                         continue;
 
                     case XSharpLexer.COLON:
-                        state = CompletionState.Members;
+                        state = CompletionState.InstanceMembers;
                         resetState = false;
                         startOfExpression = false;
                         continue;

@@ -604,6 +604,7 @@ namespace XSharp.LanguageService
             int count = -1;
             startType = currentType;
             bool resetState = false;
+            string ns = "";
             while (!list.Eoi())
             {
                 // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
@@ -623,7 +624,7 @@ namespace XSharp.LanguageService
                     if (top != null && top.Kind == Kind.Namespace)
                     {
                         var elements = top.FullName.Split('.');
-                        var ns = "";
+                        ns = "";
                         foreach (var element in elements)
                         {
                             if (ns.Length > 0)
@@ -953,7 +954,11 @@ namespace XSharp.LanguageService
                                 currentName = KnownTypes.SystemArray;
                             }
                         }
-                        var types = SearchType(location, currentName, additionalUsings);
+                        var lookupName = currentName;
+                        if (!String.IsNullOrEmpty(ns))
+                            lookupName = ns + "." + lookupName;
+
+                        var types = SearchType(location, lookupName, additionalUsings);
                         if (types?.Count() > 0)
                         {
                             result.AddRange(types);
@@ -1119,7 +1124,7 @@ namespace XSharp.LanguageService
                 var namespaces = location.Project.AllNamespaces.Where(n => additionalUsings.Contains(n));
                 if (namespaces.Count() > 0)
                 {
-                    var ns = namespaces.First();
+                    ns = namespaces.First();
                     result.Add(new XNamespaceSymbol(ns));
                 }
             }

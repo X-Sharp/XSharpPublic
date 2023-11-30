@@ -1857,20 +1857,10 @@ namespace XSharp.LanguageService
             WriteOutputMessage($" SearchMethodStaticIn {location.File.SourcePath}, '{name}' ");
             //
             var emptyusing = new string[] { };
-            foreach (string staticUsing in location.File.AllUsingStatics)
+            var staticMembers = SearchMembersInStaticUsings(location, name);
+            if (staticMembers.Count > 0)
             {
-                // Provide an Empty Using list, so we are looking for FullyQualified-name only
-                var temp = location.Project.FindType(staticUsing, emptyusing);
-                //
-                if (temp != null)
-                {
-                    var found = SearchMethod(location, temp, name, Modifiers.Public, true);
-                    result.AddRange(found);
-                }
-                if (result.Count > 0)
-                {
-                    break;
-                }
+                result.AddRange(staticMembers.Where(m => m.Kind.IsMethod()));
             }
             DumpResults(result, $" SearchMethodStaticIn {location.File.SourcePath}, '{name}'");
             return result;
@@ -1884,6 +1874,20 @@ namespace XSharp.LanguageService
                 return result;
             }
             WriteOutputMessage($" SearchGlobalField {location.File.SourcePath},'{name}' ");
+            // First search globals in source code
+            var sym = location.Project.FindGlobalOrDefine(name, true);
+            if (sym != null)
+            {
+                result.Add(sym);
+                return result;
+            }
+            var staticMembers = SearchMembersInStaticUsings(location, name);
+            if (staticMembers.Count > 0)
+            {
+                result.AddRange(staticMembers.Where(m => !m.Kind.IsMethod() ));
+                if (result.Count > 0)
+                    return result;
+            }
             if (location.Project.AssemblyReferences == null)
             {
                 return result;
@@ -1895,6 +1899,28 @@ namespace XSharp.LanguageService
                 result.AddRange(global);
             }
             DumpResults(result, $" SearchGlobalField {location.File.SourcePath},'{name}'");
+            return result;
+        }
+
+        private static IList<IXMemberSymbol> SearchMembersInStaticUsings(XSharpSearchLocation location, string name)
+        {
+            var result = new List<IXMemberSymbol>();
+            if (location.File.StaticUsings.Count > 0)
+            {
+                foreach (var typeName in location.File.StaticUsings)
+                {
+                    var xtypes = SearchType(location, typeName, null);
+                    foreach (var xtype in xtypes)
+                    {
+                        var members = SearchMembers(location, xtype, name, Modifiers.Internal);
+                        if (members?.Count > 0)
+                        {
+                            result.AddRange(members);
+                            return result;
+                        }
+                    }
+                }
+            }
             return result;
         }
 
@@ -1916,6 +1942,11 @@ namespace XSharp.LanguageService
             {
                 var found = location.Project.FindFunctionsInAssemblyReferences(name);
                 result.AddRange(found);
+            }
+            var staticMembers = SearchMembersInStaticUsings(location, name);
+            if (staticMembers.Count > 0)
+            {
+                result.AddRange(staticMembers.Where(m => m.Kind.HasParameters()));
             }
             DumpResults(result, $" SearchFunction {location.File.SourcePath}, '{name}'");
             return result;

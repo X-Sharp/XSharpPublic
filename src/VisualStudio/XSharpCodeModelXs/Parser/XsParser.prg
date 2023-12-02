@@ -132,7 +132,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         LOCAL cXmlDoc   := "" AS STRING
         VAR cmtTokens  := XSolution.CommentTokens
         Log(i"Start")
-
+        if lLocals
+            // this makes sure that locals declared in catch blocks or case blocks are also discovered
+            lBlocks := true
+        endif
         _collectLocals := lLocals
         _collectBlocks := lBlocks
         _tokens        := tokens
@@ -576,7 +579,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         IF SELF:La1 != XSharpLexer.USING
             RETURN FALSE
         ENDIF
-        IF SELF:La2 == XSharpLexer.VAR             // USING VAR
+        IF SELF:ExpectOnThisLine(XSharpLexer.VAR)             // USING VAR
+            RETURN FALSE
+        ENDIF
+        IF SELF:ExpectOnThisLine(XSharpLexer.IMPLIED)
             RETURN FALSE
         ENDIF
         VAR startToken := SELF:ConsumeAndGet()
@@ -2882,6 +2888,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             IF ! SELF:ParseDeclarationStatement()
                 SELF:ReadLine()
             ENDIF
+        CASE XSharpLexer.USING
+            IF SELF:La2 == XSharpLexer.VAR .or. SELF:La2 == XSharpLexer.STATIC .or. SELF:La2 == XSharpLexer.LOCAL .or. SELF:La2 == XSharpLexer.IMPLIED
+                SELF:ParseUsingDeclarationStatement()
+            ELSE
+                SELF:ReadLine()
+            ENDIF
         CASE XSharpLexer.LPARAMETERS
             IF ! SELF:ParseXBaseDeclarationStatement()
                 SELF:ReadLine()
@@ -2914,6 +2926,38 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             SELF:ReadLine( )
         END SWITCH
         RETURN
+
+    PRIVATE METHOD ParseUsingDeclarationStatement() AS LOGIC
+    //   | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
+    //   | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+        local lStatic := FALSE AS LOGIC
+        IF ! SELF:Expect(XSharpLexer.USING)
+            RETURN FALSE
+        ENDIF
+        IF SELF:Expect(XSharpLexer.STATIC)
+            lStatic := TRUE
+        ENDIF
+        IF SELF:Expect(XSharpLexer.VAR)
+            NOP
+        ELSEIF SELF:Expect(XSharpLexer.LOCAL) .and. SELF:Expect(XSharpLexer.IMPLIED)
+            NOP
+        ELSEIF SELF:Expect(XSharpLexer.IMPLIED)
+            NOP
+        ELSE
+            RETURN FALSE
+        ENDIF
+        VAR result := List<XSourceVariableSymbol>{}
+        VAR xVar := SELF:ParseImpliedVar(lStatic)
+        result:Add(xVar)
+        DO WHILE SELF:Expect(XSharpLexer.COMMA)
+            xVar := SELF:ParseImpliedVar(lStatic)
+            result:Add(xVar)
+        ENDDO
+        FOREACH VAR x IN result
+            SELF:_locals:Add(x)
+        NEXT
+        SELF:ReadLine()
+        RETURN TRUE
 
     PRIVATE METHOD ParseDeclarationStatement() AS LOGIC
         //

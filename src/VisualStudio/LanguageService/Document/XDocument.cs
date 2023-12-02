@@ -163,8 +163,8 @@ namespace XSharp.LanguageService
             {
                 // When the snapshot matches, return a clone of the line we already have. 
                 // no need to lex again
-                if (this._tokensPerLine.ContainsKey(line.LineNumber))
-                    tokens.AddRange(this._tokensPerLine[line.LineNumber]);
+                if (this._tokensPerLine.TryGetValue(line.LineNumber, out var token))
+                    tokens.AddRange(token);
                 return tokens;
             }
             var text = line.GetText();

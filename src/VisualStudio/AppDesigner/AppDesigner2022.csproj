@@ -210,7 +210,7 @@
       <DependentUpon>XPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
- <ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>

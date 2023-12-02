@@ -39,14 +39,71 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "SplitPath")];
 		METHOD SplitPathTests() AS VOID
-			LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
-			SplitPath("C:\folder\file.ext" ,  REF cDrive , REF cDir , REF cFile , REF cExt)
+			
+			LOCAL PROCEDURE DoSplitPathTest(cPath AS STRING, cExpDrive AS STRING , cExpDir  AS STRING, cExpFile AS STRING , cExpExt AS STRING)
+				LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
+				? "testing path:", cPath
+				SplitPath(cPath ,  REF cDrive , REF cDir , REF cFile , REF cExt)
+				Assert.Equal(cExpDrive , cDrive)
+				Assert.Equal(cExpDir , cDir)
+				Assert.Equal(cExpFile , cFile)
+				Assert.Equal(cExpExt , cExt)
+			END PROCEDURE
+			
+			DoSplitPathTest("C:\folder\file.ext" ,  "C:" , "\folder\" , "file" , ".ext")
+			DoSplitPathTest("a:\\\\folder///file . ext" ,  "a:" , "\\\\folder///" , "file " , ". ext")
+			DoSplitPathTest(":\msb-azure-01\c$\Temp\Debug" , "" , ":\msb-azure-01\c$\Temp\" , "Debug" , "")
+			DoSplitPathTest(":\msb-azure-01\c$\Temp\Debug\" , "" , ":\msb-azure-01\c$\Temp\Debug\" , "" , "")
+			DoSplitPathTest("???**:\msb->>azure-01\c$\Temp\Debug" , "" , "???**:\msb->>azure-01\c$\Temp\" , "Debug" , "")
+			DoSplitPathTest("c:\123\\45" , "c:" , "\123\\" , "45" , "")
+			DoSplitPathTest("ac:\123\/\45" , "" , "ac:\123\/\" , "45" , "")
+			DoSplitPathTest("ac:\123/\/45" , "" , "ac:\123/\/" , "45" , "")
+			DoSplitPathTest("c:\123\/\45\" , "c:" , "\123\/\45\" , "" , "")
+			DoSplitPathTest("c:\123\/\45/" , "c:" , "\123\/\45/" , "" , "")
+			DoSplitPathTest("c:\123/45/" , "c:" , "\123/45/" , "" , "")
+			DoSplitPathTest("c:\123/45" , "c:" , "\123/" , "45" , "")
+			DoSplitPathTest("c:\123\45" , "c:" , "\123\" , "45" , "")
+			DoSplitPathTest("c:\123/\/\45" , "c:" , "\123/\/\" , "45" , "")
+			DoSplitPathTest(":\123/\/\45" , "" , ":\123/\/\" , "45" , "")
+			DoSplitPathTest(":\123/\/\45.ext" , "" , ":\123/\/\" , "45" , ".ext")
+			DoSplitPathTest(".aa.   " , "" , "" , ".aa" , ".   ")
+			DoSplitPathTest(" .   " , "" , "" , " " , ".   ")
+			DoSplitPathTest("c:::aaa" , "c:" , "" , "::aaa" , "")
+			DoSplitPathTest("dd:::aaa" , "" , "" , "dd:::aaa" , "")
+			DoSplitPathTest("d\aaa" , "" , "d\" , "aaa" , "")
+			DoSplitPathTest("c:.abc" , "c:" , "" , "" , ".abc")
+			DoSplitPathTest(":c:.abc" , "" , "" , ":c:" , ".abc")
+			DoSplitPathTest("  :.abc" , "" , "" , "  :" , ".abc")
+			DoSplitPathTest("c:\abc,def" , "c:" , "\" , "abc,def" , "")
+			DoSplitPathTest("cz:\abc,def" , "" , "cz:\" , "abc,def" , "")
+			DoSplitPathTest("c:" , "c:" , "" , "" , "")
+			DoSplitPathTest("    " , "" , "" , "    " , "")
+			DoSplitPathTest(".abc" , "" , "" , "" , ".abc")
+			DoSplitPathTest("abc" , "" , "" , "abc" , "")
+			DoSplitPathTest("abc.def" , "" , "" , "abc" , ".def")
+			DoSplitPathTest(" .def" , "" , "" , " " , ".def")
+			DoSplitPathTest("\.def" , "" , "\" , "" , ".def")
+			DoSplitPathTest("c:\123\\45" , "c:" , "\123\\" , "45" , "")
+			DoSplitPathTest("c:\123\\45/" , "c:" , "\123\\45/" , "" , "")
+			DoSplitPathTest("//////" , "" , "//////" , "" , "")
+			DoSplitPathTest("\\\\\\" , "" , "\\\\\\" , "" , "")
+			DoSplitPathTest("@:" , "@:" , "" , "" , "")
+			DoSplitPathTest("c:\asdasd\wqeqw\fdsfds\1234.555" , "c:" , "\asdasd\wqeqw\fdsfds\" , "1234" , ".555")
+			DoSplitPathTest("c:\asdasd\wqeqw\fdsfds\1234.5/55" , "c:" , "\asdasd\wqeqw\fdsfds\1234.5/" , "55" , "")
+			DoSplitPathTest("c:\!!??\??////.\***.***" , "c:" , "\!!??\??////.\" , "***" , ".***")
+			DoSplitPathTest("A:\\\\folder///file.ext" , "A:" , "\\\\folder///" , "file" , ".ext")
+			DoSplitPathTest("c\asd.def" , "" , "c\" , "asd" , ".def")
+			DoSplitPathTest("asd.def" , "" , "" , "asd" , ".def")
+			DoSplitPathTest("///asd.def" , "" , "///" , "asd" , ".def")
+			DoSplitPathTest("\a\sd.def" , "" , "\a\" , "sd" , ".def")
+			DoSplitPathTest("c:asd" , "c:" , "" , "asd" , "")
+			DoSplitPathTest("c:asd.efg" , "c:" , "" , "asd" , ".efg")
+			DoSplitPathTest("asd.efg" , "" , "" , "asd" , ".efg")
+			DoSplitPathTest("asd" , "" , "" , "asd" , "")
+			DoSplitPathTest("   " , "" , "" , "   " , "")
+			DoSplitPathTest(":::" , "::" , "" , ":" , "")
+			DoSplitPathTest(":a:" , "" , "" , ":a:" , "")
 
-			Assert.Equal("C:" , cDrive)
-			Assert.Equal("\folder\" , cDir)
-
-			Assert.Equal("file" , cFile)
-			Assert.Equal(".ext" , cExt)
 		RETURN
 
 		[Fact, Trait("Category", "SplitPathVO")];

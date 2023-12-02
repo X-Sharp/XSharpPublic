@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Data
@@ -31,14 +31,14 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     VIRTUAL PROPERTY Name      AS STRING GET "AbstractFactory"
 
     /// <inheritdoc />
-    VIRTUAL PROPERTY ParameterPrefix AS CHAR GET '?'
+    VIRTUAL PROPERTY ParameterPrefix AS CHAR GET c"?"
     /// <inheritdoc />
     VIRTUAL PROPERTY ParameterNameInQuery AS LOGIC GET FALSE
 
     /// <inheritdoc />
     VIRTUAL PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET oInstance:CanCreateDataSourceEnumerator
 
-    
+
 
 
     CONSTRUCTOR
@@ -47,7 +47,7 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     /// <inheritdoc />
     VIRTUAL METHOD CreateConnection AS DbConnection
         RETURN oInstance:CreateConnection()
-        
+
     /// <inheritdoc />
     VIRTUAL METHOD CreateCommand    AS DbCommand
         RETURN oInstance:CreateCommand()
@@ -79,7 +79,7 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     /// <inheritdoc />
     VIRTUAL METHOD BeforeConnect(cString AS STRING, cUser AS STRING, cPassword AS STRING) AS STRING
 	    IF !cString:Contains("=") .AND. ! String.IsNullOrEmpty(cString)
-			cString := "DSN="+cString+";" 
+			cString := "DSN="+cString+";"
 		ENDIF
 		IF !String.IsNullOrEmpty(cUser)
 			cString += "UID="+cUser+";"
@@ -88,7 +88,7 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 			cString += "PWD="+cPassword+";"
 		ENDIF
         RETURN cString
-        
+
     /// <inheritdoc />
     VIRTUAL METHOD BeforeDisConnect(oConnection AS DbConnection) AS VOID
         RETURN

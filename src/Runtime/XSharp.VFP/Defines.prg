@@ -198,7 +198,7 @@ DEFINE CMDID_ONTOOLBARACTIVATED :=  31  // One of the container's toolbars has r
 /// <exclude/>
 DEFINE CMDID_ENABLE_INTERACTION :=  36  // Asks the Active Document to either pause or resume multimedia
 /// <exclude/>
-DEFINE CMDID_ONUNLOAD           :=  37  // Sent by the Active Document host before navigation to another 
+DEFINE CMDID_ONUNLOAD           :=  37  // Sent by the Active Document host before navigation to another
                                         // site is initiated or the host is closed
 
 *-- CommantTargetExec nExecOption parameter
@@ -566,7 +566,7 @@ DEFINE FILLSTYLE_DOWNWARD_DIAGONAL   :=    5       // 5 - Downward Diagonal
 DEFINE FILLSTYLE_CROSS               :=    6       // 6 - Cross
 /// <exclude/>
 DEFINE FILLSTYLE_DIAGONAL_CROSS      :=    7       // 7 - Diagonal Cross
-                                      
+
 *-- ScaleMode
 /// <exclude/>
 DEFINE SCALEMODE_PIXELS        :=  3       // 3 - Pixel
@@ -719,87 +719,87 @@ DEFINE PRT_COLLATE           := 13
 *--PRTINFO() Return types
 *-- Paper sizes
 /// <exclude/>
-DEFINE PRTPAPER_LETTER     := 1       // Letter 8 1/2 x 11 in               
+DEFINE PRTPAPER_LETTER     := 1       // Letter 8 1/2 x 11 in
 /// <exclude/>
-DEFINE PRTPAPER_LETTERSMALL:= 2       // Letter Small 8 1/2 x 11 in         
+DEFINE PRTPAPER_LETTERSMALL:= 2       // Letter Small 8 1/2 x 11 in
 /// <exclude/>
-DEFINE PRTPAPER_TABLOID    := 3       // Tabloid 11 x 17 in                 
+DEFINE PRTPAPER_TABLOID    := 3       // Tabloid 11 x 17 in
 /// <exclude/>
-DEFINE PRTPAPER_LEDGER     := 4       // Ledger 17 x 11 in                  
+DEFINE PRTPAPER_LEDGER     := 4       // Ledger 17 x 11 in
 /// <exclude/>
-DEFINE PRTPAPER_LEGAL      := 5       // Legal 8 1/2 x 14 in                
+DEFINE PRTPAPER_LEGAL      := 5       // Legal 8 1/2 x 14 in
 /// <exclude/>
-DEFINE PRTPAPER_STATEMENT  := 6       // Statement 5 1/2 x 8 1/2 in         
+DEFINE PRTPAPER_STATEMENT  := 6       // Statement 5 1/2 x 8 1/2 in
 /// <exclude/>
-DEFINE PRTPAPER_EXECUTIVE  := 7       // Executive 7 1/4 x 10 1/2 in      
+DEFINE PRTPAPER_EXECUTIVE  := 7       // Executive 7 1/4 x 10 1/2 in
 /// <exclude/>
-DEFINE PRTPAPER_A3         := 8       // A3 297 x 420 mm                    
+DEFINE PRTPAPER_A3         := 8       // A3 297 x 420 mm
 /// <exclude/>
-DEFINE PRTPAPER_A4         := 9       // A4 210 x 297 mm                    
+DEFINE PRTPAPER_A4         := 9       // A4 210 x 297 mm
 /// <exclude/>
-DEFINE PRTPAPER_A4SMALL    := 10      // A4 Small 210 x 297 mm              
+DEFINE PRTPAPER_A4SMALL    := 10      // A4 Small 210 x 297 mm
 /// <exclude/>
-DEFINE PRTPAPER_A5         := 11      // A5 148 x 210 mm                    
+DEFINE PRTPAPER_A5         := 11      // A5 148 x 210 mm
 /// <exclude/>
-DEFINE PRTPAPER_B4         := 12      // B4 250 x 354                       
+DEFINE PRTPAPER_B4         := 12      // B4 250 x 354
 /// <exclude/>
-DEFINE PRTPAPER_B5         := 13      // B5 182 x 257 mm                    
+DEFINE PRTPAPER_B5         := 13      // B5 182 x 257 mm
 /// <exclude/>
-DEFINE PRTPAPER_FOLIO      := 14      // Folio 8 1/2 x 13 in                
+DEFINE PRTPAPER_FOLIO      := 14      // Folio 8 1/2 x 13 in
 /// <exclude/>
-DEFINE PRTPAPER_QUARTO     := 15      // Quarto 215 x 275 mm                
+DEFINE PRTPAPER_QUARTO     := 15      // Quarto 215 x 275 mm
 /// <exclude/>
-DEFINE PRTPAPER_10X14      := 16      // 10x14 in                           
+DEFINE PRTPAPER_10X14      := 16      // 10x14 in
 /// <exclude/>
-DEFINE PRTPAPER_11X17      := 17      // 11x17 in                           
+DEFINE PRTPAPER_11X17      := 17      // 11x17 in
 /// <exclude/>
-DEFINE PRTPAPER_NOTE       := 18      // Note 8 1/2 x 11 in                 
+DEFINE PRTPAPER_NOTE       := 18      // Note 8 1/2 x 11 in
 /// <exclude/>
-DEFINE PRTPAPER_ENV_9      := 19      // Envelope #9 3 7/8 x 8 7/8          
+DEFINE PRTPAPER_ENV_9      := 19      // Envelope #9 3 7/8 x 8 7/8
 /// <exclude/>
-DEFINE PRTPAPER_ENV_10     := 20      // Envelope #10 4 1/8 x 9 1/2         
+DEFINE PRTPAPER_ENV_10     := 20      // Envelope #10 4 1/8 x 9 1/2
 /// <exclude/>
-DEFINE PRTPAPER_ENV_11     := 21      // Envelope #11 4 1/2 x 10 3/8        
+DEFINE PRTPAPER_ENV_11     := 21      // Envelope #11 4 1/2 x 10 3/8
 /// <exclude/>
-DEFINE PRTPAPER_ENV_12     := 22      // Envelope #12 4 \276 x 11           
+DEFINE PRTPAPER_ENV_12     := 22      // Envelope #12 4 \276 x 11
 /// <exclude/>
-DEFINE PRTPAPER_ENV_14     := 23      // Envelope #14 5 x 11 1/2            
+DEFINE PRTPAPER_ENV_14     := 23      // Envelope #14 5 x 11 1/2
 /// <exclude/>
-DEFINE PRTPAPER_CSHEET     := 24      // C size sheet                       
+DEFINE PRTPAPER_CSHEET     := 24      // C size sheet
 /// <exclude/>
-DEFINE PRTPAPER_DSHEET     := 25      // D size sheet                       
+DEFINE PRTPAPER_DSHEET     := 25      // D size sheet
 /// <exclude/>
-DEFINE PRTPAPER_ESHEET     := 26      // E size sheet                       
+DEFINE PRTPAPER_ESHEET     := 26      // E size sheet
 /// <exclude/>
-DEFINE PRTPAPER_ENV_DL     := 27      // Envelope DL 110 x 220mm            
+DEFINE PRTPAPER_ENV_DL     := 27      // Envelope DL 110 x 220mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_C5     := 28      // Envelope C5 162 x 229 mm           
+DEFINE PRTPAPER_ENV_C5     := 28      // Envelope C5 162 x 229 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_C3     := 29      // Envelope C3  324 x 458 mm          
+DEFINE PRTPAPER_ENV_C3     := 29      // Envelope C3  324 x 458 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_C4     := 30      // Envelope C4  229 x 324 mm          
+DEFINE PRTPAPER_ENV_C4     := 30      // Envelope C4  229 x 324 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_C6     := 31      // Envelope C6  114 x 162 mm          
+DEFINE PRTPAPER_ENV_C6     := 31      // Envelope C6  114 x 162 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_C65    := 32      // Envelope C65 114 x 229 mm          
+DEFINE PRTPAPER_ENV_C65    := 32      // Envelope C65 114 x 229 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_B4     := 33      // Envelope B4  250 x 353 mm          
+DEFINE PRTPAPER_ENV_B4     := 33      // Envelope B4  250 x 353 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_B5     := 34      // Envelope B5  176 x 250 mm          
+DEFINE PRTPAPER_ENV_B5     := 34      // Envelope B5  176 x 250 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_B6     := 35      // Envelope B6  176 x 125 mm          
+DEFINE PRTPAPER_ENV_B6     := 35      // Envelope B6  176 x 125 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_ITALY  := 36      // Envelope 110 x 230 mm              
+DEFINE PRTPAPER_ENV_ITALY  := 36      // Envelope 110 x 230 mm
 /// <exclude/>
-DEFINE PRTPAPER_ENV_MONARCH :=37      // Envelope Monarch 3.875 x 7.5 in    
+DEFINE PRTPAPER_ENV_MONARCH :=37      // Envelope Monarch 3.875 x 7.5 in
 /// <exclude/>
-DEFINE PRTPAPER_ENV_PERSONAL:= 38     // 6 3/4 Envelope 3 5/8 x 6 1/2 in    
+DEFINE PRTPAPER_ENV_PERSONAL:= 38     // 6 3/4 Envelope 3 5/8 x 6 1/2 in
 /// <exclude/>
-DEFINE PRTPAPER_FANFOLD_US := 39      // US Std Fanfold 14 7/8 x 11 in      
+DEFINE PRTPAPER_FANFOLD_US := 39      // US Std Fanfold 14 7/8 x 11 in
 /// <exclude/>
-DEFINE PRTPAPER_FANFOLD_STD_GERMAN := 40 // German Std Fanfold 8 1/2 x 12 in   
+DEFINE PRTPAPER_FANFOLD_STD_GERMAN := 40 // German Std Fanfold 8 1/2 x 12 in
 /// <exclude/>
-DEFINE PRTPAPER_FANFOLD_LGL_GERMAN := 41 // German Legal Fanfold 8 1/2 x 13 in 
+DEFINE PRTPAPER_FANFOLD_LGL_GERMAN := 41 // German Legal Fanfold 8 1/2 x 13 in
 
 *-- Paper bins
 /// <exclude/>
@@ -1065,7 +1065,7 @@ DEFINE DB_BUFOFF            :=  1
 /// <exclude/>
 DEFINE DB_BUFLOCKRECORD     :=  2
 /// <exclude/>
-DEFINE DB_BUFOPTRECORD      :=  3        
+DEFINE DB_BUFOPTRECORD      :=  3
 /// <exclude/>
 DEFINE DB_BUFLOCKTABLE      :=  4
 /// <exclude/>
@@ -1088,19 +1088,8 @@ DEFINE DB_KEYANDMODIFIED     := 3
 /// <exclude/>
 DEFINE DB_KEYANDTIMESTAMP    := 4
 
-*-- Remote connection login prompt options
-/// <exclude/>
-DEFINE DB_PROMPTCOMPLETE     :=  1
-/// <exclude/>
-DEFINE DB_PROMPTALWAYS       :=  2
-/// <exclude/>
-DEFINE DB_PROMPTNEVER        :=  3
 
-*-- Remote transaction modes
-/// <exclude/>
-DEFINE DB_TRANSAUTO          :=  1
-/// <exclude/>
-DEFINE DB_TRANSMANUAL        :=  2
+
 
 *-- Source Types for CursorGetProp()
 /// <exclude/>
@@ -1414,7 +1403,7 @@ DEFINE	DBCEVENTS_VIEW		:=7
 /// <exclude/>
 DEFINE DBCEVENTS_LASTTYPE	:=8
 /// <exclude/>
-DEFINE DBCEVENTS_STPROCS	:=	9	
+DEFINE DBCEVENTS_STPROCS	:=	9
 /// <exclude/>
 
 *-- AFields() Constants

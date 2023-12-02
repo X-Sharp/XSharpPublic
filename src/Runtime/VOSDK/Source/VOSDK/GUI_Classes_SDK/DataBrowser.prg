@@ -2790,7 +2790,7 @@ CLASS DataBrowser INHERIT Control
     /// <include file="Gui.xml" path="doc/DataBrowser.Paste/*" />
     METHOD Paste ( )
 
-        
+
         IF oCellEdit IS Edit var oEdit
             oEdit:Paste()
         ENDIF
@@ -3245,7 +3245,7 @@ CLASS DataColumn INHERIT VObject
         LOCAL lRestoreTextColor, lRestoreBackground AS LOGIC
 
         IF (oFieldSpec != NULL_OBJECT)
-            uValue := oFieldSpec:Val(pszData)
+            uValue := oFieldSpec:Val(Psz2String(pszData))
         ELSE
             uValue := Send(oServer:FieldSpec(SELF:NameSym), #Val, Psz2String(pszData))
         ENDIF

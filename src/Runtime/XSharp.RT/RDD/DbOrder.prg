@@ -88,18 +88,21 @@ FUNCTION IndexExt       () AS STRING STRICT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexkey/*" />
 FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 	LOCAL uRetVal   AS USUAL
-	IF nPosition:IsNil
-		nPosition := 0
-	ENDIF
-	uRetVal := DbOrderInfo(DBOI_EXPRESSION, "", nPosition)
+    IF Used()
+        uRetVal := DbOrderInfo(DBOI_EXPRESSION, "", nPosition)
+    ELSE
+        uRetVal := NIL
+    ENDIF
 	RETURN uRetVal
 
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexord/*" />
 FUNCTION IndexOrd() AS INT STRICT
-	LOCAL uRetVal := NIL AS USUAL
-	uRetVal := DbOrderInfo(DBOI_NUMBER, "", NIL)
+    LOCAL uRetVal := NIL AS USUAL
+    IF Used()
+        uRetVal := DbOrderInfo(DBOI_NUMBER, "", NIL)
+    endif
 	@@Default( REF uRetVal, 0)
     RETURN uRetVal
 

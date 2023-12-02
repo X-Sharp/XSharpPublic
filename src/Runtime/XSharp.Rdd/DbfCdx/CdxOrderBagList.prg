@@ -275,6 +275,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD FindOrder(orderinfo AS DbOrderInfo, tag OUT CdxTag) AS LOGIC
             tag := NULL
+            IF orderinfo:IsEmpty
+                tag := SELF:CurrentOrder
+                RETURN TRUE
+            ENDIF
             IF orderinfo:Order IS STRING VAR name
                 RETURN SELF:FindOrderByName(orderinfo:BagName, name, OUT tag)
             ELSEIF orderinfo:Order IS LONG VAR number

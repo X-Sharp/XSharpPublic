@@ -17,14 +17,7 @@ FUNCTION AllTrim(cString AS STRING) AS STRING
 	RETURN cString:Trim(trimChars)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-/// <remarks>
-/// AscA() always uses the current Ansi codepage, and ignores the setting of SetAnsi()
-/// </remarks>
-/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.ChrA'>ChrA</seealso>
-FUNCTION AscA(cString AS STRING) AS DWORD
+INTERNAL FUNCTION __AscWorker(cString as STRING, lMustBeAnsi as LOGIC) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
 	if ( !String.IsNullOrEmpty(cString) )
@@ -32,48 +25,7 @@ FUNCTION AscA(cString AS STRING) AS DWORD
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
 			LOCAL encoding AS Encoding
-			encoding := StringHelpers.WinEncoding
-			LOCAL buffer AS BYTE[]
-			VAR chars := <CHAR> {chValue}
-			IF encoding:IsSingleByte
-				buffer := BYTE[]{1}
-				encoding:GetBytes(chars,0,1,buffer,0)
-				ascValue := buffer[0]
-			ELSE
-				buffer := BYTE[]{2}
-				IF encoding:GetBytes(chars,0,1,buffer,0) == 1
-					ascValue := buffer[0]
-				ELSE
-					IF BitConverter.IsLittleEndian
-						LOCAL tmp := buffer[0] AS BYTE
-						buffer[0] := buffer[1]
-						buffer[1] := tmp
-					ENDIF
-					ascValue := BitConverter.ToUInt16( buffer, 0 )
-				ENDIF
-			ENDIF
-		ENDIF
-	ENDIF
-	RETURN ascValue
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-/// <remarks>
-/// The return value of Asc() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the result.<br/>
-/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the result.<br/>
-/// This is different from the behior in most single byte versions of Xbase where Asc() simply returnes the
-/// byte value of the 1st character of the string.
-/// </remarks>
-/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
-FUNCTION Asc(cString AS STRING) AS DWORD
-	LOCAL ascValue := 0 AS DWORD
-	LOCAL chValue AS CHAR
-	if ( !String.IsNullOrEmpty(cString) )
-		chValue := cString[0]
-		ascValue := (DWORD) chValue
-		IF ascValue > 127
-			LOCAL encoding AS Encoding
-            IF RuntimeState.Ansi
+            IF lMustBeAnsi .or. RuntimeState.Ansi
                 encoding := StringHelpers.WinEncoding
             ELSE
                 encoding := StringHelpers.DosEncoding
@@ -100,6 +52,29 @@ FUNCTION Asc(cString AS STRING) AS DWORD
 		ENDIF
 	ENDIF
 	RETURN ascValue
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
+/// <remarks>
+/// AscA() always uses the current Ansi codepage, and ignores the setting of SetAnsi()
+/// </remarks>
+/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.ChrA'>ChrA</seealso>
+FUNCTION AscA(cString AS STRING) AS DWORD
+	RETURN __AscWorker(cString, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
+/// <remarks>
+/// The return value of Asc() in XSharp depends on the setting of SetAnsi().<br/>
+/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the result.<br/>
+/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the result.<br/>
+/// This is different from the behior in most single byte versions of Xbase where Asc() simply returnes the
+/// byte value of the 1st character of the string.
+/// </remarks>
+/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+FUNCTION Asc(cString AS STRING) AS DWORD
+    RETURN __AscWorker(cString, FALSE)
 /// <summary>
 /// Convert a character to its Unicode ASCII value.
 /// </summary>
@@ -215,8 +190,6 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 	RETURN STRING{'\0', (INT) dwSize}
 
 
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chareven/*" />
 FUNCTION CharEven(cString AS STRING) AS STRING
 	LOCAL evenChars:=NULL AS STRING
@@ -290,16 +263,7 @@ FUNCTION CharPos(cString AS STRING, wPosition AS DWORD) AS STRING
 	RETURN result
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chr/*" />
-/// <remarks>
-/// The value of dwChar must be between 0 and 255<br/>
-/// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the character.<br/>
-/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the character.<br/>
-/// This is different from the behior in most single byte versions of Xbase where Chr() simply returnes a string with a single byte
-/// that matches the number passed to this function.
-/// </remarks>
-FUNCTION Chr(dwCode AS DWORD) AS STRING
+INTERNAL FUNCTION __ChrWorker(dwCode as DWORD, lMustBeAnsi as LOGIC) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
    b := (BYTE)( dwCode & 0xFF )  // VO ignores the high 24 bits
@@ -308,7 +272,7 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
       ret := Convert.ToChar( b ):ToString()
    ELSE
       LOCAL encoding AS Encoding
-      IF RuntimeState.Ansi
+      IF lMustBeAnsi .or. RuntimeState.Ansi
         encoding := StringHelpers.WinEncoding
       ELSE
         encoding := StringHelpers.DosEncoding
@@ -323,34 +287,28 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
    ENDIF
    RETURN ret
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chr/*" />
+/// <remarks>
+/// The value of dwChar must be between 0 and 255<br/>
+/// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
+/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the character.<br/>
+/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the character.<br/>
+/// This is different from the behior in most single byte versions of Xbase where Chr() simply returnes a string with a single byte
+/// that matches the number passed to this function.
+/// </remarks>
+FUNCTION Chr(dwCode AS DWORD) AS STRING
+  RETURN __ChrWorker(dwCode, FALSE)
+
 
 /// <summary>
 /// Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
 /// </summary>
-/// <param name="dwChar"></param>
+/// <param name="dwCode"></param>
 /// <returns>
 /// </returns>
 /// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
-FUNCTION ChrA(dwChar AS DWORD) AS STRING
-  LOCAL b   AS BYTE
-  LOCAL ret AS STRING
-   b := (BYTE)( dwChar & 0xFF )  // VO ignores the high 24 bits
-
-   IF b <= 0x7F
-      ret := Convert.ToChar( b ):ToString()
-   ELSE
-      LOCAL encoding AS Encoding
-      encoding := StringHelpers.WinEncoding
-
-      LOCAL chars := CHAR[]{ 1 } AS CHAR[]
-      LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
-      LOCAL decoder := encoding:GetDecoder() AS Decoder
-      bytes[__ARRAYBASE__] := b
-      decoder:GetChars( bytes, 0, 1, chars, 0 )
-      ret := chars[__ARRAYBASE__]:ToString()
-   ENDIF
-   RETURN ret
-
+FUNCTION ChrA(dwCode AS DWORD) AS STRING
+    RETURN __ChrWorker(dwCode, TRUE)
 
 /// <summary>
 /// Convert an ASCII code to a character value.

@@ -100,7 +100,8 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC)
 /// <param name="cExt">The extension, including the leading period.  </param>
 FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT STRING,cExt OUT STRING) AS VOID
 	LOCAL nPos AS LONG
-	LOCAL cSep AS STRING
+	LOCAL cSeparators AS STRING
+	LOCAL lDotAfterDirSep := FALSE AS LOGIC
 	cDrive	:= ""
 	cDir	:= ""
 	cName	:= ""
@@ -108,29 +109,36 @@ FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT
 	IF String.IsNullOrEmpty(cPath)
 		RETURN
 	ENDIF
-	cSep := Path.DirectorySeparatorChar:ToString()
-	nPos := cPath:IndexOf(Path.VolumeSeparatorChar)
-	IF nPos > 0
-		cDrive := cPath:Substring(0, nPos+1)
-		cPath  := cPath:Substring(nPos + 1)
+	cSeparators := "\/"
+	IF cSeparators:IndexOf(Path.DirectorySeparatorChar) == -1
+		cSeparators += Path.DirectorySeparatorChar:ToString()
+	END IF
+	IF cPath:Length >= 2 .and. cPath[1] == Path.VolumeSeparatorChar // What VO does
+		cDrive := cPath:Substring(0, 2)
+		cPath  := cPath:Substring(2)
 	ENDIF
 
-	IF cPath:Trim() != ""
-		cDir := Path.GetDirectoryName(cPath)
+	nPos := -1
+	FOREACH cSep AS Char IN cSeparators
+		nPos := Math.Max(nPos, cPath:LastIndexOf(cSep))
+	NEXT
+	IF cPath:LastIndexOf('.') > nPos
+		lDotAfterDirSep := TRUE
+	END IF
+	IF nPos != -1
+		cDir := cPath:Substring(0, nPos+1)
+		cName  := cPath:Substring(nPos + 1)
+	ELSE
+		cName := cPath
 	ENDIF
-
-	IF String.IsNullOrEmpty( cDir )
-		IF cPath:StartsWith(cSep)
-			cDir := cSep
-		ELSE
-			cDir := ""
-		ENDIF
-	ELSEIF ! cDir:EndsWith(cSep)
-		cDir += cSep
+	
+	IF lDotAfterDirSep
+		nPos := cName:LastIndexOf('.')
+		IF nPos != -1 // should be always true
+			cExt  := cName:Substring(nPos)
+			cName := cName:Substring(0, nPos)
+		END IF
 	ENDIF
-
-	cName := Path.GetFileNameWithoutExtension(cPath)
-	cExt  := Path.GetExtension(cPath)
 
 	RETURN
 

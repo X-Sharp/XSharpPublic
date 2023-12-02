@@ -43,27 +43,27 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="Functions\Array.prg" />
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
-    <Compile Include="Functions\ExtensionMethods.prg" />
-    <Compile Include="Functions\MemVarSave.prg" />
+    <Compile Include="Functions\Date.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
     <Compile Include="Functions\Error.prg" />
+    <Compile Include="Functions\ExtensionMethods.prg" />
     <Compile Include="Functions\File.prg" />
-    <Compile Include="Functions\Array.prg" />
-    <Compile Include="Functions\Date.prg" />
-    <Compile Include="Functions\Math.prg" />
-    <Compile Include="Functions\OS.prg" />
     <Compile Include="Functions\Float.prg" />
     <Compile Include="Functions\GC.prg" />
     <Compile Include="Functions\Macro.prg" />
+    <Compile Include="Functions\Math.prg" />
     <Compile Include="Functions\Memo.prg" />
     <Compile Include="Functions\Memory.prg" />
     <Compile Include="Functions\MemVar.prg" />
+    <Compile Include="Functions\MemVarSave.prg" />
     <Compile Include="Functions\Misc.prg" />
     <Compile Include="Functions\OOP.prg" />
+    <Compile Include="Functions\OS.prg" />
     <Compile Include="Functions\Psz.prg" />
     <Compile Include="Functions\Set.prg" />
     <Compile Include="Functions\String.prg" />

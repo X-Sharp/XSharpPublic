@@ -5,6 +5,7 @@
 //
 
 using System
+USING System.Collections
 using System.Collections.Generic
 using System.Diagnostics
 using System.Linq
@@ -22,7 +23,7 @@ STRUCTURE XSharp.VFP.NameValuePair
 END STRUCTURE
 
 
-class XSharp.VFP.PropertyContainer
+class XSharp.VFP.PropertyContainer IMPLEMENTS IEnumerable<NameValuePair>
 
     static _PropertyCache as Dictionary<System.Type, IList<PropertyDescriptor> >
 
@@ -177,6 +178,13 @@ class XSharp.VFP.PropertyContainer
         next
         return result
 
+     method IEnumerable<NameValuePair>.GetEnumerator() AS IEnumerator<NameValuePair>
+        var props := SELF:GetProperties()
+        return props:GetEnumerator()
+
+     method IEnumerable.GetEnumerator() AS IEnumerator
+        var props := SELF:GetProperties()
+        return props:GetEnumerator()
 end class
 
 public class XSharp.VFP.PropertyDescriptor

@@ -11,6 +11,7 @@ using XSharp.Internal
 using System.Reflection
 using System.Reflection.Emit
 using System.Collections.Generic
+using System.Collections.Concurrent
 using System.Linq
 using System.Text
 using System.Runtime.CompilerServices
@@ -19,15 +20,15 @@ using System.Diagnostics
 internal static class OOPHelpers
     static internal aXsAssemblies  as IList<Assembly>
     static internal EnableOptimizations as logic
-    static internal cacheClassesAll as Dictionary<string,Type>
-    static internal cacheClassesOurAssemblies as Dictionary<string,Type>
-    static internal fieldPropCache    as Dictionary<System.Type, Dictionary<string, MemberInfo> >
-    static internal overloadCache     as Dictionary<System.Type, Dictionary<string, IList<MethodInfo>> >
+    static internal cacheClassesAll as ConcurrentDictionary<string,Type>
+    static internal cacheClassesOurAssemblies as ConcurrentDictionary<string,Type>
+    static internal fieldPropCache    as ConcurrentDictionary<System.Type, ConcurrentDictionary<string, MemberInfo> >
+    static internal overloadCache     as ConcurrentDictionary<System.Type, ConcurrentDictionary<string, IList<MethodInfo>> >
     static constructor()
-        cacheClassesAll             := Dictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
-        cacheClassesOurAssemblies   := Dictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
-        fieldPropCache              := Dictionary<System.Type, Dictionary<string, MemberInfo> >{}
-        overloadCache               := Dictionary<System.Type, Dictionary<string, IList<MethodInfo>> >{}
+        cacheClassesAll             := ConcurrentDictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
+        cacheClassesOurAssemblies   := ConcurrentDictionary<string,Type>{StringComparer.OrdinalIgnoreCase}
+        fieldPropCache              := ConcurrentDictionary<System.Type, ConcurrentDictionary<string, MemberInfo> >{}
+        overloadCache               := ConcurrentDictionary<System.Type, ConcurrentDictionary<string, IList<MethodInfo>> >{}
         aXsAssemblies               := List<Assembly>{}
         return
 
@@ -170,11 +171,11 @@ internal static class OOPHelpers
         if ret != null
             if lOurAssembliesOnly
                 if .not. cacheClassesOurAssemblies:ContainsKey(cName)
-                    cacheClassesOurAssemblies:Add(cName , ret)
+                    cacheClassesOurAssemblies:TryAdd(cName , ret)
                 end if
             else
                 if .not. cacheClassesAll:ContainsKey(cName)
-                    cacheClassesAll:Add(cName , ret)
+                    cacheClassesAll:TryAdd(cName , ret)
                 end if
             end if
         end if
@@ -731,13 +732,13 @@ internal static class OOPHelpers
 
     static method AddMember(t as Type, cName as string, mi as MemberInfo) as logic
         if t != null .and. ! String.IsNullOrEmpty(cName)
-            local fields as Dictionary<string, MemberInfo>
+            local fields as ConcurrentDictionary<string, MemberInfo>
             if ! fieldPropCache:TryGetValue(t, out fields)
-                fields := Dictionary<string, MemberInfo> {StringComparison.OrdinalIgnoreCase}
-                fieldPropCache:Add( t, fields)
+                fields := ConcurrentDictionary<string, MemberInfo> {StringComparer.OrdinalIgnoreCase}
+                fieldPropCache:TryAdd( t, fields)
             endif
             if !fields:ContainsKey(cName)
-                fields:Add(cName, mi)
+                fields:TryAdd(cName, mi)
                 return true
             endif
         endif
@@ -968,15 +969,15 @@ internal static class OOPHelpers
         return null
 
     static method CacheOverLoads(t as System.Type, cMethod as string, ml as IList<MethodInfo>) as logic
-        local type as Dictionary<string, IList<MethodInfo> >
+        local type as ConcurrentDictionary<string, IList<MethodInfo> >
         if !overloadCache:TryGetValue(t, out type)
-            type := Dictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase}
-            overloadCache:Add(t, type)
+            type := ConcurrentDictionary<string, IList<MethodInfo> >{StringComparer.OrdinalIgnoreCase}
+            overloadCache:TryAdd(t, type)
         endif
         if type:ContainsKey(cMethod)
             return false
         endif
-        type:Add(cMethod, ml)
+        type:TryAdd(cMethod, ml)
         return true
 
     static method SendHelper(oObject as object, cMethod as string, uArgs as usual[], result out usual, lCallBase as logic) as logic
@@ -1023,7 +1024,7 @@ internal static class OOPHelpers
         static method SendHelper(oObject as object, mi as MethodInfo , uArgs as usual[], result out usual) as logic
             return SendHelper(oObject, mi, uArgs, out result, false)
 
-    static internal dynamicMethodCache as Dictionary<MethodInfo,DynamicMethod>
+    static internal dynamicMethodCache as ConcurrentDictionary<MethodInfo,DynamicMethod>
     static method InvokeNotOverriddenMethod( methodInfo as MethodInfo, targetObject as object, arguments as object[]) as object
         // this code is from
         // http://www.simplygoodcode.com/2012/08/invoke-base-method-using-reflection/index.html
@@ -1039,7 +1040,7 @@ internal static class OOPHelpers
         endif
         local dynamicMethod as DynamicMethod
         if dynamicMethodCache == null
-            dynamicMethodCache := Dictionary<MethodInfo,DynamicMethod>{}
+            dynamicMethodCache := ConcurrentDictionary<MethodInfo,DynamicMethod>{}
         endif
         if .not. dynamicMethodCache:TryGetValue(methodInfo, out dynamicMethod)
             local returnType := null as System.Type
@@ -1067,7 +1068,7 @@ internal static class OOPHelpers
             next
             iLGenerator:Emit(OpCodes.Call, methodInfo)
             iLGenerator:Emit(OpCodes.Ret)
-            dynamicMethodCache:Add(methodInfo, dynamicMethod)
+            dynamicMethodCache:TryAdd(methodInfo, dynamicMethod)
         endif
         return dynamicMethod:Invoke(null, <object>{ targetObject, arguments })
 

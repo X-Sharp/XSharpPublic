@@ -15,22 +15,59 @@ BEGIN NAMESPACE XSharp.RDD.Support
 
 /// <summary>Helper class for the RDD system to store field information</summary>
 CLASS RddFieldInfo
+#region static
+    static private TypeMap as Dictionary<STRING, DbFieldType>
+    static constructor()
+        TypeMap := Dictionary<STRING, DbFieldType>{StringComparer.OrdinalIgnoreCase}
+        TypeMap:Add("blob", DbFieldType.Blob )
+        TypeMap:Add("char", DbFieldType.Character )
+        TypeMap:Add("character", DbFieldType.Character )
+        TypeMap:Add("currency", DbFieldType.Currency )
+        TypeMap:Add("date", DbFieldType.Date )
+        TypeMap:Add("datetime", DbFieldType.DateTime )
+        TypeMap:Add("double", DbFieldType.Double )
+        TypeMap:Add("general", DbFieldType.General )
+        TypeMap:Add("int", DbFieldType.Integer )
+        TypeMap:Add("integer", DbFieldType.Integer )
+        TypeMap:Add("logical", DbFieldType.Logic )
+        TypeMap:Add("memo", DbFieldType.Memo )
+        TypeMap:Add("num", DbFieldType.Integer )
+        TypeMap:Add("numeric", DbFieldType.Number )
+        TypeMap:Add("float", DbFieldType.Float )
+        TypeMap:Add("varbinary", DbFieldType.VarBinary )
+        TypeMap:Add("varchar", DbFieldType.VarChar )
+        RETURN
+    STATIC METHOD FindType(cType as STRING) as DbFieldType
+        cType := cType:ToUpper()
+        if cType:Length == 1
+            RETURN (DbFieldType) (byte) cType[0]
+        elseif TypeMap:TryGetValue(cType, out var dbType)
+            RETURN dbType
+        endif
+        RETURN DbFieldType.Unknown
+#endregion
+
     /// <summary>Name, normally max 10 characters</summary>
-	PUBLIC Name 		AS STRING
+    PUBLIC Name 		AS STRING
     /// <summary>Field Type</summary>
-	PUBLIC FieldType 	AS DbFieldType
+    PUBLIC FieldType 	AS DbFieldType
     /// <summary>Physical length in the table</summary>
-	PUBLIC Length 		AS LONG
+    PUBLIC Length 		AS LONG
     /// <summary>Decimal positions</summary>
-	PUBLIC Decimals 	AS LONG
+    PUBLIC Decimals 	AS LONG
     /// <summary>Alternative name, no length limit. This is the Caption for VFP fields</summary>
-	PUBLIC Alias 		AS STRING
+    PUBLIC Alias 		AS STRING
     /// <summary>Flags, such as Nullable, AutoIncrement, Binary etc.</summary>
     PUBLIC Flags        AS DBFFieldFlags
     /// <summary>Offset in the record buffer for DBF fields.</summary>
-	PUBLIC Offset       AS LONG
+    PUBLIC Offset       AS LONG
     /// <summary>1 based Ordinal position in the RDD.</summary>
-	PUBLIC Ordinal      AS LONG
+    PUBLIC Ordinal      AS LONG
+    /// <summary>Next key for autoincrement columns.</summary>
+    PUBLIC NextValue    AS LONG
+    /// <summary>Step value for autoincrement columns.</summary>
+    PUBLIC StepValue    AS LONG
+
     /// <summary>Dynamic list of optional properties, such as Caption, Description.</summary>
     PUBLIC PROPERTY Properties AS DatabasePropertyCollection
         GET
@@ -81,22 +118,22 @@ CLASS RddFieldInfo
     /// <param name="nLength">Length 'DBF style', so length in Buffer</param>
     /// <param name="nDecimals">Number of decimals. </param>
     /// <param name="nOffSet">Offset in record buffer (optional).</param>
-	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
-		Name 		:= sName
-		Length 		:= nLength
-		Decimals 	:= nDecimals
+    CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
+        Name 		:= sName
+        Length 		:= nLength
+        Decimals 	:= nDecimals
         Flags       := DBFFieldFlags.None
-		FieldType := (DbFieldType) Char.ToUpper(sType[0])
-		if FieldType:IsBinary()
-			Flags |= DBFFieldFlags.Binary
-		ENDIF
+        FieldType := (DbFieldType) Char.ToUpper(sType[0])
+        if FieldType:IsBinary()
+            Flags |= DBFFieldFlags.Binary
+        ENDIF
         IF sType:IndexOf(":") >= 0
             sType := sType:Substring(1)
             FOREACH VAR cChar IN sType
                 SWITCH cChar
                 CASE 'N'
                 CASE '0'
-			        Flags |= DBFFieldFlags.Nullable
+                    Flags |= DBFFieldFlags.Nullable
                 CASE 'B'
                     Flags |= DBFFieldFlags.Binary
                 CASE '+'
@@ -109,15 +146,15 @@ CLASS RddFieldInfo
                     Flags |= DBFFieldFlags.Unicode
                 END SWITCH
             NEXT
-		ENDIF
-		IF String.Compare(Name, _NULLFLAGS, TRUE) == 0
-		    Flags |= DBFFieldFlags.System
-		    Flags |= DBFFieldFlags.Binary
-		ENDIF
-		Alias       := sName
-		SELF:Offset := nOffSet
-		SELF:Validate()
-		RETURN
+        ENDIF
+        IF String.Compare(Name, _NULLFLAGS, TRUE) == 0
+            Flags |= DBFFieldFlags.System
+            Flags |= DBFFieldFlags.Binary
+        ENDIF
+        Alias       := sName
+        SELF:Offset := nOffSet
+        SELF:Validate()
+        RETURN
     /// <summary>Construct a RddFieldInfo object.</summary>
     /// <param name="sName">Name</param>
     /// <param name="nType">Type</param>
@@ -125,65 +162,70 @@ CLASS RddFieldInfo
     /// <param name="nDecimals">Number of decimals. </param>
     /// <param name="nOffSet">Offset in record buffer (optional)</param>
     /// <param name="nFlags">Flags (optional)</param>
-	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DBFFieldFlags.None AS DBFFieldFlags)
-		self:Name 		:= sName
-		SELF:FieldType 	:= nType
-		SELF:Length 	:= nLength
-		SELF:Decimals 	:= nDecimals
-		SELF:Alias      := sName
-		SELF:Offset     := nOffSet
-		SELF:Flags      := nFlags
-		SELF:Validate()
-		RETURN
+    CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DBFFieldFlags.None AS DBFFieldFlags)
+        self:Name 		:= sName
+        SELF:FieldType 	:= nType
+        SELF:Length 	:= nLength
+        SELF:Decimals 	:= nDecimals
+        SELF:Alias      := sName
+        SELF:Offset     := nOffSet
+        SELF:Flags      := nFlags
+        SELF:Validate()
+        RETURN
 
     /// <summary>Construct a RddFieldInfo object.</summary>
     /// <param name="oInfo">Object to copy values from.</param>
     CONSTRUCTOR(oInfo AS RddFieldInfo)
         SUPER()
         SELF:CopyValues(oInfo)
-		SELF:Validate()
+        SELF:Validate()
 
-   /// <summary>Copy values from one object to another.</summary>
-   /// <param name="oInfo">Object to copy values to.</param>
-   /// <remarks>Only the fields will be copied.</remarks>
+    /// <summary>Copy values from one object to another.</summary>
+    /// <param name="oInfo">Object to copy values to.</param>
+    /// <remarks>Only the fields will be copied.</remarks>
     METHOD CopyValues(oInfo AS RddFieldInfo) AS VOID
         VAR oFields    := typeof(RddFieldInfo):GetFields()
         foreach var oField in oFields
             oField:SetValue(SELF, oField:GetValue(oInfo))
         NEXT
-		IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
-        	SELF:Decimals 	:= oInfo:Decimals
+        IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
+            SELF:Decimals 	:= oInfo:Decimals
         ENDIF
+        
+        foreach var prop in oInfo:Properties
+            SELF:Properties:Add(prop:Key, prop:Value)
+        next
+        SELF:Name := SELF:Name:ToUpper()
         return
     /// <summary>Return the blank (non null) value of the column.</summary>
     METHOD BlankValue() AS OBJECT
-     SWITCH SELF:FieldType
-     CASE DbFieldType.Character
-     case DbFieldType.VarChar
-     CASE DbFieldType.Memo
-         RETURN String.Empty
-     CASE DbFieldType.Date
-     CASE DbFieldType.DateTime
-         RETURN DateTime.MinValue
-     CASE DbFieldType.Number
-     CASE DbFieldType.Integer
-         RETURN 0
-     CASE DbFieldType.Logic
-         RETURN FALSE
-     CASE DbFieldType.Blob
-     CASE DbFieldType.General
-     CASE DbFieldType.Picture
-     CASE DbFieldType.VarBinary
-         RETURN <BYTE>{}
-     CASE DbFieldType.Currency
-         RETURN 0.0m
-     CASE DbFieldType.Double
-     CASE DbFieldType.Float
-         RETURN 0.0
+        SWITCH SELF:FieldType
+        CASE DbFieldType.Character
+        case DbFieldType.VarChar
+        CASE DbFieldType.Memo
+            RETURN String.Empty
+        CASE DbFieldType.Date
+        CASE DbFieldType.DateTime
+            RETURN DateTime.MinValue
+        CASE DbFieldType.Number
+        CASE DbFieldType.Integer
+            RETURN 0
+        CASE DbFieldType.Logic
+            RETURN FALSE
+        CASE DbFieldType.Blob
+        CASE DbFieldType.General
+        CASE DbFieldType.Picture
+        CASE DbFieldType.VarBinary
+            RETURN <BYTE>{}
+        CASE DbFieldType.Currency
+            RETURN 0.0m
+        CASE DbFieldType.Double
+        CASE DbFieldType.Float
+            RETURN 0.0
         END SWITCH
         RETURN NULL
     /// <summary>Clone a RddFieldInfo object.</summary>
-	METHOD Clone() AS RddFieldInfo
+    METHOD Clone() AS RddFieldInfo
         VAR info := (RddFieldInfo) SELF:MemberwiseClone()
         RETURN info
 
@@ -194,17 +236,24 @@ CLASS RddFieldInfo
     /// <summary>Validate combinations of type, length and decimals.</summary>
     VIRTUAL METHOD Validate() AS LOGIC
         SWITCH SELF:FieldType
-            CASE DbFieldType.Date
-                SELF:Length := 8
-                SELF:Decimals := 0
-            CASE DbFieldType.Logic
-                SELF:Length := 1
-                SELF:Decimals := 0
-            CASE DbFieldType.Currency
-                SELF:Length   := 8
-                SELF:Decimals := 4
-            CASE DbFieldType.Memo
-                SELF:Decimals := 0
+        CASE DbFieldType.Date
+            SELF:Length := 8
+            SELF:Decimals := 0
+        CASE DbFieldType.Logic
+            SELF:Length := 1
+            SELF:Decimals := 0
+        CASE DbFieldType.Currency
+            SELF:Length   := 8
+            SELF:Decimals := 4
+        CASE DbFieldType.Memo
+            IF SELF:Length == 0
+                SELF:Length := 10
+            ENDIF
+            SELF:Decimals := 0
+        CASE DbFieldType.Integer
+            IF SELF:Length == 0
+                SELF:Length := 4
+            ENDIF
         END SWITCH
         RETURN TRUE
 
@@ -277,6 +326,26 @@ CLASS RddFieldInfo
     PROPERTY ColumnName   AS STRING ;
         GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.ColumnName)  DEFAULT SELF:Name;
         SET SELF:Properties:Add(DatabasePropertyType.ColumnName, value)
+
+    PROPERTY PrimaryKey   AS LOGIC ;
+        GET SELF:Properties:GetValue<LOGIC>(DatabasePropertyType.KeyField)   ;
+        SET SELF:Properties:Add(DatabasePropertyType.KeyField, value)
+
+    PROPERTY DefaultValue   AS STRING ;
+        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.DefaultValue)  DEFAULT String.Empty ;
+        SET SELF:Properties:Add(DatabasePropertyType.DefaultValue, value)
+
+    PROPERTY IsUnique   AS LOGIC ;
+        GET SELF:Properties:GetValue<LOGIC>(DatabasePropertyType.IsUnique)  ;
+        SET SELF:Properties:Add(DatabasePropertyType.IsUnique, value)
+
+    PROPERTY RuleExpression   AS STRING ;
+        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.RuleExpression)    DEFAULT String.Empty ;
+        SET SELF:Properties:Add(DatabasePropertyType.RuleExpression, value)
+
+    PROPERTY RuleText   AS STRING ;
+        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.RuleText)    DEFAULT String.Empty ;
+        SET SELF:Properties:Add(DatabasePropertyType.RuleText, value)
 
 END CLASS
 

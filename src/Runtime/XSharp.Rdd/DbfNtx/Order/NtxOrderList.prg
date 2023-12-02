@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 LOCAL num AS LONG
                 //
                 result := -1
-                IF info == NULL .OR. info:Order == NULL
+                IF info == null .or. info:IsEmpty
                     RETURN SELF:_focusNtx
                 ENDIF
                 //

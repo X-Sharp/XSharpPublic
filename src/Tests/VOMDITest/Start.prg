@@ -13,7 +13,8 @@ RETURN 0
 CLASS XApp INHERIT App
 	METHOD Start()
 		LOCAL oMainWindow AS StandardShellWindow
-		oMainWindow := StandardShellWindow{SELF}
+        oMainWindow := StandardShellWindow{SELF}
+        DoEvents()
 		oMainWindow:Show(SHOWCENTERED)
 
 		SELF:Exec()

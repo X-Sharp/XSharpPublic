@@ -19,6 +19,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// This class stores "metadata" about tables. It can be filled from the database, in code or otherwise
 /// </remarks>
 class SqlTableInfo inherit SqlDbTableDef
+
     /// <summary>
     /// List of Indexes and tags
     /// </summary>
@@ -52,6 +53,13 @@ class SqlTableInfo inherit SqlDbTableDef
     /// Should trailing spaces for string columns be trimmed?
     /// </summary>
     property TrimTrailingSpaces as logic auto
+
+    /// <summary>
+    /// Specifies a comma-delimited list of fields in the view and includes fields from the cursor
+    /// </summary>
+    property UpdatableFieldList             as string auto
+
+
 
     protected _connection as SqlDbConnection
 
@@ -104,6 +112,7 @@ class SqlIndexInfo
     ///  Should the index be unique ?
     /// </summary>
     property Unique    as logic  auto
+
 
 end class
 

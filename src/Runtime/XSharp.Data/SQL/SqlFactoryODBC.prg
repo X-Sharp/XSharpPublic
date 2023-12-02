@@ -65,14 +65,14 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
             IF uCompletion != NULL
                 nCompletion := Convert.ToUInt16(uCompletion)
             ELSE
-                nCompletion := Win32.SQL_DRIVER_PROMPT
+                nCompletion := XWin32.SQL_DRIVER_PROMPT
             ENDIF
         CATCH
-            nCompletion := Win32.SQL_DRIVER_PROMPT
+            nCompletion := XWin32.SQL_DRIVER_PROMPT
         end try
-        sbResult := StringBuilder{Win32.SQL_MAX_MESSAGE_LENGTH}
+        sbResult := StringBuilder{XWin32.SQL_MAX_MESSAGE_LENGTH}
         IF hWindow == IntPtr.Zero
-            hWindow := Win32.GetParentWindow()
+            hWindow := XWin32.GetParentWindow()
         ENDIF
 
         IF cConnectionString IS STRING
@@ -83,25 +83,25 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
             nSize     := 0
         ENDIF
 
-        nRetCode := Win32.SQLAllocEnv( out hEnv )
-        nRetCode := Win32.SQLAllocConnect( hEnv, OUT hDBc )
-        nRetCode := Win32.SQLDriverConnect( 	hDBc,                    ;
+        nRetCode := XWin32.SQLAllocEnv( out hEnv )
+        nRetCode := XWin32.SQLAllocConnect( hEnv, OUT hDBc )
+        nRetCode := XWin32.SQLDriverConnect( 	hDBc,                    ;
                                         hWindow,                    ;
                                         cConnect,               ;
                                         nSize    , ;
                                         sbResult,              ;
-                                        Win32.SQL_MAX_MESSAGE_LENGTH,  ;
+                                        XWin32.SQL_MAX_MESSAGE_LENGTH,  ;
                                         OUT nBytes,                 ;
                                         nCompletion  )
-        IF nRetCode == Win32.SQL_SUCCESS .OR. nRetCode == Win32.SQL_SUCCESS_WITH_INFO .AND. nBytes > 0
+        IF nRetCode == XWin32.SQL_SUCCESS .OR. nRetCode == XWin32.SQL_SUCCESS_WITH_INFO .AND. nBytes > 0
             cResult  := sbResult:ToString()
         ELSE
             cResult := ""
         ENDIF
 
-        nRetCode := Win32.SQLDisconnect( hDBc )
-        nRetCode := Win32.SQLFreeConnect(hDBc)
-        nRetCode := Win32.SQLFreeEnv( hEnv )
+        nRetCode := XWin32.SQLDisconnect( hDBc )
+        nRetCode := XWin32.SQLFreeConnect(hDBc)
+        nRetCode := XWin32.SQLFreeEnv( hEnv )
         RETURN cResult
 
       /// <inheritdoc />

@@ -46,6 +46,9 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 VAR lOk := SELF:_indexList:Add(orderInfo, fullPath)
                 SELF:_oIndex := SELF:_indexList:CurrentOrder
+                IF RuntimeState.LastRddError != null
+                    lOk := FALSE
+                ENDIF
                 RETURN lOk
             END LOCK
 
@@ -54,13 +57,13 @@ BEGIN NAMESPACE XSharp.RDD
             BEGIN LOCK SELF
 
                 SELF:GoCold()
-                RETURN SELF:_indexList:CloseAll()
+                RETURN SELF:_indexList:CloseAll() .and. RuntimeState.LastRddError == null
             END LOCK
 
         OVERRIDE METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
             BEGIN LOCK SELF
                 SELF:GoCold()
-                RETURN SELF:_indexList:SetFocus(orderInfo)
+                RETURN SELF:_indexList:SetFocus(orderInfo)  .and. RuntimeState.LastRddError == null
             END LOCK
 
         OVERRIDE METHOD OrderListRebuild() AS LOGIC
@@ -75,7 +78,15 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN FALSE
                 ENDIF
                 SELF:GoCold()
-                RETURN SELF:_indexList:Rebuild()
+                local current := SELF:CurrentOrder as NtxOrder
+                var lOk := SELF:_indexList:Rebuild()  .and. RuntimeState.LastRddError == null
+                IF lOk .and. current != null
+                    var orderInfo := DbOrderInfo{}
+                    orderInfo:BagName := current:FullPath
+                    orderInfo:Order   := current:OrderName
+                    SELF:OrderListFocus(orderInfo)
+                ENDIF
+                RETURN lOk
             END LOCK
 
         OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
@@ -315,7 +326,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             isOk := SUPER:Pack()
             IF isOk
-                isOk := SELF:OrderListRebuild()
+                isOk := SELF:OrderListRebuild()  .and. RuntimeState.LastRddError == null
             ENDIF
             RETURN isOk
 
@@ -324,7 +335,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             isOk := SUPER:Zap()
             IF isOk
-                isOk := SELF:OrderListRebuild()
+                isOk := SELF:OrderListRebuild()  .and. RuntimeState.LastRddError == null
             ENDIF
             RETURN isOk
 

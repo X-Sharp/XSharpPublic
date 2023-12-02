@@ -16,8 +16,19 @@ USING XSharp.VFP
 USING XSharp.Data
 USING XSharp.RDD
 
-
-INTERNAL CLASS XSharp.VFP.SQLConnection
+*-- Remote connection login prompt options
+/// <exclude/>
+DEFINE DB_PROMPTCOMPLETE     :=  1
+/// <exclude/>
+DEFINE DB_PROMPTALWAYS       :=  2
+/// <exclude/>
+DEFINE DB_PROMPTNEVER        :=  3
+*-- Remote transaction modes
+/// <exclude/>
+DEFINE DB_TRANSAUTO          :=  1
+/// <exclude/>
+DEFINE DB_TRANSMANUAL        :=  2
+INTERNAL CLASS XSharp.VFP.SQLConnection IMPLEMENTS IDbConnectionClient
     PROTECT _oNetConnection     AS DbConnection
     PROTECT _oTransaction       AS DbTransaction
     PROTECT _oFactory           AS ISqlFactory
@@ -34,7 +45,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
         SET
             SQLReflection.SetPropertyValue(SELF:NetConnection, "ConnectionTimeout", value)
         END SET
-    END PROPERTY       
+    END PROPERTY
     PROPERTY ConnectBusy        AS LOGIC  GET _oNetConnection:State == ConnectionState.Executing .OR. _oNetConnection:State == ConnectionState.Fetching
     PRIVATE _PacketSize         AS LONG
     PROPERTY PacketSize         AS LONG
@@ -43,7 +54,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                 RETURN (LONG) result
             ENDIF
             RETURN _PacketSize
-            
+
         END GET
         SET
             _PacketSize := value
@@ -52,6 +63,8 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
 
     END SET
     END PROPERTY
+
+    PROPERTY IDbConnectionClient.DbConnection AS DbConnection GET _oNetConnection
 
     PROPERTY Shared             AS LOGIC AUTO GET SET
     PRIVATE _DataSource         AS STRING
@@ -89,8 +102,8 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
         SELF:Password   := cPassword
         SELF:Shared     := lShared
         _oNetConnection := SELF:Connect(DataSource, UserId, Password)
-        RETURN 
-        
+        RETURN
+
 
     CONSTRUCTOR(cConnectionString AS STRING, lShared AS LOGIC)
         SELF:_SetDefaults()
@@ -119,13 +132,13 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
         LOCAL oConn := NULL AS DbConnection
 		TRY
             LOCAL oBuilder AS DbConnectionStringBuilder
-            
+
 		    oBuilder := SELF:Factory:CreateConnectionStringBuilder()
 		    oBuilder:ConnectionString := cConnStr
             oConn := SELF:Factory:CreateConnection()
             SELF:ConnectionTimeOut := SQLSupport.GetDefault<LONG>(SQLProperty.ConnectTimeOut)
             SELF:PacketSize        := SQLSupport.GetDefault<LONG>(SQLProperty.PacketSize)
-            
+
 		    cConnStr := oBuilder:ToString()
             TRY
                 oConn:ConnectionString := cConnStr
@@ -144,7 +157,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                 OTHERWISE
                     nLogin := SQL_DRIVER_COMPLETE
                 END SWITCH
-                cConnStr := SELF:Factory:DriverConnect(Win32.GetParentWindow(), nLogin, cConnStr)
+                cConnStr := SELF:Factory:DriverConnect(XWin32.GetParentWindow(), nLogin, cConnStr)
                 oConn:ConnectionString    := cConnStr
                 SELF:ConnectionString     := cConnStr
                 oBuilder:ConnectionString := cConnStr
@@ -152,20 +165,21 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                     oConn:Open()
                 ENDIF
             END TRY
+            local tmp as object
             IF oConn:State == System.Data.ConnectionState.Open
                 SELF:Factory:AfterConnect(oConn)
-                IF oBuilder:ContainsKey("Password")
-                    SELF:Password   := oBuilder["Password"]
-                ELSEIF oBuilder:ContainsKey("pwd")
-                    SELF:Password   := oBuilder["pwd"]
+                IF oBuilder:TryGetValue("Password", out tmp)
+                    SELF:Password   := (string) tmp
+                ELSEIF oBuilder:TryGetValue("pwd", out tmp)
+                    SELF:Password   := (string) tmp
                 ENDIF
-                IF oBuilder:ContainsKey("User Id")
-                    SELF:UserId   := oBuilder["User Id"]
-                ELSEIF oBuilder:ContainsKey("uid")
-                    SELF:UserId   := oBuilder["uid"]
+                IF oBuilder:TryGetValue("User Id", out tmp)
+                    SELF:UserId   := (string) tmp
+                ELSEIF oBuilder:TryGetValue("uid", out tmp)
+                    SELF:UserId   := (string) tmp
                 ENDIF
-                IF oBuilder:ContainsKey("dsn")
-                    SELF:DataSource   := oBuilder["dsn"]
+                IF oBuilder:TryGetValue("dsn", out tmp)
+                    SELF:DataSource   := (string ) tmp
                 ENDIF
             ENDIF
         CATCH e AS Exception
@@ -180,7 +194,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                 RETURN _oNetConnection:State == System.Data.ConnectionState.Open
             ENDIF
             RETURN FALSE
-        END GET 
+        END GET
     END PROPERTY
 
     METHOD Close() AS LOGIC
@@ -189,7 +203,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
             RETURN TRUE
         ENDIF
         RETURN FALSE
-        
+
     METHOD AddStatement(oStmt AS SQLStatement) AS LOGIC
         IF !_aStatements:Contains(oStmt)
             _aStatements:Add(oStmt)

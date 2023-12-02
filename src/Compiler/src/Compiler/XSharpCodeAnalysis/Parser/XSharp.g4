@@ -888,6 +888,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name
                     | Op=(DOT|COLON|COLONCOLON) AMP 
                         ( Name=identifierName | LPAREN Right=expression RPAREN) #accessMemberLate   // .&Name  XPP & Harbour Late member access or inside WITH
+  
                     | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
                     | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access

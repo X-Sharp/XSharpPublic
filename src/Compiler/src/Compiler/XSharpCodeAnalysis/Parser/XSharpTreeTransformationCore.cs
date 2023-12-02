@@ -6812,11 +6812,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    VariableDesignationSyntax designation;
-                    if (context.Id.GetText() == "_")
-                        designation = _syntaxFactory.DiscardDesignation(SyntaxFactory.MakeToken(SyntaxKind.UnderscoreToken, "_"));
-                    else
-                        designation = _syntaxFactory.SingleVariableDesignation(context.Id.Get<SyntaxToken>());
+                    VariableDesignationSyntax designation = GetDesignation(context.Id);
                     var type = context.DataType.Get<TypeSyntax>();
                     var node = _syntaxFactory.DeclarationPattern(type, designation);
                     WhenClauseSyntax whenexpr = null;
@@ -7569,7 +7565,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMemberWith([NotNull] XP.AccessMemberWithContext context)
         {
-            var expr = context.Rigth.Get<ExpressionSyntax>();
+            var expr = context.Right.Get<ExpressionSyntax>();
             var e = _syntaxFactory.ParenthesizedLambdaExpression(
                 modifiers: default,
                 parameterList: MakeParameterList(new List<ParameterSyntax>() { MakeParameter("__this", null) }),
@@ -8316,8 +8312,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Id != null)
                 {
-                    var id = SyntaxFactory.Identifier(context.Id.GetText());
-                    var designation = _syntaxFactory.SingleVariableDesignation(id);
+                    var designation = GetDesignation(context.Id);
                     var pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
@@ -8651,17 +8646,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Null != null || context.Id != null)
             {
                 TypeSyntax type = context.Type != null ? context.Type.Get<TypeSyntax>() : _impliedType;
-                VariableDesignationSyntax desig;
-                if (context.Null != null || context.Id.GetText() == "_")
-                {
-                    var token = SyntaxFactory.MakeToken(SyntaxKind.UnderscoreToken, "_");
-                    desig = _syntaxFactory.DiscardDesignation(token);
-                }
-                else
-                {
-                    var token = context.Id.Get<SyntaxToken>();
-                    desig = _syntaxFactory.SingleVariableDesignation(token);
-                }
+                VariableDesignationSyntax desig = GetDesignation(context.Id);
                 var decl = _syntaxFactory.DeclarationExpression(type, desig);
                 var arg = _syntaxFactory.Argument(null, refKeyword, decl);
                 context.Put(arg);
@@ -10242,6 +10227,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
+
+        VariableDesignationSyntax GetDesignation(XP.VaridentifierContext id)
+        {
+            if (id == null || id.GetText() == "_")
+            {
+                return _syntaxFactory.DiscardDesignation(SyntaxFactory.MakeToken(SyntaxKind.UnderscoreToken, "_"));
+            }
+            else
+            {
+                return _syntaxFactory.SingleVariableDesignation(id.Get<SyntaxToken>());
+            }
+        }
         public override void ExitDesignationTypeExpr([NotNull] XP.DesignationTypeExprContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
@@ -10249,7 +10246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (args.Count > 0)
                     args.AddSeparator(SyntaxFactory.CommaToken);
-                var locdes = _syntaxFactory.SingleVariableDesignation(loc.Id.Get<SyntaxToken>());
+                VariableDesignationSyntax locdes = GetDesignation(loc.Id);
                 args.Add(MakeArgument(_syntaxFactory.DeclarationExpression(loc.Type.Get<TypeSyntax>(), locdes)));
             }
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
@@ -10262,7 +10259,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (variables.Count > 0)
                     variables.AddSeparator(SyntaxFactory.CommaToken);
-                variables.Add(_syntaxFactory.SingleVariableDesignation(id.Get<SyntaxToken>()));
+                variables.Add(GetDesignation(id));
             }
             var vardes = _syntaxFactory.ParenthesizedVariableDesignation(SyntaxFactory.OpenParenToken, variables, SyntaxFactory.CloseParenToken);
             _pool.Free(variables);

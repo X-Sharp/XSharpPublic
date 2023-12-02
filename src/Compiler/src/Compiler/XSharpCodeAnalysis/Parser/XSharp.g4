@@ -1112,7 +1112,7 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
 
 // Tuples
 
-tupleType           : LPAREN (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RPAREN
+tupleType           : TUPLE? LPAREN (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RPAREN
                     ;
 
 tupleTypeElement    : (identifierName AS)? datatype

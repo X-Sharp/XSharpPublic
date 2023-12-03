@@ -882,7 +882,7 @@ assignoperator      : Op = (ASSIGN_OP | EQ)
 
 expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #accessMember           // member access.
                     | Op=(DOT|COLON|COLONCOLON)     Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
-                    | Left=expression Op=(DOT|COLON) LPAREN Rigth=expression RPAREN #accessMemberWith // member access with left expression.
+                    | Left=expression Op=(DOT|COLON) LPAREN Right=expression RPAREN #accessMemberWith // member access with left expression.
                     // Latebound member access with a ampersand and a name or an expression that evaluates to a string
                     | Left=expression Op=(DOT|COLON) AMP 
                       ( Name=identifierName | LPAREN Right=expression RPAREN)  #accessMemberLate   // aa:&Name  Expr must evaluate to a string which is the ivar name

@@ -1113,7 +1113,7 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
 
 // Tuples
 
-tupleType           : TUPLE LCURLY (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RCURLY
+tupleType           : TUPLE? LPAREN (Elements+=tupleTypeElement (COMMA Elements+=tupleTypeElement)*)? RPAREN
                     ;
 
 tupleTypeElement    : (identifierName AS)? datatype

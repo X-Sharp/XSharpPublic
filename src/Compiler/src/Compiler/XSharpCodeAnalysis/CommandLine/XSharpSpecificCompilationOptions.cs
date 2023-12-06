@@ -41,6 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         public bool AllowDotForInstanceMembers { get; internal set; } = false;
         public bool AllowOldStyleAssignments { get; internal set; } = false;
+        public bool AmpAmpIsLogic { get; internal set; } = false;
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
@@ -112,6 +113,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case CompilerOption.AllowOldStyleAssignments:
                     AllowOldStyleAssignments = value;
+                    break;
+                case CompilerOption.AmpAmpIsLogic:
+                    AmpAmpIsLogic = value;
                     break;
                 case CompilerOption.AllowDotForInstanceMembers:
                     AllowDotForInstanceMembers = value;
@@ -379,7 +383,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo15 = 1 << 15,
         UntypedAllowed = Vo15,
         Vo16 = 1 << 16,
-        DefaultClipperContructors = Vo16,
+        DefaultClipperConstructors = Vo16,
         Vo17 = 1 << 17,
         CompatibleBeginSequence = Vo17,
         Xpp1 = 1 << 18,
@@ -399,6 +403,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         AllowDotForInstanceMembers = 1 << 30,
         EnforceOverride = 1L << 31,
         AllowOldStyleAssignments = 1L << 32,
+        AmpAmpIsLogic = 1L << 33,
         All = -1,       // used for Push/Pop
     }
 
@@ -438,6 +443,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 case CompilerOption.AllowDotForInstanceMembers:
                 case CompilerOption.AllowOldStyleAssignments:
+                case CompilerOption.AmpAmpIsLogic:
                 case CompilerOption.AllowNamedArgs:
                 case CompilerOption.ArrayZero:
                 case CompilerOption.ClrVersion:
@@ -466,6 +472,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "Use Zero Based Arrays";
                 case CompilerOption.AllowOldStyleAssignments:
                     return "Allow Old Style Assignments";
+                case CompilerOption.AmpAmpIsLogic:
+                    return "Amp Amp is Logic operator";
                 case CompilerOption.EnforceOverride:
                     return "OVERRIDE must be explicitly used in the source code"; ;
                 case CompilerOption.EnforceSelf:
@@ -538,6 +546,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case "allowoldstyleassignments":
                     return CompilerOption.AllowOldStyleAssignments;
+                case "ampampislogic":
+                    return CompilerOption.AmpAmpIsLogic;
                 case "allowdot":
                     return CompilerOption.AllowDotForInstanceMembers;
                 case "az":

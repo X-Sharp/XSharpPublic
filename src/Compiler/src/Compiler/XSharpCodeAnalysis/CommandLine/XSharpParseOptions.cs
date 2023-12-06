@@ -130,6 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
         public bool AllowOldStyleAssignments { get; private set; }
+        public bool AmpAmpIsLogic { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
         public bool EnforceOverride { get; private set; }
@@ -196,6 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
                 AllowNamedArguments = opt.AllowNamedArguments;
                 AllowOldStyleAssignments = opt.AllowOldStyleAssignments;
+                AmpAmpIsLogic = opt.AmpAmpIsLogic;
                 AllowUnsafe = opt.AllowUnsafe;
                 ArrayZero = opt.ArrayZero;
                 CaseSensitive = opt.CaseSensitive;
@@ -280,6 +282,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
             AllowNamedArguments = opt.AllowNamedArguments;
             AllowOldStyleAssignments = opt.AllowOldStyleAssignments;
+            AmpAmpIsLogic = opt.AmpAmpIsLogic;
             AllowUnsafe = opt.AllowUnsafe;
             ArrayZero = opt.ArrayZero;
             CaseSensitive = opt.CaseSensitive;
@@ -396,6 +399,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.AllowOldStyleAssignments: // allowoldstyleassignments
                     return CheckOption(option, AllowOldStyleAssignments, token, options);
 
+                case CompilerOption.AmpAmpIsLogic: // allowoldstylecomments
+                    return CheckOption(option, AmpAmpIsLogic, token, options);
+
                 case CompilerOption.ArrayZero: // az
                     return CheckOption(option, ArrayZero, token, options);
 
@@ -456,7 +462,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.UntypedAllowed: // vo15
                     return CheckOption(option, VOUntypedAllowed, token, options);
 
-                case CompilerOption.DefaultClipperContructors: // vo16
+                case CompilerOption.DefaultClipperConstructors: // vo16
                     return CheckOption(option, VOClipperConstructors, token, options);
 
                 case CompilerOption.CompatibleBeginSequence: // vo17

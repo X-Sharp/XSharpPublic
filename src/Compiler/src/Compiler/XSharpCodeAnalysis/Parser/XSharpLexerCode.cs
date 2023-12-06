@@ -164,7 +164,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private readonly List<XSharpToken> pendingTokens = new();
         public CSharpParseOptions Options { get; set; }
         public XSharpDialect Dialect => Options.Dialect;
-        private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
+        private bool AllowOldStyleComments => Dialect.AllowOldStyleComments() && !Options.AmpAmpIsLogic;
         private bool AllowFourLetterAbbreviations => Dialect.AllowFourLetterAbbreviations();
         private bool AllowSingleQuotedStrings => Dialect.AllowStringsWithSingleQuotes();
         private bool AllowXBaseVariables => Dialect.SupportsMemvars();
@@ -1052,7 +1052,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '&':
                         parseOne(AMP);
-                        if (Dialect.AllowOldStyleComments() && Expect('&'))
+                        if (AllowOldStyleComments && Expect('&'))
                             parseSlComment();
                         else if (Expect('&'))
                             parseOne(AND);

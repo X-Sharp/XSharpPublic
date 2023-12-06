@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         bool allowLateBound(SyntaxNode syntax, TypeSymbol type)
         {
             bool allowLB ;
-            if (_compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && type.HasLateBindingAttribute() )
+            if (_compilation.Options.Dialect.AllowLateBindingForTypesWithLateBindingAttribute() && type.HasLateBindingAttribute() )
             {
                 allowLB = true;
             }

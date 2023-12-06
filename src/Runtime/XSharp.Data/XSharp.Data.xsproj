@@ -41,6 +41,14 @@
     <Compile Include="FoxPro\SQLReflection.prg" />
     <Compile Include="FoxPro\SQLStatement.prg" />
     <Compile Include="FoxPro\SQLSupport.prg" />
+    <Compile Include="Parser\Context.prg" />
+    <Compile Include="Parser\SQLParser.prg" />
+    <Compile Include="Parser\Token.prg" />
+    <Compile Include="Parser\TokenType.prg" />
+    <Compile Include="Parser\XbaseLexer.prg" />
+    <Compile Include="Parser\XLexer.prg" />
+    <Compile Include="Parser\XSqlLexer.prg" />
+    <Compile Include="Parser\XTokenList.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -65,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FoxPro" />
+    <Folder Include="Parser" />
     <Folder Include="RDD" />
     <Folder Include="SQL" />
     <Folder Include="Properties\" />

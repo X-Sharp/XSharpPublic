@@ -457,6 +457,9 @@ CLASS CursorAdapter
                 XSharp.RuntimeState.Workareas:SetCargo(nArea, SELF)
                 lOk := TRUE
             endif
+            if lInherit
+                NOP
+            endif
         else
             lOk := FALSE
         endif

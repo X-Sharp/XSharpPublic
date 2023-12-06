@@ -8,6 +8,7 @@ USING System.Runtime.InteropServices
 USING System.Reflection
 USING System.Reflection.Emit
 USING System.Collections.Generic
+USING System.Collections.Concurrent
 USING System.Runtime.CompilerServices
 
 
@@ -18,17 +19,17 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
     PUBLIC CONST FAILURE := 65535 AS WORD
     PUBLIC CONST SUCCESS := 0 AS WORD
     INTERNAL INITONLY STATIC Is32Bits AS LOGIC
-    INTERNAL STATIC Groups		AS Dictionary<DWORD, MemGroup>
+    INTERNAL STATIC Groups		AS ConcurrentDictionary<DWORD, MemGroup>
     INTERNAL STATIC LastGroup	AS DWORD
     INTERNAL STATIC Total		AS DWORD
     INTERNAL STATIC MemTrace	AS LOGIC
-    INTERNAL STATIC AllocatedBlocks AS Dictionary<IntPtr, DWORD>
+    INTERNAL STATIC AllocatedBlocks AS ConcurrentDictionary<IntPtr, DWORD>
     //PRIVATE STATIC _memSetDelegate  AS Action<IntPtr, BYTE, DWORD>
     //PRIVATE STATIC _memCopyDelegate AS Action<IntPtr, IntPtr, DWORD>
 
     STATIC CONSTRUCTOR()
-        Groups			:= Dictionary<DWORD, MemGroup>{}
-        AllocatedBlocks := Dictionary<IntPtr, DWORD>{}
+        Groups			:= ConcurrentDictionary<DWORD, MemGroup>{}
+        AllocatedBlocks := ConcurrentDictionary<IntPtr, DWORD>{}
         AddGroup(1)
         LastGroup := 1
         Total	  := 0
@@ -60,7 +61,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
     INTERNAL STATIC METHOD AddGroup(nGroup AS DWORD) AS MemGroup
         LOCAL oGroup AS MemGroup
         oGroup := MemGroup{nGroup}
-        Groups:Add(nGroup, oGroup)
+        Groups:TryAdd(nGroup, oGroup)
         RETURN oGroup
 
     INTERNAL STATIC METHOD AddGroup() AS MemGroup
@@ -80,7 +81,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
         oGroup := FindGroup(nGroup)
         IF oGroup != NULL_OBJECT
             oGroup:Free()
-            Groups:Remove(nGroup)
+            Groups:TryRemove(nGroup, out var _)
             lOk := TRUE
         ENDIF
         RETURN lOk
@@ -139,7 +140,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
             pResult := NULL
         ENDIF
         IF MemTrace
-            AllocatedBlocks:Add(pResult, nSize)
+            AllocatedBlocks:TryAdd(pResult, nSize)
         ENDIF
         RETURN pResult
 
@@ -151,7 +152,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
             IF Validate(pMem)
                 LOCAL nSize AS DWORD
                 IF MemTrace .AND. AllocatedBlocks:ContainsKey(pMem)
-                    AllocatedBlocks:Remove(pMem)
+                    AllocatedBlocks:TryRemove(pMem, out nSize)
                 ENDIF
                 VAR pMemBlockStart  := _GetMemBlockStart (pMem)
                 nSize 				:= pMemBlockStart:dwSize

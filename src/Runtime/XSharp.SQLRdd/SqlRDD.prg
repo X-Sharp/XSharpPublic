@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#define TEST
 using XSharp.RDD.Enums
 using XSharp.RDD.Support
 using System.IO
@@ -65,6 +64,7 @@ class SQLRDD inherit DBFVFP
         _maxRec          := -1
         _oIni            := IniFile{"SQLRDD.INI"}
         self:_trimValues := true // trim String Valuess
+        SELF:DeleteOnClose := TRUE
         return
     destructor()
         Command:Close()
@@ -542,21 +542,6 @@ class SQLRDD inherit DBFVFP
         // This method deletes the temporary file after the file is closed
         _connection:RemoveRdd(self)
         lOk := super:Close()
-#ifndef TEST
-        local cMemoName := "" as string
-        if self:_Memo is AbstractMemo var memo
-            cMemoName := memo:FileName
-        endif
-        local cFileName := self:_FileName as string
-        if lOk
-            if File(cFileName)
-                FErase(FPathName())
-            endif
-            if ! String.IsNullOrEmpty(cMemoName) .and. File(cMemoName)
-                FErase(FPathName())
-            endif
-        endif
-#endif
         return lOk
 
     override method Delete() as logic

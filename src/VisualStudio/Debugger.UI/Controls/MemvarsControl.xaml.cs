@@ -42,13 +42,13 @@ namespace XSharp.Debugger.UI
 
         void ResizeColumns()
         {
-            int lastColumn = (lvMemVars.View as GridView).Columns.Count - 1;
+            int lastColumn = lvMemVars.Columns.Count - 1;
             if (lvMemVars.ActualWidth == Double.NaN)
                 lvMemVars.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             double remainingSpace = lvMemVars.ActualWidth * 0.8;
-            for (int i = 0; i < (lvMemVars.View as GridView).Columns.Count; i++)
+            for (int i = 0; i < lvMemVars.Columns.Count; i++)
             {
-                var column = (lvMemVars.View as GridView).Columns[i];
+                var column = lvMemVars.Columns[i];
                 if (i != lastColumn)
                     column.Width = remainingSpace / 4;
                 else
@@ -70,7 +70,7 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
-            this.SetTheme(lvMemVars, tbNotLoaded);
+            Community.VisualStudio.Toolkit.Themes.SetUseVsTheme(this, true);
 
             if (View.IsRTLoaded)
             {

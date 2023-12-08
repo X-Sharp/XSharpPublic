@@ -22,10 +22,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             var isCodeblock = syntax.XIsCodeBlock;
             if (!isCodeblock)
             {
-                isCodeblock = !destination.IsDelegateType() && !destination.IsExpressionTree();
+                isCodeblock = !destination.IsDelegateType() && !destination.IsExpressionTree() && !destination.IsUsualType() && !destination.IsObjectType();
             }
             if (!isCodeblock)
+            {
+                if (destination.IsUsualType() || destination.IsObjectType())
+                {
+                    diagnostics.Add(ErrorCode.ERR_LambdaConversionNotPossible, syntax.Location, destination);
+                }
                 return null;
+            }
 
             Conversion conv = Conversion.ImplicitReference;
             if (destination.IsCodeblockType() && !destination.IsObjectType())
@@ -66,8 +72,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conversion,
                 @checked: false,
                 explicitCastInCode: false,
-                conversionGroupOpt: default,
-                constantValueOpt: default,
+                conversionGroupOpt: null,
+                constantValueOpt: null,
                 type: delType)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
             // Construct the ToString()
@@ -86,8 +92,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     Conversion.ImplicitReference,
                     @checked: false,
                     explicitCastInCode: false,
-                    conversionGroupOpt: default,
-                    constantValueOpt: default,
+                    conversionGroupOpt: null,
+                    constantValueOpt: null,
                     type: Compilation.CodeBlockType())
                 { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; 
             }
@@ -101,8 +107,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     conv,
                     false,
                     explicitCastInCode: isCast,
-                    conversionGroupOpt: isCast ? new ConversionGroup(conv) : default,
-                    constantValueOpt: default,
+                    conversionGroupOpt: isCast ? new ConversionGroup(conv) : null,
+                    constantValueOpt: null,
                     type: destination,
                     hasErrors: true)
                 { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
@@ -113,8 +119,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 conv,
                 false,
                 explicitCastInCode: isCast,
-                conversionGroupOpt: new ConversionGroup(conv), 
-                constantValueOpt: default,
+                conversionGroupOpt: new ConversionGroup(conv),
+                constantValueOpt: null,
                 type: destination)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
         }

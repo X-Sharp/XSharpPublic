@@ -7703,6 +7703,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ParameterInit" xml:space="preserve">
   <value>{0} cannot have an initial value.</value>
  </data>
+  <data name="ERR_LambdaConversionNotPossible" xml:space="preserve">
+  <value>Cannot convert from Lambda Expression to {0}.</value>
+ </data>
+ 
+ 
 
 </root>
 

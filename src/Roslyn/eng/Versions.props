@@ -5,6 +5,7 @@
     Roslyn version
   -->
   <PropertyGroup>
+      <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <MajorVersion>3</MajorVersion>
     <MinorVersion>9</MinorVersion>
     <PatchVersion>0</PatchVersion>

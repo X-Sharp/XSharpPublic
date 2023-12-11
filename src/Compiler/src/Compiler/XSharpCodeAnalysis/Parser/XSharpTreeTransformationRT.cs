@@ -1077,9 +1077,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var fieldInfo = findVar(name);
             if (fieldInfo == null || fieldInfo.IsFileWidePublic)
             {
-                var alias = XSharpSpecialNames.LocalPrefix ;
+                var alias = XSharpSpecialNames.LocalPrefix;
                 var field = addFieldOrMemvar(name, alias, context, context.Start);
-                field.IsCreated = true;
+                if (field != null)
+                    field.IsCreated = true;
             }
         }
 
@@ -1112,6 +1113,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (field.IsPublic)
                     return field;
+                if (field.IsLocal && prefix == XSharpSpecialNames.LocalPrefix)
+                    return null;
                 ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                 return null;
             }
@@ -2913,7 +2916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int i = 0; i < parameters.Parameters.Count; i++)
             {
                 var p = parameters.Parameters[i];
-                if (p.Type == PszType)
+                if (p.Type.IsPszType())
                 {
                     hasPsz = true;
                     break;
@@ -2926,7 +2929,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
                     var p = parameters.Parameters[i];
-                    if (p.Type != PszType)
+                    if (!p.Type.IsPszType())
                     {
                         @params.Add(p);
                     }

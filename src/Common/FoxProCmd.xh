@@ -404,9 +404,10 @@
 #command CREATE DATABASE <(db)>                                          ;
         => XSharp.RDD.Dbc.Create( <(db)>)
 
+#ifndef NOASSERT
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )
-
+#endif
 // Redirect FIELDS clauses to __FOXFIELDS__ rules
 
 #command <cmd:SCATTER,GATHER,COPY,APPEND,SORT>  <*clauses*> FIELDS <*moreclauses*> => ;

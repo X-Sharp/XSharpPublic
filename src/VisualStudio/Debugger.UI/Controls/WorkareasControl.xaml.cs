@@ -10,6 +10,7 @@ using System.Linq;
 using System;
 using System.Windows.Controls;
 using System.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace XSharp.Debugger.UI
 {
@@ -45,7 +46,7 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
-            this.SetTheme(lvAreas, tbNotLoaded);
+            Community.VisualStudio.Toolkit.Themes.SetUseVsTheme(this, true);
             if (View.IsRTLoaded)
             {
                 lvAreas.Visibility = Visibility.Visible;

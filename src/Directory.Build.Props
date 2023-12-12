@@ -8,7 +8,7 @@ See License.txt in the project root for license information.
 . -->
 <Project>
   <PropertyGroup>
-    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
 </Project>
 

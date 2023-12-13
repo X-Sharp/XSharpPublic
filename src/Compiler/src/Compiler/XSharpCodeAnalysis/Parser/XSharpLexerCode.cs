@@ -1229,6 +1229,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 parseType(ELLIPSIS, 2);
                             }
                         }
+                        else if (Expect('.'))
+                            parseOne(DOTDOT);
                         else if (La(3) == '.') // a.or.b should be allowed, so no check for _inDottedIdentifier
                         {
                             if (ExpectLower("or"))

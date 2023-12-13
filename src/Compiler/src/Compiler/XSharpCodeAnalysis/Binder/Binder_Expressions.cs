@@ -81,15 +81,81 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expression;
         }
 
-        private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics, SpecialType specialType)
+        public BoundExpression SubtractSystemIndex(BoundExpression index, DiagnosticBag diagnostics)
         {
-            expr = BindToNaturalType(expr, diagnostics, false);
-            var type = expr.Type;
-            var kind = BinaryOperatorKind.IntSubtraction;
-            if (!specialType.IsSignedIntegralType())
+            var syntax = (CSharpSyntaxNode)index.Syntax;
+
+            var kind = BinaryOperatorKind.Subtraction;
+            var left = index;
+            var leftType = left.Type;
+            Debug.Assert(leftType.Equals(Compilation.GetWellKnownType(WellKnownType.System_Index)));
+
+            var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
+
+            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+
+            BoundExpression isFromEnd;
             {
-                kind = BinaryOperatorKind.UIntSubtraction;
+                const string IsFromEndName = "IsFromEnd";
+                var lookupResult = LookupResult.GetInstance();
+                LookupMembersWithFallback(lookupResult, leftType, IsFromEndName, 0, ref useSiteDiagnostics);
+                var members = ArrayBuilder<Symbol>.GetInstance();
+                bool wasError;
+                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, IsFromEndName, 0, members, diagnostics, out wasError) as PropertySymbol;
+                isFromEnd = new BoundPropertyAccess(syntax, left, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
             }
+
+            BoundExpression leftValue;
+            {
+                const string valueName = "Value";
+                var lookupResult = LookupResult.GetInstance();
+                LookupMembersWithFallback(lookupResult, leftType, valueName, 0, ref useSiteDiagnostics);
+                var members = ArrayBuilder<Symbol>.GetInstance();
+                bool wasError;
+                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, valueName, 0, members, diagnostics, out wasError) as PropertySymbol;
+                leftValue = new BoundPropertyAccess(syntax, left, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+            }
+
+            var opKind = BinaryOperatorKind.IntSubtraction;
+            var resultConstant = FoldBinaryOperator(syntax, opKind, leftValue, right, leftValue.Type.SpecialType, diagnostics);
+            var sig = this.Compilation.builtInOperators.GetSignature(opKind);
+            var whenFalse = new BoundBinaryOperator(syntax, kind, leftValue, right, resultConstant, sig.Method,
+                resultKind: LookupResultKind.Viable,
+                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                type: index.Type,
+                hasErrors: false)
+            { WasCompilerGenerated = true };
+
+            var whenTrue = index;
+
+            TypeSymbol type = BestTypeInferrer.InferBestTypeForConditionalOperator(whenTrue, whenFalse, this.Conversions, out bool hadMultipleCandidates, ref useSiteDiagnostics);
+            diagnostics.Add(syntax, useSiteDiagnostics);
+            var constantValue = FoldConditionalOperator(isFromEnd, whenTrue, whenFalse);
+            bool hasErrors = type?.IsErrorType() == true || constantValue?.IsBad == true;
+            return new BoundConditionalOperator(syntax, false, isFromEnd, whenTrue, whenFalse, null, null, false, type, hasErrors) { WasCompilerGenerated = true };
+        }
+        private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics, SpecialType? specialTypeOpt = null)
+        {
+            if (expr is BoundFromEndIndexExpression)
+            {
+                return expr;
+            }
+
+            expr = BindToNaturalType(expr, diagnostics, false);
+            if (expr.Type.Equals(Compilation.GetWellKnownType(WellKnownType.System_Index)))
+            {
+                return SubtractSystemIndex(expr, diagnostics);
+            }
+
+            var type = expr.Type;
+            var specialType = specialTypeOpt ?? type.SpecialType;
+            var kind = specialType switch
+            {
+                SpecialType.System_Int32 => BinaryOperatorKind.IntSubtraction,
+                SpecialType.System_Int64 => BinaryOperatorKind.LongSubtraction,
+                SpecialType.System_UInt32 => BinaryOperatorKind.UIntSubtraction,
+                _ => BinaryOperatorKind.ULongSubtraction
+            };
             // normalize the type: all types are converted to int32
             if (expr.Type.SpecialType != specialType)
             {

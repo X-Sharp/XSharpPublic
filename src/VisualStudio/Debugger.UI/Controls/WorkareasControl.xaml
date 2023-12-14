@@ -28,70 +28,19 @@
             <DataGrid.Resources>
                 <ResourceDictionary Source="VsThemeDictionary.xaml"/>
             </DataGrid.Resources>
-            <DataGrid.Style>
-                <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource ResourceKey=GenericDataGrid}" />
-            </DataGrid.Style>
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Selected" Width="Auto" Binding="{Binding Path=Selected}">
-                    <DataGridCheckBoxColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ResourceKey=GenericDataGridColumnHeader}" >
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                        </Style>
-                    </DataGridCheckBoxColumn.HeaderStyle>
-                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="Selected" Width="Auto" Binding="{Binding Path=Selected}"/>
                 <DataGridTextColumn Header="Area" MinWidth="50" Width="Auto" Binding="{Binding Path=Area}" />
                 <DataGridTextColumn Header="Alias" MinWidth="50" Width="Auto" Binding="{Binding Path=Alias}" />
                 <DataGridTextColumn Header="RDD" MinWidth="50" Width="Auto" Binding="{Binding Path=RDD}" />
-                <DataGridTextColumn Header="RecNo" MinWidth="50" Width="Auto" Binding="{Binding Path=RecNo}" >
-                    <DataGridTextColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ResourceKey=GenericDataGridColumnHeader}" >
-                            <Setter Property="HorizontalAlignment" Value="Right" />
-                        </Style>
-                    </DataGridTextColumn.HeaderStyle>
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource ResourceKey=GenericDataGridCell}" >
-                            <Setter Property="HorizontalAlignment" Value="Right" />
-                        </Style>
-                        
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="RecNo" MinWidth="50" Width="Auto" Binding="{Binding Path=RecNo}" />
+                <DataGridTextColumn Header="# recs" MinWidth="50" Width="Auto" Binding="{Binding Path=RecCount}" />
+                <DataGridCheckBoxColumn Header="EoF" MinWidth="50" Width="50" Binding="{Binding Path=EoF}" />
+                <DataGridCheckBoxColumn Header="BoF" MinWidth="50" Width="Auto" Binding="{Binding Path=BoF}" />
+                <DataGridCheckBoxColumn Header="Found" MinWidth="50" Width="Auto" Binding="{Binding Path=Found}"  />
 
-                <DataGridTextColumn Header="# recs" MinWidth="50" Width="Auto" Binding="{Binding Path=RecCount}" >
-                    <DataGridTextColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ResourceKey=GenericDataGridColumnHeader}" >
-                            <Setter Property="HorizontalAlignment" Value="Right" />
-                        </Style>
-                    </DataGridTextColumn.HeaderStyle>
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource ResourceKey=GenericDataGridCell}" >
-                            <Setter Property="HorizontalAlignment" Value="Right" />
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
-                <DataGridCheckBoxColumn Header="EoF" MinWidth="50" Width="50" Binding="{Binding Path=EoF}" >
-                    <DataGridCheckBoxColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ResourceKey=GenericDataGridColumnHeader}" >
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                        </Style>
-                    </DataGridCheckBoxColumn.HeaderStyle>
 
-                </DataGridCheckBoxColumn>
-                <DataGridCheckBoxColumn Header="BoF" MinWidth="50" Width="Auto" Binding="{Binding Path=BoF}" >
-                    <DataGridCheckBoxColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ResourceKey=GenericDataGridColumnHeader}" >
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                        </Style>
-                    </DataGridCheckBoxColumn.HeaderStyle>
 
-                </DataGridCheckBoxColumn>
-                <DataGridCheckBoxColumn Header="Found" MinWidth="50" Width="Auto" Binding="{Binding Path=Found}" >
-                    <DataGridCheckBoxColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource ResourceKey=GenericDataGridColumnHeader}" >
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                        </Style>
-                    </DataGridCheckBoxColumn.HeaderStyle>
-
-                </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

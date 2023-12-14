@@ -28,9 +28,6 @@
             <DataGrid.Resources>
                 <ResourceDictionary Source="VsThemeDictionary.xaml"/>
             </DataGrid.Resources>
-            <DataGrid.Style>
-                <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource ResourceKey=GenericDataGrid}" />
-            </DataGrid.Style>
             <DataGrid.Columns>
                 <DataGridTextColumn Width="125" Header="Name" Binding="{Binding Name}" />
                 <DataGridTextColumn Width="125" Header="Key" Binding="{Binding Key}" />

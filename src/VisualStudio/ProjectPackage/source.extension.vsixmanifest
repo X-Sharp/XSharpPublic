@@ -16,6 +16,9 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community" >
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community" >
+            <ProductArchitecture>arm64</ProductArchitecture>
+        </InstallationTarget>		
     </Installation>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />

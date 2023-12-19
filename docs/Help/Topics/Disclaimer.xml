@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-12-19T12:07:30.599+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Disclaimer</title>
   <body>
     <header>
@@ -71,7 +71,7 @@
           <para styleclass="Normal">Xbase++</para>
         </td>
         <td>
-          <para styleclass="Normal">Partially. </para>
+          <para styleclass="Normal">Complete </para>
         </td>
         <td>
           <para styleclass="Normal">Partially.</para>

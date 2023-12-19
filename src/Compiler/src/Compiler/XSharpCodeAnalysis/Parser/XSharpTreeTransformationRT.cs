@@ -1600,7 +1600,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ClassDeclarationSyntax GenerateDefaultClipperCtor(ClassDeclarationSyntax classdecl, XP.ITypeContext context)
         {
             if (!context.TypeData.Partial && !context.TypeData.HasInstanceCtor &&
-                _options.HasOption(CompilerOption.DefaultClipperContructors, (XSharpParserRuleContext)context, PragmaOptions))
+                _options.HasOption(CompilerOption.DefaultClipperConstructors, (XSharpParserRuleContext)context, PragmaOptions))
             {
                 var hasComImport = false;
                 foreach (var attlist in classdecl.AttributeLists)

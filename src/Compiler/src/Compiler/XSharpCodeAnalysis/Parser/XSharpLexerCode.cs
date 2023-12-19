@@ -1052,7 +1052,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '&':
                         parseOne(AMP);
-                        if (Dialect.AllowOldStyleComments() && Expect('&'))
+                        if (AllowOldStyleComments && Expect('&'))
                             parseSlComment();
                         else if (Expect('&'))
                             parseOne(AND);

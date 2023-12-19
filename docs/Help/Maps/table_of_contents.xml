@@ -613,7 +613,7 @@
       <topicref type="topic" id="423890630286744" modified="2020-04-21T14:52:56.462Z" icon="0" href="Arrays">
         <caption translate="true">Arrays</caption>
       </topicref>
-      <topicref type="topic" id="423888812622405" modified="2020-04-21T14:52:56.470Z" icon="0" href="Classes-and-Structures">
+      <topicref type="topic" id="423888812622405" build="ALL" modified="2023-12-19T12:00:13.718Z" icon="0" href="Classes-and-Structures">
         <caption translate="true">Classes and Structures</caption>
       </topicref>
       <topicref type="topic" id="428997435733357" build="ALL" modified="2019-01-31T09:46:42.812Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
@@ -652,7 +652,7 @@
       <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-31T09:46:42.954Z" icon="0" href="Memory-Variables">
         <caption translate="true">Memory Variables</caption>
       </topicref>
-      <topicref type="topic" id="42389463199336" modified="2020-04-21T14:53:22.103Z" icon="0" href="Namespaces2">
+      <topicref type="topic" id="42389463199336" build="ALL" modified="2023-12-19T12:00:06.418Z" icon="0" href="Namespaces2">
         <caption translate="true">Namespaces</caption>
       </topicref>
       <topicref type="topic" id="423889985895203" modified="2020-04-21T14:53:34.303Z" icon="0" href="Nullable-Types">
@@ -1455,10 +1455,13 @@
         <topicref type="topic" id="426894908055984" build="ALL" modified="2016-11-15T10:12:00.342Z" icon="0" href="Codeblocks">
           <caption translate="true">Codeblocks</caption>
         </topicref>
+        <topicref type="topic" id="452794107968885" build="ALL" modified="2023-12-19T13:57:00.992Z" icon="0" href="Lamda-Expressions">
+          <caption translate="true">Lamda Expressions</caption>
+        </topicref>
         <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
           <caption translate="true">LINQ Expressions</caption>
         </topicref>
-        <topicref type="topic" id="426895382962818" build="ALL" modified="2016-11-15T10:24:36.372Z" icon="0" href="Initializers2">
+        <topicref type="topic" id="426895382962818" build="ALL" modified="2023-12-19T14:02:17.488Z" icon="0" href="Initializers">
           <caption translate="true">Initializers</caption>
         </topicref>
         <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
@@ -7084,61 +7087,61 @@
     </topicref>
     <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
       <caption translate="true">X# Examples</caption>
-      <topicref type="topic" id="42424518616889" build="ALL" modified="2017-06-21T18:24:42.073Z" icon="0" href="Anonymous-Methods2">
+      <topicref type="topic" id="42424518616889" build="ALL" modified="2023-12-19T13:54:51.276Z" icon="0" href="Ex-Anonymous-Methods">
         <caption translate="true">Anonymous Method Expressions</caption>
       </topicref>
-      <topicref type="topic" id="426887977972070" build="ALL" modified="2016-11-14T19:59:48.184Z" icon="0" href="Anonymous-Types">
+      <topicref type="topic" id="426887977972070" build="ALL" modified="2023-12-19T13:54:40.651Z" icon="0" href="Ex-Anonymous-Types">
         <caption translate="true">Anonymous Types</caption>
       </topicref>
-      <topicref type="topic" id="424267695938100" build="ALL" modified="2016-02-26T16:53:24.103Z" icon="0" href="ASYNC-Example">
+      <topicref type="topic" id="424267695938100" build="ALL" modified="2023-12-19T13:54:46.068Z" icon="0" href="Ex-ASYNC">
         <caption translate="true">ASYNC Example</caption>
       </topicref>
-      <topicref type="topic" id="424945667794068" build="ALL" modified="2016-05-04T10:27:22.125Z" icon="0" href="BEGIN-UNSAFE-Example">
+      <topicref type="topic" id="424945667794068" build="ALL" modified="2023-12-19T13:54:58.454Z" icon="0" href="Ex-BEGIN-UNSAFE">
         <caption translate="true">BEGIN UNSAFE Example</caption>
       </topicref>
-      <topicref type="topic" id="42492634929077" build="ALL" modified="2016-05-04T10:13:15.532Z" icon="0" href="BEGIN-USING-Example">
+      <topicref type="topic" id="42492634929077" build="ALL" modified="2023-12-19T13:55:01.883Z" icon="0" href="Ex-BEGIN-USING">
         <caption translate="true">BEGIN USING Example</caption>
       </topicref>
-      <topicref type="topic" id="424265406124180" build="ALL" modified="2016-02-26T16:40:46.271Z" icon="0" href="CHECKED-Example">
+      <topicref type="topic" id="424265406124180" build="ALL" modified="2023-12-19T13:55:05.753Z" icon="0" href="Ex-CHECKED">
         <caption translate="true">CHECKED Example</caption>
       </topicref>
-      <topicref type="topic" id="425847391702785" build="ALL" modified="2016-08-02T16:42:18.866Z" icon="0" href="EVENT-Example">
+      <topicref type="topic" id="425847391702785" build="ALL" modified="2023-12-19T13:55:09.069Z" icon="0" href="Ex-EVENT">
         <caption translate="true">EVENT Example</caption>
       </topicref>
-      <topicref type="topic" id="424265813808443" build="ALL" modified="2016-02-26T17:33:35.007Z" icon="0" href="Expression-Examples">
+      <topicref type="topic" id="424265813808443" build="ALL" modified="2023-12-19T13:55:12.963Z" icon="0" href="Ex-Expression">
         <caption translate="true">Expression Examples</caption>
       </topicref>
-      <topicref type="topic" id="426394412434484" build="ALL" modified="2016-09-26T10:53:11.841Z" icon="0" href="FIXED-Example">
+      <topicref type="topic" id="426394412434484" build="ALL" modified="2023-12-19T13:55:16.971Z" icon="0" href="Ex-FIXED">
         <caption translate="true">FIXED Example</caption>
       </topicref>
-      <topicref type="topic" id="424249105268691" build="ALL" modified="2016-02-24T20:04:41.119Z" icon="0" href="GENERICs-Example">
+      <topicref type="topic" id="424249105268691" build="ALL" modified="2023-12-19T13:55:20.792Z" icon="0" href="Ex-GENERICs">
         <caption translate="true">GENERICs Example</caption>
       </topicref>
-      <topicref type="topic" id="429079409602691" build="ALL" modified="2017-06-21T18:23:59.158Z" icon="0" href="Lamda-Expressions">
+      <topicref type="topic" id="429079409602691" build="ALL" modified="2023-12-19T13:55:24.857Z" icon="0" href="Ex-Lamda-Expressions">
         <caption translate="true">Lamda Expressions</caption>
       </topicref>
-      <topicref type="topic" id="424249979841329" build="ALL" modified="2016-02-24T19:50:00.886Z" icon="0" href="LINQ-Example">
+      <topicref type="topic" id="424249979841329" build="ALL" modified="2023-12-19T13:55:29.085Z" icon="0" href="Ex-LINQ">
         <caption translate="true">LINQ Example</caption>
       </topicref>
-      <topicref type="topic" id="424476434780340" build="ALL" modified="2016-03-18T18:45:40.123Z" icon="0" href="NOP-Example">
+      <topicref type="topic" id="424476434780340" build="ALL" modified="2023-12-19T13:55:33.368Z" icon="0" href="Ex-NOP">
         <caption translate="true">NOP Example</caption>
       </topicref>
-      <topicref type="topic" id="424266614671750" build="ALL" modified="2016-02-26T17:14:34.481Z" icon="0" href="SWITCH-Example">
+      <topicref type="topic" id="424266614671750" build="ALL" modified="2023-12-19T13:55:36.696Z" icon="0" href="Ex-SWITCH">
         <caption translate="true">SWITCH Example</caption>
       </topicref>
-      <topicref type="topic" id="429077405209086" build="ALL" modified="2017-06-21T18:25:04.287Z" icon="0" href="Typed-Enums">
+      <topicref type="topic" id="429077405209086" build="ALL" modified="2023-12-19T13:55:39.717Z" icon="0" href="Ex-Typed-Enums">
         <caption translate="true">Typed Enums</caption>
       </topicref>
-      <topicref type="topic" id="424267820342591" build="ALL" modified="2016-02-26T16:55:26.201Z" icon="0" href="USING-Example">
+      <topicref type="topic" id="424267820342591" build="ALL" modified="2023-12-19T13:55:43.087Z" icon="0" href="Ex-USING">
         <caption translate="true">USING Example</caption>
       </topicref>
-      <topicref type="topic" id="424268534582981" build="ALL" modified="2016-02-26T17:04:54.987Z" icon="0" href="VAR-Example">
+      <topicref type="topic" id="424268534582981" build="ALL" modified="2023-12-19T13:55:46.982Z" icon="0" href="Ex-VAR">
         <caption translate="true">VAR Example</caption>
       </topicref>
-      <topicref type="topic" id="424248854286636" build="ALL" modified="2016-02-24T20:35:24.071Z" icon="0" href="Vulcan-Runtime-Types-BYOR">
+      <topicref type="topic" id="424248854286636" build="ALL" modified="2023-12-19T13:55:51.051Z" icon="0" href="Ex-Vulcan-Runtime-Types-BYOR">
         <caption translate="true">Vulcan Runtime (BYOR)</caption>
       </topicref>
-      <topicref type="topic" id="424247612718920" build="ALL" modified="2016-02-24T20:02:34.336Z" icon="0" href="YIELD-Example">
+      <topicref type="topic" id="424247612718920" build="ALL" modified="2023-12-19T13:55:54.486Z" icon="0" href="Ex-YIELD-">
         <caption translate="true">YIELD Example</caption>
       </topicref>
     </topicref>

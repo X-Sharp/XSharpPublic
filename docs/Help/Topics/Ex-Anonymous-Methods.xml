@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-12-19T13:54:50.376+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Anonymous Method Expressions</title>
   <body>
     <header>
       <para styleclass="Heading1">Anonymous Method Expressions</para>
     </header>
     <para styleclass="Body Text">An example of an Anonymous Method Expression (AME) (note the DELEGATE keyword):<br/>Note that the body of the that you can have :</para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">A single Expression</li>
       <li styleclass="Body Text">An Expression List</li>
       <li styleclass="Body Text">A statement List</li>

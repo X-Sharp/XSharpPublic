@@ -540,7 +540,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     indexed: indexed,
                                     type: returnType,
                                     hasErrors: false);
-                            var hidewWarning = Compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && leftType.HasLateBindingAttribute();
+                            var hidewWarning = Compilation.Options.Dialect.AllowLateBindingForTypesWithLateBindingAttribute() && leftType.HasLateBindingAttribute();
                             if (!hidewWarning)
                             {
                                 // when FoxPro dialect and the type is marked with "allowLateBound" then no need for the warning

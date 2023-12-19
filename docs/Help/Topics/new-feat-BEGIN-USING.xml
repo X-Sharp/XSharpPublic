@@ -10,6 +10,6 @@
     <header>
       <para styleclass="Heading1">BEGIN USING</para>
     </header>
-    <para styleclass="Normal"><snippet src="BEGIN-USING-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-BEGIN-USING" inline="false"/></para>
   </body>
 </topic>

@@ -10,6 +10,6 @@
     <header>
       <para styleclass="Heading1">BEGIN FIXED</para>
     </header>
-    <para styleclass="Normal"><snippet src="FIXED-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-FIXED" inline="false"/></para>
   </body>
 </topic>

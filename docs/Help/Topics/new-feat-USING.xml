@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">USING</para>
     </header>
-    <para styleclass="Normal"><snippet src="USING-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-USING" inline="false"/></para>
   </body>
 </topic>

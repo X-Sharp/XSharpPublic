@@ -6,6 +6,6 @@
     <header>
       <para styleclass="Heading1">Anonymous Methods</para>
     </header>
-    <para styleclass="Normal"><snippet src="Anonymous-Methods2" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-Anonymous-Methods" inline="false"/></para>
   </body>
 </topic>

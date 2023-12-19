@@ -11,6 +11,6 @@
     </header>
     <para styleclass="Normal">The NOP keyword allows you to define a line of code that does nothing but satisfies the compiler, so it will not complain about missing code.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><snippet src="NOP-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-NOP" inline="false"/></para>
   </body>
 </topic>

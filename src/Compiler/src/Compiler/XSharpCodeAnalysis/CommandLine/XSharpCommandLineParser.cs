@@ -47,11 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.AllowOldStyleAssignments = positive;
                     encode = true;
                     break;
-                case "ampampislogic":
-                    options.AmpAmpIsLogic = positive;
-                    encode = true;
-                    break;
-                case "allowdot":
+                 case "allowdot":
                     options.AllowDotForInstanceMembers = positive;
                     encode = true;
                     break;

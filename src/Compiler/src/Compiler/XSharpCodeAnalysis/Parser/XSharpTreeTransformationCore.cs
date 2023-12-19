@@ -8073,9 +8073,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.Expr.Get<ExpressionSyntax>());
         }
 
+        private bool HandleTupleAssignmentExpression([NotNull] XP.ParenExpressionContext context)
+        {
+            if (context.Parent.Parent is XP.AssignmentExpressionContext aec && aec.Left is XP.PrimaryExpressionContext pec && pec.Expr == context)
+            {
+                // if this is something like (a,b) := SomeTuple
+                // then convert this to a tuple expression
+                // requirements
+                // paren expr = Left hand side of assignment
+                // each expression inside the parens is a NameExpression
+
+                var args = _pool.AllocateSeparated<ArgumentSyntax>();
+                bool IsDesignation = true;
+                foreach (var expr in context._Exprs)
+                {
+                    if (args.Count > 0)
+                        args.AddSeparator(SyntaxFactory.CommaToken);
+                    if (expr is XP.PrimaryExpressionContext pec2 && pec2.Expr is XP.NameExpressionContext nec)
+                    {
+                        args.Add(MakeArgument(nec.Get<ExpressionSyntax>()));
+                    }
+                    else
+                    {
+                        IsDesignation = false;
+                        break;
+                    }
+                }
+                var list = args.ToList();
+                _pool.Free(args);
+                if (IsDesignation)
+                {
+                    context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, list, SyntaxFactory.CloseParenToken));
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override void ExitParenExpression([NotNull] XP.ParenExpressionContext context)
         {
-
+            if (HandleTupleAssignmentExpression(context))
+                return;
             if (context._Exprs.Count == 1)
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
@@ -10252,6 +10290,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.TupleExpression(SyntaxFactory.OpenParenToken, args, SyntaxFactory.CloseParenToken));
             _pool.Free(args);
         }
+
         public override void ExitDesignationExpr([NotNull] XP.DesignationExprContext context)
         {
             var variables = _pool.AllocateSeparated<VariableDesignationSyntax>();

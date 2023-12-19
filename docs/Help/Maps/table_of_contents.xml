@@ -613,7 +613,7 @@
       <topicref type="topic" id="423890630286744" modified="2020-04-21T14:52:56.462Z" icon="0" href="Arrays">
         <caption translate="true">Arrays</caption>
       </topicref>
-      <topicref type="topic" id="423888812622405" modified="2020-04-21T14:52:56.470Z" icon="0" href="Classes-and-Structures">
+      <topicref type="topic" id="423888812622405" build="ALL" modified="2023-12-19T12:00:13.718Z" icon="0" href="Classes-and-Structures">
         <caption translate="true">Classes and Structures</caption>
       </topicref>
       <topicref type="topic" id="428997435733357" build="ALL" modified="2019-01-31T09:46:42.812Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
@@ -652,7 +652,7 @@
       <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-31T09:46:42.954Z" icon="0" href="Memory-Variables">
         <caption translate="true">Memory Variables</caption>
       </topicref>
-      <topicref type="topic" id="42389463199336" modified="2020-04-21T14:53:22.103Z" icon="0" href="Namespaces2">
+      <topicref type="topic" id="42389463199336" build="ALL" modified="2023-12-19T12:00:06.418Z" icon="0" href="Namespaces2">
         <caption translate="true">Namespaces</caption>
       </topicref>
       <topicref type="topic" id="423889985895203" modified="2020-04-21T14:53:34.303Z" icon="0" href="Nullable-Types">
@@ -666,6 +666,9 @@
       </topicref>
       <topicref type="topic" id="42388775368697" build="ALL" modified="2023-07-07T22:44:23.692Z" icon="0" href="Types">
         <caption translate="true">Types</caption>
+      </topicref>
+      <topicref type="topic" id="452683246054714" build="ALL" modified="2023-12-08T23:45:53.022Z" icon="0" href="Tuples">
+        <caption translate="true">Tuples</caption>
       </topicref>
       <topicref type="topic" id="423888708711938" modified="2020-04-21T14:53:34.344Z" icon="0" href="Unsafe-Code-and-Pointers">
         <caption translate="true">Unsafe Code and Pointers</caption>

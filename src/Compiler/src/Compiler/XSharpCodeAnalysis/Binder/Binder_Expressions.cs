@@ -927,7 +927,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
 
                         expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, indexed: false, isError);
-                        
+
                         if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
                         {
                             diagnostics.Add(ErrorCode.ERR_InvalidExprTerm, node.Location, node.XNode.GetText());
@@ -953,7 +953,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (expression != null && expression.Type is not null && expression.Type.IsErrorType())
             {
-                if (expression.Type.ContainingAssembly != null)
+                if (expression.Type.ContainingAssembly != null && expression.Type.ContainingAssembly != Compilation.Assembly)
                 {
                     Error(diagnostics, ErrorCode.ERR_NoTypeDef, node, expression.Type, expression.Type.ContainingAssembly);
                 }

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2008 rel. 2 (http://www.altova.com) by Alexander Halser (EC Software GmbH) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XInclude" xmlns:xml="http://www.w3.org/XML/1998/namespace" elementFormDefault="unqualified" attributeFormDefault="unqualified">
-	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd"/>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:xsi="http://www.w3.org/2001/XInclude" 
+		   xmlns:xml="http://www.w3.org/XML/1998/namespace" 
+		   elementFormDefault="unqualified" 
+		   attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 	<xs:element name="helpproject">
 		<xs:complexType>
 			<xs:sequence>
@@ -313,7 +316,6 @@
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
-						<xs:attribute ref="xml:base"/>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="map" type="map.class" minOccurs="0"/>
@@ -324,13 +326,11 @@
 								<xs:complexType>
 									<xs:complexContent>
 										<xs:extension base="file.class">
-											<xs:attribute ref="xml:base"/>
 										</xs:extension>
 									</xs:complexContent>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
-						<xs:attribute ref="xml:base"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
@@ -491,7 +491,6 @@
 			<xs:element name="config-value" type="config-value.class" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute ref="xml:base"/>
 	</xs:complexType>
 	<xs:complexType name="config-value.class" mixed="false">
 		<xs:annotation>
@@ -502,7 +501,6 @@
 				<xs:attribute name="name" type="xs:string" use="required"/>
 				<xs:attribute name="translate" type="xs:boolean"/>
 				<xs:attribute name="lang" type="xs:language"/>
-				<xs:attribute ref="xml:base"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -540,6 +538,14 @@
 		<xs:simpleContent>
 			<xs:extension base="embedded-image.class"/>
 		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="embedded-svg.class" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Embedded SVG code in image</xs:documentation>
+		</xs:annotation>
+        <xs:simpleContent>
+			<xs:extension base="xs:base64Binary" />
+        </xs:simpleContent>
 	</xs:complexType>
 	<xs:complexType name="equation.class" mixed="true">
 		<xs:annotation>
@@ -635,13 +641,14 @@
 		</xs:annotation>
 		<xs:sequence minOccurs="0" maxOccurs="2">
 			<xs:element name="caption" type="caption.class" minOccurs="0"/>
-			<xs:element name="imagemap" minOccurs="0">
+			<xs:element name="imagemap" minOccurs="0" maxOccurs="1">
 				<xs:complexType>
 					<xs:sequence maxOccurs="unbounded">
 						<xs:element name="area" type="area.class" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="embedded-svg" type="embedded-svg.class" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="title" type="caption.class" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="src" type="xs:string" use="required"/>
@@ -821,7 +828,6 @@
 			<xs:element name="navref" type="navref.class" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="topicref" type="topicref.class" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:choice>
-		<xs:attribute ref="xml:base"/>
 		<xs:attribute name="defaulttopic" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="navref.class" mixed="true">
@@ -843,7 +849,6 @@
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:attribute>
-		<xs:attribute ref="xml:base"/>
 	</xs:complexType>
 	<xs:complexType name="para.class" mixed="true">
 		<xs:annotation>
@@ -1063,7 +1068,6 @@
 		<xs:attribute name="anchor" type="xs:string"/>
 		<xs:attribute name="target" type="xs:string"/>
 		<xs:attribute name="domain" type="xs:string"/>
-		<xs:attribute ref="xml:base"/>
 	</xs:complexType>
 	<xs:complexType name="topic.class" mixed="true">
 		<xs:annotation>

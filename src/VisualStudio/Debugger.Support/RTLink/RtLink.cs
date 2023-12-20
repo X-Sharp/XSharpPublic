@@ -288,6 +288,11 @@ namespace XSharp.Debugger.Support
                     waitem.Area = (int) first;
                     waitem.Alias = second.Alias;
                     waitem.RDD = second.Driver;
+                    waitem.EoF = second.EoF;
+                    waitem.BoF = second.BoF;
+                    waitem.Found = second.Found;
+                    waitem.RecNo = second.RecNo;
+                    waitem.RecCount = second.RecCount;
                     waitem.Selected = waitem.Area == (int)selectedArea;
                     result.Add(waitem);
                 }

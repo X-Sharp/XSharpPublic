@@ -19,25 +19,21 @@
             <TextBlock Text="Sort Order:" VerticalAlignment="Center" Margin="5,5,10,5"/>
             <RadioButton IsChecked="{Binding Path=ByName}" VerticalAlignment="Center" Content="By _Name" Margin="5,5,10,5"/>
             <RadioButton IsChecked="{Binding Path=ByNumber}" VerticalAlignment="Center" Content="By N_umber" Margin="5,5,10,5"/>
-            
+
         </StackPanel>
         <Separator Grid.Row="1" />
         <TextBox  Grid.Row="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
-        <ListView Grid.Row="2" Name="lvSettings" Width="Auto" ItemsSource="{Binding SortedItems}">
-            <ListView.Resources>
-                <Style TargetType="{x:Type GridViewColumnHeader}">
-                    <Setter Property="HorizontalContentAlignment" Value="Left" />
-                    <Setter Property="Visibility" Value="Visible" />
-                </Style>
-            </ListView.Resources>
-            <ListView.View>
-                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Settings">
-                    <GridViewColumn Width="125" Header="Name" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Width="125" Header="Key" DisplayMemberBinding="{Binding Key}" />
-                    <GridViewColumn Width="Auto" Header="Value" DisplayMemberBinding="{Binding Value}" />
-                </GridView>
-            </ListView.View>
+        <DataGrid Grid.Row="2" Name="lvSettings" Width="Auto" ItemsSource="{Binding SortedItems}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Resources>
+                <ResourceDictionary Source="VsThemeDictionary.xaml"/>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="125" Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="125" Header="Key" Binding="{Binding Key}" />
+                <DataGridTextColumn Width="Auto" Header="Value" Binding="{Binding Value}" />
+            </DataGrid.Columns>
 
-        </ListView>
+        </DataGrid>
     </Grid>
 </UserControl>

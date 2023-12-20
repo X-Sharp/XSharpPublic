@@ -43,13 +43,13 @@ namespace XSharp.Debugger.UI
         GlobalsView View => DataContext as GlobalsView;
         void ResizeColumns()
         {
-            int lastColumn = (lvGlobals.View as GridView).Columns.Count - 1;
+            int lastColumn = lvGlobals.Columns.Count - 1;
             if (lvGlobals.ActualWidth == Double.NaN)
                 lvGlobals.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
             double remainingSpace = lvGlobals.ActualWidth * 0.9;
-            for (int i = 0; i < (lvGlobals.View as GridView).Columns.Count; i++)
+            for (int i = 0; i < lvGlobals.Columns.Count; i++)
             {
-                var column = (lvGlobals.View as GridView).Columns[i];
+                var column = lvGlobals.Columns[i];
                 if (i != lastColumn)
                     column.Width = remainingSpace / 4;
                 else
@@ -69,7 +69,7 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
-            this.SetTheme(lvGlobals, tbNotLoaded);
+            Community.VisualStudio.Toolkit.Themes.SetUseVsTheme(this, true);
 
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {

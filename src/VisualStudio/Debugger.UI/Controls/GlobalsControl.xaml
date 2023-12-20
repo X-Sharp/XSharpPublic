@@ -26,21 +26,17 @@
         </StackPanel>
         <Separator Grid.Row="1" />
         <TextBox  Grid.Row="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
-        <ListView Grid.Row ="2" Name="lvGlobals" ItemsSource="{Binding SelectedItems}">
-            <ListView.Resources>
-                <Style TargetType="{x:Type GridViewColumnHeader}">
-                    <Setter Property="HorizontalContentAlignment" Value="Left" />
-                    <Setter Property="Visibility" Value="Visible" />
-                </Style>
-            </ListView.Resources>
-            <ListView.View>
-                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Global Variables">
-                    <GridViewColumn Width="125" Header="Name" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Width="125" Header="Assembly" DisplayMemberBinding="{Binding Assembly}" />
-                    <GridViewColumn Width="Auto" Header="Value" DisplayMemberBinding="{Binding Value}" />
-                </GridView>
-            </ListView.View>
+        <DataGrid Grid.Row ="2" Name="lvGlobals" ItemsSource="{Binding SelectedItems}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Resources>
+                <ResourceDictionary Source="VsThemeDictionary.xaml"/>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="125" Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Width="125" Header="Assembly" Binding="{Binding Assembly}" />
+                <DataGridTextColumn Width="Auto" Header="Value" Binding="{Binding Value}" />
+            </DataGrid.Columns>
 
-        </ListView>
+        </DataGrid>
     </Grid>
 </UserControl>

@@ -17,10 +17,10 @@ FUNCTION AllTrim(cString AS STRING) AS STRING
 	RETURN cString:Trim(trimChars)
 
 
-INTERNAL FUNCTION __AscWorker(cString as STRING, lMustBeAnsi as LOGIC) AS DWORD
+INTERNAL FUNCTION __AscWorker(cString AS STRING, lMustBeAnsi AS LOGIC) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
-	if ( !String.IsNullOrEmpty(cString) )
+	IF ( !String.IsNullOrEmpty(cString) )
 		chValue := cString[0]
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
@@ -86,7 +86,7 @@ FUNCTION Asc(cString AS STRING) AS DWORD
 FUNCTION AscW(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
-	if ( !String.IsNullOrEmpty(c) )
+	IF ( !String.IsNullOrEmpty(c) )
 		chValue := c[0]
 		ascValue := (DWORD) chValue
 	ENDIF
@@ -133,7 +133,7 @@ FUNCTION AtC(cSearch AS STRING,cTarget AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atc2/*" />
 FUNCTION AtC2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return AtC(cSearch,cTarget)
+	RETURN AtC(cSearch,cTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atcline/*" />
 FUNCTION ATCLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
@@ -149,7 +149,7 @@ FUNCTION ATLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	IF String.IsNullOrEmpty(cTarget) .OR. String.IsNullOrEmpty(cSearch)
 		RETURN 0
 	ENDIF
-	if cTarget:StartsWith(cSearch)
+	IF cTarget:StartsWith(cSearch)
 		RETURN 1
 	ENDIF
 	nPos    := At( cSearch, cTarget )
@@ -193,12 +193,12 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chareven/*" />
 FUNCTION CharEven(cString AS STRING) AS STRING
 	LOCAL evenChars:=NULL AS STRING
-	if ( !String.IsNullOrEmpty(cString) )
+	IF ( !String.IsNullOrEmpty(cString) )
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isEven := FALSE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 
-		foreach ch as char in cString
+		FOREACH ch AS char IN cString
 			IF isEven
 				sb:Append(ch)
 			ENDIF
@@ -214,7 +214,7 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 	LOCAL n2 := 0 AS INT
 	LOCAL i1 := 0 AS INT
 	LOCAL i2 := 0  AS INT
-	local sb as StringBuilder
+	LOCAL sb AS StringBuilder
 
 	IF cEven:Length == 0
 		RETURN ""
@@ -238,12 +238,12 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/charodd/*" />
 FUNCTION CharOdd(cString AS STRING) AS STRING
 	LOCAL oddChars:=NULL AS STRING
-	if ( !String.IsNullOrEmpty(cString) )
+	IF ( !String.IsNullOrEmpty(cString) )
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isOdd  := TRUE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 
-		foreach ch as char in cString
+		FOREACH ch AS char IN cString
 			IF isOdd
 				sb:Append(ch)
 			ENDIF
@@ -263,7 +263,7 @@ FUNCTION CharPos(cString AS STRING, wPosition AS DWORD) AS STRING
 	RETURN result
 
 
-INTERNAL FUNCTION __ChrWorker(dwCode as DWORD, lMustBeAnsi as LOGIC) AS STRING
+INTERNAL FUNCTION __ChrWorker(dwCode AS DWORD, lMustBeAnsi AS LOGIC) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
    b := (BYTE)( dwCode & 0xFF )  // VO ignores the high 24 bits
@@ -383,6 +383,13 @@ INTERNAL FUNCTION _nibble (c AS CHAR) AS BYTE
 	CASE 'E'
 	CASE 'F'
 		b := (BYTE) (c - 'A' + 10)
+	CASE 'a'
+	CASE 'b'
+	CASE 'c'
+	CASE 'd'
+	CASE 'e'
+	CASE 'f'
+		b := (BYTE) (c - 'a' + 10)
 	OTHERWISE
 		b := 0
 	END SWITCH
@@ -412,7 +419,7 @@ FUNCTION Instr(cSearch AS STRING,cTarget AS STRING) AS LOGIC
 	IF cSearch != NULL .AND. cTarget != NULL .AND. cSearch:Length != 0
 		result := cTarget:IndexOf( cSearch, StringComparison.Ordinal ) > -1
 	ENDIF
-	return result
+	RETURN result
 
 
 
@@ -453,11 +460,11 @@ FUNCTION LTrim(cString AS STRING) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs/*" />
 FUNCTION Occurs(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return Occurs3(cSearch,cTarget, 0)
+	RETURN Occurs3(cSearch,cTarget, 0)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs2/*" />
 FUNCTION Occurs2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return Occurs3(cSearch,cTarget, 0)
+	RETURN Occurs3(cSearch,cTarget, 0)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs3/*" />
 FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
@@ -675,14 +682,14 @@ FUNCTION RAt(cSearch AS STRING,cTarget AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
 FUNCTION RAt2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return RAt(cSearch,cTarget)
+	RETURN RAt(cSearch,cTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat3/*" />
 FUNCTION RAt3(cSearch AS STRING,cTarget AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
 	IF cSearch != NULL .AND. cTarget != NULL
 		IF cTarget:Length != 0 .AND. cSearch:Length != 0
-			if dwOffSet > (dword) cTarget:Length
+			IF dwOffSet > (DWORD) cTarget:Length
 				dwOffSet := 0U
 			ENDIF
 			VAR cTemp := cTarget:Substring((INT) dwOffSet)
@@ -753,7 +760,7 @@ FUNCTION SClone(cString AS STRING) AS STRING
     IF (cString != NULL)
         // String.Copy is not supported on modern .Net
         #ifdef NETNEXT
-           var sb := System.Text.StringBuilder{}
+           VAR sb := System.Text.StringBuilder{}
            sb:Append(cString)
            clonedString := sb:ToString()
         #else
@@ -810,7 +817,7 @@ FUNCTION SoundEx(cString AS STRING) AS STRING
 	NEXT
 	ret := sb:ToString()
 
-	return ret:PadRight( 4, '0' )
+	RETURN ret:PadRight( 4, '0' )
 
 INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 	LOCAL ret AS CHAR
@@ -826,7 +833,7 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 			ret := c'2'
 		CASE c'D' ;	CASE c'T'
 			ret := c'3'
-		case c'L'
+		CASE c'L'
 			ret := c'4'
 		CASE c'M' ;	CASE c'N'
 			ret := c'5'
@@ -851,12 +858,12 @@ FUNCTION Stuff(cTarget AS STRING,dwStart AS DWORD,dwDelete AS DWORD,cInsert AS S
 			dwStart -= 1
 		ENDIF
 		LOCAL part1 := cTarget AS STRING
-		if  (int) dwStart < cTarget:Length
+		IF  (INT) dwStart < cTarget:Length
 			part1 := cTarget:Substring(0,(INT)dwStart)
 		ENDIF
 		LOCAL part2 := "" AS STRING
 		VAR iOffSet := (INT) (dwStart + dwDelete)
-		if  iOffSet  < cTarget:Length
+		IF  iOffSet  < cTarget:Length
 			part2 := cTarget:Substring( iOffSet )
 		ENDIF
 		result := part1 + cInsert + part2
@@ -1083,23 +1090,23 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
                 // so when the character following the wildcard matches the current
                 // source then we ignore the asterisk
                 nWildPos++
-                if sWildCard[nWildPos] != sSource[nSrcPos]
+                IF sWildCard[nWildPos] != sSource[nSrcPos]
                     lAsterisk := TRUE
-                else
+                ELSE
                     nWildPos++
-                endif
+                ENDIF
             ENDIF
         CASE '?'
             nWildPos++
         OTHERWISE
             IF sWildCard[nWildPos] == sSource[nSrcPos]
                 // match character after asterisk ?
-                if lAsterisk
+                IF lAsterisk
                     lAsterisk := FALSE
                 ENDIF
                 nWildPos++
             ELSE
-                if ! lAsterisk
+                IF ! lAsterisk
                     RETURN FALSE
                 ENDIF
             ENDIF

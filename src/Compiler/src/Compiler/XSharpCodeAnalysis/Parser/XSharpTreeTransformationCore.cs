@@ -7667,6 +7667,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.LSHIFT:
                     right = MakeCastTo(IntType, right, true);
                     goto default;
+                case XP.DOTDOT:
+                    context.Put(_syntaxFactory.RangeExpression(
+                        context.Left?.Get<ExpressionSyntax>(),
+                        context.Op.SyntaxOp(),
+                        context.Right?.Get<ExpressionSyntax>()));
+                    break;
                 default:
                     // Note
                     // in VO ~is XOR for binary expressions and bitwise negation for unary expressions

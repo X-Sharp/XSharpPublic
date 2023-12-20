@@ -379,7 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo15 = 1 << 15,
         UntypedAllowed = Vo15,
         Vo16 = 1 << 16,
-        DefaultClipperContructors = Vo16,
+        DefaultClipperConstructors = Vo16,
         Vo17 = 1 << 17,
         CompatibleBeginSequence = Vo17,
         Xpp1 = 1 << 18,

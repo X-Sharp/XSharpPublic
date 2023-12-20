@@ -11,9 +11,20 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using Antlr4.Runtime;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     class XSharpTreeTransformationVO : XSharpTreeTransformationRT
     {
+        #region Properties
+        protected TypeSyntax WinBoolType =>
+                _options.XSharpRuntime
+                ? GenerateQualifiedName(XSharpQualifiedTypeNames.WinBool)
+                : GenerateQualifiedName(VulcanQualifiedTypeNames.WinBool);
+        protected TypeSyntax WinDateType =>
+             _options.XSharpRuntime
+             ? GenerateQualifiedName(XSharpQualifiedTypeNames.WinDate)
+             : GenerateQualifiedName(VulcanQualifiedTypeNames.WinDate);
+        #endregion
         private bool voStructHasDim;
         protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
         {
@@ -79,28 +90,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(m);
         }
-
         private TypeSyntax voStructMemberDataType(XP.VostructmemberContext context)
         {
             var varType = getDataType(context.DataType);
-            if (context.DataType is XP.SimpleDatatypeContext)
+            if (context.DataType is XP.SimpleDatatypeContext sdt)
             {
-                var sdt = context.DataType as XP.SimpleDatatypeContext;
-                if (sdt.TypeName.NativeType != null)
+                var token = sdt.Start;
+                switch (token.Type)
                 {
-                    if (sdt.TypeName.NativeType.Token.Type == XP.LOGIC)
-                    {
-                        var winBoolType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinBool : VulcanQualifiedTypeNames.WinBool;
-                        varType = GenerateQualifiedName(winBoolType);
-                    }
-                }
-                if (sdt.TypeName.XType != null)
-                {
-                    var winDateType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinDate : VulcanQualifiedTypeNames.WinDate; // UInt32
-                    if (sdt.TypeName.XType.Token.Type == XP.DATE)
-                    {
-                        varType = GenerateQualifiedName(winDateType);
-                    }
+                    case XP.LOGIC:
+                        return WinBoolType;
+                    case XP.DATE:
+                        return WinDateType;
                 }
             }
             return varType;

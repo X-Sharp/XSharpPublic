@@ -11,12 +11,12 @@
     <Name>FoxTest</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
-    <vo15>false</vo15>
+    <Dialect>FoxPro</Dialect>
+    <vo15>True</vo15>
     <OutputName>ConsoleApplication1</OutputName>
     <AZ>false</AZ>
     <CS>false</CS>
-    <LB>false</LB>
+    <LB>True</LB>
     <NamedArgs>False</NamedArgs>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
@@ -34,6 +34,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo2>True</Vo2>
     <Fox2>False</Fox2>
+    <Vo9>True</Vo9>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,7 +54,7 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption>
     </CommandLineOption>
-    <PPO>False</PPO>
+    <PPO>True</PPO>
     <Prefer32Bit>True</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
@@ -105,6 +106,11 @@
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

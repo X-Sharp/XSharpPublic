@@ -14,10 +14,10 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">YIELD RETURN &lt;<text style="font-style:italic;">expression</text>&gt;<br/>YIELD (EXIT|BREAK) </para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">YIELD RETURN<tab />You use YIELD RETURN &lt;expression&gt; to return each element one at a time.</para>
+    <para styleclass="List">YIELD RETURN<tab/>You use YIELD RETURN &lt;expression&gt; to return each element one at a time.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">YIELD [BREAK|EXIT]<tab />You use YIELD BREAK or YIELD EXIT to end the iteration.</para>
+    <para styleclass="List">YIELD [BREAK|EXIT]<tab/>You use YIELD BREAK or YIELD EXIT to end the iteration.</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal"><snippet src="YIELD-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-YIELD-" inline="false"/></para>
   </body>
 </topic>

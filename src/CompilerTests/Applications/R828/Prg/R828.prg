@@ -1,25 +1,26 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/911
-
+#translate FOR EACH => FOREACH
+#translate ENDFOR => NEXT
 FUNCTION Start( ) AS VOID
 LOCAL aList
-LOCAL M.iterator  
-LOCAL i AS INT 
+LOCAL M.iterator
+LOCAL i AS INT
 aList := {41,42,43}
 
 FOREACH M.iterator  IN aList
     ++ i
     SWITCH i
     CASE 1
-        xAssert(M.iterator == 41)        
+        xAssert(M.iterator == 41)
     CASE 2
         xAssert(M.iterator == 42)
-    CASE 3                       
+    CASE 3
         xAssert(M.iterator == 43)
-    END SWITCH            
-    
+    END SWITCH
+
 ENDFOR
 
-RETURN 
+RETURN
 
 
 
@@ -28,4 +29,4 @@ IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN 
+RETURN

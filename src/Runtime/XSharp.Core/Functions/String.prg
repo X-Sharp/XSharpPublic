@@ -17,63 +17,15 @@ FUNCTION AllTrim(cString AS STRING) AS STRING
 	RETURN cString:Trim(trimChars)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-/// <remarks>
-/// AscA() always uses the current Ansi codepage, and ignores the setting of SetAnsi()
-/// </remarks>
-/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.ChrA'>ChrA</seealso>
-FUNCTION AscA(cString AS STRING) AS DWORD
+INTERNAL FUNCTION __AscWorker(cString AS STRING, lMustBeAnsi AS LOGIC) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
-	if ( !String.IsNullOrEmpty(cString) )
+	IF ( !String.IsNullOrEmpty(cString) )
 		chValue := cString[0]
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
 			LOCAL encoding AS Encoding
-			encoding := StringHelpers.WinEncoding
-			LOCAL buffer AS BYTE[]
-			VAR chars := <CHAR> {chValue}
-			IF encoding:IsSingleByte
-				buffer := BYTE[]{1}
-				encoding:GetBytes(chars,0,1,buffer,0)
-				ascValue := buffer[0]
-			ELSE
-				buffer := BYTE[]{2}
-				IF encoding:GetBytes(chars,0,1,buffer,0) == 1
-					ascValue := buffer[0]
-				ELSE
-					IF BitConverter.IsLittleEndian
-						LOCAL tmp := buffer[0] AS BYTE
-						buffer[0] := buffer[1]
-						buffer[1] := tmp
-					ENDIF
-					ascValue := BitConverter.ToUInt16( buffer, 0 )
-				ENDIF
-			ENDIF
-		ENDIF
-	ENDIF
-	RETURN ascValue
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
-/// <remarks>
-/// The return value of Asc() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the result.<br/>
-/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the result.<br/>
-/// This is different from the behior in most single byte versions of Xbase where Asc() simply returnes the
-/// byte value of the 1st character of the string.
-/// </remarks>
-/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
-/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
-FUNCTION Asc(cString AS STRING) AS DWORD
-	LOCAL ascValue := 0 AS DWORD
-	LOCAL chValue AS CHAR
-	if ( !String.IsNullOrEmpty(cString) )
-		chValue := cString[0]
-		ascValue := (DWORD) chValue
-		IF ascValue > 127
-			LOCAL encoding AS Encoding
-            IF RuntimeState.Ansi
+            IF lMustBeAnsi .or. RuntimeState.Ansi
                 encoding := StringHelpers.WinEncoding
             ELSE
                 encoding := StringHelpers.DosEncoding
@@ -100,6 +52,29 @@ FUNCTION Asc(cString AS STRING) AS DWORD
 		ENDIF
 	ENDIF
 	RETURN ascValue
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
+/// <remarks>
+/// AscA() always uses the current Ansi codepage, and ignores the setting of SetAnsi()
+/// </remarks>
+/// <seealso cref='O:XSharp.Core.Functions.Asc'>Asc</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.ChrA'>ChrA</seealso>
+FUNCTION AscA(cString AS STRING) AS DWORD
+	RETURN __AscWorker(cString, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asc/*" />
+/// <remarks>
+/// The return value of Asc() in XSharp depends on the setting of SetAnsi().<br/>
+/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the result.<br/>
+/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the result.<br/>
+/// This is different from the behior in most single byte versions of Xbase where Asc() simply returnes the
+/// byte value of the 1st character of the string.
+/// </remarks>
+/// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.AscW'>AscW</seealso>
+FUNCTION Asc(cString AS STRING) AS DWORD
+    RETURN __AscWorker(cString, FALSE)
 /// <summary>
 /// Convert a character to its Unicode ASCII value.
 /// </summary>
@@ -111,7 +86,7 @@ FUNCTION Asc(cString AS STRING) AS DWORD
 FUNCTION AscW(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
-	if ( !String.IsNullOrEmpty(c) )
+	IF ( !String.IsNullOrEmpty(c) )
 		chValue := c[0]
 		ascValue := (DWORD) chValue
 	ENDIF
@@ -158,7 +133,7 @@ FUNCTION AtC(cSearch AS STRING,cTarget AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atc2/*" />
 FUNCTION AtC2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return AtC(cSearch,cTarget)
+	RETURN AtC(cSearch,cTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atcline/*" />
 FUNCTION ATCLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
@@ -174,7 +149,7 @@ FUNCTION ATLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	IF String.IsNullOrEmpty(cTarget) .OR. String.IsNullOrEmpty(cSearch)
 		RETURN 0
 	ENDIF
-	if cTarget:StartsWith(cSearch)
+	IF cTarget:StartsWith(cSearch)
 		RETURN 1
 	ENDIF
 	nPos    := At( cSearch, cTarget )
@@ -215,17 +190,15 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 	RETURN STRING{'\0', (INT) dwSize}
 
 
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chareven/*" />
 FUNCTION CharEven(cString AS STRING) AS STRING
 	LOCAL evenChars:=NULL AS STRING
-	if ( !String.IsNullOrEmpty(cString) )
+	IF ( !String.IsNullOrEmpty(cString) )
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isEven := FALSE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 
-		foreach ch as char in cString
+		FOREACH ch AS char IN cString
 			IF isEven
 				sb:Append(ch)
 			ENDIF
@@ -241,7 +214,7 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 	LOCAL n2 := 0 AS INT
 	LOCAL i1 := 0 AS INT
 	LOCAL i2 := 0  AS INT
-	local sb as StringBuilder
+	LOCAL sb AS StringBuilder
 
 	IF cEven:Length == 0
 		RETURN ""
@@ -265,12 +238,12 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/charodd/*" />
 FUNCTION CharOdd(cString AS STRING) AS STRING
 	LOCAL oddChars:=NULL AS STRING
-	if ( !String.IsNullOrEmpty(cString) )
+	IF ( !String.IsNullOrEmpty(cString) )
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isOdd  := TRUE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
 
-		foreach ch as char in cString
+		FOREACH ch AS char IN cString
 			IF isOdd
 				sb:Append(ch)
 			ENDIF
@@ -290,16 +263,7 @@ FUNCTION CharPos(cString AS STRING, wPosition AS DWORD) AS STRING
 	RETURN result
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chr/*" />
-/// <remarks>
-/// The value of dwChar must be between 0 and 255<br/>
-/// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the character.<br/>
-/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the character.<br/>
-/// This is different from the behior in most single byte versions of Xbase where Chr() simply returnes a string with a single byte
-/// that matches the number passed to this function.
-/// </remarks>
-FUNCTION Chr(dwCode AS DWORD) AS STRING
+INTERNAL FUNCTION __ChrWorker(dwCode AS DWORD, lMustBeAnsi AS LOGIC) AS STRING
   LOCAL b   AS BYTE
   LOCAL ret AS STRING
    b := (BYTE)( dwCode & 0xFF )  // VO ignores the high 24 bits
@@ -308,7 +272,7 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
       ret := Convert.ToChar( b ):ToString()
    ELSE
       LOCAL encoding AS Encoding
-      IF RuntimeState.Ansi
+      IF lMustBeAnsi .or. RuntimeState.Ansi
         encoding := StringHelpers.WinEncoding
       ELSE
         encoding := StringHelpers.DosEncoding
@@ -323,34 +287,28 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
    ENDIF
    RETURN ret
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chr/*" />
+/// <remarks>
+/// The value of dwChar must be between 0 and 255<br/>
+/// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
+/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the character.<br/>
+/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the character.<br/>
+/// This is different from the behior in most single byte versions of Xbase where Chr() simply returnes a string with a single byte
+/// that matches the number passed to this function.
+/// </remarks>
+FUNCTION Chr(dwCode AS DWORD) AS STRING
+  RETURN __ChrWorker(dwCode, FALSE)
+
 
 /// <summary>
 /// Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
 /// </summary>
-/// <param name="dwChar"></param>
+/// <param name="dwCode"></param>
 /// <returns>
 /// </returns>
 /// <seealso cref='O:XSharp.Core.Functions.AscA'>AscA</seealso>
-FUNCTION ChrA(dwChar AS DWORD) AS STRING
-  LOCAL b   AS BYTE
-  LOCAL ret AS STRING
-   b := (BYTE)( dwChar & 0xFF )  // VO ignores the high 24 bits
-
-   IF b <= 0x7F
-      ret := Convert.ToChar( b ):ToString()
-   ELSE
-      LOCAL encoding AS Encoding
-      encoding := StringHelpers.WinEncoding
-
-      LOCAL chars := CHAR[]{ 1 } AS CHAR[]
-      LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
-      LOCAL decoder := encoding:GetDecoder() AS Decoder
-      bytes[__ARRAYBASE__] := b
-      decoder:GetChars( bytes, 0, 1, chars, 0 )
-      ret := chars[__ARRAYBASE__]:ToString()
-   ENDIF
-   RETURN ret
-
+FUNCTION ChrA(dwCode AS DWORD) AS STRING
+    RETURN __ChrWorker(dwCode, TRUE)
 
 /// <summary>
 /// Convert an ASCII code to a character value.
@@ -425,6 +383,13 @@ INTERNAL FUNCTION _nibble (c AS CHAR) AS BYTE
 	CASE 'E'
 	CASE 'F'
 		b := (BYTE) (c - 'A' + 10)
+	CASE 'a'
+	CASE 'b'
+	CASE 'c'
+	CASE 'd'
+	CASE 'e'
+	CASE 'f'
+		b := (BYTE) (c - 'a' + 10)
 	OTHERWISE
 		b := 0
 	END SWITCH
@@ -454,7 +419,7 @@ FUNCTION Instr(cSearch AS STRING,cTarget AS STRING) AS LOGIC
 	IF cSearch != NULL .AND. cTarget != NULL .AND. cSearch:Length != 0
 		result := cTarget:IndexOf( cSearch, StringComparison.Ordinal ) > -1
 	ENDIF
-	return result
+	RETURN result
 
 
 
@@ -495,11 +460,11 @@ FUNCTION LTrim(cString AS STRING) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs/*" />
 FUNCTION Occurs(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return Occurs3(cSearch,cTarget, 0)
+	RETURN Occurs3(cSearch,cTarget, 0)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs2/*" />
 FUNCTION Occurs2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return Occurs3(cSearch,cTarget, 0)
+	RETURN Occurs3(cSearch,cTarget, 0)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs3/*" />
 FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
@@ -717,14 +682,14 @@ FUNCTION RAt(cSearch AS STRING,cTarget AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
 FUNCTION RAt2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	return RAt(cSearch,cTarget)
+	RETURN RAt(cSearch,cTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat3/*" />
 FUNCTION RAt3(cSearch AS STRING,cTarget AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
 	IF cSearch != NULL .AND. cTarget != NULL
 		IF cTarget:Length != 0 .AND. cSearch:Length != 0
-			if dwOffSet > (dword) cTarget:Length
+			IF dwOffSet > (DWORD) cTarget:Length
 				dwOffSet := 0U
 			ENDIF
 			VAR cTemp := cTarget:Substring((INT) dwOffSet)
@@ -795,7 +760,7 @@ FUNCTION SClone(cString AS STRING) AS STRING
     IF (cString != NULL)
         // String.Copy is not supported on modern .Net
         #ifdef NETNEXT
-           var sb := System.Text.StringBuilder{}
+           VAR sb := System.Text.StringBuilder{}
            sb:Append(cString)
            clonedString := sb:ToString()
         #else
@@ -852,7 +817,7 @@ FUNCTION SoundEx(cString AS STRING) AS STRING
 	NEXT
 	ret := sb:ToString()
 
-	return ret:PadRight( 4, '0' )
+	RETURN ret:PadRight( 4, '0' )
 
 INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 	LOCAL ret AS CHAR
@@ -868,7 +833,7 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 			ret := c'2'
 		CASE c'D' ;	CASE c'T'
 			ret := c'3'
-		case c'L'
+		CASE c'L'
 			ret := c'4'
 		CASE c'M' ;	CASE c'N'
 			ret := c'5'
@@ -893,12 +858,12 @@ FUNCTION Stuff(cTarget AS STRING,dwStart AS DWORD,dwDelete AS DWORD,cInsert AS S
 			dwStart -= 1
 		ENDIF
 		LOCAL part1 := cTarget AS STRING
-		if  (int) dwStart < cTarget:Length
+		IF  (INT) dwStart < cTarget:Length
 			part1 := cTarget:Substring(0,(INT)dwStart)
 		ENDIF
 		LOCAL part2 := "" AS STRING
 		VAR iOffSet := (INT) (dwStart + dwDelete)
-		if  iOffSet  < cTarget:Length
+		IF  iOffSet  < cTarget:Length
 			part2 := cTarget:Substring( iOffSet )
 		ENDIF
 		result := part1 + cInsert + part2
@@ -1125,23 +1090,23 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
                 // so when the character following the wildcard matches the current
                 // source then we ignore the asterisk
                 nWildPos++
-                if sWildCard[nWildPos] != sSource[nSrcPos]
+                IF sWildCard[nWildPos] != sSource[nSrcPos]
                     lAsterisk := TRUE
-                else
+                ELSE
                     nWildPos++
-                endif
+                ENDIF
             ENDIF
         CASE '?'
             nWildPos++
         OTHERWISE
             IF sWildCard[nWildPos] == sSource[nSrcPos]
                 // match character after asterisk ?
-                if lAsterisk
+                IF lAsterisk
                     lAsterisk := FALSE
                 ENDIF
                 nWildPos++
             ELSE
-                if ! lAsterisk
+                IF ! lAsterisk
                     RETURN FALSE
                 ENDIF
             ENDIF

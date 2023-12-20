@@ -75,15 +75,16 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
                     SELF:Add(dbProp, lValue)
                 CASE "N"
                     local nValue as LONG
-                    if len == 11
+                    switch len
+                    Case 11
                         nValue   := BuffToLongFox(bProps, pos+7)
-                    elseif len == 8
-                        nValue := bProps[pos+7]
-                    elseif len == 9
+                    Case 9
                         nValue   := BuffToShortFox(bProps, pos+7)
-                    else
+                    Case 8
+                        nValue := bProps[pos+7]
+                    otherwise
                         nValue := 0
-                    endif
+                    end switch
                     SELF:Add(dbProp, nValue)
                 CASE "C"
                     if pos+len <= bProps:Length

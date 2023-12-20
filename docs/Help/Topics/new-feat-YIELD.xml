@@ -11,6 +11,6 @@
     <header>
       <para styleclass="Heading1">YIELD EXIT and YIELD RETURN</para>
     </header>
-    <para styleclass="Normal"><snippet src="YIELD-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-YIELD-" inline="false"/></para>
   </body>
 </topic>

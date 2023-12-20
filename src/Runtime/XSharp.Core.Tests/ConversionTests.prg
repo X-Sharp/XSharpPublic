@@ -103,8 +103,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		[Trait("Category", "Conversion")];
 		[Fact];
 		METHOD LTocTest() AS VOID 
-			Assert.Equal( "T", LToC(TRUE))
-			Assert.Equal( "F", LToC(FALSE))
+			Assert.Equal( "T", LTOC(TRUE))
+			Assert.Equal( "F", LTOC(FALSE))
 			Assert.Equal( TRUE, CTOL("T"))
 			Assert.Equal( TRUE, CTOL("t"))
 			Assert.Equal( TRUE, CTOL("Y"))
@@ -122,6 +122,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal("@", Hex2C("40"))
 			Assert.Equal("@AB", Hex2C("404142"))
 			Assert.Equal("@A", Hex2C("40414"))	// incomplete last character
+			Assert.Equal("JJJJ", Hex2C("4a4A4a4A"))
+			Assert.Equal(":", Hex2C("3a"))
 
 
 		END CLASS

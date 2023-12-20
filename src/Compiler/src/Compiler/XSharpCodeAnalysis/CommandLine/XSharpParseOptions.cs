@@ -456,7 +456,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.UntypedAllowed: // vo15
                     return CheckOption(option, VOUntypedAllowed, token, options);
 
-                case CompilerOption.DefaultClipperContructors: // vo16
+                case CompilerOption.DefaultClipperConstructors: // vo16
                     return CheckOption(option, VOClipperConstructors, token, options);
 
                 case CompilerOption.CompatibleBeginSequence: // vo17

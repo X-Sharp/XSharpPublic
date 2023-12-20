@@ -737,6 +737,9 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
             SELF:Decimals := 0
+            IF SELF:Length == 0
+                SELF:Length := 4
+            ENDIF
             RETURN SELF:Length == 4 .OR. SELF:Length == 2
 
     END CLASS

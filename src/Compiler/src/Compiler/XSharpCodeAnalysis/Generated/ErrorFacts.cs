@@ -344,6 +344,7 @@
                 case ErrorCode.WRN_ConversionFromNilNotSupported:
                 case ErrorCode.WRN_ParameterMustBeTyped:
                 case ErrorCode.WRN_PropertyParametersBrackets:
+                case ErrorCode.WRN_FileWideMemVarName:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFreezeNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

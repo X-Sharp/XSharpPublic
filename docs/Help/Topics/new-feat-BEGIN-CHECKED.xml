@@ -10,6 +10,6 @@
     <header>
       <para styleclass="Heading1">BEGIN CHECKED</para>
     </header>
-    <para styleclass="Normal"><snippet src="CHECKED-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-CHECKED" inline="false"/></para>
   </body>
 </topic>

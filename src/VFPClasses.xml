@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members>
+  </members>
+  <CursorAdapter>
+    <summary>
+      The CursorAdapter class.
+    </summary>
+    <remarks>
+      This class is modeled after the FoxPro CursorAdapter class. <br />
+      This class wraps properties for remote cursors
+    </remarks>
+  </CursorAdapter>
+  <EmptyCmd>
+    <remarks>When this property is empty (""), X# generates a command automatically.</remarks>
+  </EmptyCmd>
+  <EmptyList>
+    <remarks>When this property is empty (""), X# generates a list automatically.</remarks>
+  </EmptyList>
+  <KeyFields>
+    <remarks>
+      The character expression is a comma delimited list of the key fields in the cursor that are used to retrieve a record.</br>
+      When this property is empty (""), X# generates a list automatically.
+    </remarks>
+  </KeyFields>
+  <CursorAdapter.AllowUpdate>
+    <summary>Specifies whether to permit update operations against a data source.</summary>
+    <remarks>When the UpdateCmd Property property is empty (""), X# generates a INSERT Command command automatically.</remarks>
+  </CursorAdapter.AllowUpdate>
+  <CursorAdapter.AllowInsert>
+    <summary>Specifies whether to permit insert operations against a data source.</summary>
+    <remarks>When the InsertCmd Property property is empty (""), X# generates a INSERT Command command automatically.</remarks>
+  </CursorAdapter.AllowInsert>
+  <CursorAdapter.AllowDelete>
+    <summary>Specifies whether to permit delete operations against a data source.</summary>
+    <remarks>When the DeleteCmd Property property is empty (""), X# generates a DELETE Command command automatically.</remarks>
+  </CursorAdapter.AllowDelete>
+  <CursorAdapter.UpdateCmd>
+    <summary>Specifies the command to use for updating rows.</summary>
+    <include file="VFPClasses.xml" path="doc/EmptyCmd/*" />
+  </CursorAdapter.UpdateCmd>
+  <CursorAdapter.UpdateCmdRefreshCmd>
+    <summary>Specifies the command to automatically refresh the record after an Update command is executed.</summary>
+    <include file="VFPClasses.xml" path="doc/EmptyCmd/*" />
+  </CursorAdapter.UpdateCmdRefreshCmd>
+  <CursorAdapter.UpdateCmdRefreshFieldList>
+    <summary>Specifies the fields in the cursor to refresh after an Update command is executed</summary>
+    <remarks>The character expression is a comma delimited list of the key fields in the cursor that is used to retrieve a record.</remarks>
+    <include file="VFPClasses.xml" path="doc/EmptyList/*" />
+  </CursorAdapter.UpdateCmdRefreshFieldList>
+  <CursorAdapter.UpdateCmdRefreshKeyFieldList>
+    <summary>Specifies the key fields in the cursor used to retrieve a record after an Update command is executed</summary>
+    <remarks>Specifies the fields in the cursor to refresh after an Update command is executed.</remarks>
+    <include file="VFPClasses.xml" path="doc/KeyFields/*" />
+  </CursorAdapter.UpdateCmdRefreshKeyFieldList>
+
+  <CursorAdapter.InsertCmd>
+    <summary>Specifies the command to use for inserting rows.</summary>
+    <include file="VFPClasses.xml" path="doc/EmptyCmd/*" />
+  </CursorAdapter.InsertCmd>
+  <CursorAdapter.InsertCmdRefreshCmd>
+    <summary>Specifies the command to automatically refresh the record after an Insert command is executed.</summary>
+    <include file="VFPClasses.xml" path="doc/EmptyCmd/*" />
+  </CursorAdapter.InsertCmdRefreshCmd>
+  <CursorAdapter.InsertCmdRefreshFieldList>
+    <remarks>Specifies the fields in the cursor to refresh after an Insert command is executed.</remarks>
+    <remarks>The character expression is a comma delimited list of the key fields in the cursor that is used to retrieve a record.</remarks>
+    <include file="VFPClasses.xml" path="doc/EmptyList/*" />
+  </CursorAdapter.InsertCmdRefreshFieldList>
+  <CursorAdapter.InsertCmdRefreshKeyFieldList>
+    <summary>Specifies the key fields in the cursor used to retrieve a record after an Insert command is executed</summary>
+    <include file="VFPClasses.xml" path="doc/KeyFields/*" />
+  </CursorAdapter.InsertCmdRefreshKeyFieldList>
+
+
+  <CursorAdapter.DeleteCmd>
+    <summary>Specifies the command to use for deleting rows.</summary>
+    <include file="VFPClasses.xml" path="doc/EmptyCmd/*" />
+  </CursorAdapter.DeleteCmd>
+
+  <CursorAdapter.RefreshCmd>
+    <summary>Specifies the command to use for the record Refresh.</summary>
+    <include file="VFPClasses.xml" path="doc/EmptyCmd/*" />
+  </CursorAdapter.RefreshCmd>
+  <CursorAdapter.RefreshIgnoreFieldList>
+    <summary>Specifies a list of fields that are ignored by the refresh process when the RecordRefresh method is executed</summary>
+  </CursorAdapter.RefreshIgnoreFieldList>
+
+  <CursorAdapter.KeyFieldList>
+    <summary>Specifies a comma-delimited list of primary fields for the cursor or CursorAdapter object.</summary>
+  </CursorAdapter.KeyFieldList>
+  <CursorAdapter.TimeStampFieldList>
+    <summary>Specifies the timestamp fields in the cursor.</summary>
+    <remarks>
+      Use this property to specify the timestamp fields.
+      If you specify the timestamp fields with this property and the CursorAdapter
+      WhereType property is set to 4, Visual FoxPro includes the timestamp fields in the where condition for UPDATE/DELETE commands for Native, ODBC and ADODB.Command based updates
+    </remarks>
+  </CursorAdapter.TimeStampFieldList>
+
+  <CursorAdapter.WhereType>
+    <summary>Specifies the fields that the WHERE clause consists of when used for updating tables</summary>
+  </CursorAdapter.WhereType>
+  <CursorAdapter.BatchUpdateCount>
+    <summary>Specifies the number of update statements sent to the remote data source for buffered tables</summary>
+  </CursorAdapter.BatchUpdateCount>
+
+  <CursorAdapter.FetchSize>
+    <summary>Specifies the number of rows progressively fetched from the remote table result set.</summary>
+  </CursorAdapter.FetchSize>
+  <CursorAdapter.FetchMemo>
+    <summary>Specifies whether memo fields are fetched with view results</summary>
+  </CursorAdapter.FetchMemo>
+  <CursorAdapter.FetchMemoCmdList>
+    <summary>Specifies the commands to use for the Memo fields fetch performed by the DelayedMemoFetch method.</summary>
+  </CursorAdapter.FetchMemoCmdList>
+
+  <CursorAdapter.AllowSimultaneousFetch>
+    <summary>Specifies whether to permit simultaneous fetching when using a shared connection</summary>
+  </CursorAdapter.AllowSimultaneousFetch>
+
+  <CursorAdapter.Alias>
+    <summary>Alias name for the cursor generated by the SelectCmd property</summary>
+  </CursorAdapter.Alias>
+  <CursorAdapter.CursorFill>
+    <summary>
+      Executes the command in the SelectCmd Property property against the data source in the CursorAdapter DataSource property,
+      creates a cursor, retrieves data, and performs any necessary data conversion
+      according to the CursorAdapter DataSourceType Property and CursorSchema Property properties.
+    </summary>
+    <param name="lUseCursorSchema">
+      <list type="table">
+        <listheader>
+          <term>lUseCursorSchema</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>
+            True (.T.)
+          </term>
+          <description>
+            Uses the schema in the CursorSchema property to create the cursor.
+          </description>
+        </item>
+        <item>
+          <term>
+            False (.F.) or empty
+          </term>
+          <description>
+            Does not use the schema in the CursorSchema property to create the cursor. <br/>
+            Instead, CursorFill creates the cursor using the data types as normally determined
+            by X# according to the CursorAdapter DataSourceType property.
+          </description>
+        </item>
+      </list>
+    </param>
+    <param name="lNoData">
+      <list type="table">
+        <listheader>
+          <term>lUseCursorSchema</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>
+            True (.T.)
+          </term>
+          <description>
+            Create the cursor but do not fill it with data. <br />
+            When the CursorAdapter DataSourceType property is "ADO",
+            and SelectCmd contains parameters, CursorFill attempts to evaluate the parameters in SelectCmd.
+            If CursorFill cannot evaluate the parameters, it uses null (.NULL.) values for the parameter values.<br />
+
+            When the CursorAdapter DataSourceType property is "XML", CursorFill creates the cursor using
+            the schema in the CursorSchema property, regardless of the value passed to lUseCursorSchema.
+            If CursorSchema is empty or invalid, Visual FoxPro generates an error.
+          </description>
+        </item>
+        <item>
+          <term>
+            False (.F.) or empty
+          </term>
+          <description>
+            Create the cursor and fill it with data.
+          </description>
+        </item>
+      </list>
+    </param>
+    <param name="nOptions">
+      <list type="table">
+        <listheader>
+          <term>DataSourceType </term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>
+            "ADO"
+          </term>
+          <description>
+            An integer representing the Command type or Execution Enum values you want to set for the ActiveX Data Object (ADO) RecordSet Open method. The default value is -1.
+            to lUseCursorSchema.
+          </description>
+        </item>
+        <item>
+          <term>
+            "XML"
+          </term>
+          <description>
+            Any combination of valid XMLTOCURSOR( ) Function function flags except 8192, which is automatically set when the lUseCursorSchema parameter contains a value of True (.T.).
+          </description>
+        </item>
+      </list>
+    </param>
+    <param name="Source">
+      Specifies a reference to an DbCommand or a DataTable object
+    </param>
+    <returns>
+      Logical data type. CursorFill returns True (.T.) if the cursor is created successfully and False (.F.) if not created successfully.
+    </returns>
+    <remarks>
+      The following table lists how CursorFill behaves depending on how the CursorAdapter DataSourceType property is set.
+      <list type="table">
+        <item>
+          <term>
+            "Native"
+          </term>
+          <description>
+            CursorFill executes SelectCmd, which must contain a SelectCmd a valid Visual FoxPro SQL SELECT command.
+          </description>
+        </item>
+        <item>
+          <term>
+            "ADO"
+          </term>
+          <description>
+            CursorFill executes SelectCmd by calling the ADO RecordSet Open method.
+            You must therefore set the CursorAdapter DataSource property to a valid ADO RecordSet object.
+            If SelectCmd contains parameters, you must specify a valid ADO Command object in the Source
+            parameter for the CursorFill method
+            Manually closing the cursor closes the associated ADO RecordSet. However, this does not apply if the cursor was obtained
+            using the CursorAttach Method method.
+
+            CursorFill does not set the ADO RecordSet MaxRecords property to the MaxRecords Property property.
+          </description>
+        </item>
+        <item>
+          <term>
+            "ODBC"
+          </term>
+          <description>
+            CursorFill executes SelectCmd using the connection handle of the DataSource property of the CursorAdapter object.
+            Visual FoxPro returns the cursor using SQL Pass-Through. The name of the cursor corresponds to the alias obtained
+            by calling This.Alias.
+            Note
+            When several CursorAdapter objects share the same ODBC statement handle, CursorFill might fail for some CursorAdapter objects
+            because another CursorAdapter object has not finished retrieving data. To avoid this situation,
+            set the FetchSize property to 1 for all CursorAdapter objects or use a dedicated ODBC statement handle for each object.
+          </description>
+        </item>
+        <listheader>
+          <term>DataSourceType </term>
+          <description>SelectCmd property behavior </description>
+        </listheader>
+        <item>
+          <term>
+            "XML"
+          </term>
+          <description>
+            One of the following: <br />
+            <list type="bullet">
+              <item>
+                SelectCmd is an expression that evaluates to a valid XMLTable object. CursorFill calls the XMLTable ToCursor method, and the resulting cursor is attached.
+              </item>
+              <item>
+                SelectCmd is an expression, command, or function that returns XML. CursorFill uses the XMLTOCURSOR( ) function to transform the XML to a cursor. For more information, see the following list of additional remarks.
+              </item>
+            </list>
+          </description>
+        </item>
+      </list>
+      In addition, when DataSourceType is set to "XML", and SelectCmd is an expression, command, or function that returns XML:
+      <list type="bullet">
+        <item>
+          The XML requirements are the same as those for the first parameter of the XMLTOCURSOR( ) function. 
+          You can specify these requirements by passing the appropriate XMLTOCURSOR( ) nFlags value to the 
+          CursorFill nOptions parameter. You can specify additional XMLTOCURSOR( ) flags or combine them as in XMLTOCURSOR( ).
+        </item>
+        <item>
+          CursorFill chooses between eExpression and cXMLFile from XMLTOCURSOR( ) based on nOptions:
+        </item>
+        <item>
+          If nOptions is 0, CursorFill processes XMLSource as eExpression and expects a memory variable containing 
+          a valid XML string or an expression that results in an XML string.
+        </item>
+        <item>
+          If nOptions is 512, CursorFill processes XMLSource as cXMLFile and expects a string literal with quotation
+          marks ("") or a memory variable containing a valid file name.
+        </item>
+        <item>
+          The cCursorName parameter in XMLTOCURSOR( ) is always the current value in the Alias property for the CursorAdapter object.
+        </item>
+        <item>
+          If lUseCursorSchema is True (.T.), CursorFill automatically adds the 8192 flag to enforce use of the existing cursor for the XML.
+        </item>
+        <item>
+          When Visual FoxPro calls CursorFill, it closes the currently attached cursor, if it exists, and 
+          the work area that contains the newly created cursor becomes the active work area.
+        </item>
+      </list>
+    </remarks>
+  </CursorAdapter.CursorFill>
+
+</doc>

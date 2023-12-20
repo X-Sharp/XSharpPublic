@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -23,7 +23,7 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
     OVERRIDE PROPERTY Name      AS STRING GET "SqlServerFactory"
 
     /// <inheritdoc />
-    OVERRIDE PROPERTY ParameterPrefix AS CHAR GET '@'
+    OVERRIDE PROPERTY ParameterPrefix AS CHAR GET c'@'
     /// <inheritdoc />
     OVERRIDE PROPERTY ParameterNameInQuery AS LOGIC GET TRUE
 
@@ -38,7 +38,7 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
     /// <inheritdoc />
     OVERRIDE METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
 
-        VAR result := OBJECT[]{19}                        // 
+        VAR result := OBJECT[]{19}                        //
         result[01] := oRow["TABLE_CATALOG"]               // aStruct[1] := {"TABLE_CAT","C:0",128,0}
         result[02] := oRow["TABLE_SCHEMA"]                // aStruct[2] := {"TABLE_SCHE","C:0",128,0}
         result[03] := oRow["TABLE_NAME"]                  // aStruct[3] := {"TABLE_NAME","C",128,0}
@@ -64,7 +64,7 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
         IF result[11] IS STRING VAR sValue
             result[11] := IIF(sValue:ToUpper() == "YES", 1, 0)
         ENDIF
-        RETURN result       
+        RETURN result
 
 
     /// <inheritdoc />
@@ -119,7 +119,7 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
         LOCAL cResult AS STRING
         oODBC := OdbcFactory{}
         cConnectionString := "Driver=SQL Server"
-        cResult := oODBC:DriverConnect(hWindow, Win32.SQL_DRIVER_PROMPT, cConnectionString)
+        cResult := oODBC:DriverConnect(hWindow, XWin32.SQL_DRIVER_PROMPT, cConnectionString)
         IF String.IsNullOrEmpty(cResult)
             RETURN cResult
         ENDIF

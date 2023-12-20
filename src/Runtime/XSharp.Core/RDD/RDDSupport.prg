@@ -288,7 +288,7 @@ CLASS DbOrderInfo
                 IF Order == NULL
                     RETURN TRUE
                 ELSEIF Order IS LONG VAR nOrder
-                    RETURN nOrder == 0
+                    RETURN FALSE
                 ELSEIF Order IS STRING VAR cOrder
                     RETURN String.IsNullOrEmpty(cOrder)
                 ELSEIF RuntimeState.Dialect == XSharpDialect.FoxPro .AND. Order IS LOGIC VAR lValue

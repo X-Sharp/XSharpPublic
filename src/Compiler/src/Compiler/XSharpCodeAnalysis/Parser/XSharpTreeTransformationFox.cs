@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     internal class XSharpTreeTransformationFox : XSharpTreeTransformationRT
     {
-        protected readonly TypeSyntax _foxarrayType;
+        protected TypeSyntax FoxarrayType => GenerateQualifiedName(XSharpQualifiedTypeNames.FoxArray);
 
         protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
         {
@@ -29,7 +29,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {
-            _foxarrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.FoxArray);
 
         }
         XP.FuncprocContext _defaultEntity = null;
@@ -69,7 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     Start = new XSharpToken(XP.AS, "AS"),
                     Stop = new XSharpToken(XP.VOID, "VOID")
                 };
-                sig.Type.Put(_voidType);
+                sig.Type.Put(VoidType);
                 sig.AddChild(sig.Type);
             }
             func.Attributes = new XP.AttributesContext(func, 0);
@@ -158,37 +157,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
-        private void AddLocalName(string name, XSharpParserRuleContext context, bool local)
-        {
-            var fieldInfo = findVar(name);
-            if (fieldInfo == null)
-            {
-                var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
-                var field = addFieldOrMemvar(name, alias, context, context.Start);
-                field.IsCreated = local;
-            }
-        }
-
-        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
-        {
-            base.EnterLocalvar(context);
-            var name = context.Id.GetText();
-            AddLocalName(name, context, true);
-        }
-
-        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
-        {
-            base.EnterImpliedvar(context);
-            var name = context.Id.GetText();
-            AddLocalName(name, context, true);
-        }
-
         public override void EnterFoxdimvar([NotNull] XP.FoxdimvarContext context)
         {
             if (context.Id != null)
             {
                 var name = CleanVarName(context.Id.GetText());
                 var alias = XSharpSpecialNames.MemVarPrefix;
+                CheckForFileWideMemVar(name, context);
                 var field = findVar(name);
                 if (field == null)
                 {
@@ -437,7 +412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var p in context._LParameters)
                 {
                     var name = p.Name.Id.GetText();
-                    var type = _usualType;
+                    var type = UsualType;
                     if (p.XT != null && p.XT.Type != null)
                     {
                         type = getDataType(p.XT.Type);
@@ -478,7 +453,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (!fieldInfo.IsCreated)
                     {
-                        var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
+                        var decl = GenerateLocalDecl(name, FoxarrayType, GenerateLiteralNull());
                         decl.XNode = context;
                         stmts.Add(decl);
                         fieldInfo.IsCreated = true;
@@ -763,7 +738,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.RealType == XP.ASSIGN)
                 {
-                    returntype = VoidType();
+                    returntype = VoidType;
                 }
                 else  // method and access
                 {
@@ -785,7 +760,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Assign does not need a return.
                 // So do not add missing returns
-                returntype = VoidType();
+                returntype = VoidType;
             }
             else if (context.StmtBlk != null && !hasNoBody)
             {
@@ -1025,7 +1000,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Fld != null)
             {
-                var flddecl = createField(context.F.Name.GetText(), _usualType, context.Modifiers);
+                var flddecl = createField(context.F.Name.GetText(), UsualType, context.Modifiers);
                 if (flddecl != null)
                 {
                     context.Put(flddecl);
@@ -1033,7 +1008,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var propdecl = createProperty(context.F.Name.GetText(), _usualType, context, context.Modifiers);
+                var propdecl = createProperty(context.F.Name.GetText(), UsualType, context, context.Modifiers);
                 if (propdecl != null)
                 {
                     context.Put(propdecl);
@@ -1110,7 +1085,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     body.XGenerated = true;
                     var mods = TokenList(SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword);
                     var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.InitProperties);
-                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, _voidType, null, id,
+                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, VoidType, null, id,
                         null, EmptyParameterList(), null, body, null, SyntaxFactory.SemicolonToken);
                     members.Add(mem);
                     stmts.Clear();
@@ -1164,16 +1139,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 result = type.GetText().ToLower() switch
                 {
-                    "integer" => _intType,
+                    "integer" => IntType,
                     "single" => _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword)),
                     "double" => _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword)),
-                    "string" => _stringType,
+                    "string" => StringType,
                     _ => type.Get<TypeSyntax>(),
                 };
             }
             else
             {
-                result = _voidType;
+                result = VoidType;
             }
             result.XCanBeVoStruct = true;
             return result;
@@ -1208,7 +1183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: id,
                 @default: null);
 
-            if (type == _stringType && context.Address != null)
+            if (type == StringType && context.Address != null)
             {
                 par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxDeclareDLLStringByReference));
             }

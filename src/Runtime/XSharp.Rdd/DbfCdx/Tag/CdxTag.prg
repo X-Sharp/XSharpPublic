@@ -171,7 +171,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !String.IsNullOrEmpty(SELF:_Header:VFPCollation)
                 IF SELF:_oRdd IS DBFVFP
                     SELF:_Collation := VfpCollation{SELF:_Header:VFPCollation,SELF:_oRdd:Header:CodePage:ToCodePage()}
-                ELSE
+                ELSEIF RuntimeState.Dialect != XSharpDialect.VO .and. ;
+                    RuntimeState.Dialect != XSharpDialect.Vulcan .and. ;
+                    RuntimeState.Dialect != XSharpDialect.Core
                     SELF:ThrowException( Subcodes.ERDD_CORRUPT, Gencode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
                 ENDIF
             ENDIF

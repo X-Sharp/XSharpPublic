@@ -30,12 +30,11 @@
     <vo15>true</vo15>
     <vo16>true</vo16>
     <lb>true</lb>
-    <memvar>true</memvar>
-    <undeclared>true</undeclared>
+    <memvar>True</memvar>
+    <undeclared>False</undeclared>
     <initlocals>true</initlocals>
     <fox1>true</fox1>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
     <CS>false</CS>
     <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>

@@ -14,7 +14,6 @@
     <NS>true</NS>
     <vo15>False</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -85,10 +84,7 @@
     <Compile Include="Keyboard.prg" />
     <Compile Include="NotSupported.prg" />
     <Compile Include="PrinterFunctions.prg" />
-    <Compile Include="SQL\SQLReflection.prg" />
-    <Compile Include="SQL\SQLStatement.prg" />
-    <Compile Include="SQL\SQLSupport.prg" />
-    <Compile Include="SQL\SQLConnection.prg" />
+    <Compile Include="SQL\EmbeddedSql.prg" />
     <Compile Include="SQL\SQLFunctions.prg" />
     <Compile Include="ToDo-TUVWX.prg" />
     <Compile Include="ToDo-S.prg" />
@@ -209,7 +205,6 @@
     <EmbeddedResource Include="UI\AssertDialog.resx">
       <DependentUpon>AssertDialog.prg</DependentUpon>
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

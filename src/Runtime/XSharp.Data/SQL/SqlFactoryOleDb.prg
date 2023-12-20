@@ -47,12 +47,12 @@ CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
         VAR startInfo := System.Diagnostics.ProcessStartInfo{}
         startInfo:FileName := cTemp
         VAR process := System.Diagnostics.Process.Start(startInfo)
-        LOCAL hDialog := Win32.FindWindow("#32770",NULL) AS IntPtr
+        LOCAL hDialog := XWin32.FindWindow("#32770",NULL) AS IntPtr
         IF hDialog != IntPtr.Zero
             IF hWindow == IntPtr.Zero
-                hWindow := Win32.GetParentWindow()
+                hWindow := XWin32.GetParentWindow()
             ENDIF
-            Win32.SetParent(hDialog, hWindow)
+            XWin32.SetParent(hDialog, hWindow)
         ENDIF
         process:WaitForExit()
         VAR lines := System.IO.File.ReadAllLines(cTemp)

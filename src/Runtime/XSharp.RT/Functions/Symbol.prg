@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,7 +14,7 @@
 /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION String2Atom(c AS STRING) AS SYMBOL
 	RETURN SYMBOL{c, FALSE}
-	
+
 	/// <summary>
 	/// Convert a string to an uppercase Symbol.
 	/// </summary>
@@ -24,8 +24,8 @@ FUNCTION String2Atom(c AS STRING) AS SYMBOL
 /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION String2Symbol(c AS STRING) AS SYMBOL
 	RETURN SYMBOL{c, TRUE}
-	
-	
+
+
 	/// <summary>
 	/// Convert a symbol to string
 	/// </summary>
@@ -46,7 +46,7 @@ FUNCTION Symbol2String(s AS SYMBOL) AS STRING
 /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString()+ s2:ToString()}
-	
+
 	/// <summary>
 	/// Concatenate three Symbols.
 	/// </summary>
@@ -70,7 +70,7 @@ FUNCTION ConcatAtom3(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL) AS SYMBOL
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom4(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() }
-	
+
 	/// <summary>
 	/// </summary>
 	/// <param name="s1"></param>
@@ -83,8 +83,8 @@ FUNCTION ConcatAtom4(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL) AS SYM
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION ConcatAtom5(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL,s5 AS SYMBOL) AS SYMBOL
 	RETURN SYMBOL{ s1:ToString() +s2:ToString() +s3:ToString() +s4:ToString() +s5:ToString()}
-	
-	
+
+
 	/// <summary>
 	/// Determine the number of Symbols in the atom table.
 	/// </summary>
@@ -92,10 +92,10 @@ FUNCTION ConcatAtom5(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL,s5 AS S
 	/// </returns>
 /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION MaxAtom() AS DWORD
-	RETURN (DWORD) __Symbol.SymbolTable.Strings:Count
-	
-	
-	
+	RETURN (DWORD) __Symbol.SymbolTable.Count
+
+
+
 	/// <summary>
 	/// </summary>
 	/// <param name="s1"></param>
@@ -115,7 +115,7 @@ FUNCTION SysCompAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS INT
 	/// </returns>
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
-	RETURN SYMBOL { s, FALSE} 
+	RETURN SYMBOL { s, FALSE}
 
 
 	/// <summary>
@@ -126,7 +126,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// </returns>
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysAddAtom(p AS PSZ) AS SYMBOL
-		RETURN SYMBOL { Psz2String(p), FALSE} 
+		RETURN SYMBOL { Psz2String(p), FALSE}
 
 
 	/// <summary>
@@ -137,8 +137,8 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// </returns>
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysAddAtomUpperA(s AS STRING) AS SYMBOL
-		RETURN SYMBOL { s, TRUE} 	
-	
+		RETURN SYMBOL { s, TRUE}
+
 	/// <summary>
 	/// Convert a null-terminated string to an uppercase Symbol and add it to the atom table.
 	/// </summary>
@@ -147,7 +147,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
 	/// </returns>
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysAddAtomUpperA(p AS PSZ) AS SYMBOL
-		RETURN SYMBOL { Psz2String(p), TRUE} 	
+		RETURN SYMBOL { Psz2String(p), TRUE}
 
 	/// <summary>
 	/// Determine whether a Symbol is in the atom table.
@@ -158,7 +158,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysFindAtom(s AS STRING) AS SYMBOL
 		RETURN __Symbol.Find(s)
-			
+
 	/// <summary>
 	/// Determine whether a Symbol is in the atom table.
 	/// </summary>
@@ -168,7 +168,7 @@ FUNCTION SysAddAtom(s AS STRING) AS SYMBOL
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
 	FUNCTION SysFindAtom(p AS PSZ) AS SYMBOL
 		RETURN __Symbol.Find(Psz2String(p))
-	
+
 	/// <summary>
 	/// Convert a Symbol to a null-terminated string.
 	/// </summary>

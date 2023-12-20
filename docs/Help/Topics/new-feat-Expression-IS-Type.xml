@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">Expression IS Type</para>
     </header>
-    <para styleclass="Normal"><snippet src="Expression-Examples" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-Expression" inline="false"/></para>
   </body>
 </topic>

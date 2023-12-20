@@ -1,7 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-12-19T14:03:27.942+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Primary Expressions</title>
+  <keywords>
+    <keyword>_AND</keyword>
+    <keyword>_ARGLIST</keyword>
+    <keyword>_CAST</keyword>
+    <keyword>_NOT</keyword>
+    <keyword>_OR</keyword>
+    <keyword>_sizeof</keyword>
+    <keyword>_typeof</keyword>
+    <keyword>_XOR</keyword>
+    <keyword>CHECKED</keyword>
+    <keyword>CLASS</keyword>
+    <keyword>DEFAULT</keyword>
+    <keyword>FIELD</keyword>
+    <keyword>IF</keyword>
+    <keyword>IIF</keyword>
+    <keyword>NAMEOF</keyword>
+    <keyword>nativetype</keyword>
+    <keyword>PTR</keyword>
+    <keyword>SELF</keyword>
+    <keyword>SIZEOF</keyword>
+    <keyword>SUPER</keyword>
+    <keyword>TUPLE</keyword>
+    <keyword>TYPEOF</keyword>
+    <keyword>UNCHECKED</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Primary Expressions</para>
@@ -51,10 +76,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Tuple</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">TUPLE { .... }</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Codeblocks">CodeBlock</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"></para>
+          <para styleclass="Body Text">{|| ....}</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Lamda-Expressions">Lambda Expression</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">{ .. =&gt; }</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -62,7 +103,7 @@
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ">LINQ query</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"></para>
+          <para styleclass="Body Text">FROM .. SELECT ..</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -70,23 +111,15 @@
           <para styleclass="Body Text">DelegateConstructor call</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype { expression COMMA, @ Identifier ( ) }</para>
+          <para styleclass="Body Text">datatype { expression, @Identifier() }</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Constructor call with parameters and optional initializer</para>
+          <para styleclass="Body Text">Constructor call with optional initializer</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype { argumentlist }( LCURLY initializer }) ?</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Constructor call without parameters and with optional initializer</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype { } (LCURLY initializer }) ?</para>
+          <para styleclass="Body Text">datatype { argumentlist? } &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="Initializers">initializer</link>? }</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -126,7 +159,7 @@
           <para styleclass="Body Text">Nameof</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(NAMEOF) ( identifier )</para>
+          <para styleclass="Body Text">NAMEOF ( identifier )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -150,7 +183,7 @@
           <para styleclass="Body Text">Conversion</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">nativetype ( expression ): LONG(1+2)</para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">nativetype</link> ( expression ): LONG(1+2)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -158,7 +191,7 @@
           <para styleclass="Body Text">XBase Conversion</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">xbasetype ( expression ): FLOAT(1+2)</para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Types">xbasetype</link> ( expression ): FLOAT(1+2)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -195,18 +228,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">VOAnd</para>
+          <para styleclass="Body Text">Bitwise </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">_AND ( expressionlist )</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">VOOr</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">_OR ( expressionlist )</para>
+          <para styleclass="Body Text">(_AND, _OR, _XOR, _NOT) ( expressionlist )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -230,7 +255,7 @@
           <para styleclass="Body Text">MacroExpr</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">AMPERSAND ( expression )</para>
+          <para styleclass="Body Text">&amp; ( expression )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -238,7 +263,7 @@
           <para styleclass="Body Text">MacroVar</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">AMPERSAND identifier</para>
+          <para styleclass="Body Text">&amp; identifier</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

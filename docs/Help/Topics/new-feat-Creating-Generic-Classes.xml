@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">Creating Generic Classes</para>
     </header>
-    <para styleclass="Normal"><snippet src="GENERICs-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-GENERICs" inline="false"/></para>
   </body>
 </topic>

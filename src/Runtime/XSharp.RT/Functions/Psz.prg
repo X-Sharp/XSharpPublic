@@ -6,7 +6,8 @@
 
 USING System.Runtime.InteropServices
 USING System.Text
-
+// This code assumes 0 based arrays
+#pragma options("az",on)
 #region functions
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansibuff/*" />
@@ -103,9 +104,9 @@ FUNCTION Ansi2OemBuff(pszTarget AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 	LOCAL bp AS BYTE PTR
 	bp := pszSource
-	DO WHILE bp[1] != 0
-		IF bp[1] >= 97 .AND. bp[1] <= 122       // between 'a' and 'z'
-			bp[1] -= 32
+	DO WHILE bp[0] != 0
+		IF bp[0] >= 97 .AND. bp[0] <= 122       // between 'a' and 'z'
+			bp[0] -= 32
 		ENDIF
 		bp++
 	ENDDO
@@ -150,8 +151,8 @@ FUNCTION __String2MemRaw( s AS STRING ) AS PSZ
    IF s != NULL
       len := s:Length
       ret := (BYTE PTR) MemAlloc( (DWORD)( len + 1 ) )
-      FOR x := 1 UPTO len
-         ret[x] := (BYTE)( s[x-1] & 0xFF )
+      FOR x := 0 UPTO len -1
+         ret[x] := (BYTE)( s[x] & 0xFF )
       NEXT
    ENDIF
 
@@ -181,7 +182,7 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
 FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS BYTE
    LOCAL ret := 0 AS BYTE
    IF p != NULL_PSZ
-      ret := ((BYTE PTR)p)[dwOffset+1]
+      ret := ((BYTE PTR)p)[dwOffset]
    ENDIF
    RETURN ret
 
@@ -189,7 +190,7 @@ FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS BYTE
 /// <exclude/>
 FUNCTION _NPut( p AS PSZ, dwOffset AS DWORD, b AS BYTE ) AS VOID
    IF p != NULL_PSZ
-      ((BYTE PTR)p)[dwOffset+1] := b
+      ((BYTE PTR)p)[dwOffset] := b
    ENDIF
    RETURN
 

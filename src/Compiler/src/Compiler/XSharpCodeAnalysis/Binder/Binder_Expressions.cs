@@ -126,6 +126,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
                 if (cf.IsPszType())
                 {
+                    var zerobasedArray = Compilation.Options.HasOption(CompilerOption.ArrayZero, node);
+                    if (Compilation.Options.Dialect == XSharpDialect.Vulcan)
+                    {
+                        zerobasedArray = true;
+                    }
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
                     {
@@ -142,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
                         // we assume that all other dialects are closer to VO
-                        if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
+                        if (!zerobasedArray)
                         {
                             newarg = SubtractIndex(newarg, diagnostics, specialType);
                             newarg.WasCompilerGenerated = true;
@@ -535,7 +540,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     indexed: indexed,
                                     type: returnType,
                                     hasErrors: false);
-                            var hidewWarning = Compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && leftType.HasLateBindingAttribute();
+                            var hidewWarning = Compilation.Options.Dialect.AllowLateBindingForTypesWithLateBindingAttribute() && leftType.HasLateBindingAttribute();
                             if (!hidewWarning)
                             {
                                 // when FoxPro dialect and the type is marked with "allowLateBound" then no need for the warning
@@ -711,6 +716,23 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (node.IsMissing)
             {
                 return BadExpression(node);
+            }
+
+            if (this.ContainingMemberOrLambda is LambdaSymbol ls && ls.ParameterCount == 1 && ls.Parameters[0].Name == "__this" && node.Identifier.ValueText != "__this" && node is IdentifierNameSyntax)
+            {
+                var syntax = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, SyntaxFactory.IdentifierName("__this"), SyntaxFactory.IdentifierName(node.Identifier.ValueText));
+                DiagnosticBag loc_diagnostics = DiagnosticBag.GetInstance();
+                BoundExpression e = BindMemberAccess(syntax, false, false, loc_diagnostics);
+                bool valid = true;
+                if (e is BoundMethodGroup m)
+                {
+                    valid = m.Methods.Count() > 0;
+                }
+                if (!loc_diagnostics.HasAnyErrors() && valid)
+                {
+                    syntax = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, SyntaxFactory.IdentifierName("__this"), node);
+                    return BindMemberAccess(syntax, false, false, diagnostics);
+                }
             }
 
             // A simple-name is either of the form I or of the form I<A1, ..., AK>, where I is a
@@ -905,7 +927,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
 
                         expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, indexed: false, isError);
-                        
+
                         if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
                         {
                             diagnostics.Add(ErrorCode.ERR_InvalidExprTerm, node.Location, node.XNode.GetText());
@@ -931,7 +953,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (expression != null && expression.Type is not null && expression.Type.IsErrorType())
             {
-                if (expression.Type.ContainingAssembly != null)
+                if (expression.Type.ContainingAssembly != null && expression.Type.ContainingAssembly != Compilation.Assembly)
                 {
                     Error(diagnostics, ErrorCode.ERR_NoTypeDef, node, expression.Type, expression.Type.ContainingAssembly);
                 }

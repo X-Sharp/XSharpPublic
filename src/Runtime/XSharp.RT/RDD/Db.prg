@@ -491,7 +491,9 @@ FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
         lKeyVal  := .T.
         kInfoType := DBOI_EXPRESSION
     ENDIF
-    VoDb.OrderInfo(kInfoType, cIndexFile, uOrder, REF uNewSetting)
+    IF Used()
+        VoDb.OrderInfo(kInfoType, cIndexFile, uOrder, REF uNewSetting)
+    ENDIF
     IF lKeyVal
         IF uNewSetting:IsString
             IF SLen(uNewSetting) == 0

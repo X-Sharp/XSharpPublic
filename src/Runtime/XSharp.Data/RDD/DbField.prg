@@ -88,6 +88,8 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
     VIRTUAL  PROPERTY DbField        AS DbField      GET SELF:_dbField SET SELF:_dbField := value
     OVERRIDE PROPERTY IsReadOnly     AS LOGIC        GET SELF:_dbField:ReadOnly
     OVERRIDE PROPERTY PropertyType   AS System.Type  GET SELF:_dbField:DataType
+    OVERRIDE PROPERTY DisplayName    AS STRING       GET SELF:_dbField:Caption
+    OVERRIDE PROPERTY Description    AS STRING       GET SELF:_dbField:Description
     #endregion
 
 END CLASS

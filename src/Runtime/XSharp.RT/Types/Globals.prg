@@ -5,15 +5,16 @@
 //
 
 USING System.Reflection
+USING System.Collections.Concurrent
 USING System.Collections.Generic
 
 /// <summary>
 /// Support class to support runtime access to globals declared in the loaded X# assemblies
 /// </summary>
 CLASS XSharp.Globals
-    PRIVATE STATIC Cache AS Dictionary<Assembly, Dictionary<STRING, FieldInfo> >
+    PRIVATE STATIC Cache AS ConcurrentDictionary<Assembly, ConcurrentDictionary<STRING, FieldInfo> >
     STATIC CONSTRUCTOR()
-        Cache := Dictionary<Assembly, Dictionary<STRING, FieldInfo> >{}
+        Cache := ConcurrentDictionary<Assembly, ConcurrentDictionary<STRING, FieldInfo> >{}
 
     PRIVATE STATIC METHOD LoadAssemblies() AS LOGIC
         LOCAL newAsm AS LOGIC
@@ -23,7 +24,7 @@ CLASS XSharp.Globals
                 LOOP
             ENDIF
             newAsm := TRUE
-            VAR aDict := Dictionary<STRING, FieldInfo>{StringComparer.OrdinalIgnoreCase}
+            VAR aDict := ConcurrentDictionary<STRING, FieldInfo>{StringComparer.OrdinalIgnoreCase}
             VAR att := TYPEOF( XSharp.Internal.ClassLibraryAttribute )
             IF asm:IsDefined(  att, FALSE )
                 LOCAL cFunctionClass AS STRING
@@ -39,7 +40,7 @@ CLASS XSharp.Globals
                                         ! oFld:Attributes:HasFlag(FieldAttributes.Literal) .AND. ;          // DEFINES
                                         ! oFld:Attributes:HasFlag(FieldAttributes.InitOnly) .AND. ;         // DEFINES
                                         oFld:IsPublic
-                                    aDict:Add(oFld:Name, oFld)
+                                    aDict:TryAdd(oFld:Name, oFld)
                                 ENDIF
                             NEXT
                         ENDIF
@@ -48,9 +49,9 @@ CLASS XSharp.Globals
             ENDIF
             // when no fields then add the assembly with a NULL dictionary
             IF aDict:Count > 0
-                Cache:Add(asm, aDict)
+                Cache:TryAdd(asm, aDict)
             ELSE
-                Cache:Add(asm, NULL)
+                Cache:TryAdd(asm, NULL)
             ENDIF
         NEXT
         RETURN newAsm

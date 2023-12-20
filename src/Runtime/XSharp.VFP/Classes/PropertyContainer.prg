@@ -5,7 +5,9 @@
 //
 
 using System
+USING System.Collections
 using System.Collections.Generic
+using System.Collections.Concurrent
 using System.Diagnostics
 using System.Linq
 using System.Reflection
@@ -22,29 +24,28 @@ STRUCTURE XSharp.VFP.NameValuePair
 END STRUCTURE
 
 
-class XSharp.VFP.PropertyContainer
+class XSharp.VFP.PropertyContainer IMPLEMENTS IEnumerable<NameValuePair>
 
-    static _PropertyCache as Dictionary<System.Type, IList<PropertyDescriptor> >
+    static _PropertyCache as ConcurrentDictionary<System.Type, IList<PropertyDescriptor> >
 
     static constructor
-        _PropertyCache :=  Dictionary<System.Type, IList<PropertyDescriptor> > {}
+        _PropertyCache :=  ConcurrentDictionary<System.Type, IList<PropertyDescriptor> > {}
 
-    protected _Properties as Dictionary<string, PropertyDescriptor>
-    protected _Values     as Dictionary<string, usual>
+    protected _Properties as ConcurrentDictionary<string, PropertyDescriptor>
+    protected _Values     as ConcurrentDictionary<string, usual>
     protected _Owner      as object
 
     property Count as long get _Properties:Count
     constructor(oOwner as object)
-        _Properties := Dictionary<string, PropertyDescriptor>{StringComparer.OrdinalIgnoreCase}
-        _Values     := Dictionary<string, usual>{StringComparer.OrdinalIgnoreCase}
+        _Properties := ConcurrentDictionary<string, PropertyDescriptor>{StringComparer.OrdinalIgnoreCase}
+        _Values     := ConcurrentDictionary<string, usual>{StringComparer.OrdinalIgnoreCase}
         _Owner := oOwner
         self:InitCompileTimeProperties()
 
     private method InitCompileTimeProperties() as void
         var oType := _Owner:GetType()
         local list as IList<PropertyDescriptor>
-        if _PropertyCache:ContainsKey(oType)
-            list := _PropertyCache[oType]
+        if _PropertyCache:TryGetValue(oType, out list)
             foreach var item in list
                 _Properties[item:Name] := item
             next
@@ -56,20 +57,25 @@ class XSharp.VFP.PropertyContainer
             var met := oProp:GetGetMethod(true)
             if met != null
                 var nVis := iif(met:IsPublic,1 ,iif(met:IsPrivate,3,2))
-                var desc := self:Add(oProp:Name, nil, nVis,nil)
-                if _Values:ContainsKey(oProp:Name)
-                    _Values:Remove(oProp:Name)
-                endif
+                var desc := self:_Add(oProp:Name, nVis,nil, out var _)
                 list:Add(desc)
                 _Properties[oProp:Name]:PropInfo := oProp
             endif
         next
-        _PropertyCache[oType] := list
+        var aFields := _Owner:GetType():GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+        foreach var oFld in aFields
+            var nVis := iif(oFld:IsPublic,1 ,iif(oFld:IsPrivate,3,2))
+            var desc := self:_Add(oFld:Name, nVis,nil , out var _)
+            list:Add(desc)
+            _Properties[oFld:Name]:PropInfo := oFld
+        next
+        _PropertyCache:TryAdd(oType, list)
         return
 
-       #region Property related
-     method Add(cName as string, uValue as usual, nVisibility as usual, cDescription as usual) as PropertyDescriptor
-        // Note that we need to handle the syntax AddProperty("PropertyName(3)") which adds an array property with 3 elements
+    #region Property related
+    private method _Add(cName as String, nVisibility as usual, cDescription as usual, foxArray OUT __FoxArray ) as PropertyDescriptor
+       // Note that we need to handle the syntax AddProperty("PropertyName(3)") which adds an array property with 3 elements
+        foxArray := NULL
         if ! String.IsNullOrEmpty(cName)
             local cDims := String.Empty as string
             cName := cName:Trim()
@@ -95,7 +101,7 @@ class XSharp.VFP.PropertyContainer
                 else
                     aValue:ReDim(dims[1], dims[2])
                 endif
-                uValue := aValue
+                foxArray := aValue
             endif
             local nPropVis  := PropertyVisibility.Public as PropertyVisibility
             local cPropDesc := "" as string
@@ -109,22 +115,30 @@ class XSharp.VFP.PropertyContainer
              endif
              var desc := PropertyDescriptor{cName, nPropVis, cPropDesc}
              _Properties[cName]:= desc
-             _Values[cName] := uValue
              return desc
+        endif
+        return null
+
+    method Add(cName as string, uValue as usual, nVisibility as usual, cDescription as usual) as PropertyDescriptor
+        var desc := self:_Add(cName, nVisibility, cDescription, out var foxArray)
+        if desc != null
+            if foxArray != NULL
+                _Values[cName] := foxArray
+            else
+                _Values[cName] := uValue
+            endif
+            return desc
         endif
         return null
 
     method Remove(cPropertyName as string) as logic
         // FoxPro does not throw an error when non existing properties are removed
         // FoxPro does not require the dimensions when deleting an array property
-        if _Values:ContainsKey(cPropertyName)
-            _Values:Remove(cPropertyName)
-        endif
-        if _Properties:ContainsKey(cPropertyName)
-            local desc := _Properties[cPropertyName] as PropertyDescriptor
+        _Values:TryRemove(cPropertyName, out var _)
+        if _Properties:TryGetValue(cPropertyName, out var desc)
             // you cannot remove builtin properties, only dynamic properties
             if desc:PropInfo == null
-                _Properties:Remove(cPropertyName)
+                _Properties:TryRemove(cPropertyName, out var _)
             endif
             return true
         endif
@@ -134,10 +148,12 @@ class XSharp.VFP.PropertyContainer
 
     #region IDynamicProperties
     virtual method NoIvarPut(cName as string, uValue as usual) as void
-        if _Properties:ContainsKey( cName)
-            var desc := _Properties[cName]
-            if desc:PropInfo != null
-                desc:PropInfo:SetValue(_Owner, uValue)
+        if _Properties:TryGetValue( cName, out var desc)
+            if desc:PropInfo is PropertyInfo var oProp
+                oProp:SetValue(_Owner, uValue)
+                return
+            elseif desc:PropInfo is FieldInfo var oFld
+                oFld:SetValue(_Owner, uValue)
                 return
             elseif self:_Values:ContainsKey(cName)
                 self:_Values[cName] := uValue
@@ -148,12 +164,13 @@ class XSharp.VFP.PropertyContainer
 
 
     virtual method NoIvarGet(cName as string) as usual
-        if _Properties:ContainsKey(cName)
-            var desc := _Properties[cName]
-            if desc:PropInfo != null
-                return desc:PropInfo:GetValue(_Owner)
-            elseif self:_Values:ContainsKey(cName)
-                return self:_Values[cName]
+        if _Properties:TryGetValue(cName, out var desc)
+            if desc:PropInfo is PropertyInfo var oProp
+                return oProp:GetValue(_Owner)
+            elseif desc:PropInfo is FieldInfo var oFld
+                return oFld:GetValue(_Owner)
+            elseif self:_Values:TryGetValue(cName, out var result)
+                return result
             endif
         endif
         throw PropertyNotFoundException{cName}
@@ -170,20 +187,27 @@ class XSharp.VFP.PropertyContainer
             local desc as PropertyDescriptor
             var uValue := self:NoIvarGet(item:Key)
             desc := item:Value
-            if desc:PropInfo == null .or. desc:PropInfo:PropertyType != typeof(PropertyContainer)
+            if desc:PropInfo == null .or. (desc:PropInfo is PropertyInfo var info .and. info:PropertyType != typeof(PropertyContainer))
 
                 result:Add( NameValuePair{item:Key, uValue})
             endif
         next
         return result
 
+     method IEnumerable<NameValuePair>.GetEnumerator() AS IEnumerator<NameValuePair>
+        var props := SELF:GetProperties()
+        return props:GetEnumerator()
+
+     method IEnumerable.GetEnumerator() AS IEnumerator
+        var props := SELF:GetProperties()
+        return props:GetEnumerator()
 end class
 
 public class XSharp.VFP.PropertyDescriptor
     public Name           as string
     public Visibility     as PropertyVisibility
     public Description    as string
-    public PropInfo       as PropertyInfo
+    public PropInfo       as MemberInfo
     public constructor(cName as string, nVis as PropertyVisibility, cDesc as string)
         Name        := cName
         Visibility  := nVis

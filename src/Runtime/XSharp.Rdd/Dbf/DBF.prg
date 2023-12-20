@@ -2409,7 +2409,10 @@ END PROPERTY
 OVERRIDE PROPERTY Deleted 	AS LOGIC
 	GET
 		SELF:ForceRel()
-		SELF:_readRecord()
+        SELF:_readRecord()
+        IF SELF:_EoF
+            RETURN FALSE
+        ENDIF
 		RETURN SELF:_Deleted
 	END GET
 END PROPERTY

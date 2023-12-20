@@ -714,9 +714,10 @@ OVERRIDE METHOD GoCold() AS LOGIC
     ENDIF
     IF SELF:_Hot
         SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_READ)
+        SELF:_Hot           := FALSE
+        RETURN SELF:RecordMovement()
     ENDIF
-    SELF:_Hot           := FALSE
-RETURN SELF:RecordMovement()
+    RETURN TRUE
 
     /// <inheritdoc />
 OVERRIDE METHOD GoHot() AS LOGIC

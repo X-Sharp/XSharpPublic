@@ -104,11 +104,12 @@ FUNCTION __ScatterArray(uSource, aFieldList, lBlank) AS ARRAY CLIPPER
     ELSE
         aResult := __FoxArray{(DWORD) nLen}
     ENDIF
-
-    FOR VAR nI := 0 to nLen-1
-        VAR oField := aFields[nI]
-        aResult[nI] := oField:Value
-    NEXT
+    IF nLen > 0
+        FOR VAR nI := 0 to nLen-1
+            VAR oField := aFields[nI]
+            aResult[nI] := oField:Value
+        NEXT
+    ENDIF
     RETURN aResult
 
 

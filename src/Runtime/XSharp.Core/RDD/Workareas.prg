@@ -5,6 +5,7 @@
 //
 
 using System.Collections.Generic
+using System.Collections.Concurrent
 using System.Diagnostics
 USING System.Linq
 #undef AUTOCLOSETIMER
@@ -18,7 +19,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     PUBLIC CONST MaxWorkareas := 4096 AS DWORD
     #endregion
     // This is a table across threads that has all the RDDs and Workareas
-    static protected _AllRDDs   as Dictionary<IRdd, Workareas>
+    static protected _AllRDDs   as ConcurrentDictionary<IRdd, Workareas>
 #ifdef AUTOCLOSETIMER
     STATIC PRIVATE _oTimer       as System.Threading.Timer
 
@@ -51,7 +52,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         ENDIF
 #endif
     STATIC CONSTRUCTOR()
-        _AllRDDs  := Dictionary<IRdd, Workareas>{}
+        _AllRDDs  := ConcurrentDictionary<IRdd, Workareas>{}
 #ifdef AUTOCLOSETIMER
     // every 30 seconds we do some cleanup for dangling RDD objects
         _oTimer   := System.Threading.Timer{Timer_Tick,NULL, 0, 30_000}
@@ -67,7 +68,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 // and is moved to the main thread for example
                 _AllRDDs[oRDD] := oWA
             ELSE
-                _AllRDDs.Add(oRDD, oWA)
+                _AllRDDs.TryAdd(oRDD, oWA)
             ENDIF
         END LOCK
         RETURN
@@ -75,7 +76,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     STATIC METHOD _Remove(oRDD AS IRdd) AS LOGIC
         begin lock _AllRDDs
             if _AllRDDs:ContainsKey(oRDD)
-                _AllRDDs:Remove(oRDD)
+                _AllRDDs:TryRemove(oRDD, out null)
                 return true
             endif
         end lock
@@ -94,8 +95,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RETURN FALSE
 
         #region Fields
-        PRIVATE Aliases            AS Dictionary<STRING, DWORD>	// 1 based area numbers !
-        PRIVATE RDDs	           AS Dictionary<DWORD, IRdd>
+        PRIVATE Aliases            AS ConcurrentDictionary<STRING, DWORD>	// 1 based area numbers !
+        PRIVATE RDDs	           AS ConcurrentDictionary<DWORD, IRdd>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE iCurrentWorkarea    AS DWORD
         PRIVATE WorkareaStack       AS Stack<DWORD>
@@ -103,8 +104,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         PRIVATE Thread              AS System.Threading.Thread
 #endif
         // xbase++ has a cargo slot per Workarea
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PRIVATE cargo    := Dictionary<DWORD, OBJECT>{} AS Dictionary<DWORD, OBJECT>      // 1 based area number and value
+        PRIVATE cargo    := ConcurrentDictionary<DWORD, OBJECT>{} AS ConcurrentDictionary<DWORD, OBJECT>      // 1 based area number and value
 
         INTERNAL METHOD PushCurrentWorkarea(dwNew AS DWORD) AS VOID
             WorkareaStack:Push(iCurrentWorkarea)
@@ -116,12 +116,12 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 RETURN iCurrentWorkarea
             ENDIF
             RETURN 0
-        INTERNAL PROPERTY OpenRDDs AS Dictionary<DWORD, IRdd> GET RDDs
+        INTERNAL PROPERTY OpenRDDs AS ConcurrentDictionary<DWORD, IRdd> GET RDDs
     #endregion
     /// <exclude />
     CONSTRUCTOR()
-        Aliases 			:= Dictionary<STRING, DWORD>{ (INT) MaxWorkareas, StringComparer.OrdinalIgnoreCase}
-        RDDs				:= Dictionary<DWORD, IRdd>{}
+        Aliases 			:= ConcurrentDictionary<STRING, DWORD>{ StringComparer.OrdinalIgnoreCase}
+        RDDs				:= ConcurrentDictionary<DWORD, IRdd>{}
         iCurrentWorkarea	:= 1
         WorkareaStack       := Stack<DWORD>{}
 #ifdef AUTOCLOSETIMER
@@ -138,8 +138,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
             RuntimeState.LastRddError := NULL
             FOREACH VAR element IN Aliases
                 VAR nArea := element:Value
-                IF RDDs:ContainsKey(nArea) .AND. RDDs[nArea] != NULL
-                    VAR oRdd := RDDs[nArea]
+                IF RDDs:TryGetValue(nArea, OUT VAR oRdd) .AND. oRdd != NULL
                     TRY
                         IF ! oRdd:Close()
                             lResult := FALSE
@@ -185,12 +184,11 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         IF IsValidArea(nArea)
             BEGIN LOCK RDDs
                 //RuntimeState.LastRddError  := NULL
-                IF RDDs:ContainsKey(nArea)
-                    VAR oRdd := RDDs[ nArea]
+                IF RDDs:TryGetValue(nArea, out var oRdd)
                     IF oRdd != NULL_OBJECT
                         TRY
                             lResult := oRdd:Close()
-                            Aliases:Remove(oRdd:Alias)
+                            Aliases:TryRemove(oRdd:Alias, out null)
                             // Remove from Global Thread-Wide list
                             Workareas._Remove(oRdd)
                         CATCH e AS Exception
@@ -198,7 +196,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                             RuntimeState.LastRddError 	:= e
                         END TRY
                     ENDIF
-                    RDDs:Remove(nArea)
+                    RDDs:TryRemove(nArea, out null)
                 ELSE
                     lResult        := FALSE
                 ENDIF
@@ -269,8 +267,8 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     PUBLIC METHOD GetRDD( nArea AS DWORD) AS IRdd
         IF IsValidArea(nArea)
             BEGIN LOCK RDDs
-                IF RDDs:ContainsKey(nArea)
-                    RETURN RDDs[ nArea]
+                IF RDDs:TryGetValue(nArea, out var oRDD)
+                    RETURN oRDD
                 ENDIF
             END LOCK
         ENDIF
@@ -294,7 +292,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 ENDIF
                 RDDs[ nArea] 	:= oRDD
                 IF ! Aliases:ContainsKey(sAlias)
-                    Aliases:Add(sAlias, nArea)
+                    Aliases:TryAdd(sAlias, nArea)
                 ENDIF
                 SELF:SetCargo(nArea, NULL)
                 Workareas._Add(oRDD, SELF)
@@ -353,7 +351,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         IF IsValidArea(nArea)
             IF newCargo == NULL
                 if self:cargo:ContainsKey(nArea)
-                    self:cargo:Remove(nArea)
+                    self:cargo:TryRemove(nArea, out null)
                 endif
             ELSE
                 SELF:cargo[nArea] := newCargo

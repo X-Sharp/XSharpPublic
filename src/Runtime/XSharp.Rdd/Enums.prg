@@ -180,7 +180,7 @@ BEGIN NAMESPACE XSharp.RDD
             OTHERWISE
                 // this is what VO does and Vulcan.
                 // need to check what FoxPro and Xbase++ do.
-                RETURN OsCodepage.CP_INI_DOS_US
+                RETURN (OsCodepage) RuntimeState.DosCodePage
             END SWITCH
 
 

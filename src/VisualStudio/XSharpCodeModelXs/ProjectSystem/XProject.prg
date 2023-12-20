@@ -1020,8 +1020,10 @@ CLASS XProject
         // So when looking for the Type Foo.SomeType (defined in an external assembly) we should not return
         // Bar.SomeType (defined in code).
 
-        if tmp != null .and. originalName:Contains(".") .and. tmp:FullName != originalName
-            tmp := NULL
+        if tmp != null .and. originalName:Contains(".")
+            if !tmp:NameEquals(originalName)
+                tmp := NULL
+            ENDIF
         endif
         _lastFound  := tmp
         _lastName   := originalName

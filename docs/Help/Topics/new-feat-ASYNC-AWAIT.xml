@@ -6,6 +6,6 @@
     <header>
       <para styleclass="Heading1">ASYNC - AWAIT</para>
     </header>
-    <para styleclass="Normal"><snippet src="ASYNC-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-ASYNC" inline="false"/></para>
   </body>
 </topic>

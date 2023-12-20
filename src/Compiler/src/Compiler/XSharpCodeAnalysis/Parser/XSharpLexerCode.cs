@@ -1052,7 +1052,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '&':
                         parseOne(AMP);
-                        if (Dialect.AllowOldStyleComments() && Expect('&'))
+                        if (AllowOldStyleComments && Expect('&'))
                             parseSlComment();
                         else if (Expect('&'))
                             parseOne(AND);
@@ -2174,7 +2174,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     // normal keywords
                     // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
                     // We handle that in XBasePPCmd.xh
-                    {"ENDFOR",   NEXT },
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
                     {"READONLY",READONLY },
@@ -2243,7 +2242,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var vfpKeyWordAbbrev = new XSharpKeywords
                 {
                     {"ENDDEFINE", ENDDEFINE },
-                    {"ENDFOR", NEXT },
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },
@@ -2372,6 +2370,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "STRUCT", STRUCTURE},
                     { "THROW", THROW},
                     { "TRY", TRY},
+                    { "TUPLE", TUPLE},
                     { "TYPEOF", TYPEOF},
                     { "UNTIL", UNTIL},
                     { "VALUE", VALUE},

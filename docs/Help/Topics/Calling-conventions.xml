@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-06-29T22:23:13.825+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-12-19T12:07:00.280+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Calling conventions</title>
   <body>
     <header>
       <para styleclass="Heading1">Calling conventions</para>
     </header>
-    <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;">Calling conventions are something from the unmanaged world. They describe how parameters should be passed when you call a function or method and they also describe who is responsible for adjusting the stack when the called function / method returns.</text></para>
-    <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;">Different compilers have different default strategies for passing parameters to functions.</text></para>
+    <para styleclass="Body Text">Calling conventions are something from the unmanaged world. They describe how parameters should be passed when you call a function or method and they also describe who is responsible for adjusting the stack when the called function / method returns.</para>
+    <para styleclass="Body Text">Different compilers have different default strategies for passing parameters to functions.</para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><table styleclass="Default" rowcount="6" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:144px;">

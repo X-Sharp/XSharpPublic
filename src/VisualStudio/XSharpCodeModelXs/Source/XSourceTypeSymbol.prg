@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY GenericName    AS STRING AUTO
       PROPERTY TickedName     AS STRING
         GET
-            IF SELF:IsGeneric
+            IF SELF:IsGeneric .and. ! SELF:Name:Contains('`')
                 RETURN SELF:Name+"`"+SELF:TypeParameters:Count:ToString()
             ENDIF
             RETURN SELF:Name
@@ -369,6 +369,23 @@ BEGIN NAMESPACE XSharpModel
              END SWITCH
          ENDIF
          RETURN sb:ToString()
+        METHOD NameEquals(sName AS STRING) AS LOGIC
+            var tickedName := SELF:TickedName
+            if sName:Contains('.') .and. !String.IsNullOrEmpty(SELF:Namespace)
+                // compare full name
+                
+                IF SELF:FullName:Equals(sName, StringComparison.OrdinalIgnoreCase)
+                    RETURN TRUE
+                ENDIF
+                tickedName := SELF:Namespace+"." + TickedName
+                RETURN tickedName:Equals(sName, StringComparison.OrdinalIgnoreCase)
+            else
+                if SELF:Name:Equals(sName, StringComparison.OrdinalIgnoreCase)
+                    RETURN TRUE
+                ENDIF
+                RETURN tickedName:Equals(sName, StringComparison.OrdinalIgnoreCase)
+            ENDIF
+        END METHOD
 
 END CLASS
 

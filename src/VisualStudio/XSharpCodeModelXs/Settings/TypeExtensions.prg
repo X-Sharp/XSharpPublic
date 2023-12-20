@@ -146,9 +146,8 @@ BEGIN NAMESPACE XSharp.Settings
         if typeName:IndexOf("/") >= 0
             typeName := typeName:Replace('/','.')
         endif
-        IF (SystemToXSharp:ContainsKey(typeName))
-            //
-            typeName := SystemToXSharp[typeName]
+        IF SystemToXSharp:TryGetValue(typeName, out var name)
+            typeName := name
         ENDIF
         VAR pos := typeName:IndexOf("<")
         IF pos > 0

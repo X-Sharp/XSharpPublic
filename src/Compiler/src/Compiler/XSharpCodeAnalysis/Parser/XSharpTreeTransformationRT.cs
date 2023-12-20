@@ -17,6 +17,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using System.Xml.Linq;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
@@ -304,9 +305,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (initializer != null)
                     {
                         exp = GenerateMemVarPut(memvar.Context, GenerateLiteral(name), initializer);
+                        exp.XNode = memvar.Context;
+                        stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
                     }
-                    stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
-
                 }
             }
             var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
@@ -1070,6 +1071,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected void AddLocalName(string name, XSharpParserRuleContext context)
+        {
+            CheckForFileWideMemVar(name, context);
+            var fieldInfo = findVar(name);
+            if (fieldInfo == null || fieldInfo.IsFileWidePublic)
+            {
+                var alias = XSharpSpecialNames.LocalPrefix;
+                var field = addFieldOrMemvar(name, alias, context, context.Start);
+                if (field != null)
+                    field.IsCreated = true;
+            }
+        }
+
+        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
+        {
+            base.EnterLocalvar(context);
+            if (_options.SupportsMemvars)
+            {
+                var name = context.Id.GetText();
+                AddLocalName(name, context);
+            }
+        }
+
+        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
+        {
+            base.EnterImpliedvar(context);
+            if (_options.SupportsMemvars)
+            {
+                var name = context.Id.GetText();
+                AddLocalName(name, context);
+            }
+        }
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix,
             XSharpParserRuleContext context, IToken modifier)
         {
@@ -1080,6 +1113,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (field.IsPublic)
                     return field;
+                if (field.IsLocal && prefix == XSharpSpecialNames.LocalPrefix)
+                    return null;
                 ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                 return null;
             }
@@ -1179,26 +1214,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        protected void CheckForFileWideMemVar(string name, XSharpParserRuleContext context)
+        {
+            if (_options.SupportsMemvars)
+            {
+                var filewide = findFileWideMemVar(name);
+                if (filewide != null)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FileWideMemVarName, name));
+                }
+            }
+        }
+        protected MemVarFieldInfo findFileWideMemVar(string name)
+        {
+            MemVarFieldInfo memvar = null;
+            if (_options.SupportsMemvars)
+            {
+                name = CleanVarName(name);
+                _filewideMemvars.TryGetValue(name, out memvar);
+            }
+            return memvar;
+        }
         protected MemVarFieldInfo findVar(string name)
         {
 
-            MemVarFieldInfo memvar = null;
-            // First look in the FileWide Memvars
             name = CleanVarName(name);
+            // First look in the FileWide Memvars
+            MemVarFieldInfo memvar = null;
             if (_options.SupportsMemvars)
             {
                 _filewideMemvars.TryGetValue(name, out memvar);
             }
             // the next is also needed when memvars are not supported, since name could be a field
-            if (memvar == null && CurrentMember != null)
+            if (CurrentMember != null)
             {
-                memvar = CurrentMember.Data.GetField(name);
+                var curvar = CurrentMember.Data.GetField(name);
+                if (curvar != null)
+                    memvar = curvar;
             }
             return memvar;
         }
         protected MemVarFieldInfo findMemVar(string name)
         {
-
             MemVarFieldInfo memvar = findVar(name);
             if (memvar != null && !memvar.IsLocal)
                 return memvar;
@@ -1543,7 +1600,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ClassDeclarationSyntax GenerateDefaultClipperCtor(ClassDeclarationSyntax classdecl, XP.ITypeContext context)
         {
             if (!context.TypeData.Partial && !context.TypeData.HasInstanceCtor &&
-                _options.HasOption(CompilerOption.DefaultClipperContructors, (XSharpParserRuleContext)context, PragmaOptions))
+                _options.HasOption(CompilerOption.DefaultClipperConstructors, (XSharpParserRuleContext)context, PragmaOptions))
             {
                 var hasComImport = false;
                 foreach (var attlist in classdecl.AttributeLists)
@@ -2859,7 +2916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             for (int i = 0; i < parameters.Parameters.Count; i++)
             {
                 var p = parameters.Parameters[i];
-                if (p.Type == PszType)
+                if (p.Type.IsPszType())
                 {
                     hasPsz = true;
                     break;
@@ -2872,7 +2929,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
                     var p = parameters.Parameters[i];
-                    if (p.Type != PszType)
+                    if (!p.Type.IsPszType())
                     {
                         @params.Add(p);
                     }
@@ -3410,7 +3467,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (XP.ParameterContext par in parameters)
                     {
-                        CurrentMember.Data.AddField(par.Id.GetText(), XSharpSpecialNames.ClipperParamPrefix, par);
+                        var name = par.Id.GetText();
+                        CheckForFileWideMemVar(name, par);
+                        CurrentMember.Data.AddField(name, XSharpSpecialNames.ClipperParamPrefix, par);
                     }
                 }
             }

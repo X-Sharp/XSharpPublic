@@ -157,37 +157,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(stmt);
         }
 
-        private void AddLocalName(string name, XSharpParserRuleContext context, bool local)
-        {
-            var fieldInfo = findVar(name);
-            if (fieldInfo == null)
-            {
-                var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
-                var field = addFieldOrMemvar(name, alias, context, context.Start);
-                field.IsCreated = local;
-            }
-        }
-
-        public override void EnterLocalvar([NotNull] XP.LocalvarContext context)
-        {
-            base.EnterLocalvar(context);
-            var name = context.Id.GetText();
-            AddLocalName(name, context, true);
-        }
-
-        public override void EnterImpliedvar([NotNull] XP.ImpliedvarContext context)
-        {
-            base.EnterImpliedvar(context);
-            var name = context.Id.GetText();
-            AddLocalName(name, context, true);
-        }
-
         public override void EnterFoxdimvar([NotNull] XP.FoxdimvarContext context)
         {
             if (context.Id != null)
             {
                 var name = CleanVarName(context.Id.GetText());
                 var alias = XSharpSpecialNames.MemVarPrefix;
+                CheckForFileWideMemVar(name, context);
                 var field = findVar(name);
                 if (field == null)
                 {

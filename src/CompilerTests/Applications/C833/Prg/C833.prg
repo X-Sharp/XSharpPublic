@@ -2,6 +2,8 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/911
 #pragma warnings(9025, off) // return statement
 #pragma warnings(162, off) // unreachable code
+#translate FOR EACH => FOREACH
+#translate ENDFOR => NEXT
 CLASS TestClass
 	METHOD Another() AS USUAL
 		LOCAL aFiles

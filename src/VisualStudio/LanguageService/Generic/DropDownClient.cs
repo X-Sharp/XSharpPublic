@@ -213,16 +213,16 @@ namespace XSharp.LanguageService
             if (member != null)
             {
                 var prot = _getUniqueName(member);
-                if (_membersDict.ContainsKey(prot))
+                if (_membersDict.TryGetValue(prot, out var memLoc))
                 {
-                    return _membersDict[prot];
+                    return memLoc;
                 }
                 // The selected member may be a field or a define that is not shown
                 // In that case try to select the class
                 prot = _getUniqueName((XSourceEntity)member.Parent);
-                if (_membersDict.ContainsKey(prot))
+                if (_membersDict.TryGetValue(prot, out var parentLoc))
                 {
-                    return _membersDict[prot];
+                    return parentLoc;
                 }
             }
             return -1;

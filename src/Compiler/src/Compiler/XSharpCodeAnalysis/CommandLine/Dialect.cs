@@ -166,7 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        public static bool AllowLateBindingForTypesWithTheAttribute(this XSharpDialect dialect)
+        public static bool AllowLateBindingForTypesWithLateBindingAttribute(this XSharpDialect dialect)
         {
             switch (dialect)
             {

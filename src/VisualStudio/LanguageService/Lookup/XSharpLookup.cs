@@ -67,7 +67,12 @@ namespace XSharp.LanguageService
                 {
                     var pars = member.Parameters.Where(x => StringEquals(x.Name, name)).ToList();
                     if (pars.Count >0)
-                        result.AddRange(pars);
+                    {
+                        foreach (var par in pars)
+                        {
+                            result.Add(par.Clone());
+                        }
+                    }
                 }
                 if (result.Count == 0)
                 {
@@ -79,7 +84,7 @@ namespace XSharp.LanguageService
                         var local = member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine <= location.LineNumber).LastOrDefault();
                         if (local != null)
                         {
-                            result.Add(local);
+                            result.Add(local.Clone());
                         }
                     }
                 }
@@ -273,9 +278,7 @@ namespace XSharp.LanguageService
             if (name.EndsWith("[]"))
             {
                 name = name.Substring(0, name.Length - 2);
-                if (arrayTypes.ContainsKey(name))
-                    oType = arrayTypes[name];
-                else
+                if (!arrayTypes.TryGetValue(name, out oType))
                 {
                     oType = GetArrayType(location, name);
                     arrayTypes.Add(name, oType);
@@ -601,6 +604,7 @@ namespace XSharp.LanguageService
             int count = -1;
             startType = currentType;
             bool resetState = false;
+            string ns = "";
             while (!list.Eoi())
             {
                 // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
@@ -620,7 +624,7 @@ namespace XSharp.LanguageService
                     if (top != null && top.Kind == Kind.Namespace)
                     {
                         var elements = top.FullName.Split('.');
-                        var ns = "";
+                        ns = "";
                         foreach (var element in elements)
                         {
                             if (ns.Length > 0)
@@ -723,7 +727,7 @@ namespace XSharp.LanguageService
                         continue;
 
                     case XSharpLexer.COLON:
-                        state = CompletionState.Members;
+                        state = CompletionState.InstanceMembers;
                         resetState = false;
                         startOfExpression = false;
                         continue;
@@ -950,7 +954,11 @@ namespace XSharp.LanguageService
                                 currentName = KnownTypes.SystemArray;
                             }
                         }
-                        var types = SearchType(location, currentName, additionalUsings);
+                        var lookupName = currentName;
+                        if (!String.IsNullOrEmpty(ns))
+                            lookupName = ns + "." + lookupName;
+
+                        var types = SearchType(location, lookupName, additionalUsings);
                         if (types?.Count() > 0)
                         {
                             result.AddRange(types);
@@ -1116,7 +1124,7 @@ namespace XSharp.LanguageService
                 var namespaces = location.Project.AllNamespaces.Where(n => additionalUsings.Contains(n));
                 if (namespaces.Count() > 0)
                 {
-                    var ns = namespaces.First();
+                    ns = namespaces.First();
                     result.Add(new XNamespaceSymbol(ns));
                 }
             }
@@ -1849,20 +1857,10 @@ namespace XSharp.LanguageService
             WriteOutputMessage($" SearchMethodStaticIn {location.File.SourcePath}, '{name}' ");
             //
             var emptyusing = new string[] { };
-            foreach (string staticUsing in location.File.AllUsingStatics)
+            var staticMembers = SearchMembersInStaticUsings(location, name);
+            if (staticMembers.Count > 0)
             {
-                // Provide an Empty Using list, so we are looking for FullyQualified-name only
-                var temp = location.Project.FindType(staticUsing, emptyusing);
-                //
-                if (temp != null)
-                {
-                    var found = SearchMethod(location, temp, name, Modifiers.Public, true);
-                    result.AddRange(found);
-                }
-                if (result.Count > 0)
-                {
-                    break;
-                }
+                result.AddRange(staticMembers.Where(m => m.Kind.IsMethod()));
             }
             DumpResults(result, $" SearchMethodStaticIn {location.File.SourcePath}, '{name}'");
             return result;
@@ -1876,6 +1874,20 @@ namespace XSharp.LanguageService
                 return result;
             }
             WriteOutputMessage($" SearchGlobalField {location.File.SourcePath},'{name}' ");
+            // First search globals in source code
+            var sym = location.Project.FindGlobalOrDefine(name, true);
+            if (sym != null)
+            {
+                result.Add(sym);
+                return result;
+            }
+            var staticMembers = SearchMembersInStaticUsings(location, name);
+            if (staticMembers.Count > 0)
+            {
+                result.AddRange(staticMembers.Where(m => !m.Kind.IsMethod() ));
+                if (result.Count > 0)
+                    return result;
+            }
             if (location.Project.AssemblyReferences == null)
             {
                 return result;
@@ -1887,6 +1899,28 @@ namespace XSharp.LanguageService
                 result.AddRange(global);
             }
             DumpResults(result, $" SearchGlobalField {location.File.SourcePath},'{name}'");
+            return result;
+        }
+
+        private static IList<IXMemberSymbol> SearchMembersInStaticUsings(XSharpSearchLocation location, string name)
+        {
+            var result = new List<IXMemberSymbol>();
+            if (location.File.StaticUsings.Count > 0)
+            {
+                foreach (var typeName in location.File.StaticUsings)
+                {
+                    var xtypes = SearchType(location, typeName, null);
+                    foreach (var xtype in xtypes)
+                    {
+                        var members = SearchMembers(location, xtype, name, Modifiers.Internal);
+                        if (members?.Count > 0)
+                        {
+                            result.AddRange(members);
+                            return result;
+                        }
+                    }
+                }
+            }
             return result;
         }
 
@@ -1909,6 +1943,11 @@ namespace XSharp.LanguageService
                 var found = location.Project.FindFunctionsInAssemblyReferences(name);
                 result.AddRange(found);
             }
+            var staticMembers = SearchMembersInStaticUsings(location, name);
+            if (staticMembers.Count > 0)
+            {
+                result.AddRange(staticMembers.Where(m => m.Kind.HasParameters()));
+            }
             DumpResults(result, $" SearchFunction {location.File.SourcePath}, '{name}'");
             return result;
         }
@@ -1921,8 +1960,11 @@ namespace XSharp.LanguageService
                 int i = 0;
                 foreach (var result in results)
                 {
-                    ++i;
-                    Logger.Information($"{i}: {result.Kind} {result.Prototype}");
+                    if (result != null)
+                    {
+                        ++i;
+                        Logger.Information($"{i}: {result.Kind} {result.Prototype}");
+                    }
                 }
             }
         }

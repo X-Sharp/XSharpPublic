@@ -234,9 +234,10 @@ namespace XSharpDebugger
             var pos = name.IndexOf("`");
             if (pos > 0)
                 name = name.Substring(0, pos);
-            if (s_types.ContainsKey(name))
-                return s_types[name];
-            var result = new XSharpType(name);
+			XSharpType result;
+            if (s_types.TryGetValue(name, out result))
+                return result;
+            result = new XSharpType(name);
             s_types.Add(name, result);
             return result;
         }

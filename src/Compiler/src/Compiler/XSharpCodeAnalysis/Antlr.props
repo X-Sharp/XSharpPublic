@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-	<ErrorFacts>$(RoslynBin)CSharpErrorFactsGenerator\x64\Release\netcoreapp3.1\CSharpErrorFactsGenerator.exe</ErrorFacts>
-	<ErrorIn>$(MSBuildThisFileDirectory)ErrorCode.cs</ErrorIn>
-	<ErrorOut>$(MSBuildThisFileDirectory)Generated\ErrorFacts.cs</ErrorOut>
+    <ErrorFacts>$(RoslynBin)CSharpErrorFactsGenerator\x64\Release\netcoreapp3.1\CSharpErrorFactsGenerator.exe</ErrorFacts>
+    <ErrorIn>$(MSBuildThisFileDirectory)ErrorCode.cs</ErrorIn>
+    <ErrorOut>$(MSBuildThisFileDirectory)Generated\ErrorFacts.cs</ErrorOut>
     <AntlrDir>$(Solutiondir)Compiler\eng\</AntlrDir>
     <AntlrCall>java -jar $(AntlrDir)antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall>
     <AntlrPackage>-package LanguageService.CodeAnalysis.XSharp.SyntaxParser</AntlrPackage>
@@ -23,7 +23,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath);$(AntlrLexerIn);$(AntlrParserIn)</MSBuildAllProjects>
   </PropertyGroup>
   <!--These tasks will only run when needed. We compare filedates for the input and output -->
-  
+
   <Target Name="ErrorFacts" BeforeTargets="DispatchToInnerBuilds" Condition="$(TicksE1) > $(TicksE2)" >
     <Message Importance="high" Text="Building ErrorFacts" />
     <Exec Command="$(ErrorFacts) $(ErrorIn) $(ErrorOut)" />
@@ -33,10 +33,10 @@
     <Exec Command="$(AntlrCall) $(AntlrParams) $(AntlrLexerIn)" />
   </Target>
   <Target Name="AntlrParser" BeforeTargets="DispatchToInnerBuilds" Condition="$(TicksP1) > $(TicksP2) or $(TicksL1) > $(TicksP2)" >
-    <Message Importance="high" Text="Building Parser" /> 
+    <Message Importance="high" Text="Building Parser" />
     <Exec Command="$(AntlrCall) $(AntlrParams) $(AntlrParserIn)" />
-  </Target> 
-  
+  </Target>
+
   <ItemGroup>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />

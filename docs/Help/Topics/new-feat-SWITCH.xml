@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">SWITCH</para>
     </header>
-    <para styleclass="Normal"><snippet src="SWITCH-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-SWITCH" inline="false"/></para>
   </body>
 </topic>

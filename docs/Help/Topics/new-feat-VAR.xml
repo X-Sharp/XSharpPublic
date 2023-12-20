@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">VAR</para>
     </header>
-    <para styleclass="Normal"><snippet src="VAR-Example" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="Ex-VAR" inline="false"/></para>
   </body>
 </topic>

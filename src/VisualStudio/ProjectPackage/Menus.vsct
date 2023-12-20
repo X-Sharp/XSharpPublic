@@ -334,6 +334,14 @@
           <ButtonText>Add .designer file</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidProjectPackage" id="idGenerateWinForm" priority="0x0400" type="Button">
+        <Icon guid="ImageCatalogGuid" id="WindowsForm" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <ButtonText>Convert to Windows Form</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" />
@@ -362,6 +370,9 @@
     </CommandPlacement>
     <!--Context Menu-->
     <CommandPlacement guid="guidProjectPackage" id="idAddDesignerFile" priority="0x0100">
+      <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
+    </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idGenerateWinForm" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
     </CommandPlacement>
     <CommandPlacement guid="guidProjectPackage" id="idConvertXSharpRuntime" priority="0x0100">
@@ -451,6 +462,7 @@
       <IDSymbol name="idRebuildIntellisense" value="0x010D" />
       <IDSymbol name="idViewInDisassembler" value="0x010E" />
       <IDSymbol name="idEditProjectFile" value="0x010F" />
+      <IDSymbol name="idGenerateWinForm" value="0x0120" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />

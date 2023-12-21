@@ -6,6 +6,7 @@
 
 
 USING System
+USING System.Linq
 USING System.Collections.Generic
 USING System.Text
 using XSharp.RDD.Enums
@@ -142,7 +143,79 @@ CLASS SQLParser
 
         return true
 
-#region Worker Methods
+    #region Worker Methods
+    METHOD ParseAlterTable() AS FoxAlterTableContext
+        /*
+        3 MOdes:
+        1 Add/Alter Column
+        ALTER TABLE TableName1 ADD | ALTER [COLUMN] FieldName1
+              FieldType [( nFieldWidth [, nPrecision])] [NULL | NOT NULL] [CHECK lExpression1 [ERROR cMessageText1]]
+           [AUTOINC [NEXTVALUE NextValue [STEP StepValue]]] [DEFAULT eExpression1]
+           [PRIMARY KEY | UNIQUE [COLLATE cCollateSequence]]
+           [REFERENCES TableName2 [TAG TagName1]] [NOCPTRANS] [NOVALIDATE]
+
+            2. Alternative modiffication of column
+        ALTER TABLE TableName1 ALTER [COLUMN] FieldName2 [NULL | NOT NULL] [SET DEFAULT eExpression2]
+           [SET CHECK lExpression2 [ERROR cMessageText2]] [ DROP DEFAULT ] [ DROP CHECK ] [ NOVALIDATE ]
+
+            3. Drop Column or set Table properties
+            ALTER TABLE TableName1 [DROP [COLUMN] FieldName3]
+               [SET CHECK lExpression3 [ERRORcMessageText3]] [DROP CHECK]
+               [ADD PRIMARY KEY eExpression3 [FOR lExpression4] TAG TagName2
+               [COLLATE cCollateSequence]] [DROP PRIMARY KEY]
+               [ADD UNIQUE eExpression4 [[FOR lExpression5] TAG TagName3
+                  [COLLATE cCollateSequence]]] [DROP UNIQUE TAG TagName4]
+               [ADD FOREIGN KEY [eExpression5] [FOR lExpression6] TAG TagName4
+                  REFERENCES TableName4 [TAG TagName4][COLLATE cCollateSequence]
+                  REFERENCES TableName2 [TAG TagName5]]
+               [DROP FOREIGN KEY TAG TagName6 [SAVE]]
+               [RENAME COLUMN FieldName4 TO FieldName5] [NOVALIDATE]
+
+        */
+        IF ! SELF:Expect(XTokenType.ALTER)
+            return null
+        ENDIF
+        IF !SELF:Expect(XTokenType.TABLE)
+            return null
+        endif
+        var table := FoxAlterTableContext{}
+        if !SELF:ExpectAndGet(XTokenType.ID, out var id)
+            RETURN null
+        ENDIF
+        table:Name := id:Text
+        IF SELF:Expect("ADD")
+            table:Mode := FoxAlterMode.AddColumn
+            SELF:Expect("COLUMN")
+            var cols := List<FoxColumnContext>{}
+            IF SELF:ParseColumn(cols, TRUE)
+                table:ColumnInfo := cols:First()
+            ENDIF
+        elseif SELF:Expect("ALTER")
+            table:Mode := FoxAlterMode.AlterColumn
+            SELF:Expect("COLUMN")
+            var cols := List<FoxColumnContext>{}
+            IF SELF:ParseColumn(cols, TRUE)
+                table:ColumnInfo := cols:First()
+            ENDIF
+        elseif SELF:Expect("DROP")
+            table:Mode := FoxAlterMode.DropColumn
+            SELF:Expect("COLUMN")
+            table:ColumnInfo := FoxColumnContext{}
+            IF SELF:ExpectAndGet(XTokenType.ID, out id)
+                table:ColumnInfo:Name := id:Text
+            ENDIF
+        else
+            // This may be a modification of the table properties
+            table:Mode := FoxAlterMode.AlterTable
+            VAR tokens := List<XToken>{}
+            DO WHILE ! SELF:Eos()
+                tokens:Add(SELF:ConsumeAndGet())
+            ENDDO
+            table:TableRules := SELF:TokensAsString(tokens, TRUE)
+        ENDIF
+
+        RETURN table
+
     METHOD ParseCreateTable(table out FoxCreateTableContext) AS LOGIC
         return ParseCreateCursorTable(out table, TRUE)
 
@@ -221,9 +294,13 @@ CLASS SQLParser
                         endif
 
                     case XTokenType.ID
-                        IF ! SELF:ParseColumn(table,  lTable)
+                        IF ! SELF:ParseColumn(table:Columns,  lTable)
                             RETURN FALSE
                         ENDIF
+                        IF SELF:Expect(XTokenType.COMMA)
+                            // Another column
+                            LOOP
+                        endif
                     case XTokenType.RPAREN
                         done := true
                     case XTokenType.COMMA
@@ -232,10 +309,13 @@ CLASS SQLParser
                         NOP
                     end switch
                 else
-                    IF ! SELF:ParseColumn( table, lTable)
+                    IF ! SELF:ParseColumn( table:Columns, lTable)
                         RETURN FALSE
                     ENDIF
-                    SELF:Expect(XTokenType.COMMA)
+                    IF SELF:Expect(XTokenType.COMMA)
+                        // Another column
+                        LOOP
+                    endif
                 endif
             ENDDO
             SELF:Expect(XTokenType.RPAREN)
@@ -245,16 +325,20 @@ CLASS SQLParser
                 table:ArrayName := SELF:ConsumeAndGet():Text
             ENDIF
         ENDIF
+        foreach var column in table:Columns
+            column:Table := table
+        next
+
         RETURN TRUE
 
-    METHOD ParseColumn(oTable as FoxCreateTableContext, lTable as LOGIC) AS LOGIC
+    METHOD ParseColumn(oColumns as List<FoxColumnContext>, lTable as LOGIC) AS LOGIC
         local name      as XToken
         local oType      as XToken
         local endTokens as XTokenType[]
         local lOk := FALSE as logic
         endTokens := <XTokenType>{XTokenType.CHECK,XTokenType.DEFAULT,XTokenType.AUTOINC,XTokenType.PRIMARY,XTokenType.UNIQUE,XTokenType.ERROR,XTokenType.COMMA}
-        var sqlField := FoxCreateColumnContext{oTable}
-        oTable:Columns:Add(sqlField)
+        var sqlField := FoxColumnContext{}
+        oColumns:Add(sqlField)
         IF !SELF:ExpectAndGet(XTokenType.ID, out name)
             RETURN FALSE
         ENDIF
@@ -286,14 +370,9 @@ CLASS SQLParser
             ENDIF
         ENDIF
         LOCAL done := FALSE AS LOGIC
-        DO WHILE !done .and. ! SELF:Eoi()
+        lOk := TRUE
+        DO WHILE !done .and. ! SELF:Eoi() .and. SELF:La1 != XTokenType.RPAREN .and. SELF:La1 != XTokenType.COMMA
             SWITCH SELF:La1
-            CASE XTokenType.COMMA
-            CASE XTokenType.RPAREN
-                // end of field
-                lOk := TRUE
-                sqlField:FieldType := XSharp.RDD.Support.RddFieldInfo.FindType(oType:Text)
-                done := TRUE
             CASE XTokenType.PRIMARY WHEN SELF:La2 == XTokenType.KEY
                 // This is only supported when part of a DBC
                 SELF:Consume()
@@ -370,6 +449,7 @@ CLASS SQLParser
             END SWITCH
         ENDDO
         if lOk
+            sqlField:FieldType := XSharp.RDD.Support.RddFieldInfo.FindType(oType:Text)
             sqlField:Validate()
         endif
         return lOk

@@ -21,8 +21,10 @@
 #xcommand ANNOUNCE <id1> [,<idn> ]   =>
 
 // XBase++ Allows ENDSEQUENCE as alternative for END SEQUENCE
+// Same for ENDCLASS and ENDFOR
 // In the Xbase++ header file this is mapped to END, but we prefer to match it to END SEQUENCE
-#xcommand ENDSEQUENCE  <*any*>  => END SEQUENCE
-#xcommand ENDFOR <*any*>  => NEXT
+#xcommand ENDSEQUENCE  [<*any*>]  => END SEQUENCE
+#xcommand ENDCLASS [<*any*>]      => END CLASS
+#xcommand ENDFOR [<*any*>]        => NEXT
 
 #endif

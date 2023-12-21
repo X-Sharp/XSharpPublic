@@ -15,6 +15,7 @@
 #define FOXPROCMD_XH
 
 #xcommand FOR EACH [<*any*>] => FOREACH
+#xcommand ENDDEFINE [<*any*>] => END DEFINE
 #xcommand ENDFOR [<*any*>]   => NEXT
 #xcommand ENDFUNC [<*any*>] => END FUNCTION
 #xcommand ENDPROC [<*any*>] => END PROCEDURE
@@ -388,8 +389,6 @@
       => DbAppendFromArray(<arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <{lfor}> )
 
 
-
-
 #command OPEN DATABASE <(db)>                                            ;
              [<ex: EXCLUSIVE >]                                          ;
              [<sh: SHARED> ]                                             ;
@@ -398,16 +397,22 @@
          ;
         => XSharp.RDD.Dbc.Open( <(db)>, iif(<.sh.> .or. <.ex.>, !<.ex.>, .T.), <.ro.>, <.val.>)
 
-#command SET DATABASE TO [<(db)>]                                        ;
-        => XSharp.RDD.Dbc.Select( <(db)>)
+#command SET DATABASE TO [<(db)>]                                => XSharp.RDD.Dbc.Select( <(db)>)
+#command CREATE DATABASE <(db)>                                  => XSharp.RDD.Dbc.Create( <(db)>)
+#command DELETE DATABASE <(db)> [<del:DELETETABLES>] [<rec:RECYCLE>]         => XSharp.RDD.Dbc.Delete( <(db)>, <.del.>, <.rec.>)
 
-#command CREATE DATABASE <(db)>                                          ;
-        => XSharp.RDD.Dbc.Create( <(db)>)
+// connection commands
+#command CREATE CONNECTION <(conn)> ;
+    [DATASOURCE <(Dsn)>]    ;
+    [USERID     <(user)>]   ;
+    [PASSWORD   <(pwd)>]    ;
+    [DATABASE   <(db)>]                                          =>XSharp.RDD.Dbc.CreateConnection( <(conn)>, <(Dsn)>, <(user)>, <(pwd)>, <(db)>)
 
-#ifndef NOASSERT
-#command ASSERT <expression> [MESSAGE <cMessageText>]  ;
-        => __FoxAssert( <expression> , <"expression">, <cMessageText> )
-#endif
+#command CREATE CONNECTION <(conn)> ;
+    CONNSTRING <(CONNSTRING)>                                    =>XSharp.RDD.Dbc.CreateConnection( <(conn)>, <(CONNSTRING)>)
+
+#command DELETE CONNECTION <(conn)>                              => XSharp.RDD.Dbc.DeleteConnection( <(conn)>)
+
 // Redirect FIELDS clauses to __FOXFIELDS__ rules
 
 #command <cmd:SCATTER,GATHER,COPY,APPEND,SORT>  <*clauses*> FIELDS <*moreclauses*> => ;
@@ -435,8 +440,23 @@
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ) )        => __FoxCast(<expression>,<(type)>, <width>,-1)
 #translate CAST ( <expression> AS <type:W,C,Y,D,T,B,F,G,I,L,M,N,Q,V>(<width> ,<dec>) )  => __FoxCast(<expression>,<(type)>, <width>,<dec>)
 
+// unsupported commands
+#command CREATE <cmd:CLASS, CLASSLIB, COLOR, CONNECTION, FORM, LABEL, MENU, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, TRIGGER>  <*any*> ;
+         => #error This command is not supported: <(udc)>
 
+// supported CREATE commands in FoxProSql.xh
+// CREATE CURSOR
+// CREATE DATABASE
+// CREATE TABLE
+// CREATE [SQL] VIEW
 
+#command MODIFY <cmd:COMMAND, CLASS, DATABASE, CONNECTION, FILE, FORM, GENERAL, LABEL, MEMO, MENU, PROCEDURE, PROJECT, QUERY, REPORT, SCREEN, STRUCTURE, WINDOW>  <*any*> ;
+            => #error This command is not supported: <(udc)>
+
+#ifndef NOASSERT
+#command ASSERT <expression> [MESSAGE <cMessageText>]  ;
+        => __FoxAssert( <expression> , <"expression">, <cMessageText> )
+#endif
 
 #include "FoxProSql.xh"
 #endif

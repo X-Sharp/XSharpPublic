@@ -15,6 +15,9 @@ INTERNAL FUNCTION _SelectFoxPro(uWorkArea AS USUAL) AS USUAL
     LOCAL sSelect   AS DWORD
 	LOCAL sCurrent  AS DWORD
     // handles an alias string or a uWorkArea number > 1
+    IF IsSymbol(uWorkArea )
+        uWorkArea := Symbol2String(uWorkArea)
+    ENDIF
 	IF IsString ( uWorkArea  ) .OR. ( IsNumeric ( uWorkArea )  .AND. uWorkArea > 1 )
 
 		// Throws a exception if the uWorkArea number is > 4096 !

@@ -3558,7 +3558,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (dataType != null && !isDim && candefault)
                 {
-                    initExpr = GenerateInitializer(dataType);
+                    initExpr = GenerateInitializer(dataType, false);
                 }
             }
             if (variable == null) // normal variables and variables with ArraySub that have a generated initExpr above
@@ -3710,7 +3710,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var initValue = context.Initializer.Get<ExpressionSyntax>();
                 if (initValue == null && (isAuto || emulateAuto) && !isInStruct)
                 {
-                    initValue = GenerateInitializer(context.Type);
+                    initValue = GenerateInitializer(context.Type, false);
                 }
                 var initializer = initValue == null ? null :
                     _syntaxFactory.EqualsValueClause(SyntaxFactory.EqualsToken, initValue);
@@ -3764,7 +3764,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         /// </summary>
         /// <param name="datatype"></param>
         /// <returns></returns>
-        protected virtual ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
+        protected virtual ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype, bool isLocal)
         {
             if (_options.HasOption(CompilerOption.NullStrings, datatype, PragmaOptions) && datatype != null)
             {
@@ -3782,7 +3782,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return value;
                 }
             }
-            if (_options.HasOption(CompilerOption.InitLocals, datatype, PragmaOptions))
+            if (isLocal && _options.HasOption(CompilerOption.InitLocals, datatype, PragmaOptions))
             {
                 ExpressionSyntax value;
                 if (datatype == null)
@@ -6082,7 +6082,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions) && initExpr == null)
             {
-                initExpr = GenerateInitializer(context.DataType);
+                initExpr = GenerateInitializer(context.DataType, true);
             }
             if (isStatic)
             {
@@ -6093,7 +6093,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lockName = staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix;
                 if (initExpr == null)
                 {
-                    initExpr = GenerateInitializer(context.DataType);
+                    initExpr = GenerateInitializer(context.DataType, true);
                 }
                 simpleInit = (initExpr is LiteralExpressionSyntax);
                 var field = _syntaxFactory.FieldDeclaration(

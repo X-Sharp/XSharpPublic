@@ -62,7 +62,7 @@
       [; DbSetIndex( <(index1)> )]                                      ;
       [; DbSetIndex( <(indexn)> )]
 
-#command INDEX ON <key>         										;
+#command INDEX ON <(key)>         										;
      TAG <order>                										;
      [<To:TO,OF> <file>]                								;
      [FOR <fo>]                 										;
@@ -90,7 +90,7 @@
           [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;             ;
        OrdCreate(<(file)>,<(order)>,<(key)>,,IIF(<.u.>,.T., NIL))
 
-#command INDEX ON <key>         										;
+#command INDEX ON <(key)>          										;
      To <(file)>                										;
      [Binary <bin>]                  								    ;
      [COLLATE <coll>]                								    ;
@@ -409,7 +409,7 @@
                       )
 
 #command COPY [TO <(file)>] [SDF]                                       ;
-         [__DBFIELDLIST__ <fields ]                                     ;
+         [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -507,7 +507,7 @@
                  )
 
 
-#command TOTAL [TO <(file)>] ON <y>                                     ;
+#command TOTAL [TO <(file)>] ON <key>                                   ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;

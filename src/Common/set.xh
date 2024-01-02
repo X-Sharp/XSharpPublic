@@ -35,7 +35,7 @@
 
 #command  SET EXACT <x:ON,OFF,&>    =>  Set( Set.Exact, <(x)> )
 #command  SET FIXED <x:ON,OFF,&>    =>  Set( Set.Fixed, <(x)> )
-#command  SET DECIMALS TO <x:&>     =>  Set( Set.Decimals, <(x)>)
+#command  SET DECIMALS TO <x>       =>  Set( Set.Decimals, <(x)>)
 
 #command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
 #command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)

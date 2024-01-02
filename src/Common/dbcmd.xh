@@ -45,22 +45,15 @@
              [<sh: SHARED>]                                             ;
              [<ro: READONLY,NOUPDATE>]                                  ;
              [INDEX <(index1)> [, <(indexn)>]]                          ;
-                                                                        ;
-      => DbUseArea(                                                     ;
-                    <.new.>, <rdd>, <(db)>, <(a)>,                      ;
-                    if(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.>        ;
-                  )                                                     ;
-                                                                        ;
+      => DbUseArea( <.new.>, <rdd>, <(db)>, <(a)>, iif(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.> ) ;
       [; DbSetIndex( <(index1)> )]                                      ;
       [; DbSetIndex( <(indexn)> )]
 
+#command  SET INDEX TO [ <(index1)> [, <(indexN)>]] ;
+      =>  ordListClear() [; ordListAdd( <(index1)> )] [; ordListAdd( <(indexn)> )]
 
-#command SET INDEX TO [ <(index1)> [, <(indexn)>]]                      ;
-                                                                        ;
-      => DbClearIndex()                                                 ;
-                                                                        ;
-      [; DbSetIndex( <(index1)> )]                                      ;
-      [; DbSetIndex( <(indexn)> )]
+#command  SET INDEX TO <(index1)> [, <(indexN)> ] ADDITIVE ;
+      =>  ordListAdd( <(index1)> ) [; ordListAdd( <(indexn)> )]
 
 #command INDEX ON <(key)>         										;
      TAG <order>                										;

@@ -30,6 +30,8 @@ CLASS FoxCreateTableContext
     PROPERTY ArrayName  as STRING AUTO
     PROPERTY RuleExpression as STRING AUTO
     PROPERTY RuleText       as string Auto
+    PROPERTY Free       AS LOGIC AUTO
+    PROPERTY LongName   AS STRING AUTO
     CONSTRUCTOR()
         SELF:Columns := List<FoxColumnContext>{}
         RETURN

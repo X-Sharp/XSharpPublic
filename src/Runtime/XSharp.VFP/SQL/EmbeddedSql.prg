@@ -123,6 +123,9 @@ STATIC CLASS FoxEmbeddedSQL
             if oTable:IsCursor
                 cTable := System.IO.Path.GetTempFileName()
             ENDIF
+            if RuntimeState.Workareas.FindAlias(oTable:Name) != 0
+                DbCloseArea(oTable:Name)
+            endif
             DbCreate(cTable, aStruct, "DBFVFP", TRUE, oTable:Name)
             DbCloseArea(oTable:Name)
             DbUseArea(TRUE, "DBFVFP", cTable, oTable:Name, FALSE, FALSE)

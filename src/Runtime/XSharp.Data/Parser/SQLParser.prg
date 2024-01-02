@@ -266,6 +266,13 @@ CLASS SQLParser
         if !SELF:ExpectAndGet(XTokenType.ID, out id)
             RETURN FALSE
         ENDIF
+        if lTable .and. SELF:Expect("Name")
+            
+            table:LongName := SELF:ConsumeAndGet():Text
+        ENDIF
+        IF lTable .and. SELF:Expect("Free")
+            table:Free := TRUE
+        ENDIF
         table:Name := id:Text
         IF SELF:Expect(XTokenType.CODEPAGE)
             nCP := SELF:ConsumeAndGet()

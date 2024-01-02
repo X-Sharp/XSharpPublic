@@ -56,7 +56,7 @@
       =>  OrdListAdd( <(index1)> ) [; OrdListAdd( <(indexn)> )]
 
 #command INDEX ON <(key)>         										;
-     TAG <order>                										;
+     [TAG <order>]                										;
      [<To:TO,OF> <file>]                								;
      [FOR <fo>]                 										;
      [<all:ALL>]                										;
@@ -82,23 +82,6 @@
           [<.lCur.>], [<.lCus.>], [<.lNop.>] ,      					;
           [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;             ;
        OrdCreate(<(file)>,<(order)>,<(key)>,,IIF(<.u.>,.T., NIL))
-
-#command INDEX ON <(key)>          										;
-     To <(file)>                										;
-     [Binary <bin>]                  								    ;
-     [COLLATE <coll>]                								    ;
-     [For <fo>]                 										;
-     [<u:UNIQUE>]               										;
-     [<cmp:COMPACT>]          										    ;
-     [<cand:CANDIDATE>]          										;
-     [<asd:ASCENDING>]          										;
-     [<dsd:DESCENDING>]         										;
-     [<lAdd:ADDITIVE>]          										;
-     [<lNop:NOOPTIMIZE>]        										;
-    => OrdCondSet(<"fo">, , , , , , ,                                   ;
-        , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>],                     ;
-        [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;               ;
-       dbCreateIndex( <(file)>, <(key)>,, IIF( <.u.>, .T., NIL ))
 
 #command REINDEX [EVAL <eval>] [EVERY <every>] [<lNop: NOOPTIMIZE>] => ;
             OrdCondSet(,,,, <{EVAL}>, <EVERY>,,,,,,,,,, <.lNop.>) ;;

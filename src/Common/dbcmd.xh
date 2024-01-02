@@ -18,7 +18,7 @@
 
 #define DBCMD_XH
 
-// rule for Fields, used in several other rules
+// rule for Fields, used in several other rules. This converts a list of field names to an array of field names
 
 #translate __DBFIELDS__ <f1> [,<fn> ]   => ;
            __DBFIELDLIST__  {<(f1)>[, <(fn)> ]}
@@ -107,17 +107,24 @@
         [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;               ;
        dbCreateIndex( <(file)>, <(key)>,, IIF( <.u.>, .T., NIL ))
 
-#command REINDEX                => DbReindex()
+#command REINDEX [EVAL <eval>] [EVERY <every>] [<lNop: NOOPTIMIZE>] => ;
+            OrdCondSet(,,,, <{EVAL}>, <EVERY>,,,,,,,,,, <.lNop.>) ;;
+            OrdListRebuild()
+#command REINDEX        => OrdListRebuild()
+
+
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
 #command SET ORDER TO           => DbSetOrder(0)
 #command APPEND BLANK           => DbAppend()
 #command PACK                   => DbPack()
 #command ZAP                    => DbZap()
-#command COMMIT                 => DbCommitAll()
+#command COMMIT                 => DbCommit()
+
+#command COMMIT ALL             => DbCommitAll()
 #command UNLOCK [RECORD <rcd>]  => DbUnlock(<rcd>)
 
 // Commands with IN clause
-#command REINDEX          <x:IN,ALIAS> <(a)>          => (<(a)>) -> (DbReindex())
+#command REINDEX          <x:IN,ALIAS> <(a)>          => (<(a)>) -> (OrdListRebuild())
 #command SET ORDER TO <n> <x:IN,ALIAS> <(a)>          => (<(a)>) -> (DbSetOrder( <n> ))  // No overload with area param
 #command SET ORDER TO     <x:IN,ALIAS> <(a)>          => (<(a)>) -> (DbSetOrder(0))      // No overload with area param
 #command APPEND BLANK <x:IN,ALIAS> <(a)>              => (<(a)>) -> (DbAppend())
@@ -175,7 +182,7 @@
 
 
 
-#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                      ;
+#command REPLACE [<(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -190,7 +197,7 @@
                )
 
 // Replace with IN clause: Run DbEval in the area
-#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                  ;
+#command REPLACE [<(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -375,17 +382,18 @@
             => _DbCreate( <(file1)>, <(file2)> , <rdd>, <.new.>, <(a)> )
 
 
-#command COPY STRUCTURE EXTENDED TO <(file)>                      		;
-      => DbCopyXStruct( <(file)> )
+// STRUCTURE and EXTENDED keyword can be optional, so it can be anywhere in the command. Same for TO <(file)>
+// The normal Copy and COPY STRUCTURE commands are declared later and will take precedence when the keywords are omitted
+#command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]   => DbCopyXStruct( <(file)> )
 
-
-#command COPY STRUCTURE TO <(file)> [__DBFIELDLIST__ <fields>]          ;
-      => DbCopyStruct( <(file)>, <fields> )
-
+// STRUCTURE keyword can be optional, so it can be anywhere in the command. Same for TO <(file)>
+// The normal Copy command is declared later and will take precedence when STRUCTURE is ommitted.
+#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  => DbCopyStruct( <(file)>, <fields> )
 
 #ifndef __DIALECT_FOXPRO__
+// These commands are also defined in the FoxPro header file
 
-#command COPY TO <(file)>   DELIMITED [WITH <*delim*>]                  ;
+#command COPY [TO <(file)>] [DELIMITED [WITH <*delim*>]]                ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -400,12 +408,11 @@
                         <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>  ;
                       )
 
-
-#command COPY TO <(file)> SDF                                           ;
+#command COPY [TO <(file)>] [SDF]                                       ;
          [__DBFIELDLIST__ <fields>]                                     ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -416,11 +423,11 @@
                       <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>    ;
                     )
 
-#command COPY TO <(file)>                                               ;
+#command COPY [TO <(file)>]                                             ;
          [__DBFIELDLIST__ <fields>]                                     ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -434,7 +441,7 @@
                    <rdd>, { <(hdnlist)> }, <.noopt.>)
 
 
-#command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
+#command APPEND [FROM <(file)>] [DELIMITED [WITH <*delim*>]]            ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -449,7 +456,7 @@
                      )
 
 
-#command APPEND FROM <(file)> SDF                                       ;
+#command APPEND [FROM <(file)>] [SDF]                                   ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -464,19 +471,19 @@
                    )
 
 
-#command APPEND FROM <(file)>                                          ;
-         [__DBFIELDLIST__ <fields>]                                     ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [ALL]                                                          ;
-         [VIA <rdd>]                                                    ;
-                                                                        ;
-      => DbApp(                                                         ;
-                  <(file)>, <fields>,                                   ;
-                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <rdd>    ;
+#command APPEND [FROM <(file)>]                                        ;
+         [__DBFIELDLIST__ <fields>]                                    ;
+         [FOR <lfor>]                                                  ;
+         [WHILE <lwhile>]                                              ;
+         [NEXT <nnext>]                                                ;
+         [RECORD <rec>]                                                ;
+         [<REST:REST>]                                                 ;
+         [all]                                                         ;
+         [VIA <rdd>]                                                   ;
+                                                                       ;
+      => DbApp(                                                        ;
+                  <(file)>, <fields>,                                  ;
+                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <rdd> ;
                 )
 
 #command <cmd:COPY,APPEND>  <*clauses*> FIELDS <*moreclauses*> => ;
@@ -485,10 +492,10 @@
 
 #endif
 
-#command SORT  TO <(file)>  [ON <fields,...>]                           ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
+#command SORT  [TO <(file)>]  [ON <fields,...>]                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -500,11 +507,11 @@
                  )
 
 
-#command TOTAL TO <(file)> ON <key>                                     ;
+#command TOTAL [TO <(file)>] ON <key>                                   ;
          [__DBFIELDLIST__ <fields>]                                     ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -520,8 +527,8 @@
 
 
 
-#command UPDATE  FROM <(alias)>  [ON <key>]                             ;
-         [REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                    ;
+#command UPDATE  [FROM <(alias)>]  [ON <key>]                           ;
+         [REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                ;
          [<rand:RANDOM>]                                                ;
                                                                         ;
       => DbUpdate(                                                      ;
@@ -530,7 +537,7 @@
                    )
 
 
-#command JOIN  WITH <(alias)>  [TO <file>]                              ;
+#command JOIN  [WITH <(alias)>]  [TO <file>]                            ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [<noopt: NOOPTIMIZE>]                                          ;
          [FOR <lfor>]                                                   ;
@@ -541,7 +548,7 @@
 #command JOIN <*clauses*> FIELDS <*moreclauses*> => ;
          JOIN <clauses> __DBFIELDS__ <moreclauses>
 
-#command COUNT TO <xvar>                                                ;
+#command COUNT [TO <xvar>]                                              ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -556,7 +563,7 @@
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command SUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                          ;
+#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>]]                        ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -571,7 +578,7 @@
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]                     ;
+#command AVERAGE [<x1> [, <xn>]  TO  <v1> [, <vn>]]                     ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;
@@ -595,7 +602,8 @@
 #command CLOSE <alias>                 => <alias>->( DbCloseArea() )
 #command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
 
-#command CLOSE [<al: DATABASES,ALL>] [ALL]   => DbCloseAll()
+#command CLOSE DATABASES                     => DbCloseAll()
+#command CLOSE ALL                           => DbCloseAll(); DbSelectArea(1)
 #command CLOSE INDEXES                       => DbClearIndex()
 #command CLOSE <x:IN,ALIAS> <(a)>            => (<(a)>)->(DbCloseArea())
 #command CLOSE                               => DbCloseArea()

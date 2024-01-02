@@ -97,6 +97,11 @@
 
 #endif
 
+
+// Various DBF related commands. These should be included before the dialect specific headers
+// so that the dialect specific headers can override the commands if needed
+#include "dbcmd.xh"
+
 #ifdef __DIALECT_XBASEPP__
 #include "XbasePPCmd.xh"
 #endif
@@ -105,11 +110,13 @@
 #include "FoxProCmd.xh"
 #endif
 
+#ifdef __DIALECT_HARBOUR__
+#include "HarbourCmd.xh"
+#endif
+
 // Various SET commands
 #include "set.xh"
 
-// Various DBF related commands
-#include "dbcmd.xh"
 
 #ifdef __MEMVAR__
 // include memvar commands when memvar options are enabled

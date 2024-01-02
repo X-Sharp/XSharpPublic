@@ -20,7 +20,7 @@
 #command ALTER TABLE <*clauses*> [COLUMN]  <*moreclause*>   => __SqlAlterTable(<"udc">)
 
 // SQL Create Commands
-#command CREATE TABLE <*clauses*>                           => __SqlCreateTable(<"udc">)
+#command CREATE <tbl:TABLE,DBF> <*clauses*>                 => __SqlCreateTable(<"udc">)
 #command CREATE CURSOR <*clauses*>                          => __SqlCreateCursor(<"udc">)
 #command CREATE [SQL] VIEW <(cView)> [<remote:REMOTE>] ;
     [CONNECTION <(cConn)>] [<share:SHARE>] ;

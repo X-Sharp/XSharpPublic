@@ -50,10 +50,10 @@
       [; DbSetIndex( <(indexn)> )]
 
 #command  SET INDEX TO [ <(index1)> [, <(indexN)>]] ;
-      =>  ordListClear() [; ordListAdd( <(index1)> )] [; ordListAdd( <(indexn)> )]
+      =>  OrdListClear() [; OrdListAdd( <(index1)> )] [; OrdListAdd( <(indexn)> )]
 
 #command  SET INDEX TO <(index1)> [, <(indexN)> ] ADDITIVE ;
-      =>  ordListAdd( <(index1)> ) [; ordListAdd( <(indexn)> )]
+      =>  OrdListAdd( <(index1)> ) [; OrdListAdd( <(indexn)> )]
 
 #command INDEX ON <(key)>         										;
      TAG <order>                										;
@@ -106,8 +106,10 @@
 #command REINDEX        => OrdListRebuild()
 
 
-#command SET ORDER TO <n>       => DbSetOrder( <n> )
-#command SET ORDER TO           => DbSetOrder(0)
+#command SET ORDER TO <xOrder> [IN <file>] 	=> OrdSetFocus( <xOrder> [,<(file)>] )
+#command SET ORDER TO TAG <cOrder> [IN <file>] 	=> OrdSetFocus( <(cOrder)> [,<(file)>] )
+#command SET ORDER TO           		=> OrdSetFocus(0)
+
 #command APPEND BLANK           => DbAppend()
 #command PACK                   => DbPack()
 #command ZAP                    => DbZap()

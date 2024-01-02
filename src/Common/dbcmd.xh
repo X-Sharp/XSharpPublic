@@ -114,6 +114,7 @@
 #command PACK                   => DbPack()
 #command ZAP                    => DbZap()
 #command COMMIT                 => DbCommit()
+
 #command COMMIT ALL             => DbCommitAll()
 #command UNLOCK [RECORD <rcd>]  => DbUnlock(<rcd>)
 

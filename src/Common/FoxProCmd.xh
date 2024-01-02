@@ -256,13 +256,13 @@
 ** Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
 
 
-#command COPY TO <(file)>                                               ;
+#command COPY [TO <(file)> ]                                            ;
          [DATABASE <dbname> [NAME <longtablename>]]                     ;
          [WITH] [<cdx: CDX, PRODUCTION> ]                               ;
-         [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]       ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nNext>]                                                  ;
+         [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]               ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nNext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -272,16 +272,16 @@
       =>  DbCopyFox(                                                    ;
                         <(file)>, iif( <.type.>,#<type>,"DBF"),         ;
                         iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
-                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, ;
                         <nCodePage>, <(dbname)>, <(longtablename)>,     ;
                         <.cdx.>, <.noopt.>                              ;
                       )
 
-#command COPY TO <(file)>                                               ;
-         [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]       ;
+#command COPY [TO <(file)> ]                                            ;
+         [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]               ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
-         [NEXT <nNext>]                                                  ;
+         [NEXT <nNext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -293,15 +293,15 @@
       => DbCopyDelimFox(                                                ;
                         <(file)>, <(delim)>,<char>,                     ;
                         iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
-                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, ;
                         <nCodePage>, <.noopt.>                          ;
                         )
 
-#command COPY TO <(file)>                                               ;
-         [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]       ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nNext>]                                                  ;
+#command COPY [TO <(file)> ]                                            ;
+         [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]               ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nNext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -313,15 +313,15 @@
       => DbCopyDelimFox(                                                ;
                         <(file)>, "\" + #<tab>, /* no char */ ,         ;
                         IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
-                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, ;
                         <nCodePage>, <.noopt.>                          ;
                         )
 
 
 
-#command APPEND FROM <(file)>                                           ;
-         [__FOXLIST__ <fldlist>]                                    ;
-         [__FOXWILD__ <fldwild> ]                                   ;
+#command APPEND [FROM <(file)>]                                         ;
+         [__FOXLIST__ <fldlist>]                                        ;
+         [__FOXWILD__ <fldwild> ]                                       ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nNext>]                                                 ;
@@ -339,12 +339,12 @@
                      )
 
 
-#command APPEND FROM <(file)>                                           ;
-         [__FOXLIST__ <fldlist>]                                    ;
-         [__FOXWILD__ <fldwild> ]                                   ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nNext>]                                                  ;
+#command APPEND [FROM <(file)>]                                         ;
+         [__FOXLIST__ <fldlist>]                                        ;
+         [__FOXWILD__ <fldwild> ]                                       ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nNext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
@@ -359,12 +359,12 @@
                      )
 
 
-#command APPEND FROM <(file)>                                           ;
-         [__FOXLIST__ <fldlist>]                                    ;
-         [__FOXWILD__ <fldwild> ]                                   ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nNext>]                                                  ;
+#command APPEND [FROM <(file)> ]                                        ;
+         [__FOXLIST__ <fldlist>]                                        ;
+         [__FOXWILD__ <fldwild> ]                                       ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nNext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;

@@ -81,7 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expression;
         }
 
-        public BoundExpression SubtractSystemIndex(BoundExpression index, DiagnosticBag diagnostics)
+        public BoundExpression SubtractSystemIndex(BoundExpression index, DiagnosticBag diagnostics, bool checkZero = false)
         {
             var syntax = (CSharpSyntaxNode)index.Syntax;
 
@@ -119,7 +119,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var opKind = BinaryOperatorKind.IntSubtraction;
             var resultConstant = FoldBinaryOperator(syntax, opKind, leftValue, right, leftValue.Type.SpecialType, diagnostics);
             var sig = this.Compilation.builtInOperators.GetSignature(opKind);
-            var whenFalse = new BoundBinaryOperator(syntax, kind, leftValue, right, resultConstant, sig.Method,
+            BoundExpression whenFalse = new BoundBinaryOperator(syntax, kind, leftValue, right, resultConstant, sig.Method,
                 resultKind: LookupResultKind.Viable,
                 originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
                 type: index.Type,
@@ -128,11 +128,73 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var whenTrue = index;
 
+            if (checkZero)
+            {
+                BoundExpression isZero;
+                {
+                    var zeroValue = new BoundLiteral(syntax, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
+                    var resultConstantZ = FoldBinaryOperator(syntax, BinaryOperatorKind.IntEqual, leftValue, zeroValue, leftValue.Type.SpecialType, diagnostics);
+                    isZero = new BoundBinaryOperator(syntax,
+                        BinaryOperatorKind.IntEqual,
+                        leftValue,
+                        zeroValue,
+                        resultConstantZ,
+                        null,
+                        LookupResultKind.Viable,
+                        ImmutableArray<MethodSymbol>.Empty,
+                        Compilation.GetSpecialType(SpecialType.System_Boolean),
+                        false);
+                }
+                var constantValueZ = FoldConditionalOperator(isZero, whenTrue, whenFalse);
+                bool hasErrorsZ = constantValueZ?.IsBad == true;
+                whenFalse = new BoundConditionalOperator(syntax, false, isZero, whenTrue, whenFalse, constantValueZ, null, false, leftType, hasErrorsZ) { WasCompilerGenerated = true };
+            }
+
             TypeSymbol type = BestTypeInferrer.InferBestTypeForConditionalOperator(whenTrue, whenFalse, this.Conversions, out bool hadMultipleCandidates, ref useSiteDiagnostics);
             diagnostics.Add(syntax, useSiteDiagnostics);
             var constantValue = FoldConditionalOperator(isFromEnd, whenTrue, whenFalse);
             bool hasErrors = type?.IsErrorType() == true || constantValue?.IsBad == true;
-            return new BoundConditionalOperator(syntax, false, isFromEnd, whenTrue, whenFalse, null, null, false, type, hasErrors) { WasCompilerGenerated = true };
+            return new BoundConditionalOperator(syntax, false, isFromEnd, whenTrue, whenFalse, constantValue, null, false, type, hasErrors) { WasCompilerGenerated = true };
+        }
+        public BoundExpression SubtractSystemRange(BoundExpression range, DiagnosticBag diagnostics)
+        {
+            var syntax = (CSharpSyntaxNode)range.Syntax;
+
+            var rangeType = Compilation.GetWellKnownType(WellKnownType.System_Range);
+            Debug.Assert(range.Type.Equals(rangeType));
+
+            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+
+            BoundExpression start;
+            {
+                const string valueName = "Start";
+                var lookupResult = LookupResult.GetInstance();
+                LookupMembersWithFallback(lookupResult, rangeType, valueName, 0, ref useSiteDiagnostics);
+                var members = ArrayBuilder<Symbol>.GetInstance();
+                bool wasError;
+                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, valueName, 0, members, diagnostics, out wasError) as PropertySymbol;
+                start = new BoundPropertyAccess(syntax, range, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+            }
+
+            BoundExpression end;
+            {
+                const string valueName = "End";
+                var lookupResult = LookupResult.GetInstance();
+                LookupMembersWithFallback(lookupResult, rangeType, valueName, 0, ref useSiteDiagnostics);
+                var members = ArrayBuilder<Symbol>.GetInstance();
+                bool wasError;
+                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, valueName, 0, members, diagnostics, out wasError) as PropertySymbol;
+                end = new BoundPropertyAccess(syntax, range, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+            }
+
+            start = SubtractSystemIndex(start, diagnostics, checkZero: true);
+
+            var symbolOpt = (MethodSymbol)GetWellKnownTypeMember(
+                Compilation,
+                WellKnownMember.System_Range__ctor,
+                diagnostics,
+                syntax: syntax);
+            return new BoundRangeExpression(syntax, start, end, symbolOpt, rangeType) { WasCompilerGenerated = true };
         }
         private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics, SpecialType? specialTypeOpt = null)
         {
@@ -145,6 +207,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expr.Type.Equals(Compilation.GetWellKnownType(WellKnownType.System_Index)))
             {
                 return SubtractSystemIndex(expr, diagnostics);
+            }
+            if (expr.Type.Equals(Compilation.GetWellKnownType(WellKnownType.System_Range)))
+            {
+                return SubtractSystemRange(expr, diagnostics);
             }
 
             var type = expr.Type;

@@ -78,9 +78,8 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NODEBUG] [INLINE];
     PUBLIC CONSTRUCTOR(type AS __UsualType , initialized AS LOGIC)
         SELF:_valueData := _UsualData{}
-        SELF:_flags     := UsualFlags{type}
+        SELF:_flags     := UsualFlags{type, initialized}
         SELF:_refData   := NULL
-        SELF:_flags:Initialized := initialized
 
     [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR(type AS __UsualType )
@@ -100,16 +99,14 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE CONSTRUCTOR(f AS FLOAT)
         SELF(__UsualType.Float)
         SELF:_valueData:r8		:= f:Value
-        SELF:_flags:Width		:= (SByte) f:Digits
-        SELF:_flags:Decimals	:= (SByte) f:Decimals
+        self:_flags             := UsualFlags{__UsualType.Float, (SByte) f:Digits, (SByte) f:Decimals}
         RETURN
 
     [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR(r8 AS REAL8)
         SELF(__UsualType.Float)
         SELF:_valueData:r8		:= r8
-        SELF:_flags:Width		:= -1
-        SELF:_flags:Decimals	:= (SByte) RuntimeState.Decimals
+        self:_flags             := UsualFlags{__UsualType.Float, -1, (SByte)  RuntimeState.Decimals}
         RETURN
 
     [NODEBUG] [INLINE];
@@ -156,6 +153,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         ELSE
             SELF(__UsualType.Float)
             SELF:_valueData:r8 := @@Value
+            self:_flags  := UsualFlags{__UsualType.Float, -1, -1}
         ENDIF
         RETURN
 
@@ -196,7 +194,6 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             SELF(__UsualType.Object)
         ELSE
             SELF := _NIL
-            SELF:_flags:Initialized := TRUE
             VAR vartype := o:GetType()
             //  decode type from typecode
             VAR typeCode := System.Type.GetTypeCode(vartype)
@@ -242,10 +239,8 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                     SELF:_flags				:= UsualFlags{__UsualType.Long}
                     SELF:_valueData:i := (LONG)(DWORD)o
                 ELSE
-                    SELF:_flags				:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8:= (REAL8) (UInt32) o
-                    SELF:_flags:Width	:= -1
-                    SELF:_flags:Decimals := -1
+                    SELF:_flags				:= UsualFlags{__UsualType.Float, -1, -1}
                 ENDIF
             CASE System.TypeCode.Int64
                 SELF:_flags				:= UsualFlags{__UsualType.Int64}
@@ -256,22 +251,16 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                     SELF:_flags				:= UsualFlags{__UsualType.Int64}
                     SELF:_valueData:i64		:= (INT64)(UINT64)o
                 ELSE
-                    SELF:_flags				:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8 := (REAL8)(UINT64)o
-                    SELF:_flags:Width	:= -1
-                    SELF:_flags:Decimals := -1
+                    SELF:_flags				:= UsualFlags{__UsualType.Float, -1, -1}
                 ENDIF
             CASE System.TypeCode.Single
-                SELF:_flags			:= UsualFlags{__UsualType.Float}
                 SELF:_valueData:r8	:= (REAL4)o
-                SELF:_flags:Width	:= -1
-                SELF:_flags:Decimals := (SByte) RuntimeState.Decimals
+                SELF:_flags				:= UsualFlags{__UsualType.Float, -1, (SByte) RuntimeState.Decimals}
 
             CASE System.TypeCode.Double
-                SELF:_flags				:= UsualFlags{__UsualType.Float}
                 SELF:_valueData:r8 := (REAL8)o
-                SELF:_flags:Width := -1
-                SELF:_flags:Decimals := (SByte) RuntimeState.Decimals
+                SELF:_flags				:= UsualFlags{__UsualType.Float, -1, (SByte) RuntimeState.Decimals}
 
             CASE System.TypeCode.Decimal
                 SELF:_flags				:= UsualFlags{__UsualType.Decimal}
@@ -295,16 +284,11 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                     SELF:_flags			    := UsualFlags{__UsualType.Currency}
                     SELF:_refData	 	    := c:Value
                 CASE f AS IFloat
-                    SELF:_flags				:= UsualFlags{__UsualType.Float}
                     SELF:_valueData:r8		:= f:Value
-                    SELF:_flags:Width		:= (SByte) f:Digits
-                    SELF:_flags:Decimals	:= (SByte) f:Decimals
+                    SELF:_flags				:= UsualFlags{__UsualType.Float, (SByte) f:Digits, (SByte) f:Decimals}
                 CASE cb AS ICodeblock
                     SELF:_flags				:= UsualFlags{__UsualType.Codeblock}
                     SELF:_refData           := cb
-                    //                    ELSEIF o IS OBJECT[]   VAR oArray
-                    //                        SELF:_flags				:= UsualFlags{__UsualType.Array}
-                    //                        SELF:_refData           := ARRAY{oArray}
                 CASE ar AS ARRAY
                     SELF:_flags				:= UsualFlags{__UsualType.Array}
                     SELF:_refData           := ar
@@ -355,7 +339,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NODEBUG] [INLINE];
     PUBLIC CONSTRUCTOR(u AS USUAL, lIsByRef AS LOGIC)
         SELF := u
-        SELF:_flags:IsByRef := lIsByRef
+        SELF:_flags         := UsualFlags{_flags:UsualType, _flags:Width, _flags:Decimals, lIsByRef}
         RETURN
 
 #endregion
@@ -3487,10 +3471,28 @@ INTERNAL STRUCTURE UsualFlags
 
     #pragma warnings(171, off) // not all elements are initialzed. Setting Flags sets all other fields
     [NODEBUG] [INLINE];
-        CONSTRUCTOR(type AS __UsualType)
+    CONSTRUCTOR(type AS __UsualType)
         Flags       := 0
         UsualType   := type
         Initialized := TRUE
+    [NODEBUG] [INLINE];
+    CONSTRUCTOR(type AS __UsualType, initialized as LOGIC)
+        Flags       := 0
+        UsualType   := type
+        Initialized := initialized
+    [NODEBUG] [INLINE];
+    CONSTRUCTOR(type AS __UsualType, nWidth as SByte, nFlags as SByte)
+        Flags       := 0
+        UsualType   := type
+        Width       := nWidth
+        Decimals    := nFlags
+    [NODEBUG] [INLINE];
+    CONSTRUCTOR(type AS __UsualType, nWidth as SByte, nFlags as SByte, lByRef as LOGIC)
+        Flags       := 0
+        UsualType   := type
+        Width       := nWidth
+        Decimals    := nFlags
+        IsByRef     := lByRef
     #pragma warnings(171, default)
 END STRUCTURE
 

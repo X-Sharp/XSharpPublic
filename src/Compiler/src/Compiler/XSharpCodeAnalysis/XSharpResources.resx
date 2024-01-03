@@ -1443,13 +1443,13 @@
     <value>This label has not been referenced</value>
   </data>
   <data name="ERR_UseDefViolation" xml:space="preserve">
-    <value>Use of unassigned local variable '{0}'</value>
+    <value>Use of possibly unassigned local variable '{0}'</value>
   </data>
   <data name="WRN_UseDefViolation" xml:space="preserve">
-    <value>Use of unassigned local variable '{0}'</value>
+    <value>Use of possibly unassigned local variable '{0}'</value>
   </data>
   <data name="WRN_UseDefViolation_Title" xml:space="preserve">
-    <value>Use of unassigned local variable</value>
+    <value>Use of possibly unassigned local variable</value>
   </data>
   <data name="WRN_UnreferencedVar" xml:space="preserve">
     <value>The variable '{0}' is declared but never used</value>
@@ -1776,13 +1776,13 @@
     <value>Imported type '{0}' is invalid. It contains a circular base type dependency.</value>
   </data>
   <data name="ERR_UseDefViolationOut" xml:space="preserve">
-    <value>Use of unassigned OUT parameter '{0}'</value>
+    <value>Use of possibly unassigned OUT parameter '{0}'</value>
   </data>
   <data name="WRN_UseDefViolationOut" xml:space="preserve">
-    <value>Use of unassigned OUT parameter '{0}'</value>
+    <value>Use of possibly unassigned OUT parameter '{0}'</value>
   </data>
   <data name="WRN_UseDefViolationOut_Title" xml:space="preserve">
-    <value>Use of unassigned OUT parameter</value>
+    <value>Use of possibly unassigned OUT parameter</value>
   </data>
   <data name="ERR_ArraySizeInDeclaration" xml:space="preserve">
     <value>Array size cannot be specified in a variable declaration (try initializing with a 'new' expression)</value>

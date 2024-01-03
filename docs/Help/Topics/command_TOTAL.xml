@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-12-28T10:44:30.232+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>TOTAL Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -17,15 +17,15 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Summarize records in the current work area by key value to a database file.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">TOTAL ON &lt;uKeyValue&gt; FIELDS &lt;idFieldList&gt; TO &lt;xcTargetFile&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
+    <para styleclass="Code with box">TOTAL TO &lt;xcTargetFile&gt; ON &lt;uKeyValue&gt; FIELDS &lt;idFieldList&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ON &lt;uKeyValue&gt;<tab />The key value used to summarize the records. &#160;To make the summarizing operation accurate, the current database file should be indexed or sorted on this expression.</para>
-    <para styleclass="List"></para>
-    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The list of numeric fields to total. &#160;If the FIELDS clause is not specified, no numeric fields are totaled. &#160;Instead each numeric field in the target file contains the value for the first record in the source file matching the key value.</para>
-    <para styleclass="List"></para>
     <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file to write the totaled records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ON &lt;uKeyValue&gt;<tab />The key value used to summarize the records. &#160;To make the summarizing operation accurate, the current database file should be indexed or sorted on this expression.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The list of numeric fields to total. &#160;If the FIELDS clause is not specified, no numeric fields are totaled. &#160;Instead each numeric field in the target file contains the value for the first record in the source file matching the key value.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

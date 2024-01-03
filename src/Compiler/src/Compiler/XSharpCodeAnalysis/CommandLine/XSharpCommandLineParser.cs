@@ -513,7 +513,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (newDialect.NeedsRuntime())
             {
-                if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect != XSharpDialect.XPP && options.Dialect != XSharpDialect.FoxPro)
+                if (options.Dialect == XSharpDialect.FoxPro && options.TargetDLL != XSharpTargetDLL.VFP)
+                {
+                    if (!options.XSharpVFPIncluded || !options.XSharpRTIncluded || !options.XSharpCoreIncluded)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
+                            "XSharp.Core.DLL, XSharp.RT.DLL, XSharp.VFP.DLL");
+                    }
+                }
+                if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect.LikeVO())
                 {
                     // Ok;
                     withRT = true;

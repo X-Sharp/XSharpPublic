@@ -965,6 +965,24 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool isFoxMemberAccess = false;
 
+            if (expression is BoundTypeExpression && node?.XNode is XSharpParserRuleContext xnode1)
+            {
+                // an expression like "M.Object = Something" should not resolve to the Object Type
+
+                if (xnode1 is not AccessMemberContext)
+                {
+                    xnode1 = xnode1.Parent as XSharpParserRuleContext;
+                }
+                if (xnode1 is AccessMemberContext amc && amc.IsFox)
+                {
+                    isFoxMemberAccess = true;
+                    if (amc.HasMPrefix)
+                    {
+                        expression = null;
+                    }
+                }
+            }
+
             if (expression == null && node?.XNode is XSharpParserRuleContext xnode)
             {
                 // Foxpro member access is transformed in 2 ways:

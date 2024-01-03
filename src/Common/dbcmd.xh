@@ -35,8 +35,6 @@
 #command USE                            => DbCloseArea()
 #command USE IN <(area)>                => (area)->(DbCloseArea())
 
-
-
 #command USE <(db)>                                                     ;
              [VIA <rdd>]                                                ;
              [ALIAS <a>]                                                ;
@@ -54,13 +52,11 @@
       [; DbSetIndex( <(index1)> )]                                      ;
       [; DbSetIndex( <(indexn)> )]
 
+#command  SET INDEX TO [ <(index1)> [, <(indexN)>]] ;
+      =>  ordListClear() [; ordListAdd( <(index1)> )] [; ordListAdd( <(indexn)> )]
 
-#command SET INDEX TO [ <(index1)> [, <(indexn)>]]                      ;
-                                                                        ;
-      => DbClearIndex()                                                 ;
-                                                                        ;
-      [; DbSetIndex( <(index1)> )]                                      ;
-      [; DbSetIndex( <(indexn)> )]
+#command  SET INDEX TO <(index1)> [, <(indexN)> ] ADDITIVE ;
+      =>  ordListAdd( <(index1)> ) [; ordListAdd( <(indexn)> )]
 
 #command INDEX ON <(key)>         										;
      TAG <order>                										;
@@ -94,16 +90,26 @@
      To <(file)>                										;
      [Binary <bin>]                  								    ;
      [COLLATE <coll>]                								    ;
-     [For <fo>]                 										;
+     [FOR <fo>]                 										;
+     [<all:ALL>]                										;
+     [WHILE <wh>]               										;
+     [NEXT <nx>]                										;
+     [RECORD <rec>]             										;
+     [<rs:REST>]                										;
+     [EVAL <ev>]                										;
+     [EVERY <evr>]              										;
      [<u:UNIQUE>]               										;
      [<cmp:COMPACT>]          										    ;
      [<cand:CANDIDATE>]          										;
      [<asd:ASCENDING>]          										;
      [<dsd:DESCENDING>]         										;
+     [<lCur:USECURRENT>]        										;
      [<lAdd:ADDITIVE>]          										;
+     [<lCus:CUSTOM>]            										;
      [<lNop:NOOPTIMIZE>]        										;
-    => OrdCondSet(<"fo">, , , , , , ,                                   ;
-        , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>],                     ;
+    => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, <{ev}>, <evr>,          ;
+        RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,               ;
+        [<.lCur.>], [<.lCus.>], [<.lNop.>] ,                            ;
         [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;               ;
        dbCreateIndex( <(file)>, <(key)>,, IIF( <.u.>, .T., NIL ))
 

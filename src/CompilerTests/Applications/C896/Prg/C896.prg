@@ -2,21 +2,26 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/1409
 
 FUNCTION Start( ) AS VOID
+    test1()
+    test2()
 RETURN
 
 PROCEDURE Test1()
-	CREATE TABLE Test FREE (OBJECT C(10), Color C(16), SqFt n(6,2))
+	CREATE TABLE Test FREE (Object C(10), Color C(16), SqFt n(6,2))
 	SCATTER MEMVAR BLANK
 	m.Object="Box"
 	m.Color="Red"
 	m.SqFt=12.5
 	APPEND BLANK
 	GATHER MEMVAR
+	? _FIELD->OBJECT
+	? _FIELD->Color
+	? _FIELD->SqFt
 
 PROCEDURE Test2()
 	CREATE TABLE Test FREE ;
 	   (OBJECT C(10), Color C(16), SqFt n(6,2))
-	
+
 	SCATTER NAME oTest BLANK
 	oTest.Object="Box"
 	oTest.Color="Red"
@@ -24,6 +29,9 @@ PROCEDURE Test2()
 	APPEND BLANK
 	GATHER NAME oTest
 	RELEASE oTest
+	? _FIELD->OBJECT
+	? _FIELD->Color
+	? _FIELD->SqFt
 
 PROCEDURE Test3()
 	USE Customer

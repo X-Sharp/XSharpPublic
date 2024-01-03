@@ -173,13 +173,16 @@ CLASS SQLParser
 
         */
         IF ! SELF:Expect(XTokenType.ALTER)
+            SetError("Expected ALTER", SELF:Lt1 )
             return null
         ENDIF
         IF !SELF:Expect(XTokenType.TABLE)
+            SetError("Expected TABLE", SELF:Lt1 )
             return null
         endif
         var table := FoxAlterTableContext{}
         if !SELF:ExpectAndGet(XTokenType.ID, out var id)
+            SetError("Expected ID", SELF:Lt1 )
             RETURN null
         ENDIF
         table:Name := id:Text
@@ -189,6 +192,8 @@ CLASS SQLParser
             var cols := List<FoxColumnContext>{}
             IF SELF:ParseColumn(cols, TRUE)
                 table:ColumnInfo := cols:First()
+            else
+                table := NULL
             ENDIF
         elseif SELF:Expect("ALTER")
             table:Mode := FoxAlterMode.AlterColumn
@@ -196,6 +201,8 @@ CLASS SQLParser
             var cols := List<FoxColumnContext>{}
             IF SELF:ParseColumn(cols, TRUE)
                 table:ColumnInfo := cols:First()
+            else
+                table := NULL
             ENDIF
         elseif SELF:Expect("DROP")
             table:Mode := FoxAlterMode.DropColumn
@@ -203,6 +210,8 @@ CLASS SQLParser
             table:ColumnInfo := FoxColumnContext{}
             IF SELF:ExpectAndGet(XTokenType.ID, out id)
                 table:ColumnInfo:Name := id:Text
+            else
+                table := NULL
             ENDIF
         else
             // This may be a modification of the table properties
@@ -346,11 +355,13 @@ CLASS SQLParser
         var sqlField := FoxColumnContext{}
         oColumns:Add(sqlField)
         IF !SELF:ExpectAndGet(XTokenType.ID, out name)
+            SetError("Expected Column Name", SELF:Lt1 )
             RETURN FALSE
         ENDIF
         sqlField:Name    := name:Text
         sqlField:Caption := name:Text
         IF !SELF:ExpectAndGet(XTokenType.ID, out oType)
+            SetError("Expected Column Type", SELF:Lt1 )
             RETURN FALSE
         ENDIF
         IF SELF:Expect(XTokenType.LPAREN)
@@ -371,7 +382,7 @@ CLASS SQLParser
                 endif
             ENDIF
             IF ! SELF:Expect(XTokenType.RPAREN)
-                SetError("Expected RPAREN")
+                SetError("Expected ')'")
                 return FALSE
             ENDIF
         ENDIF
@@ -449,7 +460,7 @@ CLASS SQLParser
                 SELF:Expect(XTokenType.NOCPTRANS)
                 sqlField:Flags |= DBFFieldFlags.Binary
             OTHERWISE
-                SetError("Unexpected token ")
+                SetError("Unexpected token ", SELF:Lt1)
                 lOk := FALSE
                 done := TRUE
             END SWITCH

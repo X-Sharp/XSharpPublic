@@ -19,6 +19,7 @@ USING XSharp.Parsers
 
 
 FUNCTION Start() AS VOID STRICT
+    try
     local a,b,c as int
     a := b := c := 42
     CREATE TABLE Salesman ;
@@ -29,7 +30,7 @@ FUNCTION Start() AS VOID STRICT
         INSERT INTO Salesman VALUES ("2", "Fabrice")
         INSERT INTO Salesman VALUES ("3", "Chris")
         INSERT INTO Salesman VALUES ("4", "Nikos")
-        Browse()
+        //Browse()
     ELSE
         ? "Table not open"
     ENDIF
@@ -58,7 +59,7 @@ FUNCTION Start() AS VOID STRICT
         values[3] = ToDay()
         INSERT INTO employee FROM ARRAY values
 
-        Browse()
+        //Browse()
 
     ELSE
         ? "Table not open"
@@ -92,6 +93,7 @@ FUNCTION Start() AS VOID STRICT
     CREATE TABLE Orders ;
    (OrderId i PRIMARY KEY, ;
       CustId i REFERENCES customer TAG CustId, ;
+      CustName c(10), ;
       OrderAmt y(4), ;
       OrderQty i ;
       DEFAULT 10 ;
@@ -103,25 +105,24 @@ FUNCTION Start() AS VOID STRICT
         local oTest := XSharp.VFP.Empty{}
         AddProperty(oTest, "LastName", "Hulst")
         AddProperty(oTest, "FirstName", "Robert")
+        INSERT INTO Orders(CustId,OrderAmt, OrderQty,CustName) VALUES (1, 100, 10,"19010101")
+        INSERT INTO Orders(CustId,OrderAmt, OrderQty,CustName) VALUES (1, 200, 20,"19010202")
+    Browse()
     ALTER TABLE Orders Add OrderDate Date NULL
+    Browse()
     ALTER TABLE Orders Add COLUMN DeliveryDate DateTime
-
-    IF Used()
-        ShowArray(DbStruct())
-    ELSE
-        ? "Table not open"
-    ENDIF
-//        local aTest := {1,2,3}
-//         INSERT INTO TEST(a,b,c)  VALUES (1,2,3)
-//         INSERT INTO TEST VALUES (a,b,c)
-//         INSERT INTO MemvarTest(x,y,z) FROM MEMVAR
-//         insert into TEST FROM NAME oTest
-//         insert into TEST FROM Array aTest
-//         insert into test(a,b,c) Select d,e,f from Customers
+    Browse()
+    ALTER TABLE Orders DROP COLUMN OrderAmt
+    Browse()
+    ALTER TABLE Orders Alter COLUMN CustName C(5)
+    Browse()
 
     CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
     WHERE Country="Mexico"
-    WAIT
+    catch e as exception
+        ? "Error", e:Message
+    end try
+        WAIT
 
 
 

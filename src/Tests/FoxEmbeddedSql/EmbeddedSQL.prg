@@ -10,28 +10,9 @@ USING SYstem.Linq
 using SYstem.Diagnostics
 using XSharp.RDD.Support
 using XSharp.RDD.Enums
+using XSharp.RDD
 using XSharp.Parsers
 using XSharp.Internal
-
-
-FUNCTION __SqlAlterTable(sCommand as STRING) AS LOGIC
-    var oContext := ParseSqlAlter(sCommand)
-    if (oContext != NULL)
-        RETURN TRUE
-    endif
-    RETURN FALSE
-
-
-STATIC FUNCTION ParseSqlAlter(sCommand as STRING) AS FoxAlterTableContext
-    VAR lexer := XSqlLexer{sCommand}
-    VAR tokens := lexer:AllTokens()
-    var parser := SqlParser{XTokenList{tokens}}
-    var table := parser:ParseAlterTable()
-    ? sCommand
-    return table
-
-
-
 
 
 

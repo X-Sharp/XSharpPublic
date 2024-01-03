@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
     /// Orderbag = CDX file. Contains one or more orders = Tags
     /// </summary>
+    [DebuggerDisplay("{FullPath,nq} {Tags.Count} tags")];
     INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex
 #region constants
     INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING

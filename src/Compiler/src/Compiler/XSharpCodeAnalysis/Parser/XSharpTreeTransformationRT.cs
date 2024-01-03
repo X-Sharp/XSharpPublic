@@ -979,16 +979,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected override ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
+        protected override ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype, bool isLocal)
         {
             ExpressionSyntax value;
-            if (datatype == null || datatype.Get<TypeSyntax>().IsUsualType())
+            if (isLocal && (datatype == null || datatype.Get<TypeSyntax>().IsUsualType()))
             {
                 value = GenerateNIL();
                 value.XGenerated = true;
                 return value;
             }
-            return base.GenerateInitializer(datatype);
+            return base.GenerateInitializer(datatype, isLocal);
         }
 
         protected override void VisitLocalvar([NotNull] XP.LocalvarContext context)

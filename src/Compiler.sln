@@ -76,6 +76,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\FoxProSet.xh = Common\FoxProSet.xh
 		Common\FoxProSql.xh = Common\FoxProSql.xh
 		Common\GuidStrings.cs = Common\GuidStrings.cs
+		Common\HarbourCmd.xh = Common\HarbourCmd.xh
 		Common\memvar.xh = Common\memvar.xh
 		Common\NativeResourceDefines.xh = Common\NativeResourceDefines.xh
 		Common\README.md = Common\README.md

@@ -13,10 +13,59 @@
 #ifndef FOXPROSQL_XH
 #define FOXPROSQL_XH
 
+// DDL Commands
+
+// SQL Alter Commands
+#command ALTER TABLE <*clauses*>                            => __SqlAlterTable(<"udc">)
+#command ALTER TABLE <*clauses*> [COLUMN]  <*moreclause*>   => __SqlAlterTable(<"udc">)
+
+// SQL Create Commands
+#command CREATE <tbl:TABLE,DBF> <*clauses*>                 => __SqlCreateTable(<"udc">)
+#command CREATE CURSOR <*clauses*>                          => __SqlCreateCursor(<"udc">)
+#command CREATE [SQL] VIEW <(cView)> [<remote:REMOTE>] ;
+    [CONNECTION <(cConn)>] [<share:SHARE>] ;
+    [AS  <*sqlstatement*>]                                  => XSharp.RDD.Dbc.CreateView( <(cView)>, <cConn>, <.remote.>, <.share.>, <(sqlstatement)>)
+
+// SQL Drop Commands
+#command DROP TABLE <*clauses*>                             => __SqlDropTable(<"udc">)
+#command DROP VIEW <*clauses*>                              => __SqlDropView(<"udc">)
+
+
+// DML Commands
+
+// SQL Insert commands
+// First is generic INSERT, to enable keyword coloring  while typing
+
+#command INSERT [INTO] [<*any*>] => #error <(udc)> : Missing FROM or VALUES clause
+
+#command INSERT INTO <(table)> FROM MEMVAR => ;
+    __SqlInsertMemVar(<"table"> )
+
+#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )]  VALUES (  <(v1)> [, <(vn)> ] )     => ;
+    __SqlInsertValues(<"table"> , { <"f1"> [, <"fn"> ] },  { <v1> [, <vn> ] } )
+
+#command INSERT INTO <(table)>  FROM ARRAY <ArrayName>   => ;
+    __SqlInsertFromArray( <"table">,  <ArrayName>)
+
+#command INSERT INTO <(table)> FROM NAME <ObjectName>   => ;
+    __SqlInsertFromObject(<"table"> , <ObjectName> )
+
+#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:Select> <*moreclauses*>   => ;
+    __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
+
+
+// SQL Delete
+#command DELETE [<*tableName*>] FROM  <*clauses*>           => __SqlDelete(<"udc">)
+#command DELETE TRIGGER  <*clauses*>                        => #error "DELETE TRIGGER is not supported "
+
+// SQL Update Commands
+#command UPDATE [<*tableName*>] SET <*setclauses*> ;
+  [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
+  [WHERE <*whereclause*>]                                   => __SqlUpdate(<"udc">)
+
 // SQL Select commands. Separate commands for TO and 3 different INTO variations
 
 #command __NOFOXPROSQL__ <any> => #warning This command is not (yet) supported: <(any)>
-
 
 #command SELECT <*columnClauses*> FROM <*TableList*>           ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
@@ -27,56 +76,15 @@
     [TO <dest:FILE,PRINTER,SCREEN> <*extraoptions*>]        => ;
     __NOFOXPROSQL__ <(udc)> //__FoxSqlSelect(<"udc">,<"dest">,<"extraoptions">
 
-
 #command SELECT <*columnClauses*> FROM <*TableList*>           ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;
     [WHERE <*WhereConditions*> ]                               ;
     [GROUP BY <*ColumnList*> [HAVING <*HavingConditions*>] ]   ;
     [UNION [ALL] <*SelectCommand*>]                            ;
     [ORDER BY <*orderByList*>]                                 ;
-    INTO <dest:ARRAY,CURSOR,TABLE> <Name> ;
+    INTO <dest:ARRAY,CURSOR,TABLE> <NAME> ;
 	[<cursoropt:NOFILTER,READWRITE>]  ;
 	[DATABASE <DatabaseName> [NAME <LongName>] ] =>;
     __NOFOXPROSQL__ <(udc)>  // __FoxSqlSelectSpecial(<"udc">, <(dest)>, <(Name)>, <cursoropt>,<DatabaseName>,<LongName>)
-
-
-
-// SQL Insert commands
-// First is generic INSERT, to enable keyword coloring  while typing
-
-
-#command INSERT [INTO] [<*any*>] => #error <(udc)> : command not supported
-
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] FROM MEMVAR => ;
-    __SqlInsertMemVar(<"udc">,<"table"> , { <"f1"> [, <"fn"> ] })
-
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )]  VALUES (  <(v1)> [, <(vn)> ] )     => ;
-    __SqlInsertValues(<"udc"> , <"table"> , { <"f1"> [, <"fn"> ] },  { <v1> [, <vn> ] } )
-
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] FROM ARRAY <ArrayName>   => ;
-    __SqlInsertFromArray(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <ArrayName>)
-
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] FROM NAME <ObjectName>   => ;
-    __SqlInsertFromObject(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <ObjectName> )
-
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:Select> <*moreclauses*>   => ;
-    __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
-
-// SQL Create Commands
-#command CREATE VIEW <*clauses*>    => __SqlCreateView(<"udc">)
-#command CREATE TABLE <*clauses*> => __SqlCreateTable(<"udc">)
-#command CREATE CURSOR <*clauses*> => __SqlCreateCursor(<"udc">)
-#command DROP TABLE <*clauses*> => __SqlDropTable <(udc)>
-#command DROP VIEW <*clauses*>  => __SqlDropView <(udc)>
-#command ALTER TABLE <*clauses*> => __SqlAlterTable <(udc)>
-
-#command DELETE [<*tableName*>] FROM  <*clauses*> => __SqlDelete(<"udc">)
-
-#command UPDATE [<*tableName*>] SET <*setclauses*> ;
-  [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
-  [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)
-
-#command CREATE TRIGGER  <*clauses*> => #error "CREATE TRIGGER is not supported "
-#command DELETE TRIGGER  <*clauses*> => #error "DELETE TRIGGER is not supported "
 
 #endif

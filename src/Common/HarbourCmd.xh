@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////
 // XBasePPCmd.xh
 //
-// XSharp Xbase++ Preprocessor Directives
+// XSharp Harbour Preprocessor Directives
 //
 // Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -9,26 +9,22 @@
 // Caution: do not modify this file. It will be overwritten during product updates
 //
 
-#ifndef XBASEPPCMD_XH
-#define XBASEPPCMD_XH
+#ifndef HARBOURCMD_XH
+#define HARBOURCMD_XH
 
-// These commands are used to instruct the Xbase++ linker but
+// These commands are used to instruct the Harbour linker but
 // they are of no use in the .Net environment
 // Adding a reference to an assembly is enough to make code visible
 // even in the macro compiler
 
 #xcommand REQUEST  <id1> [,<idn> ]   =>
-#xcommand ANNOUNCE <id1> [,<idn> ]   =>
 
-// XBase++ Allows ENDSEQUENCE as alternative for END SEQUENCE
-// Same for ENDCLASS and ENDFOR
-// In the Xbase++ header file this is mapped to END, but we prefer to match it to END SEQUENCE
+// Harbour Allows ENDSEQUENCE as alternative for END SEQUENCE
+// Same ENDFOR
 #xcommand ENDSEQUENCE  [<*any*>]  => END SEQUENCE
-#xcommand ENDCLASS [<*any*>]      => END CLASS
 #xcommand ENDFOR [<*any*>]        => NEXT
 
-
-// Override COMMIT for Xbase++ compatibility
+// Override COMMIT for Harbour compatibility
 #command COMMIT                 => DbCommitAll()
 
 #endif

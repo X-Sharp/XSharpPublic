@@ -71,7 +71,6 @@
 #endif
 
 
-
 // Allow "garbage" after END <id>
 // Statements
 #xcommand END <kw:IF,DO,WHILE,FOR,CASE,SEQUENCE,TRY,LOCK,SCOPE,SWITCH,USING,UNSAFE,CHECKED,UNCHECKED,FIXED,WITH> <*any*> => END <kw>
@@ -82,12 +81,12 @@
 // END accessor keywords followed by "garbage"
 #xcommand END <kw:ADD,REMOVE,GET,SET> <*any*> => END <kw>
 // Specific end keywords
-#xcommand ENDIF <*any*> => ENDIF
-#xcommand ENDCASE <*any*> => ENDCASE
-#xcommand ENDDO <*any*> => ENDDO
-#xcommand NEXT <*any*> => NEXT
-#xcommand ENDDEFINE <*any*> => ENDDEFINE
-#xcommand ENDCLASS <*any*> => ENDCLASS
+#command NEXT <*any*>       => NEXT
+
+#command ENDIF <*any*>      => ENDIF
+#command ENDCASE <*any*>    => ENDCASE
+#command ENDDO <*any*>      => ENDDO
+
 
 // Run commands
 // and some rules to fetch assignment to RUN variable
@@ -98,6 +97,11 @@
 
 #endif
 
+
+// Various DBF related commands. These should be included before the dialect specific headers
+// so that the dialect specific headers can override the commands if needed
+#include "dbcmd.xh"
+
 #ifdef __DIALECT_XBASEPP__
 #include "XbasePPCmd.xh"
 #endif
@@ -106,16 +110,18 @@
 #include "FoxProCmd.xh"
 #endif
 
+#ifdef __DIALECT_HARBOUR__
+#include "HarbourCmd.xh"
+#endif
+
 // Various SET commands
 #include "set.xh"
 
-// Various DBF related commands
-#include "dbcmd.xh"
-        
+
 #ifdef __MEMVAR__
 // include memvar commands when memvar options are enabled
-#include "memvar.xh"         
-#endif         
+#include "memvar.xh"
+#endif
 // Include (optional) custom UDCs
 #include "CustomDefs.xh"
 #endif

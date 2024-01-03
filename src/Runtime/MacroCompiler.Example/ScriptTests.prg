@@ -411,19 +411,19 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     "LPARAMETERS fileName",;
     "LOCAL recCount",;
     "USE (fileName)",;
-    "i:=1",;
+    "i=1",;
     "SCAN",;
     " IF Test->Test1 != StrZero(i,10,0)",;
-    "  RETURN false",;
+    "  RETURN NTrim(i) // this indicates an error",;
     " END",;
     " IF Test->Test2 != Repl(Chr(64+(DWORD)i),10)",;
-    "  RETURN false",;
+    "  RETURN NTrim(100*i) // this indicates an error",;
     " END",;
     " i++",;
     "ENDSCAN",;
     "recCount = LastRec()",;
     "CLOSE ",;
-    "RETURN true"}),Args("test"), TRUE, typeof(LOGIC))
+    "RETURN '0'"}),Args("test"), "0", typeof(STRING))
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "#include ""XSharpDefs.xh"" ",;

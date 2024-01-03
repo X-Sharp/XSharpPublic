@@ -407,7 +407,7 @@ STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS BINARY, Arg2 PARAMS
                 NEXT
             END
 
-    ENDFOR
+    NEXT
 
     RETURN (BINARY)Result
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using static System.Diagnostics.Debug;
 using System.Dynamic;
+using System.Diagnostics;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -40,7 +41,20 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            b.Bind(ref Expr);
+            if (b.Options.Dialect == XSharpDialect.FoxPro)
+            {
+                if (Expr is ExprList el && el.Exprs.Count> 0)
+                {
+                    var node = el.Exprs.First();
+                    if (node is BinaryExpr bin && bin.Kind == TokenType.EQ)
+                    {
+                        var token = new Token(TokenType.ASSIGN, bin.Token.Text);
+                        var newnode = new AssignExpr(bin.Left, token, bin.Right);
+                        el.Exprs[0] = newnode;
+                    }
+                }
+            }
+                b.Bind(ref Expr);
             return null;
         }
         internal static ExprStmt Bound(Expr e)

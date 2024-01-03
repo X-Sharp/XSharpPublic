@@ -240,6 +240,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN lOk
                 })
 
+
         PRIVATE STATIC METHOD _writeRecord(data as OBJECT[]) as void
             CoreDb.Append(TRUE)
             FOR var nField := 0 to data:Length-1
@@ -283,7 +284,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY FileName       AS STRING AUTO
 
         /// <summary>List of tables</summary>
-        PROPERTY Tables as ICollection<DbcTable> GET _tables:Values
+        PROPERTY Tables         as ICollection<DbcTable> GET _tables:Values
         PRIVATE _tables         AS Dictionary<String, DbcTable>
 
         /// <summary>List of connections</summary>
@@ -709,7 +710,8 @@ STATIC CLASS XSharp.RDD.Dbc
         oDb := DbcManager.FindDatabase(cFileName)
         RETURN oDb
 
-
+    STATIC METHOD CreateView(cName as STRING, cConnection := "" as STRING, lRemote := FALSE as LOGIC, lShared := FALSE as LOGIC, sSelect := "" as STRING) AS VOID
+        RETURN
     /// <summary>Create a database.</summary>
     STATIC METHOD Create(cFileName as STRING) AS LOGIC
         cFileName := DbcManager.ExtendDbName(cFileName)
@@ -722,6 +724,41 @@ STATIC CLASS XSharp.RDD.Dbc
         oDb := DbcManager.FindDatabaseByName(cDatabaseName)
         DbcManager.Activate(oDb)
         RETURN oDb
+
+    STATIC METHOD Delete(cDatabaseName as STRING, lDeleteTables as LOGIC, lRecycle as LOGIC) AS LOGIC
+//         LOCAL lOpen := FALSE as LOGIC
+//         local cTables   AS List<String>
+//         cFileName := DbcManager.ExtendDbName(cFileName)
+//         var db := DbcManager.FindDatabase(cFileName)
+//         IF lDeleteTables
+//             if db == NULL
+//                 DbcManager.Open(cFileName, FALSE,FALSE,FALSE)
+//                 db := DbcManager.FindDatabase(cFileName)
+//             ENDIF
+//             if db != NULL
+//                 FOREACH var table in db:Tables
+//                     var name := table:ObjectName
+//                     var Path := table:Path
+//                     if Path != NULL
+//                         name := System.IO.Path.Combine(Path, name)
+//                     endif
+//                     cTables:Add(name)
+//                 NEXT
+//                 DbcManager.Close(cFileName)
+//             ENDIF
+//             FOREACH var name in cTables
+//                 if File(name)
+//                     if lRecycle
+//                         System.IO.File.Move(name, name+".old")
+//                     else
+//                         System.IO.File.Delete(name)
+//                     endif
+//                 endif
+//             NEXT
+//         ENDIF
+        RETURN FALSE
+
+
 
     /// <summary>DeSelect a database.</summary>
     STATIC METHOD Select() AS VOID

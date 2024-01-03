@@ -35,6 +35,8 @@
 #command USE                            => DbCloseArea()
 #command USE IN <(area)>                => (area)->(DbCloseArea())
 
+
+
 #command USE <(db)>                                                     ;
              [VIA <rdd>]                                                ;
              [ALIAS <a>]                                                ;
@@ -43,23 +45,18 @@
              [<sh: SHARED>]                                             ;
              [<ro: READONLY,NOUPDATE>]                                  ;
              [INDEX <(index1)> [, <(indexn)>]]                          ;
-                                                                        ;
-      => DbUseArea(                                                     ;
-                    <.new.>, <rdd>, <(db)>, <(a)>,                      ;
-                    if(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.>        ;
-                  )                                                     ;
-                                                                        ;
+      => DbUseArea( <.new.>, <rdd>, <(db)>, <(a)>, iif(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.> ) ;
       [; DbSetIndex( <(index1)> )]                                      ;
       [; DbSetIndex( <(indexn)> )]
 
 #command  SET INDEX TO [ <(index1)> [, <(indexN)>]] ;
-      =>  ordListClear() [; ordListAdd( <(index1)> )] [; ordListAdd( <(indexn)> )]
+      =>  OrdListClear() [; OrdListAdd( <(index1)> )] [; OrdListAdd( <(indexn)> )]
 
 #command  SET INDEX TO <(index1)> [, <(indexN)> ] ADDITIVE ;
-      =>  ordListAdd( <(index1)> ) [; ordListAdd( <(indexn)> )]
+      =>  OrdListAdd( <(index1)> ) [; OrdListAdd( <(indexn)> )]
 
 #command INDEX ON <(key)>         										;
-     TAG <order>                										;
+     [TAG <order>]                										;
      [<To:TO,OF> <file>]                								;
      [FOR <fo>]                 										;
      [<all:ALL>]                										;
@@ -86,41 +83,16 @@
           [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;             ;
        OrdCreate(<(file)>,<(order)>,<(key)>,,IIF(<.u.>,.T., NIL))
 
-#command INDEX ON <(key)>          										;
-     To <(file)>                										;
-     [Binary <bin>]                  								    ;
-     [COLLATE <coll>]                								    ;
-     [FOR <fo>]                 										;
-     [<all:ALL>]                										;
-     [WHILE <wh>]               										;
-     [NEXT <nx>]                										;
-     [RECORD <rec>]             										;
-     [<rs:REST>]                										;
-     [EVAL <ev>]                										;
-     [EVERY <evr>]              										;
-     [<u:UNIQUE>]               										;
-     [<cmp:COMPACT>]          										    ;
-     [<cand:CANDIDATE>]          										;
-     [<asd:ASCENDING>]          										;
-     [<dsd:DESCENDING>]         										;
-     [<lCur:USECURRENT>]        										;
-     [<lAdd:ADDITIVE>]          										;
-     [<lCus:CUSTOM>]            										;
-     [<lNop:NOOPTIMIZE>]        										;
-    => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, <{ev}>, <evr>,          ;
-        RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,               ;
-        [<.lCur.>], [<.lCus.>], [<.lNop.>] ,                            ;
-        [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;               ;
-       dbCreateIndex( <(file)>, <(key)>,, IIF( <.u.>, .T., NIL ))
-
 #command REINDEX [EVAL <eval>] [EVERY <every>] [<lNop: NOOPTIMIZE>] => ;
             OrdCondSet(,,,, <{EVAL}>, <EVERY>,,,,,,,,,, <.lNop.>) ;;
             OrdListRebuild()
 #command REINDEX        => OrdListRebuild()
 
 
-#command SET ORDER TO <n>       => DbSetOrder( <n> )
-#command SET ORDER TO           => DbSetOrder(0)
+#command SET ORDER TO <xOrder> [IN <file>] 	=> OrdSetFocus( <xOrder> [,<(file)>] )
+#command SET ORDER TO TAG <cOrder> [IN <file>] 	=> OrdSetFocus( <(cOrder)> [,<(file)>] )
+#command SET ORDER TO           		=> OrdSetFocus(0)
+
 #command APPEND BLANK           => DbAppend()
 #command PACK                   => DbPack()
 #command ZAP                    => DbZap()

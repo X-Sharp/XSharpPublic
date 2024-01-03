@@ -21,7 +21,6 @@ USING XSharp.Parsers
 FUNCTION Start() AS VOID STRICT
     local a,b,c as int
     a := b := c := 42
-    /*
     CREATE TABLE Salesman ;
         (SalesID c(6) PRIMARY KEY, ;
         SaleName Character(20) )
@@ -34,17 +33,18 @@ FUNCTION Start() AS VOID STRICT
     ELSE
         ? "Table not open"
     ENDIF
-    */
+
     CREATE CURSOR employee ;
         (EmpID N(5), Name Character(20), DOB D, Address c( 30 ) , City c(30), ;
         PostalCode c(10), OfficeNo c(8) NULL, Salary Numeric(10 , 2 ),  Specialty Memo)
+
     IF Used()
         INSERT INTO Employee(EmpId, Name) VALUES (1, "Nikos")
         Local Address as usual
         m.Address = "Zuukerweg"
-        m.EmpId = 10 
+        m.EmpId = 10
         m.Name  = "Robert"
-        INSERT INTO employee FROM Memvar 
+        INSERT INTO employee FROM Memvar
 
         LOCAL obj as object
         OBJ = CREATEOBJECT("Empty")
@@ -89,7 +89,6 @@ FUNCTION Start() AS VOID STRICT
            AND mfg_msrp.discontinued = .f.
 
 
-/*
     CREATE TABLE Orders ;
    (OrderId i PRIMARY KEY, ;
       CustId i REFERENCES customer TAG CustId, ;
@@ -104,31 +103,27 @@ FUNCTION Start() AS VOID STRICT
         local oTest := XSharp.VFP.Empty{}
         AddProperty(oTest, "LastName", "Hulst")
         AddProperty(oTest, "FirstName", "Robert")
-        local aTest := {1,2,3}
+    ALTER TABLE Orders Add OrderDate Date NULL
+    ALTER TABLE Orders Add COLUMN DeliveryDate DateTime
 
     IF Used()
         ShowArray(DbStruct())
     ELSE
         ? "Table not open"
     ENDIF
+//        local aTest := {1,2,3}
+//         INSERT INTO TEST(a,b,c)  VALUES (1,2,3)
+//         INSERT INTO TEST VALUES (a,b,c)
+//         INSERT INTO MemvarTest(x,y,z) FROM MEMVAR
+//         insert into TEST FROM NAME oTest
+//         insert into TEST FROM Array aTest
+//         insert into test(a,b,c) Select d,e,f from Customers
 
-        INSERT INTO TEST(a,b,c)  VALUES (1,2,3)
-        INSERT INTO TEST VALUES (a,b,c)
-        INSERT INTO MemvarTest(x,y,z) FROM MEMVAR
-        insert into TEST FROM NAME oTest
-        insert into TEST FROM Array aTest
-        insert into test(a,b,c) Select d,e,f from Customers
-*/
+    CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
+    WHERE Country="Mexico"
     WAIT
 
 
-FUNCTION __FoxSqlInsertFromSQL(sCommand as STRING, sTable as STRING, aFields as ARRAY, sSelect as string) AS VOID
-    // FoxPro opens the table when needed and keeps it open
-    // FoxPro opens the table for the select clause when needed and keeps it open
-    ? sCommand
-    ? sTable
-    ShowArray(aFields, "aFields")
-    ? sSelect
 
 FUNCTION __SqlDelete (sCommand as STRING)
     VAR lexer := XSqlLexer{sCommand}

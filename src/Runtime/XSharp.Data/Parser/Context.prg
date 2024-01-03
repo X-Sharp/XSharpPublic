@@ -5,19 +5,35 @@ using XSharp.RDD.Support
 using XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.Parsers
+    ENUM FoxAlterMode
+        MEMBER AddColumn
+        MEMBER AlterColumn
+        MEMBER DropColumn
+        MEMBER AlterTable
+    END ENUM
+
+[DebuggerDisplay("{Mode,nq} {Name,nq}")];
+CLASS FoxAlterTableContext
+    PROPERTY Name       as STRING AUTO
+    PROPERTY Mode       AS FoxAlterMode AUTO
+    PROPERTY ColumnInfo AS FoxColumnContext AUTO
+    PROPERTY TableRules as STRING AUTO
+END CLASS
 
 [DebuggerDisplay("{Type,nq} {Name,nq}")];
 CLASS FoxCreateTableContext
     PROPERTY Name       as STRING AUTO
     PROPERTY IsCursor   AS LOGIC AUTO
     PROPERTY Type       as STRING => IIF(IsCursor, "CURSOR","TABLE")
-    PROPERTY Columns    as List<FoxCreateColumnContext> AUTO
+    PROPERTY Columns    as List<FoxColumnContext> AUTO
     PROPERTY CodePage   as LONG AUTO
     PROPERTY ArrayName  as STRING AUTO
     PROPERTY RuleExpression as STRING AUTO
     PROPERTY RuleText       as string Auto
+    PROPERTY Free       AS LOGIC AUTO
+    PROPERTY LongName   AS STRING AUTO
     CONSTRUCTOR()
-        SELF:Columns := List<FoxCreateColumnContext>{}
+        SELF:Columns := List<FoxColumnContext>{}
         RETURN
 
     OVERRIDE METHOD ToString() AS STRING
@@ -33,13 +49,12 @@ CLASS FoxCreateTableContext
         END CLASS
 
 [DebuggerDisplay("{Name,nq} {FieldType}")];
-CLASS FoxCreateColumnContext INHERIT RddFieldInfo
+CLASS FoxColumnContext INHERIT RddFieldInfo
     PROPERTY Foreign    as STRING AUTO
     PROPERTY ForeignTag AS STRING AUTO
-    PROPERTY Table      AS FoxCreateTableContext AUTO GET PRIVATE SET
-    CONSTRUCTOR (oTable as FoxCreateTableContext)
+    PROPERTY Table      AS FoxCreateTableContext AUTO
+    CONSTRUCTOR ()
         SUPER("",DbFieldType.Unknown,0,0)
-        SELF:Table := oTable
         RETURN
 
     OVERRIDE METHOD ToString() AS STRING

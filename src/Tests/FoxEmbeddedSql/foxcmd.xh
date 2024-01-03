@@ -1,5 +1,4 @@
-#command __NOFOXPROSQL__ <any> => #warning This command is not (yet) supported: <(any)>
-#command INSERT [INTO] [<*any*>] => #error <(udc)> : command not supported
+#command INSERT [INTO] [<*any*>] => #error <(udc)> : Missing FROM or VALUES clause
 
 #command INSERT INTO <(table)> FROM MEMVAR => ;
     __SqlInsertMemVar(<"table">)
@@ -17,17 +16,11 @@
 #command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:Select> <*moreclauses*>   => ;
     __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
 
-#command CREATE TABLE <*clauses*>   => __SqlCreateTable(<"udc">)
-#command CREATE VIEW <*clauses*>    => __SqlCreateView(<"udc">)
-#command CREATE CURSOR <*clauses*>  => __SqlCreateCursor(<"udc">)
-#command ALTER TABLE <*clauses*>    => __SqlAlterTable <(udc)>
-#command DROP TABLE <*clauses*>     => __SqlDropTable <(udc)>
-#command DROP VIEW <*clauses*>      => __SqlDropView <(udc)>
 
 
-#command DELETE [<*tableName*>] FROM  <*clauses*> => __SqlDelete(<"udc">)
+// SQL Update Commands
 
 #command UPDATE [<*tableName*>] SET <*setclauses*> ;
   [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
-  [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)
+  [WHERE <*whereclause*>]                                   => __SqlUpdate(<"udc">)
 

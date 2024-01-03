@@ -4,7 +4,9 @@
 // See License.txt in the project root for license information.
 //
 
-USING XSharp.Internal
+using XSharp.Parsers
+using XSharp.Internal
+
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
@@ -91,8 +93,68 @@ FUNCTION __SqlInsertValues(sTable as STRING, aFields as ARRAY, aValues as ARRAY)
 
 
 
+FUNCTION __SqlCreateCursor(sCommand as STRING) AS LOGIC
+    var oContext := FoxEmbeddedSQL.ParseSqlCreate(sCommand, TRUE)
+    if (oContext != NULL)
+        RETURN FoxEmbeddedSQL.CreateTableCursor(oContext)
+    endif
+    RETURN FALSE
+
+
+FUNCTION __SqlCreateTable(sCommand as STRING) AS LOGIC
+    // FoxPro creates the table and keeps it open
+    var oContext := FoxEmbeddedSQL.ParseSqlCreate(sCommand, FALSE)
+    if (oContext != NULL)
+        RETURN FoxEmbeddedSQL.CreateTableCursor(oContext)
+    endif
+    RETURN FALSE
 
 STATIC CLASS FoxEmbeddedSQL
+
+    STATIC METHOD CreateTableCursor(oTable as FoxCreateTableContext) AS LOGIC
+        if oTable != NULL
+            local aStruct as ARRAY
+            aStruct := {}
+            foreach col as FoxColumnContext in oTable:Columns
+                var aField := {col:Name, ((Char)col:FieldType):ToString(), col:Length, col:Decimals, col:Name, col:Flags}
+                AAdd(aStruct, aField)
+            next
+            VAR cTable := oTable:Name
+            if oTable:IsCursor
+                cTable := System.IO.Path.GetTempFileName()
+            ENDIF
+            if RuntimeState.Workareas.FindAlias(oTable:Name) != 0
+                DbCloseArea(oTable:Name)
+            endif
+            DbCreate(cTable, aStruct, "DBFVFP", TRUE, oTable:Name)
+            DbCloseArea(oTable:Name)
+            DbUseArea(TRUE, "DBFVFP", cTable, oTable:Name, FALSE, FALSE)
+            FOR var nI := 1 to oTable:Columns:Count
+                var oCol := oTable:Columns[nI-1]
+                DbFieldInfo(DBS_CAPTION, nI, oCol:Caption)
+            NEXT
+            if oTable:IsCursor
+                DbInfo(DBI_ISTEMPORARY, TRUE)
+            endif
+            RETURN TRUE
+        endif
+        RETURN FALSE
+    STATIC METHOD ParseSqlCreate(sCommand as STRING, lCursor as LOGIC) AS FoxCreateTableContext
+        VAR lexer := XSqlLexer{sCommand}
+        VAR tokens := lexer:AllTokens()
+        var parser := SQLParser{XTokenList{tokens}}
+        local table as FoxCreateTableContext
+        IF lCursor
+            IF ! parser:ParseCreateCursor(out table)
+                return null
+            ENDIF
+        ELSE
+            IF ! parser:ParseCreateTable(out  table)
+                return null
+            ENDIF
+        endif
+        return table
+
     STATIC METHOD OpenArea(sTable as STRING) AS LOGIC
         IF ! DbSelectArea(sTable)
             DbUseArea(TRUE, "DBFVFP", sTable, sTable, TRUE, FALSE)

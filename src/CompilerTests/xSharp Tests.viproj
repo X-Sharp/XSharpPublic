@@ -123802,7 +123802,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C895 - initlocals compiler option also initializes class fields
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C896 - Various FoxPro commands *************
 Application = C896 - Various FoxPro commands
 IDEVersion = 1.06
@@ -123917,7 +123917,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C896 - Various FoxPro commands
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C897 - UDCs do not allow all possible orders of optional clauses *************
 Application = C897 - UDCs do not allow all possible orders of optional clauses
 IDEVersion = 1.06

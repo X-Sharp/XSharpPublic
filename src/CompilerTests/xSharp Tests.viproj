@@ -55658,8 +55658,9 @@ FileType = Code
 CopyToBin = 0
 [C483 - Harbour dialect, iif() with omitted argument is allowed References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
 ReferenceProject = 3FD20812-F1F2-477B-9734-FE2697DED8D6,1,0,C460_helper
 [C483 - Harbour dialect, iif() with omitted argument is allowed Resources]
 [C483 - Harbour dialect, iif() with omitted argument is allowed Native Resources]
@@ -67553,8 +67554,9 @@ FileType = Code
 CopyToBin = 0
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect Resources]
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect Native Resources]
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect License files]
@@ -70503,8 +70505,9 @@ FileType = Code
 CopyToBin = 0
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = VulcanRT,1,0,1.1.401.0
-ReferenceGAC = VulcanRTFuncs,1,0,1.1.401.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers Resources]
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers Native Resources]
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers License files]
@@ -79154,6 +79157,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 ReferenceGAC = XSharp.VO,1,0,
 [R682 - FoxPro AND, OR, NOT Resources]
 [R682 - FoxPro AND, OR, NOT Native Resources]
@@ -79612,6 +79616,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [C686 - Problem with NIL arguments in FoxPro dialect Resources]
 [C686 - Problem with NIL arguments in FoxPro dialect Native Resources]
 [C686 - Problem with NIL arguments in FoxPro dialect License files]
@@ -79726,6 +79731,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 ReferenceGAC = XSharp.VO,1,0,2.0.0.0
 [C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect Resources]
 [C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect Native Resources]
@@ -79846,6 +79852,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VO.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [C688 - Another PUBLIC/PRIVATE FoxPro sample Resources]
 [C688 - Another PUBLIC/PRIVATE FoxPro sample Native Resources]
 [C688 - Another PUBLIC/PRIVATE FoxPro sample License files]
@@ -80863,6 +80870,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 ReferenceGAC = XSharp.VO,1,0,
 [R697 Resources]
 [R697 Native Resources]
@@ -81320,6 +81328,7 @@ ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.MacroCompiler.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Rdd.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [R701 FoxPro MemberAccess Resources]
 [R701 FoxPro MemberAccess Native Resources]
 [R701 FoxPro MemberAccess License files]
@@ -81434,6 +81443,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [C697 - Cannot pass PUBLIC/PRIVATE by reference Resources]
 [C697 - Cannot pass PUBLIC/PRIVATE by reference Native Resources]
 [C697 - Cannot pass PUBLIC/PRIVATE by reference License files]
@@ -81548,6 +81558,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [C698 - Various problems with passing params by reference in FoxPro dialect Resources]
 [C698 - Various problems with passing params by reference in FoxPro dialect Native Resources]
 [C698 - Various problems with passing params by reference in FoxPro dialect License files]
@@ -84624,6 +84635,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [R707 - Allow latebinding for FoxPro for certain types Resources]
 [R707 - Allow latebinding for FoxPro for certain types Native Resources]
 [R707 - Allow latebinding for FoxPro for certain types License files]
@@ -89316,6 +89328,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [C746 - Problem with macro on left side of equation with the single "=" operator Resources]
 [C746 - Problem with macro on left side of equation with the single "=" operator Native Resources]
 [C746 - Problem with macro on left side of equation with the single "=" operator License files]
@@ -90117,6 +90130,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [R748 - FoxPro Declare DLL Resources]
 [R748 - FoxPro Declare DLL Native Resources]
 [R748 - FoxPro Declare DLL License files]
@@ -97892,7 +97906,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
-ReferenceGAC = XSharp.VO,1,0,
+ReferenceGAC = XSharp.VFP,1,0,
 [R786 - Logical operators without spaces Resources]
 [R786 - Logical operators without spaces Native Resources]
 [R786 - Logical operators without spaces License files]
@@ -98007,6 +98021,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [R787 - FoxPro Null_Date Resources]
 [R787 - FoxPro Null_Date Native Resources]
 [R787 - FoxPro Null_Date License files]
@@ -101076,6 +101091,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [R803 - REF or OUT variables and missing arguments Resources]
 [R803 - REF or OUT variables and missing arguments Native Resources]
 [R803 - REF or OUT variables and missing arguments License files]
@@ -104516,6 +104532,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.Core.dll,1,0
 ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.RT.dll,1,0
+ReferenceBrowse = %ProjectPath%\..\..\..\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
 [R823 - Local and Type with same name. Resolving instance properties, fields and methods Resources]
 [R823 - Local and Type with same name. Resolving instance properties, fields and methods Native Resources]
 [R823 - Local and Type with same name. Resolving instance properties, fields and methods License files]
@@ -117690,7 +117707,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C877 - Problems with interpolated strings
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C878 - Preprocessor problem with the SUM UDC (with nested brackets) *************
 Application = C878 - Preprocessor problem with the SUM UDC (with nested brackets)
 IDEVersion = 1.06
@@ -117919,7 +117936,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C880 - Incorrect ambiguous call error with OBJECT/IntPtr parameters *************
 Application = C880 - Incorrect ambiguous call error with OBJECT/IntPtr parameters
 IDEVersion = 1.06
@@ -120675,7 +120692,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R898 - Debugger stops inside codeblock inside DebuggerHidden method
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C889 - Failed to emit Module error with CONST class field missing value assignment *************
 Application = C889 - Failed to emit Module error with CONST class field missing value assignment
 IDEVersion = 1.06
@@ -120907,7 +120924,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R899 - Complicated UDC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C890 - Preprocessor can't handle UDCs in code spanning in multiple lines *************
 Application = C890 - Preprocessor can't handle UDCs in code spanning in multiple lines
 IDEVersion = 1.06
@@ -121134,7 +121151,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R901 - Show warning when REF used instead of OUT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C891 - Internal compiler error with incorrect explicit interface implementation with property *************
 Application = C891 - Internal compiler error with incorrect explicit interface implementation with property
 IDEVersion = 1.06
@@ -123215,7 +123232,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C892 - Multiple type constraints in a generic type
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C893 - Tuples *************
 Application = C893 - Tuples
 IDEVersion = 1.06
@@ -123557,7 +123574,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R918 - Lamda in early bound call
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C894 - Compiler crash with missing reference to XSharp.VFP *************
 Application = C894 - Compiler crash with missing reference to XSharp.VFP
 IDEVersion = 1.06
@@ -123671,7 +123688,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C894 - Compiler crash with missing reference to XSharp.VFP
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C895 - initlocals compiler option also initializes class fields *************
 Application = C895 - initlocals compiler option also initializes class fields
 IDEVersion = 1.06
@@ -123785,7 +123802,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C895 - initlocals compiler option also initializes class fields
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C896 - Various FoxPro commands *************
 Application = C896 - Various FoxPro commands
 IDEVersion = 1.06
@@ -123900,7 +123917,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C896 - Various FoxPro commands
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C897 - UDCs do not allow all possible orders of optional clauses *************
 Application = C897 - UDCs do not allow all possible orders of optional clauses
 IDEVersion = 1.06

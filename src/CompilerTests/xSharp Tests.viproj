@@ -117707,7 +117707,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C877 - Problems with interpolated strings
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C878 - Preprocessor problem with the SUM UDC (with nested brackets) *************
 Application = C878 - Preprocessor problem with the SUM UDC (with nested brackets)
 IDEVersion = 1.06
@@ -117936,7 +117936,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C880 - Incorrect ambiguous call error with OBJECT/IntPtr parameters *************
 Application = C880 - Incorrect ambiguous call error with OBJECT/IntPtr parameters
 IDEVersion = 1.06
@@ -120692,7 +120692,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R898 - Debugger stops inside codeblock inside DebuggerHidden method
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C889 - Failed to emit Module error with CONST class field missing value assignment *************
 Application = C889 - Failed to emit Module error with CONST class field missing value assignment
 IDEVersion = 1.06
@@ -120924,7 +120924,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R899 - Complicated UDC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C890 - Preprocessor can't handle UDCs in code spanning in multiple lines *************
 Application = C890 - Preprocessor can't handle UDCs in code spanning in multiple lines
 IDEVersion = 1.06
@@ -121151,7 +121151,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R901 - Show warning when REF used instead of OUT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C891 - Internal compiler error with incorrect explicit interface implementation with property *************
 Application = C891 - Internal compiler error with incorrect explicit interface implementation with property
 IDEVersion = 1.06
@@ -123232,7 +123232,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C892 - Multiple type constraints in a generic type
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C893 - Tuples *************
 Application = C893 - Tuples
 IDEVersion = 1.06
@@ -123574,7 +123574,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R918 - Lamda in early bound call
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C894 - Compiler crash with missing reference to XSharp.VFP *************
 Application = C894 - Compiler crash with missing reference to XSharp.VFP
 IDEVersion = 1.06
@@ -123688,7 +123688,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C894 - Compiler crash with missing reference to XSharp.VFP
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C895 - initlocals compiler option also initializes class fields *************
 Application = C895 - initlocals compiler option also initializes class fields
 IDEVersion = 1.06

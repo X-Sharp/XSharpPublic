@@ -1223,6 +1223,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
         }
+        protected LiteralExpressionSyntax GenerateDefaultLiteral()
+        {
+            return _syntaxFactory.LiteralExpression(SyntaxKind.DefaultLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword));
+        }
         protected VariableDeclaratorSyntax GenerateVariable(string name, ExpressionSyntax initexpr = null)
         {
             return GenerateVariable(SyntaxFactory.Identifier(name), initexpr);
@@ -1520,8 +1524,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var keyword = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword);
-                return _syntaxFactory.LiteralExpression(SyntaxKind.DefaultLiteralExpression, keyword);
+                return _syntaxFactory.DefaultExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword),
+                    SyntaxFactory.OpenParenToken,
+                    type,
+                    SyntaxFactory.CloseParenToken);
             }
         }
 
@@ -3788,7 +3795,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    value = MakeDefault(datatype.Get<TypeSyntax>());
+                    var dt = datatype.Get<TypeSyntax>();
+                    if (dt.IsUsualType())
+                    {
+                        value = GenerateNIL();
+                    }
+                    else
+                    {
+                        value = GenerateDefaultLiteral();
+                    }
                 }
                 value.XGenerated = true;
                 value.XNode = datatype;
@@ -3796,6 +3811,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return null;
         }
+        protected ExpressionSyntax GenerateNIL()
+        {
+            if (_options.NoClipCall)
+                return MakeDefault(UsualType);
+            if (_options.XSharpRuntime)
+                return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
+            else
+                return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
+
+        }
+
 
         public override void ExitPropertyParameterList([NotNull] XP.PropertyParameterListContext context)
         {
@@ -9291,6 +9317,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int[] elements;
             switch (context.Token.Type)
             {
+                case XP.DEFAULT:
+                    context.Put(GenerateDefaultLiteral());
+                    return;
                 case XP.BINARY_CONST:
                     var source = context.Token.Text.Substring(2);
                     var error = false;

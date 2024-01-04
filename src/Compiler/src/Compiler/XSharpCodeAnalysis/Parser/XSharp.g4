@@ -1294,7 +1294,8 @@ literalValue        : Token=
                     | NULL_PTR
                     | NULL_STRING
                     | NULL_SYMBOL
-                    | NULL_FOX )
+                    | NULL_FOX
+                    | DEFAULT)
                     ;
 
                     // The following rule matches DateTime literals that are the result of a preprocessor rule
@@ -1356,8 +1357,7 @@ xppclass           :  Attributes=attributes?                                // N
                        (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       Members+=xppclassMember*
-                      ENDCLASS
-                      eos
+                      (ENDCLASS | END CLASS) eos
                     ;
 
 xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL | SEALED | ABSTRACT) )+

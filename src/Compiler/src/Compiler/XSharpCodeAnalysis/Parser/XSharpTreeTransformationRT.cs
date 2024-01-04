@@ -940,16 +940,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Expressions
 
-        protected ExpressionSyntax GenerateNIL()
-        {
-            if (_options.NoClipCall)
-                return MakeDefault(UsualType);
-            if (_options.XSharpRuntime)
-                return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
-            else
-                return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
-
-        }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {
             var result = GenerateNIL();

@@ -1520,11 +1520,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                return _syntaxFactory.DefaultExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword),
-                    SyntaxFactory.OpenParenToken,
-                    type,
-                    SyntaxFactory.CloseParenToken);
+                var keyword = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword);
+                return _syntaxFactory.LiteralExpression(SyntaxKind.DefaultLiteralExpression, keyword);
             }
         }
 
@@ -3794,6 +3791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     value = MakeDefault(datatype.Get<TypeSyntax>());
                 }
                 value.XGenerated = true;
+                value.XNode = datatype;
                 return value;
             }
             return null;
@@ -6138,6 +6136,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var eqvalue = (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.EqualsToken, initExpr);
+                if (eqvalue != null)
+                {
+                    eqvalue.XNode = initExpr.XNode;
+                    eqvalue.XGenerated = initExpr.XGenerated;
+                }
                 vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null, eqvalue);
             }
             vardecl.XVoIsDim = isDim;

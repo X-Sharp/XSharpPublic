@@ -938,16 +938,16 @@ primary             : Key=SELF                                                  
                     | TupleExpr=tupleExpr                                       #tupleExpression      // TUPLE { id := expr [, id := expr] }
                     | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | AnoExpr=anonymousMethodExpression                         #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
-                    | Query=linqQuery                                           #queryExpression        // LINQ
+                    | Query=linqQuery                                           #queryExpression      // LINQ
                     | {ExpectToken(LCURLY)}? Type=datatype LCURLY Obj=expression COMMA
-                      ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
+                      ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		  // delegate{ obj , @func() }
                     | {ExpectToken(LCURLY)}? Type=datatype LCURLY ArgList=argumentList  RCURLY
-                                                   Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
+                                                   Init=objectOrCollectioninitializer?  #ctorCall			// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
-                    | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
-                    | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		// sizeof( typeORid )
-                    | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
-                    | Name=simpleName                                           #nameExpression			// generic name
+                    | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		  // typeof( typeORid )
+                    | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		  // sizeof( typeORid )
+                    | DEFAULT (LPAREN Type=datatype RPAREN)?                    #defaultExpression		// default( typeORid )
+                    | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// nativetype(_CAST, expr )
@@ -1294,8 +1294,7 @@ literalValue        : Token=
                     | NULL_PTR
                     | NULL_STRING
                     | NULL_SYMBOL
-                    | NULL_FOX
-                    | DEFAULT)
+                    | NULL_FOX)
                     ;
 
                     // The following rule matches DateTime literals that are the result of a preprocessor rule

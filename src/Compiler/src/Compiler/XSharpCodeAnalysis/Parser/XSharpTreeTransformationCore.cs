@@ -8560,7 +8560,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)
         {
-            context.Put(MakeDefault(context.Type.Get<TypeSyntax>()));
+            if (context.Type != null)
+            {
+                var type = context.Type.Get<TypeSyntax>();
+                if (type.IsUsualType())
+                {
+                    context.Put(GenerateNIL());
+                }
+                else
+                {
+                    context.Put(MakeDefault(type));
+                }
+            }
+            else
+            {
+                context.Put(GenerateDefaultLiteral());
+            }
         }
 
         public override void ExitAwaitExpression([NotNull] XP.AwaitExpressionContext context)

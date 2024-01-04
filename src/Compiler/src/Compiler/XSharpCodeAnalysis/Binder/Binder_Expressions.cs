@@ -96,24 +96,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             BoundExpression isFromEnd;
             {
-                const string IsFromEndName = "IsFromEnd";
-                var lookupResult = LookupResult.GetInstance();
-                LookupMembersWithFallback(lookupResult, leftType, IsFromEndName, 0, ref useSiteDiagnostics);
-                var members = ArrayBuilder<Symbol>.GetInstance();
-                bool wasError;
-                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, IsFromEndName, 0, members, diagnostics, out wasError) as PropertySymbol;
-                isFromEnd = new BoundPropertyAccess(syntax, left, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+                var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Index__get_IsFromEnd) as MethodSymbol;
+                isFromEnd = new BoundCall(syntax, left, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             BoundExpression leftValue;
             {
-                const string valueName = "Value";
-                var lookupResult = LookupResult.GetInstance();
-                LookupMembersWithFallback(lookupResult, leftType, valueName, 0, ref useSiteDiagnostics);
-                var members = ArrayBuilder<Symbol>.GetInstance();
-                bool wasError;
-                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, valueName, 0, members, diagnostics, out wasError) as PropertySymbol;
-                leftValue = new BoundPropertyAccess(syntax, left, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+                var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Index__get_Value) as MethodSymbol;
+                leftValue = new BoundCall(syntax, left, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             var opKind = BinaryOperatorKind.IntSubtraction;
@@ -163,28 +153,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rangeType = Compilation.GetWellKnownType(WellKnownType.System_Range);
             Debug.Assert(range.Type.Equals(rangeType));
 
-            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-
             BoundExpression start;
             {
-                const string valueName = "Start";
-                var lookupResult = LookupResult.GetInstance();
-                LookupMembersWithFallback(lookupResult, rangeType, valueName, 0, ref useSiteDiagnostics);
-                var members = ArrayBuilder<Symbol>.GetInstance();
-                bool wasError;
-                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, valueName, 0, members, diagnostics, out wasError) as PropertySymbol;
-                start = new BoundPropertyAccess(syntax, range, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+                var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Range__get_Start) as MethodSymbol;
+                start = new BoundCall(syntax, range, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             BoundExpression end;
             {
-                const string valueName = "End";
-                var lookupResult = LookupResult.GetInstance();
-                LookupMembersWithFallback(lookupResult, rangeType, valueName, 0, ref useSiteDiagnostics);
-                var members = ArrayBuilder<Symbol>.GetInstance();
-                bool wasError;
-                var symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, syntax, valueName, 0, members, diagnostics, out wasError) as PropertySymbol;
-                end = new BoundPropertyAccess(syntax, range, symbol, lookupResult.Kind, symbol.Type) { WasCompilerGenerated = true };
+                var symbol = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Range__get_End) as MethodSymbol;
+                end = new BoundCall(syntax, range, symbol, ImmutableArray<BoundExpression>.Empty, default, default, false, false, false, default, default, default, symbol.ReturnType) { WasCompilerGenerated = true };
             }
 
             start = SubtractSystemIndex(start, diagnostics, checkZero: true);

@@ -455,6 +455,10 @@ namespace Microsoft.CodeAnalysis
 
         System_Index__ctor,
         System_Index__GetOffset,
+#if XSHARP
+        System_Index__get_IsFromEnd,
+        System_Index__get_Value,
+#endif
         System_Range__ctor,
         System_Range__StartAt,
         System_Range__EndAt,

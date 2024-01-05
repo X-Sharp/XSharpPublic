@@ -576,6 +576,11 @@
        ; <v1> /= M->__Avg [; <vn> /= M->__Avg ]
 
 
+#command DELETE TAG <cOrd1> [IN <file1>] [,<cOrdN> [IN <fileN>]]        ;
+       =>     ORDDESTROY(<(cOrd1)> ,<(file1)>) ;
+          [;; ORDDESTROY(<(cOrdN)> ,<(fileN)>)]
+
+
 // NOTE:  CLOSE <alias> must precede the others
 #command CLOSE <alias>                 => <alias>->( DbCloseArea() )
 #command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )

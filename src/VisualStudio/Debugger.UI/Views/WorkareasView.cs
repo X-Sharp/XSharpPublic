@@ -26,7 +26,11 @@ namespace XSharp.Debugger.UI
             get => Contents != STATUS;
             set => Contents = value ? FIELDS : STATUS;
         }
-
+        private string _alias;
+        public string Alias
+        {   get => _alias;
+            set => SetProperty(ref _alias, value);
+        }
         private int _contents;
         public int Contents
         {

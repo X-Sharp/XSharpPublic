@@ -115,6 +115,7 @@ namespace XSharp.Debugger.UI
                 if (item != null)
                 {
                     var areaNum = item.Area;
+                    View.Alias = item.Alias;
                     View.Status = GetStatus(areaNum).Items;
                     View.Fields = GetFields(areaNum).Items;
                 }
@@ -125,10 +126,28 @@ namespace XSharp.Debugger.UI
             }
             else
             {
-                View.Status = null;
-                View.Fields = null;
+                WorkareaItem item = this.lvAreas.SelectedItem as WorkareaItem;
+                if (item != null)
+                {
+                    View.Alias = item.Alias;
+                }
+                if (stubs == null)
+                {
+                    var items = new NameValueItems();
+                    var nvitem = new NameValueItem
+                    {
+                        Name = "",
+                        Value = "Debugger is not in break mode"
+                    };
+                    items.Add(nvitem);
+                    stubs = items;
+                }
+                View.Status = stubs.Items; ;
+                View.Fields = stubs.Items;
             }
         }
+
+        NameValueItems stubs = null;
 
         private void lvAreas_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {

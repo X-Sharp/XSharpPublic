@@ -23,6 +23,8 @@
                       VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+            <TextBlock Text="Area:" VerticalAlignment="Center" Margin="5,5,10,5"  Padding="2,0,0,0"/>
+            <TextBlock Text="{Binding Path=Alias}" VerticalAlignment="Center" MinWidth="30" Margin="5,5,10,5"  /> 
             <TextBlock Text="Show:" VerticalAlignment="Center" Margin="5,5,10,5"  Padding="2,0,0,0"/>
             <RadioButton IsChecked="{Binding Path=ShowStatus}" VerticalAlignment="Center" Content="_Status" Margin="5,5,10,5"/>
             <RadioButton IsChecked="{Binding Path=ShowFields}" VerticalAlignment="Center" Content="_Fields" Margin="5,5,10,5"/>

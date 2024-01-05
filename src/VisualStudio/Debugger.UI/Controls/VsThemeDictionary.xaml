@@ -16,7 +16,8 @@
     <Style x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}" />
     <Style x:Key="{x:Type TreeView}" TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewStyleKey}}" />
     <Style x:Key="{x:Type TreeViewItem}" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewItemStyleKey}}" />
-    <Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabControlNavigationStyleKey}}" />
+    <!-- Next line does not work for VS2019 and VS2017 -->
+    <!--<Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabControlNavigationStyleKey}}" />-->
     <Style x:Key="{x:Type GroupBox}" TargetType="{x:Type GroupBox}">
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
         <Setter Property="TextBlock.Background" Value="#00FFFFFF" />

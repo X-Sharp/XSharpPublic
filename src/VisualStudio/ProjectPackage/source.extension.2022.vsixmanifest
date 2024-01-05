@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem.2022" Version="2.18.1.0" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem.2022" Version="2.19.0.0" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp VS Integration for 2022 and later</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
@@ -18,7 +18,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         </InstallationTarget>
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community" >
             <ProductArchitecture>arm64</ProductArchitecture>
-        </InstallationTarget>		
+        </InstallationTarget>
     </Installation>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />
@@ -43,8 +43,8 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <ItemTemplate>ItemTemplates</ItemTemplate>
     </Content>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
-        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0,)" DisplayName="C# and Visual Basic" />
-        <Prerequisite Id="Microsoft.VisualStudio.Component.ManagedDesktop.Prerequisites" Version="[15.0,)" DisplayName=".NET desktop development tools" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[17.0,18.0)" DisplayName="C# and Visual Basic" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.ManagedDesktop.Prerequisites" Version="[17.0,18.0)" DisplayName=".NET desktop development tools" />
     </Prerequisites>
 </PackageManifest>

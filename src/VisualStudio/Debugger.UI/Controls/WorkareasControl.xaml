@@ -7,41 +7,51 @@
              d:DesignHeight="450" d:DesignWidth="800"
              >
 
-
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,10,0">
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,10,0">
             <TextBlock Text="Selected RDD:" VerticalAlignment="Center" Margin="5,5,10,5"/>
             <ComboBox ItemsSource="{Binding RDDs}" SelectedItem="{Binding SelectedRDD}" Padding="5,0" Width="250" 
                       VerticalAlignment="Center"/>
-            <Separator Grid.Row="1" />
         </StackPanel>
-        <Separator Grid.Row="1" />
-        <TextBox  Grid.Row="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
-        <DataGrid Grid.Row="2" Name="lvAreas" Width="Auto" 
-                  ItemsSource="{Binding SelectedItems}" AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Resources>
-                <ResourceDictionary Source="VsThemeDictionary.xaml"/>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Selected" Width="Auto" Binding="{Binding Path=Selected}"/>
-                <DataGridTextColumn Header="Area" MinWidth="50" Width="Auto" Binding="{Binding Path=Area}" />
-                <DataGridTextColumn Header="Alias" MinWidth="50" Width="Auto" Binding="{Binding Path=Alias}" />
-                <DataGridTextColumn Header="RDD" MinWidth="50" Width="Auto" Binding="{Binding Path=RDD}" />
-                <DataGridTextColumn Header="RecNo" MinWidth="50" Width="Auto" Binding="{Binding Path=RecNo}" />
-                <DataGridTextColumn Header="# recs" MinWidth="50" Width="Auto" Binding="{Binding Path=RecCount}" />
-                <DataGridCheckBoxColumn Header="EoF" MinWidth="50" Width="50" Binding="{Binding Path=EoF}" />
-                <DataGridCheckBoxColumn Header="BoF" MinWidth="50" Width="Auto" Binding="{Binding Path=BoF}" />
-                <DataGridCheckBoxColumn Header="Found" MinWidth="50" Width="Auto" Binding="{Binding Path=Found}"  />
-
-
-
-            </DataGrid.Columns>
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+            <TextBlock Text="Show:" VerticalAlignment="Center" Margin="5,5,10,5"  Padding="2,0,0,0"/>
+            <RadioButton IsChecked="{Binding Path=ShowStatus}" VerticalAlignment="Center" Content="_Status" Margin="5,5,10,5"/>
+            <RadioButton IsChecked="{Binding Path=ShowFields}" VerticalAlignment="Center" Content="_Fields" Margin="5,5,10,5"/>
+        </StackPanel>
+        <Separator Grid.Row="1" Grid.ColumnSpan="2"/>
+        <TextBox  Grid.Row="2" Grid.ColumnSpan="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
+        <DataGrid Name="lvAreas" Width="Auto" Grid.Row="2" Grid.Column="0" 
+                  ItemsSource="{Binding SelectedItems}" AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionChanged="lvAreas_SelectionChanged" >
+                <DataGrid.Resources>
+                    <ResourceDictionary Source="VsThemeDictionary.xaml"/>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Selected" Width="Auto" Binding="{Binding Path=Selected}"/>
+                    <DataGridTextColumn Header="Area" MinWidth="50" Width="Auto" Binding="{Binding Path=Area}" />
+                    <DataGridTextColumn Header="Alias" MinWidth="50" Width="Auto" Binding="{Binding Path=Alias}" />
+                    <DataGridTextColumn Header="RDD" MinWidth="50" Width="Auto" Binding="{Binding Path=RDD}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        <DataGrid Grid.Row="2" Grid.Column="1" Name="lvInfo" 
+                ItemsSource="{Binding AreaInfo}" AutoGenerateColumns="False" IsReadOnly="True" 
+                BorderThickness="2,0,0,0" >
+        <DataGrid.Resources>
+            <ResourceDictionary Source="VsThemeDictionary.xaml"/>
+        </DataGrid.Resources>
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Name" MinWidth="50" Width="Auto" Binding="{Binding Path=Name}" />
+            <DataGridTextColumn Header="Value" MinWidth="50" Width="*" Binding="{Binding Path=Value}" />
+        </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

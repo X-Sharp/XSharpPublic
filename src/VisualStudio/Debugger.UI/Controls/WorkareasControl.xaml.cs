@@ -5,12 +5,14 @@
 //
 using Debugger.Support;
 using Microsoft.VisualStudio.Shell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Windows.Controls;
 using System.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Controls;
+using System.Windows.Media;
+using XSharp.Debugger.Support;
+using XSharp.Settings;
 
 namespace XSharp.Debugger.UI
 {
@@ -30,6 +32,7 @@ namespace XSharp.Debugger.UI
             if (this.Visibility == Visibility.Visible)
             {
                 Refresh();
+                ShowDetails();
             }
         }
 
@@ -50,6 +53,7 @@ namespace XSharp.Debugger.UI
             if (View.IsRTLoaded)
             {
                 lvAreas.Visibility = Visibility.Visible;
+                lvInfo.Visibility = Visibility.Visible;
                 tbNotLoaded.Visibility = Visibility.Hidden;
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -65,9 +69,10 @@ namespace XSharp.Debugger.UI
                 }
                 View.RDDs = rdds;
                 View.Items = items.Items.ToList();
-                if (View.SelectedRDD == null ||
-                    !rdds.Contains(View.SelectedRDD))
+                if (View.SelectedRDD == null || !rdds.Contains(View.SelectedRDD))
                     View.SelectedRDD = rdds.FirstOrDefault();
+                if (lvAreas.SelectedIndex == -1)
+                    lvAreas.SelectedIndex = 0;
             }
 
             );
@@ -75,9 +80,59 @@ namespace XSharp.Debugger.UI
             else
             {
                 lvAreas.Visibility = Visibility.Hidden;
+                lvInfo.Visibility = Visibility.Hidden;
                 tbNotLoaded.Visibility = Visibility.Visible;
 
             }
+        }
+
+        private NameValueItems GetStatus(int area)
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var str = await Support.GetAreaInfoAsync(area);
+                var status = NameValueItems.Deserialize(str);
+                return status;
+            });
+        }
+
+
+        private NameValueItems GetFields(int area)
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var str = await Support.GetFieldValuesAsync((int)area);
+                var fields = NameValueItems.Deserialize(str);
+                return fields;
+            });
+        }
+
+        private void ShowDetails()
+        {
+            if (XDebuggerSettings.DebuggerMode == DebuggerMode.Break)
+            {
+                WorkareaItem item = this.lvAreas.SelectedItem as WorkareaItem;
+                if (item != null)
+                {
+                    var areaNum = item.Area;
+                    View.Status = GetStatus(areaNum).Items;
+                    View.Fields = GetFields(areaNum).Items;
+                }
+                else if (this.lvAreas.Items.Count > 0)
+                {
+                    this.lvAreas.SelectedIndex = 0;
+                }
+            }
+            else
+            {
+                View.Status = null;
+                View.Fields = null;
+            }
+        }
+
+        private void lvAreas_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            ShowDetails();
         }
     }
 }

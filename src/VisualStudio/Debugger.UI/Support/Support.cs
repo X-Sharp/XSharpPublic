@@ -24,7 +24,7 @@ namespace XSharp.Debugger.UI
         internal static EnvDTE.Debugger debugger;
         internal static DkmProcess currentProcess = null;
         internal static bool? IsRtLoaded = null;
-        internal static bool IsRunning = false;
+        internal static bool IsRunning => XDebuggerSettings.DebuggerMode != DebuggerMode.Design;
         internal static bool errorIsShown = false;
         static IList<IDebuggerToolWindow> windows;
         static ILogger Logger => XSettings.Logger;
@@ -93,6 +93,18 @@ namespace XSharp.Debugger.UI
             var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetWorkareas()");
             return StripResult(result);
         }
+
+        internal static async Task<string> GetAreaInfoAsync(int Area)
+        {
+            var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetArea({Area})");
+            return StripResult(result);
+        }
+        internal static async Task<string> GetFieldValuesAsync(int Area)
+        {
+            var result = await Support.ExecExpressionAsync($"XSharp.Debugger.Support.RtLink.GetFieldValues({Area})");
+            return StripResult(result);
+        }
+
 
         static bool IsProcessChanged()
         {

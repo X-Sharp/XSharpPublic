@@ -134,6 +134,7 @@ BEGIN NAMESPACE XSharp.IO
                 SELF:FileAccess	:= FileAccess.ReadWrite
             ELSEIF _AND(dwMode,FO_WRITE) == (DWORD) FO_WRITE
                 SELF:FileAccess	:= FileAccess.Write
+                SELF:UnBuffered := TRUE
             ELSE
                 SELF:FileAccess	:= FileAccess.Read
             ENDIF

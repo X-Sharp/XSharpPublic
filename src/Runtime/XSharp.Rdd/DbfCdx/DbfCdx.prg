@@ -163,13 +163,32 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
 
                     SELF:GoCold()
+                    // because of caching mechanisms we have to close the indexes and reopen them after rebuilding
+                    // therefor we save the names of the orderbags that are open, so we can reopen them later
+                    // we also save the active order
                     local current := SELF:CurrentOrder as CdxTag
+                    var bags := List<DbOrderInfo>{}
+                    foreach var index in SELF:_indexList:Bags
+                        bags:Add(DbOrderInfo{} {BagName := index:FullPath})
+                    next
                     var lOk := SELF:_indexList:Rebuild() .and. RuntimeState.LastRddError == null
+                    foreach var index in SELF:_indexList:Bags
+                        index:Close()
+                    next
+                    SELF:_indexList:Bags:Clear()
+                    var baseName := System.IO.Path.ChangeExtension(SELF:FileName,"")
+                    foreach var bag in bags
+                        var indexBase := System.IO.Path.ChangeExtension(bag:BagName,"")
+                        lOk := SELF:_indexList:Add(bag, String.Compare(indexBase, baseName, true) == 0)
+                        IF ! lOk
+                            EXIT
+                        ENDIF
+                    next
                     IF lOk .and. current != null
                         var orderInfo := DbOrderInfo{}
                         orderInfo:BagName := current:OrderBag:FullPath
                         orderInfo:Order   := current:OrderName
-                        SELF:OrderListFocus(orderInfo)
+                        lOk := SELF:OrderListFocus(orderInfo)
                     ENDIF
                     RETURN lOk
 

@@ -41,7 +41,11 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
     CONSTRUCTOR (r8 AS REAL8)
         SELF:_value    := r8
         SELF:_length   := 0
-        SELF:_decimals := -1
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            SELF:_decimals := (Short) RuntimeState.Decimals
+        ELSE
+            SELF:_decimals := -1
+        ENDIF
 
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
     [NODEBUG]  [INLINE];
@@ -518,7 +522,7 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 #region IFormattable
     /// <inheritdoc />
     PUBLIC OVERRIDE METHOD ToString() AS STRING
-        RETURN Str1(SELF)
+        RETURN Str3(SELF, (DWORD) SELF:Digits, (DWORD) SELF:Decimals)
 
     /// <inheritdoc cref="System.Double.ToString(System.String)"/>
     PUBLIC METHOD ToString(sFormat AS STRING) AS STRING

@@ -64,10 +64,12 @@ Function Browse(oTable as DbDataSource)
 
 
 FUNCTION Browse() AS VOID STRICT
-    LOCAL oSource AS DbDataSource
-    oSource := DbDataSource()
-    oSource:ShowDeleted := FALSE
-    oSource:ShowRecno  := FALSE
-    Browse(oSource)
+    IF Used()
+        LOCAL oSource AS DbDataSource
+        oSource := DbDataSource()
+        oSource:ShowDeleted := FALSE
+        oSource:ShowRecno  := FALSE
+        Browse(oSource)
+    ENDIF
     RETURN
 

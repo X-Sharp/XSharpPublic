@@ -7425,9 +7425,9 @@
             This example makes the DBFMDX driver the default RDD.<br/>
             If the RDD is unavailable, a message is issued:
             <code language="X#">
-                DBSetDriver("DBFMDX")
-                IF (DBSetDriver() <paramref name="" /> "DBFMDX")
-                &#0009;QOut("DBFMDX driver not available")
+              DBSetDriver("DBFMDX")
+              IF DBSetDriver() != "DBFMDX"
+              &#0009;QOut("DBFMDX driver not available")
                 ENDIF
             </code>
         </example>
@@ -7449,20 +7449,25 @@
         <remarks>
             DBSetFilter() sets a logical filter condition.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-            When a filter is set, records which do not meet the filter condition are not logically visible.  That is, database operations which act on logical records will not consider these records.
+            When a filter is set, records which do not meet the filter condition are not logically visible. <br/> 
+            That is, database operations which act on logical records will not consider these records.
             The filter expression can be a code block (<paramref name="bCondition" />) or both a code block and equivalent text (<paramref name="cCondition" />).<br/>
-            If both versions are supplied, they must express the same condition.
+            If both versions are supplied, they must express the same condition.<br/>
             DBSetFilter() performs the same function as the SET FILTER command.<br/>
             For more information, refer to the SET FILTER command.
-            Tip:<br/>
-            If the RDD you are using supports optimization, use SET OPTIMIZE to control whether the RDD will optimize the filter search based on the available orders in the work area.
             <note type="tip">
-                Logical records:&#0009;DBSetFilter() affects the logical visibility of records (see above).
-                Side effects:&#0009;Setting a filter condition is only guaranteed to restrict visibility of certain records as described above.<br/>
+              If the RDD you are using supports optimization, use SET OPTIMIZE to control whether the RDD will 
+              optimize the filter search based on the available orders in the work area.
+            </note>
+            <note type="tip">
+              <b>Logical records: </b><br/>
+                DBSetFilter() affects the logical visibility of records (see above).
+                <br/><b>Side effects:</b><br/>Setting a filter condition is only guaranteed to restrict visibility of certain records as described above.<br/>
                 The filter expression is not necessarily evaluated at any particular time, by any particular means, or on any particular record or series of records.<br/>
                 If the filter expression relies on information external to the database file or work area, the effect is unpredictable.<br/>
                 If the filter expression changes the state of the work area (for example, by moving to a different record or changing the contents of a record), the effect is unpredictable.
-                Evaluation context:&#0009;When the filter expression is evaluated, the associated work area is automatically selected as the current work area before the evaluation; the previously selected work area is automatically restored afterward.
+               <br/><b>Evaluation context:</b><br/>
+                When the filter expression is evaluated, the associated work area is automatically selected as the current work area before the evaluation; the previously selected work area is automatically restored afterward.
             </note>
         </remarks>
         <example>
@@ -7517,12 +7522,12 @@
             The name of the index files to open, including an optional drive, directory, and extension for each.  See SetDefault() and SetPath() for file searching and creation rules.<br/>
             The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).<br/>
 
-            &#0009;If <paramref name="cIndexFile" /> does not exist, a runtime error is raised.<br/>
+            If <paramref name="cIndexFile" /> does not exist, a runtime error is raised.<br/>
             If it exists, this function attempts to open the file in the same mode as the corresponding database file.<br/>
             If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE.<br/>
             Otherwise, the file open is successful.<br/>
 
-            &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.<br/>
+            <b>Concurrency conflicts </b> with index files are rare since they should be used with only one database file.<br/>
             If a concurrency problem arises, it will normally be when you attempt to open the database file.
         </param>
         <returns>
@@ -7535,8 +7540,10 @@
             After the new index file is opened (using the same open mode as its associated database file), the work area is positioned to the first logical record in the controlling order.
             Opening an index file imposes a logical order (defined by the controlling order) on the records in a database file and may also filter the records according to a for condition or a unique flag.<br/>
             This means that when you process the database file, the records will appear in the order determined by the controlling order and filtered records, although still physically present in the database file, will be inaccessible.
-            Note:  Except for production index files supported by some RDDs, index files are not opened automatically when you open the corresponding database file.<br/>
+            <note type="tip">
+            Except for production index files supported by some RDDs, index files are not opened automatically when you open the corresponding database file.<br/>
             To ensure that index files are accurately maintained, you should either open them prior to making any updates to their corresponding database files or rebuild them at a later time with DBReindex().
+          </note>
         </remarks>
         <example>
             The following example opens multiple index files:
@@ -7582,8 +7589,7 @@
         <param name="cIndexFile">
             The name of an index file, including an optional drive and directory (no extension should be specified).<br/>
             Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.<br/>
-
-            &#0009;If <paramref name="cIndexFile" /> is not open by the current process, a runtime error is raised.
+            If <paramref name="cIndexFile" /> is not open by the current process, a runtime error is raised.
         </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -27881,10 +27887,10 @@
     </uAreaOperation>
     <currentWorkareaParam>
         <span>
-            By default, this function operates on the currently selected work area.
-            It can be made to operate on an unselected work area by specifying
+          <br/>By default, this function operates on the currently selected work area.
+            <br/>It can be made to operate on an unselected work area by specifying
             it within an aliased expression or by calling the overload that accepts a workarea
-            parameter (a workarea number or alias ).
+            parameter (a workarea number or alias ).<br/>
         </span>
     </currentWorkareaParam>
     <currentWorkarea>

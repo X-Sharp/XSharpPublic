@@ -901,9 +901,12 @@ internal function _VOVal(cNumber as string) as usual
             style |= NumberStyles.AllowExponent
         endif
         if System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, out var r8Result)
-            return __Float{ r8Result , cNumber:Length - cNumber:IndexOf(c'.') - 1}
+           if RuntimeState.Dialect == XSharpDialect.FoxPro
+                return __Float{ r8Result }   // FoxPro Takes Decimals from settings
+            else
+                return __Float{ r8Result , cNumber:Length - cNumber:IndexOf(c'.') - 1}
+           endif
         endif
-
     else
 
         local style as NumberStyles
@@ -950,7 +953,6 @@ internal function _VOVal(cNumber as string) as usual
             endif
 
         endif
-
     endif
     return 0
 

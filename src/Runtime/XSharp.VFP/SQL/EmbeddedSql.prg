@@ -6,7 +6,10 @@
 
 using XSharp.Parsers
 using XSharp.Internal
-
+using XSharp.RDD
+using XSharp.RDD.Support
+using System.IO
+using System.Linq
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
@@ -91,7 +94,12 @@ FUNCTION __SqlInsertValues(sTable as STRING, aFields as ARRAY, aValues as ARRAY)
     DbUnLock()
     RETURN TRUE
 
-
+FUNCTION __SqlAlterTable(sCommand as STRING) AS LOGIC
+    var oContext := FoxEmbeddedSQL.ParseSqlAlter(sCommand)
+    if (oContext != NULL)
+        RETURN FoxEmbeddedSQL.SqlAlterTable(oContext)
+    endif
+    RETURN FALSE
 
 FUNCTION __SqlCreateCursor(sCommand as STRING) AS LOGIC
     var oContext := FoxEmbeddedSQL.ParseSqlCreate(sCommand, TRUE)
@@ -107,7 +115,7 @@ FUNCTION __SqlCreateTable(sCommand as STRING) AS LOGIC
     if (oContext != NULL)
         RETURN FoxEmbeddedSQL.CreateTableCursor(oContext)
     endif
-    RETURN FALSE
+    THROW Error{"Syntax error in command: "+sCommand}
 
 STATIC CLASS FoxEmbeddedSQL
 
@@ -146,12 +154,22 @@ STATIC CLASS FoxEmbeddedSQL
         local table as FoxCreateTableContext
         IF lCursor
             IF ! parser:ParseCreateCursor(out table)
-                return null
+                THROW Error{"Syntax error in command: "+parser.Error+CRLF+sCommand}
             ENDIF
         ELSE
-            IF ! parser:ParseCreateTable(out  table)
-                return null
+            IF ! parser:ParseCreateTable(out table)
+                THROW Error{"Syntax error in command: "+parser.Error+CRLF+sCommand}
             ENDIF
+        endif
+        return table
+
+    STATIC METHOD ParseSqlAlter(sCommand as STRING) AS FoxAlterTableContext
+        VAR lexer := XSqlLexer{sCommand}
+        VAR tokens := lexer:AllTokens()
+        var parser := SQLParser{XTokenList{tokens}}
+        var table := parser:ParseAlterTable()
+        if table == NULL
+            Throw Error{parser:Error+" in command: "+sCommand}
         endif
         return table
 
@@ -189,4 +207,85 @@ STATIC CLASS FoxEmbeddedSQL
             return (Binary) sValue
         END SWITCH
         RETURN NIL
+STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
+    IF ! FoxEmbeddedSQL.OpenArea(table:Name)
+        RETURN FALSE
+    ENDIF
+    var area := RuntimeState.Workareas.FindAlias(table:Name)
+    if area == 0
+        Throw Error{"Table "+table:Name+" not found"}
+    ENDIF
+    var oRdd := RuntimeState.Workareas.GetRDD(area)
+    local fields := NULL as RddFieldInfo[]
+    if oRdd is XSharp.RDD.Workarea var oWA
+        fields := oWA:_Fields
+    endif
+    var column := table:ColumnInfo
+    var index  := oRdd:FieldIndex(column:Name)
+    local aStruct := DbStruct() as ARRAY
+    switch table:Mode
+    case FoxAlterMode.AddColumn
+        if index > 0
+            Throw Error{"Column "+column:Name+" already exists"}
+        endif
+        AAdd(aStruct, {column:Name, column:FieldTypeStr, column:Length, column:Decimals, column:Alias, column:Flags})
+
+    case FoxAlterMode.DropColumn
+        if index == 0
+            Throw Error{"Column "+column:Name+" does not exist"}
+        endif
+        ADel(aStruct, (DWORD) index)
+        ASize(aStruct, ALen(aStruct)-1)
+    case FoxAlterMode.AlterColumn
+        if index == 0
+            Throw Error{"Column "+column:Name+" does not exist"}
+        endif
+        aStruct[index] := { column:Name, column:FieldTypeStr, column:Length, column:Decimals, column:Alias, column:Flags}
+    end switch
+
+    var oldFile  := (String) oRdd:Info(DBI_FULLPATH,null)
+    var memoExt  := (String) oRdd:Info(DBI_MEMOEXT, null)
+    var dbfExt   := Path.GetExtension(oldFile)
+    var oldMemo  := Path.ChangeExtension(oldFile, memoExt)
+    var rand     := Path.GetRandomFileName()
+    var newFile  := Path.Combine(Path.GetDirectoryName(oldFile), Path.GetFileNameWithoutExtension(rand))
+    newFile      := Path.ChangeExtension(newFile, dbfExt)
+    var newMemo  := Path.ChangeExtension(newFile, memoExt)
+    DbCloseArea()
+    IF !DbCreate(newFile, aStruct)
+        RETURN FALSE
+    ENDIF
+    IF ! DbUseArea(TRUE, "DBFVFP", newFile, table:Name, FALSE, FALSE)
+        RETURN FALSE
+    ENDIF
+    IF ! DbApp(oldFile)
+        RETURN FALSE
+    ENDIF
+    DbCloseArea()
+    var cBak := Path.ChangeExtension(oldFile, "bak")
+    FErase(cBak)
+    FRename(oldFile, cBak)
+    IF File(oldMemo)
+        cBak := Path.ChangeExtension(oldFile, "tbk")
+        FErase(cBak)
+        FRename(oldMemo, cBak)
+    ENDIF
+    FRename(newFile, oldFile)
+    IF File(newMemo)
+        FRename(newMemo, oldMemo)
+    ENDIF
+    DbUseArea(TRUE, "DBFVFP", oldFile, table:Name, FALSE, FALSE)
+    area := RuntimeState.Workareas.FindAlias(table:Name)
+    oRdd := RuntimeState.Workareas.GetRDD(area)
+    if fields != NULL .and. oRdd is XSharp.RDD.Workarea var oWANew
+        foreach var fld in oWANew:_Fields
+            var oldFld := fields:FirstOrDefault({f => f:Name == fld:Name})
+            if oldFld != NULL
+                fld:Caption := oldFld:Caption
+            else // Must be the new column
+                fld:Caption := column:Caption
+            endif
+        next
+    endif
+    RETURN TRUE
 END CLASS

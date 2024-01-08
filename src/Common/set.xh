@@ -107,8 +107,12 @@
 
 #command CLEAR SCREEN                                 =>  Cls(); SetPos(0,0)
 
+#command CLEAR ALL                                    =>  CLOSE ALL ; _MClear(); SET ALTERNATE TO ; CLOSE ALTERNATE
+
+
 #ifdef __DIALECT_FOXPRO__
 #include "FoxProSet.xh"
 #endif
+
 
 #endif

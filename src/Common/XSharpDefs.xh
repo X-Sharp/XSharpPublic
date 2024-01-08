@@ -30,6 +30,7 @@
 // The following UDCs require the xBase Runtime
 
 #xcommand QUIT                   		=> _Quit()
+#xcommand CANCEL                   		=> _Quit()
 
 #command ACCEPT [<msg>] TO <v>         	=> <v> := _accept( <msg> )
 #xcommand WAIT [<msg>]                  => _wait( <msg> )
@@ -42,6 +43,10 @@
 #xcommand STORE <value> TO <var1> [, <varN> ]   => ;
 				<var1> := [ <varN> := ] <value>
 
+#xcommand ERASE <(file)>                     => FErase(<(file)>)
+#xcommand DELETE FILE <(file)>               => FErase(<(file)>)
+#xcommand RENAME <(oldfile)> TO <(newfile)>  => FRename(<(oldfile)>, <(newfile)>)
+#xcommand COPY FILE <(src)> TO <(dst)>       => FCopy( <(src)>, <(dst)> )
 
 // Special TEXT rules for dialects with the runtime
 

@@ -576,6 +576,11 @@
        ; <v1> /= M->__Avg [; <vn> /= M->__Avg ]
 
 
+#command DELETE TAG <cOrd1> [IN <file1>] [,<cOrdN> [IN <fileN>]]        ;
+       =>     ORDDESTROY(<(cOrd1)> ,<(file1)>) ;
+          [;; ORDDESTROY(<(cOrdN)> ,<(fileN)>)]
+
+
 // NOTE:  CLOSE <alias> must precede the others
 #command CLOSE <alias>                 => <alias>->( DbCloseArea() )
 #command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
@@ -585,6 +590,22 @@
 #command CLOSE INDEXES                       => DbClearIndex()
 #command CLOSE <x:IN,ALIAS> <(a)>            => (<(a)>)->(DbCloseArea())
 #command CLOSE                               => DbCloseArea()
+
+#command SET DRIVER TO <drv>                 => DBSetDriver(<(drv)>)
+#command SET MEMOBLOCK TO <size>             => RDDInfo(_SET_MEMOBLOCKSIZE, <size>)
+#command SET MEMOBLOCKSIZE TO <size>         => RDDInfo(_SET_MEMOBLOCKSIZE, <size>)
+#command SET MEMOBLOCKSIZE TO                => RDDInfo(_SET_MEMOBLOCKSIZE, 512)
+#command SET OPTIMIZE <x:ON,OFF,&>           => RDDInfo(_SET_OPTIMIZE, <(x)>)
+#command SET DESCENDING ON                   =>  OrdDescend(,, .T.)
+#command SET DESCENDING OFF                  =>  OrdDescend(,, .F.)
+
+#command SET SCOPE TO                        =>  OrdScope(0,NIL) ; OrdScope(1,NIL)
+#command SET SCOPE TO <xValue>               =>  OrdScope(0, <xValue>) ; OrdScope(1, <xValue>)
+#command SET SCOPE TO <xVal1>, <xVal2>       =>  OrdScope(0, <xVal1>) ; OrdScope(1, <xVal2>)
+#command SET SCOPETOP TO                     =>  OrdScope(0,NIL)
+#command SET SCOPETOP TO <xValue>            =>  OrdScope(0, <xValue>)
+#command SET SCOPEBOTTOM TO                  =>  OrdScope(1,NIL)
+#command SET SCOPEBOTTOM TO <xValue>         =>  OrdScope(1, <xValue>)
 
 #endif
 

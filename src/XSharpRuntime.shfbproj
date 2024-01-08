@@ -62,7 +62,7 @@
       <DocumentationSource sourceFile="..\Artifacts\Documentation\XSharp.Harbour.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.18.0.2</HelpFileVersion>
+    <HelpFileVersion>2.19.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -188,7 +188,7 @@
     <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
     <FooterText>
     </FooterText>
-    <SourceCodeBasePath>c:\XSharp\Dev\src\</SourceCodeBasePath>
+    <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>True</WarnOnMissingSourceContext>
     <PlugInConfigurations>
       <PlugInConfig id="XSharp Function Output" enabled="True">
@@ -208,7 +208,7 @@
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
-    <BuildLogFile>C:\XSharp\Dev\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
+    <BuildLogFile>E:\XSharp\Dev\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
     <VendorName>XSharp BV</VendorName>
@@ -229,6 +229,7 @@
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_XPP_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.XPP.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VFP_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.VFP.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Data_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Data.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Harbour_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Harbour.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOGUIClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOGUIClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOInternetClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOInternetClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VORDDClasses_Functions.htm&amp;quot%3b&amp;gt%3bVORDDClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b

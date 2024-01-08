@@ -6,7 +6,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Bgraphic</RootNamespace>
     <AssemblyName>Bgraphic</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <Name>Bgraphic</Name>
     <Dialect>VO</Dialect>
     <LB>true</LB>
@@ -39,6 +39,8 @@
     <Undeclared>false</Undeclared>
     <NoStandardDefs>false</NoStandardDefs>
     <EnforceSelf>True</EnforceSelf>
+    <StartupObject />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -61,10 +63,6 @@
     <Compile Include="GraphMenu.prg">
       <SubType>Code</SubType>
     </Compile>
-    <NativeResource Include="C:\XSharp\DevRt\src\Tests\TypedSDK\BGraphic\GraphMenu.GraphMenu.rc" />
-    <NativeResource Include="C:\XSharp\DevRt\src\Tests\TypedSDK\BGraphic\GraphMenu.GraphMenu_Accelerator.rc" />
-    <NativeResource Include="C:\XSharp\DevRt\src\Tests\TypedSDK\BGraphic\GraphMenu.ShellMenu.rc" />
-    <NativeResource Include="C:\XSharp\DevRt\src\Tests\TypedSDK\BGraphic\GraphMenu.ShellMenu_Accelerator.rc" />
     <NativeResource Include="GraphMenu.GMENRIB.rc">
       <DependentUpon>GraphMenu.prg</DependentUpon>
     </NativeResource>
@@ -136,6 +134,9 @@
       <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

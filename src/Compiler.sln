@@ -42,6 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripting", "Scripting", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xsi", "Compiler\src\Scripting\xsi\xsi.csproj", "{BE3240A6-A018-4E62-B925-1A5415BD9A60}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2175700A-1AAE-4204-A89A-054C5AB9A21A} = {2175700A-1AAE-4204-A89A-054C5AB9A21A}
 		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2} = {9D02E3F9-7157-46B7-9E97-F62010E4B3F2}
 	EndProjectSection
 EndProject

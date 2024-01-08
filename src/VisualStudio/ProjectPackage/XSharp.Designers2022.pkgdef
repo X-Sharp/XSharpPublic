@@ -45,8 +45,45 @@
 ; We must enable this when the debugger extension is working
 
 [$RootKey$\AD7Metrics\ExpressionEvaluator\{f579403a-d3d3-47a0-bf03-9709575bee69}\{363398fa-76ad-44bb-a750-0abdc02bf4de}]
+@="XSharp vsdbg host"
 "Name"="X#"
 "Language"="X#"
+"AllowMultipleDebuggers"=dword:00000001
+"AlwaysLoadLocal"=dword:00000001
+"Attach"=dword:00000001
+"AuthenticatedSymbolServers"=dword:00000001
+"AutoSelectPriority"=dword:00000004
+"CallstackBP"=dword:00000000
+"ConditionalBP"=dword:00000001
+"ClrCustomVisualizerVSHost"="{E82F32A8-074E-465A-86E5-D68A87284F61}"
+"Disassembly"=dword:00000001
+"DumpWriting"=dword:00000001
+"EnableFuncEvalQuickAbort"=dword:00000001
+"EnableTracing"=dword:00000001
+"ENC"=dword:00000001
+"EngineCanWatchProcess"=dword:00000001
+"Exceptions"=dword:00000001
+"ExceptionConditions"=dword:00000001
+"FuncEvalAbortLoggingLevel"=dword:00000000
+"FuncEvalQuickAbortDlls"="System.Windows.Forms.dll"
+"FuncEvalQuickAbortExcludeList"="PresentationHost.exe;WebDev.WebServer.exe;WebDev.WebServer20.exe;WebDev.WebServer40.exe"
+"FunctionBP"=dword:00000001
+"HitCountBP"=dword:00000001
+"Interop"=dword:00000000
+"IsEditAndContinue"=dword:00000001
+"JITDebug"=dword:00000001
+"ProgramProvider"="{4FF9DEF4-8922-4D02-9379-3FFA64D1D639}"
+"RemoteDebugging"=dword:00000001
+"RemoteProcessListing"=dword:00000001
+"Runtime"="{6FEF44D0-39E7-4C77-BE8E-C9F8CF988630}"
+"SetNextStatement"=dword:00000001
+"SupportsEESearch"=dword:00000001
+"SupportsObjectFavorites"=dword:00000001
+"SuppressModulesRequestOnAttach"=dword:00000001
+"SupportsUISideExternalCodeStackFiltering"=dword:00000001
+"SuspendThread"=dword:00000001
+
+
 
 ; Specifies the debug engines supported by the language.
 ; Here we are specifying that X# can be used when Managed or Mixed Mode debugging.

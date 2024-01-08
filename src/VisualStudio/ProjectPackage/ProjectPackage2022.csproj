@@ -390,8 +390,9 @@
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
-    <Content Include="XSharp.Designers.2022.pkgdef">
+    <Content Include="XSharp.Designers2022.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -401,9 +402,7 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharp.Designers.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="XSharp.Designers.pkgdef" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

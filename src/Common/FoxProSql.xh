@@ -13,6 +13,9 @@
 #ifndef FOXPROSQL_XH
 #define FOXPROSQL_XH
 
+
+#command __NOFOXPROSQL__ <any> => #warning This command is not (yet) supported: <(any)>
+
 // DDL Commands
 
 // SQL Alter Commands
@@ -24,11 +27,11 @@
 #command CREATE CURSOR <*clauses*>                          => __SqlCreateCursor(<"udc">)
 #command CREATE [SQL] VIEW <(cView)> [<remote:REMOTE>] ;
     [CONNECTION <(cConn)>] [<share:SHARE>] ;
-    [AS  <*sqlstatement*>]                                  => XSharp.RDD.Dbc.CreateView( <(cView)>, <cConn>, <.remote.>, <.share.>, <(sqlstatement)>)
+    [AS  <*sqlstatement*>]                                  => __NOFOXPROSQL__ <(udc)> //  XSharp.RDD.Dbc.CreateView( <(cView)>, <cConn>, <.remote.>, <.share.>, <(sqlstatement)>)
 
 // SQL Drop Commands
-#command DROP TABLE <*clauses*>                             => __SqlDropTable(<"udc">)
-#command DROP VIEW <*clauses*>                              => __SqlDropView(<"udc">)
+#command DROP TABLE <*clauses*>                             => __NOFOXPROSQL__ <(udc)> // __SqlDropTable(<"udc">)
+#command DROP VIEW <*clauses*>                              => __NOFOXPROSQL__ <(udc)> // __SqlDropView(<"udc">)
 
 
 // DML Commands
@@ -51,21 +54,20 @@
     __SqlInsertFromObject(<"table"> , <ObjectName> )
 
 #command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:Select> <*moreclauses*>   => ;
-    __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
+    __NOFOXPROSQL__ <(udc)>  // __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
 
 
 // SQL Delete
-#command DELETE [<*tableName*>] FROM  <*clauses*>           => __SqlDelete(<"udc">)
+#command DELETE [<*tableName*>] FROM  <*clauses*>           => __NOFOXPROSQL__ <(udc)> //  __SqlDelete(<"udc">)
 #command DELETE TRIGGER  <*clauses*>                        => #error "DELETE TRIGGER is not supported "
 
 // SQL Update Commands
 #command UPDATE [<*tableName*>] SET <*setclauses*> ;
   [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
-  [WHERE <*whereclause*>]                                   => __SqlUpdate(<"udc">)
+  [WHERE <*whereclause*>]                                   => __NOFOXPROSQL__ <(udc)> // __SqlUpdate(<"udc">)
 
 // SQL Select commands. Separate commands for TO and 3 different INTO variations
 
-#command __NOFOXPROSQL__ <any> => #warning This command is not (yet) supported: <(any)>
 
 #command SELECT <*columnClauses*> FROM <*TableList*>           ;
     [WITH (BUFFERING = <lExpr> ) ]                             ;

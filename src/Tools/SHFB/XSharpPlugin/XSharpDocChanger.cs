@@ -449,10 +449,10 @@ namespace XSharpDocs
                     break;
                 case FileType.Define:
                     string strType = DetermineFieldType(fileWhole);
-                    newFileWhole = WebPageReplaceTitles(fileWhole, "Functions." + groupedAnyString + "Field", "$1" + strType);
+                    newFileWhole = WebPageReplaceTitles(fileWhole, "Functions." + groupedAnyString + "Field(.*)", "$1" + strType);
                     break;
                 case FileType.Function:
-                    newFileWhole = WebPageReplaceTitles(fileWhole, "Functions." + groupedAnyString + "Method", "$1Function$2");
+                    newFileWhole = WebPageReplaceTitles(fileWhole, "Functions." + groupedAnyString + "Method(.*)", "$1Function$2");
                     break;
                 case FileType.TypedsdkClass:
                     newFileWhole = WebPageAdjustSdkTitles(fileWhole, "Class");
@@ -1147,8 +1147,6 @@ namespace XSharpDocs
                     { "UInt32", "DWord" },
                     { "UInt16", "Word" },
                     { "Int16", "Short" },
-                    { "Double", "Real8" },
-                    { "Single", "Real4" },
                     { "Boolean", "Logic" }
                 };
                 pattern = delimiters + "(" + string.Join("|", new List<string>(replacements.Keys).ToArray()) + ")";

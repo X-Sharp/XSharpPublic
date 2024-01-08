@@ -69,8 +69,6 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
-            Community.VisualStudio.Toolkit.Themes.SetUseVsTheme(this, true);
-
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 if (View.IsRTLoaded)

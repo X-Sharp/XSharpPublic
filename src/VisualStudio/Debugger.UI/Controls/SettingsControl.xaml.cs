@@ -69,8 +69,6 @@ namespace XSharp.Debugger.UI
             {
                 return;
             }
-            Community.VisualStudio.Toolkit.Themes.SetUseVsTheme(this, true);
-
             if (View.IsRTLoaded)
             {
                 lvSettings.Visibility = Visibility.Visible;

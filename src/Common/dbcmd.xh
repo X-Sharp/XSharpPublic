@@ -541,7 +541,7 @@
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>]]                        ;
+#command SUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                          ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;

@@ -1,16 +1,19 @@
-delegate BrwRowCondition(val as int) as logic
+#command XSUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+                                                                        ;
+      => <v1> := [ <vn> := ] 0                                          ;
+       ; DbEval(                                                        ;
+               {|| <v1> += <x1> [, <vn> += <xn> ]},                     ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               )
 
-class Test
-	public method AddColorCondition(uCondition as BrwRowCondition) as logic
-		var x := uCondition(1)
-		return x
-end class
-
-
-
-function Start() as void strict
-	local test := Test{} as object
-
-	test:AddColorCondition({val => val > 0})
-
-	return
+FUNCTION Start() AS VOID STRICT
+local b
+field a
+XSUM a TO b

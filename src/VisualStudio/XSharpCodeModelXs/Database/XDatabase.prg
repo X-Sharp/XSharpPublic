@@ -4,7 +4,7 @@
 // See License.txt in the project root f` license information.
 //
 
-USING Microsoft.Data.Sqlite
+//USING Microsoft.Data.Sqlite
 USING System.IO
 USING System.Data
 USING System.Linq
@@ -16,15 +16,42 @@ USING XSharp.Settings
 
 BEGIN NAMESPACE XSharpModel
 STATIC CLASS XDatabase
-    STATIC PRIVATE oConn   AS SqliteConnection     // In memory database !
+    STATIC PRIVATE oFact   as DbProviderFactory
+    Internal STATIC IsX86   AS LOGIC
+    STATIC PRIVATE oConn   AS DbConnection     // In memory database !
+
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
     PRIVATE CONST CurrentDbVersion := 1.9 AS System.Double
 
-    STATIC CONSTRUCTOR
+    STATIC METHOD Initializex64() AS VOID
         SQLitePCL.Batteries.Init()
+        oFact := Microsoft.Data.Sqlite.SqliteFactory.Instance
+    STATIC METHOD Initializex86()  AS VOID
+        oFact := System.Data.SQLite.SQLiteFactory.Instance
+
+
+    STATIC METHOD CreateCommand(cQuery as STRING, oConn as DbConnection) AS DbCommand
+        var cmd := oFact:CreateCommand()
+        cmd:CommandText := cQuery
+        cmd:Connection  := oConn
+        return cmd
+    STATIC METHOD CreateConnection(connStr as STRING) AS DbConnection
+        var conn := oFact:CreateConnection()
+        conn:ConnectionString := connStr
+
+        return conn
+
+
+    STATIC CONSTRUCTOR
+        IsX86 := IntPtr.Size == 4
+        IF IsX86
+            Initializex86()
+        ELSE
+            Initializex64()
+        ENDIF
 
     STATIC METHOD Log(cMessage AS STRING) AS VOID
         IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
@@ -36,7 +63,7 @@ STATIC CLASS XDatabase
 
     STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
         LOCAL lValid := FALSE AS LOGIC
-        LOCAL oDiskDb AS SqliteConnection
+        LOCAL oDiskDb AS DbConnection
         Log(i"CreateOrOpen {cFileName}")
         currentFile := cFileName
         IF File.Exists(cFileName)
@@ -49,7 +76,7 @@ STATIC CLASS XDatabase
                 Log(i"Delete invalid {cFileName}")
             ENDIF
         ENDIF
-        oConn := SqliteConnection{"Data source=:memory:"}
+        oConn := CreateConnection("Data source=:memory:")
         oConn:Open()
         SetPragmas(oConn)
         IF ! lValid
@@ -85,24 +112,22 @@ STATIC CLASS XDatabase
         oConn := NULL
         RETURN FALSE
 
-    STATIC METHOD SetPragmas(oConn AS SqliteConnection) AS VOID
+    STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
         IF ! IsDbOpen
             RETURN
         ENDIF
         BEGIN LOCK oConn
-            USING VAR oCmd := SqliteCommand{"PRAGMA foreign_keys = ON", oConn}
+            USING VAR oCmd := CreateCommand("PRAGMA foreign_keys = ON", oConn)
             oCmd:ExecuteNonQuery()
             oCmd:CommandText := "VACUUM"
             oCmd:ExecuteNonQuery()
-            // We overrule the NOCASE collation, to allow Unicode comparisons
-            // the default collation only "knows" the characters A-Z.
-            // see https://github.com/dotnet/docs/blob/main/samples/snippets/standard/data/sqlite/CollationSample/Program.cs
-            oConn:CreateCollation("NOCASE", { x, y => String.Compare(x, y, ignoreCase:= true) } )
+            oConn:SetCollation()
         END LOCK
         RETURN
 
-    STATIC METHOD OpenFile(cFile AS STRING) AS SqliteConnection
-        VAR db := SqliteConnection{"Data Source="+cFile+";Pooling=False;"}
+    STATIC METHOD OpenFile(cFile AS STRING) AS DbConnection
+
+        VAR db :=CreateConnection("Data Source="+cFile+";Pooling=False;")
         db:Open()
         SetPragmas(db)
         RETURN db
@@ -126,24 +151,24 @@ STATIC CLASS XDatabase
             endif
         ENDIF
 
-    STATIC METHOD SaveToDisk(oConn AS SqliteConnection, cFile AS STRING) AS VOID
+    STATIC METHOD SaveToDisk(oConn AS DbConnection, cFile AS STRING) AS VOID
         IF ! IsDbOpen
             RETURN
         ENDIF
         SafeFileDelete(cFile)
         USING VAR diskdb := OpenFile(cFile)
-        oConn:BackupDatabase(diskdb, "main", "main")
-        USING VAR oCmd := SqliteCommand{"VACUUM", diskdb}
+        oConn:BackupDatabase(diskdb, "main")
+        USING VAR oCmd := CreateCommand("VACUUM", diskdb)
         oCmd:ExecuteNonQuery()
         diskdb:Close()
         lastWritten := DateTime.Now
         RETURN
 
-    STATIC METHOD RestoreFromDisk(oDiskDb AS SqliteConnection, oConn AS SqliteConnection) AS VOID
+    STATIC METHOD RestoreFromDisk(oDiskDb AS DbConnection, oConn AS DbConnection) AS VOID
         IF ! IsDbOpen
             RETURN
         ENDIF
-        oDiskDb:BackupDatabase(oConn, "main", "main")
+        oDiskDb:BackupDatabase(oConn, "main")
         lastWritten := DateTime.Now
         RETURN
 
@@ -176,9 +201,9 @@ STATIC CLASS XDatabase
         END LOCK
         RETURN
 
-    STATIC METHOD CreateSchema(connection AS SqliteConnection) AS VOID
-        BEGIN LOCK connection
-            VAR cmd := SqliteCommand{"SELECT 1",connection}
+    STATIC METHOD CreateSchema(Connection AS DbConnection) AS VOID
+        BEGIN LOCK Connection
+            VAR cmd := CreateCommand("SELECT 1",Connection)
             Log("Creating new database schema")
 #region Drop Existing Tables
             cmd:CommandText := "DROP TABLE IF EXISTS Projects ;"
@@ -455,18 +480,18 @@ STATIC CLASS XDatabase
         END LOCK
         RETURN
 
-    STATIC METHOD ValidateSchema( connection AS SqliteConnection) AS LOGIC
+    STATIC METHOD ValidateSchema( Connection AS DbConnection) AS LOGIC
         LOCAL lOk AS LOGIC
         lOk := TRUE
-        BEGIN LOCK connection
+        BEGIN LOCK Connection
             DO WHILE lOk
-                USING VAR cmd  := SqliteCommand{"SELECT 1", connection}
+                USING VAR cmd  := CreateCommand("SELECT 1", Connection)
                 VAR stmt := "SELECT count(name) from Sqlite_master WHERE type='table' AND name=$table"
                 cmd:CommandText := stmt
-                VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks", "ReferencedGlobals"}
-                FOREACH VAR table IN tables
+                VAR Tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks", "ReferencedGlobals"}
+                FOREACH VAR Table IN Tables
                     cmd:Parameters:Clear()
-                    cmd:Parameters:AddWithValue("$table",table)
+                    cmd:Parameters:AddWithValue("$table",Table)
                     VAR num := (INT64) cmd:ExecuteScalar()
                     IF num != 1
                         lOk := FALSE
@@ -497,7 +522,7 @@ STATIC CLASS XDatabase
             BEGIN LOCK oConn
                 var project := XSolution.OrphanedFilesProject
                 Read(project)
-                USING VAR cmd := SqliteCommand{"Delete from FilesPerProject where IdProject = "+project:Id:ToString(), oConn}
+                USING VAR cmd := CreateCommand("Delete from FilesPerProject where IdProject = "+project:Id:ToString(), oConn)
                 cmd:ExecuteScalar()
                 cmd:CommandText := "Delete from Files where Id not in (select IdFile from FilesPerProject)"
                 cmd:ExecuteScalar()
@@ -514,7 +539,7 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := SqliteCommand{"SELECT FullName from OpenDesignerFiles", oConn}
+                USING VAR cmd := CreateCommand("SELECT FullName from OpenDesignerFiles", oConn)
                 USING VAR rdr := cmd:ExecuteReader()
                 DO WHILE rdr:Read()
                     VAR name := rdr:GetString(0)
@@ -524,17 +549,17 @@ STATIC CLASS XDatabase
         ENDIF
         Log(i"GetOpenDesignerFiles returned {result.Count} names")
         RETURN result
-    STATIC METHOD SaveOpenDesignerFiles(files AS List<STRING>) AS LOGIC
+    STATIC METHOD SaveOpenDesignerFiles(Files AS List<STRING>) AS LOGIC
         VAR result := TRUE
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR cmd := SqliteCommand{"DELETE from OpenDesignerFiles", oConn}
+                    USING VAR cmd := CreateCommand("DELETE from OpenDesignerFiles", oConn)
                     cmd:ExecuteNonQuery()
                     cmd:CommandText := "Insert into OpenDesignerFiles(FullName) values ($name);"
-                    FOREACH VAR file IN files
+                    FOREACH VAR File IN Files
                         cmd:Parameters:Clear()
-                        cmd:Parameters:AddWithValue("$name",file)
+                        cmd:Parameters:AddWithValue("$name",File)
                         cmd:ExecuteNonQuery()
                     NEXT
                 CATCH e AS Exception
@@ -551,7 +576,7 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := SqliteCommand{"SELECT ProjectFileName from Projects", oConn}
+                USING VAR cmd := CreateCommand("SELECT ProjectFileName from Projects", oConn)
                 USING VAR rdr := cmd:ExecuteReader()
                 DO WHILE rdr:Read()
                     VAR name := rdr:GetString(0)
@@ -571,7 +596,7 @@ STATIC CLASS XDatabase
         VAR lUpdated := FALSE
         Log(i"Read Project info for project {file}")
         BEGIN LOCK oConn
-            USING VAR cmd := SqliteCommand{"", oConn}
+            USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
             cmd:Parameters:AddWithValue("$file",file)
             VAR lOk := FALSE
@@ -583,8 +608,8 @@ STATIC CLASS XDatabase
             END USING
             IF ! lOk
                 cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
-                VAR id := (INT64) cmd:ExecuteScalar()
-                oProject:Id := id
+                VAR Id := (INT64) cmd:ExecuteScalar()
+                oProject:Id := Id
                 lUpdated := TRUE
             ENDIF
         END LOCK
@@ -597,7 +622,7 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := SqliteCommand{"SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn}
+                USING VAR cmd := CreateCommand("SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn)
                 USING VAR rdr := cmd:ExecuteReader()
                 DO WHILE rdr:Read()
                     VAR name := rdr:GetString(0)
@@ -613,7 +638,7 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := SqliteCommand{"SELECT FileName from ProjectIncludeFiles where idProject = "+oProject:Id:ToString(), oConn}
+                USING VAR cmd := CreateCommand("SELECT FileName from ProjectIncludeFiles where idProject = "+oProject:Id:ToString(), oConn)
                 USING VAR rdr := cmd:ExecuteReader()
                 DO WHILE rdr:Read()
                     VAR name := rdr:GetString(0)
@@ -628,11 +653,11 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
         ENDIF
-        VAR file := cFileName
+        VAR File := cFileName
         BEGIN LOCK oConn
-            USING VAR cmd := SqliteCommand{"", oConn}
+            USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "delete from Projects where ProjectFileName = $file"
-            cmd:Parameters:AddWithValue("$file",file)
+            cmd:Parameters:AddWithValue("$file",File)
             cmd:ExecuteNonQuery()
         END LOCK
         CommitWhenNeeded()
@@ -644,12 +669,12 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
         ENDIF
-        VAR file    := cFileName
+        VAR File    := cFileName
         Log(i"Delete Project info for project {cFileName}")
         BEGIN LOCK oConn
-            USING VAR cmd := SqliteCommand{"", oConn}
+            USING VAR cmd := CreateCommand("", oConn)
             cmd:CommandText := "DELETE FROM Files WHERE FileName = $file"
-            cmd:Parameters:AddWithValue("$file",file)
+            cmd:Parameters:AddWithValue("$file",File)
             cmd:ExecuteNonQuery()
         END LOCK
         CommitWhenNeeded()
@@ -658,7 +683,7 @@ STATIC CLASS XDatabase
         local result := "" as string
         BEGIN LOCK oConn
             TRY
-                USING VAR cmd := SqliteCommand{"", oConn}
+                USING VAR cmd := CreateCommand("", oConn)
                 cmd:CommandText := "SELECT FileName from Files where id = "+idFile:ToString()
                 USING VAR rdr := cmd:ExecuteReader()
                 if rdr:Read()
@@ -697,7 +722,7 @@ STATIC CLASS XDatabase
         LOCAL lUpdated := FALSE AS LOGIC
         BEGIN LOCK oConn
             TRY
-                USING VAR cmd := SqliteCommand{"", oConn}
+                USING VAR cmd := CreateCommand("", oConn)
                 cmd:CommandText := "SELECT Id, LastChanged, Size, Usings,StaticUsings FROM Files WHERE FileName = $file"
                 cmd:Parameters:AddWithValue("$file",file)
                 VAR lOk := FALSE
@@ -717,8 +742,8 @@ STATIC CLASS XDatabase
                     cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
                     cmd:CommandText := "INSERT INTO Files( FileName, FileType, LastChanged, Size ) VALUES ( $file, $type, $last, 0); "+ ;
                         "SELECT last_insert_rowid() "
-                    VAR id := (INT64) cmd:ExecuteScalar()
-                    oFile:Id := id
+                    VAR Id := (INT64) cmd:ExecuteScalar()
+                    oFile:Id := Id
                     oFile:LastChanged := DateTime.MinValue
                     oFile:Size        := 0
                     lUpdated := TRUE
@@ -751,7 +776,7 @@ STATIC CLASS XDatabase
         BEGIN LOCK oConn
             TRY
                 IF File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
-                    USING VAR oCmd := SqliteCommand{"SELECT 1", oConn}
+                    USING VAR oCmd := CreateCommand("SELECT 1", oConn)
                     oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size, Usings = $usings, StaticUsings = $staticUsings WHERE id = "+oFile:Id:ToString()
                     VAR fi            := FileInfo{oFile:FullPath}
                     oFile:LastChanged := fi:LastWriteTime
@@ -825,9 +850,9 @@ STATIC CLASS XDatabase
                 FOREIGN KEY (idMember) REFERENCES Members (Id) ON DELETE CASCADE ON UPDATE CASCADE)
                 "
                 */
-                USING VAR oCmdExtens := SqliteCommand{"select 1", oConn}
+                USING VAR oCmdExtens := CreateCommand("select 1", oConn)
                 oCmdExtens:CommandText := "insert into ExtensionMethods (IdMember, FullName) Values ($idmember,$fullname)"
-                USING VAR oCmd := SqliteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
+                USING VAR oCmd := CreateCommand("DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn)
                 oCmd:ExecuteNonQuery()
 
                 oCmd:CommandText  := "DELETE FROM CommentTasks WHERE IdFile = "+oFile:Id:ToString()
@@ -844,7 +869,7 @@ STATIC CLASS XDatabase
                     " VALUES ($name, $file, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
                     "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop, $classtype) ;" +;
                     " SELECT last_insert_rowid()"
-                VAR pars := List<SqliteParameter>{} { ;
+                VAR pars := List<DbParameter>{} { ;
                     oCmd:Parameters:AddWithValue("$name", ""),;
                     oCmd:Parameters:AddWithValue("$file", 0),;
                     oCmd:Parameters:AddWithValue("$namespace", ""),;
@@ -860,8 +885,8 @@ STATIC CLASS XDatabase
                     oCmd:Parameters:AddWithValue("$start", 0),;
                     oCmd:Parameters:AddWithValue("$stop", 0),;
                     oCmd:Parameters:AddWithValue("$classtype", 0)}
-                VAR types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
-                FOREACH VAR typedef IN types
+                VAR Types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
+                FOREACH VAR typedef IN Types
                     TRY
                         pars[0]:Value := typedef:Name
                         pars[1]:Value := oFile:Id
@@ -878,8 +903,8 @@ STATIC CLASS XDatabase
                         pars[12]:Value := typedef:Interval:Start
                         pars[13]:Value := typedef:Interval:Stop
                         pars[14]:Value := (INT) typedef:ClassType
-                        VAR id := (INT64) oCmd:ExecuteScalar()
-                        typedef:Id := id
+                        VAR Id := (INT64) oCmd:ExecuteScalar()
+                        typedef:Id := Id
                     CATCH e AS Exception
                         Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
                         Log("Typedef: "+typedef:Name)
@@ -903,7 +928,7 @@ STATIC CLASS XDatabase
                     "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop, $returntype) ;" +;
                     " SELECT last_insert_rowid()"
                 oCmd:Parameters:Clear()
-                pars := List<SqliteParameter>{} { ;
+                pars := List<DbParameter>{} { ;
                     oCmd:Parameters:AddWithValue("$file", oFile:Id),;
                     oCmd:Parameters:AddWithValue("$type", 0),;
                     oCmd:Parameters:AddWithValue("$name", ""),;
@@ -918,7 +943,7 @@ STATIC CLASS XDatabase
                     oCmd:Parameters:AddWithValue("$sourcecode", ""),;
                     oCmd:Parameters:AddWithValue("$xmlcomments", ""),;
                     oCmd:Parameters:AddWithValue("$returntype", "")}
-                FOREACH VAR typedef IN types
+                FOREACH VAR typedef IN Types
                     FOREACH VAR xmember IN typedef:XMembers
                         TRY
                             // file is constant
@@ -936,8 +961,8 @@ STATIC CLASS XDatabase
                             pars[11]:Value := xmember:SourceCode default ""
                             pars[12]:Value := xmember:XmlComments default ""
                             pars[13]:Value := xmember:ReturnType default ""
-                            VAR id := (INT64) oCmd:ExecuteScalar()
-                            xmember:Id := id
+                            VAR Id := (INT64) oCmd:ExecuteScalar()
+                            xmember:Id := Id
                             if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
                                 oCmdExtens:Parameters:Clear()
                                 local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
@@ -975,8 +1000,8 @@ STATIC CLASS XDatabase
                         pars[11]:Value := xmember:SourceCode default ""
                         pars[12]:Value := xmember:XmlComments default ""
                         pars[13]:Value := xmember:ReturnType default ""
-                        VAR id := (INT64) oCmd:ExecuteScalar()
-                        xmember:Id := id
+                        VAR Id := (INT64) oCmd:ExecuteScalar()
+                        xmember:Id := Id
                     CATCH e AS Exception
                         Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
                         Log("Member : "+xmember:Name)
@@ -993,7 +1018,7 @@ STATIC CLASS XDatabase
                         " VALUES ($file, $line, $column, $priority, $comment) ;" +;
                         " SELECT last_insert_rowid()"
                     oCmd:Parameters:Clear()
-                    pars := List<SqliteParameter>{} { ;
+                    pars := List<DbParameter>{} { ;
                         oCmd:Parameters:AddWithValue("$file", oFile:Id),;
                         oCmd:Parameters:AddWithValue("$line", 0),;
                         oCmd:Parameters:AddWithValue("$column", 0),;
@@ -1028,8 +1053,8 @@ STATIC CLASS XDatabase
                                 " SELECT last_insert_rowid()"
                             oCmd:Parameters:Clear()
                             oCmd:Parameters:AddWithValue("$fileName", fn)
-                            VAR id := (INT64) oCmd:ExecuteScalar()
-                            include:Id := id
+                            VAR Id := (INT64) oCmd:ExecuteScalar()
+                            include:Id := Id
                         endif
                     endif
                     oCmd:CommandText := "INSERT INTO IncludeFilesPerFile (IdInclude, IdFile) " +;
@@ -1071,14 +1096,14 @@ STATIC CLASS XDatabase
         stmt	   += ")"
         */
         Log(i"Read Assembly info for assembly {oAssembly.FileName}")
-        VAR file    := oAssembly:FileName
+        VAR File    := oAssembly:FileName
         VAR name    := oAssembly:FullName
         VAR lUpdated := FALSE
         BEGIN LOCK oConn
             TRY
-                USING VAR cmd := SqliteCommand{"", oConn}
+                USING VAR cmd := CreateCommand("", oConn)
                 cmd:CommandText := "SELECT Id, Name, AssemblyFileName, LastChanged, Size from Assemblies where  AssemblyFileName = $file"
-                cmd:Parameters:AddWithValue("$file",file)
+                cmd:Parameters:AddWithValue("$file",File)
                 VAR lOk := FALSE
                 BEGIN USING VAR rdr := cmd:ExecuteReader()
                     IF rdr:Read()
@@ -1092,8 +1117,8 @@ STATIC CLASS XDatabase
                     cmd:CommandText := "INSERT INTO Assemblies(Name, AssemblyFileName,LastChanged, Size ) values ($name, $file,$last,0); SELECT last_insert_rowid() "
                     cmd:Parameters:AddWithValue("$name",name)
                     cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
-                    VAR id := (INT64) cmd:ExecuteScalar()
-                    oAssembly:Id := id
+                    VAR Id := (INT64) cmd:ExecuteScalar()
+                    oAssembly:Id := Id
                     lUpdated := TRUE
                 ENDIF
             CATCH e AS Exception
@@ -1113,7 +1138,7 @@ STATIC CLASS XDatabase
         ENDIF
         BEGIN LOCK oConn
             TRY
-                USING VAR oCmd := SqliteCommand{"Delete From Assemblies where Id = "+oAssembly:Id:ToString(), oConn}
+                USING VAR oCmd := CreateCommand("Delete From Assemblies where Id = "+oAssembly:Id:ToString(), oConn)
                 oCmd:ExecuteNonQuery()
             CATCH e AS Exception
                 Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
@@ -1131,7 +1156,7 @@ STATIC CLASS XDatabase
         Log(i"Update Assembly info for assembly {oAssembly.FileName}")
         BEGIN LOCK oConn
             TRY
-                USING VAR oCmd := SqliteCommand{"SELECT 1", oConn}
+                USING VAR oCmd := CreateCommand("SELECT 1", oConn)
                 LOCAL globalType := NULL as XPETypeSymbol
                 LOCAL hasGlobalClass as LOGIC
                 hasGlobalClass := !String.IsNullOrEmpty(oAssembly:GlobalClassName)
@@ -1148,7 +1173,7 @@ STATIC CLASS XDatabase
                 oCmd:CommandText := "INSERT INTO ReferencedTypes (idAssembly, Name, Namespace, Kind, BaseTypeName, Attributes,FullName) " + ;
                     " values ($id, $name, $namespace, $kind, $basetypename, $attributes,$fullname) "
                 oCmd:Parameters:Clear()
-                VAR pars := List<SqliteParameter>{} { ;
+                VAR pars := List<DbParameter>{} { ;
                     oCmd:Parameters:AddWithValue("$id", 0),;
                     oCmd:Parameters:AddWithValue("$name", ""),;
                     oCmd:Parameters:AddWithValue("$namespace", ""),;
@@ -1177,7 +1202,7 @@ STATIC CLASS XDatabase
                         " Values ($id, $name, $fullname, $kind, $attributes, $source, $return) "
 
                     oCmd:Parameters:Clear()
-                    pars := List<SqliteParameter>{} { ;
+                    pars := List<DbParameter>{} { ;
                         oCmd:Parameters:AddWithValue("$id", 0),;
                         oCmd:Parameters:AddWithValue("$name", ""),;
                         oCmd:Parameters:AddWithValue("$fullname", ""),;
@@ -1222,7 +1247,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{"SELECT 1", oConn}
+                    USING VAR oCmd := CreateCommand("SELECT 1", oConn)
                     var crit := "name = $name"
                     if lUseLike
                         sLike += "%"
@@ -1277,7 +1302,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{"SELECT 1", oConn}
+                    USING VAR oCmd := CreateCommand("SELECT 1", oConn)
                     var crit := "name = $name"
                     if lUseLike
                         sLike += "%"
@@ -1334,7 +1359,7 @@ STATIC CLASS XDatabase
                     IF like .and. ! sLike:EndsWith("%")
                         sLike += "%"
                     ENDIF
-                    USING VAR oCmd := SqliteCommand{"SELECT 1", oConn}
+                    USING VAR oCmd := CreateCommand("SELECT 1", oConn)
                     oCmd:CommandText := "SELECT * FROM AssemblyGlobals WHERE name like $name " + ;
                         " AND Kind in ($kind1,$kind2,$kind3) AND IdAssembly in ("+sAssemblyIds+")"
                     oCmd:Parameters:AddWithValue("$name", sLike)
@@ -1376,7 +1401,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1397,7 +1422,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1420,7 +1445,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1442,7 +1467,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1462,7 +1487,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1484,7 +1509,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1511,7 +1536,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read()
                         result:Add(CreateCommentTask(rdr))
@@ -1530,7 +1555,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     oCmd:Parameters:AddWithValue("$type",(INT) type)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1549,7 +1574,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     // No limit on the # of Namespaces
                     DO WHILE rdr:Read()
@@ -1572,7 +1597,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     // No limit on the # of Namespaces
                     DO WHILE rdr:Read()
@@ -1597,7 +1622,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     // No limit on the # of Namespaces
                     DO WHILE rdr:Read()
@@ -1621,7 +1646,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     // No limit on the # of Namespaces
                     DO WHILE rdr:Read()
@@ -1649,7 +1674,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateTypeInfo(rdr))
@@ -1663,13 +1688,13 @@ STATIC CLASS XDatabase
         RETURN result
 
 
-    STATIC METHOD GetExtensionMethods (sProjectIds AS STRING, typeName as STRING) AS IList<XDbResult>
-        VAR stmt := "Select * from ProjectExtensionMethods where idProject IN ("+sProjectIds+") AND fullName = '"+typeName+"'"
+    STATIC METHOD GetExtensionMethods (sProjectIds AS STRING, TypeName as STRING) AS IList<XDbResult>
+        VAR stmt := "Select * from ProjectExtensionMethods where idProject IN ("+sProjectIds+") AND fullName = '"+TypeName+"'"
         VAR result := List<XDbResult>{}
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
@@ -1680,7 +1705,7 @@ STATIC CLASS XDatabase
 
             END LOCK
         ENDIF
-        Log(i"GetExtensionMethods '{typeName}' returns {result.Count} matches")
+        Log(i"GetExtensionMethods '{TypeName}' returns {result.Count} matches")
         RETURN result
 
     STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
@@ -1690,7 +1715,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
@@ -1711,7 +1736,7 @@ STATIC CLASS XDatabase
                 TRY
                     var fileType := (Int) XFileType.NativeResource
                     var stmt := "select count(*) from ProjectFiles where fileType = "+fileType:ToString()+" and ProjectFileName like '%" +projectFile+"'"
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     var count := (Int64) oCmd:ExecuteScalar()
                     RETURN count > 0
                 CATCH e AS Exception
@@ -1727,13 +1752,13 @@ STATIC CLASS XDatabase
             BEGIN LOCK oConn
                 TRY
                     var stmt := "select TypeName, Name, Attributes, Kind from ProjectMembers where Name like 'Start%' and ProjectFileName like '%" +projectFile+"'"
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read()
                         var atts := (Modifiers) (INT64) rdr["Attributes"]
-                        var kind := (Kind) (INT64) rdr["Kind"]
+                        var Kind := (Kind) (INT64) rdr["Kind"]
                         var m := rdr["Name"]:ToString()
-                        if m:Trim():ToLower() == "start" .and. atts:HasFlag(Modifiers.Static) .and. kind:HasFlag(Kind.Method)
+                        if m:Trim():ToLower() == "start" .and. atts:HasFlag(Modifiers.Static) .and. Kind:HasFlag(Kind.Method)
                             result:Add(rdr["TypeName"]:ToString())
                         endif
                     ENDDO
@@ -1752,7 +1777,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{stmt, oConn}
+                    USING VAR oCmd := CreateCommand(stmt, oConn)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
@@ -1773,7 +1798,7 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             BEGIN LOCK oConn
                 TRY
-                    USING VAR oCmd := SqliteCommand{"SELECT 1", oConn}
+                    USING VAR oCmd := CreateCommand("SELECT 1", oConn)
                     oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE IdFile = $idfile AND TypeName = $typename " + ;
                         " AND Kind in ($kind1, $kind2, $kind3, $kind4, $kind5)"
                     oCmd:Parameters:AddWithValue("$idfile", sFileId)
@@ -1797,7 +1822,7 @@ STATIC CLASS XDatabase
 
 
 
-    STATIC METHOD CreateTypeInfo(rdr AS SqliteDataReader) AS XDbResult
+    STATIC METHOD CreateTypeInfo(rdr AS DbDataReader) AS XDbResult
         VAR res := XDbResult{}
         res:TypeName     := DbToString(rdr["Name"])
         res:Namespace    := DbToString(rdr["NameSpace"])
@@ -1820,7 +1845,7 @@ STATIC CLASS XDatabase
         res:IdProject    := (INT64) rdr["IdProject"]
         RETURN res
 
-    STATIC METHOD CreateRefTypeInfo(rdr AS SqliteDataReader) AS XDbResult
+    STATIC METHOD CreateRefTypeInfo(rdr AS DbDataReader) AS XDbResult
         VAR res := XDbResult{}
         res:TypeName     := DbToString(rdr["Name"])
         res:Namespace    := DbToString(rdr["NameSpace"])
@@ -1832,7 +1857,7 @@ STATIC CLASS XDatabase
         res:IdAssembly   := (INT64) rdr["IdAssembly"]
         RETURN res
 
-    STATIC METHOD CreateCommentTask(rdr AS SqliteDataReader) AS XDbResult
+    STATIC METHOD CreateCommentTask(rdr AS DbDataReader) AS XDbResult
         VAR res := XDbResult{}
         res:Line         := DbToInt(rdr["Line"])
         res:Column       := DbToInt(rdr["Column"])
@@ -1842,7 +1867,7 @@ STATIC CLASS XDatabase
         RETURN res
 
 
-    STATIC METHOD CreateMemberInfo(rdr AS SqliteDataReader) AS XDbResult
+    STATIC METHOD CreateMemberInfo(rdr AS DbDataReader) AS XDbResult
         VAR res := XDbResult{}
         res:TypeName     := DbToString(rdr["TypeName"])
         res:MemberName   := DbToString(rdr["Name"])
@@ -1865,7 +1890,7 @@ STATIC CLASS XDatabase
         res:ReturnType   := DbToString(rdr["ReturnType"])
         RETURN res
 
-    STATIC METHOD CreateAssemblyMemberInfo(rdr AS SqliteDataReader) AS XDbResult
+    STATIC METHOD CreateAssemblyMemberInfo(rdr AS DbDataReader) AS XDbResult
         VAR res := XDbResult{}
         res:MemberName   := DbToString(rdr["Name"])
         res:Kind         := (Kind) (INT64) rdr["Kind"]
@@ -1899,7 +1924,56 @@ STATIC CLASS XDatabase
 
 
     STATIC PROPERTY IsDbOpen AS LOGIC GET oConn != NULL_OBJECT .AND.  oConn:State == ConnectionState.Open
-    STATIC PROPERTY Connection as SqliteConnection GET oConn
+    STATIC PROPERTY Connection as DbConnection GET oConn
+
+END CLASS
+
+STATIC CLASS SqlExtensions
+    STATIC METHOD AddWithValue(SELF oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
+        IF XDatabase.IsX86
+            RETURN Addx86(oColl, name, oValue)
+        ELSE
+            RETURN AddX64(oColl, name, oValue)
+        ENDIF
+    STATIC METHOD Addx86(oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
+        var coll := (System.Data.SQLite.SQLiteParameterCollection) oColl
+        return coll:AddWithValue(name, oValue)
+    STATIC METHOD AddX64(oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
+        var coll := (Microsoft.Data.Sqlite.SqliteParameterCollection) oColl
+        return coll:AddWithValue(name, oValue)
+
+    STATIC METHOD BackupDatabase(SELF oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
+        IF XDatabase.IsX86
+            BackupDatabaseX86(oConn, oDest, name)
+        ELSE
+            BackupDatabaseX64(oConn, oDest, name)
+        ENDIF
+    STATIC METHOD BackupDatabaseX86(oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
+        var conn := (System.Data.SQLite.SQLiteConnection) oConn
+        var dest := (System.Data.SQLite.SQLiteConnection) oDest
+        conn:BackupDatabase(dest, name, name, -1, NULL, 0)
+    STATIC METHOD BackupDatabaseX64(oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
+        var conn := (Microsoft.Data.Sqlite.SqliteConnection) oConn
+        var dest := (Microsoft.Data.Sqlite.SqliteConnection) oDest
+        conn:BackupDatabase(dest, name, name)
+
+    STATIC METHOD SetCollation(SELF oConn AS DbConnection) AS VOID
+        IF XDatabase.IsX86
+            SetCollationX86(oConn)
+        ELSE
+            SetCollationX64(oConn)
+        ENDIF
+
+        RETURN
+    STATIC METHOD SetCollationX86(oConn AS DbConnection) AS VOID
+        RETURN
+    STATIC METHOD SetCollationX64(SELF oConn AS DbConnection) AS VOID
+        // We overrule the NOCASE collation, to allow Unicode comparisons
+        // the default collation only "knows" the characters A-Z.
+        // see https://github.com/dotnet/docs/blob/main/samples/snippets/standard/data/sqlite/CollationSample/Program.cs
+        var conn := (Microsoft.Data.Sqlite.SqliteConnection) oConn
+        conn:CreateCollation("NOCASE", { x, y => String.Compare(x, y, ignoreCase:= true) } )
+        RETURN
 
 END CLASS
 

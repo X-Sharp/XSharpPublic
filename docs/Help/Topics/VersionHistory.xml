@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-01-08T10:10:59.460+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-01-11T20:06:22.050+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -84,6 +84,7 @@
     <para styleclass="Heading2">Header files</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Implemented several missing commands (#1407)</li>
       <li styleclass="Normal">Fixed typo in the SET DECIMALS TO command (#1406)</li>
       <li styleclass="Normal">Added missing clauses NAME and MEMVAR for the GATHER command (FoxPro) (#1409)</li>
       <li styleclass="Normal">Updated several commands to make some tokens optional and more compatible to various dialects (#1410, #1412)</li>

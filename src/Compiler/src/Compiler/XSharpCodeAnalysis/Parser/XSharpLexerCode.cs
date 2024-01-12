@@ -1615,7 +1615,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case PUBLIC:
                 case SEALED:
                 case STATIC:
-                case UNSAFE:
+                case UNSAFE: 
                 case VIRTUAL:
                 case VOLATILE:
 
@@ -1793,11 +1793,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                case EACH:                   // FoxPro dialect and only after FOR
-                    if (lastToken != FOR)
-                        return ID;
-                    else
-                        return keyword;
                 case FOX_M:
                     return keyword;
             }
@@ -2236,7 +2231,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"NOT", FOX_NOT},
                     {"THEN", THEN},
                     {"XOR", FOX_XOR},
-                    {"EACH", EACH },                // Only after FOR
                     {"M", FOX_M }                   // FoxPro allows LOCAL M.Name and PRIVATE M.Name
                 };
                 var vfpKeyWordAbbrev = new XSharpKeywords

@@ -231,6 +231,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitTupleExpression([NotNull] XSharpParser.TupleExpressionContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>nameOfExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNameOfExpression([NotNull] XSharpParser.NameOfExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>nameOfExpression</c>
+	/// labeled alternative in <see cref="XSharpParser.primary"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNameOfExpression([NotNull] XSharpParser.NameOfExpressionContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>sizeOfExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.primary"/>.
 	/// <para>The default implementation does nothing.</para>

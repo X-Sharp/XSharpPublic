@@ -947,6 +947,7 @@ primary             : Key=SELF                                                  
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		  // typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		  // sizeof( typeORid )
                     | DEFAULT (LPAREN Type=datatype RPAREN)?                    #defaultExpression		// default( typeORid )
+                    | Name=NAMEOF LPAREN Expr=simpleName RPAREN                      #nameOfExpression		  // nameof( expr )
                     | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
@@ -1452,7 +1453,7 @@ xppinlineMethod     : Attributes=attributes?                                 // 
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
+keywordfox          :  Token=( OLEPUBLIC | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
                       // ENDDEFINE | DIMENSION | LPARAMETERS
                     ;

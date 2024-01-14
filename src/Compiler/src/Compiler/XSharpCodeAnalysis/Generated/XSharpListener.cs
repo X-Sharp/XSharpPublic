@@ -201,19 +201,6 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitTupleExpression([NotNull] XSharpParser.TupleExpressionContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>nameOfExpression</c>
-	/// labeled alternative in <see cref="XSharpParser.primary"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterNameOfExpression([NotNull] XSharpParser.NameOfExpressionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>nameOfExpression</c>
-	/// labeled alternative in <see cref="XSharpParser.primary"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitNameOfExpression([NotNull] XSharpParser.NameOfExpressionContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>sizeOfExpression</c>
 	/// labeled alternative in <see cref="XSharpParser.primary"/>.
 	/// </summary>

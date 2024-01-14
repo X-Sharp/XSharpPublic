@@ -946,8 +946,7 @@ primary             : Key=SELF                                                  
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		  // typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		  // sizeof( typeORid )
-                    | DEFAULT (LPAREN Type=datatype RPAREN)?                    #defaultExpression		// default( typeORid )
-                    | Name=NAMEOF LPAREN Expr=simpleName RPAREN                      #nameOfExpression		  // nameof( expr )
+                    | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
                     | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )

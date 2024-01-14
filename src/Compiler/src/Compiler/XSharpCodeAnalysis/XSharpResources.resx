@@ -7709,9 +7709,5 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_FileWideMemVarName" xml:space="preserve">
   <value>File Wide Memory Variable found with the same name '{0}'. You must use the MEMVAR or M prefix to access that variable.</value>
  </data>
- 
- 
- 
-
 </root>
 

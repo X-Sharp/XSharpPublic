@@ -8558,35 +8558,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(MakeTypeOf(context.Type.Get<TypeSyntax>()));
         }
 
-        public override void ExitNameOfExpression([NotNull] XP.NameOfExpressionContext context)
-        {
-            // Roslyn expects a normal method call here
-            ArgumentListSyntax argList = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
-            var id = context.Name.SyntaxIdentifier();
-            var expr = _syntaxFactory.IdentifierName(id);
-            context.Put(_syntaxFactory.InvocationExpression(expr, argList));
-        }
-
         public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)
         {
-            if (context.Type != null)
+            var type = context.Type.Get<TypeSyntax>();
+            if (type.IsUsualType())
             {
-                var type = context.Type.Get<TypeSyntax>();
-                if (type.IsUsualType())
-                {
-                    context.Put(GenerateNIL());
-                }
-                else
-                {
-                    context.Put(MakeDefault(type));
-                }
+                context.Put(GenerateNIL());
             }
             else
             {
-                context.Put(GenerateDefaultLiteral());
+                context.Put(MakeDefault(type));
             }
         }
-
         public override void ExitAwaitExpression([NotNull] XP.AwaitExpressionContext context)
         {
             context.Put(_syntaxFactory.AwaitExpression(SyntaxFactory.MakeToken(SyntaxKind.AwaitKeyword), context.Expr.Get<ExpressionSyntax>()));

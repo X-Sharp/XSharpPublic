@@ -51,12 +51,13 @@ PARTIAL CLASS OrderDialog INHERIT DIALOGWINDOW
 	PROTECT oCCCancelButton AS PUSHBUTTON
 	PROTECT oCCMarioButton AS TWOBMPBUTTON
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)  
+	// {{%UC%}} User code starts here (DO NOT remove this line)
 
-METHOD CancelButton() 
+
+METHOD CancelButton()
 	SELF:EndDialog()
 	GetAppObject():Quit()
-	RETURN NIL	
+	RETURN NIL
 
 CONSTRUCTOR(oParent,uExtra)
 
@@ -153,7 +154,7 @@ CONSTRUCTOR(oParent,uExtra)
 
 	SELF:oCCCancelButton := PUSHBUTTON{SELF , ResourceID{ ORDERDIALOG_CANCELBUTTON  , _GetInst() } }
 	SELF:oCCCancelButton:HyperLabel := HyperLabel{#CancelButton , "Push" , NULL_STRING , NULL_STRING}
-	SELF:oCCCancelButton:TooltipText := "Press in case you already had enough pizzas."
+	SELF:oCCCancelButton:TooltipText := "Press in case you already had enough pizzas. "
 	SELF:oCCCancelButton:Image := NOPIZZA{}
 
 	SELF:oCCMarioButton := TWOBMPBUTTON{SELF , ResourceID{ ORDERDIALOG_MARIOBUTTON  , _GetInst() } }
@@ -176,24 +177,24 @@ CONSTRUCTOR(oParent,uExtra)
 RETURN
 
 
-METHOD OrderButton( ) 
+METHOD OrderButton( )
 	LOCAL oSubmitDlg AS SubmitDlg
 
 	oSubmitDlg := SubmitDlg{SELF}
 	oSubmitDlg:Show()
 	RETURN NIL
 
-METHOD PostInit() 
+METHOD PostInit()
 	oCCMarioButton:BmpUnPressed := Bitmap{ResourceID{"CHEF1", _GetInst()}}
 	oCCMarioButton:BmpPressed   := Bitmap{ResourceID{"CHEF2", _GetInst()}}
-	RETURN NIL	
+	RETURN NIL
 
-METHOD VerticalSpin( oSpinEvent AS SpinnerEvent ) 
+METHOD VerticalSpin( oSpinEvent AS SpinnerEvent )
 	SUPER:VerticalSpin(oSpinEvent)
 
   IF oSpinEvent:Spinner == oDCCrustSpinner
   	oDCCrustEdit:TextValue := LTrim(AsString(oSpinEvent:@@Value))
-  ENDIF	
+  ENDIF
 
 	RETURN NIL
 

@@ -40,11 +40,10 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <XSharpProjectversion>2.8.3.14</XSharpProjectversion>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -52,7 +51,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
@@ -65,7 +64,7 @@
     <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>

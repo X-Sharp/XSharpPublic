@@ -1837,10 +1837,16 @@ CLASS ModuleDescriptor
 
 	PROTECTED METHOD Adjust_VXP_Tags(aCode AS STRING[]) AS VOID
 		FOR LOCAL n := 1 AS INT UPTO aCode:Length
-			LOCAL cLine, cUpper AS STRING
-			LOCAL nAt AS INT
+			LOCAL cLine/*, cUpper*/ AS STRING
+//			LOCAL nAt AS INT
 			cLine := aCode[n]
-			cUpper := cLine:ToUpperInvariant()
+			// We already handle such tags with the {VOXP:XXX} format, at theline level
+			// So simply convert the alternative VXP-XXX ones to {VOXP:XXX}
+			IF cLine:IndexOf("VXP-") != -1
+				cLine := cLine:Replace("VXP-DEL", "{VOXP:DEL}"):Replace("VXP-COM", "{VOXP:COM}"):Replace("VXP-UNC", "{VOXP:UNC}")
+				aCode[n] := cLine
+			END IF
+/*			cUpper := cLine:ToUpperInvariant()
 			nAt := nAt := cUpper:IndexOf("VXP-")
 			IF nAt != -1
 				LOCAL nCommentMarker := -1 AS INT
@@ -1872,7 +1878,7 @@ CLASS ModuleDescriptor
 						END IF
 					END CASE
 				END IF
-			END IF
+			END IF*/
 		NEXT
 	RETURN
 
@@ -2486,6 +2492,7 @@ CLASS EntityDescriptor
 					cLine := cLine:Substring(0 , nCommentMarker):TrimEnd()
 				ENDIF
 				cLine := "// " + cLine
+				RETURN cLine
 			CASE cLine:Contains("{VOXP:UNC}")
 				nCommentMarker := cLine:IndexOf("//")
 				IF nCommentMarker != - 1
@@ -2495,8 +2502,10 @@ CLASS EntityDescriptor
 						cLine := cLine:Substring(0 , nCommentMarker):TrimEnd()
 					ENDIF
 				END IF
+				RETURN cLine
 			CASE cLine:Contains("{VOXP:DEL}") .or. cLine:Contains("{VOXP:REM}")
 				cLine := ""
+				RETURN cLine
 			END CASE
 		END IF
 

@@ -4026,6 +4026,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.THISCALL
         CASE XSharpLexer.UPTO
         CASE XSharpLexer.USING
+        CASE XSharpLexer.TUPLE
         CASE XSharpLexer.WINCALL
             // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
             // but when they code event->(DoSomething()) we still need them in this rule...
@@ -4084,7 +4085,6 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         SWITCH token
         CASE XSharpLexer.OLEPUBLIC
-        CASE XSharpLexer.EACH
         CASE XSharpLexer.EXCLUDE
         CASE XSharpLexer.THISACCESS
         CASE XSharpLexer.HELPSTRING

@@ -47,11 +47,17 @@ STATIC CLASS XDatabase
 
     STATIC CONSTRUCTOR
         IsX86 := IntPtr.Size == 4
-        IF IsX86
-            Initializex86()
-        ELSE
-            Initializex64()
-        ENDIF
+        TRY
+            IF IsX86
+                Initializex86()
+            ELSE
+                Initializex64()
+            ENDIF
+        CATCH e AS Exception
+            XSettings.Exception(e, __FUNCTION__)
+            // Assign a dummy factory
+            oFact := System.Data.Odbc.OdbcFactory.Instance
+        END TRY
 
     STATIC METHOD Log(cMessage AS STRING) AS VOID
         IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging

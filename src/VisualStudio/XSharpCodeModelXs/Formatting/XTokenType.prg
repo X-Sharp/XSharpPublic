@@ -151,6 +151,7 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@Remove:= XSharpLexer.REMOVE
     MEMBER @@Select:= XSharpLexer.SELECT
     MEMBER @@Switch:= XSharpLexer.SWITCH
+    MEMBER @@Tuple := XSharpLexer.TUPLE
     MEMBER @@Unchecked:= XSharpLexer.UNCHECKED
     MEMBER @@Unsafe:= XSharpLexer.UNSAFE
     MEMBER @@Var:= XSharpLexer.VAR
@@ -217,7 +218,6 @@ ENUM XSharpModel.XTokenType AS SHORT
     MEMBER @@Helpstring:= XSharpLexer.HELPSTRING
     MEMBER @@Dimension:= XSharpLexer.DIMENSION
     MEMBER @@Noinit:= XSharpLexer.NOINIT
-    MEMBER @@Each:= XSharpLexer.EACH
     MEMBER @@Then:= XSharpLexer.THEN
     MEMBER @@Fox_m:= XSharpLexer.FOX_M
     MEMBER @@Last_keyword:= XSharpLexer.LAST_KEYWORD

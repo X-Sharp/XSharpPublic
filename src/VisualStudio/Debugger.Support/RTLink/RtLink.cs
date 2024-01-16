@@ -12,6 +12,7 @@ namespace XSharp.Debugger.Support
     public static class RtLink
     {
         public const string ErrorPrefix = "XSharp Debugger Error : ";
+        const string ErrorValue = "** Error **";
         const string RTNotLoaded = ErrorPrefix+" XSharp Runtime not Loaded";
         const string TypeNotFound = ErrorPrefix + "Type '{0}' not found";
         const string MethodNotFound = ErrorPrefix + "Method '{0}' not found";
@@ -349,22 +350,34 @@ namespace XSharp.Debugger.Support
                 var props = atype.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
                 foreach (var property in props)
                 {
-                    var value = property.GetValue(area, null);
-                    if (value != null)
+                    if (property.CanRead)
                     {
-                        switch (value)
+                        try
                         {
-                            case string _:
-                            case bool _:
-                            case int _:
-                            case uint _:
-                            case long _:
-                            case DateTime _:
-                            case ulong _:
-                                result.Add(new NameValueItem { Name = property.Name, Value = value.ToString() });
-                                break;
+                            var value = property.GetValue(area, null);
+                            if (value is null)
+                            {
+                                continue;
+                            }
+                            switch (value)
+                            {
+                                case string _:
+                                case bool _:
+                                case int _:
+                                case uint _:
+                                case long _:
+                                case DateTime _:
+                                case ulong _:
+                                    result.Add(new NameValueItem { Name = property.Name, Value = value.ToString() });
+                                    break;
+                            }
+                        }
+                        catch
+                        {
+                            result.Add(new NameValueItem { Name = property.Name, Value = ErrorValue });
                         }
                     }
+
                 }
                 return result.Serialize();
             }
@@ -381,9 +394,22 @@ namespace XSharp.Debugger.Support
                 int fields = area.FieldCount;
                 for (int i = 1; i <= fields; i++)
                 {
-                    var name = area.FieldName(i);
-                    var value = area.GetValue(i);
-                    result.Add(new NameValueItem { Name = name, Value = value.ToString() });
+                    string name = $"Field {i}";
+                    object value;
+                    try
+                    {
+                        name = area.FieldName(i);
+                        value = area.GetValue(i);
+                        if (value is null)
+                        {
+                            value = "<NULL>";
+                        }
+                        result.Add(new NameValueItem { Name = name, Value = value.ToString() });
+                    }
+                    catch
+                    {
+                        result.Add(new NameValueItem { Name = name, Value = ErrorValue });
+                    }
                 }
                 return result.Serialize();
             }

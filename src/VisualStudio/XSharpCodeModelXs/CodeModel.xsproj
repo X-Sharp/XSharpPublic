@@ -176,6 +176,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite">
       <Version>8.0.1</Version>
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true" >
+      <Version>2.1.6</Version>
+      <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.118</Version>
@@ -197,4 +202,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-</Project>
+  </Project>

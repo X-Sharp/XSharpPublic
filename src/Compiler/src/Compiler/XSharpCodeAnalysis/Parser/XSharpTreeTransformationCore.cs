@@ -1223,10 +1223,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
         }
-        protected LiteralExpressionSyntax GenerateDefaultLiteral()
-        {
-            return _syntaxFactory.LiteralExpression(SyntaxKind.DefaultLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword));
-        }
         protected VariableDeclaratorSyntax GenerateVariable(string name, ExpressionSyntax initexpr = null)
         {
             return GenerateVariable(SyntaxFactory.Identifier(name), initexpr);
@@ -3802,7 +3798,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        value = GenerateDefaultLiteral();
+                        value = MakeDefault(dt);
                     }
                 }
                 value.XGenerated = true;
@@ -9324,9 +9320,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int[] elements;
             switch (context.Token.Type)
             {
-                case XP.DEFAULT:
-                    context.Put(GenerateDefaultLiteral());
-                    return;
                 case XP.BINARY_CONST:
                     var source = context.Token.Text.Substring(2);
                     var error = false;

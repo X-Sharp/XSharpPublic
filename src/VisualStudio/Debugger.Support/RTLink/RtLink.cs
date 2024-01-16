@@ -345,7 +345,7 @@ namespace XSharp.Debugger.Support
             object area = _GetArea(areaNo);
             if (area != null)
             {
-                var result = new NameValueItems();
+                var result = new NameValueItems { Sorted = true };
                 var atype = area.GetType();
                 var props = atype.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
                 foreach (var property in props)

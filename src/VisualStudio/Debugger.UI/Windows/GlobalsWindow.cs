@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using XSharp.Settings;
 
 namespace XSharp.Debugger.UI
 {
@@ -21,9 +22,12 @@ namespace XSharp.Debugger.UI
         public override Type PaneType => typeof(Pane);
         public GlobalsControl Control = null;
 
-
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
+            if (XSettings.IsVs15)
+            {
+                return null;
+            }
             Support.RegisterWindow(this);
             Version _ = await VS.Shell.GetVsVersionAsync();
             Control = new GlobalsControl { DataContext = new GlobalsView() };

@@ -14,6 +14,7 @@ namespace XSharp.Debugger.Support
     }
     public sealed class NameValueItems
     {
+        public bool Sorted = false;
         private List<NameValueItem> items;
         public NameValueItems()
         {
@@ -24,7 +25,10 @@ namespace XSharp.Debugger.Support
             get
             {
                 var result = items.ToArray();
-                Array.Sort(result, (x, y) => x.Name.CompareTo(y.Name));
+                if (Sorted)
+				{
+                    Array.Sort(result, (x, y) => x.Name.CompareTo(y.Name));
+				}	
                 return result;
             }
             set

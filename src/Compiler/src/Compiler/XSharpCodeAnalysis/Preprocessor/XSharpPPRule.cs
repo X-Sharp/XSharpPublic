@@ -1267,81 +1267,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool matchExtendedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             int iStart = iSource;
-            var lastType = XSharpLexer.LAST;
-            var level = 0;
-            var done = false;
-            var consumed = 0;
             var iend = -1;
-            bool found = false;
+            bool found = true;
             if (matchAmpersandToken(mToken, tokens, iStart, ref iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
-                found = true;
             }
             else if (matchFileName(tokens, iStart, ref iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
-                found = true;
-            }
-            else if (tokens[iStart].IsString())
-            {
-                matchInfo[mToken.Index].SetPos(iStart, iStart);
-                iSource++;
-                found = true;
             }
             else
             {
-                while (iSource < tokens.Count && !done)
+                found = matchExpression(iSource, tokens, mToken.StopToken, out int iEnd);
+                if (found)
                 {
-                    if (level == 0 && IsStopToken(mToken, tokens[iSource]))
-                    {
-                        break;
-                    }
-                    switch (tokens[iSource].Type)
-                    {
-                        case XSharpLexer.LPAREN:
-                        case XSharpLexer.LBRKT:
-                        case XSharpLexer.LCURLY:
-                            level++;
-                            break;
-                        case XSharpLexer.RPAREN:
-                        case XSharpLexer.RBRKT:
-                        case XSharpLexer.RCURLY:
-                            level--;
-                            break;
-                        default:
-                            //
-                            // we consume one token between optional params or curly braces
-                            // but we also allow ID DOT ID (OUTPUT.TXT)
-                            // So second ID is only accepted after DOT
-                            if (level == 0 && consumed > 0)
-                            {
-                                var type = tokens[iSource].Type;
-
-                                if (type == XSharpLexer.ID || tokens[iSource].IsKeyword())
-                                {
-                                    done = lastType != XSharpLexer.DOT;
-                                }
-                                else if (type != XSharpLexer.DOT)
-                                {
-                                    done = true;
-                                }
-                            }
-                            break;
-                    }
-                    lastType = tokens[iSource].Type;
-                    consumed += 1;
-                    if (!done)
-                    {
-                        iSource++;
-                        found = true;
-                    }
+                    matchInfo[mToken.Index].SetPos(iSource, iEnd);
+                    iSource = iEnd + 1;
                 }
-                // we have either reached the end of the line or aborted because of a token that
-                // is not part of the match, so therefore iSource points to the token AFTER the last match
-                matchInfo[mToken.Index].SetPos(iStart, iSource - 1);
             }
             return found;
 

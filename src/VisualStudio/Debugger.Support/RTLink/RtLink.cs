@@ -347,7 +347,7 @@ namespace XSharp.Debugger.Support
             {
                 var result = new NameValueItems { Sorted = true };
                 var atype = area.GetType();
-                var props = atype.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                var props = atype.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy).ToArray();
                 foreach (var property in props)
                 {
                     if (property.CanRead)

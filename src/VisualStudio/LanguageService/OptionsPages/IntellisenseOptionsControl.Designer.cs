@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label label1;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IntellisenseOptionsControl));
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkShowMembersOfCurrentType = new System.Windows.Forms.CheckBox();
             this.chkSortNavBar = new System.Windows.Forms.CheckBox();
@@ -37,6 +38,7 @@
             this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.chkExcludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
+            this.chkUseMicrosoftSQLite = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
@@ -116,8 +118,8 @@
             this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
             this.chkCompletionListtabs.TabIndex = 0;
             this.chkCompletionListtabs.Text = "Organize in &tabs with different item types (properties, methods etc)";
-            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your completionlists in tabs, to make it easier to find a method or" +
-        " property in long completionlists");
+            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your completionlists in tabs, to make it easier to find a method o" +
+        "r property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
             // 
             // chkExcludeMembersFromOtherfiles
@@ -131,6 +133,17 @@
             this.toolTip1.SetToolTip(this.chkExcludeMembersFromOtherfiles, "If you select this then the combox on the right hand side will only show members " +
         "of the current selected type and only from the current file.");
             this.chkExcludeMembersFromOtherfiles.UseVisualStyleBackColor = true;
+            // 
+            // chkUseMicrosoftSQLite
+            // 
+            this.chkUseMicrosoftSQLite.AutoSize = true;
+            this.chkUseMicrosoftSQLite.Location = new System.Drawing.Point(13, 99);
+            this.chkUseMicrosoftSQLite.Name = "chkUseMicrosoftSQLite";
+            this.chkUseMicrosoftSQLite.Size = new System.Drawing.Size(339, 17);
+            this.chkUseMicrosoftSQLite.TabIndex = 4;
+            this.chkUseMicrosoftSQLite.Text = "Use the Microsoft.Data.SQLite engine for the intellisense database";
+            this.toolTip1.SetToolTip(this.chkUseMicrosoftSQLite, resources.GetString("chkUseMicrosoftSQLite.ToolTip"));
+            this.chkUseMicrosoftSQLite.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
@@ -154,13 +167,14 @@
             // 
             // grpNavigationBars
             // 
+            this.grpNavigationBars.Controls.Add(this.chkUseMicrosoftSQLite);
             this.grpNavigationBars.Controls.Add(this.chkExcludeMembersFromOtherfiles);
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
             this.grpNavigationBars.Location = new System.Drawing.Point(5, 121);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(373, 101);
+            this.grpNavigationBars.Size = new System.Drawing.Size(373, 122);
             this.grpNavigationBars.TabIndex = 1;
             this.grpNavigationBars.TabStop = false;
             this.grpNavigationBars.Text = "Navigation Bars";
@@ -227,5 +241,6 @@
         private System.Windows.Forms.CheckBox chkCompletionListtabs;
         private System.Windows.Forms.CheckBox chkExcludeMembersFromOtherfiles;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.CheckBox chkUseMicrosoftSQLite;
     }
 }

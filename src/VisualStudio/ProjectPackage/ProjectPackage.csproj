@@ -18,7 +18,7 @@
     <AssemblyName>XSharp.Project</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
@@ -191,6 +191,10 @@
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
     <Content Include="$(Outdir)\x86\SQLite.Interop.dll">
       <Link>x86\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(Outdir)\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
@@ -382,16 +386,22 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HabourConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.xsproj" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.png" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HabourConsole.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.png" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.xsproj" />
-    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\Program.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\ClassXpp.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\ClassXpp.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
     <Content Include="XSharp.Designers2022.pkgdef" />
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -802,7 +812,7 @@
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
+  -->
   <Target Name="AfterBuild">
   </Target>
-  -->
 </Project>

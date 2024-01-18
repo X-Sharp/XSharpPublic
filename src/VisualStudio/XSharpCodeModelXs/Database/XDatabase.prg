@@ -17,19 +17,20 @@ USING XSharp.Settings
 BEGIN NAMESPACE XSharpModel
 STATIC CLASS XDatabase
     STATIC PRIVATE oFact   as DbProviderFactory
-    Internal STATIC IsX86   AS LOGIC
+    internal static UseMicrosoftSQLite   as logic
     STATIC PRIVATE oConn   AS DbConnection     // In memory database !
 
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 1.9 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 2.0 AS System.Double
 
-    STATIC METHOD Initializex64() AS VOID
+    STATIC METHOD InitializeMicrosoft() AS VOID
         SQLitePCL.Batteries.Init()
         oFact := Microsoft.Data.Sqlite.SqliteFactory.Instance
-    STATIC METHOD Initializex86()  AS VOID
+
+    STATIC METHOD InitializeSystem()  AS VOID
         oFact := System.Data.SQLite.SQLiteFactory.Instance
 
 
@@ -41,17 +42,24 @@ STATIC CLASS XDatabase
     STATIC METHOD CreateConnection(connStr as STRING) AS DbConnection
         var conn := oFact:CreateConnection()
         conn:ConnectionString := connStr
-
         return conn
 
 
     STATIC CONSTRUCTOR
-        IsX86 := IntPtr.Size == 4
-        TRY
-            IF IsX86
-                Initializex86()
+        IF IntPtr.Size == 4
+            XDatabase.UseMicrosoftSQLite := FALSE
+        ELSE
+            IF XSettings.IsArm
+                XDatabase.UseMicrosoftSQLite := TRUE
             ELSE
-                Initializex64()
+                UseMicrosoftSQLite := XSettings.UseMicrosoftSQLite
+            END IF
+        ENDIF
+        TRY
+            IF UseMicrosoftSQLite
+                InitializeMicrosoft()
+            ELSE
+                InitializeSystem()
             ENDIF
         CATCH e AS Exception
             XSettings.Exception(e, __FUNCTION__)
@@ -123,11 +131,16 @@ STATIC CLASS XDatabase
             RETURN
         ENDIF
         BEGIN LOCK oConn
-            USING VAR oCmd := CreateCommand("PRAGMA foreign_keys = ON", oConn)
-            oCmd:ExecuteNonQuery()
-            oCmd:CommandText := "VACUUM"
-            oCmd:ExecuteNonQuery()
-            oConn:SetCollation()
+            TRY
+                USING VAR oCmd := CreateCommand("PRAGMA foreign_keys = ON", oConn)
+                oCmd:ExecuteNonQuery()
+                oCmd:CommandText := "VACUUM"
+                oCmd:ExecuteNonQuery()
+                oConn:SetCollation()
+            CATCH e AS Exception
+                Log("Error setting pragmas")
+                XSettings.Exception(e, __FUNCTION__)
+            END TRY
         END LOCK
         RETURN
 
@@ -228,7 +241,7 @@ STATIC CLASS XDatabase
             cmd:ExecuteNonQuery()
 #endregion
 #region Table Projects
-            VAR stmt	:= "Create Table Projects ("
+            VAR stmt	:= "CREATE TABLE Projects ("
             stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE "
             stmt		+= " ) ;"
             stmt	    += "CREATE UNIQUE INDEX Projects_Pk     ON Projects (Id) ;"
@@ -526,15 +539,20 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                var project := XSolution.OrphanedFilesProject
-                Read(project)
-                USING VAR cmd := CreateCommand("Delete from FilesPerProject where IdProject = "+project:Id:ToString(), oConn)
-                cmd:ExecuteScalar()
-                cmd:CommandText := "Delete from Files where Id not in (select IdFile from FilesPerProject)"
-                cmd:ExecuteScalar()
+                TRY
+                    var project := XSolution.OrphanedFilesProject
+                    Read(project)
+                    USING VAR cmd := CreateCommand("Delete from FilesPerProject where IdProject = "+project:Id:ToString(), oConn)
+                    cmd:ExecuteScalar()
+                    cmd:CommandText := "Delete from Files where Id not in (select IdFile from FilesPerProject)"
+                    cmd:ExecuteScalar()
 
-                cmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
-                cmd:ExecuteScalar()
+                    cmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
+                    cmd:ExecuteScalar()
+                    CATCH e AS Exception
+                    Log("Error deleting orphaned files ")
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
 
             END LOCK
         ENDIF
@@ -545,12 +563,17 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := CreateCommand("SELECT FullName from OpenDesignerFiles", oConn)
-                USING VAR rdr := cmd:ExecuteReader()
-                DO WHILE rdr:Read()
-                    VAR name := rdr:GetString(0)
-                    result:Add(name)
-                ENDDO
+                TRY
+                    USING VAR cmd := CreateCommand("SELECT FullName from OpenDesignerFiles", oConn)
+                    USING VAR rdr := cmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        VAR name := rdr:GetString(0)
+                        result:Add(name)
+                    ENDDO
+                CATCH e AS Exception
+                    Log("Error reading open designer files ")
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
             END LOCK
         ENDIF
         Log(i"GetOpenDesignerFiles returned {result.Count} names")
@@ -582,12 +605,17 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := CreateCommand("SELECT ProjectFileName from Projects", oConn)
-                USING VAR rdr := cmd:ExecuteReader()
-                DO WHILE rdr:Read()
-                    VAR name := rdr:GetString(0)
-                    result:Add(name)
-                ENDDO
+                TRY
+                    USING VAR cmd := CreateCommand("SELECT ProjectFileName from Projects", oConn)
+                    USING VAR rdr := cmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        VAR name := rdr:GetString(0)
+                        result:Add(name)
+                    ENDDO
+                CATCH e AS Exception
+                    Log("Error reading project filenames ")
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
             END LOCK
         ENDIF
         Log(i"GetProjectNames returned {result.Count} names")
@@ -602,22 +630,27 @@ STATIC CLASS XDatabase
         VAR lUpdated := FALSE
         Log(i"Read Project info for project {file}")
         BEGIN LOCK oConn
-            USING VAR cmd := CreateCommand("", oConn)
-            cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
-            cmd:Parameters:AddWithValue("$file",file)
-            VAR lOk := FALSE
-            BEGIN USING VAR rdr := cmd:ExecuteReader()
-                IF rdr:Read()
-                    oProject:Id := rdr:GetInt64(0)
-                    lOk := TRUE
+            TRY
+                USING VAR cmd := CreateCommand("", oConn)
+                cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
+                cmd:Parameters:AddWithValue("$file",file)
+                VAR lOk := FALSE
+                BEGIN USING VAR rdr := cmd:ExecuteReader()
+                    IF rdr:Read()
+                        oProject:Id := rdr:GetInt64(0)
+                        lOk := TRUE
+                    ENDIF
+                END USING
+                IF ! lOk
+                    cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
+                    VAR Id := (INT64) cmd:ExecuteScalar()
+                    oProject:Id := Id
+                    lUpdated := TRUE
                 ENDIF
-            END USING
-            IF ! lOk
-                cmd:CommandText := "INSERT INTO Projects( ProjectFileName ) values ($file); SELECT last_insert_rowid() "
-                VAR Id := (INT64) cmd:ExecuteScalar()
-                oProject:Id := Id
-                lUpdated := TRUE
-            ENDIF
+            CATCH e AS Exception
+                Log("Error reading project : "+oProject:FileName+" "+oProject:Id:ToString())
+                XSettings.Exception(e, __FUNCTION__)
+            END TRY
         END LOCK
         IF lUpdated
             CommitWhenNeeded()
@@ -628,12 +661,17 @@ STATIC CLASS XDatabase
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
-                USING VAR cmd := CreateCommand("SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn)
-                USING VAR rdr := cmd:ExecuteReader()
-                DO WHILE rdr:Read()
-                    VAR name := rdr:GetString(0)
-                    result:Add(name)
-                ENDDO
+                TRY
+                    USING VAR cmd := CreateCommand("SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn)
+                    USING VAR rdr := cmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        VAR name := rdr:GetString(0)
+                        result:Add(name)
+                    ENDDO
+                CATCH e as Exception
+                    Log("Error getting file names for project   : "+oProject:Name)
+                    XSettings.Exception(e, __FUNCTION__)
+                END TRY
             END LOCK
         ENDIF
         Log(i"GetFileNames returned {result.Count} names")
@@ -643,14 +681,19 @@ STATIC CLASS XDatabase
     STATIC METHOD GetProjectIncludeFiles(oProject AS XProject) AS List<STRING>
         VAR result := List<STRING>{}
         IF IsDbOpen
-            BEGIN LOCK oConn
-                USING VAR cmd := CreateCommand("SELECT FileName from ProjectIncludeFiles where idProject = "+oProject:Id:ToString(), oConn)
-                USING VAR rdr := cmd:ExecuteReader()
-                DO WHILE rdr:Read()
-                    VAR name := rdr:GetString(0)
-                    result:Add(name)
-                ENDDO
-            END LOCK
+            TRY
+                BEGIN LOCK oConn
+                    USING VAR cmd := CreateCommand("SELECT FileName from ProjectIncludeFiles where idProject = "+oProject:Id:ToString(), oConn)
+                    USING VAR rdr := cmd:ExecuteReader()
+                    DO WHILE rdr:Read()
+                        VAR name := rdr:GetString(0)
+                        result:Add(name)
+                    ENDDO
+                END LOCK
+            CATCH e as Exception
+                Log("Error getting includ files for project   : "+oProject:Name)
+                XSettings.Exception(e, __FUNCTION__)
+            END TRY
         ENDIF
         Log(i"GetFileNames returned {result.Count} names")
         RETURN result
@@ -659,12 +702,16 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
         ENDIF
-        VAR File := cFileName
         BEGIN LOCK oConn
-            USING VAR cmd := CreateCommand("", oConn)
-            cmd:CommandText := "delete from Projects where ProjectFileName = $file"
-            cmd:Parameters:AddWithValue("$file",File)
-            cmd:ExecuteNonQuery()
+            TRY
+                USING VAR cmd := CreateCommand("", oConn)
+                cmd:CommandText := "delete from Projects where ProjectFileName = $file"
+                cmd:Parameters:AddWithValue("$file",cFileName)
+                cmd:ExecuteNonQuery()
+            CATCH e as Exception
+                Log("Error deleting project   : "+cFileName)
+                XSettings.Exception(e, __FUNCTION__)
+            END TRY
         END LOCK
         CommitWhenNeeded()
 #endregion
@@ -675,13 +722,17 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
             RETURN
         ENDIF
-        VAR File    := cFileName
         Log(i"Delete Project info for project {cFileName}")
         BEGIN LOCK oConn
-            USING VAR cmd := CreateCommand("", oConn)
-            cmd:CommandText := "DELETE FROM Files WHERE FileName = $file"
-            cmd:Parameters:AddWithValue("$file",File)
-            cmd:ExecuteNonQuery()
+            TRY
+                USING VAR cmd := CreateCommand("", oConn)
+                cmd:CommandText := "DELETE FROM Files WHERE FileName = $file"
+                cmd:Parameters:AddWithValue("$file",cFileName)
+                cmd:ExecuteNonQuery()
+            CATCH e as Exception
+                Log("Error deleting file   : "+cFileName)
+                XSettings.Exception(e, __FUNCTION__)
+            END TRY
         END LOCK
         CommitWhenNeeded()
 
@@ -696,7 +747,7 @@ STATIC CLASS XDatabase
                     result := rdr:GetString(0)
                 endif
             CATCH e AS Exception
-                Log("File   : "+idFile:ToString())
+                Log("Error getting file name for : "+idFile:ToString())
                 XSettings.Exception(e, __FUNCTION__)
 
             END TRY
@@ -764,7 +815,7 @@ STATIC CLASS XDatabase
                     cmd:ExecuteNonQuery()
                 ENDIF
             CATCH e AS Exception
-                Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+                Log("Error reading file : "+oFile:FullPath+" "+oFile:Id:ToString())
                 XSettings.Exception(e, __FUNCTION__)
 
             END TRY
@@ -795,7 +846,7 @@ STATIC CLASS XDatabase
                     oCmd:ExecuteNonQuery()
                 ENDIF
             CATCH e AS Exception
-                Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+                Log("Error updating File data : "+oFile:FullPath+" "+oFile:Id:ToString())
                 XSettings.Exception(e, __FUNCTION__)
             END TRY
         END LOCK
@@ -1935,45 +1986,49 @@ STATIC CLASS XDatabase
 END CLASS
 
 STATIC CLASS SqlExtensions
+
     STATIC METHOD AddWithValue(SELF oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
-        IF XDatabase.IsX86
-            RETURN Addx86(oColl, name, oValue)
+        IF XDatabase.UseMicrosoftSQLite
+            RETURN AddMicrosoft(oColl, name, oValue)
         ELSE
-            RETURN AddX64(oColl, name, oValue)
+            RETURN AddSystem(oColl, name, oValue)
         ENDIF
-    STATIC METHOD Addx86(oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
+
+    STATIC METHOD AddSystem(oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
         var coll := (System.Data.SQLite.SQLiteParameterCollection) oColl
         return coll:AddWithValue(name, oValue)
-    STATIC METHOD AddX64(oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
+
+    STATIC METHOD AddMicrosoft(oColl as DbParameterCollection, name as string, oValue as object) AS DbParameter
         var coll := (Microsoft.Data.Sqlite.SqliteParameterCollection) oColl
         return coll:AddWithValue(name, oValue)
 
     STATIC METHOD BackupDatabase(SELF oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
-        IF XDatabase.IsX86
-            BackupDatabaseX86(oConn, oDest, name)
+        IF XDatabase.UseMicrosoftSQLite
+            BackupDatabaseMicrosoft(oConn, oDest, name)
         ELSE
-            BackupDatabaseX64(oConn, oDest, name)
+            BackupDatabaseSystem(oConn, oDest, name)
         ENDIF
-    STATIC METHOD BackupDatabaseX86(oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
+    STATIC METHOD BackupDatabaseSystem(oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
         var conn := (System.Data.SQLite.SQLiteConnection) oConn
         var dest := (System.Data.SQLite.SQLiteConnection) oDest
         conn:BackupDatabase(dest, name, name, -1, NULL, 0)
-    STATIC METHOD BackupDatabaseX64(oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
+
+    STATIC METHOD BackupDatabaseMicrosoft(oConn as DbConnection, oDest as DbConnection, name as string) AS VOID
         var conn := (Microsoft.Data.Sqlite.SqliteConnection) oConn
         var dest := (Microsoft.Data.Sqlite.SqliteConnection) oDest
         conn:BackupDatabase(dest, name, name)
 
     STATIC METHOD SetCollation(SELF oConn AS DbConnection) AS VOID
-        IF XDatabase.IsX86
-            SetCollationX86(oConn)
+        IF XDatabase.UseMicrosoftSQLite
+            SetCollationMicrosoft(oConn)
         ELSE
-            SetCollationX64(oConn)
+            SetCollationSystem(oConn)
         ENDIF
 
         RETURN
-    STATIC METHOD SetCollationX86(oConn AS DbConnection) AS VOID
+    STATIC METHOD SetCollationSystem(oConn AS DbConnection) AS VOID
         RETURN
-    STATIC METHOD SetCollationX64(SELF oConn AS DbConnection) AS VOID
+    STATIC METHOD SetCollationMicrosoft(SELF oConn AS DbConnection) AS VOID
         // We overrule the NOCASE collation, to allow Unicode comparisons
         // the default collation only "knows" the characters A-Z.
         // see https://github.com/dotnet/docs/blob/main/samples/snippets/standard/data/sqlite/CollationSample/Program.cs

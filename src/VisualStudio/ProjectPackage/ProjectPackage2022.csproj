@@ -33,6 +33,10 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -80,13 +84,15 @@
     <Reference Include="XSharp.Evaluator">
       <HintPath>$(VsExternalDir)XSharp.Evaluator.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+    <Reference Include="XSharp.MonoCecil">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(Solutiondir)External\Debug\XSharp.MonoCecil.dll</HintPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <HintPath>$(VsExternalDir)XSharp.MonoCecil.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+    <Reference Include="XSharp.Vsparser">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(Solutiondir)External\Debug\XSharp.Vsparser.dll</HintPath>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <HintPath>$(VsExternalDir)XSharp.Vsparser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -112,14 +118,14 @@
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
-    <Compile Include="Commands\CommandViewGlobals.cs" />
     <Compile Include="Commands\CommandViewInDisassembler.cs" />
-    <Compile Include="Commands\CommandViewMemVars.cs" />
     <Compile Include="Commands\CommandViewRepo.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewGlobals.cs" />
     <Compile Include="Commands\CommandUDCTester.cs" />
     <Compile Include="Commands\CommandFoxXPorter.cs" />
-    <Compile Include="Commands\CommandViewSettings.cs" />
-    <Compile Include="Commands\CommandViewWorkareas.cs" />
     <Compile Include="Commands\CommandXsWebsite.cs" />
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
@@ -185,6 +191,14 @@
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
+    <Content Include="$(Outdir)\x86\SQLite.Interop.dll">
+      <Link>x86\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(Outdir)\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.prg" />
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.vstemplate" />
@@ -402,7 +416,10 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharp.Designers.pkgdef" />
+    <Content Include="XSharp.Designers.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -422,10 +439,10 @@
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
     </Compile>
     <Compile Include="XSharpFileType.cs" />
+    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
-    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
     <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
@@ -658,6 +675,8 @@
     <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Name>CodeGenerator</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\Debugger.Support\Debugger.Support.csproj">
       <Project>{BBD309AA-A928-461E-B91C-7C12B1145A06}</Project>
@@ -754,6 +773,10 @@
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.File">
       <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <IncludeAssets>all</IncludeAssets>
+      <Version>1.0.118</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

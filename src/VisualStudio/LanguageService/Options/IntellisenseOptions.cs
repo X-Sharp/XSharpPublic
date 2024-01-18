@@ -37,6 +37,7 @@ namespace XSharp.LanguageService
         public bool EnableQuickInfoLog { get; set; }
         public bool EnableTypelookupLog { get; set; }
         public bool EnableReferenceInfoLog { get; set; }
+        public bool UseMicrosoftSQLite { get; set; }
 
         #endregion
         public IntellisenseOptions()
@@ -66,6 +67,7 @@ namespace XSharp.LanguageService
             EnableQuickInfoLog = false;
             EnableTypelookupLog = false;
             EnableReferenceInfoLog = false;
+            UseMicrosoftSQLite = XSettings.IsArm;
          }
 
         public override void WriteToSettings()
@@ -79,6 +81,7 @@ namespace XSharp.LanguageService
             XSettings.EnableQuickInfoLog = EnableQuickInfoLog;
             XSettings.EnableReferenceInfoLog = EnableReferenceInfoLog;
             XSettings.EnableTypelookupLog = EnableTypelookupLog;
+            XSettings.UseMicrosoftSQLite = UseMicrosoftSQLite;
 
             XSettings.DisableAssemblyReferences = DisableAssemblyReferences;
             XSettings.DisableClassViewObjectView = DisableClassViewObjectView;

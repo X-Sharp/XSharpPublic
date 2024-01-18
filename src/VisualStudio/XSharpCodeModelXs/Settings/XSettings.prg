@@ -44,11 +44,22 @@ BEGIN NAMESPACE XSharp.Settings
 
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
         PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
-        PUBLIC STATIC Property Version as Version AUTO := Version{}
+        PUBLIC STATIC PROPERTY Version AS Version AUTO := Version{}
+        PUBLIC STATIC PROPERTY UseMicrosoftSQLite AS LOGIC AUTO := false
 
         PUBLIC STATIC PROPERTY IsVs15 AS LOGIC => Version:Major == 15
         PUBLIC STATIC PROPERTY IsVs16 AS LOGIC => Version:Major == 16
         PUBLIC STATIC PROPERTY IsVs17 AS LOGIC => Version:Major == 17
+        PUBLIC STATIC PROPERTY IsArm  AS LOGIC AUTO GET PRIVATE SET
+
+        STATIC CONSTRUCTOR
+            SWITCH System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+            CASE System.Runtime.InteropServices.Architecture.Arm
+            CASE System.Runtime.InteropServices.Architecture.Arm64
+                IsArm := TRUE
+            OTHERWISE
+                IsArm := FALSE
+            END SWITCH
 
         PUBLIC STATIC METHOD EnableAll() AS VOID
              EnableBraceMatchLog           := TRUE

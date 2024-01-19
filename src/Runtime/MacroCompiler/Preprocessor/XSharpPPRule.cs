@@ -41,7 +41,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
-        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand;
+        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand || _type == PPUDCType.YCommand; 
 
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
@@ -750,7 +750,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     case PPTokenType.MatchRestricted:
                         foreach (var token in next.Tokens)
                         {
-                            if (canAddStopToken(stoptokens, token))
+                            if (canAddStopToken(stoptokens, token, out var _))
                             {
                                 stoptokens.Add(token);
                             }
@@ -758,18 +758,23 @@ namespace XSharp.MacroCompiler.Preprocessor
                         break;
                     case PPTokenType.MatchSingle:
                     case PPTokenType.Token:
-                        if (canAddStopToken(stoptokens, next.Token))
+                        if (canAddStopToken(stoptokens, next.Token, out var found))
                         {
                             stoptokens.Add(next.Token);
                             if (onlyFirstNonOptional)
                                 done = true;
                         }
+                        else if (found && onlyFirstNonOptional)
+                        {
+                            done = true;
+                        }
                         break;
                 }
             }
         }
-        bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token)
+        bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token, out bool found)
         {
+            found = false;
             if (token.Type == XSharpLexer.COMMA)
                 return false;
             foreach (var element in stoptokens)
@@ -777,6 +782,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 // do not add tokens that are already in the list.
                 if (tokenEquals(element, token))
                 {
+                    found = true;
                     return false;
                 }
             }
@@ -1127,7 +1133,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 mode = StringComparison.Ordinal;    // case sensitive
             }
-            if (lhs?.Length <= 4)
+            if (lhs?.Length <= 4 && !(type== PPUDCType.YCommand || type == PPUDCType.YTranslate))
             {
                 return string.Equals(lhs, rhs, mode);
             }
@@ -1263,81 +1269,26 @@ namespace XSharp.MacroCompiler.Preprocessor
         bool matchExtendedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             int iStart = iSource;
-            var lastType = XSharpLexer.LAST;
-            var level = 0;
-            var done = false;
-            var consumed = 0;
             var iend = -1;
-            bool found = false;
+            bool found = true;
             if (matchAmpersandToken(mToken, tokens, iStart, ref iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
-                found = true;
             }
             else if (matchFileName(tokens, iStart, ref iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
-                found = true;
-            }
-            else if (tokens[iStart].IsString())
-            {
-                matchInfo[mToken.Index].SetPos(iStart, iStart);
-                iSource++;
-                found = true;
             }
             else
             {
-                while (iSource < tokens.Count && !done)
+                found = matchExpression(iSource, tokens, mToken.StopToken, out int iEnd);
+                if (found)
                 {
-                    if (level == 0 && IsStopToken(mToken, tokens[iSource]))
-                    {
-                        break;
-                    }
-                    switch (tokens[iSource].Type)
-                    {
-                        case XSharpLexer.LPAREN:
-                        case XSharpLexer.LBRKT:
-                        case XSharpLexer.LCURLY:
-                            level++;
-                            break;
-                        case XSharpLexer.RPAREN:
-                        case XSharpLexer.RBRKT:
-                        case XSharpLexer.RCURLY:
-                            level--;
-                            break;
-                        default:
-                            //
-                            // we consume one token between optional params or curly braces
-                            // but we also allow ID DOT ID (OUTPUT.TXT)
-                            // So second ID is only accepted after DOT
-                            if (level == 0 && consumed > 0)
-                            {
-                                var type = tokens[iSource].Type;
-
-                                if (type == XSharpLexer.ID || tokens[iSource].IsKeyword())
-                                {
-                                    done = lastType != XSharpLexer.DOT;
-                                }
-                                else if (type != XSharpLexer.DOT)
-                                {
-                                    done = true;
-                                }
-                            }
-                            break;
-                    }
-                    lastType = tokens[iSource].Type;
-                    consumed += 1;
-                    if (!done)
-                    {
-                        iSource++;
-                        found = true;
-                    }
+                    matchInfo[mToken.Index].SetPos(iSource, iEnd);
+                    iSource = iEnd + 1;
                 }
-                // we have either reached the end of the line or aborted because of a token that
-                // is not part of the match, so therefore iSource points to the token AFTER the last match
-                matchInfo[mToken.Index].SetPos(iStart, iSource - 1);
             }
             return found;
 
@@ -1867,6 +1818,29 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         void repeatedResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
+            // when the repeated result started with a "common" match marker, such as the <(a)> in the example below
+            // we would match it, even when one of more of the repeated match markers were missing
+            /*
+             #command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ] <x:IN,ALIAS> <(a)>                                             ;
+            => DbAutoLock(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fN)>,<vN>)], DbAutoUnLock(<(a)>)
+            */
+            // we now make sure that all the tokens that have a match marker (so also fN and vN ) are matched.
+            if (resultToken.MatchMarker != null && resultToken.OptionalElements?.Length > 0 && resultToken.IsRepeat)
+            {
+                foreach (var token in resultToken.OptionalElements)
+                {
+                    if (token.MatchMarker != null)
+                    {
+                        var index = token.MatchMarker.Index;
+                        var mm = matchInfo[index];
+                        if (mm.MatchCount == 0)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
             if (resultToken.MatchMarker != null)
             {
                 var index = resultToken.MatchMarker.Index;

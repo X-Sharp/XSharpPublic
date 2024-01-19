@@ -124,6 +124,10 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Preprocessor\harbourppdoc.txt" />
+    <Content Include="Preprocessor\preprocessor.txt" />
+  </ItemGroup>
   <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

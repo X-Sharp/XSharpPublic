@@ -55659,9 +55659,9 @@ FileType = Code
 CopyToBin = 0
 [C483 - Harbour dialect, iif() with omitted argument is allowed References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Harbour.dll,1,1
 ReferenceProject = 3FD20812-F1F2-477B-9734-FE2697DED8D6,1,0,C460_helper
 [C483 - Harbour dialect, iif() with omitted argument is allowed Resources]
 [C483 - Harbour dialect, iif() with omitted argument is allowed Native Resources]
@@ -67555,9 +67555,9 @@ FileType = Code
 CopyToBin = 0
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Harbour.dll,1,1
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect Resources]
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect Native Resources]
 [C583 - (x)Harbour syntax currently nor supported in Harbour dialect License files]
@@ -70506,9 +70506,9 @@ FileType = Code
 CopyToBin = 0
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Harbour.dll,1,1
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers Resources]
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers Native Resources]
 [C608 - Preprocessor harbour compatibility issue with different casing of identifiers License files]
@@ -123618,8 +123618,8 @@ FileType = Code
 CopyToBin = 0
 [C894 - Compiler crash with missing reference to XSharp.VFP References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [C894 - Compiler crash with missing reference to XSharp.VFP Resources]
 [C894 - Compiler crash with missing reference to XSharp.VFP Native Resources]
 [C894 - Compiler crash with missing reference to XSharp.VFP License files]
@@ -123732,8 +123732,8 @@ FileType = Code
 CopyToBin = 0
 [C895 - initlocals compiler option also initializes class fields References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [C895 - initlocals compiler option also initializes class fields Resources]
 [C895 - initlocals compiler option also initializes class fields Native Resources]
 [C895 - initlocals compiler option also initializes class fields License files]
@@ -123846,9 +123846,9 @@ FileType = Code
 CopyToBin = 0
 [C896 - Various FoxPro commands References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VFP.dll,1,1
 [C896 - Various FoxPro commands Resources]
 [C896 - Various FoxPro commands Native Resources]
 [C896 - Various FoxPro commands License files]
@@ -123961,8 +123961,8 @@ FileType = Code
 CopyToBin = 0
 [C897 - UDCs do not allow all possible orders of optional clauses References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [C897 - UDCs do not allow all possible orders of optional clauses Resources]
 [C897 - UDCs do not allow all possible orders of optional clauses Native Resources]
 [C897 - UDCs do not allow all possible orders of optional clauses License files]
@@ -124075,8 +124075,8 @@ FileType = Code
 CopyToBin = 0
 [C898 - The global MEMVARs hide local variables References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [C898 - The global MEMVARs hide local variables Resources]
 [C898 - The global MEMVARs hide local variables Native Resources]
 [C898 - The global MEMVARs hide local variables License files]
@@ -124189,9 +124189,9 @@ FileType = Code
 CopyToBin = 0
 [C899 - Various UDCs References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VO.dll,1,1
 [C899 - Various UDCs Resources]
 [C899 - Various UDCs Native Resources]
 [C899 - Various UDCs License files]

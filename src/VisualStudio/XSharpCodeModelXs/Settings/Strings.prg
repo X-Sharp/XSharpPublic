@@ -129,7 +129,7 @@ class LanguagePropertyPagePanel
     const AZDescription := "Use Zero Based Arrays (/az)" as string
     const INSDescription := "Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)" as string
     const LBDescription := "Allow property access and method calls on expressions of type OBJECT and USUAL (/lb)" as string
-    const NamedArgDescription := "Allow named arguments (Default = FALSE for the Core dialect and TRUE for the other dialects). Changing the dialect may also automatically change this setting. (/namedargs)" as string
+    const NamedArgDescription := "Allow named arguments (Default = TRUE for the Core dialect and FALSE for the other dialects). Changing the dialect may also automatically change this setting. (/namedargs)" as string
     const NSDescription := "Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:<Namespace>)" as string
     const OVFDescription := "Check for Overflow and Underflow for numeric expressions, like the CHECKED keyword. (/ovf)" as string
     const UnsafeDescription := "Allow Unsafe code inside this assembly (/unsafe)" as string

@@ -80,7 +80,7 @@
           <para styleclass="Normal">Allow Named Arguments</para>
         </td>
         <td>
-          <para styleclass="Normal">Allow named arguments (Default = FALSE for the Core dialect and TRUE for the other dialects). Changing the dialect may also automatically change this setting.</para>
+          <para styleclass="Normal">Allow named arguments (Default = TRUE for the Core dialect and FALSE for the other dialects). Changing the dialect may also automatically change this setting.</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">/namedargs</link></para>

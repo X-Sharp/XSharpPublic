@@ -178,7 +178,7 @@
       <Version>8.0.1</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true" >
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3">
       <Version>2.1.6</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>

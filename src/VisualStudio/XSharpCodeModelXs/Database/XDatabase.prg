@@ -549,7 +549,7 @@ STATIC CLASS XDatabase
 
                     cmd:CommandText := "Delete from IncludeFiles where Id not in (select IdInclude from IncludeFilesPerFile)"
                     cmd:ExecuteScalar()
-                    CATCH e AS Exception
+                CATCH e AS Exception
                     Log("Error deleting orphaned files ")
                     XSettings.Exception(e, __FUNCTION__)
                 END TRY

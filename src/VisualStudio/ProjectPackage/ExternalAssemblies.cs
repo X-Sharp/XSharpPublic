@@ -30,7 +30,7 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "SQLitePCLRaw.batteries_v2")]
 [assembly: ProvideCodeBase(AssemblyName = "SQLitePCLRaw.provider.dynamic_cdecl")]
 #endif
-[assembly: ProvideCodeBase(AssemblyName = "System.Data.Sqlite")]
+[assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
 
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]

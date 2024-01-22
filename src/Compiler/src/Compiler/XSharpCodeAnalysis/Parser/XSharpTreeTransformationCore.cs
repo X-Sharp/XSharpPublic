@@ -8556,8 +8556,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)
         {
-            var type = context.Type.Get<TypeSyntax>();
-            if (type.IsUsualType())
+            var type = context.Type?.Get<TypeSyntax>();
+            if (type == null)
+            {
+                var defaultLiteralExpr = _syntaxFactory.LiteralExpression(SyntaxKind.DefaultLiteralExpression, context.Key.SyntaxKeyword());
+                context.Put(defaultLiteralExpr);
+            }
+            else if (type.IsUsualType())
             {
                 context.Put(GenerateNIL());
             }

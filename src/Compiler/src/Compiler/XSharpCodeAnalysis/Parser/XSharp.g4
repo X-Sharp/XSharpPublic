@@ -931,6 +931,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // Note: No need to check for extra ) } or ] tokens. The expression rule does that already
 primary             : Key=SELF                                                  #selfExpression
                     | Key=SUPER                                                 #superExpression
+                    | Key=NULL LPAREN Type=datatype? RPAREN                     #defaultExpression		// NULL( typeORid ), NULL()
                     | Literal=literalValue                                      #literalExpression		// literals
                     | Literal=parserLiteralValue                                #parserLiteralExpression		// literals created by the preprocessor
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
@@ -946,7 +947,7 @@ primary             : Key=SELF                                                  
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		  // typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		  // sizeof( typeORid )
-                    | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
+                    | Key=DEFAULT LPAREN Type=datatype? RPAREN                  #defaultExpression		// default( typeORid ), default()
                     | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )

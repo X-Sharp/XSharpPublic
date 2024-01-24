@@ -8373,7 +8373,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Op.Type == XP.IS)
             {
-                if (context.Id != null)
+                if (context.Null != null)
+                {
+                    PatternSyntax pattern = _syntaxFactory.ConstantPattern(GenerateLiteralNull());
+                    if (context.Not != null)
+                        pattern = _syntaxFactory.UnaryPattern(context.Not.SyntaxKeyword(), pattern);
+                    context.Put(_syntaxFactory.IsPatternExpression(
+                        context.Expr.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                        (PatternSyntax)pattern));
+                }
+                else if (context.Id != null)
                 {
                     var designation = GetDesignation(context.Id);
                     var pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);

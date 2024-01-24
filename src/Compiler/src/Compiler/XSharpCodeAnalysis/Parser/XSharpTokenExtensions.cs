@@ -1217,6 +1217,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.ByKeyword, text);
                     break;
 
+                case XSharpParser.FOX_NOT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NotKeyword, text);
+                    break;
+
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:

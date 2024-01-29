@@ -901,6 +901,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC | EXP) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
+                    | Expr=expression Op=IS Not=FOX_NOT? Null=NULL              #typeCheckExpression    // expr IS NOT? NULL
                     | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr

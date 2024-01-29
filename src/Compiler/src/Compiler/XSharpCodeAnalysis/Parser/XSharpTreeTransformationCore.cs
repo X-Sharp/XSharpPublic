@@ -8137,8 +8137,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParenExpression([NotNull] XP.ParenExpressionContext context)
         {
-            if (HandleTupleAssignmentExpression(context))
-                return;
             if (context._Exprs.Count == 1)
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
@@ -8148,6 +8146,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                if (HandleTupleAssignmentExpression(context))
+                    return;
+
                 // move the expressions into a local function
                 // and call this local function here
                 var statements = new List<StatementSyntax>();

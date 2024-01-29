@@ -3,7 +3,7 @@
 //
 // XSharp Memvar commands
 //
-// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // Caution: do not modify this file. It will be overwritten during product updates
@@ -14,11 +14,11 @@
 
 #ifndef MEMVAR_XH
 #define MEMVAR_XH
-***
-*  MEMVAR variables
-*
+///////////////////////////////////////////////////////////////////////////
+//  MEMVAR variables
+///////////////////////////////////////////////////////////////////////////
 #command CLEAR MEMORY                   => _MClear()
-#command RELEASE <var1> [, <varN> ]     => _MxRelease(#<var1> [, #<varN> ]) 
+#command RELEASE <var1> [, <varN> ]     => _MxRelease(#<var1> [, #<varN> ])
 #command RELEASE ALL                    => _MRelease("*", TRUE)
 #command RELEASE ALL LIKE <skel>        => _MRelease( #<skel>, TRUE )
 #command RELEASE ALL EXCEPT <skel>      => _MRelease( #<skel>, FALSE )
@@ -43,4 +43,4 @@
 
 #endif
 
-** EOF
+// EOF

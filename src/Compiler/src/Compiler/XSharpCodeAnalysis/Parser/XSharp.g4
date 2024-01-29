@@ -964,7 +964,8 @@ primary             : Key=SELF                                                  
                     | {ExpectToken(ALIAS)}? Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
-                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | { !ModernSyntax}? LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | { ModernSyntax}? LPAREN Exprs+=expression RPAREN #parenExpression		// ( expr )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 

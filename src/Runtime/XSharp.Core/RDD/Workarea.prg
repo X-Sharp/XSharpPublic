@@ -1129,6 +1129,12 @@ BEGIN NAMESPACE XSharp.RDD
                 oResult := FALSE
             CASE DbInfo.DBI_RDD_OBJECT
                 oResult := SELF
+            CASE DbInfo.DBI_MEMOPATH
+                if SELF:_Memo != NULL
+                    oResult := SELF:_Memo:FullPath
+                ELSE
+                    oResult := ""
+                ENDIF
             OTHERWISE
                 // Register an error that the info is not supported and return NULL
                 // CoreDb.Info will detect that and will return FALSE

@@ -204,7 +204,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		/// <summary>When a network is detected, open the index shared, otherwise open exclusively</summary>
 		MEMBER DBI_AUTOSHARE   		:= 64
         /// <summary>Stream: The memo file's stream</summary>
-		MEMBER DBI_MEMOSTREAM 		:= 65
+        MEMBER DBI_MEMOSTREAM 		:= 65
+        /// <summary>Stream: The memo file name</summary>
+        MEMBER DBI_MEMOPATH         := 66
 		/// <summary></summary>
 		MEMBER DBI_DB_VERSION 		:= 101
 		/// <summary></summary>

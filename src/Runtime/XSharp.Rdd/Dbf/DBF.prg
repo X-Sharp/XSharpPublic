@@ -1432,63 +1432,6 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 RETURN isOK
 
 
-INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR, lThrow)
-
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR, lThrow )
-
-INTERNAL METHOD _dbfError(ex AS Exception,iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(ex, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity, lThrow)
-
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity, lThrow)
-
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR, lThrow)
-
-INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(ex, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR, lThrow)
-
-INTERNAL METHOD _dbfError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, lThrow := TRUE AS LOGIC) AS VOID
-	SELF:_dbfError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR, lThrow)
-
-INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
-	LOCAL oError AS RddError
-    //
-    IF ex is RddError VAR oRddError
-        oError := oRddError
-    ELSE
-	    IF ex != NULL
-		    oError := RddError{ex,iGenCode, iSubCode}
-	    ELSE
-		    oError := RddError{iGenCode, iSubCode}
-        ENDIF
-        oError:CanDefault := TRUE
-	    oError:SubSystem := SELF:Driver
-	    oError:Severity := iSeverity
-	    oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
-	    oError:FileName := SELF:_FileName
-	    IF String.IsNullOrEmpty(strMessage)  .AND. ex != NULL
-		    strMessage := ex:Message
-        ENDIF
-        IF String.IsNullOrEmpty(strMessage)
-            IF oError:SubCode != 0
-                oError:Description := oError:GenCodeText + " (" + oError:SubCodeText+")"
-            ELSE
-                oError:Description := oError:GenCodeText
-            ENDIF
-        ELSE
-	        oError:Description := strMessage
-        ENDIF
-    ENDIF
-	RuntimeState.LastRddError := oError
-    //
-    IF lThrow
-	    THROW oError
-    ENDIF
-    RETURN
-
 INTERNAL METHOD _getUsualType(oValue AS OBJECT) AS __UsualType
 	LOCAL typeCde AS TypeCode
 	IF oValue == NULL

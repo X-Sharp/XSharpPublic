@@ -4,10 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
-
-#translate RDDCLASS => DBFFPT
-#translate PARENTCLASS => DBF
-#translate MEMOCLASS => FPTMemo
-#define RDD_FPT
+#translate RDDCLASS => DBFMEMO
+#translate PARENTCLASS => DBFNTX
+#translate MEMOCLASS => DBVMemo
 // Include common FlexFile code from FlexFile Folder
 #include "..\Flexfile\FlexRDD.xh"

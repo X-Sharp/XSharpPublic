@@ -175,6 +175,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.MemVars = positive;
                     encode = true;
                     break;
+                case "modernsyntax":
+                    options.ModernSyntax = positive;
+                    encode = true;
+                    break;
                 case "noinit":
                     options.SuppressInit1 = positive;
                     break;

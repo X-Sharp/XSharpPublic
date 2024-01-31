@@ -16,16 +16,17 @@
           </export-task>
           <export-task name="Publish as HTM" format="HTM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\artifacts\Help\HTML\index.html</task-config-value>
+              <task-config-value name="outputfile">..\..\artifacts\Doc\HTML\index.html</task-config-value>
               <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
+              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="Publish as PDF" format="PDF">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\artifacts\Help\XSharp.pdf</task-config-value>
+              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.pdf</task-config-value>
               <task-config-value name="template">Standard_manual_A4.mnl</task-config-value>
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
@@ -37,10 +38,11 @@
           </export-task>
           <export-task name="Publish as HXS" format="HXS">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\artifacts\Help\XSharp.mshc</task-config-value>
+              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.mshc</task-config-value>
               <task-config-value name="deletetemp">0</task-config-value>
               <task-config-value name="make2include">HXS</task-config-value>
               <task-config-value name="make2status">*</task-config-value>
+              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>

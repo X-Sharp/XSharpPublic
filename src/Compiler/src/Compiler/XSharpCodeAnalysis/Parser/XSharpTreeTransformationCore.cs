@@ -8137,8 +8137,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParenExpression([NotNull] XP.ParenExpressionContext context)
         {
-            if (HandleTupleAssignmentExpression(context))
-                return;
             if (context._Exprs.Count == 1)
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
@@ -8148,6 +8146,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                if (HandleTupleAssignmentExpression(context))
+                    return;
+
                 // move the expressions into a local function
                 // and call this local function here
                 var statements = new List<StatementSyntax>();
@@ -8373,7 +8374,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Op.Type == XP.IS)
             {
-                if (context.Id != null)
+                if (context.Null != null)
+                {
+                    PatternSyntax pattern = _syntaxFactory.ConstantPattern(GenerateLiteralNull());
+                    if (context.Not != null)
+                        pattern = _syntaxFactory.UnaryPattern(context.Not.SyntaxKeyword(), pattern);
+                    context.Put(_syntaxFactory.IsPatternExpression(
+                        context.Expr.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                        (PatternSyntax)pattern));
+                }
+                else if (context.Id != null)
                 {
                     var designation = GetDesignation(context.Id);
                     var pattern = _syntaxFactory.DeclarationPattern(context.Type.Get<TypeSyntax>(), designation);
@@ -8556,8 +8567,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)
         {
-            var type = context.Type.Get<TypeSyntax>();
-            if (type.IsUsualType())
+            var type = context.Type?.Get<TypeSyntax>();
+            if (type == null)
+            {
+                var defaultLiteralExpr = _syntaxFactory.LiteralExpression(SyntaxKind.DefaultLiteralExpression, context.Key.SyntaxKeyword());
+                context.Put(defaultLiteralExpr);
+            }
+            else if (type.IsUsualType())
             {
                 context.Put(GenerateNIL());
             }

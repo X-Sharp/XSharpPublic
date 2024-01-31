@@ -24,9 +24,9 @@
            __DBFIELDLIST__  {<(f1)>[, <(fn)> ]}
 
 
-****
-*  DB
-*
+///////////////////////
+//  DB
+///////////////////////
 
 #command SELECT <whatever>              => DbSelectArea( <(whatever)> )
 #command SELECT <f>([<list,...>])       => DbSelectArea( <f>(<list>) )
@@ -609,4 +609,4 @@
 
 #endif
 
-** EOF
+// EOF

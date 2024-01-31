@@ -901,6 +901,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC | EXP) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
+                    | Expr=expression Op=IS Not=FOX_NOT? Null=NULL              #typeCheckExpression    // expr IS NOT? NULL
                     | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
@@ -931,6 +932,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // Note: No need to check for extra ) } or ] tokens. The expression rule does that already
 primary             : Key=SELF                                                  #selfExpression
                     | Key=SUPER                                                 #superExpression
+                    | Key=NULL LPAREN Type=datatype? RPAREN                     #defaultExpression		// NULL( typeORid ), NULL()
                     | Literal=literalValue                                      #literalExpression		// literals
                     | Literal=parserLiteralValue                                #parserLiteralExpression		// literals created by the preprocessor
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
@@ -946,7 +948,7 @@ primary             : Key=SELF                                                  
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		  // typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		  // sizeof( typeORid )
-                    | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
+                    | Key=DEFAULT LPAREN Type=datatype? RPAREN                  #defaultExpression		// default( typeORid ), default()
                     | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
@@ -963,7 +965,8 @@ primary             : Key=SELF                                                  
                     | {ExpectToken(ALIAS)}? Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
-                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | { !ModernSyntax}? LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | { ModernSyntax}? LPAREN Exprs+=expression RPAREN #parenExpression		// ( expr )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 

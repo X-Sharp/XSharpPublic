@@ -89,4 +89,5 @@
 	[DATABASE <DatabaseName> [NAME <LongName>] ] =>;
     __NOFOXPROSQL__ <(udc)>  // __FoxSqlSelectSpecial(<"udc">, <(dest)>, <(Name)>, <cursoropt>,<DatabaseName>,<LongName>)
 
-#endif
+   #endif
+// EOF

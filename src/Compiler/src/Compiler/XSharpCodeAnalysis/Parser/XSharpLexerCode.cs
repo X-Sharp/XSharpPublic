@@ -164,7 +164,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private readonly List<XSharpToken> pendingTokens = new();
         public CSharpParseOptions Options { get; set; }
         public XSharpDialect Dialect => Options.Dialect;
-        private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
+        bool ModernSyntax => Options.ModernSyntax;
+        private bool AllowOldStyleComments => Dialect.AllowOldStyleComments() && !ModernSyntax;
         private bool AllowFourLetterAbbreviations => Dialect.AllowFourLetterAbbreviations();
         private bool AllowSingleQuotedStrings => Dialect.AllowStringsWithSingleQuotes();
         private bool AllowXBaseVariables => Dialect.SupportsMemvars();
@@ -1002,6 +1003,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 break;
                             case RETURN:
                             case GET:
+                                if (ModernSyntax)
+                                    goto default;
                                 parseString();
                                 break;
                             default:
@@ -1013,11 +1016,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 {
                                     parseOne(LBRKT);
                                 }
-                                else
+                                else if (!ModernSyntax)
                                 {
                                     parseString();
                                 }
-                                //parseOne(LBRKT);
+                                else
+                                {
+                                    parseOne(LBRKT);
+                                }
                                 break;
                         }
                         break;
@@ -1149,7 +1155,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '*':
                         parseOne(MULT);
-                        if (StartOfLine(LastToken))
+                        if (!ModernSyntax && StartOfLine(LastToken) )
                             parseSlComment();
                         else if (Expect('='))
                             parseOne(ASSIGN_MUL);
@@ -2228,7 +2234,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"DIMENSION",DIMENSION},
                     {"AND", FOX_AND},
                     {"OR", FOX_OR},
-                    {"NOT", FOX_NOT},
+                    //{"NOT", FOX_NOT}, // moved to core X# keywords
                     {"THEN", THEN},
                     {"XOR", FOX_XOR},
                     {"M", FOX_M }                   // FoxPro allows LOCAL M.Name and PRIVATE M.Name
@@ -2475,6 +2481,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XPP2__", MACRO},
                     { "__FOX1__", MACRO},
                     { "__FOX2__", MACRO},
+
+                    {"NOT", FOX_NOT},
                 };
 
             }

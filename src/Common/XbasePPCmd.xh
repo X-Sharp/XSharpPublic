@@ -32,3 +32,5 @@
 #command COMMIT                 => DbCommitAll()
 
 #endif
+
+// EOF

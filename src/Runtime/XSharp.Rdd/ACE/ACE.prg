@@ -10,6 +10,17 @@ USING System.Text
 USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
+    /// <summary>
+    /// the ACE class has all the constants and functions from the ACE API
+    /// </summary>
+    /// <remarks>
+    /// There is a 32 bits API and a 64 bits API. The ACE class automatically dispatches to the right version of the API.
+    /// </remarks>
+    /// <seealso cref="T:XSharp.ADS.ACE32"/>
+    /// <seealso cref="T:XSharp.ADS.ACE64"/>
+    /// <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
+
+
     STATIC CLASS ACE
 
     #region Constants

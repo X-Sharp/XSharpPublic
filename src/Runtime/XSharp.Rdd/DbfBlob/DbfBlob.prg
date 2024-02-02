@@ -69,7 +69,7 @@ CLASS DBFBLOB INHERIT Workarea
         RETURN isOk
 
     OVERRIDE METHOD Close() AS LOGIC
-        local isOk as LOGIC
+        local isOk := FALSE as LOGIC
         IF SELF:IsOpen
             isOk := SUPER:Close() 
             FClose( SELF:_hFile )

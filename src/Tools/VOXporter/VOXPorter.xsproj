@@ -87,6 +87,7 @@
     <Compile Include="Source\VOXporter\Properties\AssemblyInfo.prg" />
     <Compile Include="Source\VOXporter\UI.prg">
     </Compile>
+    <Compile Include="Source\VOXporter\VOParser.prg" />
     <Compile Include="Source\VOXporter\WinFormsConverter.prg" />
     <Compile Include="Source\VOXporter\xPorter.prg">
     </Compile>

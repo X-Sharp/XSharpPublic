@@ -55,7 +55,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <NoWarn>1762</NoWarn>
+    <NoWarn>1762;VSTHRD010</NoWarn>
     <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -247,6 +247,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
+    <Content Include="ProjectSelectors.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
@@ -704,6 +708,12 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectPackageCPS\ProjectPackageCPS2022.csproj">
+      <Project>{679502AC-264C-40AC-9E3A-587F2A27F08B}</Project>
+      <Name>ProjectPackageCPS2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>
@@ -756,11 +766,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Data.Sqlite" >
+    <PackageReference Include="Microsoft.Data.Sqlite">
       <Version>8.0.1</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true" >
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true">
       <Version>2.1.6</Version>
       <IncludeAssets>all</IncludeAssets>
     </PackageReference>

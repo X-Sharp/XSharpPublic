@@ -34,6 +34,7 @@ namespace XSharp.ProjectSystem
         private IVsRegisterProjectSelector _projectSelector;
         private uint _cookie = VSConstants.VSCOOKIE_NIL;
 
+        [ImportingConstructor]
         public XSharpProjectSelector(JoinableTaskContext context)
         {
             _context = context;

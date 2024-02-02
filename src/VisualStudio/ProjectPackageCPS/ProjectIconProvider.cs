@@ -31,7 +31,9 @@ namespace XSharp.ProjectSystem
         {
             if (propertyValues.Flags.Contains(ProjectTreeFlags.ProjectRoot))
             {
-                propertyValues.Icon = XSharpImagesMonikers.ProjectImage.ToProjectSystemType();
+                //propertyValues.Icon = XSharpImagesMonikers.ProjectImage.ToProjectSystemType();
+                propertyValues.Icon = GetIconForItem(propertyContext.ItemName);
+                return;
             }
             if (!propertyValues.Flags.Contains(ProjectTreeFlags.Common.Folder))
             {

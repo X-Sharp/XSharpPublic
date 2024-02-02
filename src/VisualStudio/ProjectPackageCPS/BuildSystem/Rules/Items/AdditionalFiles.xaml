@@ -1,15 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.-->
-<Rule Name="None"
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="AdditionalFiles"
       PageTemplate="generic"
       PropertyPagesHidden="true"
       xmlns="http://schemas.microsoft.com/build/2009/properties">
   <Rule.DataSource>
-    <DataSource HasConfigurationCondition="False"
-                ItemType="None"
+    <DataSource HasConfigurationCondition="false"
+                ItemType="AdditionalFiles"
                 Persistence="ProjectFile"
                 SourceOfDefaultValue="AfterContext" />
   </Rule.DataSource>
+
+  <BoolProperty Name="ExcludeFromCurrentConfiguration"
+                Visible="False" />
 
   <DynamicEnumProperty Name="{}{ItemType}"
                        EnumProvider="ItemTypes" />
@@ -27,7 +30,7 @@
                   Visible="false">
     <StringProperty.DataSource>
       <DataSource HasConfigurationCondition="False"
-                  ItemType="None"
+                  ItemType="AdditionalFiles"
                   PersistedName="Generator"
                   Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext" />
@@ -79,23 +82,12 @@
                   Visible="false">
     <StringProperty.DataSource>
       <DataSource Persistence="DesignTimeItemPropertiesStorage"
-                  ItemType="None"
+                  ItemType="AdditionalFiles"
                   PersistedName="SubType"
                   HasConfigurationCondition="false"/>
     </StringProperty.DataSource>
   </StringProperty>
 
-  <StringProperty Name="TargetPath"
-                  Visible="false">
-    <StringProperty.DataSource>
-      <DataSource PersistenceStyle="Attribute"
-                  SourceOfDefaultValue="AfterContext" />
-    </StringProperty.DataSource>
-    <StringProperty.Metadata>
-      <NameValuePair Name="DoNotCopyAcrossProjects"
-                     Value="true" />
-    </StringProperty.Metadata>
-  </StringProperty>
   <BoolProperty Name="Visible"
                 Visible="false" />
 

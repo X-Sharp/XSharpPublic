@@ -15,6 +15,7 @@ namespace XSharp.ProjectSystem
     /// Implementations must be exported in global scope.
     /// </remarks>
     [ProjectSystemContract(ProjectSystemContractScope.Global, ProjectSystemContractProvider.Private, Cardinality = ImportCardinality.ZeroOrMore)]
+    [ProjectSystemContract(ProjectSystemContractScope.ProjectService, ProjectSystemContractProvider.Private, Cardinality = ImportCardinality.ZeroOrMore, ContractName = ExportContractNames.Scopes.ProjectService)]
     internal interface IPackageService
     {
         /// <summary>

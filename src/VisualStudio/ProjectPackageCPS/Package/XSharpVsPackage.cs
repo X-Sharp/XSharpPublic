@@ -27,18 +27,17 @@ namespace XSharp.ProjectSystem
     /// or localized resources for the strings that appear in the New Project and Open Project dialogs.
     /// Creating project extensions or project types does not actually require a VSPackage.
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true, RegisterUsing = RegistrationMethod.Assembly)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Description("XSharp CPS based Project System")]
     [Guid(XSharpConstants.guidCpsProjectTypeString)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
-    //[ProvideAutoLoad(ActivationContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
-    //[ProvideUIContextRule(ActivationContextGuid,
-    //    name: "Load X# Managed Project Package",
-    //    expression: "dotnetcore",
-    //    termNames: new[] { "dotnetcore" },
-    //    termValues: new[] { "SolutionHasProjectCapability:.NET & CPS & XSharp" }
-    //    )]
-    public sealed class XSharpCPSPackage : ToolkitPackage
+    [ProvideUIContextRule(ActivationContextGuid,
+        name: "Load X# Managed Project Package",
+        expression: "dotnetcore",
+        termNames: new[] { "dotnetcore" },
+        termValues: new[] { "SolutionHasProjectCapability:.NET & CPS & XSharp" }
+        )]
+    public sealed class XSharpCPSPackage : AsyncPackage
     {
         public const string ActivationContextGuid = "6634b40e-66e3-4f8d-af0f-b860354a9132";
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

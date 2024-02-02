@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.-->
-<Rule Name="Content"
+<Rule Name="Resource"
       Description="File Properties"
       DisplayName="File Properties"
       PageTemplate="generic"
@@ -15,7 +15,7 @@
 
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
-                ItemType="Content"
+                ItemType="Resource"
                 Persistence="ProjectFile"
                 SourceOfDefaultValue="AfterContext" />
   </Rule.DataSource>
@@ -45,7 +45,7 @@
                   Visible="false">
     <StringProperty.DataSource>
       <DataSource HasConfigurationCondition="False"
-                  ItemType="Content"
+                  ItemType="Resource"
                   PersistedName="Generator"
                   Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext" />
@@ -70,7 +70,7 @@
                   ReadOnly="true"
                   Visible="False">
     <StringProperty.DataSource>
-      <DataSource ItemType="Content"
+      <DataSource ItemType="Resource"
                   PersistedName="Extension"
                   Persistence="Intrinsic"
                   SourceOfDefaultValue="AfterContext" />
@@ -83,7 +83,7 @@
                   DisplayName="File Name"
                   ReadOnly="true">
     <StringProperty.DataSource>
-      <DataSource ItemType="Content"
+      <DataSource ItemType="Resource"
                   PersistedName="FileNameAndExtension"
                   Persistence="Intrinsic"
                   SourceOfDefaultValue="AfterContext" />
@@ -96,7 +96,7 @@
                   DisplayName="Full Path"
                   ReadOnly="true">
     <StringProperty.DataSource>
-      <DataSource ItemType="Content"
+      <DataSource ItemType="Resource"
                   PersistedName="FullPath"
                   Persistence="Intrinsic"
                   SourceOfDefaultValue="AfterContext" />
@@ -112,7 +112,7 @@
                   ReadOnly="true"
                   Visible="false">
     <StringProperty.DataSource>
-      <DataSource ItemType="Content"
+      <DataSource ItemType="Resource"
                   PersistedName="Identity"
                   Persistence="Intrinsic"
                   SourceOfDefaultValue="AfterContext" />
@@ -134,7 +134,7 @@
                 Visible="false">
     <EnumProperty.DataSource>
       <DataSource Persistence="DesignTimeItemPropertiesStorage"
-                  ItemType="Content"
+                  ItemType="Resource"
                   PersistedName="SubType"
                   HasConfigurationCondition="false"/>
     </EnumProperty.DataSource>
@@ -149,7 +149,7 @@
                   ReadOnly="true"
                   Visible="false">
     <StringProperty.DataSource>
-      <DataSource ItemType="Content"
+      <DataSource ItemType="Resource"
                   PersistedName="FullPath"
                   Persistence="Intrinsic"
                   SourceOfDefaultValue="AfterContext" />

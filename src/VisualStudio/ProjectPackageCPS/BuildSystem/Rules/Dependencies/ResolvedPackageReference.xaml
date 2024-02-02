@@ -25,6 +25,14 @@
                   SourceOfDefaultValue="AfterContext" />
     </StringListProperty.DataSource>
   </StringListProperty>
+   <StringProperty Name="BrowsePath"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="Path"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
 
   <StringProperty Name="ExcludeAssets"
                   Description="Assets to exclude from this reference."
@@ -122,4 +130,7 @@
                 ReadOnly="True"
                 Visible="False" />
 
+  <BoolProperty Name="TreatAsUsed"
+                ReadOnly="True"
+                Visible="False" />
 </Rule>

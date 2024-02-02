@@ -8,16 +8,7 @@ USING System
 USING System.Runtime.InteropServices
 USING System.Text
 BEGIN NAMESPACE XSharp.ADS
-    /// <summary>
-    /// the ACE32 class has all the constants and functions from the 32 bits version of the ACE API
-    /// </summary>
-    /// <remarks>
-    /// We recommend that you call the methods in the ACE class because these automatically call the 32 or 64 bits version of the API
-    /// depending on the bitness of your application.
-    /// </remarks>
-    /// <seealso cref="T:XSharp.ADS.ACE"/>
-    /// <seealso cref="T:XSharp.ADS.ACE64"/>
-
+    /// <exclude />
     PUBLIC STATIC CLASS ACE32
     [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
     PUBLIC STATIC EXTERN METHOD AdsAddCustomKey(hIndex AS IntPtr ) AS DWORD
@@ -933,7 +924,7 @@ BEGIN NAMESPACE XSharp.ADS
     PUBLIC STATIC EXTERN METHOD AdsGetTime(hTable AS IntPtr , lFieldOrdinal AS DWORD, [@@In] [@@Out] pucBuf AS CHAR[] , pusLen REF WORD ) AS DWORD
 
     [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-    PUBLIC STATIC EXTERN METHOD AdsGetVersion(pulMajor OUT DWORD , pulMinor OUT DWORD , pucLetter AS STRING , [@@In] [@@Out] pucDesc AS CHAR[] , pusDescLen REF WORD ) AS DWORD
+    PUBLIC STATIC EXTERN METHOD AdsGetVersion(pulMajor OUT DWORD , pulMinor OUT DWORD , pucLetter REF CHAR , [@@In] [@@Out] pucDesc AS CHAR[] , pusDescLen REF WORD ) AS DWORD
 
     [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
     PUBLIC STATIC EXTERN METHOD AdsGotoBookmark(hTable AS IntPtr , hBookmark AS IntPtr ) AS DWORD

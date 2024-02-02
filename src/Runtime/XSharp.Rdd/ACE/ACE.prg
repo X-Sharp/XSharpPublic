@@ -11,13 +11,12 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
     /// <summary>
-    /// the ACE class has all the constants and functions from the ACE API
-    /// </summary>
-    /// <remarks>
+    /// the ACE class has all the constants and functions from the ACE API <br />
+    /// Please look in the ADS documentation for more information about the functions and constants.
+    /// <note type='tip'>
     /// There is a 32 bits API and a 64 bits API. The ACE class automatically dispatches to the right version of the API.
-    /// </remarks>
-    /// <seealso cref="T:XSharp.ADS.ACE32"/>
-    /// <seealso cref="T:XSharp.ADS.ACE64"/>
+    /// </note>
+    /// </summary>
     /// <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
 
 
@@ -4098,7 +4097,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN ACE64.AdsGetTime(hTable, strFldName, strBuf, REF wLen )
         ENDIF
 
-    PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter AS STRING, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
+    PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter REF CHAR, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
         IF Is32Bits
             RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen )
         ELSE

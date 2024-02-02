@@ -3,17 +3,7 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
 
-    /// <summary>
-    /// the ACEUNPUB64 class has undocumented constants and functions from the 64 bits version of the ACE API
-    /// </summary>
-    /// <remarks>
-    /// We recommend that you call the methods in the ACEUNPUB class because these automatically call the 32 or 64 bits version of the API
-    /// depending on the bitness of your application.
-    /// </remarks>
-    /// <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
-    /// <seealso cref="T:XSharp.ADS.ACEUNPUB32"/>
-    /// <seealso cref="T:XSharp.ADS.ACE64"/>
-
+    /// <exclude />
     PUBLIC CLASS ACEUNPUB64
 
         [DllImport("ACE64.dll", CharSet := CharSet.Ansi)];

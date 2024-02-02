@@ -170,8 +170,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.MONEY
             CASE AdsFieldType.ROWVERSION
             CASE AdsFieldType.MODTIME
-                LOCAL isEmpty   := 0 AS WORD
-                RDD:_CheckError(ACE.AdsIsEmpty(SELF:_Table,  SELF:FieldPos , OUT isEmpty),EG_READ)
+                RDD:_CheckError(ACE.AdsIsEmpty(SELF:_Table,  SELF:FieldPos , OUT VAR isEmpty),EG_READ)
                 IF isEmpty == 1
                     RETURN NULL
                 ENDIF
@@ -216,8 +215,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN
 
         OVERRIDE METHOD GetValue() AS OBJECT
-            LOCAL lJulian AS LONG
-            VAR result := ACE.AdsGetJulian(SELF:_Table, SELF:FieldPos, OUT lJulian)
+            VAR result := ACE.AdsGetJulian(SELF:_Table, SELF:FieldPos, OUT VAR lJulian)
             IF result == ACE.AE_NO_CURRENT_RECORD
                 RETURN DbDate{0,0,0}
             ELSEIF result != 0
@@ -236,10 +234,9 @@ BEGIN NAMESPACE XSharp.ADS
                         RETURN DbDate{0,0,0}
                     ELSE
                         var cDate := String{chars, 0, wLength}
-                        local year, month, day as int
-                        if Int32.TryParse(cDate:Substring(0,4), out year) .and. ;
-                            Int32.TryParse(cDate:Substring(4,2), out month) .and. ;
-                            Int32.TryParse(cDate:Substring(6,2), out day)
+                        if Int32.TryParse(cDate:Substring(0,4), out var year) .and. ;
+                            Int32.TryParse(cDate:Substring(4,2), out var month) .and. ;
+                            Int32.TryParse(cDate:Substring(6,2), out var day)
                             RETURN DbDate{year, month, day}
                         else
                             RETURN DbDate{0,0,0}
@@ -277,8 +274,7 @@ BEGIN NAMESPACE XSharp.ADS
                 SELF:RDD:_CheckError(ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos),EG_WRITE)
             ELSE
                 LOCAL text := dt:ToString("yyyyMMdd") AS STRING
-                LOCAL r8Julian AS REAL8
-                SELF:RDD:_CheckError(ACEUNPUB.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
+                SELF:RDD:_CheckError(ACEUNPUB.AdsConvertStringToJulian(text, (WORD) text:Length, OUT VAR r8Julian),EG_WRITE)
                 SELF:RDD:_CheckError(ACE.AdsSetJulian(SELF:_Table, SELF:FieldPos, (LONG) r8Julian),EG_WRITE)
             ENDIF
             RETURN TRUE
@@ -298,8 +294,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN
 
         OVERRIDE METHOD GetValue() AS OBJECT
-            LOCAL wValue AS WORD
-            VAR result := ACE.AdsGetLogical(SELF:_Table, SELF:FieldPos, OUT wValue)
+            VAR result := ACE.AdsGetLogical(SELF:_Table, SELF:FieldPos, OUT VAR wValue)
             IF result ==  ACE.AE_NO_CURRENT_RECORD
                 wValue := 0
             ELSEIF ! SELF:RDD:_CheckError(result,EG_READ)
@@ -339,8 +334,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.SHORTINT
             CASE AdsFieldType.AUTOINC
             CASE AdsFieldType.CURDOUBLE
-                LOCAL r8 AS REAL8
-                result := ACE.AdsGetDouble(SELF:_Table, SELF:FieldPos, OUT r8)
+                result := ACE.AdsGetDouble(SELF:_Table, SELF:FieldPos, OUT VAR r8)
                 IF result == ACE.AE_NO_CURRENT_RECORD
                     r8 := 0.0
                 ENDIF
@@ -352,8 +346,7 @@ BEGIN NAMESPACE XSharp.ADS
                     RETURN DbFloat{r8, SELF:Length, SELF:Decimals}
                 ENDIF
             CASE AdsFieldType.INT64
-                LOCAL i64 AS INT64
-                result := ACE.AdsGetLongLong(SELF:_Table, SELF:FieldPos, OUT i64)
+                result := ACE.AdsGetLongLong(SELF:_Table, SELF:FieldPos, OUT VAR i64)
                 RETURN i64
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object
@@ -369,8 +362,7 @@ BEGIN NAMESPACE XSharp.ADS
         IF oValue IS IFloat VAR floatValue
             oValue := floatValue:Value
         ENDIF
-        LOCAL wType AS WORD
-        SELF:RDD:_CheckError(ACE.AdsGetFieldType(SELF:_Table, SELF:FieldPos, OUT wType),EG_READ)
+        SELF:RDD:_CheckError(ACE.AdsGetFieldType(SELF:_Table, SELF:FieldPos, OUT VAR wType),EG_READ)
         IF wType != ACE.ADS_AUTOINC
             TRY
                 IF SELF:AdsType == AdsFieldType.INT64
@@ -420,7 +412,6 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN
 
         OVERRIDE METHOD GetValue() AS OBJECT
-            LOCAL isEmpty   := 0 AS WORD
             LOCAL result    := 0 as DWORD
             LOCAL mlength    := 0 AS DWORD
             LOCAL bytes     := NULL AS BYTE[]
@@ -471,7 +462,7 @@ BEGIN NAMESPACE XSharp.ADS
 
             CASE AdsFieldType.RAW
             CASE AdsFieldType.VARBINARY_FOX
-                result := ACE.AdsIsEmpty(SELF:_Table, SELF:FieldPos, OUT isEmpty)
+                result := ACE.AdsIsEmpty(SELF:_Table, SELF:FieldPos, OUT VAR isEmpty)
                 IF result == 0
                     IF isEmpty == 1
                         RETURN NULL

@@ -134,19 +134,32 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal(Space(3),      Transform( 0, "@z   a" )  )
 
         [Fact, Trait("Category", "TransForm")];
-        METHOD TransformSymbolTest AS VOID
+        METHOD TransformSymbolAndPtrTest AS VOID
         	// VO behavior...
             Assert.Equal("",     Transform( #somesymbol, "" )  )
             Assert.Equal("",     Transform( #somesymbol, "@z " )  )
             Assert.Equal("",     Transform( #somesymbol, "XXXXXXXXXXXXX" )  )
             Assert.Equal("",     Transform( #somesymbol, "abc XXXXXXXXXXXXX def" )  )
 
-            LOCAL uSymbol AS USUAL
-            uSymbol := #somesymbol
-            Assert.Equal("",     Transform( uSymbol, "" )  )
-            Assert.Equal("",     Transform( uSymbol, "@z " )  )
-            Assert.Equal("",     Transform( uSymbol, "XXXXXXXXXXXXX" )  )
-            Assert.Equal("",     Transform( uSymbol, "abc XXXXXXXXXXXXX def" )  )
+        	LOCAL p AS PTR
+        	p := @p
+            Assert.Equal("",     Transform( p, "" )  )
+            Assert.Equal("",     Transform( p, "@z " )  )
+            Assert.Equal("",     Transform( p, "9999999999999" )  )
+            Assert.Equal("",     Transform( p, "abc XXXXXXXXXXXXX def" )  )
+
+            LOCAL u AS USUAL
+            u := #somesymbol
+            Assert.Equal("",     Transform( u, "" )  )
+            Assert.Equal("",     Transform( u, "@z " )  )
+            Assert.Equal("",     Transform( u, "XXXXXXXXXXXXX" )  )
+            Assert.Equal("",     Transform( u, "abc XXXXXXXXXXXXX def" )  )
+            
+            u := p
+            Assert.Equal("",     Transform( u, "" )  )
+            Assert.Equal("",     Transform( u, "@z " )  )
+            Assert.Equal("",     Transform( u, "9999999999999" )  )
+            Assert.Equal("",     Transform( u, "abc XXXXXXXXXXXXX def" )  )
 
 
         [Fact, Trait("Category", "Unformat")];

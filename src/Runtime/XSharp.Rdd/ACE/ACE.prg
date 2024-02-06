@@ -4099,9 +4099,9 @@ BEGIN NAMESPACE XSharp.ADS
 
     PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter REF CHAR, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
         IF Is32Bits
-            RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen )
+            RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, REF strLetter, strDesc, REF pusDescLen )
         ELSE
-            RETURN ACE64.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen )
+            RETURN ACE64.AdsGetVersion(OUT pulMajor, OUT pulMinor, REF strLetter, strDesc, REF pusDescLen )
         ENDIF
 
     PUBLIC STATIC METHOD AdsGotoBookmark(hTable AS IntPtr, hBookmark AS IntPtr ) AS DWORD

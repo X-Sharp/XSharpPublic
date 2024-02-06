@@ -1,3 +1,4 @@
+//#pragma options("lb", off)
 #pragma options ("enforceself", on)
  /// <exclude />
 CLASS __ForeignWindow INHERIT Window
@@ -480,8 +481,13 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
     LOCAL oWindow AS Window
     LOCAL oReport AS OBJECT
     LOCAL o AS OBJECT
-
-    symNameSym := oEvent:NameSym
+    IF oEvent is MenuCommandEvent var oMCE
+        symNameSym := oMCE:NameSym
+    elseif oEvent is ControlEvent var oCE
+        symNameSym := oCE:NameSym
+    ELSE
+        symNameSym := IVarGet(oCE,#NameSym)
+    ENDIF
     oWindow := SELF
 
     DO WHILE TRUE
@@ -507,10 +513,10 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
                 oWindow:=oWindow:Owner
             ENDDO
             o := CreateInstance(symNameSym, oWindow)
-            o:show()
+            Send(o,#show)
         else
             o := CreateInstance(symNameSym, SELF)
-            o:Show()
+            Send(o,#show)
         ENDIF
         RETURN TRUE
     ELSEIF IsClassOf(symNameSym, #ReportQueue)
@@ -627,8 +633,10 @@ METHOD __DestroyChildren() AS VOID STRICT
 
         //IF (cObj == NULL_OBJECT)
         //	cObj := __WCGetWindowByHandle(hChild) //Not a control, try windows
-        IF cObj IS __WindApp .OR. cObj IS __DocApp
-            cObj := cObj:Owner
+        IF cObj IS __WindApp var wa
+            cObj := wa:Owner
+        ELSEIF cObj IS __DocApp VAR da
+            cObj := da:Owner
         ENDIF
         //ENDIF
 
@@ -638,10 +646,14 @@ METHOD __DestroyChildren() AS VOID STRICT
 
         IF (cObj != NULL_OBJECT) .AND. ! ( cObj IS Menu)
             // Change for 2.5a. Watch for Problems!!!
-            IF IsMethod(cObj, #Close)
-                cObj:Close()
-            ENDIF
-            cObj:Destroy()
+            if cObj is VObject var vObj
+                if cObj is Window var oWin
+                    oWin:Close()
+                elseif IsMethod(cObj, #Close)
+                    Send(cObj,#Close)
+                ENDIF
+                vObj:Destroy()
+            endif
         ENDIF
     ENDDO
     RETURN
@@ -2165,13 +2177,13 @@ METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent)
     oDTPicker := OBJECT(oEvt:Control)
     cOldValue := oDTPicker:AsString()
     cText := oDTPicker:TextValue
-    IF IsInstanceOfUsual(oDTPicker:FieldSpec, #FieldSpec)
-        cText := AsString(oDTPicker:FieldSpec:Val(cText))
+    IF oDTPicker:FieldSpec IS FieldSpec VAR oFS
+        cText := AsString(oFS:Val(cText))
     ENDIF
     IF ! cOldValue == cText
         oDTPicker:Modified := TRUE
-        IF IsInstanceOf(oDTPicker:Owner, #DataWindow)
-            oDTPicker:Owner:__DoValidate(oDTPicker)
+        IF oDTPicker:Owner IS DataWindow VAR oDW
+            oDW:__DoValidate(oDTPicker)
         ENDIF
     ENDIF
     IF oDTPicker:NullFormat .AND. oDTPicker:SelectedDate != NULL_DATE
@@ -2814,10 +2826,10 @@ METHOD GetAllChildren()
     WHILE (hChild != NULL_PTR)
         oChild :=__WCGetObjectByHandle(hChild)
         IF (oChild != NULL_OBJECT)
-            IF  oChild IS __DocApp
-                oChild := oChild:Owner
-            ELSEIF oChild IS __WindApp .AND. IsInstanceOf(oChild:Owner, #__FormFrame)
-                oChild := oChild:Owner:DataWindow
+            IF  oChild IS __DocApp var docapp
+                oChild := docapp:Owner
+            ELSEIF oChild IS __WindApp var wa .AND. wa:Owner is __FormFrame var oFF
+                oChild := oFF:DataWindow
             ENDIF
             AAdd(aRet, oChild)
         ENDIF
@@ -3279,8 +3291,8 @@ METHOD LineTo(oPoint)
     IF (hWnd != NULL_PTR) .OR. SELF IS Printer
         DCPenNeeded := TRUE
         IF (SELF:__GetDC() != NULL_PTR)
-            IF !IsArray(oPoint)
-                LineTo(hDC, oPoint:x, oPoint:y)
+            IF oPoint is Point var pt
+                LineTo(hDC, pt:x, pt:y)
             ELSE
                 aPt := oPoint
                 dwLen := ALen(aPt)

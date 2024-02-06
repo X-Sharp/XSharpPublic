@@ -980,6 +980,32 @@ CLASS UsualTests
 
     #pragma options("lb",restore)
 
+    [Fact, Trait("Category", "Usual")];
+    METHOD PszInUSUAL() AS VOID
+        XSharp.RuntimeState.Dialect := XSharpDialect.VO
+
+		LOCAL p1 AS PSZ
+		LOCAL p2 AS PSZ
+		LOCAL u1,u2 AS USUAL
+
+		p1 := String2Psz("testing")
+		p2 := String2Psz("test")
+		Assert.Equal("est", SubStr(p1,2,3))
+		Assert.Equal("test", Left(p1,4))
+		Assert.Equal("tEsting", StrTran(p1,"e","E"))
+
+		u1 := p1
+		u2 := p2
+		Assert.True( IsString(u1) )
+		Assert.True( IsString(p1) )
+
+		LOCAL exact := SetExact(FALSE) AS LOGIC
+		Assert.False( u1 != u2 )
+		Assert.True(  u2 != u1 )
+		Assert.False( p1 != p2 )
+		Assert.True(  p2 != p1 )
+
+		SetExact(exact)
 
 
 

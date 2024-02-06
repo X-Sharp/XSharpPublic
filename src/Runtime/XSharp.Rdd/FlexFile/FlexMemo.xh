@@ -15,6 +15,7 @@ USING XSharp.RDD.Support
 USING System.IO
 
 USING STATIC XSharp.Conversions
+using XSharp.RDD.FlexFile
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>FPT Memo class. Implements the FTP support.</summary>
@@ -142,7 +143,7 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
    OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
       IF SELF:IsOpen .and. oValue IS BYTE[] VAR bytes
          TRY
-            // AT this level the bytes[] array already contains the header with type and length
+            // At this level the bytes[] array already contains the header with type and length
             var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
             blockNbr     := _area:PutBlock(blockNbr, bytes)
             SELF:LastWrittenBlockNumber := blockNbr

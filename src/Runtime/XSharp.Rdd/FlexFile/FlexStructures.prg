@@ -1,6 +1,4 @@
-﻿
-
-//
+﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -12,11 +10,12 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING System.Runtime.InteropServices
 USING System.IO
+
 USING STATIC XSharp.Conversions
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.FlexFile
     INTERNAL STRUCTURE FlexMemoToken
-        PRIVATE _Buffer AS BYTE[]
-        PRIVATE _Stream as FileStream
+        INTERNAL _Buffer AS BYTE[]
+        INTERNAL _Stream as FileStream
         INTERNAL CONST TokenLength := 8 AS LONG
 
         INTERNAL CONSTRUCTOR(buffer as BYTE[], oStream as FileStream)
@@ -50,12 +49,15 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:Length   := 0
             RETURN
         INTERNAL METHOD Write() AS LOGIC
-            RETURN _Stream:SafeWrite(_Buffer, TokenLength)
+            RETURN SELF:Write(TokenLength)
 
-        INTERNAL METHOD Read() AS LOGIC
+        INTERNAL METHOD Write(nLength AS DWORD) AS LOGIC
+            RETURN _Stream:SafeWrite(_Buffer, (INT) nLength)
+
+        INTERNAL METHOD Read(nLength AS DWORD) AS LOGIC
             LOCAL lOk AS LOGIC
             TRY
-                lOk := _Stream:SafeRead(_Buffer, TokenLength)
+                lOk := _Stream:SafeRead(_Buffer, (INT) nLength)
                 IF lOk
                     // Check for 'expected' Field Types
                     SWITCH SELF:DataType
@@ -84,6 +86,8 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:Length   := Int32.MaxValue
             ENDIF
             RETURN lOk
+        INTERNAL METHOD Read() AS LOGIC
+                RETURN SELF:Read(TokenLength)
 
 
     END STRUCTURE

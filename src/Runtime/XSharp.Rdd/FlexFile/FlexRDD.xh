@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD
                                 IF oldValue != NULL .and. oldValue != DBNull.Value
                                     SELF:oFlexMemo:DeleteBlock((INT) oldValue)
                                 ENDIF
-                                RETURN oColumn:PutValue(NULL, SELF:_RecordBuffer)
+                                RETURN oColumn:PutValue(0, SELF:_RecordBuffer)
                             ENDIF
                             LOCAL bData AS BYTE[]
                             if oColumn:IsBinary

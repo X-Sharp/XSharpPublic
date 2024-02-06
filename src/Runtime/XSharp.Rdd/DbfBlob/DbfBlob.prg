@@ -17,6 +17,7 @@ USING XSharp.RDD.CDX
 USING System.Diagnostics
 USING System.IO
 USING STATIC XSharp.Conversions
+using XSharp.RDD.FlexFile
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>

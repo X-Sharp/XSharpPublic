@@ -114,9 +114,17 @@
     <Compile Include="Enums.prg" />
     <Compile Include="DbfFpt\FptHeaders.prg" />
     <Compile Include="DbfFpt\FptMemo.prg" />
+    <Compile Include="FlexFile\Cache.prg" />
     <Compile Include="FlexFile\FlexArea.prg" />
     <Compile Include="FlexFile\FlexStructures.prg" />
     <Compile Include="FlexFile\FlexEnums.prg" />
+    <Compile Include="FlexFile\IdxStack.prg" />
+    <Compile Include="FlexFile\Index.prg" />
+    <Compile Include="FlexFile\IndexKey.prg" />
+    <Compile Include="FlexFile\IndexNode.prg" />
+    <Compile Include="FlexFile\LengthIndex.prg" />
+    <Compile Include="FlexFile\LocationIndex.prg" />
+    <Compile Include="FlexFile\ULStack.prg" />
     <Compile Include="Other\TextRDD.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />
@@ -188,6 +196,7 @@
     <None Include="DbfNtx\NtxFormat.txt" />
     <None Include="FlexFile\FlexRDD.xh" />
     <None Include="FlexFile\FlexMemo.xh" />
+    <None Include="FlexFile\Readme.txt" />
     <None Include="SqlDbExamples.Xml" />
     <None Include="VfpCollations\CZECH_1250_Collate.bin" />
     <None Include="VfpCollations\CZECH_1250_Combi.bin" />

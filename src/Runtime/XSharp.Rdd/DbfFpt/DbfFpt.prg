@@ -7,7 +7,7 @@
 
 #translate RDDCLASS => DBFFPT
 #translate PARENTCLASS => DBF
-#translate MEMOCLASS => FPTMemo
+#translate MEMOCLASS => FPTMemo 
 #define RDD_FPT
 // Include common FlexFile code from FlexFile Folder
 #include "..\Flexfile\FlexRDD.xh"

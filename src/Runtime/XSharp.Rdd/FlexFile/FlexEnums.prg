@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -8,7 +8,7 @@ USING System.Text
 USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 
-BEGIN NAMESPACE XSharp.RDD.Enums
+BEGIN NAMESPACE XSharp.RDD.FlexFile
 INTERNAL ENUM FlexArrayTypes
     MEMBER NIL      := 0
     MEMBER UChar    := 1       // 1 byte
@@ -18,7 +18,7 @@ INTERNAL ENUM FlexArrayTypes
     MEMBER Long     := 5      // 4 bytes
     MEMBER String32 := 6      // 4 bytes length followed by string
     MEMBER String16 := 7      // 2 bytes length followed by string
-    MEMBER Float    := 8      // 10 bytes 
+    MEMBER Float    := 8      // 10 bytes
     MEMBER Double   := 9      // 8 bytes
     MEMBER Date     := 10     // 4 bytes
     MEMBER Logic    := 11     // 1 byte
@@ -37,11 +37,11 @@ INTERNAL ENUM FlexArrayTypes
     MEMBER Null     := 24       // no data
     MEMBER True     := 25
     MEMBER False    := 26
-    MEMBER LDouble  := 27       
-    MEMBER UCHar2   := 28       // byte[1], len, dec 
-    MEMBER CHar2    := 29       // byte[1], len, dec 
-    MEMBER Short2   := 30       // short[2], len, dec 
-    MEMBER UShort2  := 31       // ushort[2], len, dec 
+    MEMBER LDouble  := 27
+    MEMBER UCHar2   := 28       // byte[1], len, dec
+    MEMBER CHar2    := 29       // byte[1], len, dec
+    MEMBER Short2   := 30       // short[2], len, dec
+    MEMBER UShort2  := 31       // ushort[2], len, dec
     MEMBER Long2    := 32       // long[4], len, dec
     MEMBER ULong2   := 33       // ulong[4], len, dec
 END ENUM
@@ -50,7 +50,6 @@ INTERNAL ENUM FlexFieldType
     MEMBER Picture      := 0
     MEMBER String       := 1
     MEMBER OleObject    := 2
-    MEMBER FirstExtended := IndexBlock
     MEMBER IndexBlock   := 1000
     MEMBER Delete       := 1001
     MEMBER Array16      := 1002
@@ -79,5 +78,9 @@ INTERNAL ENUM FlexFieldType
     MEMBER StringEmpty  := 10002
     MEMBER LastExtended2  := StringEmpty
     MEMBER Illegal      := -1
+    MEMBER FirstExtended := IndexBlock
+
 END ENUM
+
+
 END NAMESPACE

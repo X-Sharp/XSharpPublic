@@ -1,4 +1,9 @@
-﻿
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -8,7 +13,7 @@ USING System.IO
 
 USING STATIC XSharp.Conversions
 
-BEGIN NAMESPACE XSharp.RDD
+BEGIN NAMESPACE XSharp.RDD.FlexFile
 /// <summary>FlexArea class. Implements the FTP support.</summary>
 
 INTERNAL CLASS FlexArea
@@ -18,16 +23,44 @@ INTERNAL CLASS FlexArea
     PRIVATE _foxHeader  AS FoxHeader
     PRIVATE _flexHeader AS FlexHeader
     PRIVATE _lockCount  AS LONG
-    PRIVATE _nextFree   AS LONG
+    PRIVATE _nextFree   AS DWORD
     PRIVATE _hotHeader AS LOGIC
     PRIVATE _hFile	    AS IntPtr
     PRIVATE _oStream   AS FileStream
+    PRIVATE _DeadIndexBlocks AS ULStack
+    internal LocIndex as LocationIndex
+    internal LenIndex as LengthIndex
     INTERNAL FileName  AS STRING
     PROTECT _lockScheme AS DbfLocking
     PROTECT _blockSize  AS WORD
+    internal property LenIndexRoot AS DWORD
+        GET
+            return (DWORD) _flexHeader:IndexLength
+        END GET
+        SET
+            _flexHeader:IndexLength := (INT) value
+            _hotHeader := TRUE
+        END SET
+    END PROPERTY
+    internal property LocIndexRoot AS DWORD
+        GET
+            return (DWORD) _flexHeader:IndexLocation
+        END GET
+        SET
+            _flexHeader:IndexLocation := (INT) value
+            _hotHeader := TRUE
+        END SET
+    END PROPERTY
+
+
+
+    internal property FileHandle as IntPtr get _hFile
+    internal property Stream as FileStream get _oStream
+    internal property DeadIndexBlocks as ULStack get _DeadIndexBlocks
     INTERNAL PROPERTY IsOpen     AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero
     INTERNAL PROPERTY ReadOnly   AS LOGIC GET _oRdd:ReadOnly
     INTERNAL PROPERTY Shared     AS LOGIC GET _oRdd:Shared
+    INTERNAL PROPERTY NextFree   AS DWORD GET _nextFree
     INTERNAL PROPERTY Encoding   AS Encoding
         GET
             IF _oRdd is DBF var oDbf
@@ -47,6 +80,10 @@ INTERNAL CLASS FlexArea
         SELF:_flexHeader  := FlexHeader{oRdd}
         SELF:_lockCount   := 0
         SELF:ExportMode   := BLOB_EXPORT_APPEND
+        SELF:_DeadIndexBlocks := ULStack{}
+        SELF:LenIndex     := LengthIndex{}
+        SELF:LocIndex     := LocationIndex{}
+
 
     INTERNAL METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
         SELF:_oRdd:_dbfError(ex, iSubCode, iGenCode,strFunction)
@@ -65,7 +102,7 @@ INTERNAL CLASS FlexArea
         ENDIF
         SELF:_initContext()
         SELF:BlockSize := blocksize
-        _nextFree :=  SELF:RoundToBlockSize(FoxHeader.FOXHEADER_LENGTH + FlexHeader.FLEXHEADER_LENGTH) / _blockSize
+        _nextFree :=  (DWORD) SELF:RoundToBlockSize(FoxHeader.FOXHEADER_LENGTH + FlexHeader.FLEXHEADER_LENGTH) / _blockSize
         SELF:WriteHeader()
         RETURN TRUE
 
@@ -77,9 +114,42 @@ INTERNAL CLASS FlexArea
         // Per default, Block Size if 512
         IF SELF:LockHeader(FALSE)
             SELF:_initContext()
+            IF SELF:IsFlex
+                SELF:LenIndex:Init(SELF)
+                SELF:LocIndex:Init(SELF)
+            ENDIF
+
+
             SELF:UnLockHeader(FALSE)
         ENDIF
         RETURN TRUE
+
+    INTERNAL METHOD Close() AS LOGIC
+        IF SELF:IsOpen
+            IF SELF:IsFlex
+                SELF:LocIndex:Close()
+                SELF:LenIndex:Close()
+            ENDIF
+            IF SELF:_lockCount > 0
+                SELF:UnLockHeader(FALSE)
+            ENDIF
+            _oStream:Close()
+            _oStream := NULL
+            _hFile   := F_ERROR
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+
+    PRIVATE METHOD KillIndexes() AS VOID
+        // This is called when an operation on indexes detects a problem.
+        IF SELF:LockHeader(TRUE)
+            SELF:LocIndex:KillIndex()
+            SELF:LenIndex:KillIndex()
+            SELF:DeadIndexBlocks:Clear()
+            SELF:_flexHeader:IndexDefect := TRUE
+            SELF:_hotHeader := TRUE
+            SELF:UnLockHeader(TRUE)
+        ENDIF
 
     PRIVATE METHOD LockHeader(refreshHeaders AS LOGIC) AS LOGIC
         LOCAL lOk := TRUE AS LOGIC
@@ -95,8 +165,8 @@ INTERNAL CLASS FlexArea
             IF refreshHeaders
                 IF SELF:ReadHeader()
                     IF SELF:IsFlex
-                        // Deal with indexes of deleted blocks
-                        NOP
+                        LocIndex:DiskCache:Clear()
+                        LenIndex:DiskCache:Clear()
                     ENDIF
                 ELSE
                     SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FlexArea.LockHeader")
@@ -179,12 +249,16 @@ INTERNAL CLASS FlexArea
         LOCAL fillByte AS BYTE
         LOCAL lIsVfp   AS LOGIC
         lIsVfp   := SELF:_oRdd IS DBFVFP
-        fillByte := (BYTE) IIF(lDeleted, 0xF0, IIF(lIsVfp, 0x00, 0xAF))
-        FOR VAR i := 1 TO nToWrite
+        fillByte := 00 // (BYTE) IIF(lDeleted, 0xF0, 0x00) // IIF(lIsVfp, 0x00, 0xAF))
+        FOR VAR i := 1 TO nToWrite-1
             IF ! _oStream:SafeWriteByte(fillByte)
                 SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.WriteFiller")
             ENDIF
         NEXT
+        fillByte := (BYTE) IIF(lDeleted, 0x00, IIF(lIsVfp, 0x00, 0xAF))
+        IF ! _oStream:SafeWriteByte(fillByte)
+            SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.WriteFiller")
+        ENDIF
         RETURN
 
 
@@ -203,8 +277,87 @@ INTERNAL CLASS FlexArea
                 ENDIF
                 // Clear the data. FlexFiles does not do that, but I think it's better to clean up.
                 SELF:WriteFiller(token:Length, TRUE)
-                SELF:UnLockHeader(TRUE)
             ENDIF
+            IF !SELF:IsFlex
+                SELF:UnLockHeader(TRUE)
+                RETURN
+            ENDIF
+            LOCAL bDone := FALSE as LOGIC
+            LOCAL uReleasePos := 0 as DWORD
+            LOCAL uReleaseLen := 0 AS DWORD
+            LOCAL bDeletingDeadBlocks := FALSE as LOGIC
+            DO WHILE ! bDone
+                if bDeletingDeadBlocks
+                    uReleasePos := SELF:DeadIndexBlocks:Pop()
+                    uReleaseLen := IndexNode.INDEXNODE_SIZE
+                else
+                    uReleasePos := (DWORD) blockNbr * SELF:BlockSize
+                    if uReleasePos > (DWORD) SELF:Stream:Length
+                        // No error, just exit
+                        bDone := TRUE
+                        LOOP
+                    endif
+                    uReleaseLen := (DWORD) (token:Length + FlexMemoToken.TokenLength)
+                endif
+                // Find Next block
+                if SELF:LocIndex:SeekSoft(uReleasePos)
+                    // when the block after the one deleted is found
+                    if SELF:LocIndex:CurrentPos == uReleasePos + uReleaseLen
+                        if SELF:LenIndex:Seek(SELF:LocIndex:CurrentLen, SELF:LocIndex:CurrentPos)
+                            uReleaseLen += SELF:LocIndex:CurrentLen
+                            IF ! (Self:LenIndex:Delete() .and. SELF:LocIndex:Delete())
+                                SELF:KillIndexes()
+                                bDone := TRUE
+                            ENDIF
+                        else
+                            // the entry should be in both indices
+                            bDone := TRUE
+                            SELF:KillIndexes()
+                        endif
+                    endif
+                endif
+                // seek for deleted space to left
+                IF LocIndex:SeekPrevious(uReleasePos)
+                    IF LocIndex:CurrentPos + LocIndex:CurrentLen == uReleasePos
+                        uReleasePos := LocIndex:CurrentPos
+                        uReleaseLen += LocIndex:CurrentLen
+                        IF LenIndex:Seek(LocIndex:CurrentLen, LocIndex:CurrentPos)
+                            IF ! (LocIndex:Delete() .and. LenIndex:Delete())
+                                SELF:KillIndexes()
+                            ENDIF
+                        ELSE
+                            SELF:KillIndexes()
+                        ENDIF
+                    ENDIF
+                ENDIF
+                IF uReleasePos + uReleaseLen == SELF:NextFree * SELF:BlockSize
+                    // The block is at the end of the file, so shrink the file
+                    SELF:Stream:SetLength(uReleasePos)
+                    SELF:SetNewFileLength(uReleasePos)
+                ELSE
+                    // write the data for the combined deleted block
+                    var bytes := BYTE[]{uReleaseLen}
+                    token := FlexMemoToken{bytes, SELF:Stream}
+                    _oStream:SafeSetPos(uReleasePos)
+                    token:DataType := FlexFieldType.Delete
+                    token:Length   := (LONG) (uReleaseLen - FlexMemoToken.TokenLength)
+                    if ! token:Write(FlexMemoToken.TokenLength)
+                        SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.DeleteBlock")
+                    endif
+                    SELF:WriteFiller(token:Length, TRUE)
+                    var ok1 := LocIndex:Insert(uReleasePos, uReleaseLen)
+                    var ok2 := LenIndex:Insert(uReleaseLen, uReleasePos)
+                    if (! ok1 .and. ok2)
+                        SELF:KillIndexes()
+                    ENDIF
+                ENDIF
+                if SELF:DeadIndexBlocks:Count > 0
+                    bDeletingDeadBlocks := TRUE
+                else
+                    bDone := TRUE
+                endif
+            ENDDO
+            SELF:UnLockHeader(TRUE)
         ENDIF
         RETURN
 
@@ -222,6 +375,14 @@ INTERNAL CLASS FlexArea
         ENDIF
         RETURN TRUE
 
+    INTERNAL METHOD SetNewFileLength(nNewLength AS INT64) AS VOID
+        IF SELF:IsOpen
+            _oStream:SafeSetLength(nNewLength)
+            SELF:_nextFree  := (DWORD) nNewLength / _blockSize
+            SELF:_hotHeader := TRUE
+        ENDIF
+        RETURN
+
 
     /// <summary>Write a block. When the existing block is 0 or the size is insufficient then a new block is allocated.</summary>
     /// <param name="nOldPtr">Pointer to existing block, or 0 when a new block must be allocated</param>
@@ -231,11 +392,13 @@ INTERNAL CLASS FlexArea
         LOCAL blockNr := nOldPtr as INT
         LOCAL nCurrentLen AS LONG
         LOCAL lNewBlock := FALSE AS LOGIC
+        LOCAL liExcessLen := 0 AS DWORD
+        LOCAL lDelete  := FALSE as LOGIC
+        VAR neededLen  := (DWORD) SELF:RoundToBlockSize(bytes:Length)
         IF blockNr != 0
             nCurrentLen := SELF:GetBlockLen(blockNr)
             nCurrentLen := SELF:RoundToBlockSize(nCurrentLen)
-            VAR needed  := SELF:RoundToBlockSize(bytes:Length)
-            IF nCurrentLen >= needed
+            IF nCurrentLen >= neededLen
                 IF SELF:SetBlockPos(nOldPtr)
                     IF SELF:LockHeader(TRUE)
                         SELF:WriteBlock(bytes)
@@ -246,8 +409,8 @@ INTERNAL CLASS FlexArea
                 SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.PutBlock")
             ELSE
                 // Deallocate block and allocate new
-                SELF:DeleteBlock(blockNr)
                 lNewBlock := TRUE
+                lDelete := TRUE
             ENDIF
         ELSE
             // Allocate block at the end or from free blocks
@@ -256,15 +419,80 @@ INTERNAL CLASS FlexArea
         ENDIF
         IF lNewBlock
             IF SELF:LockHeader(TRUE)
-                LOCAL nPos AS LONG
-                nPos := _nextFree  * _blockSize
-                _oStream:SafeSetPos(nPos)
-                SELF:WriteBlock(bytes)
-                VAR nFileSize := _oStream:Length
-                SELF:_nextFree    := (LONG) nFileSize / _blockSize
+                LOCAL nPos AS DWORD
+                LOCAL lFoundDeletedBlock as LOGIC
+                LOCAL liDataPos as DWORD
+                LOCAL liFoundLen as DWORD
+                // Try to find block of the right size in the free list
+                IF SELF:IsFlex
+                    lFoundDeletedBlock := SELF:LenIndex:SeekSoft(neededLen)
+                    liDataPos := SELF:LenIndex:CurrentPos
+                    liFoundLen := SELF:LenIndex:CurrentLen
+                ELSE
+                    lFoundDeletedBlock := FALSE
+                    liDataPos := 0
+                    liFoundLen := 0
+                ENDIF
+                IF lFoundDeletedBlock
+                    liExcessLen := liFoundLen - neededLen
+                    if liExcessLen > 0 .and. liExcessLen < FlexMemoToken.TokenLength +1
+                        // If excess space was allocated but it isn't enough for
+                        // the FPT token, search for another spot that has enough
+                        // excess space to contain the token.
+                        lFoundDeletedBlock := LenIndex:SeekSoft(neededLen + RoundToBlockSize(FlexMemoToken.TokenLength + 1))
+                        liDataPos := LenIndex:CurrentPos
+                        liFoundLen := LenIndex:CurrentLen
+                    endif
+                ENDIF
+                IF ! lFoundDeletedBlock
+                    nPos := (DWORD) _oStream:Length
+                    _oStream:SafeSetPos(nPos)
+                    SELF:WriteBlock(bytes)
+                    VAR nFileSize := (DWORD) _oStream:Length
+                    SELF:SetNewFileLength(nFileSize)
+                    SELF:UnLockHeader(TRUE)
+                    blockNr := (LONG) (nPos / _blockSize )
+                ELSE
+                    blockNr := (LONG) (liDataPos / _blockSize )
+                    liExcessLen := liFoundLen - neededLen
+                    _oStream:SafeSetPos(liDataPos)
+                    if ! SELF:WriteBlock(bytes)
+                        SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.PutBlock")
+                    endif
+
+                    liDataPos := liDataPos + neededLen
+                    // Now delete the block from the index
+                    LOCAL lKill := FALSE as LOGIC
+                    IF LocIndex:Seek(LenIndex:CurrentPos, LenIndex:CurrentLen)
+                        IF !( LenIndex:Delete() .and. LocIndex:Delete())
+                            lKill := TRUE
+                        ENDIF
+                    ELSE
+                        lKill := TRUE
+                    ENDIF
+                    IF lKill
+                        SELF:KillIndexes()
+                    ENDIF
+                ENDIF
+                IF liExcessLen > 0
+                    // Create a new block with the excess space
+                    VAR bData := BYTE[]{liExcessLen}
+                    VAR token := FlexMemoToken{bData, _oStream}
+                    _oStream:SafeSetPos(liDataPos)
+                    token:DataType := FlexFieldType.Delete
+                    token:Length   := (LONG) (liExcessLen - FlexMemoToken.TokenLength)
+                    IF ! token:Write()
+                        SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.PutBlock")
+                    ENDIF
+                    IF ! (LenIndex:Insert(liExcessLen, liDataPos) .and. LocIndex:Insert(liDataPos, liExcessLen))
+                        SELF:KillIndexes()
+                    ENDIF
+                endif
                 SELF:UnLockHeader(TRUE)
-                blockNr := (LONG) (nPos / _blockSize )
             ENDIF
+        ENDIF
+        IF lDelete
+            SELF:DeleteBlock(nOldPtr)
         ENDIF
         RETURN blockNr
 
@@ -287,7 +515,7 @@ INTERNAL CLASS FlexArea
         ENDIF
         RETURN -1
 
-    PRIVATE METHOD RoundToBlockSize(nSize AS LONG) AS LONG
+    INTERNAL METHOD RoundToBlockSize(nSize AS LONG) AS LONG
         IF SELF:_blockSize > 1
             VAR nDiff := nSize % _blockSize
             IF nDiff != 0
@@ -296,13 +524,13 @@ INTERNAL CLASS FlexArea
         ENDIF
         RETURN nSize
 
-    PRIVATE METHOD CalculateFillerSpace(nSize AS LONG) AS LONG
+    INTERNAL METHOD CalculateFillerSpace(nSize AS LONG) AS LONG
         IF SELF:_blockSize > 1
             LOCAL nToFill AS LONG
             nToFill := nSize %  SELF:_blockSize
             IF nToFill > 0
                 nToFill := SELF:_blockSize - nToFill
-                RETURN  nToFill
+                RETURN nToFill
             ENDIF
         ENDIF
         RETURN 0
@@ -386,8 +614,16 @@ INTERNAL CLASS FlexArea
         IF SELF:IsOpen
             _oStream:SafeSetLength(0)
             SELF:_foxHeader:Clear()
-            SELF:_flexHeader:Clear()
+            IF SELF:IsFlex
+                SELF:_flexHeader:Clear()
+                SELF:LenIndex:Clear()
+                SELF:LenIndex:Clear()
+            ENDIF
             SELF:WriteHeader()
+            IF SELF:IsFlex
+                SELF:LenIndex:Init(SELF)
+                SELF:LocIndex:Init(SELF)
+            ENDIF
             RETURN TRUE
         ENDIF
         RETURN FALSE
@@ -400,7 +636,7 @@ INTERNAL CLASS FlexArea
             SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FlexArea.ReadHeader")
         ENDIF
         _blockSize := SELF:_foxHeader:BlockSize
-        _nextFree  := SELF:_foxHeader:NextFree
+        _nextFree  := (DWORD) SELF:_foxHeader:NextFree
         // read Flex Header
         IF nFileLen >= 1024
             IF ! SELF:_flexHeader:Read()
@@ -421,7 +657,7 @@ INTERNAL CLASS FlexArea
             IF SELF:_blockSize >= MIN_FOXPRO_BLOCKSIZE
                 SELF:_foxHeader:BlockSize := _blockSize
             ENDIF
-            SELF:_foxHeader:NextFree   := _nextFree
+            SELF:_foxHeader:NextFree   := (LONG) _nextFree
             IF ! SELF:_foxHeader:Write()
                 SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FlexArea.WriteHeader")
             ENDIF

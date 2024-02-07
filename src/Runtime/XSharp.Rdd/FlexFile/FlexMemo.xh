@@ -128,14 +128,11 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
    /// <param name="nFldPos">One based field number</param>
    OVERRIDE METHOD GetValueLength(nFldPos AS INT) AS LONG
       var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
-      var blockLen := _area:GetBlockLen(blockNbr)
-      // Don't forget to remove the 8 Bytes
-      if blockLen == -1
-         blockLen := 0
-      ELSEIF blockLen >= 8
-         blockLen := blockLen - 8
+      var dataLen := _area:GetDataLen(blockNbr)
+      if dataLen == -1
+         dataLen := 0
       ENDIF
-      RETURN blockLen
+      RETURN dataLen
 
    /// <summary>Write value to field.</summary>
    /// <param name="nFldPos">One based field number</param>

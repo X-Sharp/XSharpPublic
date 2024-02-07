@@ -118,7 +118,7 @@
     <Compile Include="FlexFile\FlexArea.prg" />
     <Compile Include="FlexFile\FlexStructures.prg" />
     <Compile Include="FlexFile\FlexEnums.prg" />
-    <Compile Include="FlexFile\IdxStack.prg" />
+    <Compile Include="FlexFile\IndexStack.prg" />
     <Compile Include="FlexFile\Index.prg" />
     <Compile Include="FlexFile\IndexKey.prg" />
     <Compile Include="FlexFile\IndexNode.prg" />

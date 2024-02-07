@@ -23,7 +23,11 @@ class SqlTableInfo inherit SqlDbTableDef
     /// <summary>
     /// List of Indexes and tags
     /// </summary>
-    property Indexes        as List<SqlIndexInfo>  auto get private set
+    property Indexes     as List<SqlIndexInfo>  auto get private set
+    /// <summary>
+    /// List of columns that have to be selected. Defaults to "*", which means all columns
+    /// </summary>
+    property ColumnList as string auto
     /// <summary>
     /// Name of the Recno column. When empty then the relative row number is the record number
     /// </summary>
@@ -55,25 +59,27 @@ class SqlTableInfo inherit SqlDbTableDef
     property TrimTrailingSpaces as logic auto
 
     /// <summary>
-    /// Specifies a comma-delimited list of fields in the view and includes fields from the cursor
+    /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
     /// </summary>
-    property UpdatableFieldList             as string auto
-
+    /// <value></value>
+    property CompareMemo              as logic auto
 
 
     protected _connection as SqlDbConnection
 
     constructor(cName as string, oConn as SqlDbConnection)
         super(cName)
-        _connection := oConn
-        MaxRecords := 1000
+        _connection     := oConn
+        MaxRecords      := 1000
         //RecnoColumn := "xs_pk"
-        RecnoColumn   := ""
-        DeletedColumn := ""
-        ServerFilter := ""
+        RecnoColumn     := ""
+        DeletedColumn   := ""
+        ServerFilter    := ""
+        ColumnList      := "*"
         AllowUpdates := true
         LongFieldNames := oConn:UseLongNames
         TrimTrailingSpaces := oConn:TrimTrailingSpaces
+        Indexes := List<SqlIndexInfo>{}
 
         return
 
@@ -91,15 +97,19 @@ class SqlTableInfo inherit SqlDbTableDef
 end class
 
 
-class SqlIndexInfo
-    /// <summary>
-    /// Name of the "Index File"
-    /// </summary>
-    property IndexName as string auto
-    /// <summary>
-    /// Name of the order (tag)
-    /// </summary>
-    property OrderName as string auto
+class SqlIndexInfo INHERIT SqlDbObject
+
+    property Table  as SqlTableInfo auto
+    property Tags   as List<SqlIndexTagInfo> auto
+
+    constructor(oTable as SqlTableInfo, cIndex as string)
+        SUPER(cIndex)
+        SELF:Table := oTable
+        SELF:Tags := List<SqlIndexTagInfo>{}
+
+end class
+
+class SqlIndexTagInfo inherit SqlDbObject
     /// <summary>
     /// Index expression in Xbase format
     /// </summary>
@@ -113,8 +123,21 @@ class SqlIndexInfo
     /// </summary>
     property Unique    as logic  auto
 
+    /// <summary>
+    /// Index to which the tag belongs
+    /// </summary>
+    /// <value></value>
+    property Index     as SqlIndexInfo auto
+
+    constructor(oIndex as SqlIndexInfo, name as string)
+        super(name)
+        self:Index := oIndex
+        return
+
+
 
 end class
+
 
 
 end namespace // XSharp.RDD.SqlRDD

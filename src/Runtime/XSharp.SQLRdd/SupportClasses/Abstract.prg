@@ -20,7 +20,8 @@ class SqlDbObject
 #ifdef DEBUG
     static private nId := 0 as long
     property Id	  as long auto get private set
-#endif
+    #endif
+
     property Name as string auto get private set
 
     constructor()

@@ -153,4 +153,4 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
 
 #endregion
 end class
-end namespace // XSharp.RDD.SqlRDD
+end namespace

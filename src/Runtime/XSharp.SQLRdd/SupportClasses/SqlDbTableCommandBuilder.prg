@@ -10,6 +10,7 @@ using System.Collections.Generic
 using System.Text
 using System.Linq
 using XSharp.RDD.Support
+using XSharp.RDD.SqlRDD.Providers
 
 begin namespace XSharp.RDD.SqlRDD
 
@@ -18,92 +19,62 @@ begin namespace XSharp.RDD.SqlRDD
 /// </summary>
 class SqlDbTableCommandBuilder
     protected _cTable as string
-    protected _oInfo as SqlTableInfo
+    protected _oTable as SqlTableInfo
     protected _oRdd  as SQLRDD
     protected _connection as SqlDbConnection
     protected _orderBags      as List<SqlDbOrderBag>
     property Connection as SqlDbConnection  get _connection
     property Provider   as SqlDbProvider    get Connection:Provider
+    Property MetadataProvider as IMetadataProvider get Connection:MetadataProvider
+
 
     constructor(cTable as string, oRdd as SQLRDD)
-        self:_cTable     := cTable
-        self:_oRdd       := oRdd
-        _orderBags       := List<SqlDbOrderBag>{}
-        _connection      := oRdd:Connection
+        self:_cTable      := cTable
+        self:_oRdd        := oRdd
+        _orderBags        := List<SqlDbOrderBag>{}
+        _connection       := oRdd:Connection
         return
     method FetchInfo(oRdd as SQLRDD) as SqlTableInfo
         // build initial information needed for SQL Query for a table
-        local oInfo as SqlTableInfo
+        local oTable as SqlTableInfo
         local cTable as string
-        local columnNames := "*" as string
         cTable := self:_cTable
-        oInfo := SqlTableInfo{_cTable, _connection}
-
-        if oRdd:IniFile:Exists
-            local ini := oRdd:IniFile as IniFile
-            oInfo:MaxRecords    := ini:GetInt(cTable, nameof(oInfo:MaxRecords), oInfo:MaxRecords)
-            oInfo:RecnoColumn   := ini:GetString(cTable, nameof(oInfo:RecnoColumn), oInfo:RecnoColumn)
-            oInfo:DeletedColumn   := ini:GetString(cTable, nameof(oInfo:DeletedColumn), oInfo:DeletedColumn)
-            oInfo:LongFieldNames  := ini:GetLogic(cTable, nameof(oInfo:LongFieldNames), oInfo:LongFieldNames)
-            oInfo:TrimTrailingSpaces := ini:GetLogic(cTable, nameof(oInfo:TrimTrailingSpaces), oInfo:TrimTrailingSpaces)
-            columnNames          := ini:GetString(cTable, "ColumnList", columnNames)
-        endif
-
+        oTable := MetadataProvider:GetTableInfo(cTable)
         // Ask the client for MaxRecords
-        oInfo:MaxRecords        := Connection:RaiseIntEvent(Connection, SqlRDDEventReason.MaxRecords,cTable, oInfo:MaxRecords)
-        oInfo:RecnoColumn       := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.RecnoColumn,cTable, oInfo:RecnoColumn)
-        oInfo:DeletedColumn     := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.DeletedColumn,cTable, oInfo:DeletedColumn)
-        oInfo:LongFieldNames    := Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.LongFieldNames,cTable, oInfo:LongFieldNames)
-        oInfo:TrimTrailingSpaces:= Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.TrimTrailingSpaces,cTable, oInfo:TrimTrailingSpaces)
-        var oTd := Connection:GetStructureForTable(cTable, oInfo:LongFieldNames,columnNames)
-        oInfo:CopyFromTd(oTd)
-        self:AdjustSelects(oInfo)
-        self:_oInfo := oInfo
-        self:OpenIndex(cTable, oRdd)  // open production index
-        return oInfo
+        oTable:MaxRecords        := Connection:RaiseIntEvent(Connection, SqlRDDEventReason.MaxRecords,cTable, oTable:MaxRecords)
+        oTable:RecnoColumn       := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.RecnoColumn,cTable, oTable:RecnoColumn)
+        oTable:DeletedColumn     := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.DeletedColumn,cTable, oTable:DeletedColumn)
+        oTable:LongFieldNames    := Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.LongFieldNames,cTable, oTable:LongFieldNames)
+        oTable:TrimTrailingSpaces:= Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.TrimTrailingSpaces,cTable, oTable:TrimTrailingSpaces)
+        oTable:ColumnList        := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.ColumnList,cTable, oTable:ColumnList)
+        var oTd := Connection:GetStructureForTable(cTable, oTable,oTable:ColumnList)
+        self:_oTable := oTable
+        oTable:CopyFromTd(oTd)
+        self:AdjustSelects()
+        self:OpenIndex(cTable)  // open production index
+        return oTable
 
-    method OpenIndex(cIndex as string, oRdd as SQLRDD) as void
-        local tags as IList<string>
-        local ini := null as IniFile
-        var section := "Index:"+cIndex
-        tags := List<string>{}
-        if oRdd:IniFile:Exists
-            ini := oRdd:IniFile
-        endif
-        if ini != null
-            var nTags        := ini:GetInt(section, "TagCount",0)
-            for var i := 1 to nTags
-                var tag := ini:GetString(section, i"Tag{i}","")
-                if ! String.IsNullOrEmpty(tag)
-                    tags:Add(tag)
-                endif
-            next
-        endif
-        tags :=Connection:RaiseListEvent(Connection, SqlRDDEventReason.IndexTags,cIndex, tags)
-        if tags?:Count > 0
-            var oBag := SqlDbOrderBag{cIndex, oRdd}
-            foreach var tagName in tags
-                local info as IList<string>
-                info := List<string>{}
-                if ini != null
-                    section := "Tag:"+cIndex+":"+tagName
-                    var expr := ini:GetString(section, "Expression","")
-                    var cond := ini:GetString(section, "Condition","")
-                    info:Add(expr)
-                    info:Add(cond)
-                endif
-                info := Connection:RaiseListEvent(Connection, SqlRDDEventReason.IndexInfo,cIndex+"."+tagName, info)
-                if info?:Count > 0
-                    var oTag := SqlDbOrder{oRdd, tagName, info[0],oBag}
-                    if info?:Count > 1
-                        oTag:SetCondition(info[1])
+    method OpenIndex(cIndex as string) as void
+        local oProdIndex := NULL as SqlIndexInfo
+        foreach var index in _oTable:Indexes
+            if String.Compare(index:Name, cIndex, true) == 0
+                oProdIndex := index
+                exit
+            endif
+        next
+        if oProdIndex != null
+            if oProdIndex:Tags:Count > 0
+                var oBag := SqlDbOrderBag{cIndex, _oRdd}
+                foreach var tag in oProdIndex:Tags
+                    var oTag := SqlDbOrder{_oRdd, tag:Name, tag:Expression, oBag}
+                    if !String.IsNullOrEmpty(tag:Condition)
+                        oTag:SetCondition(tag:Condition)
                     endif
                     oBag:Add(oTag)
-                endif
-            next
-            _orderBags:Add(oBag)
+                next
+                _orderBags:Add(oBag)
+            endif
         endif
-
     method SetProductionIndex() as logic
         _oRdd:CurrentOrder := null
         if self:_orderBags:Count > 0
@@ -186,16 +157,16 @@ class SqlDbTableCommandBuilder
         var selectStmt := sb:ToString()
         sb:Clear()
         sb:Append(Provider:SelectTopStatement)
-        sb:Replace(SqlDbProvider.TopCountMacro, _oInfo:MaxRecords:ToString())
-        sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList(_oInfo))
+        sb:Replace(SqlDbProvider.TopCountMacro, _oTable:MaxRecords:ToString())
+        sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList())
         sb:Replace(SqlDbProvider.TableNameMacro, selectStmt)
 
         return _connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
-    method ColumnList(oInfo as SqlTableInfo) as string
+    method ColumnList() as string
         var sb := StringBuilder{}
         var list  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
         var first := true
-        foreach var c in oInfo:Columns
+        foreach var c in _oTable:Columns
             if first
                 first := false
             else
@@ -205,38 +176,38 @@ class SqlDbTableCommandBuilder
 
             list:Add(c:ColumnInfo:ColumnName, c)
         next
-        if !String.IsNullOrEmpty(oInfo:RecnoColumn)
-            if !list:ContainsKey(oInfo:RecnoColumn)
+        if !String.IsNullOrEmpty(_oTable:RecnoColumn)
+            if !list:ContainsKey(_oTable:RecnoColumn)
                 sb:Append(", ")
-                sb:Append(Provider.QuoteIdentifier(oInfo:RecnoColumn))
-                list:Add(oInfo:RecnoColumn, null)
+                sb:Append(Provider.QuoteIdentifier(_oTable:RecnoColumn))
+                list:Add(_oTable:RecnoColumn, null)
             else
-                var col := list[oInfo:RecnoColumn]
+                var col := list[_oTable:RecnoColumn]
                 col:ColumnFlags |= SqlDbColumnFlags.Recno
             endif
 
         endif
-        if !String.IsNullOrEmpty(oInfo:DeletedColumn)
-            if !list:ContainsKey(oInfo:DeletedColumn)
+        if !String.IsNullOrEmpty(_oTable:DeletedColumn)
+            if !list:ContainsKey(_oTable:DeletedColumn)
                 sb:Append(", ")
-                sb:Append(Provider.QuoteIdentifier(oInfo:DeletedColumn))
-                list:Add(oInfo:DeletedColumn,null)
+                sb:Append(Provider.QuoteIdentifier(_oTable:DeletedColumn))
+                list:Add(_oTable:DeletedColumn,null)
             else
-                var col := list[oInfo:DeletedColumn]
+                var col := list[_oTable:DeletedColumn]
                 col:ColumnFlags |= SqlDbColumnFlags.Deleted
             endif
         endif
         return sb:ToString()
-    method AdjustSelects(oInfo as SqlTableInfo) as void
+    method AdjustSelects() as void
         var sb := StringBuilder{}
         sb:Append(SqlDbProvider.SelectClause)
-        sb:Append(self:ColumnList(oInfo))
+        sb:Append(self:ColumnList())
         sb:Append(SqlDbProvider.FromClause)
-        sb:Append(Provider.QuoteIdentifier(oInfo:Name))
-        oInfo:SelectStatement := sb:ToString()
+        sb:Append(Provider.QuoteIdentifier(_oTable:Name))
+        _oTable:SelectStatement := sb:ToString()
         sb:Append(SqlDbProvider.WhereClause)
         sb:Append("1=0")
-        oInfo:EmptySelectStatement :=sb:ToString()
+        _oTable:EmptySelectStatement :=sb:ToString()
         return
 
 

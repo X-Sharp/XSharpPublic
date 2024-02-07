@@ -11,7 +11,7 @@ using System.Collections.Generic
 using System.Text
 using System.Data
 using System.Data.Common
-
+using XSharp.RDD.SqlRDD.Providers
 public delegate XSharp.SqlRDDEventHandler(oSender as object, e as XSharp.RDD.SqlRDD.SqlRddEventArgs) as object
 
 begin namespace XSharp.RDD.SqlRDD
@@ -27,6 +27,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     internal const TABLENAME := "TABLE_NAME" as string
     internal const TABLETYPE := "TABLE_TYPE" as string
     // Constants for the columns in a schema
+    private _lastException as Exception
 
 #region Properties
     property IsOpen             as logic get DbConnection != null .and. DbConnection:State == ConnectionState.Open
@@ -39,9 +40,9 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     property TimeOut            as long auto
     property DbTransaction      as DbTransaction auto
     property UseNulls           as logic auto
-    property UseLongNames       as logic auto
     property TrimTrailingSpaces as logic auto
-    private _lastException as Exception
+    property UseLongNames       as logic auto
+    property MetadataProvider   as IMetadataProvider auto
 
 #endregion
 
@@ -97,6 +98,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         DbConnection    := Provider:CreateConnection()
         TimeOut         := 15
         KeepOpen        := DefaultCached
+        SELF:MetadataProvider := IniMetaDataProvider{SELF}
         if @@Callback != null
             self:CallBack += @@Callback
         endif
@@ -177,7 +179,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         return false
 #endregion
 #region MetaData
-    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as logic) as SqlDbTableDef
+    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableDef
         cQuery := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
         longFieldNames := RaiseLogicEvent(self,SqlRDDEventReason.LongFieldNames, TableName, longFieldNames)
         var cmd   := SqlDbCommand{TableName, self}
@@ -192,7 +194,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         var oTd   := SqlDbTableDef{TableName, oCols}
         return oTd
 
-    method GetStructureForTable(TableName as string,longFieldNames as logic, cColumnNames as string) as SqlDbTableDef
+    method GetStructureForTable(TableName as string, oTable as SqlTableInfo, cColumnNames as string) as SqlDbTableDef
         if self:Schema:TryGetValue(TableName, out var result)
             return result
         endif
@@ -203,6 +205,10 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
                 list := String2List(cColumnNames)
             else
                 list := List<string>{}{"*"}
+            endif
+            local longFieldNames := TRUE as logic
+            if oTable != null
+                longFieldNames := oTable:LongFieldNames
             endif
             list  := RaiseListEvent(self, SqlRDDEventReason.ColumnList, TableName, list)
             var columnList := List2String(list)
@@ -255,4 +261,4 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
 
 #endregion
 end class
-end namespace // XSharp.RDD.SqlRDD
+end namespace

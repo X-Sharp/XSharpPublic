@@ -38,16 +38,17 @@ class SQLRDD inherit DBFVFP
     protect _command        as SqlDbCommand
     protect _currentOrder   as SqlDbOrder
     protect _trimValues     as logic
-    private _oIni           as IniFile
     private _creating       as logic
     private _cTable         as string
     private _emptyValues    as object[]
+    private _updatableColumns as List<RddFieldInfo>
+    private _keyColumns     as List<RddFieldInfo>
+    private _updatedRows    as List<DataRow>
 
     new internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
     internal property Connection         as SqlDbConnection get _connection
     internal property Provider           as SqlDbProvider get _connection:Provider
     internal property Command            as SqlDbCommand get _command
-    internal property IniFile            as IniFile get _oIni
 #region Overridden properties
     override property Driver as string get "SQLRDD"
 #endregion
@@ -62,9 +63,9 @@ class SQLRDD inherit DBFVFP
         //_recnoColumn     := -1
         _deletedColumn   := -1
         _maxRec          := -1
-        _oIni            := IniFile{"SQLRDD.INI"}
         self:_trimValues := true // trim String Valuess
         SELF:DeleteOnClose := TRUE
+        _updatedRows     := List<DataRow>{}
         return
     destructor()
         Command:Close()
@@ -161,31 +162,60 @@ class SQLRDD inherit DBFVFP
         if ! self:__PrepareOpen(info)
             return false
         endif
-        var query := info:FileName
+        var cQuery := info:FileName
         // Determine if this is a single table name or a query (select or Execute)
-        var selectStmt := XSharp.SQLHelpers.ReturnsRows(query)
+        var selectStmt := XSharp.SQLHelpers.ReturnsRows(cQuery)
         if (selectStmt)
-            self:_tableMode := TableMode.Query
-            var longFieldNames := _connection:RaiseLogicEvent(_connection, SqlRDDEventReason.LongFieldNames,query,true)
-            self:_oTd := _connection:GetStructureForQuery(query,"QUERY",longFieldNames)
+            self:_tableMode     := TableMode.Query
+            var longFieldNames  := _connection:RaiseLogicEvent(_connection, SqlRDDEventReason.LongFieldNames,cQuery,true)
+            self:_oTd           := _connection:GetStructureForQuery(cQuery,"QUERY",longFieldNames)
+            _command:CommandText := cQuery
         else
             self:_tableMode := TableMode.Table
-            if ! self:GetTableInfo(query)
+            if ! self:GetTableInfo(cQuery)
                 throw Exception{}
             endif
+        endif
+        local aUpdatableColumns as string[]
+        var strUpdatableColumns  := _oTd:UpdatableColumns
+        if String.IsNullOrEmpty(strUpdatableColumns) .or. strUpdatableColumns == "*"
+            aUpdatableColumns := null
+        else
+            aUpdatableColumns    := strUpdatableColumns:ToLower():Split(',')
+        endif
+        local aKeyColumns as string[]
+        var strKeyColumns        := _oTd:KeyColumns
+        if String.IsNullOrEmpty(strKeyColumns) .or. strKeyColumns == "*"
+            aKeyColumns := null
+        else
+            aKeyColumns    := strKeyColumns:ToLower():Split(',')
         endif
 
         // Get the structure
         var oFields := List<RddFieldInfo>{}
+        self:_updatableColumns := List<RddFieldInfo>{}
+        self:_keyColumns       := List<RddFieldInfo>{}
         foreach var oCol in _oTd:Columns
+            var oField := oCol:ColumnInfo
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
                 //self:_recnoColumn := oCol:ColumnInfo:Ordinal+1
                 nop
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
-                self:_deletedColumn := oCol:ColumnInfo:Ordinal+1
+                self:_deletedColumn := oField:Ordinal+1
             endif
-
-            oFields:Add(oCol:ColumnInfo)
+            oFields:Add(oField)
+            if aKeyColumns == null
+                self:_keyColumns:Add(oField)
+            elseif System.Array.IndexOf(aKeyColumns,oField:ColumnName:ToLower()) != -1
+                self:_keyColumns:Add(oField)
+            endif
+            IF !oField:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
+                if aUpdatableColumns  == null
+                    self:_updatableColumns:Add(oField)
+                elseif System.Array.IndexOf(aUpdatableColumns, oField:ColumnName:ToLower()) != -1
+                    self:_updatableColumns:Add(oField)
+                endif
+            ENDIF
         next
         var aFields := oFields:ToArray()
         var tempFile   := self:TempFileName(info)
@@ -199,10 +229,12 @@ class SQLRDD inherit DBFVFP
             self:FieldInfo(nI, DBS_COLUMNINFO, aField)
         next
         if self:_tableMode == TableMode.Table
-            query := self:_oTd:EmptySelectStatement
+            cQuery := self:_oTd:EmptySelectStatement
             self:_hasData := false
+        else
+            self:DataTable      := _command:GetDataTable(self:Alias)
         endif
-        _command:CommandText := query
+        _command:CommandText := cQuery
         self:_realOpen := true
         return true
 
@@ -261,6 +293,7 @@ class SQLRDD inherit DBFVFP
             endif
             _RecNo := super:RecNo
             self:DataTable:Rows:Add(row)
+            _updatedRows:Add(row)
             if _emptyValues == null
                 self:GetEmptyValues()
             endif
@@ -326,7 +359,7 @@ class SQLRDD inherit DBFVFP
     override method PutValue(nFldPos as int, oValue as object) as logic
         // nFldPos is 1 based, the RDD compiles with /az+
         if self:_ReadOnly
-            self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:PutValue", "Table is not Updatable" )
             return false
         endif
         if self:EoF
@@ -334,10 +367,18 @@ class SQLRDD inherit DBFVFP
         endif
         var result := false
         if nFldPos > 0 .and. nFldPos <= self:FieldCount
-            var row := self:DataTable:Rows[self:_RecNo -1]
-            row[nFldPos-1] := oValue
-            result := true
-            self:_Hot := true
+            var col := self:_GetColumn(nFldPos)
+            if SELF:_updatableColumns:Contains(col)
+                var row := self:DataTable:Rows[self:_RecNo -1]
+                if !_updatedRows:Contains(row)
+                    _updatedRows:Add(row)
+                endif
+                row[nFldPos-1] := oValue
+                result := true
+                self:_Hot := true
+            else
+                self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:PutValue", i"Column {col.ColumnName} is not Updatable"  )
+            endif
         endif
         return result
 
@@ -345,24 +386,36 @@ class SQLRDD inherit DBFVFP
         local lWasHot := self:_Hot as logic
         local lOk := super:GoCold() as logic
         if lWasHot .and. self:DataTable != null .and. self:DataTable:Rows:Count >=self:_RecNo
-            var row := self:DataTable:Rows[self:_RecNo-1]
-            switch row:RowState
-            case DataRowState.Added
-                lOk := _ExecuteInsertStatement(row)
-            case DataRowState.Deleted
-                lOk := _ExecuteDeleteStatement(row)
-            case DataRowState.Modified
-                lOk := _ExecuteUpdateStatement(row)
-            case DataRowState.Unchanged
-            case DataRowState.Detached
-                lOk := true
-                if super:Deleted
-                    lOk := _ExecuteDeleteStatement(row)
+            foreach var row in _updatedRows
+                try
+                    switch row:RowState
+                    case DataRowState.Added
+                        lOk := _ExecuteInsertStatement(row)
+                    case DataRowState.Deleted
+                        lOk := _ExecuteDeleteStatement(row)
+                    case DataRowState.Modified
+                        lOk := _ExecuteUpdateStatement(row)
+                    case DataRowState.Unchanged
+                    case DataRowState.Detached
+                        lOk := true
+                        if super:Deleted
+                            lOk := _ExecuteDeleteStatement(row)
+                        endif
+                    end switch
+                catch e as Exception
+                    lOk := false
+                    self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:PutValue", e:Message )
+                end try
+                if !lOk
+                    exit
                 endif
-            end switch
+            next
             if lOk
                 self:DataTable:AcceptChanges()
+            else
+                self:DataTable:RejectChanges()
             endif
+            _updatedRows:Clear()
         endif
         return lOk
 
@@ -407,13 +460,13 @@ class SQLRDD inherit DBFVFP
     private method _GetWhereClause(row as DataRow) as string
         var sbWhere    := StringBuilder{}
         local iCounter := 1 as long
-        foreach c as DataColumn in DataTable:Columns
+        foreach var c in self:_keyColumns
             var oldname := i"@o{iCounter}"
             if sbWhere:Length > 0
                 sbWhere:Append(SqlDbProvider.AndClause)
             endif
             sbWhere:Append(Provider:QuoteIdentifier(c:ColumnName))
-            var colValue := row[c,DataRowVersion.Original]
+            var colValue := row[c:ColumnName,DataRowVersion.Original]
             if colValue == DBNull.Value
                 sbWhere:Append(" is null")
             else
@@ -582,8 +635,6 @@ class SQLRDD inherit DBFVFP
         self:_hasData := false
         return self:_obuilder:OrderListFocus(orderInfo)
 
-
-
     method ForceOpen() as logic
         if self:_tableMode != TableMode.Table
             return true
@@ -602,7 +653,7 @@ class SQLRDD inherit DBFVFP
             _command:CommandText := query
             self:_hasData    := true
             self:DataTable   := _command:GetDataTable(self:Alias)
-        catch e as Exception
+        catch as Exception
             return false
         end try
         return true

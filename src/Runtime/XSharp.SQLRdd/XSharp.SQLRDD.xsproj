@@ -48,6 +48,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Metadata\MetaData.md" />
     <None Include="SqlRddspecs.md" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,10 @@
     <Compile Include="Functions\Command.prg" />
     <Compile Include="Functions\Connection.prg" />
     <Compile Include="Functions\Provider.prg" />
+    <Compile Include="Metadata\CallbackMetaDataProvider.prg" />
+    <Compile Include="Metadata\DatabaseMetadataProvider.prg" />
+    <Compile Include="Metadata\IniMetaDataProvider.prg" />
+    <Compile Include="Metadata\MetadataProvider.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Providers\Advantage.prg" />
     <Compile Include="Providers\MySql.prg" />
@@ -91,6 +96,7 @@
     <Compile Include="SupportClasses\TokenType.prg" />
     <Folder Include="Classes\" />
     <Folder Include="Functions\" />
+    <Folder Include="Metadata" />
     <Folder Include="Properties\" />
     <Folder Include="Providers\" />
     <Folder Include="SupportClasses\" />

@@ -134,7 +134,8 @@ function XsValueToSqlValue(oValue as object)  as string
     end switch
     return oValue:ToString()
 
-    function DToS(dDate as IDate) as string
-        return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
+function DToS(dDate as IDate) as string
+    return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
+
 
 

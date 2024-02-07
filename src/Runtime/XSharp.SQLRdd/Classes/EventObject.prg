@@ -13,7 +13,7 @@ using System.Text
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
-/// The EventObject class.
+/// The SqlDbEventObject class. This 
 /// </summary>
 class SqlDbEventObject inherit SqlDbHandleObject
 
@@ -58,4 +58,4 @@ class SqlDbEventObject inherit SqlDbHandleObject
         return oValue
 
 end class
-end namespace // XSharp.RDD.SqlRDD.Classes
+end namespace

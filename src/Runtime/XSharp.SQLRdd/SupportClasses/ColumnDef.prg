@@ -20,7 +20,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The ColumnDef class.
 /// </summary>
-[DebuggerDisplay("{Name,nq}, {Type.Name,nq} {Length}")];
+[DebuggerDisplay("{Name,nq}, {ColumnInfo:FieldTypeStr} {Length}")];
 class SqlDbColumnDef inherit SqlDbObject
     property OrdinalPosition as long auto get set
     property Type		 as System.Type get ColumnInfo:DotNetType

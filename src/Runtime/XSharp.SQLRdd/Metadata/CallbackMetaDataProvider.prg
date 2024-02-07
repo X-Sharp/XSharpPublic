@@ -34,7 +34,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
 
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
-        oTable := SqlTableInfo{cTable, _connection}
+        oTable := SqlTableInfo{cTable, Connection}
         oTable:AllowUpdates      := SELF:GetLogic(cTable, SqlRDDEventReason.AllowUpdates,  SELF:AllowUpdates)
         oTable:DeletedColumn     := SELF:GetString(cTable, SqlRDDEventReason.DeletedColumn, SELF:DeletedColumn)
         oTable:LongFieldNames    := SELF:GetLogic(cTable, SqlRDDEventReason.LongFieldNames, SELF:LongFieldNames)
@@ -60,7 +60,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         endif
 
         RETURN oTable
-    PROTECTED METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
+    OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName
         var oIndex  := SqlIndexInfo{oTable, cIndexName}
@@ -83,13 +83,13 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         RETURN oTag
     END METHOD
     private method GetString(cSection as string, nReason as SqlRDDEventReason, cDefault as STRING) AS STRING
-        RETURN _connection:RaiseStringEvent(null, nReason, cSection, cDefault)
+        RETURN Connection:RaiseStringEvent(null, nReason, cSection, cDefault)
     END METHOD
     private method GetLogic(cSection as string, nReason as SqlRDDEventReason, lDefault as LOGIC) AS LOGIC
-        RETURN _connection:RaiseLogicEvent(null, nReason, cSection, lDefault)
+        RETURN Connection:RaiseLogicEvent(null, nReason, cSection, lDefault)
     END METHOD
     private method GetInt(cSection as string, nReason as SqlRDDEventReason, nDefault as INT) AS INT
-        RETURN _connection:RaiseIntEvent(null, nReason, cSection, nDefault)
+        RETURN Connection:RaiseIntEvent(null, nReason, cSection, nDefault)
     END METHOD
 END CLASS
 END NAMESPACE // XSharp.SQLRdd.Metadata

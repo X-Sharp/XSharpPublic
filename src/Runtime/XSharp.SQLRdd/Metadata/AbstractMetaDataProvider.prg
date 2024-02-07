@@ -37,9 +37,13 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
     PROPERTY MaxRecords         AS LONG  AUTO GET PROTECTED SET
     /// <inheritdoc />
     PROPERTY CompareMemo         AS LOGIC AUTO GET PROTECTED SET
-#endregion
+
+    PROPERTY Connection AS SqlDbConnection GET _connection
+
+    #endregion
 
     ABSTRACT METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
+    ABSTRACT METHOD GetIndexInfo(oTable AS SqlTableInfo, cIndex AS STRING) AS SqlIndexInfo
 
 	END CLASS
 END NAMESPACE // XSharp.SQLRdd.Metadata

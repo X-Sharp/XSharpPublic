@@ -33,7 +33,7 @@ class SQLRDD inherit DBFVFP
     protect _hasData        as logic
     protect _realOpen       as logic
     protect _connection     as SqlDbConnection
-    protect _oTd            as SqlDbTableDef
+    protect _oTd            as SqlTableInfo
     protect _obuilder       as SqlDbTableCommandBuilder
     protect _command        as SqlDbCommand
     protect _currentOrder   as SqlDbOrder
@@ -167,7 +167,7 @@ class SQLRDD inherit DBFVFP
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(cQuery)
         if (selectStmt)
             self:_tableMode     := TableMode.Query
-            var longFieldNames  := _connection:RaiseLogicEvent(_connection, SqlRDDEventReason.LongFieldNames,cQuery,true)
+            var longFieldNames  := _connection:MetadataProvider:LongFieldNames
             self:_oTd           := _connection:GetStructureForQuery(cQuery,"QUERY",longFieldNames)
             _command:CommandText := cQuery
         else
@@ -205,7 +205,11 @@ class SQLRDD inherit DBFVFP
             endif
             oFields:Add(oField)
             if aKeyColumns == null
-                self:_keyColumns:Add(oField)
+                if self:_oTd:CompareMemo
+                    self:_keyColumns:Add(oField)
+                elseif !oField:FieldType:IsLong()
+                    self:_keyColumns:Add(oField)
+                endif
             elseif System.Array.IndexOf(aKeyColumns,oField:ColumnName:ToLower()) != -1
                 self:_keyColumns:Add(oField)
             endif

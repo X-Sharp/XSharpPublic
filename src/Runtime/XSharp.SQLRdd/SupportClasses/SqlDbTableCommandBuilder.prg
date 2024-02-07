@@ -187,7 +187,9 @@ class SqlDbTableCommandBuilder
                 list:Add(_oTable:DeletedColumn,null)
             else
                 var col := list[_oTable:DeletedColumn]
-                col:ColumnFlags |= SqlDbColumnFlags.Deleted
+                if col != null
+                    col:ColumnFlags |= SqlDbColumnFlags.Deleted
+                endif
             endif
         endif
         return sb:ToString()

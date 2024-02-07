@@ -42,14 +42,14 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
     /// <inheritdoc />
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
-        oTable := SqlTableInfo{cTable, _connection}
-        oTable:AllowUpdates      := SELF:GetLogic(cTable, nameof(AllowUpdates),  SELF:AllowUpdates)
-        oTable:DeletedColumn     := SELF:GetString(cTable, nameof(DeletedColumn), SELF:DeletedColumn)
-        oTable:LongFieldNames    := SELF:GetLogic(cTable, nameof(LongFieldNames), SELF:LongFieldNames)
-        oTable:MaxRecords        := SELF:GetInt(cTable, nameof(MaxRecords),       SELF:MaxRecords)
-        oTable:RecnoColumn       := SELF:GetString(cTable, nameof(RecnoColumn),   SELF:RecnoColumn)
-        oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable, nameof(TrimTrailingSpaces), SELF:TrimTrailingSpaces)
-        oTable:CompareMemo       := SELF:GetLogic(cTable, nameof(CompareMemo),     SELF:CompareMemo)
+        oTable := SqlTableInfo{cTable, Connection}
+        oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(AllowUpdates),  SELF:AllowUpdates)
+        oTable:DeletedColumn     := SELF:GetString(cTable,  nameof(DeletedColumn), SELF:DeletedColumn)
+        oTable:LongFieldNames    := SELF:GetLogic(cTable,   nameof(LongFieldNames),SELF:LongFieldNames)
+        oTable:MaxRecords        := SELF:GetInt(cTable,     nameof(MaxRecords),    SELF:MaxRecords)
+        oTable:RecnoColumn       := SELF:GetString(cTable,  nameof(RecnoColumn),   SELF:RecnoColumn)
+        oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable,   nameof(TrimTrailingSpaces), SELF:TrimTrailingSpaces)
+        oTable:CompareMemo       := SELF:GetLogic(cTable,   nameof(CompareMemo),   SELF:CompareMemo)
 
         // these fields have no defaults
         oTable:ColumnList           := SELF:GetString(cTable, nameof(oTable:ColumnList), "*")
@@ -69,7 +69,7 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
 
         RETURN oTable
     END METHOD
-    PROTECTED METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
+    OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName
         var oIndex  := SqlIndexInfo{oTable, cIndexName}

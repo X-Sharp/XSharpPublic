@@ -7,6 +7,7 @@
 
 
 using System
+using System.Linq
 using System.Collections.Generic
 using System.Text
 using System.Data
@@ -162,7 +163,6 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             return true
         endif
         return false
-#endregion
     method RollBackTrans as logic
         if self:DbTransaction != null
             self:DbTransaction:Rollback()
@@ -170,8 +170,20 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             return true
         endif
         return false
+#endregion
 
-
+    method Execute(cCommand as string, result out object) as LOGIC
+        result := null
+        try
+            var cmd   := SqlDbCommand{"test", self}
+            cmd:CommandText := cCommand
+            result := cmd:ExecuteScalar()
+        catch e as Exception
+            _lastException := e
+            result := null
+            return false
+        end try
+        return true
 #region Schema Info
     method DeleteTableDef(sTableName as string) as logic
         if self:Schema:ContainsKey(sTableName)
@@ -181,7 +193,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         return false
 #endregion
 #region MetaData
-    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableDef
+    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlTableInfo
         cQuery := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
         longFieldNames := SELF:MetadataProvider:LongFieldNames
         var cmd   := SqlDbCommand{TableName, self}
@@ -193,7 +205,10 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             local colInfo  := SQLHelpers.GetColumnInfoFromSchemaRow(row, fieldNames, longFieldNames) as DbColumnInfo
             oCols:Add(SqlDbColumnDef{ colInfo })
         next
-        var oTd   := SqlDbTableDef{TableName, oCols}
+        var oTd   := SqlTableInfo{TableName, SELF}
+        foreach var oCol in oCols
+            oTd:Columns:Add(oCol)
+        next
         return oTd
 
     method GetStructureForTable(TableName as string, oTable as SqlTableInfo, cColumnNames as string) as SqlDbTableDef
@@ -202,17 +217,11 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         endif
         try
             var table := self:Provider:QuoteIdentifier(TableName)
-            local list as IList<string>
-            if ! String.IsNullOrEmpty(cColumnNames)
-                list := String2List(cColumnNames)
-            else
-                list := List<string>{}{"*"}
-            endif
             local longFieldNames := TRUE as logic
             if oTable != null
                 longFieldNames := oTable:LongFieldNames
             endif
-            var columnList := oTable:ColumnList
+            var columnList := cColumnNames
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             query := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, query)

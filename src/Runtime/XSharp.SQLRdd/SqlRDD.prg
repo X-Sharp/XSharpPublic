@@ -12,6 +12,7 @@ using System.Text
 using System.Diagnostics
 using System.Reflection
 using System.Data.Common
+using XSharp.RDD.SqlRDD.Providers
 
 begin namespace XSharp.RDD.SqlRDD
 

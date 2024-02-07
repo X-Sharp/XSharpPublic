@@ -10,7 +10,7 @@ using System.Collections.Generic
 using System.Text
 using XSharp.RDD.Support
 using XSharp.RDD.Enums
-
+using XSharp.RDD.SqlRDD.Providers
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>

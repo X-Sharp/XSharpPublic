@@ -5,7 +5,7 @@
 //
 
 using XSharp.RDD.SqlRDD
-
+using XSharp.RDD.SqlRDD.Providers
 /// <summary>
 /// Set the default SqlDbProvider to use for the SqlDb Connections. The default SQLDbProvider is ODBC
 /// </summary>

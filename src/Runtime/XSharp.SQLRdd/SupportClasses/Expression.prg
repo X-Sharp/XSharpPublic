@@ -9,7 +9,7 @@ using System
 using System.Collections.Generic
 using System.Linq
 using System.Text
-
+using XSharp.RDD.SqlRDD.Providers
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>

@@ -11,7 +11,7 @@ using System.Collections.Generic
 using System.Text
 using System.Data
 using System.Data.Common
-
+using XSharp.RDD.SqlRDD.Providers
 
 begin namespace XSharp.RDD.SqlRDD
 

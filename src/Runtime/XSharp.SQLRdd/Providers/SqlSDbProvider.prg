@@ -12,7 +12,7 @@ using System.Text
 using System.Data.Common
 using XSharp.RDD.Enums
 using XSharp.RDD.Support
-begin namespace XSharp.RDD.SqlRDD
+begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
 /// The Provider class.

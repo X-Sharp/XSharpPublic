@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -7714,6 +7714,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ClipperOverloaded" xml:space="preserve">
   <value>Type '{0}' cannot have an overloaded method '{1}' because one of the overloads has the CLIPPER calling convention.</value>
  </data>
-  
+  <data name="ERR_UnexpectedNamedArgument" xml:space="preserve">
+  <value>The named argument '{0}' is not supported when creating typed arrays.</value>
+ </data>
+
 </root>
 

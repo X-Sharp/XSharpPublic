@@ -2092,6 +2092,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ParameterInit = 9120,
         ERR_LambdaConversionNotPossible = 9121,
         WRN_FileWideMemVarName = 9122,
+        ERR_UnexpectedNamedArgument = 9123,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

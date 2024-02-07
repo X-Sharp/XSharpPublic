@@ -98,9 +98,11 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         DbConnection    := Provider:CreateConnection()
         TimeOut         := 15
         KeepOpen        := DefaultCached
-        SELF:MetadataProvider := IniMetaDataProvider{SELF}
         if @@Callback != null
             self:CallBack += @@Callback
+            SELF:MetadataProvider := CallBackMetaDataProvider{SELF}
+        ELSE
+            SELF:MetadataProvider := IniMetaDataProvider{SELF}
         endif
         Connections.Add(self)
         self:ForceOpen()
@@ -181,7 +183,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
 #region MetaData
     method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableDef
         cQuery := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
-        longFieldNames := RaiseLogicEvent(self,SqlRDDEventReason.LongFieldNames, TableName, longFieldNames)
+        longFieldNames := SELF:MetadataProvider:LongFieldNames
         var cmd   := SqlDbCommand{TableName, self}
         cmd:CommandText := cQuery
         var schema := cmd:GetSchemaTable()
@@ -210,8 +212,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             if oTable != null
                 longFieldNames := oTable:LongFieldNames
             endif
-            list  := RaiseListEvent(self, SqlRDDEventReason.ColumnList, TableName, list)
-            var columnList := List2String(list)
+            var columnList := oTable:ColumnList
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             query := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, query)

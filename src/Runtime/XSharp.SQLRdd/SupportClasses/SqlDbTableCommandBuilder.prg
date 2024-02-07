@@ -40,13 +40,6 @@ class SqlDbTableCommandBuilder
         local cTable as string
         cTable := self:_cTable
         oTable := MetadataProvider:GetTableInfo(cTable)
-        // Ask the client for MaxRecords
-        oTable:MaxRecords        := Connection:RaiseIntEvent(Connection, SqlRDDEventReason.MaxRecords,cTable, oTable:MaxRecords)
-        oTable:RecnoColumn       := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.RecnoColumn,cTable, oTable:RecnoColumn)
-        oTable:DeletedColumn     := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.DeletedColumn,cTable, oTable:DeletedColumn)
-        oTable:LongFieldNames    := Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.LongFieldNames,cTable, oTable:LongFieldNames)
-        oTable:TrimTrailingSpaces:= Connection:RaiseLogicEvent(Connection, SqlRDDEventReason.TrimTrailingSpaces,cTable, oTable:TrimTrailingSpaces)
-        oTable:ColumnList        := Connection:RaiseStringEvent(Connection, SqlRDDEventReason.ColumnList,cTable, oTable:ColumnList)
         var oTd := Connection:GetStructureForTable(cTable, oTable,oTable:ColumnList)
         self:_oTable := oTable
         oTable:CopyFromTd(oTd)

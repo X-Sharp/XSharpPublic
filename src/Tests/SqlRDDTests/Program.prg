@@ -1,5 +1,6 @@
 ﻿using XSharp.RDD.SqlRDD
 using System.Data
+using System.Data.Common
 using MySql.Data.MySqlClient
 using Advantage.Data
 using System.Collections.Generic
@@ -25,7 +26,7 @@ function Start as void
     //TestCommandOLEDB()
     //TestParametersODBC()
     //TestParametersSQL()
-    //TestTable()
+    TestTable()
     //testCreate()
     wait
     return
@@ -34,6 +35,7 @@ function TestCreate() as void
     local aStruct as array
     SqlDbSetProvider("SQLSERVER")
     var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
+    ? handle
     aStruct := {{"Key","I:+",4,0},{"FirstName","C",10,0},{"LastName","C",10,0},{"DOB","D",8,0}, {"Salary","Y",10,2},{"Married","L",1,0},{"Notes","M",10,0}}
     ? DbCreate("TEST",aStruct,"SQLRDD")
     VoDbUseArea(true, "SQLRDD","TEST","TEST",true, false)
@@ -76,6 +78,7 @@ function TestCreate() as void
 function TestTable() as void
         SqlDbSetProvider("SQLSERVER")
         var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
+        ? handle
         VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
         ? "SetDeleted(TRUE)"
         SetDeleted(true)
@@ -85,6 +88,7 @@ function TestTable() as void
             DbSkip(1)
         enddo
         wait
+        Cls()
         ? "SetDeleted(FALSE)"
         SetDeleted(false)
         dbGoTop()
@@ -93,22 +97,28 @@ function TestTable() as void
             DbSkip(1)
         enddo
         wait
+        Cls()
         ? "Order by address"
         DbSetOrder("Address")
         dbGoTop()
         do while ! Eof() .and. Recno() < 10
             ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3),  FieldGetSym(#Country),  FieldGetSym(#City)
+            FieldPutSym(#Region, "xxx")
             DbSkip(1)
         enddo
+        wait
+        cls()
         ListSeek()
         wait
+        Cls()
         ListBrazil()
+        wait
         VODbCloseArea()
 
 
 function ListSeek as void
         ? "Seek Customer with key ALFKI"
-        DbSetOrder("Customers_Pk")
+        DbSetOrder("PK")
         DbSeek("ALFKI")
         do while ! Eof() .and. Recno() < 10
             ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
@@ -179,8 +189,8 @@ function TestParametersODBC() AS VOID
     RETURN
 
 function TestParametersSQL() AS VOID
-    local conn as SqlDbConnection
-    local cmd  as SqlDbCommand
+    local conn := NULL as SqlDbConnection
+    local cmd  := NULL as SqlDbCommand
     TRY
         SqlDbSetProvider("SQLServer")
         var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
@@ -238,6 +248,7 @@ FUNCTION TestCommand(cDriver as string, cConn as STRING) AS VOID
         SqlDbSetProvider(cDriver)
         var handle := SqlDbOpenConnection(cConn, EventHandler)
         conn := SqlDbGetConnection(handle)
+        ? conn:ConnectionString
         var stmt := SqlDbCreateSqlStatement(handle)
         var res := SqlDbExecuteSQLDirect(stmt, "Select count(*) from Customers")
         ? res
@@ -272,12 +283,13 @@ function TestRDDOLEDB() as void
     testRDD("OLEDB", OleDbConnStr)
 
 function DumpCustomers() as VOID
-    VoDbUseArea(true, "SQLRDD","Select * from Customers","Customers",true, true)
+    VoDbUseArea(true, "SQLRDD","select * from Customers","Customers",true, true)
     ? FCount(), RecCount()
     local nI as DWORD
     For nI  := 1 to FCount()
         ? FieldName(nI), DbFieldInfo(DBS_ALIAS, nI)
     next
+    DbGoTop()
     DO WHILE ! Eof()
         ? Recno()
         For nI  := 1 to Min(FCount(),5)
@@ -326,7 +338,9 @@ Function DumpConnection(conn as SqlDbConnection) as void
         ? "# of Tables : ", tables:Count
         foreach var name in tables
             try
-                DumpStructure(conn:GetStructureForTable(name, true,"*"))
+                DumpStructure(conn:GetStructureForTable(Name, null,"*"))
+            catch
+                nop
             end try
         next
     ENDIF
@@ -342,8 +356,10 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
     local strValue as string
     if e:Value is IList<string>  var listValue
         strValue := List2String(listValue)
-    else
+    elseif e:Value != null
         strValue := e:Value:ToString()
+    else
+        strValue := "NULL"
     endif
     if showEvents
         ? "Event", e:Reason:ToString(), e:Table, strValue
@@ -352,8 +368,10 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
 
 function TestProviders as void
     local oProv as SqlDbProvider
-    local oProvider := MySqlClientFactory.Instance
+    local oProvider := MySqlClientFactory.Instance AS DbProviderFactory
+    ? oProvider:CreateConnection():GetType():FullName
     oProvider := Advantage.Data.Provider.AdsFactory.Instance
+    ? oProvider:CreateConnection():GetType():FullName
     local aTest := {"Advantage","ODBC","OLEDB","SQLSERVER","MySql","ORACLE"}
     foreach strProv as STRING in aTest
         if SqlDbSetProvider(strProv)

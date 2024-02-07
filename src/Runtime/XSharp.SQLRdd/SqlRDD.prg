@@ -753,6 +753,9 @@ class SQLRDD inherit DBFVFP
         else
             workOrder := self:CurrentOrder
         endif
+        if workOrder != null
+            oBag := workOrder:OrderBag
+        endif
         begin switch nOrdinal
         case DBOI_DEFBAGEXT
             info:Result := SqlDbOrderBag.BAG_EXTENSION

@@ -30,6 +30,15 @@ enum SqlRDDEventReason
     member TrimTrailingSpaces
     member IndexTags
     member IndexInfo
+    member AllowUpdates
+    member CompareMemo
+    member UpdatableColumns
+    member KeyColumns
+    member Indexes
+    member Tags
+    member Expression
+    member Condition
+    member Unique
 end enum
 
 

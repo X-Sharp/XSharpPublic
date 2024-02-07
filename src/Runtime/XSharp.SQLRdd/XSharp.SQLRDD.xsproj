@@ -65,10 +65,11 @@
     <Compile Include="Functions\Command.prg" />
     <Compile Include="Functions\Connection.prg" />
     <Compile Include="Functions\Provider.prg" />
+    <Compile Include="Metadata\AbstractMetaDataProvider.prg" />
     <Compile Include="Metadata\CallbackMetaDataProvider.prg" />
     <Compile Include="Metadata\DatabaseMetadataProvider.prg" />
     <Compile Include="Metadata\IniMetaDataProvider.prg" />
-    <Compile Include="Metadata\MetadataProvider.prg" />
+    <Compile Include="Metadata\IMetadataProvider.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Providers\Advantage.prg" />
     <Compile Include="Providers\MySql.prg" />

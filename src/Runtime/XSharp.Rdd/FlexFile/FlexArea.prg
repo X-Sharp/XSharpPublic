@@ -34,7 +34,6 @@ INTERNAL CLASS FlexArea
     PRIVATE _DeadIndexBlocks AS ULStack
     internal LocIndex as LocationIndex
     internal LenIndex as LengthIndex
-    INTERNAL FileName  AS STRING
     PROTECT _lockScheme AS DbfLocking
     PROTECT _blockSize  AS WORD
     internal property LenIndexRoot AS DWORD

@@ -169,8 +169,6 @@ METHOD __CreateToolBar(symTB AS SYMBOL, hwndParent AS PTR, dwID AS DWORD, dwTBSt
 		oImagelist := oTb:ImageList
 		IF oImageList != NULL_OBJECT
 			SendMessage(hWndTB, TB_SETIMAGELIST, 0u, LONGINT(_CAST, oImageList:Handle()))
-
-
 			oImagelist := oTB:HotImageList
 			IF oImageList != NULL_OBJECT
 				SendMessage(hWndTB, TB_SETHOTIMAGELIST, 0u, LONGINT(_CAST, oImageList:Handle()))
@@ -398,18 +396,18 @@ METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeCol
 
 	rbBand:clrFore := GetSysColor(COLOR_BTNTEXT)
 	rbBand:clrBack := GetSysColor(COLOR_BTNFACE)
-	IF IsInstanceOf(oForeColor, #Color)
-		rbBand:clrFore := oForeColor:ColorRef
+	IF oForeColor IS Color VAR oFore
+		rbBand:clrFore := oFore:ColorRef
 	ENDIF
-	IF IsInstanceOf(oBackColor, #Color)
-		rbBand:clrBack := oBackColor:ColorRef
+	IF oBackColor IS Color var oBack
+		rbBand:clrBack := oBack:ColorRef
 	ENDIF
 
 
-	IF IsInstanceOf(oBackBitmap, #Bitmap)
+	IF oBackBitmap IS Bitmap var oBmp
 		rbBand:fMask := _OR(rbBand:fMask, RBBIM_BACKGROUND)
-		rbBand:hbmBack := oBackBitmap:Handle()
-		AAdd(aBackBitmaps, oBackBitmap)
+		rbBand:hbmBack := oBmp:Handle()
+		AAdd(aBackBitmaps, oBmp)
 	ENDIF
 
 
@@ -826,7 +824,7 @@ ASSIGN BandImageList(oImageList)
 		IF (hwnd != NULL)
 			rbi:cbSize := _SIZEOF(_winREBARINFO)
 			rbi:fMask := RBIM_IMAGELIST
-			rbi:himl := IIF(IsInstanceOf(oBandImageList, #ImageList), oBandImageList:Handle(), NULL_PTR)
+			rbi:himl := IIF(oBandImageList IS ImageList, oBandImageList:Handle(), NULL_PTR)
 
 
 			SendMessage(hwnd, RB_SETBARINFO, 0, LONGINT(_CAST, @rbi))
@@ -956,11 +954,11 @@ ASSIGN ButtonSize(oNewButtonSize)
 
 
 	// Only allow the assign if the control has not yet been created
-	IF IsInstanceOfUsual(oNewButtonSize, #Dimension)
+	IF oNewButtonSize IS Dimension var oSize
 		IF hWnd = NULL_PTR .AND. ALen(SELF:aUpdates) > 0
-			SELF:__TryDeferAction(#ButtonSize, MakeLong(oNewButtonSize:Width, oNewButtonSize:Height), NULL_SYMBOL)
+			SELF:__TryDeferAction(#ButtonSize, MakeLong(oSize:Width, oSize:Height), NULL_SYMBOL)
 		ELSE
-			RETURN oButtonSize := oNewButtonSize
+			RETURN oButtonSize := oSize
 		ENDIF
 	ENDIF
 
@@ -2132,7 +2130,6 @@ METHOD SetImageList(uImageList, symType, symTB)
 	LOCAL oTB     	  AS __VOToolBarChild
 	LOCAL dwMsg      AS DWORD
 	LOCAL oImageList AS ImageList
-	LOCAL oBmp       AS Bitmap
 	LOCAL oBMPSize   AS Dimension
 	LOCAL dwCount    AS DWORD
 
@@ -2144,8 +2141,7 @@ METHOD SetImageList(uImageList, symType, symTB)
 		nImageCount := 0
 
 
-		IF IsInstanceOfUsual(uImageList, #Bitmap)
-			oBmp     := uImageList
+		IF uImageList IS Bitmap var oBmp
 			oBMPSize := oBmp:Size
 			dwCount  := DWORD(oBMPSize:Width)
 			IF oButtonSize:Width = 0

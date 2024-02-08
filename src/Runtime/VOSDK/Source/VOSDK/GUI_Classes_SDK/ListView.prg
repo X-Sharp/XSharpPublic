@@ -492,21 +492,28 @@ METHOD DeleteItem(nItem)
 /// <include file="Gui.xml" path="doc/ListView.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 
-
-
-
-	IF !InCollect()
-		// if not in garbage collection, free column and deleted list
-		aColumns := NULL_ARRAY
-		aDeleted := NULL_ARRAY
-		oLargeImageList := NULL_OBJECT
-		oSmallImageList := NULL_OBJECT
-		oStateImageList := NULL_OBJECT
-		oDragImageList := NULL_OBJECT
-	ENDIF
+    if oLargeImageList != NULL_OBJECT
+        oLargeImageList:Destroy()
+        ListView_SetImageList(SELF:Handle(), NULL, LVSIL_NORMAL)
+    	oLargeImageList := NULL_OBJECT
+    endif
+    if oSmallImageList != NULL_OBJECT
+        oSmallImageList:Destroy()
+        ListView_SetImageList(SELF:Handle(), NULL, LVSIL_SMALL)
+    	oSmallImageList := NULL_OBJECT
+    endif
+    if oStateImageList != NULL_OBJECT
+        oStateImageList:Destroy()
+	    ListView_SetImageList(SELF:Handle(), NULL, LVSIL_STATE)
+    	oStateImageList := NULL_OBJECT
+    endif
+    if oDragImageList != NULL_OBJECT
+        oDragImageList:Destroy()
+    	oDragImageList := NULL_OBJECT
+    endif
+	aColumns := NULL_ARRAY
+	aDeleted := NULL_ARRAY
 	SUPER:Destroy()
-
-
 	RETURN NIL
 
 
@@ -2100,9 +2107,9 @@ CONSTRUCTOR(nWidth, xColumnID, kAlignment)
 
 
 	// set the width of the column
-	IF IsInstanceOfUsual(nWidth, #FieldSpec)
-		SELF:nWidth := __GetFSDefaultLength(nWidth)
-		SELF:FieldSpec := nWidth
+	IF nWidth IS FieldSpec VAR oFS
+		SELF:nWidth := __GetFSDefaultLength(oFS)
+		SELF:FieldSpec := oFS
 	ELSEIF IsNumeric(nWidth)
 		SELF:nWidth := nWidth
 	ELSE
@@ -2111,8 +2118,8 @@ CONSTRUCTOR(nWidth, xColumnID, kAlignment)
 
 
 	// set the HyperLabel object for the column
-	IF IsInstanceOfUsual(xColumnID, #HyperLabel)
-		oHyperLabel := xColumnID
+	IF xColumnID IS HyperLabel VAR oHL
+		oHyperLabel := oHL
 	ELSEIF IsString(xColumnID)
 		oHyperLabel := HyperLabel{String2Symbol(xColumnID), xColumnID}
 	ELSEIF IsSymbol(xColumnID)

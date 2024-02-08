@@ -6,12 +6,12 @@ CLASS ImageList INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/ImageList.Add/*" />
-METHOD Add(oImage) 
+METHOD Add(oImage)
 	LOCAL nReturnValue AS INT
 
 
-	
-	
+
+
 
 
 	IF (hImageList != NULL_PTR)
@@ -29,13 +29,13 @@ METHOD Add(oImage)
 
 
 /// <include file="Gui.xml" path="doc/ImageList.AddMask/*" />
-METHOD AddMask(oBitmap, oMaskColor) 
+METHOD AddMask(oBitmap, oMaskColor)
 	//PP-031115 Allow specification of mask color
 	LOCAL dwColor AS DWORD
 
 
-	
-	
+
+
 
 
 	IF (hImageList != NULL_PTR)
@@ -48,11 +48,11 @@ METHOD AddMask(oBitmap, oMaskColor)
 
 
 /// <include file="Gui.xml" path="doc/ImageList.BeginDrag/*" />
-METHOD BeginDrag(nIndex) 
+METHOD BeginDrag(nIndex)
 
 
-	
-	
+
+
 
 
 	Default(@nIndex, 1)
@@ -62,11 +62,11 @@ METHOD BeginDrag(nIndex)
 
 
 /// <include file="Gui.xml" path="doc/ImageList.CreateOverlayImage/*" />
-METHOD CreateOverlayImage(nImageIndex, nListIndex) 
+METHOD CreateOverlayImage(nImageIndex, nListIndex)
 
 
-	
-	
+
+
 
 
 	Default(@nListIndex, 1)
@@ -82,14 +82,9 @@ METHOD CreateOverlayImage(nImageIndex, nListIndex)
 
 /// <include file="Gui.xml" path="doc/ImageList.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
-
-
 	IF (hImageList != NULL_PTR)
 		ImageList_Destroy(hImageList)
 	ENDIF
-
 
 	SUPER:Destroy()
 	//RvdH 050307 Fix for bug #  13023
@@ -103,20 +98,20 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/ImageList.DragEnter/*" />
-METHOD DragEnter(oPoint, oWindow) 
+METHOD DragEnter(oPoint, oWindow)
 	//SE-080520
 	LOCAL liPointY AS LONG
-	
-	
-	liPointY     := oPoint:Y 
+
+
+	liPointY     := oPoint:Y
 	iDragYOffset := oWindow:Size:Height
-	
-	
+
+
    IF WCGetCoordinateSystem() = WCCartesianCoordinates // Cartesian Coordinate System
 	   liPointY := iDragYOffset - liPointY
    ENDIF
-   
-   
+
+
 	hDragWindow  := oWindow:Handle()
 
 
@@ -126,37 +121,37 @@ METHOD DragEnter(oPoint, oWindow)
 
 
 /// <include file="Gui.xml" path="doc/ImageList.DragLeave/*" />
-METHOD DragLeave() 
-	
-	
+METHOD DragLeave()
+
+
 
 
 	RETURN ImageList_DragLeave(hDragWindow)
 
 
 /// <include file="Gui.xml" path="doc/ImageList.DragMove/*" />
-METHOD DragMove(oPoint) 
-	//SE-080520 
+METHOD DragMove(oPoint)
+	//SE-080520
 	LOCAL liPointY AS LONG
-	
-	
-	liPointY := oPoint:Y 
-	
-	
+
+
+	liPointY := oPoint:Y
+
+
    IF WCGetCoordinateSystem() = WCCartesianCoordinates // Cartesian Coordinate System
 	   liPointY := iDragYOffset - liPointY
-   ENDIF  
-   
-   
+   ENDIF
+
+
 	RETURN ImageList_DragMove(oPoint:X, liPointY)
 
 
 /// <include file="Gui.xml" path="doc/ImageList.EndDrag/*" />
-METHOD EndDrag() 
+METHOD EndDrag()
 
 
-	
-	
+
+
 
 
 	ImageList_EndDrag()
@@ -175,7 +170,7 @@ METHOD Handle() AS PTR
 
 
 /// <include file="Gui.xml" path="doc/ImageList.ImageCount/*" />
-ACCESS ImageCount 
+ACCESS ImageCount
 	//PP-031115
 	IF hImageList != Null_Ptr
 		RETURN ImageList_GetImageCount(hImageList)
@@ -184,7 +179,7 @@ ACCESS ImageCount
 
 
 /// <include file="Gui.xml" path="doc/ImageList.ImageSize/*" />
-ACCESS ImageSize 
+ACCESS ImageSize
 LOCAL cx	AS INT
 LOCAL cy	AS INT
 
@@ -203,11 +198,11 @@ RETURN NULL_OBJECT
 
 
 /// <include file="Gui.xml" path="doc/ImageList.ctor/*" />
-CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow) 
+CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow)
 	LOCAL dwCol AS DWORD
 	//PP-040416 Update from S Ebert
-	
-	
+
+
 
 
 	SUPER()
@@ -237,11 +232,11 @@ CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow)
 	ENDIF
 
 
-	
-	
 
 
-	RETURN 
+
+
+	RETURN
 
 
 

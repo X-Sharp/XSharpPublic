@@ -160,6 +160,8 @@ BEGIN NAMESPACE XSharp.RDD
     OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         IF uiOrdinal == DbInfo.DBI_CANPUTREC
             RETURN FALSE
+        ELSEIF uiOrdinal == DbInfo.DBI_ISDBF
+	        RETURN FALSE
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 

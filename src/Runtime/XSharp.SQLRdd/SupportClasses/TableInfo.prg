@@ -21,6 +21,10 @@ begin namespace XSharp.RDD.SqlRDD
 class SqlTableInfo inherit SqlDbTableDef
 
     /// <summary>
+    /// Real tablename of the table in the SQL database. This is the name that is used in the SQL statements
+    /// </summary>
+    property RealName as string auto
+    /// <summary>
     /// List of Indexes and tags
     /// </summary>
     property Indexes     as List<SqlIndexInfo>  auto get private set

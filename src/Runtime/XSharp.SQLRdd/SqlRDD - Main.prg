@@ -53,6 +53,8 @@ partial class SQLRDD inherit DBFVFP
             return false
         endif
         var cQuery := info:FileName
+        var tempFile   := self:_TempFileName(info)
+        self:_FileName := tempFile
         // Determine if this is a single table name or a query (select or Execute)
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(cQuery)
         if (selectStmt)
@@ -111,11 +113,11 @@ partial class SQLRDD inherit DBFVFP
             ENDIF
         next
         var aFields := oFields:ToArray()
-        var tempFile   := self:_TempFileName(info)
         CoreDb.Create(tempFile,aFields,typeof(DBFVFP),true,"SQLRDD-TEMP","",false,false)
         info:ReadOnly := false
         self:_realOpen := false
         super:Open(info)
+        self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
         // Assoctiate the extra properties
         for var nI := 1 to aFields:Length
             var aField := aFields[nI-1]
@@ -184,7 +186,7 @@ partial class SQLRDD inherit DBFVFP
         if result == 0
             foreach var oColumn in self:_Fields
                 if oColumn != null .and. String.Compare(oColumn:ColumnName, fieldName, true) == 0
-                    return oColumn:Ordinal
+                    return oColumn:Ordinal+1
                 endif
             next
         endif
@@ -323,6 +325,8 @@ partial class SQLRDD inherit DBFVFP
     /// <inheritdoc />
     override method Info(uiOrdinal as long, oNewValue as object) as object
         if uiOrdinal == DbInfo.DBI_CANPUTREC
+            return false
+        elseif uiOrdinal == DbInfo.DBI_ISDBF
             return false
         endif
         return super:Info(uiOrdinal, oNewValue)

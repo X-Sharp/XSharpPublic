@@ -19,34 +19,32 @@ begin namespace XSharp.RDD.SqlRDD
 // Private methods and fields
 partial class SQLRDD inherit DBFVFP
 
-    protect _table          as DataTable
-    protect _phantomRow     as DataRow
-    protect _creatingIndex  as logic
-    protect _identityKey    as long
-    protect _identityColumn as DataColumn
-    protect _deletedColumn  as long
-    protect _tableMode      as TableMode
-    protect _rowNum         as long
-    protect _maxRec         as long
-    protect _hasData        as logic
-    protect _realOpen       as logic
-    protect _connection     as SqlDbConnection
-    protect _oTd            as SqlTableInfo
-    protect _obuilder       as SqlDbTableCommandBuilder
-    protect _command        as SqlDbCommand
-    protect _trimValues     as logic
+    private _table          as DataTable
+    private _phantomRow     as DataRow
+    private _creatingIndex  as logic
+    private _identityKey    as long
+    private _identityColumn as DataColumn
+    private _deletedColumn  as long
+    private _tableMode      as TableMode
+    private _hasData        as logic
+    private _realOpen       as logic
+    private _connection     as SqlDbConnection
+    private _oTd            as SqlTableInfo
+    private _obuilder       as SqlDbTableCommandBuilder
+    private _command        as SqlDbCommand
+    private _trimValues     as logic
     private _creating       as logic
     private _cTable         as string
     private _emptyValues    as object[]
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRows    as List<DataRow>
-    private _indexList      as List<SqlDbOrderBag>
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
     internal property Provider       as SqlDbProvider get _connection:Provider
     internal property Command        as SqlDbCommand get _command
+    internal property IndexList      as List<SqlDbOrderBag> get _obuilder:OrderBags
     internal property DataTable as DataTable
         get
             return _table
@@ -108,11 +106,9 @@ partial class SQLRDD inherit DBFVFP
         _connection      := null
         _obuilder        := null
         _deletedColumn   := -1
-        _maxRec          := -1
         self:_trimValues := true // trim String Valuess
         self:DeleteOnClose := TRUE
         _updatedRows     := List<DataRow>{}
-        _indexList       := List<SqlDbOrderBag>{}
         _keyColumns      := List<RddFieldInfo>{}
         _updatableColumns:= List<RddFieldInfo>{}
         return

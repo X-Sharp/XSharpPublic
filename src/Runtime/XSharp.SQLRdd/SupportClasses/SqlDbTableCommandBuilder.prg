@@ -25,8 +25,8 @@ class SqlDbTableCommandBuilder
     protected _orderBags      as List<SqlDbOrderBag>
     property Connection as SqlDbConnection  get _connection
     property Provider   as SqlDbProvider    get Connection:Provider
+    property OrderBags  as List<SqlDbOrderBag> get _orderBags
     Property MetadataProvider as IMetadataProvider get Connection:MetadataProvider
-
 
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
@@ -58,6 +58,8 @@ class SqlDbTableCommandBuilder
         if oProdIndex != null
             if oProdIndex:Tags:Count > 0
                 var oBag := SqlDbOrderBag{cIndex, _oRdd}
+                oBag:LogicalName := cIndex
+                oBag:FileName := System.IO.Path.GetFileNameWithoutExtension(_oRdd:FileName)
                 foreach var tag in oProdIndex:Tags
                     var oTag := SqlDbOrder{_oRdd, tag:Name, tag:Expression, oBag}
                     if !String.IsNullOrEmpty(tag:Condition)
@@ -87,7 +89,7 @@ class SqlDbTableCommandBuilder
         local selectedBag := null as SqlDbOrderBag
         var currentOrder := _oRdd:CurrentOrder
         var bagName   := orderInfo:BagName
-        if (!String.IsNullOrEmpty(bagName))
+        if !String.IsNullOrEmpty(bagName)
             foreach var bag in self:_orderBags
                 if String.Compare(bag:FileName, bagName, true) == 0
                     selectedBag := bag
@@ -121,23 +123,46 @@ class SqlDbTableCommandBuilder
             endif
         endif
         return currentOrder
+    method CombineWhereClauses(whereList as List<String>) as string
+        if whereList:Count == 0
+            return ""
+        endif
+        if whereList:Count == 1
+            return whereList:First()
+        endif
+        local strResult := "" as string
+        local first := true as logic
+
+        foreach var whereClause in whereList
+            if first
+                first := false
+            else
+                strResult += SqlDbProvider.AndClause
+            endif
+            strResult += "( " + whereClause + " )"
+        next
+        return strResult
     method BuildSqlStatement(sWhereClause as string) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var currentOrder := _oRdd:CurrentOrder
+        var whereClauses := List<String>{}
         sb:Append(Provider:QuoteIdentifier(self:_cTable))
         if currentOrder != null
             scopeWhere := currentOrder:GetScopeClause()
         endif
-        if ! String.IsNullOrEmpty(sWhereClause) .or. ! String.IsNullOrEmpty(scopeWhere)
-            if String.IsNullOrEmpty(scopeWhere)
-                nop
-            elseif String.IsNullOrEmpty(sWhereClause)
-                sWhereClause := scopeWhere
-            else
-                sWhereClause += SqlDbProvider.AndClause + scopeWhere
-            endif
-            sWhereClause :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
+        if ! String.IsNullOrEmpty(sWhereClause)
+            whereClauses:Add(sWhereClause)
+        endif
+        if ! String.IsNullOrEmpty(scopeWhere)
+            whereClauses:Add(scopeWhere)
+        endif
+        if ! String.IsNullOrEmpty(_oTable:ServerFilter)
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+        sWhereClause := self:CombineWhereClauses(whereClauses)
+        sWhereClause :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
+        if ! String.IsNullOrEmpty(sWhereClause)
             sb:Append(SqlDbProvider.WhereClause)
             sb:Append(sWhereClause)
         endif
@@ -153,8 +178,7 @@ class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.TopCountMacro, _oTable:MaxRecords:ToString())
         sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList())
         sb:Replace(SqlDbProvider.TableNameMacro, selectStmt)
-
-        return _connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        return sb:ToString()
     method ColumnList() as string
         var sb := StringBuilder{}
         var list  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}

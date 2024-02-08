@@ -4,7 +4,6 @@
 // Created for   :
 // WorkStation   : LEDA
 
-
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -29,13 +28,13 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
         RETURN
     END CONSTRUCTOR
     METHOD ReadDefaults() AS VOID
-        LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(LongFieldNames), TRUE)
-        AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(AllowUpdates), TRUE)
-        MaxRecords          := SELF:GetInt(DefaultSection,    nameof(MaxRecords), 1000)
-        RecnoColumn         := SELF:GetString(DefaultSection, nameof(RecnoColumn), "")
-        DeletedColumn       := SELF:GetString(DefaultSection, nameof(DeletedColumn), "")
-        TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(TrimTrailingSpaces), TRUE)
-        CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(CompareMemo), TRUE)
+        LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), TRUE)
+        AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.AllowUpdates), TRUE)
+        MaxRecords          := SELF:GetInt(DefaultSection,    nameof(SqlRDDEventReason.MaxRecords), 1000)
+        RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), "")
+        DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), "")
+        TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), TRUE)
+        CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), TRUE)
         RETURN
     END METHOD
 
@@ -43,20 +42,22 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
         oTable := SqlTableInfo{cTable, Connection}
-        oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(AllowUpdates),  SELF:AllowUpdates)
-        oTable:DeletedColumn     := SELF:GetString(cTable,  nameof(DeletedColumn), SELF:DeletedColumn)
-        oTable:LongFieldNames    := SELF:GetLogic(cTable,   nameof(LongFieldNames),SELF:LongFieldNames)
-        oTable:MaxRecords        := SELF:GetInt(cTable,     nameof(MaxRecords),    SELF:MaxRecords)
-        oTable:RecnoColumn       := SELF:GetString(cTable,  nameof(RecnoColumn),   SELF:RecnoColumn)
-        oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable,   nameof(TrimTrailingSpaces), SELF:TrimTrailingSpaces)
-        oTable:CompareMemo       := SELF:GetLogic(cTable,   nameof(CompareMemo),   SELF:CompareMemo)
+        oTable:RealName          := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RealName),      cTable)
+        oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.AllowUpdates),  SELF:AllowUpdates)
+        oTable:DeletedColumn     := SELF:GetString(cTable,  nameof(SqlRDDEventReason.DeletedColumn), SELF:DeletedColumn)
+        oTable:LongFieldNames    := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.LongFieldNames),SELF:LongFieldNames)
+        oTable:MaxRecords        := SELF:GetInt(cTable,     nameof(SqlRDDEventReason.MaxRecords),    SELF:MaxRecords)
+        oTable:RecnoColumn       := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RecnoColumn),   SELF:RecnoColumn)
+        oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.TrimTrailingSpaces), SELF:TrimTrailingSpaces)
+        oTable:CompareMemo       := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.CompareMemo),   SELF:CompareMemo)
 
         // these fields have no defaults
-        oTable:ColumnList           := SELF:GetString(cTable, nameof(oTable:ColumnList), "*")
-        oTable:UpdatableColumns     := SELF:GetString(cTable, "UpdatableColumns", "*")
-        oTable:KeyColumns           := SELF:GetString(cTable, "KeyColumns", "*")
+         oTable:ServerFilter         := SELF:GetString(cTable, nameof(SqlRDDEventReason.ServerFilter), "")
+         oTable:ColumnList           := SELF:GetString(cTable, nameof(SqlRDDEventReason.ColumnList), "*")
+         oTable:UpdatableColumns     := SELF:GetString(cTable, nameof(SqlRDDEventReason.UpdatableColumns), "*")
+         oTable:KeyColumns           := SELF:GetString(cTable, nameof(SqlRDDEventReason.KeyColumns), "*")
 
-        var cIndexes := SELF:GetString(cTable, "Indexes", "")
+        var cIndexes := SELF:GetString(cTable, nameof(SqlRDDEventReason.Indexes), "")
         if (!String.IsNullOrEmpty(cIndexes))
             var aIndexes := cIndexes:Split(c",")
             foreach var cIndex in aIndexes
@@ -73,7 +74,7 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName
         var oIndex  := SqlIndexInfo{oTable, cIndexName}
-        var cTags    := SELF:GetString(cSection, "Tags", "")
+        var cTags    := SELF:GetString(cSection, nameof(SqlRDDEventReason.Tags), "")
         if (!String.IsNullOrEmpty(cTags))
             var aTags := cTags:Split(c",")
             foreach var cTag in aTags
@@ -85,9 +86,9 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
     PROTECTED METHOD GetTagInfo(oIndex as SqlIndexInfo, tagName as STRING) AS SqlIndexTagInfo
         var cSection := "Tag:"+oIndex:Name+":"+tagName
         var oTag := SqlIndexTagInfo{oIndex, tagName}
-        oTag:Expression    := SELF:GetString(cSection, nameof(oTag:Expression ), "")
-        oTag:Condition     := SELF:GetString(cSection, nameof(oTag:Condition ), "")
-        oTag:Unique        := SELF:GetLogic(cSection, nameof(oTag:Unique ), FALSE)
+        oTag:Expression    := SELF:GetString(cSection, nameof(SqlRDDEventReason.Expression ), "")
+        oTag:Condition     := SELF:GetString(cSection, nameof(SqlRDDEventReason.Condition ), "")
+        oTag:Unique        := SELF:GetLogic(cSection, nameof(SqlRDDEventReason.Unique ), FALSE)
         oIndex:Tags:Add(oTag)
         RETURN oTag
     END METHOD
@@ -104,3 +105,4 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
 
 END CLASS
 END NAMESPACE // XSharp.SQLRdd.Metadata
+

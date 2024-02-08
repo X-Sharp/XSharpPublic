@@ -35,29 +35,31 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
 
     PRIVATE METHOD TableFields() as List<RddFieldInfo>
         var cols := List<RddFieldInfo>{}
-        cols:Add(RddFieldInfo{nameof(TableName),"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(LongFieldNames),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(AllowUpdates),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(MaxRecords),"N", 10,0})
-        cols:Add(RddFieldInfo{nameof(RecnoColumn),"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(DeletedColumn),"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(TrimTrailingSpaces),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(CompareMemo),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(Indexes),"C", 250,0})
-        cols:Add(RddFieldInfo{nameof(ColumnList),"C", 255,0})
-        cols:Add(RddFieldInfo{nameof(KeyColumns),"C", 255,0})
-        cols:Add(RddFieldInfo{nameof(UpdatableColumns),"C", 255,0})
+        cols:Add(RddFieldInfo{TableName,"C", 50,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.RealName),"C", 255,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Indexes),"C", 250,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.ServerFilter),"C", 255,0})
         RETURN cols
     END METHOD
     PRIVATE METHOD IndexFields() AS List<RddFieldInfo>
         var cols := List<RddFieldInfo>{}
-        cols:Add(RddFieldInfo{nameof(TableName)         ,"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(IndexName)         ,"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(Ordinal)           ,"N", 10,0})
-        cols:Add(RddFieldInfo{nameof(IndexTag)          ,"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(IndexExpression)   ,"C", 250,0})
-        cols:Add(RddFieldInfo{nameof(IndexCondition)    ,"C", 250,0})
-        cols:Add(RddFieldInfo{nameof(IndexUnique)       ,"L", 1,0})
+        cols:Add(RddFieldInfo{TableName         ,"C", 50,0})
+        cols:Add(RddFieldInfo{IndexName         ,"C", 50,0})
+        cols:Add(RddFieldInfo{Ordinal           ,"N", 10,0})
+        cols:Add(RddFieldInfo{TagName           ,"C", 50,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0})
         RETURN cols
     END METHOD
 
@@ -183,19 +185,20 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                 SELF:CreateDictionary()
             endif
         ENDIF
+        // Read the defaults from the database
         var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{DefaultSection}'"
         var cmd := SqlDbCommand{"DEFAULT", Connection}
         cmd:CommandText := sql
         local tbl := cmd:GetDataTable("TABLE") as DataTable
         if tbl:Rows:Count > 0
             var row := tbl:Rows[0]
-            LongFieldNames      := (LOGIC) row[nameof(LongFieldNames)]
-            AllowUpdates        := (LOGIC) row[nameof(AllowUpdates)]
-            MaxRecords          := Convert.ToInt32(row[nameof(MaxRecords)])
-            RecnoColumn         := (STRING) row[nameof(RecnoColumn)]
-            DeletedColumn       := (STRING) row[nameof(DeletedColumn)]
-            TrimTrailingSpaces  := (LOGIC) row[nameof(TrimTrailingSpaces)]
-            CompareMemo         := (LOGIC) row[nameof(CompareMemo)]
+            LongFieldNames      := AsLogic (row[nameof(SqlRDDEventReason.LongFieldNames)])
+            AllowUpdates        := AsLogic (row[nameof(SqlRDDEventReason.AllowUpdates)])
+            MaxRecords          := AsNumber(row[nameof(SqlRDDEventReason.MaxRecords)])
+            RecnoColumn         := AsString(row[nameof(SqlRDDEventReason.RecnoColumn)])
+            DeletedColumn       := AsString(row[nameof(SqlRDDEventReason.DeletedColumn)])
+            TrimTrailingSpaces  := AsLogic (row[nameof(SqlRDDEventReason.TrimTrailingSpaces)])
+            CompareMemo         := AsLogic (row[nameof(SqlRDDEventReason.CompareMemo)])
         endif
         RETURN
     END METHOD
@@ -232,16 +235,18 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         local tbl := cmd:GetDataTable("TABLE") as DataTable
         if tbl:Rows:Count > 0
             var row := tbl:Rows[0]
-            oTable:LongFieldNames      := AsLogic(row[nameof(LongFieldNames)])
-            oTable:AllowUpdates        := AsLogic( row[nameof(AllowUpdates)])
-            oTable:MaxRecords          := AsNumber(row[nameof(MaxRecords)])
-            oTable:RecnoColumn         := AsString(row[nameof(RecnoColumn)])
-            oTable:DeletedColumn       := AsString(row[nameof(DeletedColumn)])
-            oTable:TrimTrailingSpaces  := AsLogic(row[nameof(TrimTrailingSpaces)])
-            oTable:CompareMemo         := AsLogic(row[nameof(CompareMemo)])
-            oTable:UpdatableColumns    := AsString(row[nameof(oTable:UpdatableColumns)])
-            oTable:KeyColumns          := AsString(row[nameof(oTable:KeyColumns)])
-            var cIndexes               := AsString(row[nameof(Indexes)])
+            oTable:RealName            := AsString(row[nameof(SqlRDDEventReason.RealName)])
+            oTable:LongFieldNames      := AsLogic (row[nameof(SqlRDDEventReason.LongFieldNames)])
+            oTable:AllowUpdates        := AsLogic (row[nameof(SqlRDDEventReason.AllowUpdates)])
+            oTable:MaxRecords          := AsNumber(row[nameof(SqlRDDEventReason.MaxRecords)])
+            oTable:RecnoColumn         := AsString(row[nameof(SqlRDDEventReason.RecnoColumn)])
+            oTable:DeletedColumn       := AsString(row[nameof(SqlRDDEventReason.DeletedColumn)])
+            oTable:TrimTrailingSpaces  := AsLogic (row[nameof(SqlRDDEventReason.TrimTrailingSpaces)])
+            oTable:CompareMemo         := AsLogic (row[nameof(SqlRDDEventReason.CompareMemo)])
+            oTable:UpdatableColumns    := AsString(row[nameof(SqlRDDEventReason.UpdatableColumns)])
+            oTable:KeyColumns          := AsString(row[nameof(SqlRDDEventReason.KeyColumns)])
+            oTable:ServerFilter        := AsString(row[nameof(SqlRDDEventReason.ServerFilter)])
+            var cIndexes               := AsString(row[nameof(SqlRDDEventReason.Indexes)])
             if (!String.IsNullOrEmpty(cIndexes))
                 var aIndexes := cIndexes:Split(c",")
                 foreach var cIndex in aIndexes
@@ -266,10 +271,10 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         var oIndex  := SqlIndexInfo{oTable, cIndexName}
         if tbl:Rows:Count > 0
             foreach oRow as DataRow in tbl:Rows
-                var oTag := SqlIndexTagInfo{oIndex, AsString(oRow[nameof(IndexTag)])}
-                oTag:Expression    := AsString(oRow[nameof(IndexExpression)])
-                oTag:Condition     := AsString(oRow[nameof(IndexCondition)])
-                oTag:Unique        := AsLogic(oRow[nameof(IndexUnique)])
+                var oTag := SqlIndexTagInfo{oIndex, AsString(oRow[nameof(TagName)])}
+                oTag:Expression    := AsString(oRow[nameof(SqlRDDEventReason.Expression)])
+                oTag:Condition     := AsString(oRow[nameof(SqlRDDEventReason.Condition)])
+                oTag:Unique        := AsLogic(oRow[nameof(SqlRDDEventReason.Unique)])
                 oIndex:Tags:Add(oTag)
             next
         endif
@@ -279,18 +284,11 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
 #region constants
     INTERNAL CONST TableDictionary   := "xs_tableinfo" as string
     INTERNAL CONST IndexDictionary   := "xs_indexinfo" as string
-    INTERNAL const Indexes           := "Indexes" as string
-    internal const DefaultSection    := "Default" as string
-    internal const TableName         := "TableName" as string
-    internal const IndexName         := "IndexName" as string
-    internal const Ordinal           := "Ordinal" as string
-    internal const IndexTag          := "IndexTag" as string
-    internal const IndexExpression   := "IndexExpression" as string
-    internal const IndexCondition    := "IndexCondition" as string
-    internal const IndexUnique       := "IndexUnique" as string
-    internal const UpdatableColumns  := "UpdatableColumns" as string
-    internal const KeyColumns        := "KeyColumns" as string
-    internal const ColumnList        := "ColumnList" as string
+    INTERNAL CONST DefaultSection    := "default" as string
+    INTERNAL CONST TableName         := nameof(TableName) as string
+    INTERNAL CONST IndexName         := nameof(IndexName) as string
+    INTERNAL CONST TagName           := nameof(TagName) as string
+    INTERNAL CONST Ordinal           := nameof(Ordinal) as string
 
 #endregion
 END CLASS

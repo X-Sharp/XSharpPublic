@@ -16,6 +16,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// </summary>
 class SqlDbOrderBag
     property FileName         as string auto
+    property LogicalName      as string auto
     property ProductionIndex  as logic auto
     property Rdd              as SQLRDD auto
     property Tags             as List<SqlDbOrder> auto
@@ -25,7 +26,7 @@ class SqlDbOrderBag
         get
             var path := (string) self:Rdd:Info(DBI_FULLPATH, null)
             path     := System.IO.Path.GetDirectoryName(path)
-            return System.IO.Path.Combine(path, self:FileName, BAG_EXTENSION)
+            return System.IO.Path.Combine(path, self:FileName)+ BAG_EXTENSION
         end get
 
     end property

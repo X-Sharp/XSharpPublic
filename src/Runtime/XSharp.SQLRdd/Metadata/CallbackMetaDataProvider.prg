@@ -35,6 +35,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
         oTable := SqlTableInfo{cTable, Connection}
+        oTable:RealName          := SELF:GetString(cTable, SqlRDDEventReason.RealName, cTable)
         oTable:AllowUpdates      := SELF:GetLogic(cTable, SqlRDDEventReason.AllowUpdates,  SELF:AllowUpdates)
         oTable:DeletedColumn     := SELF:GetString(cTable, SqlRDDEventReason.DeletedColumn, SELF:DeletedColumn)
         oTable:LongFieldNames    := SELF:GetLogic(cTable, SqlRDDEventReason.LongFieldNames, SELF:LongFieldNames)
@@ -42,6 +43,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         oTable:RecnoColumn       := SELF:GetString(cTable, SqlRDDEventReason.RecnoColumn,   SELF:RecnoColumn)
         oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable, SqlRDDEventReason.TrimTrailingSpaces, SELF:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(cTable, SqlRDDEventReason.CompareMemo,     SELF:CompareMemo)
+        oTable:ServerFilter      := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter, "")
 
         // these fields have no defaults
         oTable:ColumnList           := SELF:GetString(cTable, SqlRDDEventReason.ColumnList, "*")

@@ -23,15 +23,42 @@ partial class SQLRDD inherit DBFVFP
 
     internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
 
-
     /// <inheritdoc />
     override method OrderCreate(orderInfo as DbOrderCreateInfo ) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
-            // todo: Create Order in tablemode, query mode uses DBFVFP driver for indices
-            result := false
+            var bagName     := orderInfo:BagName
+            var tagName     := (string) orderInfo:Order
+            if String.IsNullOrEmpty(bagName)
+                bagName := System.IO.Path.GetFileNameWithoutExtension(SELF:_FileName)
+            endif
+            // Find orderbag or create one
+            local oBag := null as SqlDbOrderBag
+            foreach var bag in self:IndexList
+                if String.Compare(bag:FileName, bagName, true) == 0
+                    oBag := bag
+                    exit
+                endif
+            next
+            if oBag == null
+                oBag := SqlDbOrderBag{bagName, SELF}
+                self:IndexList:Add(oBag)
+            endif
+            var oTag := SqlDbOrder{SELF, tagName, orderInfo:Expression, oBag}
+            if orderInfo:OrdCondInfo != null
+                if !String.IsNullOrEmpty(orderInfo:OrdCondInfo:ForExpression)
+                    oTag:Condition := orderInfo:OrdCondInfo:ForExpression
+                endif
+            endif
+            oBag:Tags:Add(oTag)
+            CurrentOrder := oTag
+            self:_hasData := false
+            return TRUE
         else
+            // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
+            self:_creatingIndex := TRUE
             result := super:OrderCreate(orderInfo)
+            self:_creatingIndex := FALSE
         endif
         return result
 
@@ -41,8 +68,13 @@ partial class SQLRDD inherit DBFVFP
         if self:_tableMode == TableMode.Table
             // todo: Rebuild Orders in tablemode, query mode uses DBFVFP driver for indices
             result := false
+            // todo: Create Order in tablemode, query mode uses DBFVFP driver for indices
+            SELF:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE)
         else
+            // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
+            SELF:_creatingIndex := TRUE
             result := super:OrderListRebuild()
+            SELF:_creatingIndex := FALSE
         endif
         return result
 
@@ -122,7 +154,7 @@ partial class SQLRDD inherit DBFVFP
                 if hasBagName
                     info:Result := 0
                 else
-                    info:Result := self:_indexList:Count
+                    info:Result := self:IndexList:Count
                 endif
             else
                 info:Result := oBag:Tags:Count
@@ -134,18 +166,18 @@ partial class SQLRDD inherit DBFVFP
                 info:Result := String.Empty
             endif
         case DBOI_BAGCOUNT
-            info:Result := self:_indexList:Count
+            info:Result := self:IndexList:Count
         case DBOI_BAGNAME
-            if _indexList:Count > 0
+            if IndexList:Count > 0
                 if info:Order is long var nOrder
-                    if nOrder >= 1 .and. nOrder <= _indexList:Count
-                        var bag := self:_indexList[nOrder-1]
-                        info:Result := bag:FileName
+                    if nOrder >= 1 .and. nOrder <= IndexList:Count
+                        var bag := self:IndexList[nOrder-1]
+                        info:Result := bag:LogicalName
                     else
                         info:Result := ""
                     endif
                 elseif workOrder != null
-                    info:Result := workOrder:FileName
+                    info:Result := workOrder:Name
                 else
                     info:Result :=String.Empty
                 endif

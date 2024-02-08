@@ -224,7 +224,6 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             var columnList := cColumnNames
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
-            query := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, query)
             var oTd := GetStructureForQuery(query,TableName, longFieldNames)
             oTd:SelectStatement := selectStmt
             oTd:EmptySelectStatement := query

@@ -20,8 +20,10 @@ end enum
 enum SqlRDDEventReason
     member ConnectionString
     member CommandText
+    member RealName
     member MaxRecords
     member ColumnList
+    member ServerFilter
     member OrderByClause
     member WhereClause
     member RecnoColumn

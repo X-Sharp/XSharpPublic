@@ -252,10 +252,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
 
-
-            // If the Key Expression contains only a Field Name
-
-            IF SELF:_oRdd IS DBFVFPSQL
+            // Is this a real DBF (the SQL subclasses are not)
+            var oIsDbf := SELF:_oRdd:Info(DbInfo.DBI_ISDBF, NULL)
+            local lRddIsDbf as LOGIC
+            IF oIsDbf is LOGIC var lIsDbf
+                lRddIsDbf := lIsDbf
+            ELSE
+                lRddIsDbf := FALSE
+            ENDIF
+            IF ! lRddIsDbf
                 SELF:_SingleField := -1
             ELSE
                 SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1

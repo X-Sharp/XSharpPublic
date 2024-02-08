@@ -177,7 +177,7 @@ partial class SQLRDD inherit DBFVFP
                         info:Result := ""
                     endif
                 elseif workOrder != null
-                    info:Result := workOrder:Name
+                    info:Result := workOrder:OrderBag:LogicalName
                 else
                     info:Result :=String.Empty
                 endif

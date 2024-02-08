@@ -118,10 +118,17 @@ partial class SQLRDD inherit DBFVFP
         self:_realOpen := false
         super:Open(info)
         self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
-        // Assoctiate the extra properties
+        // Associate the extra properties
         for var nI := 1 to aFields:Length
             var aField := aFields[nI-1]
             self:FieldInfo(nI, DBS_COLUMNINFO, aField)
+        next
+        // Add long field names
+        for var nI := 1 to aFields:Length
+            var aField := aFields[nI-1]
+            if !_fieldNames:ContainsKey(aField:ColumnName)
+                _fieldNames:Add(aField:ColumnName, nI)
+            endif
         next
         if self:_tableMode == TableMode.Table
             cQuery := self:_oTd:EmptySelectStatement
@@ -175,22 +182,6 @@ partial class SQLRDD inherit DBFVFP
             self:_Hot := true
         endif
         return lResult
-    end method
-
-    /// <inheritdoc />
-    override method FieldIndex(fieldName as string) as int
-        local result as int
-        // SUPER:FieldIndex uses a dictionary, so that is fast, If that fails then
-        // check again for colum names.
-        result := super:FieldIndex(fieldName)
-        if result == 0
-            foreach var oColumn in self:_Fields
-                if oColumn != null .and. String.Compare(oColumn:ColumnName, fieldName, true) == 0
-                    return oColumn:Ordinal+1
-                endif
-            next
-        endif
-        return result
     end method
 
     /// <inheritdoc />

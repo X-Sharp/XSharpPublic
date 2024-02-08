@@ -80,6 +80,7 @@
     <Compile Include="Providers\SqlServer.prg" />
     <Compile Include="SqlRDD.prg" />
     <Compile Include="SupportClasses\Abstract.prg" />
+    <Compile Include="SupportClasses\ExtensionMethods.prg" />
     <Compile Include="SupportClasses\ColumnDef.prg" />
     <Compile Include="SupportClasses\Defines.prg" />
     <Compile Include="SupportClasses\Enums.prg" />

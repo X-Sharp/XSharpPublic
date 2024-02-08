@@ -481,16 +481,7 @@ STATIC CLASS RDDExtensions
             RETURN TRUE
         END SWITCH
         RETURN FALSE
-    STATIC METHOD IsLong(SELF eType AS DbFieldType ) AS LOGIC
-        SWITCH eType
-        CASE DbFieldType.Memo
-        CASE DbFieldType.Picture
-        CASE DbFieldType.General
-        CASE DbFieldType.VarBinary
-        CASE DbFieldType.Blob
-            RETURN TRUE
-        END SWITCH
-        RETURN FALSE
+
     STATIC METHOD IsBinary(SELF eType AS DbFieldType ) AS LOGIC
         SWITCH eType
         CASE DbFieldType.Integer

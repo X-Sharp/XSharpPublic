@@ -3,16 +3,16 @@ CLASS HorizontalSelectionSlider INHERIT SelectionSlider
 
 
 /// <include file="Gui.xml" path="doc/HorizontalSelectionSlider.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
 	SELF:SetStyle(TBS_HORZ)
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -23,16 +23,16 @@ CLASS HorizontalSlider INHERIT Slider
 
 
 /// <include file="Gui.xml" path="doc/HorizontalSlider.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
 	SELF:SetStyle(TBS_HORZ)
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -44,9 +44,9 @@ CLASS SelectionSlider INHERIT Slider
 
 
 /// <include file="Gui.xml" path="doc/SelectionSlider.ClearSelection/*" />
-METHOD ClearSelection() 
-	
-	
+METHOD ClearSelection()
+
+
 
 
 	IF (hWnd != NULL_PTR)
@@ -59,27 +59,27 @@ METHOD ClearSelection()
 
 
 /// <include file="Gui.xml" path="doc/SelectionSlider.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
 	SELF:SetStyle(TBS_ENABLESELRANGE)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SelectionSlider.SelectionRange/*" />
-ACCESS SelectionRange 
+ACCESS SelectionRange
 	LOCAL hSlider AS PTR
 	LOCAL nMin AS LONGINT
 	LOCAL nMax AS LONGINT
 
 
-	
-	
+
+
 
 
 	hSlider := SELF:Handle()
@@ -91,16 +91,16 @@ ACCESS SelectionRange
 
 
 /// <include file="Gui.xml" path="doc/SelectionSlider.SelectionRange/*" />
-ASSIGN SelectionRange(oNewSelectionRange) 
-	
-	
+ASSIGN SelectionRange(oNewSelectionRange)
+
+
 
 
 	SendMessage(SELF:Handle(), TBM_SETSELSTART, 0, oNewSelectionRange:Min)
 	SendMessage(SELF:Handle(), TBM_SETSELEND, 1, oNewSelectionRange:Max)
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -112,18 +112,18 @@ CLASS Slider INHERIT ScrollBar
 
 
 /// <include file="Gui.xml" path="doc/Slider.BlockSize/*" />
-ACCESS BlockSize 
-	
-	
+ACCESS BlockSize
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), TBM_GETPAGESIZE, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/Slider.BlockSize/*" />
-ASSIGN BlockSize(nBlockSize) 
-	
-	
+ASSIGN BlockSize(nBlockSize)
+
+
 
 
 	IF !IsLong(nBlockSize) .OR. nBlockSize < 0
@@ -132,18 +132,18 @@ ASSIGN BlockSize(nBlockSize)
 	SendMessage(SELF:Handle(), TBM_SETPAGESIZE, 0, nBlockSize)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Slider.ChannelBoundingBox/*" />
-ACCESS ChannelBoundingBox 
+ACCESS ChannelBoundingBox
 	LOCAL strucRect IS _winRect
 	LOCAL oOrigin AS Point
 	LOCAL oSize AS Dimension
 
 
-	
-	
+
+
 
 
 	SendMessage(SELF:Handle(), TBM_GETCHANNELRECT, 0, LONGINT(_CAST, @strucRect))
@@ -155,9 +155,9 @@ ACCESS ChannelBoundingBox
 
 
 /// <include file="Gui.xml" path="doc/Slider.ClearTicks/*" />
-METHOD ClearTicks() 
-	
-	
+METHOD ClearTicks()
+
+
 
 
 	IF (hWnd != NULL_PTR)
@@ -169,11 +169,11 @@ METHOD ClearTicks()
 
 
 /// <include file="Gui.xml" path="doc/Slider.Create/*" />
-METHOD Create() 
+METHOD Create()
 	LOCAL wMin, wMax AS WORD
 	IF (SUPER:Create() != NULL_PTR)
-		wMin := WORD(_AND(oRange:Min,0xFFFF)) 
-		wMax := WORD(_AND(oRange:Max,0xFFFF)) 
+		wMin := WORD(_AND(oRange:Min,0xFFFF))
+		wMax := WORD(_AND(oRange:Max,0xFFFF))
 		SendMessage(hWnd, TBM_SETRANGE, 1, MakeLong(wMin, wMax))
 	ENDIF
 
@@ -182,18 +182,18 @@ METHOD Create()
 
 
 /// <include file="Gui.xml" path="doc/Slider.GetTickPos/*" />
-METHOD GetTickPos(nIndex) 
-	
-	
+METHOD GetTickPos(nIndex)
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), TBM_GETTIC, 0, nIndex)
 
 
 /// <include file="Gui.xml" path="doc/Slider.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
@@ -204,18 +204,18 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	SELF:Range := Range{}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Slider.Range/*" />
-ACCESS Range 
+ACCESS Range
 	LOCAL hSlider AS PTR
 	LOCAL nMin AS LONGINT
 	LOCAL nMax AS LONGINT
 
 
-	
-	
+
+
 
 
 	hSlider := SELF:Handle()
@@ -227,12 +227,12 @@ ACCESS Range
 
 
 /// <include file="Gui.xml" path="doc/Slider.Range/*" />
-ASSIGN Range(oNewRange) 
-	
-	
+ASSIGN Range(oNewRange)
 
 
-	IF !IsInstanceOfUsual(oNewRange, #Range)
+
+
+	IF !(oNewRange IS Range)
 		WCError{#Range, #Slider, __WCSTypeError, oNewRange, 1}:Throw()
 	ENDIF
 
@@ -241,27 +241,27 @@ ASSIGN Range(oNewRange)
 	SendMessage(SELF:Handle(), TBM_SETRANGEMAX, 1, oNewRange:Max)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Slider.SetTickPos/*" />
-METHOD SetTickPos(nPosition) 
-	
-	
+METHOD SetTickPos(nPosition)
+
+
 
 
 	RETURN LOGIC(_CAST, SendMessage(SELF:Handle(), TBM_SETTIC, 0, nPosition))
 
 
 /// <include file="Gui.xml" path="doc/Slider.ThumbBoundingBox/*" />
-ACCESS ThumbBoundingBox 
+ACCESS ThumbBoundingBox
 	LOCAL strucRect IS _winRect
 	LOCAL oOrigin AS Point
 	LOCAL oSize AS Dimension
 
 
-	
-	
+
+
 
 
 	SendMessage(SELF:Handle(), TBM_GETTHUMBRECT, 0, LONGINT(_CAST, @strucRect))
@@ -273,37 +273,37 @@ ACCESS ThumbBoundingBox
 
 
 /// <include file="Gui.xml" path="doc/Slider.ThumbLength/*" />
-ACCESS ThumbLength 
-	
-	
+ACCESS ThumbLength
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), TBM_GETTHUMBLENGTH, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/Slider.ThumbLength/*" />
-ASSIGN ThumbLength(nThumbLength) 
-	
-	
+ASSIGN ThumbLength(nThumbLength)
+
+
 
 
 	SendMessage(SELF:Handle(), TBM_SETTHUMBLENGTH, nThumbLength, 0)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Slider.ThumbPosition/*" />
-ACCESS ThumbPosition 
-	
-	
+ACCESS ThumbPosition
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), TBM_GETPOS, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/Slider.ThumbPosition/*" />
-ASSIGN ThumbPosition(nThumbPosition) 
-	
-	
+ASSIGN ThumbPosition(nThumbPosition)
+
+
 
 
 	IF !IsLong(nThumbPosition)
@@ -312,22 +312,22 @@ ASSIGN ThumbPosition(nThumbPosition)
 	SendMessage(SELF:Handle(), TBM_SETPOS, 1, nThumbPosition)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Slider.TickAlignment/*" />
-ACCESS TickAlignment 
-	
-	
+ACCESS TickAlignment
+
+
 
 
 	RETURN symTickAlignment
 
 
 /// <include file="Gui.xml" path="doc/Slider.TickAlignment/*" />
-ASSIGN TickAlignment(symNewTickAlignment) 
-	
-	
+ASSIGN TickAlignment(symNewTickAlignment)
+
+
 
 
 	IF IsInstanceOf(SELF, #HorizontalSlider) .OR. ISINSTANCEOF(SELF, #HorizontalSelectionSlider)
@@ -355,13 +355,13 @@ ASSIGN TickAlignment(symNewTickAlignment)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Slider.TickCount/*" />
-ACCESS TickCount 
-	
-	
+ACCESS TickCount
+
+
 
 
 	IF hWnd != 0
@@ -373,18 +373,18 @@ ACCESS TickCount
 
 
 /// <include file="Gui.xml" path="doc/Slider.UnitSize/*" />
-ACCESS UnitSize 
-	
-	
+ACCESS UnitSize
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), TBM_GETLINESIZE, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/Slider.UnitSize/*" />
-ASSIGN UnitSize(nUnitSize) 
-	
-	
+ASSIGN UnitSize(nUnitSize)
+
+
 
 
 	IF !IsLong(nUnitSize) .OR. nUnitSize < 0
@@ -393,7 +393,7 @@ ASSIGN UnitSize(nUnitSize)
 	SendMessage(SELF:Handle(), TBM_SETLINESIZE, 0, nUnitSize)
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 
@@ -402,16 +402,16 @@ CLASS VerticalSelectionSlider INHERIT SelectionSlider
 
 
 /// <include file="Gui.xml" path="doc/VerticalSelectionSlider.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
 	SELF:SetStyle(TBS_VERT)
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -422,16 +422,16 @@ CLASS VerticalSlider INHERIT Slider
 
 
 /// <include file="Gui.xml" path="doc/VerticalSlider.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
 	SELF:SetStyle(TBS_VERT)
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS

@@ -319,7 +319,7 @@ METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 
 
 	//SE-070430
-	IF IsInstanceOfUsual(xPage,#Window)
+	IF (xPage IS Window)
 		//PP-030909 XP theme background on tab page
 		xPage:EnableThemeDialogTexture(ETDT_ENABLETAB)
 
@@ -362,7 +362,7 @@ METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 	ELSE
 		hBefore := GetWindow(SELF:Handle(), GW_HWNDPREV)
 	ENDIF
-	IF IsInstanceOfUsual(xPage,#Window)
+	IF (xPage IS Window)
 		SetWindowPos(xPage:Handle(), hBefore, 0, 0, 0, 0, _OR(SWP_NOSIZE, SWP_NOMOVE))
 	ENDIF
 	RETURN lReturnValue
@@ -425,7 +425,7 @@ METHOD CreatePageInstance(symPageClass, symTabName)
 
 
 	oPage := CreateInstance(symPageClass, SELF:Owner)
-	IF IsInstanceOfUsual(oPage, #Window)
+	IF (oPage IS Window)
 		oPage:EnableThemeDialogTexture(ETDT_ENABLETAB)
 	ENDIF
 
@@ -841,9 +841,9 @@ ASSIGN ImageList(oNewImageList)
 
 
 
-	IF IsInstanceOfUsual(oNewImageList, #ImageList)
-		TabCtrl_SetImageList(SELF:Handle(), oNewImageList:Handle())
-		oImageList := oNewImageList
+	IF oNewImageList IS ImageList var oIL
+		TabCtrl_SetImageList(SELF:Handle(), oIL:Handle())
+		oImageList := oIL
 	ENDIF
 
 
@@ -854,7 +854,7 @@ ASSIGN ImageList(oNewImageList)
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle, FALSE)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, WC_TABCONTROL, kStyle, FALSE)
@@ -885,7 +885,7 @@ METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage)
 
 
 	//PP-030909 XP theme background on tab page
-	IF IsInstanceOfUsual(xPage,#Window)
+	IF  (xPage IS Window)
 		xPage:EnableThemeDialogTexture(ETDT_ENABLETAB)
 	ENDIF
 
@@ -951,7 +951,7 @@ METHOD IsTabPage(xSymbolOrPosition)
     dwCount := ALen(aPages)
     FOR dwI := 1 UPTO dwCount
         IF Eval(cbBlock, aPages[dwI])
-            IF IsInstanceOfUsual(aPages[dwI, TAB_PAGE], #Window)
+            IF (aPages[dwI, TAB_PAGE] IS Window)
                 RETURN TRUE
             ENDIF
             EXIT

@@ -4,9 +4,9 @@ CLASS MultiLineEdit INHERIT Edit
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.Dispatch/*" />
-METHOD Dispatch(oEvent) 
-	     
-	     
+METHOD Dispatch(oEvent)
+
+
 	LOCAL oEvt := oEvent AS @@Event
 
 
@@ -17,7 +17,7 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.GetLine/*" />
-METHOD GetLine(nLineNumber, nMaxLength) 
+METHOD GetLine(nLineNumber, nMaxLength)
    //SE-070525
 	LOCAL hHandle AS PTR
 	LOCAL dwIndex AS DWORD
@@ -70,13 +70,13 @@ METHOD GetLine(nLineNumber, nMaxLength)
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.GetLineLength/*" />
-METHOD GetLineLength(nLineNumber) 
+METHOD GetLineLength(nLineNumber)
 	LOCAL hHandle AS PTR
 	LOCAL dwIndex AS DWORD
 
 
-	
-	
+
+
 
 
 	IF IsNil(nLineNumber) .OR. (IsLong(nLineNumber) .AND. nLineNumber==0)
@@ -98,26 +98,26 @@ METHOD GetLineLength(nLineNumber)
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
+
 
 
 	//PP-030902
 	// dwStyle := _Or(dwStyle, WS_HSCROLL)
 	SUPER( oOwner, xID, oPoint, oDimension, kStyle )
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		SELF:SetStyle(ES_MultiLine)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.LineCount/*" />
-ACCESS LineCount 
-	
-	
+ACCESS LineCount
+
+
 
 
 	IF SELF:ValidateControl()
@@ -129,9 +129,9 @@ ACCESS LineCount
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.LineDown/*" />
-METHOD LineDown ( ) 
-	
-	
+METHOD LineDown ( )
+
+
 
 
 	IF SELF:ValidateControl()
@@ -143,9 +143,9 @@ METHOD LineDown ( )
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.LineUp/*" />
-METHOD LineUp ( ) 
-	
-	
+METHOD LineUp ( )
+
+
 
 
 	IF SELF:ValidateControl()
@@ -157,9 +157,9 @@ METHOD LineUp ( )
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.PageDown/*" />
-METHOD PageDown ( ) 
-	
-	
+METHOD PageDown ( )
+
+
 
 
 	IF SELF:ValidateControl()
@@ -171,9 +171,9 @@ METHOD PageDown ( )
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.PageUp/*" />
-METHOD PageUp() 
-	
-	
+METHOD PageUp()
+
+
 
 
 	IF SELF:ValidateControl()
@@ -185,9 +185,9 @@ METHOD PageUp()
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.ScrollHorizontal/*" />
-METHOD ScrollHorizontal(nChars) 
-	
-	
+METHOD ScrollHorizontal(nChars)
+
+
 
 
 	IF !IsLong(nChars)
@@ -204,9 +204,9 @@ METHOD ScrollHorizontal(nChars)
 
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.ScrollVertical/*" />
-METHOD ScrollVertical(nLines) 
-	
-	
+METHOD ScrollVertical(nLines)
+
+
 
 
 	IF !IsLong(nLines)

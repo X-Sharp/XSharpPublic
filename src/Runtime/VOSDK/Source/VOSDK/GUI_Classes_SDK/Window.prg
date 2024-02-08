@@ -2409,7 +2409,7 @@ METHOD Draw(oDrawObject)
 
 
     IF !IsArray(oDrawObject)
-        IF !IsInstanceOfUsual(oDrawObject,#DrawObject)
+        IF !(oDrawObject IS DrawObject)
             WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:Throw()
         ENDIF
         oDraw := oDrawObject
@@ -2419,7 +2419,7 @@ METHOD Draw(oDrawObject)
         aDraw := oDrawObject
         cnt := ALen(aDraw)
         FOR i:=1 TO cnt
-            IF !IsInstanceOfUsual(aDraw[i],#DrawObject)
+            IF !(aDraw[i] IS DrawObject)
                 WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:Throw()
             ENDIF
             oDraw := aDraw[i]
@@ -2520,7 +2520,7 @@ METHOD EnableCloseBox(uValue)
         IF GetSystemMenu(oWindow:Handle(),FALSE)<>NULL_PTR
             EXIT
         ELSE
-            IF IsInstanceOfUsual(oWindow:Owner, #Window)
+            IF (oWindow:Owner IS Window)
                 oWindow := oWindow:Owner
             ELSE
                 oWindow := NULL_OBJECT
@@ -2620,7 +2620,7 @@ METHOD EnableHelp(lEnable, oHelpDisplay)
 
 
     IF !IsNil(oHelpDisplay)
-        IF !IsInstanceOfUsual(oHelpDisplay,#HelpDisplay)
+        IF !(oHelpDisplay IS HelpDisplay)
             WCError{#EnableHelp,#Window,__WCSTypeError,oHelpDisplay,2}:Throw()
         ENDIF
     ENDIF
@@ -3130,7 +3130,7 @@ ASSIGN HyperLabel(oHL)
 
 
 
-    IF IsInstanceOfUsual(oHL,#HyperLabel)
+    IF (oHL IS HyperLabel)
         oHyperLabel := oHL
         SELF:StatusMessage(oHL, MESSAGEPERMANENT)
     ENDIF
@@ -3754,7 +3754,7 @@ ACCESS Origin
 
 /// <include file="Gui.xml" path="doc/Window.Origin/*" />
 ASSIGN Origin(oPoint)
-    IF !IsInstanceOfUsual(oPoint, #Point)
+    IF !(oPoint IS Point)
         WCError{#Origin,#Window,__WCSTypeError,oPoint,1}:Throw()
     ENDIF
     SELF:oOrigin := Point{oPoint:x, oPoint:y}
@@ -3776,7 +3776,7 @@ ACCESS Owner
 /// <include file="Gui.xml" path="doc/Window.Owner/*" />
 ASSIGN Owner(oWindow)
     // DHer: 18/12/2008
-    IF IsInstanceOfUsual(oWindow, #Window)
+    IF (oWindow IS Window)
         SELF:oParent := oWindow
         SetParent(SELF:Handle(),oWindow:Handle())
     ENDIF
@@ -3863,7 +3863,7 @@ METHOD PaintBoundingBox(oBoundingBox, kPaintMode)
 
 
 
-    IF !IsInstanceOfUsual(oBoundingBox, #BoundingBox)
+    IF !(oBoundingBox IS BoundingBox)
         WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:Throw()
     ENDIF
 
@@ -3989,7 +3989,7 @@ METHOD Print(oDevice)
 
 
     IF !IsNil(oDevice)
-        IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
+        IF !(oDevice IS PrintingDevice)
             WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:Throw()
         ENDIF
         oPrintingDev := oDevice
@@ -4207,11 +4207,11 @@ METHOD Scroll(oDimension, oBoundingBox, lClip)
     LOCAL oPoint AS Point
 
 
-    IF !IsInstanceOfUsual(oDimension,#Dimension)
+    IF !(oDimension IS Dimension)
         WCError{#Scroll,#Window,__WCSTypeError,oDimension,1}:Throw()
     ENDIF
     IF !IsNil(oBoundingBox)
-        IF !IsInstanceOfUsual(oBoundingBox,#BoundingBox)
+        IF !(oBoundingBox IS BoundingBox)
             WCError{#Scroll,#Window,__WCSTypeError,oBoundingBox,2}:Throw()
         ENDIF
         oBB:=oBoundingBox
@@ -4272,7 +4272,7 @@ METHOD SetAlignStartSize(oSize)
     IF IsNil(oSize) .AND. ! IsObject(oSize)
         GetClientRect(SELF:Handle(4), @sRect)
         aAlignes[1,2] := Dimension{sRect:right - sRect:left, sRect:bottom - sRect:top}
-    ELSEIF IsInstanceOfUsual(oSize, #Dimension)
+    ELSEIF (oSize IS Dimension)
         aAlignes[1,2] := oSize
     ENDIF
     RETURN SELF
@@ -4520,10 +4520,10 @@ ASSIGN Size(oDimension)
     //RvdH 070428 In the past you could send in a BoundingBox and it worked
     //            mysteriously. Make sure we handle that as well (although it
     //				  is not documented to do so.
-    IF IsInstanceOfUsual(oDimension, #BoundingBox)
-        oDimension := oDimension:Size
+    IF oDimension IS BoundingBox var oBB
+        oDimension := oBB:Size
     ENDIF
-    IF !IsInstanceOfUsual(oDimension, #Dimension)
+    IF !(oDimension IS Dimension)
         WCError{#Size,#Window,__WCSTypeError,oDimension,1}:Throw()
     ENDIF
 
@@ -4662,7 +4662,7 @@ METHOD TextPrint(cText, oPoint)
     IF !IsString(cText)
         WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:Throw()
     ENDIF
-    IF !IsInstanceOfUsual(oPoint,#Point)
+    IF !(oPoint IS Point)
         WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:Throw()
     ENDIF
 

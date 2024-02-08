@@ -6,13 +6,13 @@ CLASS TextObject INHERIT DrawObject
 
 
 /// <include file="Gui.xml" path="doc/TextObject.BoundingBox/*" />
-ACCESS BoundingBox 
+ACCESS BoundingBox
 	LOCAL oOldFont AS Font
 	LOCAL oDim AS Dimension
 
 
-	
-	
+
+
 
 
 	IF (oWnd != NULL_OBJECT)
@@ -27,21 +27,21 @@ ACCESS BoundingBox
 
 
 /// <include file="Gui.xml" path="doc/TextObject.Color/*" />
-ACCESS Color 
-	
-	
+ACCESS Color
+
+
 
 
 	RETURN oColor
 
 
 /// <include file="Gui.xml" path="doc/TextObject.Color/*" />
-ASSIGN Color(oNewColor) 
-	
-	
+ASSIGN Color(oNewColor)
 
 
-	IF !IsInstanceOfUsual(oNewColor,#Color)
+
+
+	IF !(oNewColor IS Color)
 		WCError{#Color,#TextObject,__WCSTypeError,oNewColor,1}:Throw()
 	ENDIF
 
@@ -51,8 +51,8 @@ ASSIGN Color(oNewColor)
 
 /// <include file="Gui.xml" path="doc/TextObject.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -67,18 +67,18 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/TextObject.DisplayText/*" />
-ACCESS DisplayText 
-	
-	
+ACCESS DisplayText
+
+
 
 
 	RETURN cText
 
 
 /// <include file="Gui.xml" path="doc/TextObject.DisplayText/*" />
-ASSIGN DisplayText(cNewText) 
-	
-	
+ASSIGN DisplayText(cNewText)
+
+
 
 
 	IF !IsString(cNewText)
@@ -90,7 +90,7 @@ ASSIGN DisplayText(cNewText)
 
 
 /// <include file="Gui.xml" path="doc/TextObject.Draw/*" />
-METHOD Draw() 
+METHOD Draw()
 	LOCAL hDC AS PTR
 	LOCAL hLastRop AS PTR
 	LOCAL strucLogBrush IS _WinLogBrush
@@ -129,21 +129,21 @@ METHOD Draw()
 
 
 /// <include file="Gui.xml" path="doc/TextObject.Font/*" />
-ACCESS Font 
-	
-	
+ACCESS Font
+
+
 
 
 	RETURN oFont
 
 
 /// <include file="Gui.xml" path="doc/TextObject.Font/*" />
-ASSIGN Font(oNewFont) 
-	
-	
+ASSIGN Font(oNewFont)
 
 
-	IF !IsInstanceOfUsual(oNewFont,#Font)
+
+
+	IF !(oNewFont IS Font)
 		WCError{#Font,#TextObject,__WCSTypeError,oNewFont,1}:Throw()
 	ENDIF
 
@@ -152,13 +152,13 @@ ASSIGN Font(oNewFont)
 
 
 /// <include file="Gui.xml" path="doc/TextObject.ctor/*" />
-CONSTRUCTOR(oPoint, cText, oFont, oColor) 
+CONSTRUCTOR(oPoint, cText, oFont, oColor)
 	LOCAL strucColor AS WCColor
 	LOCAL dwColor AS DWORD
 
 
-	
-	
+
+
 
 
 	IF IsNil(oPoint)
@@ -177,7 +177,7 @@ CONSTRUCTOR(oPoint, cText, oFont, oColor)
 
 
 	IF !IsNil(oFont)
-		IF !IsInstanceOfUsual(oFont,#Font)
+		IF !(oFont IS Font)
 			WCError{#Init,#TextObject,__WCSTypeError,oFont,3}:Throw()
 		ENDIF
 		SELF:oFont:=oFont
@@ -187,22 +187,22 @@ CONSTRUCTOR(oPoint, cText, oFont, oColor)
 
 
 	IF !IsNil(oColor)
-		IF !IsInstanceOfUsual(oColor,#Color)
+		IF !(oColor IS Color)
 			WCError{#Init,#TextObject,__WCSTypeError,oColor,4}:Throw()
 		ENDIF
 		SELF:oColor := oColor
 	ELSE
 		dwColor:=GetSysColor(Color_WindowText)
-#ifdef __VULCAN__		
+#ifdef __VULCAN__
 		strucColor := (WCColor PTR) @dwColor
-#else		
+#else
 		strucColor := @dwColor
-#endif		
+#endif
 		SELF:oColor := Color{strucColor:bRed,strucColor:bBlue,strucColor:bGreen}
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS

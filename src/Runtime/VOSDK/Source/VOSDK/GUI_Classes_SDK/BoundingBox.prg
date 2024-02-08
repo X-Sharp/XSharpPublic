@@ -2,134 +2,134 @@
 CLASS BoundingBox INHERIT VObject
 	PROTECT _Origin AS Point
 	PROTECT _Extent AS Point
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Bottom/*" />
-ACCESS Bottom 
+ACCESS Bottom
 	LOCAL retVal AS INT
-	
-	
+
+
 	IF WCGetCoordinateSystem() == WCCartesianCoordinates
 		retVal := _Origin:Y
 	ELSE
 		retVal := _Extent:Y
 	ENDIF
-	
-	
+
+
 	RETURN retVal
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Bottom/*" />
-ASSIGN Bottom(iCoord) 
-	
-	
+ASSIGN Bottom(iCoord)
+
+
 	IF WCGetCoordinateSystem() == WCCartesianCoordinates
 		_Origin:Y := iCoord
 	ELSE
 		_Extent:Y := iCoord
 	ENDIF
-	
-	
-	RETURN 
-	
-	
+
+
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.ConvertToScreen/*" />
-METHOD ConvertToScreen(oWindow) 
+METHOD ConvertToScreen(oWindow)
 	//SE-041001 from S. Ebert
 	_Origin:ConvertToScreen(oWindow)
 	_Extent:ConvertToScreen(oWindow)
 	RETURN TRUE
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Extent/*" />
-ACCESS Extent 
+ACCESS Extent
 	RETURN _Extent
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Extent/*" />
-ASSIGN Extent(oPoint) 
-	RETURN _Extent := oPoint 
-	
-	
+ASSIGN Extent(oPoint)
+	RETURN _Extent := oPoint
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Height/*" />
-ACCESS Height 
-	RETURN _Extent:Y - _Origin:Y 
-	
-	
+ACCESS Height
+	RETURN _Extent:Y - _Origin:Y
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Height/*" />
-ASSIGN Height(iCoord) 
+ASSIGN Height(iCoord)
 	_Extent:Y := _Origin:Y + iCoord
-	RETURN 
-	
-	
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.ctor/*" />
-CONSTRUCTOR(oPoint, xPoint) 
+CONSTRUCTOR(oPoint, xPoint)
 	SUPER()
 	_Origin := Point{oPoint:X, oPoint:Y}
 	_Extent := Point{0, 0}
-	
-	
-	IF IsInstanceOfUsual(xPoint, #Dimension)
+
+
+	IF xPoint IS Dimension
 		SELF:Size := xPoint
-	ELSEIF IsInstanceOfUsual(xPoint, #Point)
-		_Extent := Point{xPoint:X, xPoint:Y}
+	ELSEIF xPoint IS Point VAR oPT
+		_Extent := Point{oPT:X, oPT:Y}
 	ENDIF
-	
-	
-	RETURN 
-	
-	
+
+
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Left/*" />
-ACCESS Left 
+ACCESS Left
 	RETURN _Origin:X
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Left/*" />
-ASSIGN Left(iCoord) 
+ASSIGN Left(iCoord)
 	RETURN _Origin:X := iCoord
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Origin/*" />
-ACCESS Origin 
+ACCESS Origin
 	RETURN _Origin
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Origin/*" />
-ASSIGN Origin(oPoint) 
+ASSIGN Origin(oPoint)
 	RETURN _Origin := Point{oPoint:X, oPoint:Y}
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.PointInside/*" />
-METHOD PointInside(oPoint) 
+METHOD PointInside(oPoint)
 	LOCAL lReturnValue AS LOGIC
-	
-	
+
+
 	IF oPoint:X < _Origin:X
 		lReturnValue := FALSE
 		//PP-030929 bottom boundary should not be included: see X explanation below
@@ -145,111 +145,111 @@ METHOD PointInside(oPoint)
 	ELSE
 		lReturnValue := TRUE
 	ENDIF
-	
-	
+
+
 	RETURN lReturnValue
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Right/*" />
-ACCESS Right 
-	
-	
+ACCESS Right
+
+
 	RETURN _Extent:X
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Right/*" />
-ASSIGN Right(iCoord) 
-	
-	
+ASSIGN Right(iCoord)
+
+
 	RETURN _Extent:X := iCoord
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Size/*" />
-ACCESS Size 
-	
-	
-	
-	
+ACCESS Size
+
+
+
+
 	RETURN Dimension{SELF:Width, SELF:Height}
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Size/*" />
-ASSIGN Size(oDimension) 
-	
-	
-	
-	
+ASSIGN Size(oDimension)
+
+
+
+
 	SELF:Width := oDimension:Width
 	SELF:Height := oDimension:Height
-	
-	
-	RETURN 
-	
-	
+
+
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Top/*" />
-ACCESS Top 
+ACCESS Top
 	LOCAL retVal AS INT
 	IF WCGetCoordinateSystem() == WCCartesianCoordinates
 		retVal := _Extent:Y
 	ELSE
 		retVal := _Origin:Y
 	ENDIF
-	
-	
+
+
 	RETURN retVal
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Top/*" />
-ASSIGN Top(iCoord) 
+ASSIGN Top(iCoord)
 	IF WCGetCoordinateSystem() == WCCartesianCoordinates
 		_Extent:Y := iCoord
 	ELSE
 		_Origin:Y := iCoord
 	ENDIF
-	
-	
-	RETURN 
-	
-	
+
+
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Union_/*" />
-METHOD Union_(oBB) 
+METHOD Union_(oBB)
 	LOCAL oNewOrigin, oNewExtent AS Point
-	oNewOrigin 	:= Point{Min(_Origin:X, oBB:origin:X), Min(_Origin:Y, oBB:origin:Y)} 
+	oNewOrigin 	:= Point{Min(_Origin:X, oBB:origin:X), Min(_Origin:Y, oBB:origin:Y)}
 	oNewExtent	:= Point{Max(_Extent:X, oBB:extent:X), Max(_Extent:Y, oBB:extent:Y)}
 	RETURN BoundingBox{ oNewOrigin, oNewExtent}
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Width/*" />
-ACCESS Width 
+ACCESS Width
 	RETURN _Extent:X - _Origin:X
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BoundingBox.Width/*" />
-ASSIGN Width(iCoord) 
-	
-	
+ASSIGN Width(iCoord)
+
+
 	_Extent:X := _Origin:X + iCoord
-	RETURN 
-	
-	
+	RETURN
+
+
 END CLASS
 
 

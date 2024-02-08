@@ -15,10 +15,10 @@ METHOD Add(oImage)
 
 
 	IF (hImageList != NULL_PTR)
-		IF IsInstanceOfUsual(oImage, #Bitmap)
-			nReturnValue := ImageList_Add(hImageList, oImage:Handle(), NULL_PTR) + 1
-		ELSEIF IsInstanceOfUsual(oImage, #Icon)
-			nReturnValue := ImageList_AddIcon(hImageList, oImage:Handle()) + 1
+		IF oImage IS Bitmap var oBmp
+			nReturnValue := ImageList_Add(hImageList, oBmp:Handle(), NULL_PTR) + 1
+		ELSEIF oImage IS Icon var oIcon
+			nReturnValue := ImageList_AddIcon(hImageList, oIcon:Handle()) + 1
 		ELSE
 			WCError{#Add, #ImageList, __WCSTypeError, oImage, 1}:Throw()
 		ENDIF
@@ -39,8 +39,8 @@ METHOD AddMask(oBitmap, oMaskColor)
 
 
 	IF (hImageList != NULL_PTR)
-		IF IsInstanceOfUsual(oMaskColor,#color)
-			dwColor := oMaskColor:ColorRef
+		IF oMaskColor IS color var oCol
+			dwColor := oCol:ColorRef
 		ENDIF
 		RETURN ImageList_AddMasked(hImageList, oBitmap:Handle(), dwColor) + 1
 	ENDIF
@@ -227,7 +227,7 @@ CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(oImage, #Bitmap) .or. IsInstanceOfUsual(oImage, #Icon)
+	IF (oImage IS Bitmap) .or. (oImage IS Icon)
 		SELF:Add(oImage)
 	ENDIF
 

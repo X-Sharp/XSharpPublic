@@ -4,7 +4,7 @@ CLASS SysLink INHERIT TextControl
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __StripTags(sHTML AS STRING) AS VOID STRICT 
+	METHOD __StripTags(sHTML AS STRING) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL iPosOpen, iPosClose AS DWORD
 
@@ -23,7 +23,7 @@ CLASS SysLink INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/SysLink.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	LOCAL cClass AS USUAL
 	LOCAL lResID AS LOGIC
 	LOCAL dwInfoSize, dw AS DWORD
@@ -32,7 +32,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 
 
 	Default(@lDataAware, TRUE)
-	lResID := IsInstanceOfUsual(xID,#ResourceID)
+	lResID := (xID IS ResourceID)
 	IF !lResID
 		dwInfoSize := GetFileVersionInfoSize(String2Psz("COMCTL32.DLL"), @dw)
 		pData := MemAlloc(dwInfoSize)
@@ -61,7 +61,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS

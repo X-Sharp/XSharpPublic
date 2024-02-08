@@ -53,8 +53,8 @@ ASSIGN CurrentText(cNewText)
 
 
 	cCurrentText := SELF:__SetText(cNewText)
-	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-		uValue := SELF:FieldSpec:Val(cCurrentText)
+	IF SELF:FieldSpec IS FieldSpec VAR oFS
+		uValue := oFS:Val(cCurrentText)
 	ELSE
 		uValue := cCurrentText
 	ENDIF
@@ -147,7 +147,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 	ENDIF
 
 
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		IF !IsInstanceOf(SELF, #ComboBoxEx)
 			SELF:SetStyle(_OR(WS_CLIPSIBLINGS,WS_CLIPCHILDREN), FALSE)
 			dwStyle := _OR(WS_BORDER, WS_VSCROLL)

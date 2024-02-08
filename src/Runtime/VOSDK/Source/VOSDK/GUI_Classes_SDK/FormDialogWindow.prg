@@ -142,10 +142,10 @@ METHOD HelpRequest(oHelpRequestEvent)
 	LOCAL cHelpContext AS STRING
 
 
-	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
+	IF oHelpRequestEvent IS HelpRequestEvent VAR oHRE ;
 		.and. SELF:HelpDisplay!=NULL_OBJECT;
-		.and. oHelpRequestEvent:Helptype==HELPCONTROL
-		IF oHelpRequestEvent:ItemID==3244
+		.and. oHRE:Helptype==HELPCONTROL
+		IF oHRE:ItemID==3244
 			IF SELF:Hyperlabel!=NULL_OBJECT ;
 				.and. !((cHelpContext:=SELF:Hyperlabel:HelpContext)==NULL_STRING)
 				SELF:HelpDisplay:Show(cHelpContext)

@@ -8,7 +8,7 @@ CLASS DragDropServer INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __DragAppendFiles(hDrop AS PTR, acFilesToDrop AS ARRAY) AS PTR STRICT 
+	METHOD __DragAppendFiles(hDrop AS PTR, acFilesToDrop AS ARRAY) AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL strDropFile AS __WCDropFiles
 	LOCAL dwLen AS DWORD
@@ -18,8 +18,8 @@ CLASS DragDropServer INHERIT VObject
 	LOCAL dwPathNameLength AS DWORD
 
 
-	
-	
+
+
 
 
 	iAlen := INT(_CAST, ALen(acFilesToDrop))
@@ -51,13 +51,13 @@ CLASS DragDropServer INHERIT VObject
 
 
  /// <exclude />
-METHOD __DragCreateMemHandle() AS PTR STRICT 
+METHOD __DragCreateMemHandle() AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL hDrop AS PTR
 	LOCAL strDropFile AS __WCDropFiles
 	LOCAL strPoint IS _winPoint
-	
-	
+
+
 
 
 	GetCursorPos(@strPoint) //Get the Drop mouse position
@@ -75,13 +75,13 @@ METHOD __DragCreateMemHandle() AS PTR STRICT
 
 
  /// <exclude />
-METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT 
+METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	LOCAL DIM aKeyStates[256] AS BYTE
 
 
-	
-	
+
+
 
 
 	GetKeyboardState(@aKeyStates)
@@ -95,8 +95,8 @@ METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 
 /// <include file="Gui.xml" path="doc/DragDropServer.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -112,12 +112,12 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/DragDropServer.ctor/*" />
-CONSTRUCTOR(oOwner) 
-	
-	
+CONSTRUCTOR(oOwner)
 
 
-	IF !IsInstanceOfUsual(oOwner,#Window)
+
+
+	IF !(oOwner IS Window)
 		WCError{#Init,#DragDropServer,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
@@ -125,8 +125,8 @@ CONSTRUCTOR(oOwner)
 	__LoadShellDll()
 
 
-	
-	
+
+
 	oParent := oOwner
 
 
@@ -138,11 +138,11 @@ CONSTRUCTOR(oOwner)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DragDropServer.StartDrag/*" />
-METHOD StartDrag(acFilesToDrag) 
+METHOD StartDrag(acFilesToDrag)
 	LOCAL strPoint IS _winPoint
 	LOCAL hWndSubject AS PTR
 	LOCAL hWndClient AS PTR
@@ -153,8 +153,8 @@ METHOD StartDrag(acFilesToDrag)
 	LOCAL hDragCursor AS PTR
 
 
-	
-	
+
+
 
 
 	IF !IsArray(acFilesToDrag)

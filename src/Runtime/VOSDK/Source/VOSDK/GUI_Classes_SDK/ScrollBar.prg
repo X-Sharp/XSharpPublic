@@ -3,16 +3,16 @@ CLASS HorizontalScrollBar INHERIT ScrollBar
 
 
 /// <include file="Gui.xml" path="doc/HorizontalScrollBar.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 	SUPER(oOwner,xID,oPoint,oDimension)
 	IF hWnd==0 //if xID is not a resourceID
 		SELF:SetStyle(SBS_HORZ)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
@@ -30,7 +30,7 @@ CLASS ScrollBar INHERIT Control
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __SetColors(_hDc AS PTR) AS PTR STRICT 
+	METHOD __SetColors(_hDc AS PTR) AS PTR STRICT
 	IF oControlBackground = NULL_OBJECT
 		RETURN NULL_PTR
 	ENDIF
@@ -38,7 +38,7 @@ CLASS ScrollBar INHERIT Control
 
 
  /// <exclude />
-ACCESS __Type AS LONGINT STRICT 
+ACCESS __Type AS LONGINT STRICT
 	//PP-030828 Strong typing
 
 
@@ -46,10 +46,10 @@ ACCESS __Type AS LONGINT STRICT
 
 
  /// <exclude />
-ASSIGN __Value(nValue AS USUAL)  STRICT 
+ASSIGN __Value(nValue AS USUAL)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	// RvdH 050602 Bug 12 Handle NIL (NULL in SQL)
@@ -61,18 +61,18 @@ ASSIGN __Value(nValue AS USUAL)  STRICT
 
 
 	SELF:Thumbposition := LONGINT(Round(nValue, 0))
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.BlockSize/*" />
-ACCESS BlockSize 
+ACCESS BlockSize
 
 
 	RETURN wBlockSize
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.BlockSize/*" />
-ASSIGN BlockSize(nSize) 
+ASSIGN BlockSize(nSize)
 
 
 	IF !IsLong(nSize) .OR. nSize<0
@@ -85,16 +85,16 @@ ASSIGN BlockSize(nSize)
 
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Create/*" />
-METHOD Create() 
+METHOD Create()
 
 
 	IF (SUPER:Create() != NULL_PTR)
 		//SE-051114
-		SELF:SetInfo(oRange)    
+		SELF:SetInfo(oRange)
 
 
 	ENDIF
@@ -104,9 +104,9 @@ METHOD Create()
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Hide/*" />
-METHOD Hide() 
-	
-	
+METHOD Hide()
+
+
 
 
 	IF (hWnd == NULL_PTR)
@@ -121,13 +121,13 @@ METHOD Hide()
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware)
+
+
 
 
 	Default(@lDataAware, TRUE)
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		SUPER(oOwner,xID,oPoint,oDimension,"ScrollBar",,lDataAware)
 	ELSE
 		SUPER(oOwner,xID,oPoint,oDimension,,,lDataAware)
@@ -140,11 +140,11 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware)
 	oRange 		:= Range{0,99}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.PageSize/*" />
-ACCESS PageSize 
+ACCESS PageSize
 	//SE-051114
 	LOCAL sScrollInfo IS _WINSCROLLINFO
 	IF SELF:ValidateControl()
@@ -159,29 +159,29 @@ ACCESS PageSize
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.PageSize/*" />
-ASSIGN PageSize(nValue) 
+ASSIGN PageSize(nValue)
 	//SE-051114
 	IF !IsLong(nValue)
 		WCError{#PageSize, #ScrollBar, __WCSTypeError, nValue, 1}:Throw()
 	ENDIF
-   //RvdH 070320 This was setting the Position and not the size 
+   //RvdH 070320 This was setting the Position and not the size
    //SELF:SetInfo(NIL, nValue)
 	SELF:SetInfo(NIL, NIL, nValue)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Range/*" />
-ACCESS Range 
+ACCESS Range
 	//SE-070421
 	LOCAL sScrollInfo IS _WINSCROLLINFO
-	
-	
+
+
 	IF hWnd != NULL_PTR
 		sScrollInfo:cbSize := _SIZEOF(_winSCROLLINFO)
 		sScrollInfo:fMask  := SIF_RANGE
-		GetScrollInfo(hWnd, wType, @sScrollInfo) 
+		GetScrollInfo(hWnd, wType, @sScrollInfo)
 		oRange:Min := sScrollInfo:nMin
 		oRange:Max := sScrollInfo:nMax
 	ENDIF
@@ -191,28 +191,28 @@ ACCESS Range
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Range/*" />
-ASSIGN Range(oScrollRange) 
-	
-	
-	IF ! IsInstanceOfUsual(oScrollRange, #Range)
+ASSIGN Range(oScrollRange)
+
+
+	IF ! (oScrollRange IS Range)
 		WCError{#Range,#ScrollBar,__WCSTypeError,oRange,1}:Throw()
 	ENDIF
-	
-	
-	oRange := oScrollRange 
-	
-	
-   //SE-070421        
+
+
+	oRange := oScrollRange
+
+
+   //SE-070421
    IF hWnd != NULL_PTR
 	   SELF:SetInfo(oRange)
-   ENDIF   
+   ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.SetInfo/*" />
-METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll) 
+METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
 	//SE-051114
 	//SE-070423
 	LOCAL sScrollInfo IS _WINSCROLLINFO
@@ -220,7 +220,7 @@ METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
 
 	sScrollInfo:cbSize := _SIZEOF(_winSCROLLINFO)
 	IF ! IsNil(oScrollRange)
-		IF ! IsInstanceOfUsual(oRange,#Range)
+		IF ! (oRange IS Range)
 			WCError{#SetInfo, #ScrollBar, __WCSTypeError, oRange, 1}:Throw()
 		ENDIF
 	   oRange := oScrollRange
@@ -263,46 +263,46 @@ METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.SetThumbPosition/*" />
-METHOD SetThumbPosition(nPosition, lNotifyOwner) 
+METHOD SetThumbPosition(nPosition, lNotifyOwner)
    LOCAL hOwner AS PTR
    LOCAL dwMsg  AS DWORD
    LOCAL lParam AS LONGINT
-      
-      
-   SELF:ThumbPosition := nPosition 
-   
-   
+
+
+   SELF:ThumbPosition := nPosition
+
+
    IF ! IsLogic(lNotifyOwner) .OR. lNotifyOwner
-      hOwner := oParent:Handle() 
+      hOwner := oParent:Handle()
       IF hOwner != Null_Ptr
          IF wType = SB_CTL
             lParam := LONGINT(_CAST, hWnd)
             IF _And(DWORD(_CAST, GetWindowLong(hWnd, GWL_STYLE)), SBS_HORZ) > 0
                dwMsg := WM_HSCROLL
-            ELSE 
+            ELSE
                dwMsg := WM_VSCROLL
             ENDIF
          ELSEIF wType = SB_HORZ
             dwMsg := WM_HSCROLL
-         ELSE 
+         ELSE
             dwMsg := WM_VSCROLL
-         ENDIF   
-            
-            
-         SendMessage(hOwner, dwMsg, SB_THUMBTRACK, lParam)   
+         ENDIF
+
+
+         SendMessage(hOwner, dwMsg, SB_THUMBTRACK, lParam)
       ENDIF
-   ENDIF   
-   
-   
+   ENDIF
+
+
    RETURN NIL
-   
-   
+
+
 
 
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Show/*" />
-METHOD Show() 
+METHOD Show()
 	// 	LOCAL strucScrollInfo IS _winScrollInfo
 	IF (hWnd == NULL_PTR)
 		SELF:Create()
@@ -312,12 +312,12 @@ METHOD Show()
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.TextValue/*" />
-ACCESS TextValue 
+ACCESS TextValue
 	RETURN AllTrim(AsString(SELF:Thumbposition))
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.TextValue/*" />
-ASSIGN TextValue(cNewPos) 
+ASSIGN TextValue(cNewPos)
 	LOCAL wOldValue AS LONGINT
 	IF !IsString(cNewPos)
 		WCError{#TextValue,#ScrollBar,__WCSTypeError,cNewPos,1}:Throw()
@@ -328,11 +328,11 @@ ASSIGN TextValue(cNewPos)
 	SELF:ValueChanged 	:= !wOldValue == SELF:Thumbposition
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.ThumbPosition/*" />
-ACCESS ThumbPosition 
+ACCESS ThumbPosition
 	//SE-051114
 	LOCAL sScrollInfo IS _WINSCROLLINFO
 
@@ -349,7 +349,7 @@ ACCESS ThumbPosition
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.ThumbPosition/*" />
-ASSIGN ThumbPosition(nValue) 
+ASSIGN ThumbPosition(nValue)
 	IF !IsLong(nValue)
 		WCError{#Thumbposition,#ScrollBar,__WCSTypeError,nValue,1}:Throw()
 	ENDIF
@@ -357,38 +357,38 @@ ASSIGN ThumbPosition(nValue)
 	SELF:SetInfo(NIL, nValue)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.UnitSize/*" />
-ACCESS UnitSize 
-	
-	
+ACCESS UnitSize
+
+
 	RETURN wUnitSize
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.UnitSize/*" />
-ASSIGN UnitSize(nSize) 
-	
-	
+ASSIGN UnitSize(nSize)
+
+
 	IF !IsLong(nSize) .OR. nSize<0
 		WCError{#UnitSize,#ScrollBar,__WCSTypeError,nSize,1}:Throw()
 	ENDIF
 	wUnitSize:=nSize
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Value/*" />
-ACCESS Value 
-	
-	
+ACCESS Value
+
+
 	RETURN SELF:Thumbposition
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Value/*" />
-ASSIGN Value(nValue) 
+ASSIGN Value(nValue)
 	LOCAL iOldValue AS INT
 
 
@@ -396,7 +396,7 @@ ASSIGN Value(nValue)
 	SELF:__Value := nValue
 	SELF:Modified := TRUE
 	SELF:ValueChanged := iOldValue != SELF:Thumbposition
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -407,7 +407,7 @@ CLASS VerticalScrollBar INHERIT ScrollBar
 
 
 /// <include file="Gui.xml" path="doc/VerticalScrollBar.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 
 	SUPER(oOwner,xID,oPoint,oDimension)
@@ -416,7 +416,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

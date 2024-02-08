@@ -79,7 +79,7 @@ CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
 	SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, TRUE)
 
 
-	IF !IsInstanceOfUsual(xID, #ResourceID) .and. IsNil(kStyle)
+	IF !(xID IS ResourceID) .and. IsNil(kStyle)
 		SELF:SetStyle(BS_AUTOCHECKBOX)
 	ENDIF
 
@@ -120,8 +120,8 @@ ASSIGN TextValue(cNewValue)
 
 
 	lOldTicked := SELF:Checked
-	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-		uTicked := SELF:FieldSpec:Val(cNewValue)
+	IF SELF:FieldSpec IS FieldSpec VAR oFS
+		uTicked := oFS:Val(cNewValue)
 		IF IsNumeric(uTicked)
 			lTicked := (uTicked != 0)
 		ELSEIF IsLogic(uTicked)

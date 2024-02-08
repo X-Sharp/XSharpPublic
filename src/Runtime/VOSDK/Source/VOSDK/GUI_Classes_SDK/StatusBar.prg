@@ -1030,7 +1030,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	iInsertOn := iNumLockOn := iScrollOn := iCapsLockOn := -1
 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		// Created by resource
 		SUPER(oOwner, xID, oPoint, oDimension, , , FALSE)
 	ELSE
@@ -1221,7 +1221,7 @@ METHOD SetIcon(oIcon, symItemName)
 	dwIndex := SELF:__GetItemFromSymbol(symItemName)
 	IF dwIndex != 0 .AND. SELF:ValidateControl()
 		oStatusBarItem := aItems[dwIndex]
-		IF IsInstanceOfUsual(oIcon, #Icon)
+		IF (oIcon IS Icon)
 			oStatusBarItem:__Icon := oIcon
 			SendMessage(hwnd, SB_SETICON, dwIndex-1u, LONGINT(_CAST, oIcon:Handle()))
 		ELSE
@@ -1603,7 +1603,7 @@ CONSTRUCTOR(symName, nWidth, kStyle, oIcon)
 
 
    //SE-060525
-   IF IsInstanceOfUsual(oIcon, #Icon)
+   IF (oIcon IS Icon)
 		oSBIcon := oIcon
 	ENDIF
 

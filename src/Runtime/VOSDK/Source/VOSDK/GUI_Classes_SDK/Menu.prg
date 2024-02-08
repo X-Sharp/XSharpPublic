@@ -109,7 +109,7 @@ method DeleteItem(xItemIdOrMenu)
 	LOCAL iItemCount AS DWORD
 
 
-	IF IsInstanceOfUsual(xItemIdOrMenu, #Menu)
+	IF (xItemIdOrMenu IS Menu)
 		iItemCount := DWORD(GetMenuItemCount(hMenu))
 		IF iItemCount > 0
 			FOR i := 0 TO iItemCount-1
@@ -286,7 +286,7 @@ constructor(xResourceID)
 	ELSE
 		IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 			xResourceID := ResourceID{xResourceID}
-		ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+		ELSEIF !(xResourceID IS ResourceID)
 			WCError{#Init, #Menu, __WCSTypeError}:Throw()
 		ENDIF
 

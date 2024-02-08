@@ -34,7 +34,7 @@ CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 	
 
 
-	IF  IsInstanceOfUsual(uID,#ResourceID)
+	IF  (uID IS ResourceID)
 		SUPER(uOwner,uID,,,,,FALSE)
 	ELSEIF IsLong(uID)
 		SUPER(uOwner, uID,	uPoint, uDimension, "Static", , FALSE)

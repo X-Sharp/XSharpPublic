@@ -284,7 +284,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	IF !IsInstanceOfUsual(xID, #ResourceID)
+	IF !(xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, HOTKEY_CLASS, dwStyle)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, , dwStyle)

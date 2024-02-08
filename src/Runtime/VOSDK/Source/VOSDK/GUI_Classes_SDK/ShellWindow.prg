@@ -627,7 +627,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 
 
 
-	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
+	IF (oHelpRequestEvent IS HelpRequestEvent) ;
 			.AND. SELF:HelpDisplay!=NULL_OBJECT;
 			.AND. oHelpRequestEvent:Helptype == HELPCONTROL
 		IF oHelpRequestEvent:ItemID == 3244

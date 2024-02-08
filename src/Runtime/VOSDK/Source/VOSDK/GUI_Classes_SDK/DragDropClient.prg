@@ -9,8 +9,8 @@ CLASS DragDropClient INHERIT VObject
 
 /// <include file="Gui.xml" path="doc/DragDropClient.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (hOwner != NULL_PTR)
@@ -37,14 +37,14 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/DragDropClient.Dispatch/*" />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	//SE-060520
 	LOCAL oEvt AS @@Event
 	LOCAL uMsg AS DWORD
 
 
-	
-	
+
+
 	oEvt := oEvent
 	uMsg := oEvt:uMsg
 
@@ -54,7 +54,7 @@ METHOD Dispatch(oEvent)
 		IF (oEvt:wParam == 0)
 			SELF:DragLeave(oEvt)
 		ENDIF
-	CASE WM_DROPFILES 
+	CASE WM_DROPFILES
 		SELF:Drop(DragEvent{oEvt})
 		DragFinish( PTR(_CAST, oEvt:wParam))
 	CASE WM_QUERYDROPOBJECT
@@ -66,9 +66,9 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/DragDropClient.DragLeave/*" />
-METHOD DragLeave(oEvent) 
-	
-	
+METHOD DragLeave(oEvent)
+
+
 
 
 	IF IsMethod(oParent, #DragLeave)
@@ -80,9 +80,9 @@ METHOD DragLeave(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/DragDropClient.DragOver/*" />
-METHOD DragOver(oDragEvent) 
-	
-	
+METHOD DragOver(oDragEvent)
+
+
 
 
 	IF (IsMethod(oParent, #DragOver))
@@ -94,9 +94,9 @@ METHOD DragOver(oDragEvent)
 
 
 /// <include file="Gui.xml" path="doc/DragDropClient.Drop/*" />
-METHOD Drop(oDragEvent) 
-	
-	
+METHOD Drop(oDragEvent)
+
+
 
 
 	IF IsMethod(oParent, #Drop)
@@ -108,12 +108,12 @@ METHOD Drop(oDragEvent)
 
 
 /// <include file="Gui.xml" path="doc/DragDropClient.ctor/*" />
-CONSTRUCTOR(oOwner) 
-	
-	
+CONSTRUCTOR(oOwner)
 
 
-	IF !IsInstanceOfUsual(oOwner,#Window)
+
+
+	IF !(oOwner IS Window)
 		WCError{#Init,#DragDropClient,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
@@ -123,20 +123,20 @@ CONSTRUCTOR(oOwner)
 //	ENDIF
 
 
-	
-	
+
+
 	oParent := oOwner
-	hOwner := oParent:Handle()  
+	hOwner := oParent:Handle()
 	//SE-070501 for better	Datawindow support
 	IF oParent IS __FormFrame  VAR oFF
 		oParent := oFF:DataWindow
-    ELSEIF oParent IS __FormDialogWindow 
+    ELSEIF oParent IS __FormDialogWindow
         VAR oFFr := (__FormFrame) oParent:Owner
-		oParent := oFFr:DataWindow 
+		oParent := oFFr:DataWindow
 	ENDIF
 	IF oParent == NULL_OBJECT
 		oParent := oOwner
-	ENDIF    
+	ENDIF
 
 
 	//Put the address of our proc in the window class and save the old one
@@ -147,13 +147,13 @@ CONSTRUCTOR(oOwner)
 	DragAcceptFiles( hOwner, TRUE)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DragDropClient.Owner/*" />
-ACCESS Owner 
-	
-	
+ACCESS Owner
+
+
 
 
 	RETURN oParent
@@ -172,7 +172,7 @@ _DLL FUNCTION DragAcceptFiles(hWnd AS PTR, fAccept AS LOGIC) AS VOID PASCAL:Shel
 /// <exclude/>
 _DLL FUNCTION DragFinish(hDrop AS PTR) AS VOID PASCAL:Shell32.DragFinish
 /// <exclude/>
-_DLL FUNCTION DragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DWORD) AS DWORD PASCAL:Shell32.DragQueryFileA 
+_DLL FUNCTION DragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DWORD) AS DWORD PASCAL:Shell32.DragQueryFileA
 /// <exclude/>
 _DLL FUNCTION SHBrowseForFolder(bi AS PTR) AS PTR PASCAL:Shell32.SHBrowseForFolderA
 /// <exclude/>

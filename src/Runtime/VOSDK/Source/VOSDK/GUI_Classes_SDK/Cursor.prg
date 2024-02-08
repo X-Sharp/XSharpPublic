@@ -111,13 +111,13 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 
 
 
-	IF !IsInstanceOfUsual(oOwner,#Window)
+	IF !(oOwner IS Window)
 		WCError{#Init,#Cursor,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
 
 	oWnd := oOwner
-	IF IsInstanceOfUsual(oObject,#Dimension)
+	IF (oObject IS Dimension)
 		oDim := oObject
 		IF !IsNil(lDimmed)
 			IF !IsLogic(lDimmed)
@@ -129,7 +129,7 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 		ENDIF
 		SELF:Position := Point{0,0}
 	ELSE
-		IF !IsInstanceOfUsual(oObject,#Bitmap)
+		IF !(oObject IS Bitmap)
 			WCError{#Init,#Cursor,__WCSTypeError,oObject,2}:Throw()
 		ENDIF
 		IF !IsNil(lDimmed)
@@ -186,7 +186,7 @@ ASSIGN Position(oNewPoint)
 
 
 
-	IF !IsInstanceOfUsual(oNewPoint,#Point)
+	IF !(oNewPoint IS Point)
 		WCError{#Position,#Cursor,__WCSTypeError,oNewPoint,1}:Throw()
 	ENDIF
 

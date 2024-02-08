@@ -43,7 +43,7 @@ CONSTRUCTOR(uOwner,oColor)
 
 
 	IF !IsNil(uOwner)
-		IF !IsInstanceOfUsual(uOwner,#Window)
+		IF !(uOwner IS Window)
 			WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:Throw()
 		ENDIF
 	ENDIF
@@ -105,7 +105,7 @@ CONSTRUCTOR(uOwner,oColor)
 
 
 	IF !IsNil(uOwner)
-		IF !IsInstanceOfUsual(uOwner,#Window)
+		IF !(uOwner IS Window)
 			WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:Throw()
 		ENDIF
 	ENDIF
@@ -177,7 +177,7 @@ CONSTRUCTOR(oColor)
 
 
 	IF !IsNil(oColor)
-		IF !IsInstanceOfUsual(oColor,#Color)
+		IF !(oColor IS Color)
 			WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:Throw()
 		ENDIF
 	ENDIF
@@ -486,7 +486,7 @@ CONSTRUCTOR(uOwner, cInitPath)
 
 	SUPER()
 	IF !IsNil(uOwner)
-		IF !IsInstanceOfUsual(uOwner,#Window)
+		IF !(uOwner IS Window)
 			WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:Throw()
 		ELSE
 			oOwner:=uOwner
@@ -1126,7 +1126,7 @@ CONSTRUCTOR(uOwner)
 
 
 	IF !IsNil(uOwner)
-		IF !IsInstanceOfUsual(uOwner,#Window) .AND. IsInstanceOfUsual( uOwner,#Printer)
+		IF !(uOwner IS Window) .AND. ( uOwner IS Printer)
 			WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:Throw()
 		ENDIF
 	ENDIF
@@ -1138,7 +1138,7 @@ CONSTRUCTOR(uOwner)
 	oColor := Color{COLORBLACK}
 
 
-	IF IsInstanceOfUsual(uOwner, #Printer)
+	IF (uOwner IS Printer)
 		lFlags := CF_PRINTERFONTS
 		oPrinter := uOwner
 	ELSE

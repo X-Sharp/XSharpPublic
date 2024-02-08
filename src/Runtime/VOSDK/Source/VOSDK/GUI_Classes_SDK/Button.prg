@@ -18,7 +18,7 @@ METHOD __SetImage(oNewImage)
 
 
 	IF IsThemeEnabled()
-		IF IsInstanceOfUsual(oNewImage, #Icon) .OR. IsInstanceOfUsual(oNewImage, #Bitmap)
+		IF (oNewImage IS Icon) .OR. (oNewImage IS Bitmap)
 			SELF:ImageList := ButtonImageList{oNewImage}
 			RETURN TRUE
 		ENDIF
@@ -172,7 +172,7 @@ CONSTRUCTOR ( oOwner, xID, oPoint, oDimension, cText, kStyle, lDataAware)
 
 
 
-	IF IsInstanceOfUsual(xID,#ResourceID)
+	IF xID IS ResourceID
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle,lDataAware)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "Button", kStyle, lDataAware)

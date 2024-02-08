@@ -5,8 +5,8 @@ CLASS Icon INHERIT VObject
 
 /// <include file="Gui.xml" path="doc/Icon.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF ! hIcon == NULL_PTR
@@ -23,19 +23,19 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 /// <include file="Gui.xml" path="doc/Icon.Handle/*" />
 METHOD Handle() AS PTR
-	
-	
+
+
 	RETURN hIcon
 
 
 /// <include file="Gui.xml" path="doc/Icon.ctor/*" />
-CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight) 
+CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 	LOCAL hInst AS PTR
 	LOCAL lpszIcon AS PTR
 
 
-	
-	
+
+
 
 
 	SUPER()
@@ -60,7 +60,7 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 
 		IF IsSymbol(xResourceID) .OR. IsString(xResourceID)
 			xResourceID := ResourceID{xResourceID}
-		ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+		ELSEIF !(xResourceID IS ResourceID)
 			WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:Throw()
 		ENDIF
 
@@ -81,15 +81,15 @@ CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 
    //SE-060525
    IF hIcon != NULL_PTR
-   	RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition 
+   	RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition
    ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Icon.Size/*" />
-ACCESS Size 
+ACCESS Size
 	//PP-031002
 	//PP-040425 Issue 12869, need to DeleteObjects
 

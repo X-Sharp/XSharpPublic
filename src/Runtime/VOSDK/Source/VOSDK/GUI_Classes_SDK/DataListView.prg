@@ -7,12 +7,12 @@ CLASS DataListView INHERIT ListView
 	PROTECT iCacheMax AS INT
 	PROTECT iCacheStart AS INT
 	PROTECT iCacheEnd AS INT
-	PROTECT lUseOrder AS LOGIC    
+	PROTECT lUseOrder AS LOGIC
 
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __AutoLayout() AS VOID STRICT 
+	METHOD __AutoLayout() AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL oDF AS DataField
 	LOCAL oLVC AS ListViewColumn
@@ -45,7 +45,7 @@ CLASS DataListView INHERIT ListView
 
 
  /// <exclude />
-METHOD __AutoResize() AS VOID STRICT 
+METHOD __AutoResize() AS VOID STRICT
 	//PP-030828 Strong typing
 
 
@@ -70,7 +70,7 @@ METHOD __AutoResize() AS VOID STRICT
 
 
  /// <exclude />
-METHOD __CacheHint(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+METHOD __CacheHint(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL lpHint AS _winNMLVCACHEHINT
 	LOCAL iRecNoSave, i AS INT
@@ -150,15 +150,15 @@ METHOD __CacheHint(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT 
+METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL j, cCols AS DWORD
 	LOCAL symCol AS SYMBOL
 	LOCAL oFS AS FieldSpec
 	LOCAL sVal AS STRING
    LOCAL oCol AS ListViewColumn
-	
-	
+
+
 
 
 	cCols := ALen(aColumns)
@@ -166,7 +166,7 @@ METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
 		aCache[iIndex] := ArrayCreate(cCols)
 	ENDIF
 	FOR j := 1 TO cCols
-        oCol    := aColumns[j] 
+        oCol    := aColumns[j]
         symCol  := oCol:NameSym
         oFS     := oCol:FieldSpec
 		IF (oFS != NULL_OBJECT)
@@ -180,14 +180,14 @@ METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT 
+METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT
 	//PP-030828 Strong typing
 	LOCAL fi AS _winNMLVFINDITEM
 	LOCAL iRet := -1 AS INT
 
 
-	
-	
+
+
 
 
 	IF lUseOrder
@@ -205,7 +205,7 @@ METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT
 
 
  /// <exclude />
-METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	LOCAL di AS _winLV_DISPINFO
 	LOCAL iOrderPos, iCol AS INT
 	LOCAL iLen AS DWORD
@@ -215,8 +215,8 @@ METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	LOCAL sVal AS STRING
 	LOCAL iRecNoSave AS INT
     LOCAL oCol AS ListViewColumn
-	
-	
+
+
 	IF (oDLVServer == NULL_OBJECT)
 		RETURN
 	ENDIF
@@ -247,11 +247,11 @@ METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 
 		IF (SELF:__SetServerPos(iOrderPos) != 0)
 			iCol := di:item:iSubItem + 1
-            oCol := aColumns[iCol] 
+            oCol := aColumns[iCol]
             symCol  := oCol:NameSym
             oFS     := oCol:FieldSpec
-			
-			
+
+
 			IF (oFS != NULL_OBJECT)
 				sVal := oFS:Transform(SELF:FIELDGET(symCol))
 			ELSE
@@ -279,7 +279,7 @@ METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 
 
  /// <exclude />
-ACCESS __GetServerCount() AS DWORD STRICT 
+ACCESS __GetServerCount() AS DWORD STRICT
 	//PP-030828 Strong typing
 	IF lUseOrder
 		RETURN Send(oDLVServer, #OrderKeyCount)
@@ -288,7 +288,7 @@ ACCESS __GetServerCount() AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __GetServerPos() AS INT STRICT 
+METHOD __GetServerPos() AS INT STRICT
 	//PP-030828 Strong typing
 	LOCAL iRet AS INT
 
@@ -309,13 +309,13 @@ METHOD __GetServerPos() AS INT STRICT
 
 
  /// <exclude />
-METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL nmlv AS _winNM_LISTVIEW
 
 
-	
-	
+
+
 
 
 	nmlv := PTR(_CAST, oCtrlNotifyEvent:lParam)
@@ -328,15 +328,15 @@ METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT 
+METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 	RETURN NIL
 
 
  /// <exclude />
-METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT 
+METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL iItem AS INT
 
@@ -353,7 +353,7 @@ METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __RefreshData() AS VOID STRICT 
+METHOD __RefreshData() AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL iOrderPos AS INT
 	LOCAL r IS _winRECT
@@ -371,14 +371,14 @@ METHOD __RefreshData() AS VOID STRICT
 
 
  /// <exclude />
-METHOD __RefreshField(uFieldName AS USUAL) AS VOID STRICT 
+METHOD __RefreshField(uFieldName AS USUAL) AS VOID STRICT
 	//PP-030828 Strong typing
 	SELF:__RefreshData()
 	RETURN
 
 
  /// <exclude />
-METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT STRICT 
+METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT STRICT
 	//PP-030828 Strong typing
 	LOCAL iRet AS INT
 
@@ -414,20 +414,20 @@ METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT S
 
 
  /// <exclude />
-METHOD __StatusOK() AS OBJECT STRICT 
+METHOD __StatusOK() AS OBJECT STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN NULL_OBJECT
 
 
  /// <exclude />
-METHOD __Unlink(oDS := NIL AS USUAL) AS Control  STRICT 
+METHOD __Unlink(oDS := NIL AS USUAL) AS Control  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (oDLVServer != NULL_OBJECT)
@@ -440,11 +440,11 @@ METHOD __Unlink(oDS := NIL AS USUAL) AS Control  STRICT
 
 
 /// <include file="Gui.xml" path="doc/DataListView.DeleteAll/*" />
-METHOD DeleteAll() 
+METHOD DeleteAll()
 
 
-	
-	
+
+
 
 
 	iCacheStart := -1
@@ -456,8 +456,8 @@ METHOD DeleteAll()
 
 /// <include file="Gui.xml" path="doc/DataListView.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	SELF:__Unlink()
@@ -467,9 +467,9 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/DataListView.FIELDGET/*" />
-METHOD FIELDGET(nFieldPos) 
-	
-	
+METHOD FIELDGET(nFieldPos)
+
+
 
 
 	IF (oDLVServer != NULL_OBJECT)
@@ -479,16 +479,16 @@ METHOD FIELDGET(nFieldPos)
 
 
 /// <include file="Gui.xml" path="doc/DataListView.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	LOCAL lUsedAsBrowser AS LOGIC
 	LOCAL nStyle			AS LONGINT
    //SE-070427 removed PCount() for future Vulcan compatibility
 
 
 	// We are used as a browser
-	IF IsInstanceOfUsual(oOwner, #datawindow) .AND. xID = NIL
-		oOwner 	:= oOwner:__FormWindow
-		xID 		:= 99
+	IF oOwner IS Datawindow VAR oDW .AND. xID = NIL
+		oOwner 	:= oDW:__FormWindow
+		xID 	:= 99
 		oPoint 	:= Point{0, 0}
 		oDimension := Dimension{100,100}
 		lUsedAsBrowser := TRUE
@@ -496,7 +496,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	IF (IsNumeric(kStyle))
 		nStyle := kStyle
 	ENDIF
-	nStyle := nStyle | WS_HSCROLL | LVS_SINGLESEL | LVS_REPORT | LVS_SHOWSELALWAYS| LVS_OWNERDATA 
+	nStyle := nStyle | WS_HSCROLL | LVS_SINGLESEL | LVS_REPORT | LVS_SHOWSELALWAYS| LVS_OWNERDATA
 	SUPER(oOwner, xID, oPoint, oDimension, nStyle)
 
 
@@ -513,15 +513,15 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	iCacheEnd := 0
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DataListView.Notify/*" />
-METHOD Notify(kNotification, uDescription) 
+METHOD Notify(kNotification, uDescription)
 
 
-	
-	
+
+
 
 
 	IF lNoNotifies
@@ -585,9 +585,9 @@ METHOD Notify(kNotification, uDescription)
 
 
 /// <include file="Gui.xml" path="doc/DataListView.Owner/*" />
-ACCESS Owner 
-	
-	
+ACCESS Owner
+
+
 
 
 	IF IsInstanceOf(oParent, #__FormFrame)
@@ -599,12 +599,12 @@ ACCESS Owner
 
 
 /// <include file="Gui.xml" path="doc/DataListView.Refresh/*" />
-METHOD Refresh() 
+METHOD Refresh()
 	LOCAL dwItems AS DWORD
 
 
-	
-	
+
+
 
 
 	dwItems := SELF:__GetServerCount
@@ -624,18 +624,18 @@ METHOD Refresh()
 
 
 /// <include file="Gui.xml" path="doc/DataListView.Server/*" />
-ACCESS Server 
-	
-	
+ACCESS Server
+
+
 
 
 	RETURN oDLVServer
 
 
 /// <include file="Gui.xml" path="doc/DataListView.Server/*" />
-ASSIGN Server(oNewServer)	
-	
-	
+ASSIGN Server(oNewServer)
+
+
 
 
 	IF (oDLVServer != oNewServer)
@@ -659,13 +659,13 @@ ASSIGN Server(oNewServer)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DataListView.Use/*" />
-METHOD Use(oNewServer) 
-	
-	
+METHOD Use(oNewServer)
+
+
 
 
 	SELF:Server := oNewServer

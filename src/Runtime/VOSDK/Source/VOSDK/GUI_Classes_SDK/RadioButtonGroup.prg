@@ -7,7 +7,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __AlreadyHasFocus(oButton AS RadioButton) AS LOGIC STRICT 
+	METHOD __AlreadyHasFocus(oButton AS RadioButton) AS LOGIC STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -24,7 +24,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 
  /// <exclude />
-METHOD __IsElement(oButton AS RadioButton) AS LOGIC STRICT 
+METHOD __IsElement(oButton AS RadioButton) AS LOGIC STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -41,7 +41,7 @@ METHOD __IsElement(oButton AS RadioButton) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __SetOn(oButton AS RadioButton) AS VOID STRICT 
+METHOD __SetOn(oButton AS RadioButton) AS VOID STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -61,12 +61,12 @@ METHOD __SetOn(oButton AS RadioButton) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __Update() AS Control STRICT 
+METHOD __Update() AS Control STRICT
 	//PP-030828 Strong typing
 	// Update is called to resynchronise Control:Value with control state
 	// For RadioButtonGroups this is done when a button is pressed
-	
-	
+
+
 
 
 	IF SELF:Modified
@@ -77,14 +77,14 @@ METHOD __Update() AS Control STRICT
 
 
  /// <exclude />
-ASSIGN __Value(uNewValue AS USUAL)  STRICT 
+ASSIGN __Value(uNewValue AS USUAL)  STRICT
 	LOCAL dwI, dwCount AS DWORD
     LOCAL cTempVal AS STRING
     LOCAL oRB AS RadioButton
 
 
-	
-	
+
+
 
 
 	dwCount := ALen(aButtons)
@@ -116,7 +116,7 @@ ASSIGN __Value(uNewValue AS USUAL)  STRICT
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Button/*" />
-METHOD Button(nButtonPosition) 
+METHOD Button(nButtonPosition)
 	// Return button at specified position in list
 	// - Doesn't necessarily correspond to onscreen sequence
 	// - returns NIL if button not found
@@ -131,15 +131,15 @@ METHOD Button(nButtonPosition)
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Buttons/*" />
-ACCESS Buttons 
+ACCESS Buttons
 	// DHer: 18/12/2008
 RETURN SELF:aButtons
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Disable/*" />
-METHOD Disable() 
-	
-	
+METHOD Disable()
+
+
    //RvdH 060608 optimized
 	//IF !Empty(aButtons)
 	IF ALen(aButtons) > 0
@@ -152,9 +152,9 @@ METHOD Disable()
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Enable/*" />
-METHOD Enable() 
-	
-	
+METHOD Enable()
+
+
 
 
    //RvdH 060608 optimized
@@ -169,7 +169,7 @@ METHOD Enable()
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.FillUsing/*" />
-METHOD FillUsing(aContents) 
+METHOD FillUsing(aContents)
 	LOCAL wContentsLength AS DWORD
 	LOCAL wElementLength AS DWORD
 	LOCAL wIndex AS DWORD
@@ -178,8 +178,8 @@ METHOD FillUsing(aContents)
 	LOCAL uDefValue AS USUAL
 
 
-	
-	
+
+
 
 
 	IF !IsArray(aContents)
@@ -217,7 +217,7 @@ METHOD FillUsing(aContents)
 
 			IF IsNumeric(uButton) .OR. IsString(uButton)
 				uButton := RadioButton{oFormSurface, ResourceID{uButton}}
-			ELSEIF !IsInstanceOfUsual(uButton, #RadioButton)
+			ELSEIF !(uButton IS RadioButton)
 				WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 			ENDIF
 
@@ -232,9 +232,9 @@ METHOD FillUsing(aContents)
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Hide/*" />
-METHOD Hide() 
-	
-	
+METHOD Hide()
+
+
 
 
    //RvdH 060608 optimized
@@ -249,9 +249,9 @@ METHOD Hide()
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.ctor/*" />
-CONSTRUCTOR(oOwner, xID, uPoint, uDimension, cText) 
-	
-	
+CONSTRUCTOR(oOwner, xID, uPoint, uDimension, cText)
+
+
 
 
 	SUPER(oOwner, xID, uPoint, uDimension, cText, TRUE)
@@ -259,14 +259,14 @@ CONSTRUCTOR(oOwner, xID, uPoint, uDimension, cText)
 	aValues := {}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.SetFocus/*" />
-METHOD SetFocus() 
+METHOD SetFocus()
     LOCAL oRB AS RadioButton
-	IF wPressedButton != 0     
-	    oRB := aButtons[wPressedButton] 
+	IF wPressedButton != 0
+	    oRB := aButtons[wPressedButton]
 		oRB:SetFocus()
 	ENDIF
 
@@ -275,9 +275,9 @@ METHOD SetFocus()
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Show/*" />
-METHOD Show() 
-	
-	
+METHOD Show()
+
+
 
 
    //RvdH 060608 optimized
@@ -292,18 +292,18 @@ METHOD Show()
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.TextValue/*" />
-ACCESS TextValue 
+ACCESS TextValue
     LOCAL cRetVal AS STRING
     LOCAL dwI, dwCount AS DWORD
     LOCAL oRB AS RadioButton
-    
-    
+
+
 
 
     IF wPressedButton == 0
         dwCount := ALen(aButtons)
         FOR dwI := 1 UPTO dwCount
-            oRB := aButtons[dwI] 
+            oRB := aButtons[dwI]
             IF oRB:Pressed
                 wPressedButton := dwI
                 EXIT
@@ -313,7 +313,7 @@ ACCESS TextValue
 
 
     IF (wPressedButton != 0)
-        oRB := aButtons[wPressedButton] 
+        oRB := aButtons[wPressedButton]
         cRetVal := oRB:Caption
         IF IsNil(cRetVal)
             cRetVal:=AsString(SELF:value)
@@ -322,10 +322,10 @@ ACCESS TextValue
 
 
     RETURN cRetVal
-    
-    
+
+
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.TextValue/*" />
-ASSIGN TextValue(cNewText) 
+ASSIGN TextValue(cNewText)
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL cText AS STRING
@@ -339,7 +339,7 @@ ASSIGN TextValue(cNewText)
 
 	dwCount := ALen(aButtons)
 	FOR dwI := 1 UPTO dwCount
-        oRB := aButtons[dwI] 
+        oRB := aButtons[dwI]
         IF Upper(AllTrim(oRB:Caption)) == cText
 	   	    SELF:Value := aValues[dwI]
 			SELF:ValueChanged := !(cOldValue == AsString(uValue))
@@ -348,21 +348,21 @@ ASSIGN TextValue(cNewText)
 	NEXT  // dwI
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Value/*" />
-ACCESS Value 
+ACCESS Value
 	RETURN SUPER:Value
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Value/*" />
-ASSIGN Value(uNewValue) 
+ASSIGN Value(uNewValue)
 	SUPER:Value := uNewValue
 	SELF:SetFocus()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RadioButtonGroup.Values/*" />

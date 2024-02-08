@@ -405,7 +405,7 @@ METHOD DeleteColumn(oListViewColumn)
 
 
 	// find the index of this column in the column list
-	IF IsInstanceOfUsual(oListViewColumn, #ListViewColumn)
+	IF (oListViewColumn IS ListViewColumn)
 		FOR dwIndex := 1 UPTO dwCount
 		   IF aColumns[dwIndex] = oListViewColumn
 		   	EXIT
@@ -995,7 +995,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , dwStyle, TRUE)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "SysListView32", dwStyle, TRUE)
@@ -1276,7 +1276,7 @@ METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 
 
 	// find the item closest to the given point
-	IF IsInstanceOfUsual(uValue, #Point)
+	IF (uValue IS Point)
 		// kSeekType is a usual
 		DEFAULT(@kSeekType, LV_SEEKDOWN)
 
@@ -2038,7 +2038,7 @@ ASSIGN FieldSpec(oNewFieldSpec)
 
 
 
-	IF !IsInstanceOfUsual(oNewFieldSpec, #FieldSpec)
+	IF !(oNewFieldSpec IS FieldSpec)
 		WCError{#FieldSpec, #ListViewColumn, __WCSTypeError, oNewFieldSpec, 1}:Throw()
 	ENDIF
 

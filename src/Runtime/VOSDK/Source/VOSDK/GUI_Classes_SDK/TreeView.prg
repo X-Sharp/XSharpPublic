@@ -893,7 +893,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , dwStyle, TRUE)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "SysTreeView32", dwStyle, TRUE)

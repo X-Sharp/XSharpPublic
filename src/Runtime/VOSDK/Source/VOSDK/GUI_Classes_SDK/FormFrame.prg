@@ -122,7 +122,7 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 		liNewHeight += liStatusBarVOffset
 
 
-		IF !IsInstanceOf(oParent, #DataDialog) .AND. (hwndApp != NULL_PTR)
+		IF ! (oParent IS DataDialog) .AND. (hwndApp != NULL_PTR)
 			GetClientRect(hWndApp, @r)
 
 
@@ -195,7 +195,7 @@ METHOD AddControl(oControl)
 
 
 
-	IF !IsInstanceOfUsual(oControl,#Control)
+	IF ! (oControl IS Control)
 		WCError{#AddControl,#__FormFrame,__WCSTypeError,oControl,1}:Throw()
 	ENDIF
 
@@ -233,7 +233,7 @@ METHOD AddControl(oControl)
 
 
 	// Set the controls TABSTOP bit
-	IF lAutoLayout .AND. !IsInstanceOf(oControl, #FixedText)
+	IF lAutoLayout .AND. !(oControl IS FixedText)
 		oControl:SetStyle(WS_TabStop)
 	ENDIF
 
@@ -443,10 +443,10 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 	LOCAL oDimension  AS Dimension
 	LOCAL oPoint	   AS Point
 	LOCAL sPoint IS _WinPoint
-	IF !IsInstanceOfUsual(oDim, #Dimension)
+	IF !(oDim IS Dimension)
 		WCError{#ChangeFormSize,#__FormFrame,__WCSTypeError,oDim,1}:Throw()
 	ENDIF
-	IF !IsInstanceOfUsual(oPt, #Point)
+	IF !(oPt IS Point)
 		WCError{#ChangeFormSize,#__FormFrame,__WCSTypeError,oPt,1}:Throw()
 	ENDIF
 	oDimension := oDim
@@ -634,9 +634,9 @@ METHOD CreateSubform(nResourceID, oResID)
 	hFocus := GetFocus()
 	oFocus := __WCGetWindowByHandle(hFocus)
 	IF oFocus!=NULL_OBJECT
-		IF !IsInstanceOf(oFocus,#__FormDialogWindow)
+		IF ! (oFocus IS __FormDialogWindow)
 			oFocus:=oFocus:Owner
-			IF oFocus!=NULL_OBJECT .AND. !IsInstanceOf(oFocus,#__FormDialogWindow)
+			IF oFocus!=NULL_OBJECT .AND. ! (oFocus IS __FormDialogWindow)
 				oFocus:=NULL_OBJECT
 			ENDIF
 		ENDIF
@@ -701,7 +701,7 @@ ACCESS DataWindow
 
 	IF oDataWin != NULL_OBJECT
 		RETURN oDataWin
-	ELSEIF IsInstanceOf(oParent, #DataWindow)
+	ELSEIF oParent IS DataWindow
 		RETURN oParent
 	ENDIF
 	RETURN NULL_OBJECT
@@ -797,10 +797,10 @@ METHOD HelpRequest(oHelpRequestEvent)
 
 
 
-	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
+	IF oHelpRequestEvent IS HelpRequestEvent VAR oHRE ;
 		.AND. SELF:HelpDisplay!=NULL_OBJECT;
-		.AND. oHelpRequestEvent:Helptype==HELPCONTROL
-		IF oHelpRequestEvent:ItemID==3244
+		.AND. oHRE:Helptype==HELPCONTROL
+		IF oHRE:ItemID==3244
 			IF SELF:Hyperlabel!=NULL_OBJECT ;
 				.and. (NULL_STRING != (cHelpContext:=SELF:Hyperlabel:HelpContext))
 				SELF:HelpDisplay:Show(cHelpContext)
@@ -912,9 +912,9 @@ CONSTRUCTOR(oOwner, oResID, lScroll, lBorder, lIsSub)
 		SetWindowLong(SELF:Handle(), GWL_EXSTYLE, LONGINT(_CAST, _OR(dwSubStyle, DWORD(_CAST, WS_EX_CONTROLPARENT))))
 
 
-		IF IsInstanceOf(oOwner, #__FormDialogWindow)
-			dwSubStyle := DWORD(GetWindowLong(oOwner:Handle(), GWL_EXSTYLE))
-			SetWindowLong(oOwner:Handle(), GWL_EXSTYLE, LONGINT(_CAST, _OR(dwSubStyle, DWORD(_CAST, WS_EX_CONTROLPARENT))))
+		IF oOwner IS __FormDialogWindow var oWin
+			dwSubStyle := DWORD(GetWindowLong(oWin:Handle(), GWL_EXSTYLE))
+			SetWindowLong(oWin:Handle(), GWL_EXSTYLE, LONGINT(_CAST, _OR(dwSubStyle, DWORD(_CAST, WS_EX_CONTROLPARENT))))
 		ENDIF
 	ENDIF
 	// !!!

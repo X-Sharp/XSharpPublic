@@ -4,14 +4,14 @@ CLASS Pointer INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Pointer.Confine/*" />
-METHOD Confine(oRect) 
+METHOD Confine(oRect)
 	LOCAL oOrigin AS Point
 	LOCAL oExtent AS Point
 	LOCAL rect IS _WINRECT
 
 
-	
-	
+
+
 
 
 	IF oRect:Left!=0 .OR. oRect:Right!=0 .OR. oRect:Top!=0 .OR. oRect:Bottom!=0
@@ -20,7 +20,7 @@ METHOD Confine(oRect)
 
 
 		rect:left := oOrigin:X
-		rect:top := oOrigin:Y	
+		rect:top := oOrigin:Y
 		IF WCGetCoordinateSystem() // cartesian
 			rect:top := rect:top - oExtent:Y
 		ENDIF
@@ -39,30 +39,30 @@ METHOD Confine(oRect)
 
 /// <include file="Gui.xml" path="doc/Pointer.Handle/*" />
 METHOD Handle() AS PTR
-	
-	
+
+
 
 
 	RETURN hPointer
 
 
 /// <include file="Gui.xml" path="doc/Pointer.Hide/*" />
-METHOD Hide() 
-	
-	
+METHOD Hide()
+
+
 
 
 	RETURN ShowCursor(FALSE)
 
 
 /// <include file="Gui.xml" path="doc/Pointer.ctor/*" />
-CONSTRUCTOR(xResourceID) 
+CONSTRUCTOR(xResourceID)
 	LOCAL hInst AS PTR
 	LOCAL lpPointer AS PTR
 
 
-	
-	
+
+
 	SUPER()
 
 
@@ -71,7 +71,7 @@ CONSTRUCTOR(xResourceID)
 
 	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 		hPointer := LoadCursor(0, __WCConvertPointer(xResourceID))
-	ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
+	ELSEIF (xResourceID IS ResourceID)
 		hInst := xResourceID:Handle()
 		lpPointer := xResourceID:Address()
 
@@ -82,16 +82,16 @@ CONSTRUCTOR(xResourceID)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Pointer.Position/*" />
-ACCESS Position 
+ACCESS Position
 	LOCAL pt IS _WINPOINT
 
 
-	
-	
+
+
 
 
 	GetCursorPos(@pt)
@@ -99,25 +99,25 @@ ACCESS Position
 
 
 /// <include file="Gui.xml" path="doc/Pointer.Position/*" />
-ASSIGN Position(oPoint) 
+ASSIGN Position(oPoint)
 	LOCAL oTmp AS Point
 
 
-	
-	
+
+
 
 
 	oTmp := __WCConvertPoint(NULL_OBJECT, oPoint)
 	SetCursorPos(oTmp:X, oTmp:Y)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Pointer.Show/*" />
 METHOD Show()
-	
-	
+
+
 
 
 	RETURN ShowCursor(TRUE)

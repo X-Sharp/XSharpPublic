@@ -5,13 +5,13 @@ CLASS LineObject INHERIT DrawObject
 
 
 /// <include file="Gui.xml" path="doc/LineObject.BoundingBox/*" />
-ACCESS BoundingBox 
+ACCESS BoundingBox
 	LOCAL oOrg AS Point
 	LOCAL EndX, EndY, OrgX, OrgY AS LONGINT
 
 
-	
-	
+
+
 
 
 	oOrg := SELF:Origin
@@ -25,8 +25,8 @@ ACCESS BoundingBox
 
 /// <include file="Gui.xml" path="doc/LineObject.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -42,7 +42,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/LineObject.Draw/*" />
-METHOD Draw() 
+METHOD Draw()
 	LOCAL hDC AS PTR
 	LOCAL hLastROP AS PTR
 	LOCAL wROP AS DWORD
@@ -93,24 +93,24 @@ METHOD Draw()
 
 
 /// <include file="Gui.xml" path="doc/LineObject.ctor/*" />
-CONSTRUCTOR(oPoint1, oPoint2, oPen) 
-	
-	
+CONSTRUCTOR(oPoint1, oPoint2, oPen)
+
+
 
 
 	SUPER(oPoint1)
 
 
-	IF !IsInstanceOfUsual(oPoint1,#Point)
+	IF !(oPoint1 IS Point)
 		WCError{#Init,#LineObject,__WCSTypeError,oPoint1,1}:Throw()
 	ENDIF
-	IF !IsInstanceOfUsual(oPoint2,#Point)
+	IF !(oPoint2 IS Point)
 		WCError{#Init,#LineObject,__WCSTypeError,oPoint2,2}:Throw()
 	ENDIF
 
 
 	IF !IsNil(oPen)
-		IF !IsInstanceOfUsual(oPen,#Pen)
+		IF !(oPen IS Pen)
 			WCError{#Init,#LineObject,__WCSTypeError,oPen,3}:Throw()
 		ENDIF
 		SELF:oPen := oPen
@@ -120,16 +120,16 @@ CONSTRUCTOR(oPoint1, oPoint2, oPen)
 	oEnd := oPoint2
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/LineObject.Origin/*" />
-ASSIGN Origin(oNewPoint) 
+ASSIGN Origin(oNewPoint)
 	LOCAL oOldPoint AS Point
 
 
-	
-	
+
+
 
 
 	oOldPoint := SUPER:Origin
@@ -140,26 +140,26 @@ ASSIGN Origin(oNewPoint)
 	oEnd:Y := oEnd:Y+oNewPoint:Y-oOldPoint:Y
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/LineObject.Pen/*" />
-ACCESS Pen 
-	
-	
+ACCESS Pen
+
+
 
 
 	RETURN oPen
 
 
 /// <include file="Gui.xml" path="doc/LineObject.Pen/*" />
-ASSIGN Pen(oNewPen) 
-	
-	
+ASSIGN Pen(oNewPen)
+
+
 
 
 	IF !IsNil(oPen)
-		IF !IsInstanceOfUsual(oNewPen,#Pen)
+		IF !(oNewPen IS Pen)
 			WCError{#Pen,#LineObject,__WCSTypeError,oNewPen,1}:Throw()
 		ENDIF
 	ENDIF
@@ -169,12 +169,12 @@ ASSIGN Pen(oNewPen)
 
 
 /// <include file="Gui.xml" path="doc/LineObject.Size/*" />
-ACCESS Size 
+ACCESS Size
 	LOCAL oOrg AS Point
 
 
-	
-	
+
+
 
 
 	oOrg := SELF:Origin
@@ -184,12 +184,12 @@ ACCESS Size
 
 
 /// <include file="Gui.xml" path="doc/LineObject.Size/*" />
-ASSIGN Size(oNewSize) 
-	
-	
+ASSIGN Size(oNewSize)
 
 
-	IF !IsInstanceOfUsual(oNewSize,#Dimension)
+
+
+	IF !(oNewSize IS Dimension)
 		WCError{#Size,#LineObject,__WCSTypeError,oNewSize,1}:Throw()
 	ENDIF
 
@@ -198,7 +198,7 @@ ASSIGN Size(oNewSize)
 	oEnd:Y := SELF:Origin:Y + oNewSize:Height
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

@@ -138,7 +138,7 @@ CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 
 
 	IF !IsNil(oOwnerWindow)
-		IF !IsInstanceOfUsual(oOwnerWindow, #Window)
+		IF !(oOwnerWindow IS Window)
 			WCError{#Init,#HelpDisplay,__WCSTypeError,oOwnerWindow,2}:Throw()
 		ELSE
 			hwnd := oOwnerWindow:Handle()

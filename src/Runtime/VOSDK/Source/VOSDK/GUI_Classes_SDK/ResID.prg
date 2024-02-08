@@ -69,7 +69,7 @@ CONSTRUCTOR(xID, xResourceFile)
 
 	IF IsPtr(xResourceFile)
 		hInst := xResourceFile
-	ELSEIF IsInstanceOfUsual(xResourceFile, #ResourceFile)
+	ELSEIF (xResourceFile IS ResourceFile)
 		hInst := xResourceFile:Handle()
 	ELSEIF IsNil(xResourceFile)
 		IF IsNumeric(xID)		// String table

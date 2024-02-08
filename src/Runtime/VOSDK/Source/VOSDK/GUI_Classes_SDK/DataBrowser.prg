@@ -3141,7 +3141,7 @@ CLASS DataBrowser INHERIT Control
         /*
         IF IsInstanceOf(oParent, #__FormFrame)
         oWindow:=oParent:Owner
-        if IsInstanceOfUsual(oWindow, #DataWindow)
+        if (oWindow IS DataWindow)
         return Send(oWindow,#__CheckRecordStatus)
         endif
         endif

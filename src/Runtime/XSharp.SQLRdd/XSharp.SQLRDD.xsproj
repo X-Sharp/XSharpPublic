@@ -78,7 +78,9 @@
     <Compile Include="Providers\Oracle.prg" />
     <Compile Include="Providers\SqlSDbProvider.prg" />
     <Compile Include="Providers\SqlServer.prg" />
-    <Compile Include="SqlRDD.prg" />
+    <Compile Include="SqlRDD - Orders.prg" />
+    <Compile Include="SqlRDD - Main.prg" />
+    <Compile Include="SqlRDD - Private.prg" />
     <Compile Include="SupportClasses\Abstract.prg" />
     <Compile Include="SupportClasses\ExtensionMethods.prg" />
     <Compile Include="SupportClasses\ColumnDef.prg" />

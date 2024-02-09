@@ -26,10 +26,10 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
 
     private cache as Dictionary<string, SqlTableInfo>
+    private hasDefaults as logic
 
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
-        SELF:ReadDefaults()
         cache := Dictionary<string, SqlTableInfo>{StringComparer.OrdinalIgnoreCase}
         RETURN
 
@@ -63,7 +63,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         RETURN cols
     END METHOD
 
-    PRIVATE METHOD CreateDefaultColumnValues(cols as List<RddFieldInfo>, tableName as string) as string
+    PRIVATE METHOD CreateDefaultColumnValues(cols as List<RddFieldInfo>, TableName as string) as string
         var sb  := StringBuilder{}
         var first := TRUE
         foreach var col in cols
@@ -75,7 +75,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             switch col:FieldTypeStr
             case "C"
                 if col:Name == nameof(TableName)
-                    sb:Append(i"'{tableName}'")
+                    sb:Append(i"'{TableName}'")
                 else
                     sb:Append("''")
                 endif
@@ -112,7 +112,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         sb:Clear()
         sb:Append(prov:DropTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
-        Connection:Execute(sb:ToString(), out var _)
+        Connection:ExecuteNonQuery(sb:ToString())
         sb:Clear()
         // build fields list
         var cols := TableFields()
@@ -132,14 +132,14 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         sb:Append(prov:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
-        Connection:Execute(sb:ToString(), out var _)
+        Connection:ExecuteNonQuery(sb:ToString())
         // create default values
         sb:Clear()
         sb:Append(prov:InsertStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
         sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
         sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
-        Connection:Execute(sb:ToString(), out var _)
+        Connection:ExecuteNonQuery(sb:ToString())
 
         var tables := Connection:GetTables()
         foreach var table in tables
@@ -151,7 +151,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                 sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
                 sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
                 sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
-                Connection:Execute(sb:ToString(), out var _)
+                Connection:ExecuteNonQuery(sb:ToString())
             endif
         next
         cols := IndexFields()
@@ -170,94 +170,126 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         sb:Append(prov:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, IndexDictionary)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
-        Connection:Execute(sb:ToString(), out var _)
+        Connection:ExecuteNonQuery(sb:ToString())
         RETURN
     METHOD ReadDefaults() AS VOID
-        IF !Connection:DoesTableExist(TableDictionary)
-            SELF:CreateDictionary()
-        ELSEIF !Connection:DoesTableExist(IndexDictionary)
-            SELF:CreateDictionary()
-        ELSE
-            // Check if the table dictionary has at least one record
-            var sql1 := i"SELECT COUNT(*) FROM {TableDictionary}"
-            Connection:Execute(sql1, out var count)
-            if Convert.ToInt64(count) == 0
+        if ! hasDefaults
+            // Check if the table dictionary exists
+            IF !Connection:DoesTableExist(TableDictionary)
                 SELF:CreateDictionary()
+            ELSEIF !Connection:DoesTableExist(IndexDictionary)
+                SELF:CreateDictionary()
+            ELSE
+                // Check if the table dictionary has at least one record
+                var sql1 := i"SELECT COUNT(*) FROM {TableDictionary}"
+                var count := Connection:ExecuteScalar(sql1)
+                if Convert.ToInt64(count) == 0
+                    SELF:CreateDictionary()
+                endif
+            ENDIF
+            // Read the defaults from the database
+            var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{DefaultSection}'"
+            local rdr := Connection:ExecuteReader(sql) as DbDataReader
+            if rdr != null
+                if rdr:Read()
+                    LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames))
+                    AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates))
+                    MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords))
+                    RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn))
+                    DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn))
+                    TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces))
+                    CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo))
+                endif
+                rdr:Close()
             endif
-        ENDIF
-        // Read the defaults from the database
-        var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{DefaultSection}'"
-        var cmd := SqlDbCommand{"DEFAULT", Connection}
-        cmd:CommandText := sql
-        local tbl := cmd:GetDataTable("TABLE") as DataTable
-        if tbl:Rows:Count > 0
-            var row := tbl:Rows[0]
-            LongFieldNames      := AsLogic (row[nameof(SqlRDDEventReason.LongFieldNames)])
-            AllowUpdates        := AsLogic (row[nameof(SqlRDDEventReason.AllowUpdates)])
-            MaxRecords          := AsNumber(row[nameof(SqlRDDEventReason.MaxRecords)])
-            RecnoColumn         := AsString(row[nameof(SqlRDDEventReason.RecnoColumn)])
-            DeletedColumn       := AsString(row[nameof(SqlRDDEventReason.DeletedColumn)])
-            TrimTrailingSpaces  := AsLogic (row[nameof(SqlRDDEventReason.TrimTrailingSpaces)])
-            CompareMemo         := AsLogic (row[nameof(SqlRDDEventReason.CompareMemo)])
+            hasDefaults := TRUE
         endif
-        RETURN
-    END METHOD
-    private method AsString(oValue as object) as string
-        if oValue is string var strValue
-            return strValue:TrimEnd()
+        return
+    end method
+
+    private method _GetPos(rdr as DbDataReader, cName as string) AS Long
+        var pos := rdr:GetOrdinal(cName)
+        if pos >= 0
+            return pos
+        else
+            Throw Exception{String.Format("Field {0} not found in the resultset", cName)}
         endif
+    end method
+
+    private method _GetString(rdr as DbDataReader, cName as string) as string
+        try
+            var pos := SELF:_GetPos(rdr, cName)
+            if pos >= 0
+                return rdr:GetString(pos)
+            endif
+        catch
+            return ""
+        end try
         return ""
-    private method AsNumber(oValue as object) as int
-        if oValue is int var iValue
-            return iValue
-        elseif oValue is real8 var r8Value
-            return Convert.ToInt32(r8Value)
-        elseif oValue is real4 var r4Value
-            return Convert.ToInt32(r4Value)
-        elseif oValue is decimal var decValue
-            return Convert.ToInt32(decValue)
-        endif
+    end method
+
+    private method _GetNumber(rdr as DbDataReader, cName as string) as int
+        try
+            var pos := SELF:_GetPos(rdr, cName)
+            if pos >= 0
+                var num := rdr:GetDecimal(pos)
+                return Convert.ToInt32(num)
+            endif
+        catch
+            return 0
+        end try
         return 0
-    private method AsLogic(oValue as object) as logic
-    if oValue is logic var lValue
-        return lValue
-    endif
-    return AsNumber(oValue) != 0
+    end method
+
+    private method _GetLogic(rdr as DbDataReader, cName as string) as logic
+        try
+            var pos := SELF:_GetPos(rdr, cName)
+            if pos >= 0
+                return rdr:GetBoolean(pos)
+            endif
+        catch
+            return false
+        end try
+        return false
+    end method
+
+
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
+        SELF:ReadDefaults()
+
         if cache:TryGetValue(cTable, out oTable)
             return oTable
         endif
         oTable := SqlTableInfo{cTable, Connection}
         var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{cTable}'"
-        var cmd := SqlDbCommand{"TABLEINFO", Connection}
-        cmd:CommandText := sql
-        local tbl := cmd:GetDataTable("TABLE") as DataTable
-        if tbl:Rows:Count > 0
-            var row := tbl:Rows[0]
-            oTable:RealName            := AsString(row[nameof(SqlRDDEventReason.RealName)])
-            oTable:LongFieldNames      := AsLogic (row[nameof(SqlRDDEventReason.LongFieldNames)])
-            oTable:AllowUpdates        := AsLogic (row[nameof(SqlRDDEventReason.AllowUpdates)])
-            oTable:MaxRecords          := AsNumber(row[nameof(SqlRDDEventReason.MaxRecords)])
-            oTable:RecnoColumn         := AsString(row[nameof(SqlRDDEventReason.RecnoColumn)])
-            oTable:DeletedColumn       := AsString(row[nameof(SqlRDDEventReason.DeletedColumn)])
-            oTable:TrimTrailingSpaces  := AsLogic (row[nameof(SqlRDDEventReason.TrimTrailingSpaces)])
-            oTable:CompareMemo         := AsLogic (row[nameof(SqlRDDEventReason.CompareMemo)])
-            oTable:UpdatableColumns    := AsString(row[nameof(SqlRDDEventReason.UpdatableColumns)])
-            oTable:KeyColumns          := AsString(row[nameof(SqlRDDEventReason.KeyColumns)])
-            oTable:ServerFilter        := AsString(row[nameof(SqlRDDEventReason.ServerFilter)])
-            var cIndexes               := AsString(row[nameof(SqlRDDEventReason.Indexes)])
-            if (!String.IsNullOrEmpty(cIndexes))
-                var aIndexes := cIndexes:Split(c",")
-                foreach var cIndex in aIndexes
-                    var oIndexInfo := SELF:GetIndexInfo(oTable, cIndex)
-                    if (oIndexInfo != null)
-                        oTable:Indexes:Add(oIndexInfo)
-                    endif
-                next
+        local rdr := SELF:Connection:ExecuteReader(sql) as DbDataReader
+        if rdr != null
+            if rdr:Read()
+                oTable:RealName            := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RealName))
+                oTable:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames))
+                oTable:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates))
+                oTable:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords))
+                oTable:RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn))
+                oTable:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn))
+                oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces))
+                oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo))
+                oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns))
+                oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns))
+                oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter))
+                var cIndexes               := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Indexes))
+                rdr:Close()
+                if (!String.IsNullOrEmpty(cIndexes))
+                    var aIndexes := cIndexes:Split(c",")
+                    foreach var cIndex in aIndexes
+                        var oIndexInfo := SELF:GetIndexInfo(oTable, cIndex)
+                        if (oIndexInfo != null)
+                            oTable:Indexes:Add(oIndexInfo)
+                        endif
+                    next
+                endif
             endif
         endif
-        cmd:Close()
         cache:Add(cTable, oTable)
         RETURN oTable
 
@@ -265,20 +297,19 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         // Indexes are stored in a section TableName_IndexName
         var sql := i"SELECT * FROM [{IndexDictionary}] WHERE {nameof(TableName)} = '{oTable.Name}' "+ ;
             i"and [{nameof(IndexName)}] = '{cIndexName}' Order by [Ordinal]"
-        var cmd := SqlDbCommand{"INDEXINFO", Connection}
-        cmd:CommandText := sql
-        local tbl := cmd:GetDataTable("TABLE") as DataTable
+
+        local rdr := Connection:ExecuteReader(sql) as DbDataReader
         var oIndex  := SqlIndexInfo{oTable, cIndexName}
-        if tbl:Rows:Count > 0
-            foreach oRow as DataRow in tbl:Rows
-                var oTag := SqlIndexTagInfo{oIndex, AsString(oRow[nameof(TagName)])}
-                oTag:Expression    := AsString(oRow[nameof(SqlRDDEventReason.Expression)])
-                oTag:Condition     := AsString(oRow[nameof(SqlRDDEventReason.Condition)])
-                oTag:Unique        := AsLogic(oRow[nameof(SqlRDDEventReason.Unique)])
+        if rdr != null
+            while rdr:Read()
+                var oTag           := SqlIndexTagInfo{oIndex, SELF:_GetString(rdr, nameof(TagName))}
+                oTag:Expression    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Expression))
+                oTag:Condition     := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Condition))
+                oTag:Unique        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.Unique))
                 oIndex:Tags:Add(oTag)
-            next
+            enddo
+            rdr:Close()
         endif
-        cmd:Close()
         return oIndex
 
 #region constants

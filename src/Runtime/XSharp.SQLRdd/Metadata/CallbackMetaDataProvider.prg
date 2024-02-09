@@ -16,24 +16,28 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 /// </summary>
 CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
     private const DefaultSection := "Defaults" as string
+    private hasDefaults := false as logic
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
-        SELF:ReadDefaults()
         RETURN
 
     METHOD ReadDefaults() AS VOID
-        LongFieldNames      := SELF:GetLogic(DefaultSection, SqlRDDEventReason.LongFieldNames, TRUE)
-        AllowUpdates        := SELF:GetLogic(DefaultSection, SqlRDDEventReason.AllowUpdates, TRUE)
-        MaxRecords          := SELF:GetInt(DefaultSection, SqlRDDEventReason.MaxRecords, 1000)
-        RecnoColumn         := SELF:GetString(DefaultSection, SqlRDDEventReason.RecnoColumn, "")
-        DeletedColumn       := SELF:GetString(DefaultSection, SqlRDDEventReason.DeletedColumn, "")
-        TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, TRUE)
-        CompareMemo         := SELF:GetLogic(DefaultSection, SqlRDDEventReason.CompareMemo, TRUE)
+        if ! hasDefaults
+            LongFieldNames      := SELF:GetLogic(DefaultSection, SqlRDDEventReason.LongFieldNames, TRUE)
+            AllowUpdates        := SELF:GetLogic(DefaultSection, SqlRDDEventReason.AllowUpdates, TRUE)
+            MaxRecords          := SELF:GetInt(DefaultSection, SqlRDDEventReason.MaxRecords, 1000)
+            RecnoColumn         := SELF:GetString(DefaultSection, SqlRDDEventReason.RecnoColumn, "")
+            DeletedColumn       := SELF:GetString(DefaultSection, SqlRDDEventReason.DeletedColumn, "")
+            TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, TRUE)
+            CompareMemo         := SELF:GetLogic(DefaultSection, SqlRDDEventReason.CompareMemo, TRUE)
+            hasDefaults := true
+        endif
         RETURN
     END METHOD
 
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
+        ReadDefaults()
         oTable := SqlTableInfo{cTable, Connection}
         oTable:RealName          := SELF:GetString(cTable, SqlRDDEventReason.RealName, cTable)
         oTable:AllowUpdates      := SELF:GetLogic(cTable, SqlRDDEventReason.AllowUpdates,  SELF:AllowUpdates)

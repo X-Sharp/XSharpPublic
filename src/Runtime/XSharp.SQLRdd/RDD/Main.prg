@@ -114,6 +114,8 @@ partial class SQLRDD inherit DBFVFP
         next
         var aFields := oFields:ToArray()
         CoreDb.Create(tempFile,aFields,typeof(DBFVFP),true,"SQLRDD-TEMP","",false,false)
+        File.SetAttributes(tempFile, _OR(File.GetAttributes(tempFile), FileAttributes.Temporary))
+
         info:ReadOnly := false
         self:_realOpen := false
         super:Open(info)

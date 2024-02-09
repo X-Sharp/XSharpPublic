@@ -42,6 +42,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
         OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Create(info)
+            File.SetAttributes(SELF:_FileName, _OR(File.GetAttributes(SELF:_FileName), FileAttributes.Temporary))
             SELF:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
             RETURN lResult
 

@@ -13,6 +13,7 @@ using System.Text
 /// </summary>
 /// <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
 /// <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
+/// <param name="CallBack">A delegate to an Event Handler function/method that will receive events </param>
 /// <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
 /// <remarks>This will open the default connection.
 /// If the connection string needs a UserName and/or Password then these need to be included in
@@ -57,9 +58,19 @@ function SqlDbCloseConnection(Handle as IntPtr) as logic
     endif
     return oConn != null
 
+/// <summary>
+/// Get the SqlDbConnectionObject based on a Connection Handle
+/// </summary>
+/// <param name="Handle">Handle of the opened connection</param>
+/// <returns>Connection Object, or NULL when Handle is invalid</returns>
 function SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
     return SqlDbConnection.FindByHandle(Handle)
 
+/// <summary>
+/// Get the SqlDbConnectionObject based on a Connection Name
+/// </summary>
+/// <param name="ConnectionName">Name of the opened connection</param>
+/// <returns>Connection Object, or NULL when Name is invalid</returns>
 function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
     return SqlDbConnection.FindByName(ConnectionName)
 
@@ -80,7 +91,7 @@ function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
 /// </para>
 /// <para>
 /// If you open a new connection in your app later with the same connectionstring, username and password
-/// as a previously closed connection, then you may receive a the connection object from a previous connection.
+/// as a previously closed connection, then you may receive the connection object from a previous connection.
 /// This helps to keep the # of open connection used by apps low. <br/>
 /// </para>
 /// <para>
@@ -95,8 +106,6 @@ function SqlDbCacheConnection(ShouldCache as logic) as logic
     var old := SqlDbConnection.DefaultCached
     SqlDbConnection.DefaultCached := ShouldCache
     return  old
-
-
 
 
 function List2String(list as IList<string>) as string
@@ -119,7 +128,6 @@ function String2List(names as string) as IList<string>
         result:Add(element:Trim())
     next
     return result
-
 
 function XsValueToSqlValue(oValue as object)  as string
     switch oValue

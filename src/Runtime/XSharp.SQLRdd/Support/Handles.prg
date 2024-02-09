@@ -61,13 +61,13 @@ end class
 /// <summary>
 /// The HandleObject class.
 /// </summary>
-class SqlDbHandleObject inherit SqlDbObject
+class SqlDbHandleObject inherit SqlDbObject implements IDisposable
     property Handle             as IntPtr auto
     constructor(cName as string)
         super(cName)
         self:Handle := SqlDbHandles.GetHandle(self)
         return
-    destructor
+    public virtual method Dispose() as void
         SqlDbHandles.Remove(self)
         return
 end class

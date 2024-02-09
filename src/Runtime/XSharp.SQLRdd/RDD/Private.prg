@@ -152,6 +152,7 @@ partial class SQLRDD inherit DBFVFP
         until ! File.Exists(result)
         info:FileName := Path.Combine(Path.GetDirectoryName(result), Path.GetFileNameWithoutExtension(result))
         info:Extension := ".DBF"
+        var fn := info:FileName+ info:Extension
         return result
     end method
 

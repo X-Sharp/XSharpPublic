@@ -13,7 +13,7 @@ using System.Data
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
-/// The Parameter class.
+/// The SqlDbParameter class.
 /// </summary>
 class SqlDbParameter inherit SqlDbObject
     /// <summary>Ordinal position of the parameter</summary>
@@ -24,11 +24,9 @@ class SqlDbParameter inherit SqlDbObject
     property Direction      as ParameterDirection auto
     /// <summary>DbParameter object generated to pass the value to the Ado.Net dataprovider</summary>
     property DbParameter    as DbParameter auto
-    /// <summary>Command Object for which the parameter is generated</summary>
-    property Command        as SqlDbCommand auto
 
     constructor(nOrdinal as long, oValue as object)
-        super(nOrdinal:ToString())
+        super(i"p{nOrdinal}")
         self:Ordinal    := nOrdinal
         self:Value      := oValue
         self:Direction  := ParameterDirection.Input

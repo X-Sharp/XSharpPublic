@@ -16,6 +16,7 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
     protect _fileName as STRING
     protect _ini      as IniFile
     private const DefaultSection := "Defaults" as string
+    private hasDefaults as LOGIC
 
     CONSTRUCTOR(conn as SqlDbConnection)
         SELF("SQLRDD.INI", conn)
@@ -24,23 +25,26 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
         SUPER(conn)
         _fileName := cFile
         _ini      := IniFile{_fileName}
-        SELF:ReadDefaults()
         RETURN
     END CONSTRUCTOR
     METHOD ReadDefaults() AS VOID
-        LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), TRUE)
-        AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.AllowUpdates), TRUE)
-        MaxRecords          := SELF:GetInt(DefaultSection,    nameof(SqlRDDEventReason.MaxRecords), 1000)
-        RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), "")
-        DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), "")
-        TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), TRUE)
-        CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), TRUE)
+        if ! hasDefaults
+            hasDefaults := true
+            LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), TRUE)
+            AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.AllowUpdates), TRUE)
+            MaxRecords          := SELF:GetInt(DefaultSection,    nameof(SqlRDDEventReason.MaxRecords), 1000)
+            RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), "")
+            DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), "")
+            TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), TRUE)
+            CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), TRUE)
+            ENDIF
         RETURN
     END METHOD
 
     /// <inheritdoc />
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
+        ReadDefaults()
         oTable := SqlTableInfo{cTable, Connection}
         oTable:RealName          := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RealName),      cTable)
         oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.AllowUpdates),  SELF:AllowUpdates)

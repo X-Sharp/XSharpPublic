@@ -1,4 +1,5 @@
 ﻿using XSharp.RDD.SqlRDD
+using XSharp.RDD.SqlRDD.Providers
 using System.Data
 using System.Data.Common
 using MySql.Data.MySqlClient
@@ -13,7 +14,7 @@ global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=No
 global showEvents := true as logic
 
 function Start as void
-    RegisteredRDD.Add( RegisteredRDD{"SQLRDD", typeof(SQLRDD)})
+    RegisteredRDD.Add( RegisteredRDD{"SQLRDD", typeof(SqlRDD)})
     //TestProviders()
     //TestSqlServer()
     //TestODBC()
@@ -21,12 +22,16 @@ function Start as void
     //     TestRDDODBC()
     //     TestRDDOLEDB()
     //TestRDDSql()
-    //TestCommandSql()
-    //TestCommandODBC()
-    //TestCommandOLEDB()
-    //TestParametersODBC()
-    //TestParametersSQL()
-    TestTable()
+    TestCommandSql()
+    TestCommandSql()
+    TestCommandODBC()
+    TestCommandODBC()
+    TestCommandOLEDB()
+    TestCommandOLEDB()
+//     TestParametersODBC()
+//     TestParametersSQL()
+//     TestParametersOLEDB()
+    //TestTable()
     //testCreate()
     wait
     return
@@ -76,72 +81,98 @@ function TestCreate() as void
     wait
 
 function TestTable() as void
-        SqlDbSetProvider("SQLSERVER")
-        var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
-        ? handle
-        VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
-        ? "SetDeleted(TRUE)"
-        SetDeleted(true)
-        dbGoTop()
-        do while ! Eof() .and. Recno() < 10
-            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
-            DbSkip(1)
-        enddo
-        wait
-        Cls()
-        ? "SetDeleted(FALSE)"
-        SetDeleted(false)
-        dbGoTop()
-        do while ! Eof() .and. Recno() < 10
-            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
-            DbSkip(1)
-        enddo
-        wait
-        Cls()
-        ? "Order by address"
-        DbSetOrder("Address")
-        dbGoTop()
-        do while ! Eof() .and. Recno() < 10
-            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3),  FieldGetSym(#Country),  FieldGetSym(#City)
-            FieldPutSym(#Region, "xxx")
-            DbSkip(1)
-        enddo
-        wait
-        cls()
-        ListSeek()
-        wait
-        Cls()
-        ListBrazil()
-        wait
-        VODbCloseArea()
+    SqlDbSetProvider("SQLSERVER")
+    var handle := SqlDbOpenConnection(SqlConnStr)
+    var conn   := SqlDbGetConnection(handle)
+    conn:MetadataProvider := DatabaseMetaDataProvider{conn}
+    conn:CallBack += @@EventHandler
+    ? handle
+    VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
+
+    DumpIndexes()
+    ? "SetDeleted(TRUE)"
+    SetDeleted(true)
+    DbGoTop()
+    do while ! Eof() .and. Recno() < 10
+        ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+        DbSkip(1)
+    enddo
+    wait
+    Cls()
+    ? "SetDeleted(FALSE)"
+    SetDeleted(false)
+    DbGoTop()
+    do while ! Eof() .and. Recno() < 10
+        ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+        DbSkip(1)
+    enddo
+    wait
+    Cls()
+    ? "Order by address"
+    DbSetOrder("Address")
+    DbGoTop()
+    do while ! Eof() .and. Recno() < 10
+        ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3),  FieldGetSym(#Country),  FieldGetSym(#City)
+        DbSkip(1)
+    enddo
+    wait
+    Cls()
+    ListSeek()
+    wait
+    Cls()
+    ListBrazil()
+    wait
+    // Test creating an index
+    ? "Create Index on City"
+    DbCreateOrder("City",,"City")
+    DbCreateOrder("Name",,"ContactName")
+    DumpIndexes()
+    ? DbSetOrder("City")
+    DbGoTop()
+    var nI := 0
+    ? "By city"
+    DO WHILE ! Eof() .and. ++nI < 10
+        ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
+        DbSkip(1)
+    ENDDO
+    ? "By name"
+    ? DbSetOrder("Name")
+    DbGoTop()
+    nI := 0
+    DO WHILE ! Eof() .and. ++nI < 10
+        ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
+        DbSkip(1)
+    ENDDO
+
+    VODbCloseArea()
 
 
 function ListSeek as void
-        ? "Seek Customer with key ALFKI"
-        DbSetOrder("PK")
-        DbSeek("ALFKI")
-        do while ! Eof() .and. Recno() < 10
-            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
-            DbSkip(1)
-        enddo
-        ? "Seek Customer with key GOURL"
-        DbSeek("GOURL")
-        do while ! Eof() .and. Recno() < 10
-            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
-            DbSkip(1)
-        enddo
+    ? "Seek Customer with key ALFKI"
+    DbSetOrder("PK")
+    DbSeek("ALFKI")
+    do while ! Eof() .and. Recno() < 10
+        ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+        DbSkip(1)
+    enddo
+    ? "Seek Customer with key GOURL"
+    DbSeek("GOURL")
+    do while ! Eof() .and. Recno() < 10
+        ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3)
+        DbSkip(1)
+    enddo
 
 
 function ListBrazil as void
-        ? "Scope Customers in Brazil and Canada"
-        DbSetOrder("Address")
-        DBOrderInfo(DBOI_SCOPETOP,,,"BRAZIL")
-        DBOrderInfo(DBOI_SCOPEBOTTOM,,,"CANADA")
-        DbGoTop()
-        do while ! Eof()
-            ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3), FieldGetSym(#Country)
-            DbSkip(1)
-        enddo
+    ? "Scope Customers in Brazil and Canada"
+    DbSetOrder("Address")
+    DbOrderInfo(DBOI_SCOPETOP,,,"BRAZIL")
+    DbOrderInfo(DBOI_SCOPEBOTTOM,,,"CANADA")
+    DbGoTop()
+    do while ! Eof()
+        ? Recno(), Deleted(), FieldGet(1), FieldGet(2), FieldGet(3), FieldGetSym(#Country)
+        DbSkip(1)
+    enddo
     return
 
 
@@ -149,13 +180,17 @@ function TestParametersODBC() AS VOID
     local conn := null as SqlDbConnection
     local cmd  := null as SqlDbCommand
     TRY
+        ? "Testing Parameters with ODBC"
+        var stopWatch := System.Diagnostics.Stopwatch{}
+        stopWatch:Start()
+
         SqlDbSetProvider("ODBC")
-        var handle := SqlDbOpenConnection(OdbcConnStr, EventHandler)
+        var handle := SqlDbOpenConnection(ODBCConnStr, EventHandler)
         conn := SqlDbGetConnection(handle)
         cmd := SqlDbCommand{"TEST", conn}
-        cmd:CommandText := "Select * from Customers where Country = ?"
-        cmd:AddParameter(1, "Germany1")
-        cmd:BindParameters()
+        cmd:CommandText := "Select * from Customers where CustomerId like ? or Country = ?"
+        cmd:AddParameter(1, "A%")
+        cmd:AddParameter(2, "Germany")
         var oTable := cmd:GetDataTable("Customers")
         ? "Command   :",cmd:CommandText
         ? "Parameters:",cmd:ParameterList
@@ -170,11 +205,14 @@ function TestParametersODBC() AS VOID
                 ? col:ColumnName
             next
         endif
+                ? stopWatch:Elapsed:ToString()
+        stopWatch:Stop()
     CATCH e as Exception
         ? e:Message
         if e:InnerException != null
             ? e:InnerException:Message
         endif
+
     FINALLY
         IF cmd != NULL
             cmd:Close()
@@ -187,11 +225,62 @@ function TestParametersODBC() AS VOID
     END TRY
     WAIT
     RETURN
+function TestParametersOleDb() AS VOID
+    local conn := null as SqlDbConnection
+    local cmd  := null as SqlDbCommand
+    TRY
+        ? "Testing Parameters with OLEDB"
+        var stopWatch := System.Diagnostics.Stopwatch{}
+        stopWatch:Start()
 
+        SqlDbSetProvider("OLEDB")
+        var handle := SqlDbOpenConnection(OLEDBConnStr, EventHandler)
+        conn := SqlDbGetConnection(handle)
+        cmd := SqlDbCommand{"TEST", conn}
+        cmd:CommandText := "Select * from Customers where CustomerId like ? or Country = ?"
+        cmd:AddParameter(1, "A%")
+        cmd:AddParameter(2, "Germany")
+        var oTable := cmd:GetDataTable("Customers")
+        ? "Command   :",cmd:CommandText
+        ? "Parameters:",cmd:ParameterList
+        ? "Rows      :",oTable:Rows:Count
+        if oTable:Rows:Count > 0
+            var row := oTable:Rows[0]
+            foreach col as DataColumn in oTable:Columns
+                ? col:ColumnName, row[col]
+            next
+        else
+            foreach col as DataColumn in oTable:Columns
+                ? col:ColumnName
+            next
+        endif
+                ? stopWatch:Elapsed:ToString()
+        stopWatch:Stop()
+    CATCH e as Exception
+        ? e:Message
+        if e:InnerException != null
+            ? e:InnerException:Message
+        endif
+
+    FINALLY
+        IF cmd != NULL
+            cmd:Close()
+        ENDIF
+        IF conn != NULL
+            conn:Close()
+        ENDIF
+
+
+    END TRY
+    WAIT
+    RETURN
 function TestParametersSQL() AS VOID
     local conn := NULL as SqlDbConnection
     local cmd  := NULL as SqlDbCommand
     TRY
+        ? "Testing Parameters with SQLSERVER"
+        var stopWatch := System.Diagnostics.Stopwatch{}
+        stopWatch:Start()
         SqlDbSetProvider("SQLServer")
         var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
         conn := SqlDbGetConnection(handle)
@@ -214,6 +303,9 @@ function TestParametersSQL() AS VOID
                 ? col:ColumnName
             next
         endif
+        ? stopWatch:Elapsed:ToString()
+        stopWatch:Stop()
+
     CATCH e as Exception
         ? e:Message
         if e:InnerException != null
@@ -245,15 +337,27 @@ function TestCommandOLEDB() as void
 FUNCTION TestCommand(cDriver as string, cConn as STRING) AS VOID
     local conn as SqlDbConnection
     TRY
+        var stopWatch := System.Diagnostics.Stopwatch{}
+        ? "Testing Command object with ", cDriver
+        stopWatch:Start()
         SqlDbSetProvider(cDriver)
         var handle := SqlDbOpenConnection(cConn, EventHandler)
         conn := SqlDbGetConnection(handle)
+        ? stopWatch:Elapsed:ToString()
         ? conn:ConnectionString
-        var stmt := SqlDbCreateSqlStatement(handle)
-        var res := SqlDbExecuteSQLDirect(stmt, "Select count(*) from Customers")
+        ? conn:DbConnection:ConnectionString
+        var hCommand := SqlDbCreateSqlCommand(handle)
+        var res := SqlDbExecuteSQLDirect(hCommand, "Select count(*) from Customers")
         ? res
-        SqlDbCloseStatement(stmt)
+        SqlDbCloseCommand(hCommand)
+        // now use command object directly
+        using var oCmd := SqlDbCommand{"TEST", conn}
+        oCmd:CommandText := "Select count(*) from Customers"
+        res := oCmd:ExecuteScalar()
+        ? res
         SqlDbCloseConnection(handle)
+        ? stopWatch:Elapsed:ToString()
+        stopWatch:Stop()
     CATCH e as Exception
         ? e:Message
         if e:InnerException != null
@@ -270,17 +374,17 @@ Function TestRDD(cDriver as string, cConn as STRING) as void
     DumpCustomers()
     ? Seconds() - secs
     //WAIT
-    VoDbCloseArea()
+    VODbCloseArea()
     SqlDbCloseConnection(handle)
 
 function TestRDDSql() as void
-    testRDD("SqlServer", SqlConnStr)
+    TestRDD("SqlServer", SqlConnStr)
 
 function TestRDDODBC() as void
-    testRDD("ODBC", ODBCConnStr)
+    TestRDD("ODBC", ODBCConnStr)
 
 function TestRDDOLEDB() as void
-    testRDD("OLEDB", OleDbConnStr)
+    TestRDD("OLEDB", OleDbConnStr)
 
 function DumpCustomers() as VOID
     VoDbUseArea(true, "SQLRDD","select * from Customers","Customers",true, true)
@@ -297,6 +401,28 @@ function DumpCustomers() as VOID
         next
         DbSkip(1)
     ENDDO
+    // Test creating an index
+    ? "Create Index on City"
+    DbCreateOrder("City",,"City")
+    DbCreateOrder("Name",,"ContactName")
+    DumpIndexes()
+    OrdSetFocus("City")
+    DbGoTop()
+    nI := 0
+    ? "By city"
+    DO WHILE ! Eof() .and. ++nI < 10
+        ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
+        DbSkip(1)
+    ENDDO
+    ? "By name"
+    OrdSetFocus("Name")
+    DbGoTop()
+    nI := 0
+    DO WHILE ! Eof() .and. ++nI < 10
+        ? Recno(), FieldGetSym(#City), FieldGetSym(#CustomerID), FieldGetSym(#ContactName)
+        DbSkip(1)
+    ENDDO
+
 
 function TestSqlServer as void
     Console.Clear()
@@ -336,7 +462,7 @@ Function DumpConnection(conn as SqlDbConnection) as void
         //         next
         var tables := conn:GetTables("TABLE")
         ? "# of Tables : ", tables:Count
-        foreach var name in tables
+        foreach var Name in tables
             try
                 DumpStructure(conn:GetStructureForTable(Name, null,"*"))
             catch
@@ -346,11 +472,11 @@ Function DumpConnection(conn as SqlDbConnection) as void
     ENDIF
     ? Seconds() - secs
 function DumpStructure(oTd as SqlDbTableDef) as VOID
-        ? "Table", oTd:Name, "Columns", oTd:Columns:Count
-        foreach oCol as SqlDbColumnDef in oTd:Columns
-            ? oCol:Name, oCol:ColumnInfo:ColumnName, oCol:ColumnInfo:FieldTypeFlags, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
-        next
-        ?
+    ? "Table", oTd:Name, "Columns", oTd:Columns:Count
+    foreach oCol as SqlDbColumnDef in oTd:Columns
+        ? oCol:Name, oCol:ColumnInfo:ColumnName, oCol:ColumnInfo:FieldTypeFlags, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
+    next
+    ?
 
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     local strValue as string
@@ -361,8 +487,36 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
     else
         strValue := "NULL"
     endif
+    // Tags default
+    switch e:Reason
+    case SqlRDDEventReason.Condition
+        e:Value := ""
+    case SqlRDDEventReason.Unique
+        e:Value := FALSE
+    case SqlRDDEventReason.Expression
+        switch e:Table
+        case "Tag:Customers:PK"
+            e:Value := "CustomerID"
+        case "Tag:Customers:CompanyName"
+            e:Value := "UPPER(CompanyName)"
+        case "Tag:Customers:ContactName"
+            e:Value := "UPPER(ContactName)"
+        case "Tag:Customers:Address"
+            e:Value := "Upper(Country)+Upper(City)"
+        end switch
+    case SqlRDDEventReason.Indexes
+        switch e:Table
+        case "Customers"
+            e:Value := "Customers"
+        end switch
+    case SqlRDDEventReason.Tags
+        switch e:Table
+        case "Index:Customers"
+            e:Value := "PK,CompanyName,ContactName,Address"
+        end switch
+    end switch
     if showEvents
-        ? "Event", e:Reason:ToString(), e:Table, strValue
+        ? "Event", e:Table, e:Reason:ToString(), e:Table, strValue
     endif
     return e:Value
 
@@ -383,29 +537,29 @@ function TestProviders as void
             ? "DTOS()    ", oProv:GetFunction("DTOS(%1%)")
             try
                 ? "Quotes    ", oProv:QuoteIdentifier("somename")
-            catch e as exception
+            catch e as Exception
                 ? "NO Quotes for ", strProv, e:Message
             end try
             ?
         else
             ? "Could not load provider "+strProv
             wait
-         endif
+        endif
     next
     wait
 
-// FUNCTION Start1(args AS STRING[]) AS VOID
-//     local oExpr as SqlDbExpression
-//     SqlDbExpression.SqlTranslator := SqlTranslator
-//     oExpr := SqlDbExpression{NULL, "LASTNAME+FIRSTNAME"}
-//     DumpExpression(oExpr)
-//     SqlDbExpression{NULL, "STR(CUSTNO)+DESCEND(DTOS(ORDERDATE))"}
-//     DumpExpression(oExpr)
-//     oExpr := SqlDbExpression{NULL, "STR(CUSTNO)+IIF(EMPTY(LASTNAME),REPL('Z',10), LEFT(LASTNAME,10))"}
-//     DumpExpression(oExpr)
-//
+    // FUNCTION Start1(args AS STRING[]) AS VOID
+    //     local oExpr as SqlDbExpression
+    //     SqlDbExpression.SqlTranslator := SqlTranslator
+    //     oExpr := SqlDbExpression{NULL, "LASTNAME+FIRSTNAME"}
+    //     DumpExpression(oExpr)
+    //     SqlDbExpression{NULL, "STR(CUSTNO)+DESCEND(DTOS(ORDERDATE))"}
+    //     DumpExpression(oExpr)
+    //     oExpr := SqlDbExpression{NULL, "STR(CUSTNO)+IIF(EMPTY(LASTNAME),REPL('Z',10), LEFT(LASTNAME,10))"}
+    //     DumpExpression(oExpr)
+    //
 
-//    WAIT
+    //    WAIT
 
 
 FUNCTION SqlTranslator(cFunc as String) as String
@@ -426,6 +580,18 @@ Function DumpExpression(oExpr as SqlDbExpression) AS VOID
     ? "Cols ",oExpr:ColumnListString
     ? "SqlKey", oExpr:SQLKey
     ?
+function DumpIndexes as Void
+    // Dump the indexes and orders
+    ? "Indexes", DbOrderInfo(DBOI_ORDERCOUNT)
+    var focus := OrdSetFocus()
+    FOR var i := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
+        OrdSetFocus(i)
+        ? "Order", i, DbOrderInfo(DBOI_FULLPATH), DbOrderInfo(DBOI_BAGNAME), DbOrderInfo(DBOI_NAME), DbOrderInfo(DBOI_EXPRESSION), DbOrderInfo(DBOI_CONDITION)
+    NEXT
+    OrdSetFocus(focus)
+    WAIT
+
+
 
 
 

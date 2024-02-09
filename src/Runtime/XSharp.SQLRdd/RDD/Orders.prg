@@ -51,6 +51,7 @@ partial class SQLRDD inherit DBFVFP
                 endif
             endif
             oBag:Tags:Add(oTag)
+            oBag:Save()
             CurrentOrder := oTag
             self:_hasData := false
             return TRUE
@@ -100,10 +101,17 @@ partial class SQLRDD inherit DBFVFP
 
 
     override method OrderListAdd( orderInfo AS DbOrderInfo) as logic
-        local result as logic
+        local result := false as logic
         if self:_tableMode == TableMode.Table
-            // todo: Add Order in TableMode
-            result := false
+            if !String.IsNullOrEmpty(orderInfo:BagName)
+                if System.IO.File.Exists(orderInfo:BagName)
+                    var bag := SqlDbOrderBag{orderInfo:BagName, SELF}
+                    if bag:Load()
+                        SELF:IndexList:Add(bag)
+                        result := true
+                    endif
+                endif
+            endif
         else
             result := super:OrderListAdd(orderInfo)
         endif
@@ -111,8 +119,12 @@ partial class SQLRDD inherit DBFVFP
     override method OrderListDelete( orderInfo AS DbOrderInfo) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
-            // todo: Delete Order in TableMode
-            result := false
+            var workOrder := self:_obuilder:FindOrder(orderInfo)
+            if workOrder != null
+                var oBag := workOrder:OrderBag
+                oBag:Remove(workOrder:Name)
+                result := true
+            endif
         else
             result := super:OrderListDelete(orderInfo)
         endif
@@ -151,11 +163,11 @@ partial class SQLRDD inherit DBFVFP
             endif
         case DBOI_ORDERCOUNT
             if oBag == null
-                if hasBagName
-                    info:Result := 0
-                else
-                    info:Result := self:IndexList:Count
-                endif
+                var nCount := 0
+                foreach var bag in Self:IndexList
+                    nCount += bag:Tags:Count
+                next
+                info:Result := nCount
             else
                 info:Result := oBag:Tags:Count
             endif

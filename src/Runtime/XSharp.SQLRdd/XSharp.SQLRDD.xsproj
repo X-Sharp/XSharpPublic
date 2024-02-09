@@ -79,6 +79,8 @@
     <Compile Include="DBMS\SqlSDbProvider.prg" />
     <Compile Include="DBMS\SqlServer.prg" />
     <Compile Include="RDD\Main.prg" />
+    <Compile Include="RDD\Order.prg" />
+    <Compile Include="RDD\OrderBag.prg" />
     <Compile Include="RDD\Orders.prg" />
     <Compile Include="RDD\Private.prg" />
     <Compile Include="Support\Abstract.prg" />
@@ -90,8 +92,6 @@
     <Compile Include="Support\Expression.prg" />
     <Compile Include="Support\Handles.prg" />
     <Compile Include="Support\IniFile.prg" />
-    <Compile Include="Support\Order.prg" />
-    <Compile Include="Support\OrderBag.prg" />
     <Compile Include="Support\Segment.prg" />
     <Compile Include="Support\SqlDbTableCommandBuilder.prg" />
     <Compile Include="Support\TableDef.prg" />

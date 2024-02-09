@@ -63,7 +63,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     end constructor
 
     static method CurrentDomain_ProcessExit(sender as object, e as EventArgs) as void
-        foreach var oConn in Connections
+        foreach var oConn in Connections:ToArray()
             oConn:Close()
         next
     end method
@@ -168,7 +168,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         return
     end method
 
-    internal async method ForceOpen as void
+    internal method ForceOpen as void
         if self:DbConnection:State != ConnectionState.Open
             var connStr := RaiseStringEvent(self, SqlRDDEventReason.ConnectionString, "", self:ConnectionString)
             self:DbConnection:ConnectionString  := connStr

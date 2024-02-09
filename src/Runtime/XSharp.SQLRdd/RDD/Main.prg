@@ -292,8 +292,14 @@ partial class SQLRDD inherit DBFVFP
     override method Close() as logic
         local lOk as logic
         // This method deletes the temporary file after the file is closed
+        foreach var bag in self:IndexList
+            bag:Close()
+        next
         _connection:RemoveRdd(self)
         lOk := super:Close()
+        if File.Exists(SELF:FileName)
+            File.Delete(SELF:FileName)
+        endif
         return lOk
     end method
 

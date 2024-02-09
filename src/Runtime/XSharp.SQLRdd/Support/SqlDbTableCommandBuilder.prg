@@ -58,6 +58,7 @@ class SqlDbTableCommandBuilder
         if oProdIndex != null
             if oProdIndex:Tags:Count > 0
                 var oBag := SqlDbOrderBag{cIndex, _oRdd}
+                oBag:ProductionIndex := true
                 oBag:LogicalName := cIndex
                 oBag:FileName := System.IO.Path.GetFileNameWithoutExtension(_oRdd:FileName)
                 foreach var tag in oProdIndex:Tags
@@ -68,6 +69,7 @@ class SqlDbTableCommandBuilder
                     oBag:Add(oTag)
                 next
                 _orderBags:Add(oBag)
+                oBag:Save()
             endif
         endif
     method SetProductionIndex() as logic

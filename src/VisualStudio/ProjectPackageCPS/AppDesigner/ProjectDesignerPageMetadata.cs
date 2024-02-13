@@ -7,7 +7,7 @@
 using Microsoft.VisualStudio.ProjectSystem.VS.Properties;
 using System;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     /// <summary>
     ///     Concrete implementation of <see cref="IPageMetadata"/>.

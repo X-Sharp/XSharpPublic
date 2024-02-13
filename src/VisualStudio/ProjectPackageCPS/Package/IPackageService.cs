@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Composition;
 using System.Threading.Tasks;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
 
     /// <summary>

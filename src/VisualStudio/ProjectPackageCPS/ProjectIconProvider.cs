@@ -10,7 +10,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using Microsoft.VisualStudio.ProjectSystem;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     [Export(typeof(IProjectTreePropertiesProvider))]
     [AppliesTo("XSharp")] // [Order(Order.Default)]

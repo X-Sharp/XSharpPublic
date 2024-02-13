@@ -2,7 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Microsoft.VisualStudio.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     [ExcludeFromCodeCoverage]
     [SuppressMessage("Style", "IDE0016:Use 'throw' expression")]

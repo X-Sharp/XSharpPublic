@@ -3,7 +3,7 @@
                            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                            xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
   <Symbols>
-    <String Name="Resources" Value="/XSharpProjectCPS;Component/" />
+    <String Name="Resources" Value="/XSharp.VisualStudio.ProjectSystem;Component/" />
     <Guid Name="XSharpImagesGuid" Value="6c1120ab-b5cc-4593-9413-ad506eedcec7" />
     <ID Name="ProjectIcon" Value="1" />
     <ID Name="ItemIcon" Value="2" />

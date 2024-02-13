@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using Microsoft.VisualStudio;
-using XSharp.ProjectSystem;
+using XSharp.VisualStudio.ProjectSystem;
 using XSharp;
 using Microsoft.VisualStudio.ProjectSystem.VS;
 

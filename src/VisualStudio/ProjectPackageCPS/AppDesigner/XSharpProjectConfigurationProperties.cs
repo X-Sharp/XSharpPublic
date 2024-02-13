@@ -8,7 +8,7 @@
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.ProjectSystem;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     [Export(ExportContractNames.VsTypes.ConfiguredProjectPropertiesAutomationObject)]
     [AppliesTo(ProjectCapability.XSharp)]

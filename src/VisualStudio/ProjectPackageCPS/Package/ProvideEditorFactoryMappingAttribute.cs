@@ -7,7 +7,7 @@
 using System;
 using Microsoft.VisualStudio.Shell;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     internal sealed class ProvideEditorFactoryMappingAttribute : RegistrationAttribute

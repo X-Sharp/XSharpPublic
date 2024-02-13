@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             while (parentType is { })
             {
                 // we expect exactly 1 parent ctor
-                var ctors = parentType.GetMembers(".ctor");
+                var ctors = parentType.GetMembers(WellKnownMemberNames.InstanceConstructorName);
                 if (ctors.Length != 1)
                     return ctor;
                 var parentctor = ctors[0] as MethodSymbol;

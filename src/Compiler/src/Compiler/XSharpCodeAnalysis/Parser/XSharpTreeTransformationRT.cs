@@ -1381,7 +1381,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                 var chainExpr = MakeSimpleMemberAccess(
                     chain.Start.Type == XP.SELF ? GenerateSelf() : GenerateSuper(),
-                    GenerateSimpleName(".ctor"));
+                    GenerateSimpleName(WellKnownMemberNames.InstanceConstructorName));
                 body = MakeBlock(MakeList<StatementSyntax>(
                     GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs), context.Context()),
                     body));
@@ -3269,7 +3269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (expr is ThisExpressionSyntax || expr is BaseExpressionSyntax)
             {
                 // SUPER(..) and SELF(..)
-                expr = MakeSimpleMemberAccess(expr, _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+                expr = MakeSimpleMemberAccess(expr, _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(WellKnownMemberNames.InstanceConstructorName)));
                 ArgumentListSyntax argList;
                 if (context.ArgList != null)
                 {
@@ -3300,7 +3300,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var mExpr = mac.Expression;
                     if (mExpr is ThisExpressionSyntax || mExpr is BaseExpressionSyntax)
                     {
-                        expr = MakeSimpleMemberAccess(mExpr, GenerateSimpleName(".ctor"));
+                        expr = MakeSimpleMemberAccess(mExpr, GenerateSimpleName(WellKnownMemberNames.InstanceConstructorName));
                         ArgumentListSyntax argList;
                         if (context.ArgList != null)
                         {

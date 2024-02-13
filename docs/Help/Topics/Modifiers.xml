@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-09T11:38:01.490+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-02-13T10:57:35.619+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Modifiers</title>
   <body>
     <header>
@@ -11,16 +11,17 @@
     <para styleclass="Normal">Access modifiers restrict the visibility of program elements:</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">PUBLIC/EXPORT: A public function, global, type (class, structure, delegate etc) or type member (field, method, property, event etc) is visible to all code withing the same assembly (exe or dll) where it is declared and assemblies references by the declaring assembly. This is the default in X#.</li>
+      <li styleclass="Normal">PUBLIC/EXPORT: A public function, global, type (class, structure, delegate etc) or type member (field, method, property, event etc) is visible to all code within the same assembly (exe or dll) where it is declared and assemblies referenced by the declaring assembly. This is the default in X#.</li>
       <li styleclass="Normal">PROTECT/PROTECTED: The PROTECT(ED) keyword can be applied only to type members and restrict their visibility to code within the same type and classes that inherit from that type</li>
-      <li styleclass="Normal">INSTANCE: A unique keyword to X# (and Visual Objects), very similar to PROTECT, but applies only to class fields and has different semantics to PROTECT, on the way it is used by code within the same class (see sample below)</li>
-      <li styleclass="Normal">PRIVATE/HIDDEN: Also applies to type members and is more restrictive than PROTECT, as it limits the member visibility to only code within the type where it is declared (not to classes inheriting that type)</li>
+      <li styleclass="Normal">INSTANCE: A unique modifier keyword to X# (and Visual Objects), very similar to PROTECT, but applies only to class fields and has different semantics to PROTECT, on the way it is used by code within the same class (see sample below)</li>
+      <li styleclass="Normal">PRIVATE/HIDDEN: Also applies to type members and is more restrictive than PROTECT, as it limits the member visibility to only code within the type where it is declared (not to classes inheriting from that type)</li>
       <li styleclass="Normal">INTERNAL: Restricts the visibility of a type or member only to code from the same assembly (dll or exe). An internal member is not visible to any code outside the defining assembly, not even to classes inheriting from this class declared in other assemblies. Can be combined with PROTECTED, so that an INTERNAL PROTECTED member can be seen only form within the same class and also from inheriting classes that are defined in the same assembly, but not from inheriting classes that are defined in other assemblies.</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note: It is still possible to explicitly specify certain assemblies where internal types and members of an assembly are visible, y using the InternalsVisibleTo attribute. See documentation for System.Runtime.CompilerServices.InternalsVisibleToAttribute for more information.</para>
+    <para styleclass="Normal">Note: It is still possible to explicitly specify certain assemblies where internal types and members of an assembly are visible, by using the InternalsVisibleTo attribute. See documentation for System.Runtime.CompilerServices.InternalsVisibleToAttribute for more information.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">INTERNAL PROCEDURE InternalProc() // procedure accessible only from within the same assembly</para>
+    <para styleclass="Normal">INTERNAL GLOBAL InternalGlobal AS INT // global accessible only from within the same assembly</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">PUBLIC CLASS TestClass // accessible from everywhere</para>
     <para styleclass="Normal"><tab />EXPORT Export_field AS INT // accessible from everywhere</para>
@@ -50,12 +51,12 @@
     <para styleclass="Normal">END CLASS</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This feature is a left over from old Visual Objects versions that were emitting INSTANCE members for every control in the Window Editor and is depreciated in X#, but still available for compatibility reasons.</para>
-    <para styleclass="Heading2">Hierarchy modifiers</para>
-    <para styleclass="Normal">Hierarchy modifiers control the way elements of a type (class or structure) behave with the class hierarchy.</para>
+    <para styleclass="Heading2">Class hierarchy modifiers</para>
+    <para styleclass="Normal">Hierarchy modifiers control the way elements of a class behave within their class hierarchy.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold;">VIRTUAL/OVERRIDE/NEW:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">By default, all methods in .Net are non-VIRUAL, meaning they cannot be overridden by same named methods in descendant classes. In the following example, calling a method from code inside the Parent class, results to calling he version of the method defined in this particular class in the class hierarchy, not the method with the same name defined in the Child class (even though the object we are testing with is an instance of the Child class):</para>
+    <para styleclass="Normal">By default, all methods in .Net are non-VIRTUAL, meaning they cannot be overridden by same named methods (and signature - parameter and return types) in descendant classes. In the following example, calling a method from code inside the Parent class, results to calling he version of the method defined in this particular class in the class hierarchy, not the method with the same name and signature defined in the Child class (even though the object we are testing with is an instance of the Child class):</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">FUNCTION Start() AS VOID</para>
     <para styleclass="Normal"><tab />LOCAL oTest AS Child</para>
@@ -95,9 +96,9 @@
     <para styleclass="Normal"><tab /><tab />? &quot;Child virtual method was called&quot;</para>
     <para styleclass="Normal">END CLASS</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that VirtualMethod() in the child class is declared with the OVERRIDE modifier, this tells the compiler that we have on purpose overridden a parent method with the same name. The OVERRIDE modifier is not mandatory in X# and can be omitted, but it makes the code more self-explanatory and allows the compiler to make additional compile time checks. If OVERRIDE is used on a method to override a parent method that is not VIRTUAL, or it does not even exist (or is spelled with a different name in the parent class), then a compiler error will be reported. For this reason, it is recommended &#160;to explicitly declare methods overriding parent methods with the OVERRIDE keyword. It is also possible to enforce the use of the OVERRIDE keyword in the compiler, by enabling the compiler option &quot;Enforce OVERRIDE&quot; (/enforceoverride).</para>
+    <para styleclass="Normal">Note that VirtualMethod() in the child class is declared with the OVERRIDE modifier, this tells the compiler that we have on purpose overridden a parent method with the same name. The OVERRIDE modifier is not mandatory in X# and can be omitted, but using it makes the code more self-explanatory and allows the compiler to make additional compile time checks. If OVERRIDE is used on a method to override a parent method that is not VIRTUAL, or it does not even exist (or is spelled with a different name or has a different signature in the parent class), then a compiler error will be reported. For this reason, it is recommended &#160;to explicitly declare methods overriding parent methods with the OVERRIDE keyword. It is also possible to enforce the use of the OVERRIDE keyword in the compiler, by enabling the compiler option &quot;Enforce OVERRIDE&quot; (/enforceoverride).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In the above code, the compiler does report a warning on the NonVirtualMethod() defined in the child class: warning XS0108: &apos;Child.NonVirtualMethod()&apos; hides inherited member &apos;Parent.NonVirtualMethod()&apos;. Use the new keyword if hiding was intended. This warns about the definition of a method in the child class that has the same name with a non-virtual method in the parent class, as this could had been done by accident (either accidentally using the same name, or forgetting to define the base method as virtual). In order to tell the compiler that the use of the same name in a child method was intentional, the NEW modifier keyword can be used, which explicitly marks the method as one that does override the base one:</para>
+    <para styleclass="Normal">In the above code, the compiler does report a warning on the NonVirtualMethod() defined in the child class: &quot;warning XS0108: &apos;Child.NonVirtualMethod()&apos; hides inherited member &apos;Parent.NonVirtualMethod()&apos;, use the new keyword if hiding was intended&quot;. This warns about the definition of a method in the child class that has the same name with a non-virtual method in the parent class, as this could had been done by accident (either accidentally using the same name, or forgetting to define the base method as virtual). In order to tell the compiler that the use of the same name in a child method was intentional (and prevent the warning), the NEW modifier keyword can be used, which explicitly marks the method as one that does override the base one:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">CLASS Child INHERIT Parent</para>
     <para styleclass="Normal"><tab />NEW METHOD NonVirtualMethod() AS VOID // explicitly mark the method as new one, different to the parent method</para>
@@ -106,10 +107,137 @@
     <para styleclass="Normal"><tab /><tab />? &quot;Child virtual method was called&quot;</para>
     <para styleclass="Normal">END CLASS</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For already existing code ported from older systems like Visual Objects where methods are always VIRTUAL, it can be tiresome to manually add the VIRTUAL modifier keyword in all methods that needed. For this reason, it is possible for convenience to instruct the compiler to automatically treat ALL methods as virtual, with the use of the &quot;All instance methods virtual&quot; (/vo3) compiler option. But is highly recommended to instead review the code and manually add the VIRTUAL modifier where it is really needed.</para>
+    <para styleclass="Normal">For already existing code ported from older systems like Visual Objects where methods are always VIRTUAL, it can be tiresome to manually add the VIRTUAL modifier keyword in all methods that need it. For this reason, it is possible for convenience to instruct the compiler to automatically treat ALL methods as virtual, with the use of the &quot;All instance methods virtual&quot; (/vo3) compiler option. But is highly recommended to instead review the code and manually add the VIRTUAL modifier only where it is really needed.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The VIRTUAL/OVERRIDE/NEW modifiers do not apply to methods only, but can be used also for other class members like properties, fields, events etc:</para>
+    <para styleclass="Normal">Note that a method in a child class can override a parent class method, only if it has the exact same signature with it, meaning it has the exact same name (even the exact same casing of the name, if the Case sensitive type names (/cs) compiler option is enabled), parameter count and types and return type with the base method. If the two methods are different on any of those aspects, then they are considered as completely different methods and one cannot override the other:</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Parent</para>
+    <para styleclass="Normal"><tab />VIRTUAL METHOD VirtualMethod(n AS INT) AS VOID // child class has same named method but with different signature </para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent</para>
+    <para styleclass="Normal"><tab />OVERRIDE METHOD VirtualMethod(c AS STRING) AS INT // compiler error XS0115: &apos;VirtualMethod&apos;: no suitable method found to override</para>
+    <para styleclass="Normal"><tab />RETURN 0</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The VIRTUAL/OVERRIDE/NEW modifiers do not apply to methods only, but also to properties or ACCESS/ASSIGN pairs (and also to events, but it makes little sense in declaring/overriding virtual events):</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />Child{}:DoTest()</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Parent</para>
+    <para styleclass="Normal"><tab />VIRTUAL PROPERTY TestProp AS STRING GET &quot;parent&quot;</para>
+    <para styleclass="Normal"><tab />ACCESS TestAccess AS STRING</para>
+    <para styleclass="Normal"><tab />RETURN &quot;parent&quot;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab />METHOD DoTest() AS VOID</para>
+    <para styleclass="Normal"><tab /><tab />? SELF:TestProp // child, because the property is overridden in the child class</para>
+    <para styleclass="Normal"><tab /><tab />? SELF:TestAccess // parent, because the access is not virtual</para>
+    <para styleclass="Normal"><tab />RETURN</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent</para>
+    <para styleclass="Normal"><tab />OVERRIDE PROPERTY TestProp AS STRING GET &quot;child&quot;</para>
+    <para styleclass="Normal"><tab />NEW ACCESS TestAccess AS STRING</para>
+    <para styleclass="Normal"><tab />RETURN &quot;child&quot;</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Finally, also class fields can be declared as NEW (but not as VIRTUAL), in order to differentiate them from fields with the same name in a parent class:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />Child{}</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Parent</para>
+    <para styleclass="Normal"><tab />EXPORT cField := &quot;parent&quot; AS STRING</para>
+    <para styleclass="Normal"><tab />CONSTRUCTOR()</para>
+    <para styleclass="Normal"><tab /><tab />? SELF:cField // parent, refers to the filed defined in the parent class</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent</para>
+    <para styleclass="Normal"><tab />NEW EXPORT cField := &quot;child&quot; AS STRING</para>
+    <para styleclass="Normal"><tab />CONSTRUCTOR()</para>
+    <para styleclass="Normal"><tab /><tab />SUPER()</para>
+    <para styleclass="Normal"><tab /><tab />? SELF:cField // child, refers to the filed defined in the parent class</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">ABSTRACT/SEALED</para>
+    <para styleclass="Normal">Using the SEALED modifier on a class, prevents it from being inherited from a child class. This can be useful in order to prevent users of a class/library to alter its functionality in a subclass and possibly introduce problems in it:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SEALED CLASS Parent</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent // compiler error XS0509: cannot derive from sealed type &apos;Parent&apos;</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SEALED can be used also on specific (virtual) methods/properties to prevent overriding only them in a subclass:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />Child{}:DoTest()</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Base</para>
+    <para styleclass="Normal"><tab />VIRTUAL METHOD VirtualMethod() AS VOID</para>
+    <para styleclass="Normal"><tab /><tab />? &quot;base&quot;</para>
+    <para styleclass="Normal"><tab />METHOD DoTest() AS VOID</para>
+    <para styleclass="Normal"><tab /><tab />SELF:VirtualMethod() // parent, becase method is overriden in the parent class, but cannot be overriden in the subclass of parent</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Parent INHERIT Base</para>
+    <para styleclass="Normal"><tab />SEALED OVERRIDE METHOD VirtualMethod() AS VOID</para>
+    <para styleclass="Normal"><tab /><tab />? &quot;parent&quot;</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent // compiler error</para>
+    <para styleclass="Normal">//<tab />OVERRIDE METHOD VirtualMethod() AS VOID // compiler error XS0239: cannot override method because it is sealed</para>
+    <para styleclass="Normal"><tab />NEW METHOD VirtualMethod() AS VOID // can only define a NEW method with the same name and signature, which does not override the parent method</para>
+    <para styleclass="Normal"><tab /><tab />? &quot;child&quot;</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The ABSTRACT modifier can be use on a class in order to prevent it from being accidentally directly instantiated. Only classes inheriting (and implementing additional functionality) from an abstract class can be instantiated. This is useful for classes that implement base functionality, but does not make sense creating an instance of them directly (like the Control class in System.Windows.Forms or the same named class in the VOSDK):</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />LOCAL o AS OBJECT</para>
+    <para styleclass="Normal"><tab />o := Child{} // OK</para>
+    <para styleclass="Normal"><tab />o := Parent{} // Compiler error XS0144: cannot create an instance of the abstract type</para>
+    <para styleclass="Normal"><tab /></para>
+    <para styleclass="Normal">ABSTRACT CLASS Parent</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Abstract classes can also define abstract methods or properties, which dictates that it is mandatory to implement them in classes inheriting from the abstract class. Abstract methods are implicitly virtual so they can be overriden, and it is a compiler error not providing an implementation in a child class:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">ABSTRACT CLASS Parent</para>
+    <para styleclass="Normal"><tab />METHOD BasicFunctionality() AS VOID // does not need to be overriden in subclass</para>
+    <para styleclass="Normal"><tab />ABSTRACT METHOD MustImplementInChild() AS VOID // implementation must be defined in subclasses</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS Child INHERIT Parent</para>
+    <para styleclass="Normal">//<tab />Omitting this would result to a compiler error that Child class does not implement inherited abstract method</para>
+    <para styleclass="Normal"><tab />OVERRIDE METHOD MustImplementInChild() AS VOID</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">PARTIAL</para>
+    <para styleclass="Normal">Using the PARTIAL modifier on a class declaration, instructs the compiler that the class definition and its members (methods, properties etc) may span in multiple program files in the current application/library. By default (when not using the PARTIAL modifier), all members of a class are expected to be defined in a single file, and if they span in multiple files, then all of the CLASS...ENDCLASS definitions of that class need to be marked as PARTIAL:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">// file code1.prg</para>
+    <para styleclass="Normal">PARTIAL CLASS ClassSpanningInMultipleFiles // omitting PARTIAL would result to compiler error on missing partial modifier on declaration of type</para>
+    <para styleclass="Normal"><tab />METHOD MethodInFile1() AS VOID</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">// file code2.prg</para>
+    <para styleclass="Normal">PARTIAL CLASS ClassSpanningInMultipleFiles</para>
+    <para styleclass="Normal"><tab />PROPERTY PropertyInFile2() AS LOGIC</para>
+    <para styleclass="Normal"><tab /><tab />GET</para>
+    <para styleclass="Normal"><tab /><tab /><tab />RETURN TRUE</para>
+    <para styleclass="Normal"><tab /><tab />END GET</para>
+    <para styleclass="Normal"><tab />END PROPERTY</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that all members of a partial class need to be defined in the same assembly. It is NOT possible to use the PARTIAL modifier to define members of a class in separate assemblies/libraries.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

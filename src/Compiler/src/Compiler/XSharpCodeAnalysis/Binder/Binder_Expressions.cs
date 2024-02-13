@@ -1158,6 +1158,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     switch (sym.Kind)
                     {
                         case SymbolKind.Field:
+                        case SymbolKind.Property:
                             if (onlyDef)
                             {
                                 if (sym.ContainingType.Name == XSharpSpecialNames.FunctionsClass)
@@ -1173,8 +1174,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             add = true;
                             break;
                         case SymbolKind.Method:
-                        case SymbolKind.Property:
-                            add = !noMethod && !onlyDef;
+                            add = !noMethod;
                             break;
                         default:
                             //add = true;

@@ -52,7 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // if we have generated a constructor for a subtype of a class without a 
             // clipper calling convention constructor then we must return an empty
             // parameter list
-            _noParams = syntax.suppressGeneratedConstructorParams(containingType);
+            _noParams = syntax.SuppressGeneratedConstructorParams(containingType);
 
             // no need to check for the identifier. This is generated in the parser and is always correct
             // we do not recognize constructors by name but by the keyword "CONSTRUCTOR"

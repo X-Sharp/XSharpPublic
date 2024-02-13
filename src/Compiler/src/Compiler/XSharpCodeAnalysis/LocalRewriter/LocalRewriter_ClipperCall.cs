@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression MakeRefUsual(BoundExpression expr)
         {
             var usualType = _compilation.UsualType();
-            var ctors = usualType.GetMembers(".ctor");
+            var ctors = usualType.GetMembers(WellKnownMemberNames.InstanceConstructorName);
             MethodSymbol ctor = null;
             foreach (var c in ctors)
             {

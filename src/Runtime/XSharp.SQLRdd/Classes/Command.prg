@@ -42,6 +42,11 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
         Commands := List<SqlDbCommand>{}
     end constructor
 
+    /// <summary>
+    /// Find a command object by its handle
+    /// </summary>
+    /// <param name="id">Unique Handle returned when creating the command</param>
+    /// <returns>The matching Command object, or NULL when the handle is invalid</returns>
     static method FindByHandle(id as IntPtr) as SqlDbCommand
         if SqlDbHandles.FindById(id) is SqlDbCommand var oCmd
             return oCmd
@@ -314,7 +319,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
 #endregion
 
 #region Implement IDisposable
-
+    /// <inheritdoc/>
     public override method Dispose() as void
         self:Close()
         super:Dispose()

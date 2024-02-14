@@ -24,6 +24,7 @@ using XSharp.RDD.SqlRDD.Providers
 function SqlDbSetProvider(ProviderName as string) as logic
     SqlDbProvider.SetDefaultProvider(ProviderName)
     return SqlDbProvider.Current != null
+end function
 
 
 /// <summary>
@@ -32,6 +33,7 @@ function SqlDbSetProvider(ProviderName as string) as logic
 /// <returns>The SqlDbProvider object or NULL when the ProviderName has not been registered.</returns>
 function SqlDbGetProvider() as SqlDbProvider
     return SqlDbProvider.Current
+end function
 
 
 /// <summary>
@@ -44,6 +46,7 @@ function SqlDbGetProvider() as SqlDbProvider
 /// <returns></returns>
 function SqlDbRegisterProvider(ProviderName as string, ClassName as string) as logic
     return false
+end function
 
 
 

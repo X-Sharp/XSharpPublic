@@ -27,7 +27,7 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
         _ini      := IniFile{_fileName}
         RETURN
     END CONSTRUCTOR
-    METHOD ReadDefaults() AS VOID
+    PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
             hasDefaults := true
             LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), TRUE)

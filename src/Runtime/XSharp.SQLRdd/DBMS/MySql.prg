@@ -15,19 +15,30 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The Oracle provider class.
+/// The MySq1 provider class.
 /// </summary>
+/// <remarks>
+/// This class depends on the DLL MySql.Data.dll
+/// </remarks>
+
 class MySql inherit SqlDbProvider
+    /// <inheritdoc />
     override property DllName as string => "MySql.Data.dll"
+    /// <inheritdoc />
     override property TypeName as string => "MySql.Data.MySqlClient.MySqlClientFactory"
 
+    /// <inheritdoc />
     override property GetIdentity            as string => "select LAST_INSERT_ID()"
+    /// <inheritdoc />
     override property GetRowCount            as string => "select FOUND_ROWS( )"
+    /// <inheritdoc />
     override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
 
     constructor()
         super("MySql")
         return
+    end constructor
+
     private static aFuncs := null as Dictionary<string, string>
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null

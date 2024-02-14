@@ -39,12 +39,13 @@ partial class SQLRDD inherit DBFVFP
     private _updatableColumns as List<RddFieldInfo>
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRows    as List<DataRow>
+    private _orderBagList   as List<SqlDbOrderBag>
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
     internal property Provider       as SqlDbProvider get _connection:Provider
     internal property Command        as SqlDbCommand get _command
-    internal property IndexList      as List<SqlDbOrderBag> get _obuilder:OrderBags
+    internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
     internal property DataTable as DataTable
         get
             return _table
@@ -111,6 +112,7 @@ partial class SQLRDD inherit DBFVFP
         _updatedRows     := List<DataRow>{}
         _keyColumns      := List<RddFieldInfo>{}
         _updatableColumns:= List<RddFieldInfo>{}
+        _orderBagList    := List<SqlDbOrderBag>{}
         return
     end constructor
 
@@ -152,7 +154,6 @@ partial class SQLRDD inherit DBFVFP
         until ! File.Exists(result)
         info:FileName := Path.Combine(Path.GetDirectoryName(result), Path.GetFileNameWithoutExtension(result))
         info:Extension := ".DBF"
-        var fn := info:FileName+ info:Extension
         return result
     end method
 
@@ -219,8 +220,6 @@ partial class SQLRDD inherit DBFVFP
         _command.ExecuteScalar()
         return true
     end method
-
-
 
 
     private method _GetEmptyValues() as logic

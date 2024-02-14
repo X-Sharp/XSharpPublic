@@ -22,20 +22,25 @@ using System.Text
 function SqlDbOpenConnection(ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString}
     return oConn:Handle
+end function
 
+/// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
 function SqlDbOpenConnection(ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, @@CallBack}
     return oConn:Handle
+end function
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
 function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString}
     return oConn:Handle
+end function
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
 function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString, @@CallBack}
     return oConn:Handle
+end function
 
 /// <summary>
 /// Close a SQLRDD Connection.
@@ -50,6 +55,8 @@ function SqlDbCloseConnection(ConnectionName as string) as logic
         return true
     endif
     return false
+end function
+
 /// <inheritdoc cref="SqlDbCloseConnection(System.String)" />
 function SqlDbCloseConnection(Handle as IntPtr) as logic
     var oConn := SqlDbConnection.FindByHandle(Handle)
@@ -73,6 +80,7 @@ function SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
 /// <returns>Connection Object, or NULL when Name is invalid</returns>
 function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
     return SqlDbConnection.FindByName(ConnectionName)
+end function
 
 
 /// <summary>
@@ -106,6 +114,7 @@ function SqlDbCacheConnection(ShouldCache as logic) as logic
     var old := SqlDbConnection.DefaultCached
     SqlDbConnection.DefaultCached := ShouldCache
     return  old
+end function
 
 
 function List2String(list as IList<string>) as string
@@ -120,6 +129,7 @@ function List2String(list as IList<string>) as string
         sb:Append(item)
     next
     return sb:ToString()
+end function
 
 function String2List(names as string) as IList<string>
     var list := names:Split(<char>{','})
@@ -128,6 +138,7 @@ function String2List(names as string) as IList<string>
         result:Add(element:Trim())
     next
     return result
+end function
 
 function XsValueToSqlValue(oValue as object)  as string
     switch oValue
@@ -141,9 +152,11 @@ function XsValueToSqlValue(oValue as object)  as string
         return dFloat:Value:ToString()
     end switch
     return oValue:ToString()
+end function
 
 function DToS(dDate as IDate) as string
     return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
+end function
 
 
 

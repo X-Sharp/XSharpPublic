@@ -26,6 +26,7 @@ function SqlDbCreateSQLCommand(hConn as IntPtr) as IntPtr
         return oCmd:Handle
     endif
     return IntPtr.Zero
+end function
 
 /// <inheritdoc cref="SqlDbCreateSQLStatement(System.IntPtr)" />
 function SqlDbCreateSQLCommand(name as STRING) as IntPtr
@@ -37,6 +38,7 @@ function SqlDbCreateSQLCommand(name as STRING) as IntPtr
         return oCmd:Handle
     endif
     return IntPtr.Zero
+end function
 
 /// <summary>
 /// Create a new SqlDbCommand object for the given connection
@@ -52,6 +54,7 @@ function SqlDbCreateSQLCommand(oConn as SqlDbConnection) as SqlDbCommand
         return oCmd
     endif
     return null
+end function
 
 /// <summary>
 /// Get a SqlDbCommand object from a Handle
@@ -63,6 +66,7 @@ function SqlDbGetCommand(hCmd as IntPtr) as SqlDbCommand
     local oCmd  as SqlDbCommand
     oCmd := SqlDbCommand.FindByHandle(hCmd)
     return oCmd
+end function
 
 function SqlDbExecuteSQLDirect(hCmd as IntPtr, sCommandText as string) as object
     var oCmd := SqlDbGetCommand(hCmd)
@@ -71,6 +75,7 @@ function SqlDbExecuteSQLDirect(hCmd as IntPtr, sCommandText as string) as object
         return oCmd:ExecuteScalar()
     endif
     return null
+end function
 
 
 
@@ -87,6 +92,7 @@ function SqlDbExecuteQueryDirect(hCmd as IntPtr, sCommandText as string) as Data
         return oCmd:GetDataTable("Table")
     endif
     return null
+end function
 
 /// <summary>
 /// Close a SqlDbCommand object
@@ -101,6 +107,7 @@ function SqlDbCloseCommand(hCmd as IntPtr) as logic
         oCmd:Close()
     endif
     return lOk
+end function
 
 
 

@@ -17,14 +17,22 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// <summary>
 /// The OleDb provider class.
 /// </summary>
+/// <remarks>
+/// This class depends on the DLL System.Data.dll
+/// </remarks>
 class OleDb inherit SqlDbProvider
+    /// <inheritdoc />
     override property DllName as string => "System.Data.dll"
+    /// <inheritdoc />
     override property TypeName as string => "System.Data.OleDb.OleDbFactory"
 
     constructor()
         super("OleDb")
         return
+    end constructor
+
     private static aFuncs := null as Dictionary<string, string>
+    /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
             aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
@@ -49,12 +57,19 @@ class OleDb inherit SqlDbProvider
                 {"+"						,"+"}}
         endif
         return aFuncs
+    end method
+
+    /// <inheritdoc />
    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         return super:GetSqlColumnInfo(oInfo)
+    end method
+
+    /// <inheritdoc />
     override method CreateCommandBuilder() as DbCommandBuilder
         var cmdBuilder := super:CreateCommandBuilder()
         cmdBuilder:QuotePrefix := """"
         cmdBuilder:QuoteSuffix := """"
         return cmdBuilder
+    end method
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

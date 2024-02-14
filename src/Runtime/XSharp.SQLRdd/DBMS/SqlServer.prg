@@ -17,16 +17,27 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// <summary>
 /// The SqlServer provider class.
 /// </summary>
+/// <remarks>
+/// This class depends on the DLL System.Data.dll
+/// </remarks>
+
 class SqlServer inherit SqlDbProvider
+    /// <inheritdoc />
     override property DllName as string => "System.Data.dll"
+    /// <inheritdoc />
     override property TypeName as string => "System.Data.SqlClient.SqlClientFactory"
+    /// <inheritdoc />
     override property GetIdentity            as string => "select @@IDENTITY"
+    /// <inheritdoc />
     override property GetRowCount            as string => "select @@ROWCOUNT"
 
     constructor() strict
         super("SqlServer")
         return
+    end constructor
+
     private static aFuncs := null as Dictionary<string, string>
+    /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
             aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
@@ -44,6 +55,9 @@ class SqlServer inherit SqlDbProvider
                 {"+"						,"+"}}
         endif
         return aFuncs
+    end method
+
+    /// <inheritdoc />
     override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         local sResult as string
         switch oInfo:FieldType
@@ -65,5 +79,6 @@ class SqlServer inherit SqlDbProvider
             sResult := super:GetSqlColumnInfo(oInfo)
         end switch
         return sResult
+    end method
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

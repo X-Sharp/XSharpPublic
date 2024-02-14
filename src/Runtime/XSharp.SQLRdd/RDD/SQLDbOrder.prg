@@ -63,10 +63,14 @@ class SqlDbOrder inherit SqlDbObject
         self:_KeyCodeBlock := self:RDD:Compile(cIndexExpr)
         self:ClearScopes()
         return
+    end constructor
+
     method ClearScopes() as void
         self:TopScope      := null
         self:BottomScope      := null
         return
+    end method
+
     method SetCondition(cForExpr as string) as logic
         if ! String.IsNullOrEmpty(cForExpr)
             var oExp := SqlDbExpression{self,cForExpr}
@@ -77,6 +81,7 @@ class SqlDbOrder inherit SqlDbObject
             return true
         endif
         return false
+    end method
 
     method SetOrderScope( oValue as object, nInfo as DbOrder_Info) as void
         switch nInfo
@@ -90,6 +95,8 @@ class SqlDbOrder inherit SqlDbObject
             self:BottomScope := null
         end switch
         return
+    end method
+
     method GetScopeClause() as string
         if ! self:HasScopes
             return ""
@@ -121,6 +128,7 @@ class SqlDbOrder inherit SqlDbObject
             endif
             return cFirst + SqlDbProvider.AndClause+cLast
         endif
+    end method
 
     method SeekExpression(seekInfo as DbSeekInfo) as string
         local cComp as string
@@ -151,5 +159,7 @@ class SqlDbOrder inherit SqlDbObject
             cWhereClause := self:SQLKey+cComp+XsValueToSqlValue(seekInfo:Value)
         endif
         return cWhereClause
+    end method
+
 end class
 end namespace // XSharp.RDD.SqlRDD

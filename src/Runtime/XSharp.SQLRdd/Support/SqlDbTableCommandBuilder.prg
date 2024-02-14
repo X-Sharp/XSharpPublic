@@ -22,16 +22,13 @@ class SqlDbTableCommandBuilder
     protected _oTable as SqlTableInfo
     protected _oRdd  as SQLRDD
     protected _connection as SqlDbConnection
-    protected _orderBags      as List<SqlDbOrderBag>
     property Connection as SqlDbConnection  get _connection
     property Provider   as SqlDbProvider    get Connection:Provider
-    property OrderBags  as List<SqlDbOrderBag> get _orderBags
     Property MetadataProvider as IMetadataProvider get Connection:MetadataProvider
-
+    property OrderBagList as List<SqlDbOrderBag> get _oRdd:OrderBagList
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
         self:_oRdd        := oRdd
-        _orderBags        := List<SqlDbOrderBag>{}
         _connection       := oRdd:Connection
         return
     method FetchInfo(oRdd as SQLRDD) as SqlTableInfo
@@ -40,7 +37,10 @@ class SqlDbTableCommandBuilder
         local cTable as string
         cTable := self:_cTable
         oTable := MetadataProvider:GetTableInfo(cTable)
-        var oTd := Connection:GetStructureForTable(cTable, oTable,oTable:ColumnList)
+        if String.IsNullOrEmpty(oTable:RealName)
+            oTable:RealName := oTable:Name
+        ENDIF
+        var oTd := Connection:GetStructureForTable(oTable:RealName, oTable,oTable:ColumnList)
         self:_oTable := oTable
         oTable:CopyFromTd(oTd)
         self:AdjustSelects()
@@ -57,7 +57,7 @@ class SqlDbTableCommandBuilder
         next
         if oProdIndex != null
             if oProdIndex:Tags:Count > 0
-                var oBag := SqlDbOrderBag{cIndex, _oRdd}
+                var oBag := SqlDbOrderBag{_oRdd, cIndex}
                 oBag:ProductionIndex := true
                 oBag:LogicalName := cIndex
                 oBag:FileName := System.IO.Path.GetFileNameWithoutExtension(_oRdd:FileName)
@@ -68,63 +68,22 @@ class SqlDbTableCommandBuilder
                     endif
                     oBag:Add(oTag)
                 next
-                _orderBags:Add(oBag)
+                SELF:OrderBagList:Add(oBag)
                 oBag:Save()
             endif
         endif
     method SetProductionIndex() as logic
         _oRdd:CurrentOrder := null
-        if self:_orderBags:Count > 0
-            var bag := self:_orderBags:Where( {bag => bag:FileName == _cTable}):FirstOrDefault()
+        if self:OrderBagList:Count > 0
+            var bag := self:OrderBagList:Where( {bag => bag:FileName == _cTable}):FirstOrDefault()
             if (bag != null)
+                bag:ProductionIndex := TRUE
                 _oRdd:CurrentOrder := bag:Tags:FirstOrDefault()
                 return true
             endif
         endif
         return false
 
-    method OrderListFocus(orderInfo as DbOrderInfo) as logic
-        _oRdd:CurrentOrder := self:FindOrder(orderInfo)
-        return _oRdd:CurrentOrder != null
-
-    method FindOrder(orderInfo as DbOrderInfo) as SqlDbOrder
-        local selectedBag := null as SqlDbOrderBag
-        var currentOrder := _oRdd:CurrentOrder
-        var bagName   := orderInfo:BagName
-        if !String.IsNullOrEmpty(bagName)
-            foreach var bag in self:_orderBags
-                if String.Compare(bag:FileName, bagName, true) == 0
-                    selectedBag := bag
-                    exit
-                endif
-            next
-        endif
-        currentOrder := null
-        if orderInfo:Order is long var iOrder
-            if selectedBag != null
-                currentOrder := selectedBag:FindTag(iOrder)
-            else
-                foreach var bag in _orderBags
-                    currentOrder := bag:FindTag(iOrder)
-                    if currentOrder != null
-                        exit
-                    endif
-                    iOrder -= bag:Tags:Count
-                next
-            endif
-        elseif orderInfo:Order is string var strOrder
-            if selectedBag != null
-               currentOrder := selectedBag:FindTag(strOrder)
-            else
-                foreach var bag in _orderBags
-                    currentOrder :=  bag:FindTag(strOrder)
-                    if currentOrder != null
-                        exit
-                    endif
-                next
-            endif
-        endif
-        return currentOrder
     method CombineWhereClauses(whereList as List<String>) as string
         if whereList:Count == 0
             return ""
@@ -149,7 +108,7 @@ class SqlDbTableCommandBuilder
         local scopeWhere := null as string
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        sb:Append(Provider:QuoteIdentifier(self:_cTable))
+        sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
         if currentOrder != null
             scopeWhere := currentOrder:GetScopeClause()
         endif
@@ -224,7 +183,7 @@ class SqlDbTableCommandBuilder
         sb:Append(SqlDbProvider.SelectClause)
         sb:Append(self:ColumnList())
         sb:Append(SqlDbProvider.FromClause)
-        sb:Append(Provider.QuoteIdentifier(_oTable:Name))
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
         _oTable:SelectStatement := sb:ToString()
         sb:Append(SqlDbProvider.WhereClause)
         sb:Append("1=0")

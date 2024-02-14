@@ -37,10 +37,12 @@ abstract class SqlDbProvider inherit SqlDbObject
         RegisterProvider("Advantage",typeof(XSharp.RDD.SqlRDD.Providers.Advantage ))
         RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.Oracle ))
         SetDefaultProvider("ODBC")
+    end constructor
 
     static method RegisterProvider(Name as string, ClassName as System.Type) as logic
         _ProviderClasses[Name] := ClassName
         return true
+    end method
 
     static method UnRegisterProvider(Name as string) as logic
         if (_ProviderClasses:ContainsKey(Name))
@@ -48,16 +50,19 @@ abstract class SqlDbProvider inherit SqlDbObject
             return true
         endif
         return false
+    end method
 
     static method SetDefaultProvider(provider as SqlDbProvider) as SqlDbProvider
         var old := Current
         Current := provider
         return old
+    end method
 
     static method SetDefaultProvider(name as string) as SqlDbProvider
         var old := Current
         Current := GetProvider(name)
         return old
+    end method
 
     static protected method _FindType(cName as string) as System.Type
         var aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
@@ -69,6 +74,8 @@ abstract class SqlDbProvider inherit SqlDbObject
             next
         next
         return null
+    end method
+
     static protected method _LoadFactoryFromDllAndType(DllName as string, TypeName as string) as DbProviderFactory
         local type     := null as System.Type
         foreach var asm in AppDomain.CurrentDomain.GetAssemblies()
@@ -90,7 +97,9 @@ abstract class SqlDbProvider inherit SqlDbObject
             endif
         endif
         return null
-    static method GetProvider(Name as string) as SqlDbProvider
+    end method
+
+        static method GetProvider(Name as string) as SqlDbProvider
         if _ProviderObjects:TryGetValue(Name, out var result)
             return result
         endif
@@ -111,6 +120,7 @@ abstract class SqlDbProvider inherit SqlDbObject
             nop
         end try
         return null
+    end method
 
 #endregion
     protected _Factory as DbProviderFactory
@@ -127,8 +137,18 @@ abstract class SqlDbProvider inherit SqlDbObject
             return _Factory
         end get
     end property
+    /// <summary>
+    /// Name of the DLL that contains the DbProviderFactory
+    /// </summary>
     abstract property DllName as string get
+    /// <summary>
+    /// Type name of the DbProviderFactory
+    /// </summary>
     abstract property TypeName as string get
+    /// <summary>
+    /// Return a list of function translations for this provider
+    /// </summary>
+    /// <returns>Dictionary with XBase functions mapped to SQL functions</returns>
     abstract method GetFunctions() as Dictionary<string, string>
     method GetFunction(cFunction as string) as string
         var funcs := GetFunctions()
@@ -136,52 +156,141 @@ abstract class SqlDbProvider inherit SqlDbObject
             return oFunc
         endif
         return cFunction
+    end method
+
+    /// <summary>
+    /// Create a new SqlDbProvider object
+    /// </summary>
+    /// <param name="cName">Name of the object</param>
     constructor(cName as string)
         super(cName)
         _cmdBuilder := self:CreateCommandBuilder()
+    end constructor
 
 
 #region Methods and Properties from the factory
     property CanCreateDataSourceEnumerator as logic get Factory:CanCreateDataSourceEnumerator
 
+    /// <summary>
+    /// Surround an identifier with the correct quotes for the provider
+    /// </summary>
+    /// <param name="cId">Identifier</param>
+    /// <returns>Quoted Identifier</returns>
+    /// <example>
+    /// <code>
+    /// var cId := "MyTable"
+    /// var cQuoted := provider:QuoteIdentifier(cId)
+    /// // cQuoted will be "[MyTable]" for SQLServer
+    /// </code>
+    /// </example>
     method QuoteIdentifier(cId as string) as string
         return _cmdBuilder:QuoteIdentifier(cId)
-
+    end method
+    /// <summary>
+    /// Create a provider specific DbCommand Object
+    /// </summary>
+    /// <returns>A new DbCommand object</returns>
     virtual method CreateCommand() as DbCommand
         return Factory:CreateCommand()
-
+    end method
+    /// <summary>
+    /// Create a provider specific DbCommandBuilder Object
+    /// </summary>
+    /// <returns>A new DbCommandBuilder object</returns>
     virtual method CreateCommandBuilder() as DbCommandBuilder
         return Factory:CreateCommandBuilder()
+    end method
 
+    /// <summary>
+    /// Create a provider specific DbConnection Object
+    /// </summary>
+    /// <returns>A new DbConnection object</returns>
     virtual method CreateConnection() as DbConnection
         return Factory:CreateConnection()
+    end method
 
+    /// <summary>
+    /// Create a provider specific DbConnectionStringBuilder Object
+    /// </summary>
+    /// <returns>A new DbConnectionStringBuilder object</returns>
     virtual method CreateConnectionStringBuilder() as DbConnectionStringBuilder
         return Factory:CreateConnectionStringBuilder()
+    end method
 
+    /// <summary>
+    /// Create a provider specific DbParameter Object
+    /// </summary>
+    /// <returns>A new DbParameter object</returns>
     virtual method CreateParameter() as DbParameter
         return Factory:CreateParameter()
+    end method
+
+    /// <summary>
+    /// Create a provider specific DbDataSourceEnumerator Object
+    /// </summary>
+    /// <returns>A new DbDataSourceEnumerator object</returns>
 
     virtual method CreateDataSourceEnumerator() as DbDataSourceEnumerator
         if Factory:CanCreateDataSourceEnumerator
             return Factory:CreateDataSourceEnumerator()
         endif
         return null
+    end method
 
-#endregion
+    #endregion
+
 #region Virtual Properties with statements etc
+    /// <summary>
+    /// Syntax for a CREATE TABLE statement.
+    /// </summary>
     virtual property CreateTableStatement   as string => "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )"
+    /// <summary>
+    /// Syntax for a CREATE INDEX statement.
+    /// </summary>
     virtual property CreateIndexStatement   as string => "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
+    /// <summary>
+    /// Syntax for a DROP TABLE statement.
+    /// </summary>
     virtual property DropTableStatement     as string => "drop table if exists "+TableNameMacro
+    /// <summary>
+    /// Syntax for a DROP INDEX statement.
+    /// </summary>
     virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"."+IndexNameMacro
+    /// <summary>
+    /// Syntax for the statement to delete all rows from a table (ZAP)
+    /// </summary>
     virtual property DeleteAllRowsStatement as string => "delete from "+TableNameMacro
+    /// <summary>
+    /// Syntax for the statement to select a limited number of rows from the table
+    /// </summary>
     virtual property SelectTopStatement     as string => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+TableNameMacro
+    /// <summary>
+    /// Syntax for the INSERT statement
+    /// </summary>
     virtual property InsertStatement        as string => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
+    /// <summary>
+    /// Syntax for the UPDATE statement
+    /// </summary>
     virtual property UpdateStatement        as string => "update "+TableNameMacro+" set "+ColumnsMacro+" where "+WhereMacro
+    /// <summary>
+    /// Syntax for the DELETE statement
+    /// </summary>
     virtual property DeleteStatement        as string => "delete from "+TableNameMacro+" where "+WhereMacro
+    /// <summary>
+    /// Syntax for the ORDER BY clause
+    /// </summary>
     virtual property OrderByClause          as string => " order by "+ColumnsMacro+" "
+    /// <summary>
+    /// default value for MaxRows
+    /// </summary>
     virtual property MaxRows                as int    => 1000
+    /// <summary>
+    /// Syntax for the statement to retrieve the identity value of the last inserted row
+    /// </summary>
     virtual property GetIdentity            as string => ""
+    /// <summary>
+    /// Syntax for the statement to retrieve the number of rows updated by the last statement
+    /// </summary>
     virtual property GetRowCount            as string => ""
 
 #endregion
@@ -204,13 +313,17 @@ abstract class SqlDbProvider inherit SqlDbObject
     public const WhereMacro      := "%W%" as string
 
     public const ConnectionDelimiter := "::" as string
-    public const IndexExt            := "SQX" as string
-    public const TableExt            := "SQF" as string
-    public const ConfigFile          := "confix.sql" as string
 
 
 #endregion
-
+    /// <summary>
+    /// Create the column definition (in SQL syntax) from a RDDFieldInfo object
+    /// </summary>
+    /// <param name="oInfo">Object that contains the field definition</param>
+    /// <returns>a string in SQL syntax</returns>
+    /// <remarks>
+    /// This is used when creating a SQL table with DbCreate()
+    /// </remarks>
     virtual method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         local sResult := "" as string
         var name := i"{QuoteIdentifier(oInfo.ColumnName)}"
@@ -250,6 +363,7 @@ abstract class SqlDbProvider inherit SqlDbObject
             endif
         endif
         return sResult
+    end method
 
 end class
 

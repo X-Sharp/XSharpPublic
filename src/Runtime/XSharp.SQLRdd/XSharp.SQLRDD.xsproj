@@ -48,6 +48,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\HandleObject.prg" />
     <None Include="Metadata\MetaData.md" />
     <None Include="SqlRddspecs.md" />
   </ItemGroup>
@@ -58,6 +59,7 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
+    <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\Command.prg" />
     <Compile Include="Classes\Connection.prg" />
     <Compile Include="Classes\EventObject.prg" />
@@ -78,12 +80,11 @@
     <Compile Include="DBMS\Oracle.prg" />
     <Compile Include="DBMS\SqlSDbProvider.prg" />
     <Compile Include="DBMS\SqlServer.prg" />
-    <Compile Include="RDD\Main.prg" />
-    <Compile Include="RDD\Order.prg" />
-    <Compile Include="RDD\OrderBag.prg" />
-    <Compile Include="RDD\Orders.prg" />
-    <Compile Include="RDD\Private.prg" />
-    <Compile Include="Support\Abstract.prg" />
+    <Compile Include="RDD\SQLRDD-Main.prg" />
+    <Compile Include="RDD\SQLDbOrder.prg" />
+    <Compile Include="RDD\SQLDbOrderBag.prg" />
+    <Compile Include="RDD\SQLRDD-Orders.prg" />
+    <Compile Include="RDD\SQLRDD-Private.prg" />
     <Compile Include="Support\ExtensionMethods.prg" />
     <Compile Include="Support\ColumnDef.prg" />
     <Compile Include="Support\Defines.prg" />

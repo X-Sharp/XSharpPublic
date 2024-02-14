@@ -18,17 +18,24 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// The Oracle provider class.
 /// </summary>
 class Oracle inherit SqlDbProvider
+    /// <inheritdoc />
     override property DllName as string => "System.Data.OracleClient.dll"
+    /// <inheritdoc />
     override property TypeName as string => "System.Data.OracleClient.OracleClientFactory"
 
+    /// <inheritdoc />
     override property GetIdentity            as string => "select LAST_INSERT_ID()"
+    /// <inheritdoc />
     override property GetRowCount            as string => "select SQL%ROWCOUNT"
+    /// <inheritdoc />
     override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
 
 
     constructor()
         super("Oracle")
         return
+    end constructor
+
     private static aFuncs as Dictionary<string, string>
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null

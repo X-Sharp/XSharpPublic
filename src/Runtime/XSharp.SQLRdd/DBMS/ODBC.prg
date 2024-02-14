@@ -16,15 +16,23 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// <summary>
 /// The ODBC provider class.
 /// </summary>
+/// <remarks>
+/// This class depends on the DLL System.Data.dll
+/// </remarks>
+
 class ODBC inherit SqlDbProvider
+    /// <inheritdoc />
     override property DllName as string => "System.Data.dll"
+    /// <inheritdoc />
     override property TypeName as string => "System.Data.Odbc.OdbcFactory"
 
     constructor()
         super("ODBC")
         return
+    end constructor
 
     private static aFuncs := null as Dictionary<string, string>
+    /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
             aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
@@ -49,8 +57,10 @@ class ODBC inherit SqlDbProvider
                 {"+"						,"+"}}
         endif
         return aFuncs
+    /// <inheritdoc />
    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         return super:GetSqlColumnInfo(oInfo)
+    /// <inheritdoc />
     override method CreateCommandBuilder() as DbCommandBuilder
         var cmdBuilder := super:CreateCommandBuilder()
         cmdBuilder:QuotePrefix := """"

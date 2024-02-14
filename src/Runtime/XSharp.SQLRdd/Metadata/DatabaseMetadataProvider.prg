@@ -51,6 +51,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.ServerFilter),"C", 255,0})
         RETURN cols
     END METHOD
+
     PRIVATE METHOD IndexFields() AS List<RddFieldInfo>
         var cols := List<RddFieldInfo>{}
         cols:Add(RddFieldInfo{TableName         ,"C", 50,0})
@@ -92,6 +93,8 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             end switch
         next
         return sb:ToString()
+    end method
+
     PRIVATE METHOD CreateColumnNames(cols as List<RddFieldInfo>) as string
         var sb  := StringBuilder{}
         var first := TRUE
@@ -104,6 +107,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             sb:Append(col:Name)
         next
         return sb:ToString()
+    end method
 
     PRIVATE METHOD CreateDictionary() as VOID
         var sb  := StringBuilder{}
@@ -172,7 +176,9 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
         Connection:ExecuteNonQuery(sb:ToString())
         RETURN
-    METHOD ReadDefaults() AS VOID
+    end method
+
+    PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
             // Check if the table dictionary exists
             IF !Connection:DoesTableExist(TableDictionary)
@@ -292,6 +298,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         endif
         cache:Add(cTable, oTable)
         RETURN oTable
+    end method
 
     OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
@@ -311,6 +318,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             rdr:Close()
         endif
         return oIndex
+    end method
 
 #region constants
     INTERNAL CONST TableDictionary   := "xs_tableinfo" as string

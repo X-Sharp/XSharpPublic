@@ -21,7 +21,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         SUPER(conn)
         RETURN
 
-    METHOD ReadDefaults() AS VOID
+    PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
             LongFieldNames      := SELF:GetLogic(DefaultSection, SqlRDDEventReason.LongFieldNames, TRUE)
             AllowUpdates        := SELF:GetLogic(DefaultSection, SqlRDDEventReason.AllowUpdates, TRUE)
@@ -66,6 +66,8 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         endif
 
         RETURN oTable
+    end method
+
     OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName

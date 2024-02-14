@@ -68,19 +68,19 @@ partial class SQLRDD inherit DBFVFP
                 throw Exception{}
             endif
         endif
-        local aUpdatableColumns as string[]
+        local aUpdatableColumns as HashSet<string>
         var strUpdatableColumns  := _oTd:UpdatableColumns
         if String.IsNullOrEmpty(strUpdatableColumns) .or. strUpdatableColumns == "*"
             aUpdatableColumns := null
         else
-            aUpdatableColumns    := strUpdatableColumns:ToLower():Split(',')
+            aUpdatableColumns    := HashSet<string>{strUpdatableColumns:Split(','), StringComparer.OrdinalIgnoreCase}
         endif
-        local aKeyColumns as string[]
+        local aKeyColumns as HashSet<string>
         var strKeyColumns        := _oTd:KeyColumns
         if String.IsNullOrEmpty(strKeyColumns) .or. strKeyColumns == "*"
             aKeyColumns := null
         else
-            aKeyColumns    := strKeyColumns:ToLower():Split(',')
+            aKeyColumns    := HashSet<string>{strKeyColumns:Split(','), System.StringComparer.OrdinalIgnoreCase}
         endif
 
         // Get the structure
@@ -101,13 +101,13 @@ partial class SQLRDD inherit DBFVFP
                 elseif !oField:FieldType:IsLong()
                     self:_keyColumns:Add(oField)
                 endif
-            elseif System.Array.IndexOf(aKeyColumns,oField:ColumnName:ToLower()) != -1
+            elseif aKeyColumns:Contains(oField:ColumnName)
                 self:_keyColumns:Add(oField)
             endif
             IF !oField:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 if aUpdatableColumns  == null
                     self:_updatableColumns:Add(oField)
-                elseif System.Array.IndexOf(aUpdatableColumns, oField:ColumnName:ToLower()) != -1
+                elseif aUpdatableColumns:Contains(oField:ColumnName)
                     self:_updatableColumns:Add(oField)
                 endif
             ENDIF
@@ -129,7 +129,7 @@ partial class SQLRDD inherit DBFVFP
         for var nI := 1 to aFields:Length
             var aField := aFields[nI-1]
             if !_fieldNames:ContainsKey(aField:ColumnName)
-                _fieldNames:Add(aField:ColumnName, nI)
+                _fieldNames:Add(aField:ColumnName, nI-1)
             endif
         next
         if self:_tableMode == TableMode.Table
@@ -292,7 +292,7 @@ partial class SQLRDD inherit DBFVFP
     override method Close() as logic
         local lOk as logic
         // This method deletes the temporary file after the file is closed
-        foreach var bag in self:IndexList
+        foreach var bag in self:OrderBagList
             bag:Close()
         next
         _connection:RemoveRdd(self)

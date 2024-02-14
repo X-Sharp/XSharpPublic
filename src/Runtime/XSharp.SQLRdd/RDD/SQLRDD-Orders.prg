@@ -23,6 +23,55 @@ partial class SQLRDD inherit DBFVFP
 
     internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
 
+
+    internal method FindOrderBag(bagName as string) as SqlDbOrderBag
+        local result := null as SqlDbOrderBag
+        bagName := System.IO.Path.GetFileNameWithoutExtension(bagName)
+        foreach var bag in self:OrderBagList
+            if String.Compare(bag:FileName, bagName, true) == 0
+                result := bag
+                exit
+            endif
+        next
+        return result
+    end method
+
+
+    method FindOrder(orderInfo as DbOrderInfo) as SqlDbOrder
+        local selectedBag := null as SqlDbOrderBag
+        local order as SqlDbOrder
+        var bagName   := orderInfo:BagName
+        if !String.IsNullOrEmpty(bagName)
+            selectedBag := self:FindOrderBag(bagName)
+        endif
+        order := null
+        if orderInfo:Order is long var iOrder
+            if selectedBag != null
+                order := selectedBag:FindTag(iOrder)
+            else
+                foreach var bag in OrderBagList
+                    order := bag:FindTag(iOrder)
+                    if order != null
+                        exit
+                    endif
+                    iOrder -= bag:Tags:Count
+                next
+            endif
+        elseif orderInfo:Order is string var strOrder
+            if selectedBag != null
+                order := selectedBag:FindTagByName(strOrder)
+            else
+                foreach var bag in OrderBagList
+                    order :=  bag:FindTagByName(strOrder)
+                    if order != null
+                        exit
+                    endif
+                next
+            endif
+        endif
+        return order
+    end method
+
     /// <inheritdoc />
     override method OrderCreate(orderInfo as DbOrderCreateInfo ) as logic
         local result as logic
@@ -34,15 +83,15 @@ partial class SQLRDD inherit DBFVFP
             endif
             // Find orderbag or create one
             local oBag := null as SqlDbOrderBag
-            foreach var bag in self:IndexList
+            foreach var bag in self:OrderBagList
                 if String.Compare(bag:FileName, bagName, true) == 0
                     oBag := bag
                     exit
                 endif
             next
             if oBag == null
-                oBag := SqlDbOrderBag{bagName, SELF}
-                self:IndexList:Add(oBag)
+                oBag := SqlDbOrderBag{SELF, bagName}
+                self:OrderBagList:Add(oBag)
             endif
             var oTag := SqlDbOrder{SELF, tagName, orderInfo:Expression, oBag}
             if orderInfo:OrdCondInfo != null
@@ -62,6 +111,7 @@ partial class SQLRDD inherit DBFVFP
             self:_creatingIndex := FALSE
         endif
         return result
+    end method
 
     /// <inheritdoc />
     override method OrderListRebuild() as logic
@@ -88,26 +138,34 @@ partial class SQLRDD inherit DBFVFP
             result := super:OrderDestroy(orderInfo)
         endif
         return result
+    end method
 
     override method OrderListFocus(orderInfo as DbOrderInfo) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
             self:_hasData := false
-            result := self:_obuilder:OrderListFocus(orderInfo)
+            SELF:CurrentOrder := self:FindOrder(orderInfo)
+            result := CurrentOrder != null
         else
             result := super:OrderListFocus(orderInfo)
         endif
         return result
+    end method
 
 
     override method OrderListAdd( orderInfo AS DbOrderInfo) as logic
         local result := false as logic
         if self:_tableMode == TableMode.Table
             if !String.IsNullOrEmpty(orderInfo:BagName)
+                var bag := self:FindOrderBag(orderInfo:BagName)
+                if bag != null
+                    OrderBagList:Remove(bag)
+                    bag:Close()
+                endif
                 if System.IO.File.Exists(orderInfo:BagName)
-                    var bag := SqlDbOrderBag{orderInfo:BagName, SELF}
+                    bag := SqlDbOrderBag{SELF, orderInfo:BagName}
                     if bag:Load()
-                        SELF:IndexList:Add(bag)
+                        SELF:OrderBagList:Add(bag)
                         result := true
                     endif
                 endif
@@ -116,30 +174,53 @@ partial class SQLRDD inherit DBFVFP
             result := super:OrderListAdd(orderInfo)
         endif
         return result
+    end method
+
     override method OrderListDelete( orderInfo AS DbOrderInfo) as logic
-        local result as logic
+        local result := false as logic
+        LOCAL oStruct := NULL AS SqlDbOrderBag
         if self:_tableMode == TableMode.Table
-            var workOrder := self:_obuilder:FindOrder(orderInfo)
-            if workOrder != null
-                var oBag := workOrder:OrderBag
-                oBag:Remove(workOrder:Name)
-                result := true
+            if orderInfo:AllTags
+                FOREACH oBag AS SqlDbOrderBag IN SELF:OrderBagList
+                    IF ! oBag:ProductionIndex
+                        oBag:Close()
+                    ELSE
+                        oStruct := oBag
+                    ENDIF
+                NEXT
+                SELF:OrderBagList:Clear()
+                IF oStruct != NULL
+                    SELF:OrderBagList:Add(oStruct)
+                ENDIF
+            else
+                IF ! String.IsNullOrEmpty(orderInfo:BagName)
+                    VAR oBag := SELF:FindOrderBag(orderInfo:BagName)
+                    IF oBag != NULL
+                        oBag:Close()
+                    ENDIF
+                ELSE
+                    var oTag := SELF:FindOrder(orderInfo)
+                    IF oTag != NULL
+                        VAR oBag := oTag:OrderBag
+                        result :=  oBag:Close()
+                    ENDIF
+                endif
             endif
         else
             result := super:OrderListDelete(orderInfo)
         endif
         return result
+    end method
 
     override method OrderInfo(nOrdinal as dword , info as DbOrderInfo ) as object
         local isOk := true as logic
         local oBag := null as SqlDbOrderBag
-        var hasBagName := ! String.IsNullOrEmpty(info:BagName)
         if self:_tableMode != TableMode.Table
             return super:OrderInfo(nOrdinal, info)
         endif
         local workOrder as SqlDbOrder
         if !info:IsEmpty
-            workOrder := self:_obuilder:FindOrder(info)
+            workOrder := SELF:FindOrder(info)
         else
             workOrder := self:CurrentOrder
         endif
@@ -164,7 +245,7 @@ partial class SQLRDD inherit DBFVFP
         case DBOI_ORDERCOUNT
             if oBag == null
                 var nCount := 0
-                foreach var bag in Self:IndexList
+                foreach var bag in Self:OrderBagList
                     nCount += bag:Tags:Count
                 next
                 info:Result := nCount
@@ -178,12 +259,12 @@ partial class SQLRDD inherit DBFVFP
                 info:Result := String.Empty
             endif
         case DBOI_BAGCOUNT
-            info:Result := self:IndexList:Count
+            info:Result := self:OrderBagList:Count
         case DBOI_BAGNAME
-            if IndexList:Count > 0
+            if OrderBagList:Count > 0
                 if info:Order is long var nOrder
-                    if nOrder >= 1 .and. nOrder <= IndexList:Count
-                        var bag := self:IndexList[nOrder-1]
+                    if nOrder >= 1 .and. nOrder <= OrderBagList:Count
+                        var bag := self:OrderBagList[nOrder-1]
                         info:Result := bag:LogicalName
                     else
                         info:Result := ""
@@ -284,5 +365,7 @@ partial class SQLRDD inherit DBFVFP
             super:OrderInfo(nOrdinal, info)
         end switch
         return info:Result
+    end method
+
 END CLASS
 END NAMESPACE // XSharp.SQLRdd

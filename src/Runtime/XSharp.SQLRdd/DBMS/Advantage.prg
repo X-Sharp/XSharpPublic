@@ -18,17 +18,24 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// The ODBC class.
 /// </summary>
 class Advantage inherit SqlDbProvider
+    /// <inheritdoc />
     override property DllName as string => "Advantage.Data.Provider.Dll"
+    /// <inheritdoc />
     override property TypeName as string => "Advantage.Data.Provider.AdsFactory"
+
     constructor()
         super("Advantage")
         return
+    end constructor
+
     private static aFuncs := null as Dictionary<string, string>
+    /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
             aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         endif
         return aFuncs
+    end method
 
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

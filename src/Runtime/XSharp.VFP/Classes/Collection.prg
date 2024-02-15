@@ -16,67 +16,70 @@ BEGIN NAMESPACE XSharp.VFP
     CLASS Collection INHERIT VFP.Abstract IMPLEMENTS  IEnumerable
         PRIVATE aItems AS List<OBJECT>
         PRIVATE aDict  AS SortedList<STRING, OBJECT>
-        PRIVATE initialized AS LOGIC
-        
-        PROPERTY KeySort AS LONG AUTO
-        
+        PRIVATE initialized := FALSE AS LOGIC
+
+        PROPERTY KeySort AS LONG AUTO   := 1
+
         CONSTRUCTOR()
-            initialized := FALSE
+            SUPER()
+
+        PROTECTED OVERRIDE METHOD _InitProperties() AS VOID
+            SUPER:_InitProperties()
             aItems      := List<OBJECT>{}
-            KeySort     := 1
-            
+            RETURN
+
         METHOD AddObject(oValue AS OBJECT, cKey := "" AS STRING, oBefore := NIL AS USUAL, oAfter:= NIL AS USUAL) AS LOGIC
             LOCAL nPos      AS LONG
-            IF initialized
-            IF aDict != NULL_OBJECT
-                IF String.IsNullOrEmpty(cKey)
-                    // Error
-                    THROW Exception{"Collection is indexed on key, key parameter should be passed"}
-                ELSE
-                    // The dictionary is sorted, so forget about before or after
-                    IF aDict:ContainsKey(cKey)
-                        THROW Exception{"Collection already contains an item with key '"+cKey+"'"}
-                    ELSE
-                        aDict:Add(cKey, oValue)
-                    ENDIF
+            IF !initialized
+                initialized := TRUE
+                IF ! String.IsNullOrEmpty(cKey)
+                    aDict   := SortedList<STRING, OBJECT>{}
+                    SELF:KeySort := 2
+                    aDict:Add(cKey, oValue)
                 ENDIF
             ELSE
-                IF !String.IsNullOrEmpty(cKey)
-                    THROW Exception{"Collection is not indexed on key, key parameter should NOT be passed"}
+                IF aDict != NULL_OBJECT
+                    IF String.IsNullOrEmpty(cKey)
+                        // Error
+                        THROW Exception{"Collection is indexed on key, key parameter should be passed"}
+                    ELSE
+                        // The dictionary is sorted, so forget about before or after
+                        IF aDict:ContainsKey(cKey)
+                            THROW Exception{"Collection already contains an item with key '"+cKey+"'"}
+                        ELSE
+                            aDict:Add(cKey, oValue)
+                        ENDIF
+                    ENDIF
                 ELSE
-                    DO CASE
-                    CASE IsNil(oBefore) .AND. IsNil(oAfter)
-                        aItems:Add(oValue)
-                    CASE IsNumeric(oBefore) .AND. IsNil(oAfter)
+                    IF !String.IsNullOrEmpty(cKey)
+                        THROW Exception{"Collection is not indexed on key, key parameter should NOT be passed"}
+                    ELSE
+                        DO CASE
+                        CASE IsNil(oBefore) .AND. IsNil(oAfter)
+                            aItems:Add(oValue)
+                        CASE IsNumeric(oBefore) .AND. IsNil(oAfter)
                             nPos := (LONG) oBefore
                             IF nPos <= aItems:Count
                                 aItems:Insert(nPos-1, oValue)
                             ELSE
                                 aItems:Add(oValue)
-                        ENDIF
-                    CASE IsNil(oBefore) .AND. IsNumeric(oAfter)
+                            ENDIF
+                        CASE IsNil(oBefore) .AND. IsNumeric(oAfter)
                             nPos := (LONG) oAfter
                             IF nPos < aItems:Count
                                 aItems:Insert(nPos+1, oValue)
                             ELSE
                                 aItems:Add(oValue)
-                        ENDIF
-                    OTHERWISE
-                            THROW Exception{"When you pass a before or after parameter you can only pass one argument and it has to be numeric"}                        
-                    END CASE
+                            ENDIF
+                        OTHERWISE
+                             THROW Exception{"When you pass a before or after parameter you can only pass one argument and it has to be numeric"}
+                        END CASE
+                    ENDIF
                 ENDIF
-            ENDIF
-        ELSE
-            initialized := TRUE
-            IF ! String.IsNullOrEmpty(cKey)
-                aDict   := SortedList<STRING, OBJECT>{}
-                SELF:KeySort := 2
-                aDict:Add(cKey, oValue)
-            ENDIF
             ENDIF
     RETURN TRUE
     PROPERTY Count AS LONG GET aItems:Count
-    
+
     METHOD Item(oKey AS USUAL) AS OBJECT
         LOCAL nPos AS LONG
         LOCAL cKey AS STRING
@@ -101,7 +104,7 @@ BEGIN NAMESPACE XSharp.VFP
         ELSE
             THROW Exception{"Index parameter must be numeric or string"}
         ENDIF
-        
+
     PUBLIC METHOD IEnumerable.GetEnumerator() AS IEnumerator
         VAR sort := (CollectionSort) SELF:KeySort
         IF aDict != NULL
@@ -130,10 +133,10 @@ BEGIN NAMESPACE XSharp.VFP
             CASE CollectionSort.KeyAscending
             CASE CollectionSort.KeyDescending
                 THROW Exception{"Keysort on Key is not supported for collections order by index"}
-            END SWITCH    
+            END SWITCH
         ENDIF
         RETURN NULL
-        
+
     PUBLIC METHOD GetKey(uKey AS USUAL) AS OBJECT
         LOCAL nPos AS LONG
         LOCAL oKey AS OBJECT
@@ -157,8 +160,8 @@ BEGIN NAMESPACE XSharp.VFP
             NEXT
         ENDIF
         THROW Exception{"Item not found in the collection"}
-        
-        
+
+
     CLASS CollectionEnumerator  IMPLEMENTS  IEnumerator
         PRIVATE oEnum AS IEnumerator<KeyValuePair<STRING, OBJECT>>
         CONSTRUCTOR(oEnumerator AS IEnumerator<KeyValuePair<STRING, OBJECT> >)
@@ -168,13 +171,13 @@ BEGIN NAMESPACE XSharp.VFP
         GET
             VAR oValue := oEnum:Current
             RETURN oValue:Value
-            END GET 
+            END GET
     END PROPERTY
         METHOD MoveNext AS LOGIC
             RETURN oEnum:MoveNext()
         METHOD Reset AS VOID
             oEnum:Reset()
-            RETURN 
+            RETURN
     END CLASS
     CLASS ReversedComparer<T> IMPLEMENTS IComparer<T>
         PRIVATE oCompare AS IComparer<T>
@@ -183,14 +186,14 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD Compare(x AS T, y AS T) AS LONG
             RETURN oCompare:Compare(x,y) * -1
     END CLASS
-    
+
 ENUM CollectionSort
     MEMBER IndexAscending := 0
     MEMBER IndexDescending := 1
     MEMBER KeyAscending := 2
     MEMBER KeyDescending := 3
     END ENUM
-    
-    
+
+
     END CLASS
-END NAMESPACE 
+END NAMESPACE

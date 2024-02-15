@@ -12,26 +12,25 @@ using System.Diagnostics
 
 begin namespace XSharp.VFP
 
-    class Custom inherit Abstract
+    class Custom inherit XSharp.VFP.Abstract
         protected _Controls as VFP.Collection
-        property Top    as long auto
-        property Left   as long auto
-        property Height as long auto
-        property Width  as long auto
+        property Top        as long auto
+        property Left       as long auto
+        property Height     as long auto
+        property Width      as long auto
         property Controls as VFP.Collection GET _Controls
 
-        PROTECTED VIRTUAL METHOD _InitProperties AS VOID
+        PROTECTED OVERRIDE METHOD _InitProperties AS VOID
             SELF:Top := 0
             SELF:Left := 0
             SELF:Height := 0
             SELF:Width := 0
-        RETURN
+             SELF:_Controls    := VFP.Collection{}
 
+        RETURN
         constructor() clipper
-            super()
-            _Controls    := VFP.Collection{}
-            SELF:_InitProperties()
-            self:Init(_Args())
+             super()
+           self:Init(_Args())
             return
 
         destructor()

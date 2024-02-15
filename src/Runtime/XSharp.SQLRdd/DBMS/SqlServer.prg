@@ -30,6 +30,7 @@ class SqlServer inherit SqlDbProvider
     override property GetIdentity            as string => "select @@IDENTITY"
     /// <inheritdoc />
     override property GetRowCount            as string => "select @@ROWCOUNT"
+    private static lockObj := object{} as object
 
     constructor() strict
         super("SqlServer")
@@ -40,19 +41,23 @@ class SqlServer inherit SqlDbProvider
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
-            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
-                {"STR(%1%,%2%,%3%)"			,"STR(%1%,%2%,%3%)"},;
-                {"STR(%1%,%2%)"				,"STR(%1%,%2%,0)"},;
-                {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%2%,%3%)"},;
-                {"DTOS(%1%)"				,"CONVERT(char(8), %1%,11)"},;
-                {"IIF(%1%,%2%,%3%)"			,"CASE WHEN %1% THEN %2% ELSE %3% END"},;
-                {"TODAY()"					,"GETDATE()"},;
-                {"CHR(%1%)"					,"CHAR(%1%)"},;
-                {"REPL(%1%,%2%)"			,"REPLICATE(%1%,%2%)"},;
-                {"ASC(%1%)"					,"ASCII(%1%)"},;
-                {"TRIM(%1%)"				,"RTRIM(%1%)"},;
-                {"ALLTRIM(%1%)"				,"TRIM(%1%)"},;
-                {"+"						,"+"}}
+            begin lock lockObj
+                if aFuncs == null
+                    aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
+                        {"STR(%1%,%2%,%3%)"			,"STR(%1%,%2%,%3%)"},;
+                        {"STR(%1%,%2%)"				,"STR(%1%,%2%,0)"},;
+                        {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%2%,%3%)"},;
+                        {"DTOS(%1%)"				,"CONVERT(char(8), %1%,11)"},;
+                        {"IIF(%1%,%2%,%3%)"			,"CASE WHEN %1% THEN %2% ELSE %3% END"},;
+                        {"TODAY()"					,"GETDATE()"},;
+                        {"CHR(%1%)"					,"CHAR(%1%)"},;
+                        {"REPL(%1%,%2%)"			,"REPLICATE(%1%,%2%)"},;
+                        {"ASC(%1%)"					,"ASCII(%1%)"},;
+                        {"TRIM(%1%)"				,"RTRIM(%1%)"},;
+                        {"ALLTRIM(%1%)"				,"TRIM(%1%)"},;
+                        {"+"						,"+"}}
+                endif
+            end lock
         endif
         return aFuncs
     end method
@@ -67,7 +72,7 @@ class SqlServer inherit SqlDbProvider
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
             endif
-       case DbFieldType.Integer
+        case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 sResult += " identity "

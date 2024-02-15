@@ -22,6 +22,7 @@ class Advantage inherit SqlDbProvider
     override property DllName as string => "Advantage.Data.Provider.Dll"
     /// <inheritdoc />
     override property TypeName as string => "Advantage.Data.Provider.AdsFactory"
+    private static lockObj := object{} as object
 
     constructor()
         super("Advantage")
@@ -32,7 +33,11 @@ class Advantage inherit SqlDbProvider
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
-            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
+            begin lock lockObj
+                if aFuncs == null
+                    aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
+                endif
+            end lock
         endif
         return aFuncs
     end method

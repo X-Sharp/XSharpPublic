@@ -7,6 +7,7 @@
 
 using System
 using System.Reflection
+using System.Collections.Concurrent
 using System.Collections.Generic
 using System.Text
 using System.Data.Common
@@ -20,15 +21,17 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 abstract class SqlDbProvider inherit SqlDbObject
 
 #region Static fields and methods
-    static _ProviderClasses as IDictionary<string, System.Type>
-    static _ProviderObjects as IDictionary<string, SqlDbProvider>
+    static _ProviderClasses as ConcurrentDictionary<string, System.Type>
+    static _ProviderObjects as ConcurrentDictionary<string, SqlDbProvider>
     static _lastException as Exception
+    private static lockObj := object{} as object
+
     static property Current as SqlDbProvider auto
 
     static constructor()
         Current := null
-        _ProviderClasses := Dictionary<string,  System.Type>{StringComparer.OrdinalIgnoreCase}
-        _ProviderObjects := Dictionary<string, SqlDbProvider>{StringComparer.OrdinalIgnoreCase}
+        _ProviderClasses := ConcurrentDictionary<string,  System.Type>{StringComparer.OrdinalIgnoreCase}
+        _ProviderObjects := ConcurrentDictionary<string, SqlDbProvider>{StringComparer.OrdinalIgnoreCase}
         RegisterProvider("SQLSERVER",typeof(XSharp.RDD.SqlRDD.Providers.SqlServer))
         RegisterProvider("ODBC", typeof(XSharp.RDD.SqlRDD.Providers.ODBC))
         RegisterProvider("OLEDB",typeof(XSharp.RDD.SqlRDD.Providers.OleDb ))
@@ -40,16 +43,11 @@ abstract class SqlDbProvider inherit SqlDbObject
     end constructor
 
     static method RegisterProvider(Name as string, ClassName as System.Type) as logic
-        _ProviderClasses[Name] := ClassName
-        return true
+        return _ProviderClasses:TryAdd(Name, ClassName)
     end method
 
     static method UnRegisterProvider(Name as string) as logic
-        if (_ProviderClasses:ContainsKey(Name))
-            _ProviderClasses:Remove(Name)
-            return true
-        endif
-        return false
+        return _ProviderClasses:TryRemove(Name, out var _)
     end method
 
     static method SetDefaultProvider(provider as SqlDbProvider) as SqlDbProvider
@@ -103,15 +101,14 @@ abstract class SqlDbProvider inherit SqlDbObject
         if _ProviderObjects:TryGetValue(Name, out var result)
             return result
         endif
-        if ! _ProviderClasses:ContainsKey(Name)
+        if ! _ProviderClasses:TryGetValue(Name, out var type)
             return null
         endif
-        var type := _ProviderClasses[Name]
         try
             if typeof(SqlDbProvider):IsAssignableFrom(type)
                 var oProv := (SqlDbProvider) Activator.CreateInstance(type)
                 if (oProv:Factory != null)
-                    _ProviderObjects:Add(Name, oProv)
+                    _ProviderObjects:TryAdd(Name, oProv)
                     return oProv
                 endif
             endif

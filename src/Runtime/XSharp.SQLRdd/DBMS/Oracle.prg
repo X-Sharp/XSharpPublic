@@ -22,6 +22,7 @@ class Oracle inherit SqlDbProvider
     override property DllName as string => "System.Data.OracleClient.dll"
     /// <inheritdoc />
     override property TypeName as string => "System.Data.OracleClient.OracleClientFactory"
+    private static lockObj := object{} as object
 
     /// <inheritdoc />
     override property GetIdentity            as string => "select LAST_INSERT_ID()"
@@ -39,20 +40,24 @@ class Oracle inherit SqlDbProvider
     private static aFuncs as Dictionary<string, string>
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
-            aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
-                {"LEFT(%1%,%2%)"			,"SUBSTR(%1%,1,%2%)"},;
-                {"DTOS(%1%)"				,"TO_CHAR(%1%,'YYYYMMDD')"},;
-                {"DAY(%1%)"					,"TO_NUM(TO_CHAR(%1%,'DD'))"},;
-                {"MONTH(%1%)"				,"TO_NUM(TO_CHAR(%1%,'MM'))"},;
-                {"YEAR(%1%)"				,"TO_NUM(TO_CHAR(%1%,'YYYY'))"},;
-                {"TODAY()"					,"SYSDATE "},;
-                {"CHR(%1%)"					,"CHAR(%1%)"},;
-                {"LEN(%1%)"					,"LENGTH(%1%)"},;
-                {"REPL(%1%,%2%)"			,"REPLICATE(%1%,%2%)"},;
-                {"ASC(%1%)"					,"ASCII(%1%)"},;
-                {"TRIM(%1%)"				,"RTRIM(%1%)"},;
-                {"ALLTRIM(%1%)"				,"LTRIM(RTRIM(%1%))"},;
-                {"+"						,"||"}}
+            begin lock lockObj
+                if aFuncs == null
+                    aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
+                        {"LEFT(%1%,%2%)"			,"SUBSTR(%1%,1,%2%)"},;
+                        {"DTOS(%1%)"				,"TO_CHAR(%1%,'YYYYMMDD')"},;
+                        {"DAY(%1%)"					,"TO_NUM(TO_CHAR(%1%,'DD'))"},;
+                        {"MONTH(%1%)"				,"TO_NUM(TO_CHAR(%1%,'MM'))"},;
+                        {"YEAR(%1%)"				,"TO_NUM(TO_CHAR(%1%,'YYYY'))"},;
+                        {"TODAY()"					,"SYSDATE "},;
+                        {"CHR(%1%)"					,"CHAR(%1%)"},;
+                        {"LEN(%1%)"					,"LENGTH(%1%)"},;
+                        {"REPL(%1%,%2%)"			,"REPLICATE(%1%,%2%)"},;
+                        {"ASC(%1%)"					,"ASCII(%1%)"},;
+                        {"TRIM(%1%)"				,"RTRIM(%1%)"},;
+                        {"ALLTRIM(%1%)"				,"LTRIM(RTRIM(%1%))"},;
+                        {"+"						,"||"}}
+                endif
+            end lock
         endif
         return aFuncs
 

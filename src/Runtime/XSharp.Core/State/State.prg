@@ -740,7 +740,7 @@ CLASS XSharp.RuntimeState
         SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
         SELF:_SetThreadValue(Set.Dict, FALSE)
         SELF:_SetThreadValue(Set.Century, FALSE)
-        SELF:_SetDateCountry(DateCountry.American)
+        SELF:_SetDateCountry(XSharp.DateCountry.American)
         SELF:_SetTimeFormat("hh:MM:SS")
 
     INTERNAL METHOD _SetInternationalWindows() AS VOID

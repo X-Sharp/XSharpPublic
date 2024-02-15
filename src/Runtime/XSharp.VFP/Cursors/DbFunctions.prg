@@ -11,9 +11,9 @@ USING System.Text
 
 INTERNAL FUNCTION _DoInArea<T>(uArea as Usual, action as @@Func<T>, defaultValue as T, cFunction as STRING, nArg as DWORD) as T
     IF IsNil(uArea)
-        RETURN (T) (OBJECT) IIF(Used(), action(), defaultValue)
+        RETURN (T) IIF(Used(), action(), defaultValue)
     ELSEIF IsNumeric(uArea)
-        RETURN (T) (OBJECT) (uArea)->(IIF(Used(), action(), defaultValue)) 
+        RETURN (T) (uArea)->(IIF(Used(), action(), defaultValue)) 
     ENDIF 
     VAR curArea := RuntimeState.CurrentWorkarea 
     VAR newArea := VoDb.SymSelect(uArea) 
@@ -21,7 +21,7 @@ INTERNAL FUNCTION _DoInArea<T>(uArea as Usual, action as @@Func<T>, defaultValue
     IF newArea == 0 
         THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, cFunction, nameof(uArea), nArg, <OBJECT>{uArea}  )
     ENDIF 
-    RETURN (T) (Object) (newArea)->(action()) 
+    RETURN (T) (newArea)->(action()) 
 
 // The last 2 params in the function calls below determine the error message generated when the uArea parameter
 // is an non existing alias

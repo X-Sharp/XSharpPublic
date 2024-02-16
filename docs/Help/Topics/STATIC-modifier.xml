@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-16T11:22:23.872+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STATIC modifier</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">STATIC modifier</para>
+    </header>
+    <para styleclass="Normal">The STATIC modifier has a different meaning when used on a class or its members, on a FUNCTION/GLOBAL or on a LOCAL variable.</para>
+    <para styleclass="Heading2">Static classes and members</para>
+    <para styleclass="Heading3">Static members</para>
+    <para styleclass="Normal">The STATIC modifier on a member of a class (method, constructor, property, field, event) declares a member which belongs to the class itself, instead of an instance of the class. Normal (instance) methods and other members can be called by using an instance of the class (for example through a local variable holding such an instantiated object) with the colon (&quot;:&quot;) operator (also with the dot &quot;.&quot; operator if the compiler option /allowdot is enabled), while static members can be accessed directly through the class itself, using the dot operator:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />LOCAL oInstance AS TestClass</para>
+    <para styleclass="Normal"><tab />oInstance := TestClass{}</para>
+    <para styleclass="Normal"><tab /></para>
+    <para styleclass="Normal"><tab />? oInstance:instance_field</para>
+    <para styleclass="Normal"><tab />? oInstance:InstanceMethod()</para>
+    <para styleclass="Normal"><tab />? oInstance:InstanceProperty</para>
+    <para styleclass="Normal"><tab /></para>
+    <para styleclass="Normal"><tab />? TestClass.static_field</para>
+    <para styleclass="Normal"><tab />? TestClass.StaticMethod()</para>
+    <para styleclass="Normal"><tab />? TestClass.StaticProperty</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS TestClass</para>
+    <para styleclass="Normal"><tab />EXPORT instance_field := &quot;instance field&quot; AS STRING</para>
+    <para styleclass="Normal"><tab />STATIC EXPORT static_field := &quot;static field&quot; AS STRING</para>
+    <para styleclass="Normal"><tab /></para>
+    <para styleclass="Normal"><tab />METHOD InstanceMethod() AS STRING</para>
+    <para styleclass="Normal"><tab />RETURN &quot;Instance method&quot;</para>
+    <para styleclass="Normal"><tab />PROPERTY InstanceProperty() AS STRING GET &quot;Instance property&quot;</para>
+    <para styleclass="Normal"><tab /><tab /></para>
+    <para styleclass="Normal"><tab />STATIC METHOD StaticMethod() AS STRING</para>
+    <para styleclass="Normal"><tab />RETURN &quot;Static method&quot;</para>
+    <para styleclass="Normal"><tab />STATIC PROPERTY StaticProperty() AS STRING GET &quot;Instance property&quot;</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A static method is very similar to a common function and can be used in the same way, but has the advantage that it is encapsulated within a class that may contain other related static or non static members. Like functions, static methods can not use instance members of the class with SELF, but can access other static members. Methods with related functionality can be grouped together under the same class, offering much better intellisense support in the editor (typing a dot after a class name will show a list of all static members) and makes the code more structured.For example, the System.Math class offers a lot of mathematical functions, all grouped under a single class, which makes it easier to find and use, rather that having several standalone functions offering the same functionality. Similarly, a static field can be regarded as a GLOBAL, but again structured under a class.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Static constructor</para>
+    <para styleclass="Normal">Is is also possible to define a single static constructor per class, which is guaranteed to be called automatically just before any static member (method, field, etc) of the class is accessed for the first time. A static constructor must have no parameters and cannot be overloaded. Typical use of a static constructor is to initialize static fields:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />? TestClass.static_field // adjusted by static constructor</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">CLASS TestClass</para>
+    <para styleclass="Normal"><tab />STATIC EXPORT static_field := &quot;initial value&quot; AS STRING</para>
+    <para styleclass="Normal"><tab /></para>
+    <para styleclass="Normal"><tab />STATIC CONSTRUCTOR()</para>
+    <para styleclass="Normal"><tab /><tab />? TestClass.static_field // initial value</para>
+    <para styleclass="Normal"><tab /><tab />TestClass.static_field := &quot;adjusted by static constructor&quot;</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Static class</para>
+    <para styleclass="Normal">When a class is designed to hold only static members, then it can be declared itself as static. Doing so allows the compiler to check every member of the class and make sure none is accidentally declared as non-static:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">STATIC CLASS StaticClass</para>
+    <para styleclass="Normal"><tab />STATIC EXPORT static_field AS STRING</para>
+    <para styleclass="Normal"><tab />EXPORT accidental_instance AS STRING // compiler error XS0708: cannot declare instance members in a static class</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab />STATIC METHOD Static_method() AS VOID</para>
+    <para styleclass="Normal"><tab />METHOD Accidental_Instance_method() AS VOID // compiler error XS0708: cannot declare instance members in a static class</para>
+    <para styleclass="Normal">END CLASS</para>
+    <para styleclass="Heading2">Static functions and globals</para>
+    <para styleclass="Normal">When declaring a function or global as static, restricts its visibility to only the code file where it is declared. This way, multiple files can declared functions and globals with the same name, each one being visible only in their respective file</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">STATIC GLOBAL GlobalVisibleOnlyInThisFile AS INT</para>
+    <para styleclass="Normal">STATIC FUNCTION FunctionVisibleOnlyInThisFile() AS VOID</para>
+    <para styleclass="Heading2">Static local</para>
+    <para styleclass="Normal">Declaring a LOCAL variable as STATIC, causes it to be initialized only once, at the first time that the method, function etc where it is declared is called. The local variable retains its previous value the next time the code is called:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION Start() AS VOID</para>
+    <para styleclass="Normal"><tab />? TestStaticLocal() // 2</para>
+    <para styleclass="Normal"><tab />? TestStaticLocal() // 3</para>
+    <para styleclass="Normal"><tab />? TestStaticLocal() // 4</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FUNCTION TestStaticLocal() AS INT</para>
+    <para styleclass="Normal"><tab />STATIC LOCAL nStaticLocal := 1 AS INT // gets initialized to 1 only the first time the function is called</para>
+    <para styleclass="Normal"><tab />nStaticLocal ++ // this value will be retained the next time the function is called</para>
+    <para styleclass="Normal">RETURN nStaticLocal</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -15,9 +15,13 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The ODBC class.
+/// SqlDbProvider for the Advantage Database Server
 /// </summary>
-class Advantage inherit SqlDbProvider
+/// <remarks>
+/// This class depends on the DLL Advantage.Data.Provider.Dll
+/// </remarks>
+
+class DbProviderAdvantage inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "Advantage.Data.Provider.Dll"
     /// <inheritdoc />

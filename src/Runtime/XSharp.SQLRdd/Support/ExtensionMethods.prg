@@ -8,9 +8,7 @@ USING XSharp.RDD.Enums
 
 begin namespace XSharp.RDD.SqlRDD
 
-	/// <summary>
-    /// Extension methods needed by the SQL RDD
-    /// </summary>
+	/// <exclude />
 	STATIC CLASS ExtensionMethods
 
     STATIC METHOD IsLong(SELF eType AS DbFieldType ) AS LOGIC

@@ -13,7 +13,7 @@ using System.Diagnostics
 using System.Reflection
 using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
-using static XSharp.SQLRDD.Functions
+
 
 begin namespace XSharp.RDD.SqlRDD
 
@@ -47,7 +47,7 @@ partial class SQLRDD inherit DBFVFP
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
-    internal property Provider       as SqlDbProvider get _connection:Provider
+    internal property Provider       as IDbProvider get _connection:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
     internal property DataTable as DataTable
@@ -149,6 +149,7 @@ partial class SQLRDD inherit DBFVFP
         return
     end method
 
+    /// <exclude />
     property DeleteOnClose as logic
         get
             SELF:_GetDeleteOnClose()
@@ -192,7 +193,7 @@ partial class SQLRDD inherit DBFVFP
         local strConnection as string
         local pos as int
         strConnection := SqlDbConnection.DefaultConnection
-        _connection := XSharp.SQLRDD.Functions.SqlDbGetConnection(strConnection)
+        _connection := Functions.SqlDbGetConnection(strConnection)
         if _connection == null
             return false
         endif
@@ -201,7 +202,7 @@ partial class SQLRDD inherit DBFVFP
         pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
         if pos > 0
             strConnection := query:Substring(0, pos)
-            var oNewConn := XSharp.SQLRDD.Functions.SqlDbGetConnection(strConnection)
+            var oNewConn := Functions.SqlDbGetConnection(strConnection)
             if oNewConn == null
                 return false
             endif
@@ -353,7 +354,7 @@ partial class SQLRDD inherit DBFVFP
             if c:AutoIncrement
                 loop
             endif
-            
+
             if !self:_oTd:UpdateAllColumns
                 // only update columns that are changed
                 local isEqual := true as Logic

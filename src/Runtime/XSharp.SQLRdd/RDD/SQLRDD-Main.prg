@@ -28,7 +28,9 @@ partial class SQLRDD inherit DBFVFP
     override property Driver as string get "SQLRDD"
 #endregion
 
-    /// <inheritdoc />
+	/// <summary>Create a table.</summary>
+	/// <param name="info">object describing the file to create.</param>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Create(info as DbOpenInfo) as logic
         _cTable := System.IO.Path.GetFileName(info:FileName)
         if ! self:_PrepareOpen(info)
@@ -47,7 +49,14 @@ partial class SQLRDD inherit DBFVFP
         return lResult
     end method
 
-    /// <inheritdoc />
+	/// <summary>Open a table.</summary>
+	/// <param name="info">object describing the file to open.</param>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// Open() will open the table and read the table structure from the database.
+    /// If the table is a query then the data will be read from the database as well.
+    /// If the table is a table name, then the data will be read from the database later
+    /// </remarks>
     override method Open(info as DbOpenInfo) as logic
         if ! self:_PrepareOpen(info)
             return false
@@ -143,18 +152,14 @@ partial class SQLRDD inherit DBFVFP
         return true
     end method
 
-#ifdef DEBUG
-    /// <inheritdoc />
-    override method SetFieldExtent(nFields as long) as logic
-        var result := super:SetFieldExtent(nFields)
-        return result
-    end method
-
-#endif
 
 
-
-    /// <inheritdoc />
+	/// <summary>Append a blank row and position the cursor to the new row.</summary>
+	/// <param name="lReleaseLock">A flag that is TRUE if you want to clear all pending row locks before appending the new row and FALSE if you want to add the new row to the end of the current lock list.</param>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
     override method Append(lReleaseLock as logic) as logic
         self:_ForceOpen()
         var lResult := super:Append(lReleaseLock)
@@ -186,7 +191,12 @@ partial class SQLRDD inherit DBFVFP
         return lResult
     end method
 
-    /// <inheritdoc />
+    /// <summary>Get a value for the specified column.</summary>
+	/// <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
+    /// <returns>The value of the specified field.</returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
     override method GetValue(nFldPos as int) as object
         // nFldPos is 1 based, the RDD compiles with /az+
         SELF:_ForceOpen()
@@ -222,7 +232,13 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-    /// <inheritdoc />
+	/// <summary>Write a value for a specified column</summary>
+	/// <param name="nFldPos">ONE based position for which the value should be written.</param>
+	/// <param name="oValue">New value that needs to written to the table this column.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
     override method PutValue(nFldPos as int, oValue as object) as logic
         // nFldPos is 1 based, the RDD compiles with /az+
         SELF:_ForceOpen()
@@ -250,7 +266,8 @@ partial class SQLRDD inherit DBFVFP
         endif
         return result
 
-    /// <inheritdoc />
+    /// <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method GoCold() as logic
         local lWasHot := self:_Hot as logic
         local lOk := super:GoCold() as logic
@@ -290,7 +307,8 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-    /// <inheritdoc />
+	/// <summary>Close a table.</summary>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Close() as logic
         local lOk as logic
         // This method deletes the temporary file after the file is closed
@@ -305,7 +323,13 @@ partial class SQLRDD inherit DBFVFP
         return lOk
     end method
 
-    /// <inheritdoc />
+	/// <summary>Mark the row at the current cursor position for deletion.</summary>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+	/// <remarks>
+    /// When a DeletedColumn is defined, then his set the value of that column to TRUE
+    /// Otherwise current row is deleted. The deletion at the server will be done when the record pointer is moved or the table is closed.
+	/// </remarks>
+
     override method Delete() as logic
         if self:_deletedColumn >= 0
             return self:PutValue(self:_deletedColumn, 1)
@@ -314,7 +338,12 @@ partial class SQLRDD inherit DBFVFP
         endif
     end method
 
-    /// <inheritdoc />
+	/// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+	/// <remarks>
+    /// When a DeletedColumn is defined, then his set the value of that column to TRUE
+    /// Otherwise when the current row is deleted and not persisted to the server yet, then the deletion is undone.
+	/// </remarks>
     override method Recall() as logic
         if self:_deletedColumn >= 0
             return self:PutValue(self:_deletedColumn, 0)
@@ -323,7 +352,9 @@ partial class SQLRDD inherit DBFVFP
         endif
     end method
 
-    /// <inheritdoc />
+	/// <summary>Retrieve and optionally change information about a work area.</summary>
+    /// <param name="nOrdinal">Specifies the type of information.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
     override method Info(uiOrdinal as long, oNewValue as object) as object
         if uiOrdinal == DbInfo.DBI_CANPUTREC
             return false
@@ -334,7 +365,11 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-    /// <inheritdoc />
+	/// <summary>Position the cursor to the first logical row.</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
     override method GoTop() as logic
         if !self:_ForceOpen()
             return false
@@ -343,7 +378,12 @@ partial class SQLRDD inherit DBFVFP
         return TRUE
     end method
 
-    /// <inheritdoc />
+	/// <summary>Position the cursor to the last logical row.</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
+
     override method GoBottom() as logic
         if !self:_ForceOpen()
             return false
@@ -351,7 +391,12 @@ partial class SQLRDD inherit DBFVFP
         return super:GoBottom()
     end method
 
-    /// <inheritdoc />
+	/// <summary>Position the cursor regardless of scope and filter conditions.</summary>
+	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
     override method SkipRaw(move as long) as logic
         if !self:_ForceOpen()
             return false
@@ -364,11 +409,14 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-    OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
-        LOCAL result AS LOGIC
-        result := Super:GoToId(oRec)
-        RETURN result
-    /// <inheritdoc />
+	/// <summary>Position the cursor to a specific, physical row.</summary>
+	/// <param name="nRec">The ONE based row number of the new cursor position.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database <br/>
+    /// When a RecnoColumn is defined, then the cursor will be positioned on the row with the specified Recno, when it exists.
+    /// If the recno does not exist, or when no RecnoColumn is defined, then the cursor will be positioned on the phantom row at the end of the table.
+    /// </remarks>
     override method GoTo(nRec as long) as logic
         if !self:_ForceOpen()
             return false
@@ -399,7 +447,11 @@ partial class SQLRDD inherit DBFVFP
         endif
         return miCheckEofBof != null
     end method
-    /// <inheritdoc />
+	/// <summary>The physical row identifier at the current cursor position.</summary>
+	/// <remarks>
+    /// When a RecnoColumn is defined, then his will return the value of that column.
+    /// Otherwise the relative position inside the cursor will be returned.
+	/// </remarks>
     override property RecNo		as int
         get
             self:ForceRel()
@@ -418,6 +470,10 @@ partial class SQLRDD inherit DBFVFP
             return super:RecNo
         end get
     end property
+	/// <summary>Position the cursor relative to its current position.</summary>
+	/// <param name="nToSkip">The number of rows to skip.
+    /// If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Skip(nSkip as long) as logic
         var old := SELF:_relativeRecNo
         SELF:_relativeRecNo := TRUE
@@ -426,7 +482,13 @@ partial class SQLRDD inherit DBFVFP
         return result
     end method
 
-    /// <inheritdoc />
+	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
+	/// <param name="info">An object containing containing the necessary seek information.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
     override method Seek(seekInfo as DbSeekInfo) as logic
         local oKey as object
         oKey := seekInfo:Value
@@ -446,7 +508,11 @@ partial class SQLRDD inherit DBFVFP
         return true
     end method
 
-    /// <inheritdoc />
+	/// <summary>Is the current row deleted?</summary>
+	/// <remarks>
+    /// When a DeletedColumn is defined, then his will return the value of that column.
+    /// Otherwise the state of the current row is returned.
+	/// </remarks>
     override property Deleted		as logic
         get
             self:ForceRel()

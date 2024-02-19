@@ -10,6 +10,9 @@ using System.Diagnostics
 
 begin namespace XSharp.RDD.SqlRDD
 
+    /// <summary>
+    /// This enum is used to indicate the flags of a column in a table.
+    /// </summary>
     [Flags];
     enum SqlDbColumnFlags
         member Recno   := 1
@@ -18,11 +21,10 @@ begin namespace XSharp.RDD.SqlRDD
 
 
 /// <summary>
-/// The ColumnDef class.
+/// The ColumnDef class. This class is used when reading the schema of a table.
 /// </summary>
 [DebuggerDisplay("{Name,nq}, {ColumnInfo:FieldTypeStr} {Length}")];
 class SqlDbColumnDef inherit SqlDbObject
-    property OrdinalPosition as long auto get set
     property Type		 as System.Type get ColumnInfo:DotNetType
     property Length		 as long get ColumnInfo:Length
     property Precision	 as long get ColumnInfo:NumericPrecision
@@ -33,6 +35,10 @@ class SqlDbColumnDef inherit SqlDbObject
     property Identity    as logic auto
     property ColumnFlags as SqlDbColumnFlags auto
 
+    /// <summary>
+    /// Create a new instance of the ColumnDef class.
+    /// </summary>
+    /// <param name="oCol">DBF column to derive from.</param>
     constructor(oCol as DbColumnInfo)
         super(oCol:Name)
         self:ColumnInfo := oCol

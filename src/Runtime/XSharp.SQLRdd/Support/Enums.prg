@@ -11,12 +11,20 @@ using System.Data
 using System.Data.Common
 
 begin namespace XSharp.RDD.SqlRDD
+    /// <summary>
+    /// This enum is used to specify the mode of the RDD
+    /// </summary>
 enum TableMode
+    /// <summary>The RDD operates in Table mode and uses Metadata to control the columns and rows selected etc</summary>
     member Table
+    /// <summary>The RDD operates in Query mode and uses returns all rows and columns from the sql stetemtn</summary>
     member Query
 end enum
 
 
+/// <summary>
+/// This enum is used to specify the reason for the RDD event
+/// </summary>
 enum SqlRDDEventReason
     member ConnectionString
     member CommandText

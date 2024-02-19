@@ -11,10 +11,8 @@ using System.Text
 
 begin namespace XSharp.RDD.SqlRDD
 
-/// <summary>
-/// The TokenType class.
-/// </summary>
-enum TokenType
+/// <exclude />
+internal enum TokenType
     member None     := 0
     member Token
     member BoExpr

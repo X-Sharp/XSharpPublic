@@ -50,7 +50,7 @@ INTERFACE IMetadataProvider
     /// </summary>
     /// <param name="cTableName">Name of the table to lookup the data for</param>
     /// <returns>Filled SqlTableInfo object</returns>
-    /// <seealso cref="T:SqlTableInfo"/>
+    /// <seealso cref="T:XSharp.RDD.SqlRDD.SqlTableInfo"/>
     METHOD GetTableInfo(cTableName as STRING) AS SqlTableInfo
 
     /// <summary>
@@ -59,8 +59,8 @@ INTERFACE IMetadataProvider
     /// <param name="oTable">Table object to lookup the data for</param>
     /// <param name="cIndex">Name of the index to lookup the data for</param>
     /// <returns>Filled SqlIndexInfo object</returns>
-    /// <seealso cref="T:SqlIndexInfo"/>
-    /// <remarks This method should NOT append the indexc to the TableInfo class </remarks>
+    /// <seealso cref="T:XSharp.RDD.SqlRDD.SqlIndexInfo" />
+    /// <remarks> This method should NOT append the indexc to the TableInfo class </remarks>
     METHOD GetIndexInfo(oTable AS SqlTableInfo, cIndex AS STRING) AS SqlIndexInfo
 
 END INTERFACE

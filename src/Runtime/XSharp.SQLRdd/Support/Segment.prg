@@ -16,7 +16,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// The Segment class.
 /// </summary>
 [DebuggerDisplay("{Key}")];
-class SqlDbSegment inherit SqlDbObject
+internal class SqlDbSegment inherit SqlDbObject
     property Key		    as string auto
     property Key1	        as string auto
     property Expression	    as SqlDbExpression  auto

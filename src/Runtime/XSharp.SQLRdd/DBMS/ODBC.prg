@@ -14,13 +14,13 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The ODBC provider class.
+/// The SqlDbProvider for ODBC
 /// </summary>
 /// <remarks>
 /// This class depends on the DLL System.Data.dll
 /// </remarks>
 
-class ODBC inherit SqlDbProvider
+class DbProviderODBC inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "System.Data.dll"
     /// <inheritdoc />
@@ -65,6 +65,7 @@ class ODBC inherit SqlDbProvider
     override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         return super:GetSqlColumnInfo(oInfo)
     /// <inheritdoc />
+
     override method CreateCommandBuilder() as DbCommandBuilder
         var cmdBuilder := super:CreateCommandBuilder()
         cmdBuilder:QuotePrefix := """"

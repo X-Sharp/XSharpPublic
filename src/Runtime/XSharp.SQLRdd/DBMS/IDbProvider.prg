@@ -1,10 +1,24 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using System.Data.Common
 using System.Collections.Generic
 using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
-interface ISqlDbProvider
-  /// <summary>
+interface IDbProvider
+    /// <summary>
+    /// Name of the provider
+    /// </summary>
+    property Name as string get
+
+    /// <summary>
+    /// DbProviderFactory for this provider
+    /// </summary>
+    property Factory as DbProviderFactory GET
+    /// <summary>
     /// Name of the DLL that contains the DbProviderFactory
     /// </summary>
     property DllName as string get
@@ -67,7 +81,7 @@ interface ISqlDbProvider
     property GetRowCount            as string get
 
 
-        /// <summary>
+    /// <summary>
     /// Return a list of function translations for this provider
     /// </summary>
     /// <returns>Dictionary with XBase functions mapped to SQL functions</returns>
@@ -129,7 +143,12 @@ interface ISqlDbProvider
     /// This is used when creating a SQL table with DbCreate()
     /// </remarks>
     method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
-
+    /// <summary>
+    /// Get the translation for an XBase function to a SQL function
+    /// </summary>
+    /// <param name="sFunction">Function. Parameters are replaced with %1%, %2% etc.</param>
+    /// <returns>The translation of the function.</returns>
+    method GetFunction(sFunction as string) as string
 
 
 end interface

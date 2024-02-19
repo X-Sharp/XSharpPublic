@@ -77,6 +77,8 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
 
         RETURN oTable
     END METHOD
+
+    /// <inheritdoc />
     OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName

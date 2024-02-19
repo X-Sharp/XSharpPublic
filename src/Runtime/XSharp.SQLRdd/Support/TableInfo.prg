@@ -13,7 +13,7 @@ using System.Text
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
-/// The TableInfo class.<br>
+/// The TableInfo class.
 /// </summary>
 /// <remarks>
 /// This class stores "metadata" about tables. It can be filled from the database, in code or otherwise
@@ -21,7 +21,8 @@ begin namespace XSharp.RDD.SqlRDD
 class SqlTableInfo inherit SqlDbTableDef
 
     /// <summary>
-    /// Real tablename of the table in the SQL database. This is the name that is used in the SQL statements
+    /// Real tablename of the table in the SQL database. This is the name that is used in the SQL statements.
+    /// This allows you to declare an alias for a table with for example a server side filter.
     /// </summary>
     property RealName as string auto
     /// <summary>
@@ -75,6 +76,11 @@ class SqlTableInfo inherit SqlDbTableDef
 
     protected _connection as SqlDbConnection
 
+    /// <summary>
+    /// Create a new instance of the SqlTableInfo class
+    /// </summary>
+    /// <param name="cName">Table Name</param>
+    /// <param name="oConn">Connection to which the table belongs</param>
     constructor(cName as string, oConn as SqlDbConnection)
         super(cName)
         _connection     := oConn
@@ -90,8 +96,7 @@ class SqlTableInfo inherit SqlDbTableDef
         Indexes := List<SqlIndexInfo>{}
 
         return
-
-    method CopyFromTd(oTd as SqlDbTableDef) as void
+    internal method CopyFromTd(oTd as SqlDbTableDef) as void
         self:Columns                := oTd:Columns
         self:SelectStatement        := oTd:SelectStatement
         self:EmptySelectStatement   := oTd:EmptySelectStatement
@@ -104,12 +109,24 @@ class SqlTableInfo inherit SqlDbTableDef
 
 end class
 
-
+/// <summary>
+/// This class stores metadata for indexes
+/// </summary>
 class SqlIndexInfo INHERIT SqlDbObject
-
+    /// <summary>
+    /// Table to which the index belongs
+    /// </summary>
     property Table  as SqlTableInfo auto
+    /// <summary>
+    /// List of tags
+    /// </summary>
     property Tags   as List<SqlIndexTagInfo> auto
 
+    /// <summary>
+    /// Create a new instance of the SqlIndexInfo class
+    /// </summary>
+    /// <param name="oTable">Table to which the index belongs</param>
+    /// <param name="cIndex">Name of the index</param>
     constructor(oTable as SqlTableInfo, cIndex as string)
         SUPER(cIndex)
         SELF:Table := oTable
@@ -117,6 +134,9 @@ class SqlIndexInfo INHERIT SqlDbObject
 
 end class
 
+/// <summary>
+/// This class stores metadata for index tags
+/// </summary>
 class SqlIndexTagInfo inherit SqlDbObject
     /// <summary>
     /// Index expression in Xbase format
@@ -136,7 +156,11 @@ class SqlIndexTagInfo inherit SqlDbObject
     /// </summary>
     /// <value></value>
     property Index     as SqlIndexInfo auto
-
+    /// <summary>
+    /// Create a new instance of the SqlIndexTagInfo class
+    /// </summary>
+    /// <param name="oIndex">Index to which the tag belongs</param>
+    /// <param name="name">Name of the Tag</param>
     constructor(oIndex as SqlIndexInfo, name as string)
         super(name)
         self:Index := oIndex

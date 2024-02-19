@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\HandleObject.prg" />
-    <Compile Include="DBMS\ISqlDbProvider.prg" />
+    <Compile Include="DBMS\IDbProvider.prg" />
     <None Include="Metadata\MetaData.md" />
     <None Include="SqlRddspecs.md" />
   </ItemGroup>
@@ -79,7 +79,7 @@
     <Compile Include="DBMS\ODBC.prg" />
     <Compile Include="DBMS\OleDb.prg" />
     <Compile Include="DBMS\Oracle.prg" />
-    <Compile Include="DBMS\SqlSDbProvider.prg" />
+    <Compile Include="DBMS\DbProvider.prg" />
     <Compile Include="DBMS\SqlServer.prg" />
     <Compile Include="RDD\SQLRDD-Main.prg" />
     <Compile Include="RDD\SQLDbOrder.prg" />
@@ -88,7 +88,6 @@
     <Compile Include="RDD\SQLRDD-Private.prg" />
     <Compile Include="Support\ExtensionMethods.prg" />
     <Compile Include="Support\ColumnDef.prg" />
-    <Compile Include="Support\Defines.prg" />
     <Compile Include="Support\Enums.prg" />
     <Compile Include="Support\Events.prg" />
     <Compile Include="Support\Expression.prg" />

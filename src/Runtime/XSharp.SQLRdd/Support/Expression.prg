@@ -15,7 +15,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The Expression class.
 /// </summary>
-class SqlDbExpression inherit SqlDbObject
+internal class SqlDbExpression inherit SqlDbObject
     property Owner      as SqlDbOrder auto
     property XsKey		as string auto
     property Tokens		as IList<SqlDbToken> auto
@@ -27,7 +27,7 @@ class SqlDbExpression inherit SqlDbObject
     property Translated as logic auto
     property Segments	as IList<SqlDbSegment> auto
     property Widths		as IList<long> auto
-    private _provider  as SqlDbProvider
+    private _provider   as IDbProvider
 
     property OrderListString as string => SELF:List2String(self:OrderList)
     property ColumnListString as string => SELF:List2String(self:ColumnList)

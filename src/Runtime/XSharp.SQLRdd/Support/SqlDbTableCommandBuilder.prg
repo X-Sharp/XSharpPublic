@@ -1,8 +1,8 @@
-﻿// SqlDbTableCommandBuilder.prg
-// Created by    : robert
-// Creation Date : 9/25/2023 2:54:39 PM
-// Created for   :
-// WorkStation   : NYX
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 
 using System
@@ -23,7 +23,7 @@ class SqlDbTableCommandBuilder
     protected _oRdd  as SQLRDD
     protected _connection as SqlDbConnection
     property Connection as SqlDbConnection  get _connection
-    property Provider   as SqlDbProvider    get Connection:Provider
+    property Provider   as IDbProvider   get Connection:Provider
     Property MetadataProvider as IMetadataProvider get Connection:MetadataProvider
     property OrderBagList as List<SqlDbOrderBag> get _oRdd:OrderBagList
     constructor(cTable as string, oRdd as SQLRDD)
@@ -129,7 +129,7 @@ class SqlDbTableCommandBuilder
         endif
         if currentOrder != null
             sb:Append(Provider.OrderByClause)
-            var cOrderby := XSharp.SQLRDD.Functions.List2String(currentOrder:OrderList)
+            var cOrderby := Functions.List2String(currentOrder:OrderList)
             cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
             sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         endif

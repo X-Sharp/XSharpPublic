@@ -11,7 +11,6 @@ using System.Text
 using XSharp.RDD.Support
 using XSharp.RDD.Enums
 using XSharp.RDD.SqlRDD.Providers
-using static XSharp.SQLRDD.Functions
 
 begin namespace XSharp.RDD.SqlRDD
 
@@ -44,7 +43,7 @@ class SqlDbOrder inherit SqlDbObject
     property ColumnList	as IList<string>    auto
     property OrderList	as IList<string>    auto
     property OrderListString as string auto
-    property Provider   as SqlDbProvider get RDD:Provider
+    property Provider   as IDbProvider get RDD:Provider
     property Connection as SqlDbConnection get RDD:Connection
     property FileName   as string get self:OrderBag:FileName+"_"+self:Name
 
@@ -156,9 +155,9 @@ class SqlDbOrder inherit SqlDbObject
             else
                 cWhereClause := self:SQLKey
             endif
-            cWhereClause += cComp + XSharp.SQLRDD.Functions.XsValueToSqlValue(strValue)
+            cWhereClause += cComp + Functions.XsValueToSqlValue(strValue)
         else
-            cWhereClause := self:SQLKey+cComp+XSharp.SQLRDD.Functions.XsValueToSqlValue(seekInfo:Value)
+            cWhereClause := self:SQLKey+cComp+Functions.XsValueToSqlValue(seekInfo:Value)
         endif
         return cWhereClause
     end method

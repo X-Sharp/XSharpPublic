@@ -10,7 +10,7 @@ using System.Collections.Generic
 using System.Text
 using XSharp.RDD.SqlRDD
 
-partial static class XSharp.SQLRDD.Functions
+partial static class XSharp.RDD.SqlRDD.Functions
 
 /// <summary>
 /// Open a connection for the X# SQL RDD
@@ -122,7 +122,11 @@ static method SqlDbCacheConnection(ShouldCache as logic) as logic
     return  old
 end method
 
-
+/// <summary>
+/// Convert a list of strings to a single string with comma separated values
+/// </summary>
+/// <param name="list">List to convert</param>
+/// <returns>Comma seperated list</returns>
 static method List2String(list as IList<string>) as string
     var sb := StringBuilder{}
     var first := true
@@ -137,6 +141,11 @@ static method List2String(list as IList<string>) as string
     return sb:ToString()
 end method
 
+/// <summary>
+/// Convert a a single string with comma separated values to a List of strings
+/// </summary>
+/// <param name="names">Comma seperated list</param>
+/// <returns>List of strings</returns>
 static method String2List(names as string) as IList<string>
     var list := names:Split(<char>{','})
     var result := List<string>{}
@@ -146,6 +155,12 @@ static method String2List(names as string) as IList<string>
     return result
 end method
 
+
+/// <summary>
+/// Convert a value to a string that can be used in a SQL statement
+/// </summary>
+/// <param name="oValue">Source value</param>
+/// <returns>Result</returns>
 static method XsValueToSqlValue(oValue as object)  as string
     switch oValue
     case strValue as string
@@ -160,7 +175,7 @@ static method XsValueToSqlValue(oValue as object)  as string
     return oValue:ToString()
 end method
 
-static method DToS(dDate as IDate) as string
+internal static method DToS(dDate as IDate) as string
     return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
 end method
 end class

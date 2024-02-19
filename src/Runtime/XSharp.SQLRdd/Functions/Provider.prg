@@ -7,7 +7,7 @@
 using XSharp.RDD.SqlRDD
 using XSharp.RDD.SqlRDD.Providers
 
-partial static class XSharp.SQLRDD.Functions
+partial static class XSharp.RDD.SqlRDD.Functions
 /// <summary>
 /// Set the default SqlDbProvider to use for the SqlDb Connections. The default SQLDbProvider is ODBC
 /// </summary>
@@ -33,7 +33,7 @@ end method
 /// Retrieve the default SqlDbProvider object
 /// </summary>
 /// <returns>The SqlDbProvider object or NULL when the ProviderName has not been registered.</returns>
-static method SqlDbGetProvider() as SqlDbProvider
+static method SqlDbGetProvider() as IDbProvider
     return SqlDbProvider.Current
 end method
 
@@ -42,12 +42,11 @@ end method
 /// Register a Custom SqlDbProvider with the SqlRDD system
 /// </summary>
 /// <param name="ProviderName">Name to use for the provider. </param>
-/// <param name="ClassName">Fully qualified classname that implements the provider.
-/// This class needs to inherit from the SqlDbProvider class
+/// <param name="ClassName">type of the class that implements the provider
 /// </param>
 /// <returns></returns>
-static method SqlDbRegisterProvider(ProviderName as string, ClassName as string) as logic
-    return false
+static method SqlDbRegisterProvider(ProviderName as string, ClassName as System.Type) as logic
+    return SqlDbProvider.RegisterProvider(ProviderName, ClassName)
 end method
 
 end class

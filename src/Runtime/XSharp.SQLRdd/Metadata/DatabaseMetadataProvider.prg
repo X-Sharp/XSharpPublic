@@ -28,6 +28,11 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
     private cache as Dictionary<string, SqlTableInfo>
     private hasDefaults as logic
 
+    /// <summary>
+    /// Create a new instance of the DatabaseMetadataProvider class.
+    /// </summary>
+    /// <param name="conn">Connection associated with the provider</param>
+
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
         cache := Dictionary<string, SqlTableInfo>{StringComparer.OrdinalIgnoreCase}
@@ -261,7 +266,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         return false
     end method
 
-
+    /// <inheritdoc />
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
         SELF:ReadDefaults()
@@ -303,6 +308,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         RETURN oTable
     end method
 
+    /// <inheritdoc />
     OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var sql := i"SELECT * FROM [{IndexDictionary}] WHERE {nameof(TableName)} = '{oTable.Name}' "+ ;

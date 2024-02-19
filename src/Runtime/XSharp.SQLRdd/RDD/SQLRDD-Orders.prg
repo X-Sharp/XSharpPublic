@@ -37,7 +37,7 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-    method FindOrder(orderInfo as DbOrderInfo) as SqlDbOrder
+    internal method FindOrder(orderInfo as DbOrderInfo) as SqlDbOrder
         local selectedBag := null as SqlDbOrderBag
         local order as SqlDbOrder
         var bagName   := orderInfo:BagName
@@ -72,7 +72,9 @@ partial class SQLRDD inherit DBFVFP
         return order
     end method
 
-    /// <inheritdoc />
+	/// <summary>Create a new index or tag.</summary>
+	/// <param name="info">An object containing information for order creation.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderCreate(orderInfo as DbOrderCreateInfo ) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
@@ -113,7 +115,8 @@ partial class SQLRDD inherit DBFVFP
         return result
     end method
 
-    /// <inheritdoc />
+	/// <summary>Rebuild all indexes for the current Workarea.</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderListRebuild() as logic
         local result as logic
         if self:_tableMode == TableMode.Table
@@ -129,6 +132,9 @@ partial class SQLRDD inherit DBFVFP
         endif
         return result
 
+	/// <summary>Delete an index or tag.</summary>
+	/// <param name="info">An object containing information about the order to remove.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderDestroy(orderInfo AS DbOrderInfo ) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
@@ -140,6 +146,9 @@ partial class SQLRDD inherit DBFVFP
         return result
     end method
 
+	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
+	/// <param name="info">An object containing information about the order to select.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderListFocus(orderInfo as DbOrderInfo) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
@@ -152,7 +161,9 @@ partial class SQLRDD inherit DBFVFP
         return result
     end method
 
-
+	/// <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
+	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderListAdd( orderInfo AS DbOrderInfo) as logic
         local result := false as logic
         if self:_tableMode == TableMode.Table
@@ -176,6 +187,10 @@ partial class SQLRDD inherit DBFVFP
         return result
     end method
 
+	/// <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
+	/// <param name="info"></param>
+	/// <param name="info">An object containing information about the orderlist (file) to delete.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method OrderListDelete( orderInfo AS DbOrderInfo) as logic
         local result := false as logic
         LOCAL oStruct := NULL AS SqlDbOrderBag
@@ -212,6 +227,10 @@ partial class SQLRDD inherit DBFVFP
         return result
     end method
 
+	/// <summary>Retrieve information about an index.</summary>
+	/// <param name="info">An object containing information about the order to retrieve the info for.</param>
+	/// <param name="nOrdinal">Specifies the type of information to retrieve.</param>
+    /// <returns>The requested value for the specified index.</returns>
     override method OrderInfo(nOrdinal as dword , info as DbOrderInfo ) as object
         local isOk := true as logic
         local oBag := null as SqlDbOrderBag

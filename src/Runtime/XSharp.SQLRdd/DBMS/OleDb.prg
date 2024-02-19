@@ -15,12 +15,12 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The OleDb provider class.
+/// The SqlDbProvider for OLEDB
 /// </summary>
 /// <remarks>
 /// This class depends on the DLL System.Data.dll
 /// </remarks>
-class OleDb inherit SqlDbProvider
+class DbProviderOleDb inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "System.Data.dll"
     /// <inheritdoc />

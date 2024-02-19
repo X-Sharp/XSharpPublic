@@ -16,7 +16,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// The Token class.
 /// </summary>
 [DebuggerDisplay("{Type} {Name,nq}")];
-class SqlDbToken
+internal class SqlDbToken
     property Type       as TokenType    auto get internal set
     property Name       as string       auto get internal set
     property SQLName    as string       auto get set

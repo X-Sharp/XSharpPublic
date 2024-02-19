@@ -15,9 +15,12 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The Oracle provider class.
+/// The SqlDbProvider for Oracle, using the System.Data.OracleClient namespace.
 /// </summary>
-class Oracle inherit SqlDbProvider
+/// <remarks>
+/// This class depends on the DLL System.Data.OracleClient.dll
+/// </remarks>
+class DbProviderOracle inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "System.Data.OracleClient.dll"
     /// <inheritdoc />

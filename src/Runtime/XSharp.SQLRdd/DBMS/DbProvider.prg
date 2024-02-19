@@ -18,27 +18,27 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// <summary>
 /// The Provider class.
 /// </summary>
-abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
+abstract class SqlDbProvider inherit SqlDbObject implements IDbProvider
 
 #region Static fields and methods
     private static _ProviderClasses as ConcurrentDictionary<string, System.Type>
-    private static _ProviderObjects as ConcurrentDictionary<string, SqlDbProvider>
+    private static _ProviderObjects as ConcurrentDictionary<string, IDbProvider>
     private static _lastException as Exception
     private static lockObj := object{} as object
 
-    static property Current as SqlDbProvider auto
+    static property Current as IDbProvider auto
 
     static constructor()
         Current := null
         _ProviderClasses := ConcurrentDictionary<string,  System.Type>{StringComparer.OrdinalIgnoreCase}
-        _ProviderObjects := ConcurrentDictionary<string, SqlDbProvider>{StringComparer.OrdinalIgnoreCase}
-        RegisterProvider("SQLSERVER",typeof(XSharp.RDD.SqlRDD.Providers.SqlServer))
-        RegisterProvider("ODBC", typeof(XSharp.RDD.SqlRDD.Providers.ODBC))
-        RegisterProvider("OLEDB",typeof(XSharp.RDD.SqlRDD.Providers.OleDb ))
-        RegisterProvider("MYSQL",typeof(XSharp.RDD.SqlRDD.Providers.MySql ))
-        RegisterProvider("ADS",typeof(XSharp.RDD.SqlRDD.Providers.Advantage ))
-        RegisterProvider("Advantage",typeof(XSharp.RDD.SqlRDD.Providers.Advantage ))
-        RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.Oracle ))
+        _ProviderObjects := ConcurrentDictionary<string, IDbProvider>{StringComparer.OrdinalIgnoreCase}
+        RegisterProvider("SQLSERVER",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderSqlServer))
+        RegisterProvider("ODBC", typeof(XSharp.RDD.SqlRDD.Providers.DbProviderODBC))
+        RegisterProvider("OLEDB",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderOleDb))
+        RegisterProvider("MYSQL",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderMySql))
+        RegisterProvider("ADS",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderAdvantage))
+        RegisterProvider("Advantage",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderAdvantage))
+        RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderOracle ))
         SetDefaultProvider("ODBC")
     end constructor
 
@@ -50,13 +50,13 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return _ProviderClasses:TryRemove(Name, out var _)
     end method
 
-    static method SetDefaultProvider(provider as SqlDbProvider) as SqlDbProvider
+    static method SetDefaultProvider(provider as IDbProvider) as IDbProvider
         var old := Current
         Current := provider
         return old
     end method
 
-    static method SetDefaultProvider(name as string) as SqlDbProvider
+    static method SetDefaultProvider(name as string) as IDbProvider
         var old := Current
         Current := GetProvider(name)
         return old
@@ -97,7 +97,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return null
     end method
 
-        static method GetProvider(Name as string) as SqlDbProvider
+        static method GetProvider(Name as string) as IDbProvider
         if _ProviderObjects:TryGetValue(Name, out var result)
             return result
         endif
@@ -105,8 +105,8 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
             return null
         endif
         try
-            if typeof(SqlDbProvider):IsAssignableFrom(type)
-                var oProv := (SqlDbProvider) Activator.CreateInstance(type)
+            if typeof(IDbProvider):IsAssignableFrom(type)
+                var oProv := (IDbProvider) Activator.CreateInstance(type)
                 if (oProv:Factory != null)
                     _ProviderObjects:TryAdd(Name, oProv)
                     return oProv
@@ -139,6 +139,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// <inheritdoc/>
     abstract property TypeName as string get
     abstract method GetFunctions() as Dictionary<string, string>
+    /// <inheritdoc/>
     method GetFunction(cFunction as string) as string
         var funcs := GetFunctions()
         if funcs:TryGetValue(cFunction, out var oFunc)

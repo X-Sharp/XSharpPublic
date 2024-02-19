@@ -15,13 +15,13 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The MySq1 provider class.
+/// SqlDbProvider for MySql
 /// </summary>
 /// <remarks>
 /// This class depends on the DLL MySql.Data.dll
 /// </remarks>
 
-class MySql inherit SqlDbProvider
+class DbProviderMySql inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "MySql.Data.dll"
     /// <inheritdoc />

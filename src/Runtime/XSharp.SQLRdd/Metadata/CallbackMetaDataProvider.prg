@@ -17,6 +17,10 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
     private const DefaultSection := "Defaults" as string
     private hasDefaults := false as logic
+    /// <summary>
+    /// Create a new instance of the CallbackMetaDataProvider class.
+    /// </summary>
+    /// <param name="conn">Connection associated with the provider</param>
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
         RETURN
@@ -36,6 +40,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         RETURN
     END METHOD
 
+    /// <inheritdoc/>
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
         ReadDefaults()
@@ -70,6 +75,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         RETURN oTable
     end method
 
+    /// <inheritdoc/>
     OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var cSection := "Index:"+cIndexName

@@ -26,11 +26,14 @@ class SqlRddEventArgs
     /// Default value calculated by the RDD
     /// </summary>
     property Value  as object auto
-    constructor( nReason as SqlRDDEventReason, cTable as string, oValue as object)
+    internal constructor( nReason as SqlRDDEventReason, cTable as string, oValue as object)
         self:Reason := nReason
         self:Value  := oValue
         self:Table  := cTable
         return
+    /// <summary>
+    /// Return the value as a string or null when the value is not a string
+    /// </summary>
     property StringValue as string
         get
             if self:Value is string var strValue
@@ -39,6 +42,9 @@ class SqlRddEventArgs
             return null
         end get
     end property
+    /// <summary>
+    /// Return the value as an integer or 0 when the value is not numeric
+    /// </summary>
     property IntValue as long
         get
             if self:Value is long var intValue
@@ -47,6 +53,9 @@ class SqlRddEventArgs
             return 0
         end get
     end property
+    /// <summary>
+    /// Return the value as a list of strings or null when the value is not a list of strings
+    /// </summary>
     property ListValue as List<string>
         get
             if self:Value is List<string> var listValue

@@ -36,7 +36,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// <summary>Is the connection open</summary>
     property IsOpen             as logic get DbConnection != null .and. DbConnection:State == ConnectionState.Open
     /// <summary>SqlDbProvider object used by the connection</summary>
-    property Provider           as SqlDbProvider auto
+    property Provider           as IDbProvider auto
     /// <summary>Ado.Net DbConnection object used by the connection</summary>
     property DbConnection       as DbConnection auto
     /// <summary>Connection String</summary>

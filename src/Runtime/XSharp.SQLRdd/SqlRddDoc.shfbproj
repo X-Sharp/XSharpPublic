@@ -31,9 +31,9 @@
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <HelpTitle>XSharp SQL RDD</HelpTitle>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
-    <NamingMethod>Guid</NamingMethod>
+    <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
-    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <MaximumGroupParts>2</MaximumGroupParts>
     <Preliminary>False</Preliminary>
@@ -42,12 +42,23 @@
       <DocumentationSource sourceFile="..\..\..\Artifacts\Documentation\XSharp.SQLRdd.dll" />
       <DocumentationSource sourceFile="..\..\..\Artifacts\Documentation\XSharp.SQLRdd.xml" />
     </DocumentationSources>
-    <VisibleItems>InheritedMembers, InheritedFrameworkMembers, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
+    <VisibleItems>ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="XSharp.RDD.SqlRDD" isDocumented="True" xmlns="">This namespace contains the RDD and its helper classes</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RDD.SqlRDD.Providers" isDocumented="True" xmlns="">This namespace contains the DBMS related providers as well as the Metadata Providers</NamespaceSummaryItem>
     </NamespaceSummaries>
+    <PlugInConfigurations>
+      <PlugInConfig id="XSharp Function Output" enabled="True" xmlns="">
+        <configuration />
+      </PlugInConfig>
+    </PlugInConfigurations>
+    <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
+    <RootNamespaceTitle>X# SQLRDD</RootNamespaceTitle>
+    <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
+    <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved.</CopyrightText>
+    <FeedbackEMailAddress>info%40xsharp.eu</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

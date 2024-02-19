@@ -8,15 +8,16 @@ using XSharp.RDD.SqlRDD
 using System.Collections.Generic
 using System.Text
 using System.Data
-partial static class XSharp.SQLRDD.Functions
+partial static class XSharp.RDD.SqlRDD.Functions
 /// <summary>
 /// Create a new SqlDbCommand object for the given connection
 /// </summary>
 /// <param name="hConn">Handle of the connection</param>
-/// <param name="hConn">Name of the connection</param>
+/// <param name="name">Name of the connection</param>
 /// <param name="oConn">The connection object</param>
 /// <returns>The handle to a new SqlDbCommand object for the connection</returns>
-/// <seealso cref="T:SqlDbCommand"/>
+/// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbCommand"/>
+/// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbConnection"/>
 static method SqlDbCreateSQLCommand(hConn as IntPtr) as IntPtr
     local oConn as SqlDbConnection
     local oCmd  as SqlDbCommand
@@ -28,7 +29,7 @@ static method SqlDbCreateSQLCommand(hConn as IntPtr) as IntPtr
     return IntPtr.Zero
 end method
 
-/// <inheritdoc cref="SqlDbCreateSQLStatement(System.IntPtr)" />
+/// <inheritdoc cref="SqlDbCreateSQLCommand(System.IntPtr)" />
 static method SqlDbCreateSQLCommand(name as STRING) as IntPtr
     local oConn as SqlDbConnection
     local oCmd  as SqlDbCommand
@@ -40,13 +41,7 @@ static method SqlDbCreateSQLCommand(name as STRING) as IntPtr
     return IntPtr.Zero
 end method
 
-/// <summary>
-/// Create a new SqlDbCommand object for the given connection
-/// </summary>
-/// <param name="oConn">The connection object</param>
-/// <returns>The DbCommand object</returns>
-/// <seealso cref="T:SqlDbCommand"/>
-/// <seealso cref="T:SqlDbConnection"/>
+/// <inheritdoc cref="SqlDbCreateSQLCommand(System.IntPtr)" />
 static method SqlDbCreateSQLCommand(oConn as SqlDbConnection) as SqlDbCommand
     local oCmd  as SqlDbCommand
     if oConn != null
@@ -61,17 +56,23 @@ end method
 /// </summary>
 /// <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
 /// <returns>The SqlDbCommand object or NULL when the handle is invalid</returns>
-/// <seealso cref="T:SqlDbCommand"/>
+/// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbCommand"/>
 static method SqlDbGetCommand(hCmd as IntPtr) as SqlDbCommand
     local oCmd  as SqlDbCommand
     oCmd := SqlDbCommand.FindByHandle(hCmd)
     return oCmd
 end method
 
+
+/// <summary>
+/// Execute a SQL command and return the result as a single value
+/// </summary>
+/// <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
+/// <returns>The result of the command or NULL when the handle is invalid</returns>
+/// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbCommand"/>
 static method SqlDbExecuteSQLDirect(hCmd as IntPtr, sCommandText as string) as object
     var oCmd := SqlDbGetCommand(hCmd)
     if oCmd != null
-        oCmd:CommandText := oCmd:Connection:RaiseStringEvent(oCmd,SqlRDDEventReason.CommandText,"",sCommandText)
         return oCmd:ExecuteScalar()
     endif
     return null
@@ -88,7 +89,6 @@ end method
 static method SqlDbExecuteQueryDirect(hCmd as IntPtr, sCommandText as string) as DataTable
     var oCmd := SqlDbGetCommand(hCmd)
     if oCmd != null
-        oCmd:CommandText := oCmd:Connection:RaiseStringEvent(oCmd,SqlRDDEventReason.CommandText,"",sCommandText)
         return oCmd:GetDataTable("Table")
     endif
     return null

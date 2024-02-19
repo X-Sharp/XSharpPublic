@@ -18,6 +18,6 @@ USING XSharp.Internal
 [assembly: ImplicitNamespace("XSharp")]
 [assembly: ImplicitNamespace("XSharp.ADS")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )]
-[assembly: ClassLibrary("XSharp.SQLRDD.Functions","XSharp")]
+[assembly: ClassLibrary("XSharp.RDD.SqlRDD.Functions","XSharp")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows := TRUE)]
 

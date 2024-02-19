@@ -392,15 +392,30 @@ partial class SQLRDD inherit DBFVFP
         return super:GoTo(nRec)
     end method
 
+    private miCheckEofBof as MethodInfo
+    private method _GetCheckEofBof() as logic
+        if miCheckEofBof == null
+            miCheckEofBof := typeof(DBF):GetMethod("_CheckEofBof", BindingFlags.NonPublic+BindingFlags.Instance)
+        endif
+        return miCheckEofBof != null
+    end method
     /// <inheritdoc />
     override property RecNo		as int
         get
             self:ForceRel()
-            if self:_recnoColumn > 0 .and. ! _relativeRecNo
-                return (int) self:GetValue(self:_recnoColumn)
-            else
-                return super:RecNo
+            if self:_recnoColumn > 0
+                // HACK  The code inside Xsharp.RDD for _CheckEofBof should check _RecNo and not RecNo
+                if _GetCheckEofBof()
+                    LOCAL st := StackTrace{ FALSE } AS StackTrace
+                    IF st:GetFrame(1):GetMethod() == miCheckEofBof
+                        RETURN super:RecNo
+                    endif
+                endif
+                if ! _relativeRecNo
+                    return (int) self:GetValue(self:_recnoColumn)
+                endif
             endif
+            return super:RecNo
         end get
     end property
     override method Skip(nSkip as long) as logic

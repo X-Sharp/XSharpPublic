@@ -18,12 +18,12 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// <summary>
 /// The Provider class.
 /// </summary>
-abstract class SqlDbProvider inherit SqlDbObject
+abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 
 #region Static fields and methods
-    static _ProviderClasses as ConcurrentDictionary<string, System.Type>
-    static _ProviderObjects as ConcurrentDictionary<string, SqlDbProvider>
-    static _lastException as Exception
+    private static _ProviderClasses as ConcurrentDictionary<string, System.Type>
+    private static _ProviderObjects as ConcurrentDictionary<string, SqlDbProvider>
+    private static _lastException as Exception
     private static lockObj := object{} as object
 
     static property Current as SqlDbProvider auto
@@ -134,18 +134,10 @@ abstract class SqlDbProvider inherit SqlDbObject
             return _Factory
         end get
     end property
-    /// <summary>
-    /// Name of the DLL that contains the DbProviderFactory
-    /// </summary>
+    /// <inheritdoc/>
     abstract property DllName as string get
-    /// <summary>
-    /// Type name of the DbProviderFactory
-    /// </summary>
+    /// <inheritdoc/>
     abstract property TypeName as string get
-    /// <summary>
-    /// Return a list of function translations for this provider
-    /// </summary>
-    /// <returns>Dictionary with XBase functions mapped to SQL functions</returns>
     abstract method GetFunctions() as Dictionary<string, string>
     method GetFunction(cFunction as string) as string
         var funcs := GetFunctions()
@@ -166,67 +158,37 @@ abstract class SqlDbProvider inherit SqlDbObject
 
 
 #region Methods and Properties from the factory
-    property CanCreateDataSourceEnumerator as logic get Factory:CanCreateDataSourceEnumerator
 
-    /// <summary>
-    /// Surround an identifier with the correct quotes for the provider
-    /// </summary>
-    /// <param name="cId">Identifier</param>
-    /// <returns>Quoted Identifier</returns>
-    /// <example>
-    /// <code>
-    /// var cId := "MyTable"
-    /// var cQuoted := provider:QuoteIdentifier(cId)
-    /// // cQuoted will be "[MyTable]" for SQLServer
-    /// </code>
-    /// </example>
+    /// <inheritdoc/>
     method QuoteIdentifier(cId as string) as string
         return _cmdBuilder:QuoteIdentifier(cId)
     end method
-    /// <summary>
-    /// Create a provider specific DbCommand Object
-    /// </summary>
-    /// <returns>A new DbCommand object</returns>
+    /// <inheritdoc/>
     virtual method CreateCommand() as DbCommand
         return Factory:CreateCommand()
     end method
-    /// <summary>
-    /// Create a provider specific DbCommandBuilder Object
-    /// </summary>
-    /// <returns>A new DbCommandBuilder object</returns>
+        /// <inheritdoc/>
+
     virtual method CreateCommandBuilder() as DbCommandBuilder
         return Factory:CreateCommandBuilder()
     end method
 
-    /// <summary>
-    /// Create a provider specific DbConnection Object
-    /// </summary>
-    /// <returns>A new DbConnection object</returns>
+    /// <inheritdoc/>
     virtual method CreateConnection() as DbConnection
         return Factory:CreateConnection()
     end method
 
-    /// <summary>
-    /// Create a provider specific DbConnectionStringBuilder Object
-    /// </summary>
-    /// <returns>A new DbConnectionStringBuilder object</returns>
+    /// <inheritdoc/>
     virtual method CreateConnectionStringBuilder() as DbConnectionStringBuilder
         return Factory:CreateConnectionStringBuilder()
     end method
 
-    /// <summary>
-    /// Create a provider specific DbParameter Object
-    /// </summary>
-    /// <returns>A new DbParameter object</returns>
+    /// <inheritdoc/>
     virtual method CreateParameter() as DbParameter
         return Factory:CreateParameter()
     end method
 
-    /// <summary>
-    /// Create a provider specific DbDataSourceEnumerator Object
-    /// </summary>
-    /// <returns>A new DbDataSourceEnumerator object</returns>
-
+    /// <inheritdoc/>
     virtual method CreateDataSourceEnumerator() as DbDataSourceEnumerator
         if Factory:CanCreateDataSourceEnumerator
             return Factory:CreateDataSourceEnumerator()
@@ -237,90 +199,110 @@ abstract class SqlDbProvider inherit SqlDbObject
     #endregion
 
 #region Virtual Properties with statements etc
-    /// <summary>
-    /// Syntax for a CREATE TABLE statement.
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )" </code>
+    /// </remarks>
     virtual property CreateTableStatement   as string => "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )"
-    /// <summary>
-    /// Syntax for a CREATE INDEX statement.
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )" </code>
+    /// </remarks>
     virtual property CreateIndexStatement   as string => "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
-    /// <summary>
-    /// Syntax for a DROP TABLE statement.
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "drop table if exists "+TableNameMacro </code>
+    /// </remarks>
     virtual property DropTableStatement     as string => "drop table if exists "+TableNameMacro
-    /// <summary>
-    /// Syntax for a DROP INDEX statement.
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )" </code>
+    /// </remarks>
     virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"."+IndexNameMacro
-    /// <summary>
-    /// Syntax for the statement to delete all rows from a table (ZAP)
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "delete from "+TableNameMacro </code>
+    /// </remarks>
     virtual property DeleteAllRowsStatement as string => "delete from "+TableNameMacro
-    /// <summary>
-    /// Syntax for the statement to select a limited number of rows from the table
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "select top "+TopCountMacro+" "+ColumnsMacro+" from "+TableNameMacro </code>
+    /// </remarks>
     virtual property SelectTopStatement     as string => "select top "+TopCountMacro+" "+ColumnsMacro+" from "+TableNameMacro
-    /// <summary>
-    /// Syntax for the INSERT statement
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )" </code>
+    /// </remarks>
     virtual property InsertStatement        as string => "insert into "+TableNameMacro+" ( "+ColumnsMacro+") values ( "+ValuesMacro+" )"
-    /// <summary>
-    /// Syntax for the UPDATE statement
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "update "+TableNameMacro+" set "+ColumnsMacro+" where "+WhereMacro </code>
+    /// </remarks>
     virtual property UpdateStatement        as string => "update "+TableNameMacro+" set "+ColumnsMacro+" where "+WhereMacro
-    /// <summary>
-    /// Syntax for the DELETE statement
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> "delete from "+TableNameMacro+" where "+WhereMacro </code>
+    /// </remarks>
     virtual property DeleteStatement        as string => "delete from "+TableNameMacro+" where "+WhereMacro
-    /// <summary>
-    /// Syntax for the ORDER BY clause
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns <code> order by "+ColumnsMacro+" " </code>
+    /// </remarks>
     virtual property OrderByClause          as string => " order by "+ColumnsMacro+" "
-    /// <summary>
-    /// default value for MaxRows
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns 1000
+    /// </remarks>
     virtual property MaxRows                as int    => 1000
-    /// <summary>
-    /// Syntax for the statement to retrieve the identity value of the last inserted row
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns an empty string
+    /// </remarks>
     virtual property GetIdentity            as string => ""
-    /// <summary>
-    /// Syntax for the statement to retrieve the number of rows updated by the last statement
-    /// </summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The default implementation returns an empty string
+    /// </remarks>
     virtual property GetRowCount            as string => ""
 
 #endregion
 
-#region Constants
+    #region Constants
+    /// <summary>Literal that can be used in SQL statements to indicate a SELECT clause</summary>
     public const SelectClause    := "select " as string
+    /// <summary>Literal that can be used in SQL statements to indicate a FROM clause</summary>
     public const FromClause      := " from "  as string
+    /// <summary>Literal that can be used in SQL statements to indicate a WHERE clause</summary>
     public const WhereClause     := " where " as string
+    /// <summary>Literal that can be used in SQL statements to indicate a AND operator</summary>
     public const AndClause       := " and " as string
+    /// <summary>Literal that can be used in SQL statements to indicate a OR operator</summary>
     public const OrClause        := " or "  as string
 
+    /// <summary>Literal that can be used in SQL statements to indicate a field list</summary>
     public const FieldListMacro  := "%FL%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate an index name</summary>
     public const IndexNameMacro  := "%I%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate the top count</summary>
     public const TopCountMacro   := "%N%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate the table name</summary>
     public const TableNameMacro  := "%T%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate the unique keyword</summary>
     public const UniqueMacro     := "%U%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate a fielddefinition list</summary>
     public const FieldDefinitionListMacro := "%FDL%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate a list of columns</summary>
     public const ColumnsMacro    := "%C%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate a list of values</summary>
     public const ValuesMacro     := "%V%" as string
+    /// <summary>Literal that can be used in SQL statements to indicate a WHERE clause</summary>
     public const WhereMacro      := "%W%" as string
-
+    /// <summary>Connection Delimiter (::) </summary>
     public const ConnectionDelimiter := "::" as string
 
 
 #endregion
-    /// <summary>
-    /// Create the column definition (in SQL syntax) from a RDDFieldInfo object
-    /// </summary>
-    /// <param name="oInfo">Object that contains the field definition</param>
-    /// <returns>a string in SQL syntax</returns>
-    /// <remarks>
-    /// This is used when creating a SQL table with DbCreate()
-    /// </remarks>
+    /// <inheritdoc/>
     virtual method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
         local sResult := "" as string
         var name := i"{QuoteIdentifier(oInfo.ColumnName)}"

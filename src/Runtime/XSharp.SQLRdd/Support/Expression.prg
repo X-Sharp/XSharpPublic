@@ -471,7 +471,13 @@ class SqlDbExpression inherit SqlDbObject
         return cK
 
 end class
+/// <summary>
+/// This delegate describes the signature of the TranslateFunction method
+/// </summary>
+/// <param name="cName"></param>
+/// <returns></returns>
+delegate TranslateFunctionDelegate(cName as string) as string
 end namespace // XSharp.RDD.SqlRDD
 
 
-delegate TranslateFunctionDelegate(cName as string) as string
+

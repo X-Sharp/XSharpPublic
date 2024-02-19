@@ -11,6 +11,8 @@ using System.Text
 using XSharp.RDD.Support
 using XSharp.RDD.Enums
 using XSharp.RDD.SqlRDD.Providers
+using static XSharp.SQLRDD.Functions
+
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
@@ -154,9 +156,9 @@ class SqlDbOrder inherit SqlDbObject
             else
                 cWhereClause := self:SQLKey
             endif
-            cWhereClause += cComp + XsValueToSqlValue(strValue)
+            cWhereClause += cComp + XSharp.SQLRDD.Functions.XsValueToSqlValue(strValue)
         else
-            cWhereClause := self:SQLKey+cComp+XsValueToSqlValue(seekInfo:Value)
+            cWhereClause := self:SQLKey+cComp+XSharp.SQLRDD.Functions.XsValueToSqlValue(seekInfo:Value)
         endif
         return cWhereClause
     end method

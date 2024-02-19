@@ -13,6 +13,7 @@ using System.Diagnostics
 using System.Reflection
 using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
+using static XSharp.SQLRDD.Functions
 
 begin namespace XSharp.RDD.SqlRDD
 
@@ -40,6 +41,9 @@ partial class SQLRDD inherit DBFVFP
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRows    as List<DataRow>
     private _orderBagList   as List<SqlDbOrderBag>
+    private _recnoColumn    as long
+    private _recordKeyCache as Dictionary<long, long>
+    private _relativeRecNo as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -84,6 +88,18 @@ partial class SQLRDD inherit DBFVFP
                 endif
                 dbColumn:Flags := DBFFieldFlags.None
             next
+            if self:_recnoColumn > 0
+                _recordKeyCache := Dictionary<long, long>{_RecCount}
+                // save the record numbers
+                var rowNum := 0
+                foreach row as DataRow in _table:Rows
+                    var recno  := (LONG) row[self:_recnoColumn-1]
+                    _recordKeyCache[recno] := rowNum
+                    rowNum++
+                next
+            else
+                _recordKeyCache := null
+            endif
             self:Header:RecCount := _RecCount
             // set file length
             local lOffset   := self:_HeaderLength + self:_RecCount * self:_RecordLength as int64
@@ -107,6 +123,7 @@ partial class SQLRDD inherit DBFVFP
         _connection      := null
         _obuilder        := null
         _deletedColumn   := -1
+        _recnoColumn     := -1
         self:_trimValues := true // trim String Valuess
         self:DeleteOnClose := TRUE
         _updatedRows     := List<DataRow>{}
@@ -175,7 +192,7 @@ partial class SQLRDD inherit DBFVFP
         local strConnection as string
         local pos as int
         strConnection := SqlDbConnection.DefaultConnection
-        _connection := SqlDbGetConnection(strConnection)
+        _connection := XSharp.SQLRDD.Functions.SqlDbGetConnection(strConnection)
         if _connection == null
             return false
         endif
@@ -184,7 +201,7 @@ partial class SQLRDD inherit DBFVFP
         pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
         if pos > 0
             strConnection := query:Substring(0, pos)
-            var oNewConn := SqlDbGetConnection(strConnection)
+            var oNewConn := XSharp.SQLRDD.Functions.SqlDbGetConnection(strConnection)
             if oNewConn == null
                 return false
             endif
@@ -335,6 +352,19 @@ partial class SQLRDD inherit DBFVFP
         foreach c as DataColumn in DataTable:Columns
             if c:AutoIncrement
                 loop
+            endif
+            
+            if !self:_oTd:UpdateAllColumns
+                // only update columns that are changed
+                local isEqual := true as Logic
+                if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
+                    isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
+                else
+                    isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
+                endif
+                if isEqual
+                    loop
+                endif
             endif
             var name    := i"@p{iCounter}"
             if sbColumns:Length > 0

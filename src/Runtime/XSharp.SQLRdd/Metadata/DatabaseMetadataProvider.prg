@@ -40,6 +40,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0})
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0})
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0})
+        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.UpdateAllColumns),"L", 1,0})
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0})
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0})
         cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0})
@@ -205,6 +206,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                     DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn))
                     TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces))
                     CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo))
+                    UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns))
                 endif
                 rdr:Close()
             endif
@@ -283,6 +285,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                 oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns))
                 oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns))
                 oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter))
+                oTable:UpdateAllColumns    := SELF:_GetLogic(rdr, nameof(SqlRDDEventReason.UpdateAllColumns))
                 var cIndexes               := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Indexes))
                 rdr:Close()
                 if (!String.IsNullOrEmpty(cIndexes))

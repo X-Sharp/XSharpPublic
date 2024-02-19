@@ -241,3 +241,5 @@ XSharp/src/Setup/Preprocessed.iss
 /.cr
 ~tmpchm/
 .antlr/
+/src/Runtime/XSharp.SQLRdd/Help/Documentation.chw
+/src/Runtime/XSharp.SQLRdd/Help/SqlRDDClasses.chw

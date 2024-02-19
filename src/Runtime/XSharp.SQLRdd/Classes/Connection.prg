@@ -13,9 +13,9 @@ using System.Text
 using System.Data
 using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
-public delegate XSharp.SqlRDDEventHandler(oSender as object, e as XSharp.RDD.SqlRDD.SqlRddEventArgs) as object
 
 begin namespace XSharp.RDD.SqlRDD
+public delegate SqlRDDEventHandler(oSender as object, e as XSharp.RDD.SqlRDD.SqlRddEventArgs) as object
 
 
 /// <summary>
@@ -332,6 +332,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     method ExecuteScalar(cCommand as string) as OBJECT
         local result := null as object
         try
+            cCommand := RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteScalar", cCommand)
             _command:CommandText := cCommand
             result := _command:ExecuteScalar()
         catch e as Exception
@@ -349,6 +350,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     method ExecuteNonQuery(cCommand as string) as LOGIC
         local result := true as logic
         try
+            cCommand := RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteNonQuery", cCommand)
             _command:CommandText := cCommand
             result := _command:ExecuteNonQuery()
         catch e as Exception
@@ -366,6 +368,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     method ExecuteReader(cCommand as string) as DbDataReader
        local result := null as DbDataReader
         try
+            cCommand := RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteReader", cCommand)
             _command:CommandText := cCommand
             result := _command:ExecuteReader()
         catch e as Exception

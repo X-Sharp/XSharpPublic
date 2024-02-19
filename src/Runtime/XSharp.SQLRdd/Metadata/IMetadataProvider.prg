@@ -42,12 +42,26 @@ INTERFACE IMetadataProvider
     /// </summary>
     PROPERTY TrimTrailingSpaces as LOGIC GET
     /// <summary>
+    /// Should trailing spaces for string columns be trimmed?
+    /// </summary>
+    PROPERTY UpdateAllColumns as LOGIC GET
+    /// <summary>
     /// Get the metadata for a table
     /// </summary>
     /// <param name="cTableName">Name of the table to lookup the data for</param>
     /// <returns>Filled SqlTableInfo object</returns>
     /// <seealso cref="T:SqlTableInfo"/>
     METHOD GetTableInfo(cTableName as STRING) AS SqlTableInfo
+
+    /// <summary>
+    /// Get the metadata for an Index
+    /// </summary>
+    /// <param name="oTable">Table object to lookup the data for</param>
+    /// <param name="cIndex">Name of the index to lookup the data for</param>
+    /// <returns>Filled SqlIndexInfo object</returns>
+    /// <seealso cref="T:SqlIndexInfo"/>
+    /// <remarks This method should NOT append the indexc to the TableInfo class </remarks>
+    METHOD GetIndexInfo(oTable AS SqlTableInfo, cIndex AS STRING) AS SqlIndexInfo
 
 END INTERFACE
 END NAMESPACE // XSharp.SQLRdd.Metadata

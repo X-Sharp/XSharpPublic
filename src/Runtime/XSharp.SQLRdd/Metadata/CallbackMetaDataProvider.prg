@@ -30,6 +30,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
             DeletedColumn       := SELF:GetString(DefaultSection, SqlRDDEventReason.DeletedColumn, "")
             TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, TRUE)
             CompareMemo         := SELF:GetLogic(DefaultSection, SqlRDDEventReason.CompareMemo, TRUE)
+            UpdateAllColumns    := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, TRUE)
             hasDefaults := true
         endif
         RETURN
@@ -48,6 +49,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable, SqlRDDEventReason.TrimTrailingSpaces, SELF:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(cTable, SqlRDDEventReason.CompareMemo,     SELF:CompareMemo)
         oTable:ServerFilter      := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter, "")
+        oTable:UpdateAllColumns  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, SELF:UpdateAllColumns)
 
         // these fields have no defaults
         oTable:ColumnList           := SELF:GetString(cTable, SqlRDDEventReason.ColumnList, "*")

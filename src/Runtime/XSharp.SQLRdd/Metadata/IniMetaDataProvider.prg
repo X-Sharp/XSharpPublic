@@ -31,11 +31,13 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
         if ! hasDefaults
             hasDefaults := true
             LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), TRUE)
+            UpdateAllColumns    := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.UpdateAllColumns), FALSE)
             AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.AllowUpdates), TRUE)
             MaxRecords          := SELF:GetInt(DefaultSection,    nameof(SqlRDDEventReason.MaxRecords), 1000)
             RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), "")
             DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), "")
             TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), TRUE)
+            UpdateAllColumns    := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.UpdateAllColumns), TRUE)
             CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), TRUE)
             ENDIF
         RETURN
@@ -50,6 +52,7 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
         oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.AllowUpdates),  SELF:AllowUpdates)
         oTable:DeletedColumn     := SELF:GetString(cTable,  nameof(SqlRDDEventReason.DeletedColumn), SELF:DeletedColumn)
         oTable:LongFieldNames    := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.LongFieldNames),SELF:LongFieldNames)
+        oTable:UpdateAllColumns  := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.UpdateAllColumns),SELF:UpdateAllColumns)
         oTable:MaxRecords        := SELF:GetInt(cTable,     nameof(SqlRDDEventReason.MaxRecords),    SELF:MaxRecords)
         oTable:RecnoColumn       := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RecnoColumn),   SELF:RecnoColumn)
         oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.TrimTrailingSpaces), SELF:TrimTrailingSpaces)

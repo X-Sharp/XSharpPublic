@@ -8,6 +8,10 @@ using XSharp.RDD.SqlRDD
 using XSharp.RDD.Support
 using System.Collections.Generic
 using System.Text
+using XSharp.RDD.SqlRDD
+
+partial static class XSharp.SQLRDD.Functions
+
 /// <summary>
 /// Open a connection for the X# SQL RDD
 /// </summary>
@@ -19,28 +23,28 @@ using System.Text
 /// If the connection string needs a UserName and/or Password then these need to be included in
 /// the connection string.</remarks>
 
-function SqlDbOpenConnection(ConnectionString as string) as IntPtr
+static method SqlDbOpenConnection(ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString}
     return oConn:Handle
-end function
+end method
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-function SqlDbOpenConnection(ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
+static method SqlDbOpenConnection(ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, @@CallBack}
     return oConn:Handle
-end function
+end method
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string) as IntPtr
+static method SqlDbOpenConnection(ConnectionName as string, ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString}
     return oConn:Handle
-end function
+end method
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
+static method SqlDbOpenConnection(ConnectionName as string, ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString, @@CallBack}
     return oConn:Handle
-end function
+end method
 
 /// <summary>
 /// Close a SQLRDD Connection.
@@ -48,39 +52,41 @@ end function
 /// <param name="ConnectionName">Name of the connection to close.</param>
 /// <param name="Handle">Handle of the connection to close.</param>
 /// <returns>TRUE when the connection was successfully closed. FALSE if the connection did not exist or was already closed</returns>
-function SqlDbCloseConnection(ConnectionName as string) as logic
+static method SqlDbCloseConnection(ConnectionName as string) as logic
     var oConn := SqlDbConnection.FindByName(ConnectionName)
     if (oConn != null)
         oConn:Close()
         return true
     endif
     return false
-end function
+end method
 
 /// <inheritdoc cref="SqlDbCloseConnection(System.String)" />
-function SqlDbCloseConnection(Handle as IntPtr) as logic
+static method SqlDbCloseConnection(Handle as IntPtr) as logic
     var oConn := SqlDbConnection.FindByHandle(Handle)
     if oConn != null
         return oConn:Close()
     endif
     return oConn != null
+end method
 
 /// <summary>
 /// Get the SqlDbConnectionObject based on a Connection Handle
 /// </summary>
 /// <param name="Handle">Handle of the opened connection</param>
 /// <returns>Connection Object, or NULL when Handle is invalid</returns>
-function SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
+static method SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
     return SqlDbConnection.FindByHandle(Handle)
+end method
 
 /// <summary>
 /// Get the SqlDbConnectionObject based on a Connection Name
 /// </summary>
 /// <param name="ConnectionName">Name of the opened connection</param>
 /// <returns>Connection Object, or NULL when Name is invalid</returns>
-function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
+static method SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
     return SqlDbConnection.FindByName(ConnectionName)
-end function
+end method
 
 
 /// <summary>
@@ -110,14 +116,14 @@ end function
 /// </para>
 /// </remarks>
 
-function SqlDbCacheConnection(ShouldCache as logic) as logic
+static method SqlDbCacheConnection(ShouldCache as logic) as logic
     var old := SqlDbConnection.DefaultCached
     SqlDbConnection.DefaultCached := ShouldCache
     return  old
-end function
+end method
 
 
-function List2String(list as IList<string>) as string
+static method List2String(list as IList<string>) as string
     var sb := StringBuilder{}
     var first := true
     foreach var item in list
@@ -129,18 +135,18 @@ function List2String(list as IList<string>) as string
         sb:Append(item)
     next
     return sb:ToString()
-end function
+end method
 
-function String2List(names as string) as IList<string>
+static method String2List(names as string) as IList<string>
     var list := names:Split(<char>{','})
     var result := List<string>{}
     foreach var element in list
         result:Add(element:Trim())
     next
     return result
-end function
+end method
 
-function XsValueToSqlValue(oValue as object)  as string
+static method XsValueToSqlValue(oValue as object)  as string
     switch oValue
     case strValue as string
         return "'"+strValue:Replace("'","''")+"'"
@@ -152,11 +158,11 @@ function XsValueToSqlValue(oValue as object)  as string
         return dFloat:Value:ToString()
     end switch
     return oValue:ToString()
-end function
+end method
 
-function DToS(dDate as IDate) as string
+static method DToS(dDate as IDate) as string
     return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
-end function
-
+end method
+end class
 
 

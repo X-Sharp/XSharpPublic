@@ -129,7 +129,7 @@ class SqlDbTableCommandBuilder
         endif
         if currentOrder != null
             sb:Append(Provider.OrderByClause)
-            var cOrderby := List2String(currentOrder:OrderList)
+            var cOrderby := XSharp.SQLRDD.Functions.List2String(currentOrder:OrderList)
             cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
             sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         endif

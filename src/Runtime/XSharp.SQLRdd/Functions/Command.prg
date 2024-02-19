@@ -8,7 +8,7 @@ using XSharp.RDD.SqlRDD
 using System.Collections.Generic
 using System.Text
 using System.Data
-
+partial static class XSharp.SQLRDD.Functions
 /// <summary>
 /// Create a new SqlDbCommand object for the given connection
 /// </summary>
@@ -17,7 +17,7 @@ using System.Data
 /// <param name="oConn">The connection object</param>
 /// <returns>The handle to a new SqlDbCommand object for the connection</returns>
 /// <seealso cref="T:SqlDbCommand"/>
-function SqlDbCreateSQLCommand(hConn as IntPtr) as IntPtr
+static method SqlDbCreateSQLCommand(hConn as IntPtr) as IntPtr
     local oConn as SqlDbConnection
     local oCmd  as SqlDbCommand
     oConn := SqlDbGetConnection(hConn)
@@ -26,10 +26,10 @@ function SqlDbCreateSQLCommand(hConn as IntPtr) as IntPtr
         return oCmd:Handle
     endif
     return IntPtr.Zero
-end function
+end method
 
 /// <inheritdoc cref="SqlDbCreateSQLStatement(System.IntPtr)" />
-function SqlDbCreateSQLCommand(name as STRING) as IntPtr
+static method SqlDbCreateSQLCommand(name as STRING) as IntPtr
     local oConn as SqlDbConnection
     local oCmd  as SqlDbCommand
     oConn := SqlDbGetConnection(name)
@@ -38,7 +38,7 @@ function SqlDbCreateSQLCommand(name as STRING) as IntPtr
         return oCmd:Handle
     endif
     return IntPtr.Zero
-end function
+end method
 
 /// <summary>
 /// Create a new SqlDbCommand object for the given connection
@@ -47,14 +47,14 @@ end function
 /// <returns>The DbCommand object</returns>
 /// <seealso cref="T:SqlDbCommand"/>
 /// <seealso cref="T:SqlDbConnection"/>
-function SqlDbCreateSQLCommand(oConn as SqlDbConnection) as SqlDbCommand
+static method SqlDbCreateSQLCommand(oConn as SqlDbConnection) as SqlDbCommand
     local oCmd  as SqlDbCommand
     if oConn != null
         oCmd := SqlDbCommand{"CMD", oConn}
         return oCmd
     endif
     return null
-end function
+end method
 
 /// <summary>
 /// Get a SqlDbCommand object from a Handle
@@ -62,20 +62,20 @@ end function
 /// <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
 /// <returns>The SqlDbCommand object or NULL when the handle is invalid</returns>
 /// <seealso cref="T:SqlDbCommand"/>
-function SqlDbGetCommand(hCmd as IntPtr) as SqlDbCommand
+static method SqlDbGetCommand(hCmd as IntPtr) as SqlDbCommand
     local oCmd  as SqlDbCommand
     oCmd := SqlDbCommand.FindByHandle(hCmd)
     return oCmd
-end function
+end method
 
-function SqlDbExecuteSQLDirect(hCmd as IntPtr, sCommandText as string) as object
+static method SqlDbExecuteSQLDirect(hCmd as IntPtr, sCommandText as string) as object
     var oCmd := SqlDbGetCommand(hCmd)
     if oCmd != null
         oCmd:CommandText := oCmd:Connection:RaiseStringEvent(oCmd,SqlRDDEventReason.CommandText,"",sCommandText)
         return oCmd:ExecuteScalar()
     endif
     return null
-end function
+end method
 
 
 
@@ -85,21 +85,21 @@ end function
 /// <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
 /// <param name="sCommandText">Query to execute</param>
 /// <returns> a Datatable or Null when an error occurred</returns>
-function SqlDbExecuteQueryDirect(hCmd as IntPtr, sCommandText as string) as DataTable
+static method SqlDbExecuteQueryDirect(hCmd as IntPtr, sCommandText as string) as DataTable
     var oCmd := SqlDbGetCommand(hCmd)
     if oCmd != null
         oCmd:CommandText := oCmd:Connection:RaiseStringEvent(oCmd,SqlRDDEventReason.CommandText,"",sCommandText)
         return oCmd:GetDataTable("Table")
     endif
     return null
-end function
+end method
 
 /// <summary>
 /// Close a SqlDbCommand object
 /// </summary>
 /// <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
 /// <returns>TRUE when the handle was correct and the command was closed.</returns>
-function SqlDbCloseCommand(hCmd as IntPtr) as logic
+static method SqlDbCloseCommand(hCmd as IntPtr) as logic
     var oCmd := SqlDbGetCommand(hCmd)
     local lOk := false as logic
     if oCmd != null
@@ -107,7 +107,7 @@ function SqlDbCloseCommand(hCmd as IntPtr) as logic
         oCmd:Close()
     endif
     return lOk
-end function
-
+end method
+end class
 
 

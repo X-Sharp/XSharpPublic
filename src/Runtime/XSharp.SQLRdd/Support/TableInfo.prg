@@ -61,6 +61,10 @@ class SqlTableInfo inherit SqlDbTableDef
     /// Should trailing spaces for string columns be trimmed?
     /// </summary>
     property TrimTrailingSpaces as logic auto
+    /// <summary>
+    /// Should all columns be updated, or only the columns that were changed
+    /// </summary>
+    property UpdateAllColumns as logic auto
 
     /// <summary>
     /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE

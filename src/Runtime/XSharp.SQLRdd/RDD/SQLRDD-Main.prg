@@ -90,7 +90,7 @@ partial class SQLRDD inherit DBFVFP
         foreach var oCol in _oTd:Columns
             var oField := oCol:ColumnInfo
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
-                nop
+                self:_recnoColumn   := oField:Ordinal+1
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
                 self:_deletedColumn := oField:Ordinal+1
             endif
@@ -189,6 +189,7 @@ partial class SQLRDD inherit DBFVFP
     /// <inheritdoc />
     override method GetValue(nFldPos as int) as object
         // nFldPos is 1 based, the RDD compiles with /az+
+        SELF:_ForceOpen()
         if nFldPos > 0 .and. nFldPos <= self:FieldCount
             nFldPos -= 1
             local result as object
@@ -224,6 +225,7 @@ partial class SQLRDD inherit DBFVFP
     /// <inheritdoc />
     override method PutValue(nFldPos as int, oValue as object) as logic
         // nFldPos is 1 based, the RDD compiles with /az+
+        SELF:_ForceOpen()
         if self:_ReadOnly
             self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:PutValue", "Table is not Updatable" )
             return false
@@ -337,7 +339,8 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        return super:GoTop()
+        SELF:_RecNo := 1
+        return TRUE
     end method
 
     /// <inheritdoc />
@@ -353,13 +356,37 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        return super:SkipRaw(move)
+        var old := SELF:_relativeRecNo
+        SELF:_relativeRecNo := TRUE
+        var result := super:SkipRaw(move)
+        SELF:_relativeRecNo := old
+        RETURN result
     end method
 
+
+    OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
+        LOCAL result AS LOGIC
+        result := Super:GoToId(oRec)
+        RETURN result
     /// <inheritdoc />
     override method GoTo(nRec as long) as logic
         if !self:_ForceOpen()
             return false
+        endif
+        if self:_recnoColumn > 0 .and. nRec > 0
+            local result as logic
+            IF ! _relativeRecNo
+                if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
+                    self:_RecNo := nRowNum + 1
+                else
+                    self:_RecNo := nRec
+                endif
+                var old := SELF:_relativeRecNo
+                SELF:_relativeRecNo := TRUE
+                result := super:GoTo(_RecNo)
+                SELF:_relativeRecNo := old
+                return result
+            ENDIF
         endif
         self:_RecNo := nRec
         return super:GoTo(nRec)
@@ -369,9 +396,20 @@ partial class SQLRDD inherit DBFVFP
     override property RecNo		as int
         get
             self:ForceRel()
-            return super:RecNo
+            if self:_recnoColumn > 0 .and. ! _relativeRecNo
+                return (int) self:GetValue(self:_recnoColumn)
+            else
+                return super:RecNo
+            endif
         end get
     end property
+    override method Skip(nSkip as long) as logic
+        var old := SELF:_relativeRecNo
+        SELF:_relativeRecNo := TRUE
+        var result := super:Skip(nSkip)
+        self:_relativeRecNo := old
+        return result
+    end method
 
     /// <inheritdoc />
     override method Seek(seekInfo as DbSeekInfo) as logic

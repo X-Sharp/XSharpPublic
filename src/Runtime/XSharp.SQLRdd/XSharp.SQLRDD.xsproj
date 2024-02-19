@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\HandleObject.prg" />
+    <Compile Include="DBMS\ISqlDbProvider.prg" />
     <None Include="Metadata\MetaData.md" />
     <None Include="SqlRddspecs.md" />
   </ItemGroup>

@@ -47,7 +47,7 @@ partial class SQLRDD inherit DBFVFP
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
-    internal property Provider       as IDbProvider get _connection:Provider
+    internal property Provider       as ISqlDbProvider get _connection:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
     internal property DataTable as DataTable

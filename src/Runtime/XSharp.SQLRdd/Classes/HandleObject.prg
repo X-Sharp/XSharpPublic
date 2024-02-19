@@ -15,7 +15,14 @@ begin namespace XSharp.RDD.SqlRDD
 /// The HandleObject class.
 /// </summary>
 class SqlDbHandleObject inherit SqlDbObject implements IDisposable
+    /// <summary>
+    /// Unique handle for the object
+    /// </summary>
     property Handle             as IntPtr auto
+    /// <summary>
+    /// Create a new instance of the HandleObject class
+    /// </summary>
+    /// <param name="cName">Name to associate with the object</param>
     constructor(cName as string)
         super(cName)
         self:Handle := SqlDbHandles.GetHandle(self)

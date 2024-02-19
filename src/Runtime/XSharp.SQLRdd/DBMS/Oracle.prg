@@ -20,7 +20,7 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// <remarks>
 /// This class depends on the DLL System.Data.OracleClient.dll
 /// </remarks>
-class DbProviderOracle inherit SqlDbProvider
+class SqlDbProviderOracle inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "System.Data.OracleClient.dll"
     /// <inheritdoc />

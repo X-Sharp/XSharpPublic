@@ -21,7 +21,7 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// This class depends on the DLL System.Data.dll
 /// </remarks>
 
-class DbProviderSqlServer inherit SqlDbProvider
+class SqlDbProviderSqlServer inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName as string => "System.Data.dll"
     /// <inheritdoc />

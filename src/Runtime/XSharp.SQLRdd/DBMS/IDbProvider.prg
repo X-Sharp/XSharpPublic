@@ -8,7 +8,10 @@ using System.Collections.Generic
 using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
-interface IDbProvider
+    /// <summary>
+    /// Interface for SQL Database Providers
+    /// </summary>
+interface ISqlDbProvider
     /// <summary>
     /// Name of the provider
     /// </summary>

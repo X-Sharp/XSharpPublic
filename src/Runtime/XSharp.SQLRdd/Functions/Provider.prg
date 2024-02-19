@@ -9,7 +9,7 @@ using XSharp.RDD.SqlRDD.Providers
 
 partial static class XSharp.RDD.SqlRDD.Functions
 /// <summary>
-/// Set the default SqlDbProvider to use for the SqlDb Connections. The default SQLDbProvider is ODBC
+/// Set the default ISqlDbProvider to use for the SqlDb Connections. The default SQLDbProvider is ODBC
 /// </summary>
 /// <param name="ProvideName">Name of the provider to use. This is case insensitive
 /// Built in providers are:
@@ -33,7 +33,7 @@ end method
 /// Retrieve the default SqlDbProvider object
 /// </summary>
 /// <returns>The SqlDbProvider object or NULL when the ProviderName has not been registered.</returns>
-static method SqlDbGetProvider() as IDbProvider
+static method SqlDbGetProvider() as ISqlDbProvider
     return SqlDbProvider.Current
 end method
 

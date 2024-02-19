@@ -16,29 +16,32 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The Provider class.
+/// The SqlDbProvider class.
 /// </summary>
-abstract class SqlDbProvider inherit SqlDbObject implements IDbProvider
+abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 
 #region Static fields and methods
     private static _ProviderClasses as ConcurrentDictionary<string, System.Type>
-    private static _ProviderObjects as ConcurrentDictionary<string, IDbProvider>
+    private static _ProviderObjects as ConcurrentDictionary<string, ISqlDbProvider>
     private static _lastException as Exception
     private static lockObj := object{} as object
 
-    static property Current as IDbProvider auto
+    /// <summary>
+    /// The defaut SqlDbprovider
+    /// </summary>
+    static property Current as ISqlDbProvider auto
 
     static constructor()
         Current := null
         _ProviderClasses := ConcurrentDictionary<string,  System.Type>{StringComparer.OrdinalIgnoreCase}
-        _ProviderObjects := ConcurrentDictionary<string, IDbProvider>{StringComparer.OrdinalIgnoreCase}
-        RegisterProvider("SQLSERVER",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderSqlServer))
-        RegisterProvider("ODBC", typeof(XSharp.RDD.SqlRDD.Providers.DbProviderODBC))
-        RegisterProvider("OLEDB",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderOleDb))
-        RegisterProvider("MYSQL",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderMySql))
-        RegisterProvider("ADS",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderAdvantage))
-        RegisterProvider("Advantage",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderAdvantage))
-        RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.DbProviderOracle ))
+        _ProviderObjects := ConcurrentDictionary<string, ISqlDbProvider>{StringComparer.OrdinalIgnoreCase}
+        RegisterProvider("SQLSERVER",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer))
+        RegisterProvider("ODBC", typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC))
+        RegisterProvider("OLEDB",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb))
+        RegisterProvider("MYSQL",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql))
+        RegisterProvider("ADS",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
+        RegisterProvider("Advantage",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
+        RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle ))
         SetDefaultProvider("ODBC")
     end constructor
 
@@ -50,13 +53,13 @@ abstract class SqlDbProvider inherit SqlDbObject implements IDbProvider
         return _ProviderClasses:TryRemove(Name, out var _)
     end method
 
-    static method SetDefaultProvider(provider as IDbProvider) as IDbProvider
+    static method SetDefaultProvider(provider as ISqlDbProvider) as ISqlDbProvider
         var old := Current
         Current := provider
         return old
     end method
 
-    static method SetDefaultProvider(name as string) as IDbProvider
+    static method SetDefaultProvider(name as string) as ISqlDbProvider
         var old := Current
         Current := GetProvider(name)
         return old
@@ -97,7 +100,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements IDbProvider
         return null
     end method
 
-        static method GetProvider(Name as string) as IDbProvider
+        static method GetProvider(Name as string) as ISqlDbProvider
         if _ProviderObjects:TryGetValue(Name, out var result)
             return result
         endif
@@ -105,8 +108,8 @@ abstract class SqlDbProvider inherit SqlDbObject implements IDbProvider
             return null
         endif
         try
-            if typeof(IDbProvider):IsAssignableFrom(type)
-                var oProv := (IDbProvider) Activator.CreateInstance(type)
+            if typeof(ISqlDbProvider):IsAssignableFrom(type)
+                var oProv := (ISqlDbProvider) Activator.CreateInstance(type)
                 if (oProv:Factory != null)
                     _ProviderObjects:TryAdd(Name, oProv)
                     return oProv
@@ -122,7 +125,12 @@ abstract class SqlDbProvider inherit SqlDbObject implements IDbProvider
 #endregion
     protected _Factory as DbProviderFactory
     protected _cmdBuilder as DbCommandBuilder
-
+    /// <summary>
+    /// The DbProviderFactory for this provider
+    /// </summary>
+    /// <remarks>
+    /// This property is lazy loaded. The first time it is accessed the factory is loaded from the DLL and type name
+    /// </remarks>
     property Factory as DbProviderFactory
         get
             if _Factory == null

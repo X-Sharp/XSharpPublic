@@ -35,8 +35,8 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     #region Properties
     /// <summary>Is the connection open</summary>
     property IsOpen             as logic get DbConnection != null .and. DbConnection:State == ConnectionState.Open
-    /// <summary>SqlDbProvider object used by the connection</summary>
-    property Provider           as IDbProvider auto
+    /// <summary>ISqlDbProvider object used by the connection</summary>
+    property Provider           as ISqlDbProvider auto
     /// <summary>Ado.Net DbConnection object used by the connection</summary>
     property DbConnection       as DbConnection auto
     /// <summary>Connection String</summary>
@@ -68,8 +68,8 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
 #endregion
 
 #region static properties and methods
-    const DefaultConnection := "DEFAULT" as string
-    static Connections      as List<SqlDbConnection>
+    internal const DefaultConnection := "DEFAULT" as string
+    internal static Connections      as List<SqlDbConnection>
     static internal property DefaultCached  as logic auto
     static constructor()
         Connections     := List<SqlDbConnection>{}
@@ -77,7 +77,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         AppDomain.CurrentDomain:ProcessExit += EventHandler{CurrentDomain_ProcessExit}
     end constructor
 
-    static method CurrentDomain_ProcessExit(sender as object, e as EventArgs) as void
+    internal static method CurrentDomain_ProcessExit(sender as object, e as EventArgs) as void
         foreach var oConn in Connections:ToArray()
             oConn:Close()
         next

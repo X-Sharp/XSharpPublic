@@ -14,7 +14,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The Handles class.
 /// </summary>
-static class SqlDbHandles
+internal static class SqlDbHandles
     private static RandomGenerator  as Random
     private static Objects          as Dictionary<IntPtr, SqlDbHandleObject>
 
@@ -24,8 +24,9 @@ static class SqlDbHandles
         Objects         := Dictionary<IntPtr, SqlDbHandleObject>{}
 
         return
-    static method GetId(maxValue as Int32) as IntPtr
-        return IntPtr{RandomGenerator:Next()} % maxValue
+
+    static method GetId(MaxValue as Int32) as IntPtr
+        return IntPtr{RandomGenerator:Next()} % MaxValue
 
     static method GetHandle(oObject as SqlDbHandleObject) as IntPtr
         local ok := true as logic
@@ -51,6 +52,7 @@ static class SqlDbHandles
             endif
         end lock
         return false
+
     static method FindById(nId as IntPtr) as SqlDbHandleObject
         if Objects:TryGetValue(nId, out var result)
             return result

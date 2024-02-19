@@ -27,7 +27,7 @@ internal class SqlDbExpression inherit SqlDbObject
     property Translated as logic auto
     property Segments	as IList<SqlDbSegment> auto
     property Widths		as IList<long> auto
-    private _provider   as IDbProvider
+    private _provider   as ISqlDbProvider
 
     property OrderListString as string => SELF:List2String(self:OrderList)
     property ColumnListString as string => SELF:List2String(self:ColumnList)

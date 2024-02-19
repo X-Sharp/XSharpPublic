@@ -43,7 +43,7 @@ class SqlDbOrder inherit SqlDbObject
     property ColumnList	as IList<string>    auto
     property OrderList	as IList<string>    auto
     property OrderListString as string auto
-    property Provider   as IDbProvider get RDD:Provider
+    property Provider   as ISqlDbProvider get RDD:Provider
     property Connection as SqlDbConnection get RDD:Connection
     property FileName   as string get self:OrderBag:FileName+"_"+self:Name
 

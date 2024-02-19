@@ -30,7 +30,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <summary>The List of Parameters.</summary>
     property Parameters     as List<SqlDbParameter> auto
     /// <summary>The DBMS Provider class.</summary>
-    property Provider       as IDbProvider get iif(Connection == null, null, Connection:Provider)
+    property Provider       as ISqlDbProvider get iif(Connection == null, null, Connection:Provider)
     /// <summary>The text of the Command object.</summary>
     property CommandText    as string get DbCommand:CommandText set DbCommand:CommandText := value
 

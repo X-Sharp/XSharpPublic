@@ -126,7 +126,7 @@ end method
 /// Convert a list of strings to a single string with comma separated values
 /// </summary>
 /// <param name="list">List to convert</param>
-/// <returns>Comma seperated list</returns>
+/// <returns>Comma separated list</returns>
 static method List2String(list as IList<string>) as string
     var sb := StringBuilder{}
     var first := true
@@ -144,7 +144,7 @@ end method
 /// <summary>
 /// Convert a a single string with comma separated values to a List of strings
 /// </summary>
-/// <param name="names">Comma seperated list</param>
+/// <param name="names">Comma separated list</param>
 /// <returns>List of strings</returns>
 static method String2List(names as string) as IList<string>
     var list := names:Split(<char>{','})

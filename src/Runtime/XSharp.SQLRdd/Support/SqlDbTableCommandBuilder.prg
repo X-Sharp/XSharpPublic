@@ -23,7 +23,7 @@ class SqlDbTableCommandBuilder
     protected _oRdd  as SQLRDD
     protected _connection as SqlDbConnection
     property Connection as SqlDbConnection  get _connection
-    property Provider   as IDbProvider   get Connection:Provider
+    property Provider   as ISqlDbProvider   get Connection:Provider
     Property MetadataProvider as IMetadataProvider get Connection:MetadataProvider
     property OrderBagList as List<SqlDbOrderBag> get _oRdd:OrderBagList
     constructor(cTable as string, oRdd as SQLRDD)

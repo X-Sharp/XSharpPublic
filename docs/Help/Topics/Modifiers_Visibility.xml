@@ -1,7 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-16T10:25:34.881+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-02-19T11:56:44.359+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Access/Visibility modifiers</title>
+  <keywords>
+    <keyword>EXPORT</keyword>
+    <keyword>HIDDEN</keyword>
+    <keyword>INTERNAL</keyword>
+    <keyword>PRIVATE</keyword>
+    <keyword>PROTECT</keyword>
+    <keyword>PROTECTED</keyword>
+    <keyword>PUBLIC</keyword>
+    <keyword>STATIC</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Access/Visibility modifiers</para>

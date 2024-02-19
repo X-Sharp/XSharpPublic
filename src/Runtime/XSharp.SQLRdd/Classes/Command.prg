@@ -136,6 +136,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <seealso cref="SqlDbConnection.LastException"/>
     method ExecuteScalar() as object
         try
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteScalar", self:CommandText)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
@@ -157,6 +158,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <seealso cref="SqlDbConnection.LastException"/>
     method ExecuteReader() as DbDataReader
         try
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteReader", self:CommandText)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
@@ -178,6 +180,8 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <seealso cref="SqlDbConnection.LastException"/>
     method ExecuteNonQuery() as LOGIC
         try
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteNonQuery", self:CommandText)
+
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif

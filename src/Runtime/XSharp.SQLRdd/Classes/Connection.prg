@@ -12,6 +12,7 @@ using System.Collections.Generic
 using System.Text
 using System.Data
 using System.Data.Common
+using XSharp.RDD.Enums
 using XSharp.RDD.SqlRDD.Providers
 
 begin namespace XSharp.RDD.SqlRDD
@@ -57,6 +58,9 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     property TrimTrailingSpaces as logic auto
     /// <summary>Should field names longer than 10 characters be returned, or should the field names be truncated?</summary>
     property UseLongNames       as logic auto
+    /// <summary>Should field types from SQL be translated to the 'old' field types (CDLMN) or should also FoxPro types (BCDFGILMNPQTVWY0) be allowed?</summary>
+    property LegacyFieldTypes  as logic auto
+
     /// <summary>Provider for the Metadata, such as columnlist, maxrecords etc.</summary>
     property MetadataProvider   as IMetadataProvider auto
     /// <summary>Last exception that occurred in the RDD</summary>
@@ -136,6 +140,8 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
                 self:UseNulls := (value:ToLower() == "true")
             case "uselongnames"
                 self:UseLongNames := (value:ToLower() == "true")
+            case "legacyfieldtypes"
+                self:LegacyFieldTypes := (value:ToLower() == "true")
             otherwise
                 builder:Add(key, value)
             end switch
@@ -155,10 +161,14 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// <param name="Callback">(Optional) CallBack</param>
     constructor(cName as string, cConnectionString as string, @@Callback := null as SqlRDDEventHandler)
         super(cName)
-        RDDs            := List<SQLRDD>{}
-        Schema          := Dictionary<string, SqlDbTableDef>{StringComparer.OrdinalIgnoreCase}
-        Provider        := SqlDbProvider.Current
-        cConnectionString := self:AnalyzeConnectionString(cConnectionString)
+        RDDs             := List<SQLRDD>{}
+        Schema           := Dictionary<string, SqlDbTableDef>{StringComparer.OrdinalIgnoreCase}
+        Provider         := SqlDbProvider.Current
+        LegacyFieldTypes   := TRUE
+        UseNulls           := TRUE
+        UseLongNames       := TRUE
+        TrimTrailingSpaces := TRUE
+        cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
 #ifdef DEBUG
@@ -427,6 +437,37 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
             var fieldNames := List<string>{}
             foreach row as DataRow in schema:Rows
                 local colInfo  := SQLHelpers.GetColumnInfoFromSchemaRow(row, fieldNames, longFieldNames) as DbColumnInfo
+                if SELF:LegacyFieldTypes
+                    // Map back to the old field types
+                    switch colInfo:FieldType
+                    case DbFieldType.Integer
+                    case DbFieldType.Currency
+                        colInfo:FieldType := DbFieldType.Number
+                        colInfo:Length := 10
+                    case DbFieldType.Double
+                    case DbFieldType.Float
+                        colInfo:FieldType := DbFieldType.Number
+                        colInfo:Length := 20
+                    case DbFieldType.DateTime
+                        colInfo:FieldType := DbFieldType.Date
+                        colInfo:Length := 8
+                    case DbFieldType.Blob
+                    case DbFieldType.General
+                    case DbFieldType.VarBinary
+                    case DbFieldType.VarChar
+                    case DbFieldType.Picture
+                        colInfo:FieldType := DbFieldType.Memo
+                        colInfo:Length := 10
+                    CASE DbFieldType.Character
+                    CASE DbFieldType.Date
+                    CASE DbFieldType.Number
+                    CASE DbFieldType.Logic
+                    CASE DbFieldType.Memo
+                        nop
+                    otherwise
+                        nop
+                    end switch
+                endif
                 oCols:Add(SqlDbColumnDef{ colInfo })
             next
             var oTd   := SqlTableInfo{TableName, SELF}

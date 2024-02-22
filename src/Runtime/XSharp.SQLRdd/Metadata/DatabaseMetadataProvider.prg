@@ -24,8 +24,6 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 /// - xs_defaults
 /// </remarks>
 CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
-
-    private cache as Dictionary<string, SqlTableInfo>
     private hasDefaults as logic
 
     /// <summary>
@@ -35,7 +33,6 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
 
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
-        cache := Dictionary<string, SqlTableInfo>{StringComparer.OrdinalIgnoreCase}
         RETURN
 
     PRIVATE METHOD TableFields() as List<RddFieldInfo>
@@ -271,7 +268,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         local oTable as SqlTableInfo
         SELF:ReadDefaults()
 
-        if cache:TryGetValue(cTable, out oTable)
+        if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
         oTable := SqlTableInfo{cTable, Connection}
@@ -290,7 +287,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                 oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns))
                 oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns))
                 oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter))
-                oTable:UpdateAllColumns    := SELF:_GetLogic(rdr, nameof(SqlRDDEventReason.UpdateAllColumns))
+                oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns))
                 var cIndexes               := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Indexes))
                 rdr:Close()
                 if (!String.IsNullOrEmpty(cIndexes))
@@ -304,7 +301,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                 endif
             endif
         endif
-        cache:Add(cTable, oTable)
+        SELF:AddToCache(cTable, oTable)
         RETURN oTable
     end method
 
@@ -332,7 +329,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
 #region constants
     INTERNAL CONST TableDictionary   := "xs_tableinfo" as string
     INTERNAL CONST IndexDictionary   := "xs_indexinfo" as string
-    INTERNAL CONST DefaultSection    := "default" as string
+    INTERNAL CONST DefaultSection    := "defaults" as string
     INTERNAL CONST TableName         := nameof(TableName) as string
     INTERNAL CONST IndexName         := nameof(IndexName) as string
     INTERNAL CONST TagName           := nameof(TagName) as string

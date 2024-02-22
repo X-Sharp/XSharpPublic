@@ -90,8 +90,8 @@ class SqlTableInfo inherit SqlDbTableDef
         DeletedColumn   := ""
         ServerFilter    := ""
         ColumnList      := "*"
-        AllowUpdates := true
-        LongFieldNames := oConn:UseLongNames
+        AllowUpdates    := true
+        LongFieldNames  := oConn:UseLongNames
         TrimTrailingSpaces := oConn:TrimTrailingSpaces
         Indexes := List<SqlIndexInfo>{}
 

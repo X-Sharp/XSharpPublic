@@ -11,14 +11,14 @@ using System.Data
 using System.Data.Common
 
 begin namespace XSharp.RDD.SqlRDD
-    /// <summary>
-    /// This enum is used to specify the mode of the RDD
-    /// </summary>
+/// <summary>
+/// This enum is used to specify the mode of the RDD
+/// </summary>
 enum TableMode
-    /// <summary>The RDD operates in Table mode and uses Metadata to control the columns and rows selected etc</summary>
-    member Table
-    /// <summary>The RDD operates in Query mode and uses returns all rows and columns from the sql stetemtn</summary>
-    member Query
+/// <summary>The RDD operates in Table mode and uses Metadata to control the columns and rows selected etc</summary>
+member Table
+/// <summary>The RDD operates in Query mode and uses returns all rows and columns from the sql stetemtn</summary>
+member Query
 end enum
 
 
@@ -26,30 +26,50 @@ end enum
 /// This enum is used to specify the reason for the RDD event
 /// </summary>
 enum SqlRDDEventReason
-    member ConnectionString
-    member CommandText
-    member RealName
-    member MaxRecords
-    member ColumnList
-    member ServerFilter
-    member OrderByClause
-    member WhereClause
-    member RecnoColumn
-    member DeletedColumn
-    member LongFieldNames
-    member UpdateAllColumns
-    member TrimTrailingSpaces
-    member IndexTags
-    member IndexInfo
-    member AllowUpdates
-    member CompareMemo
-    member UpdatableColumns
-    member KeyColumns
-    member Indexes
-    member Tags
-    member Expression
-    member Condition
-    member Unique
+/// <summary>Specifies the connection string for the database</summary>
+member ConnectionString
+/// <summary>Specifies the command text to be executed</summary>
+member CommandText
+/// <summary>Specifies the real name of the database</summary>
+member RealName
+/// <summary>Specifies the maximum number of records to be fetched</summary>
+member MaxRecords
+/// <summary>Specifies the list of columns for the table</summary>
+member ColumnList
+/// <summary>Specifies the server filter for the table</summary>
+member ServerFilter
+/// <summary>Specifies the order by clause for the table</summary>
+member OrderByClause
+/// <summary>Specifies the where clause for the table</summary>
+member WhereClause
+/// <summary>Specifies the record number column in the database</summary>
+member RecnoColumn
+/// <summary>Specifies the deleted column in the database</summary>
+member DeletedColumn
+/// <summary>Specifies if long field names should be used</summary>
+member LongFieldNames
+/// <summary>Specifies if all columns can be updated</summary>
+member UpdateAllColumns
+/// <summary>Specifies if trailing spaces should be trimmed</summary>
+member TrimTrailingSpaces
+/// <summary>Specifies if updates are allowed</summary>
+member AllowUpdates
+/// <summary>Specifies if memo fields should be used for where clauses (when no keycolumns are defined)</summary>
+member CompareMemo
+/// <summary>Specifies the updatable columns in the database</summary>
+member UpdatableColumns
+/// <summary>Specifies the key columns that should be used in where clauses</summary>
+member KeyColumns
+/// <summary>Specifies the indexes for a table</summary>
+member Indexes
+/// <summary>Specifies the tags for an index</summary>
+member Tags
+/// <summary>Specifies the expression for an index tag</summary>
+member Expression
+/// <summary>Specifies the condition for an index tag</summary>
+member Condition
+/// <summary>Specifies if the database is unique</summary>
+member Unique
 end enum
 
 

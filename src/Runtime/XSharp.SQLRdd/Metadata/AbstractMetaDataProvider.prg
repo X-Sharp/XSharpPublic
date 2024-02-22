@@ -16,10 +16,13 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
     /// The AbstractMetaDataProvider class.
     /// </summary>
 	ABSTRACT CLASS AbstractMetaDataProvider IMPLEMENTS IMetadataProvider
+    protected _cache as Dictionary<string, SqlTableInfo>
+    protected _connection AS SqlDbConnection
 
-    protect _connection AS SqlDbConnection
     CONSTRUCTOR(conn as SqlDbConnection)
         self:_connection := conn
+        self:_cache      := Dictionary<string, SqlTableInfo>{StringComparer.OrdinalIgnoreCase}
+
         RETURN
 
 #region Properties
@@ -50,5 +53,12 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
     /// <inheritdoc />
     ABSTRACT METHOD GetIndexInfo(oTable AS SqlTableInfo, cIndex AS STRING) AS SqlIndexInfo
 
+    METHOD FindInCache( cTable as STRING, oTable OUT SqlTableInfo) AS LOGIC
+        oTable := null
+        RETURN _cache:TryGetValue(cTable, out oTable)
+
+    METHOD AddToCache( cTable as STRING, oTable AS SqlTableInfo) AS VOID
+        _cache:Add(cTable, oTable)
+        RETURN
 	END CLASS
 END NAMESPACE // XSharp.SQLRdd.Metadata

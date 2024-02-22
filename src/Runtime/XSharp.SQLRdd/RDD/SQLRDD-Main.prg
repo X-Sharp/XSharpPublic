@@ -216,7 +216,11 @@ partial class SQLRDD inherit DBFVFP
                     result := strValue:PadRight(_Fields[nFldPos]:Length,' ')
                 endif
             endif
-
+            if result is DateTime var dtValue
+                if self:_Fields[nFldPos]:FieldType == DbFieldType.Date
+                    result := DbDate{dtValue:Year, dtValue:Month, dtValue:Day}
+                endif
+            endif
             if result == DBNull.Value
                 // The phantom row already is padded with trailing spaces
                 if ! self:_connection:UseNulls

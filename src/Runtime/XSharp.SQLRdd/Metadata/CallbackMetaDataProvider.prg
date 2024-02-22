@@ -27,13 +27,13 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
 
     PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
-            LongFieldNames      := SELF:GetLogic(DefaultSection, SqlRDDEventReason.LongFieldNames, TRUE)
             AllowUpdates        := SELF:GetLogic(DefaultSection, SqlRDDEventReason.AllowUpdates, TRUE)
+            CompareMemo         := SELF:GetLogic(DefaultSection, SqlRDDEventReason.CompareMemo, TRUE)
+            DeletedColumn       := SELF:GetString(DefaultSection, SqlRDDEventReason.DeletedColumn, "")
+            LongFieldNames      := SELF:GetLogic(DefaultSection, SqlRDDEventReason.LongFieldNames, _connection:UseLongNames)
             MaxRecords          := SELF:GetInt(DefaultSection, SqlRDDEventReason.MaxRecords, 1000)
             RecnoColumn         := SELF:GetString(DefaultSection, SqlRDDEventReason.RecnoColumn, "")
-            DeletedColumn       := SELF:GetString(DefaultSection, SqlRDDEventReason.DeletedColumn, "")
-            TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, TRUE)
-            CompareMemo         := SELF:GetLogic(DefaultSection, SqlRDDEventReason.CompareMemo, TRUE)
+            TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
             UpdateAllColumns    := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, TRUE)
             hasDefaults := true
         endif
@@ -44,6 +44,9 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
         ReadDefaults()
+        if SELF:FindInCache(cTable, out oTable)
+            return oTable
+        endif
         oTable := SqlTableInfo{cTable, Connection}
         oTable:RealName          := SELF:GetString(cTable, SqlRDDEventReason.RealName, cTable)
         oTable:AllowUpdates      := SELF:GetLogic(cTable, SqlRDDEventReason.AllowUpdates,  SELF:AllowUpdates)
@@ -53,10 +56,10 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
         oTable:RecnoColumn       := SELF:GetString(cTable, SqlRDDEventReason.RecnoColumn,   SELF:RecnoColumn)
         oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable, SqlRDDEventReason.TrimTrailingSpaces, SELF:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(cTable, SqlRDDEventReason.CompareMemo,     SELF:CompareMemo)
-        oTable:ServerFilter      := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter, "")
         oTable:UpdateAllColumns  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, SELF:UpdateAllColumns)
 
         // these fields have no defaults
+        oTable:ServerFilter         := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter, "")
         oTable:ColumnList           := SELF:GetString(cTable, SqlRDDEventReason.ColumnList, "*")
         oTable:UpdatableColumns     := SELF:GetString(cTable, SqlRDDEventReason.UpdatableColumns, "*")
         oTable:KeyColumns           := SELF:GetString(cTable, SqlRDDEventReason.KeyColumns, "*")
@@ -71,7 +74,7 @@ CLASS CallBackMetaDataProvider Inherit AbstractMetaDataProvider
                 endif
             next
         endif
-
+        SELF:AddToCache(cTable, oTable)
         RETURN oTable
     end method
 

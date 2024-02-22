@@ -30,14 +30,13 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
     PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
             hasDefaults := true
-            LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), TRUE)
+            LongFieldNames      := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.LongFieldNames), _connection:UseLongNames)
+            TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), _connection:TrimTrailingSpaces)
             UpdateAllColumns    := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.UpdateAllColumns), FALSE)
             AllowUpdates        := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.AllowUpdates), TRUE)
             MaxRecords          := SELF:GetInt(DefaultSection,    nameof(SqlRDDEventReason.MaxRecords), 1000)
             RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), "")
             DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), "")
-            TrimTrailingSpaces  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.TrimTrailingSpaces), TRUE)
-            UpdateAllColumns    := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.UpdateAllColumns), TRUE)
             CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), TRUE)
             ENDIF
         RETURN
@@ -47,6 +46,9 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
     OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
         local oTable as SqlTableInfo
         ReadDefaults()
+        if SELF:FindInCache(cTable, out oTable)
+            return oTable
+        endif
         oTable := SqlTableInfo{cTable, Connection}
         oTable:RealName          := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RealName),      cTable)
         oTable:AllowUpdates      := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.AllowUpdates),  SELF:AllowUpdates)
@@ -74,7 +76,7 @@ CLASS IniMetaDataProvider Inherit AbstractMetaDataProvider
                 endif
             next
         endif
-
+        SELF:AddToCache(cTable, oTable)
         RETURN oTable
     END METHOD
 

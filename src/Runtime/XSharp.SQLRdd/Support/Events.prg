@@ -19,17 +19,17 @@ class SqlRddEventArgs
     /// </summary>
     property Reason as SqlRDDEventReason auto
     /// <summary>
-    /// Table for which the event is happening (if any)
+    /// Table/Index/Tag for which the event is happening (if any)
     /// </summary>
-    property Table  as string auto
+    property Name  as string auto
     /// <summary>
     /// Default value calculated by the RDD
     /// </summary>
     property Value  as object auto
-    internal constructor( nReason as SqlRDDEventReason, cTable as string, oValue as object)
+    internal constructor( nReason as SqlRDDEventReason, cName as string, oValue as object)
         self:Reason := nReason
         self:Value  := oValue
-        self:Table  := cTable
+        self:Name   := cName
         return
     /// <summary>
     /// Return the value as a string or null when the value is not a string

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-09T23:21:51.346+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-02-23T09:39:23.566+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options By Category</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -32,7 +32,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">XBase Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="44" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="45" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -159,6 +159,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Enables support for memory variables</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modernsyntax">-modernsyntax</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Disable certain legacy compiler options</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

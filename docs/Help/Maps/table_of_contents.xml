@@ -1728,6 +1728,9 @@
         <topicref type="topic" id="434894709779629" build="ALL" modified="2019-01-24T12:20:14.327Z" icon="0" href="opt-memvar">
           <caption translate="true">-memvar</caption>
         </topicref>
+        <topicref type="topic" id="453456164454670" build="ALL" modified="2024-02-23T09:38:49.541Z" icon="0" href="opt-modernsyntax">
+          <caption translate="true">-modernsyntax</caption>
+        </topicref>
         <topicref type="topic" id="42388171085567" build="ALL" modified="2016-01-20T09:47:00.545Z" icon="0" href="opt-moduleassemblyname">
           <caption translate="true">-moduleassemblyname</caption>
         </topicref>

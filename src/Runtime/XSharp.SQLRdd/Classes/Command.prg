@@ -88,6 +88,7 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <summary>
     /// Get the schematable for the current Command
     /// </summary>
+    /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>An Ado.Net DataTable</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
@@ -109,17 +110,17 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// Get the datatable for the current Command
     /// </summary>
     /// <returns>An Ado.Net DataTable</returns>
-    /// <param name="cName">The name of the DataTable</param>
+    /// <param name="cTable">The name of the DataTable</param>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method GetDataTable(cName as string) as DataTable
+    method GetDataTable(cTable as string) as DataTable
         try
             local oDataTable as DataTable
-            using var reader := SELF:ExecuteReader()
+            using var reader := SELF:ExecuteReader(cTable)
             if reader == null
                 return null
             endif
-            oDataTable := DataTable{cName}
+            oDataTable := DataTable{cTable}
             oDataTable:Load(reader)
             return oDataTable
         catch e as Exception
@@ -131,12 +132,13 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <summary>
     /// Execute a scalar command
     /// </summary>
+    /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>Return value of the command</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method ExecuteScalar() as object
+    method ExecuteScalar(cTable := __FUNCTION__ as string) as object
         try
-            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteScalar", self:CommandText)
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
@@ -153,12 +155,13 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <summary>
     /// Execute a command and return the DataReader
     /// </summary>
+    /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>An Ado.Net DbDataReader object</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method ExecuteReader() as DbDataReader
+    method ExecuteReader(cTable := __FUNCTION__ as string) as DbDataReader
         try
-            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteReader", self:CommandText)
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
@@ -175,12 +178,13 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <summary>
     /// Execute a command that does not return data
     /// </summary>
+    /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>TRUE when executed successfully</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method ExecuteNonQuery() as LOGIC
+    method ExecuteNonQuery(cTable := __FUNCTION__ as string) as LOGIC
         try
-            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, "ExecuteNonQuery", self:CommandText)
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
 
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction

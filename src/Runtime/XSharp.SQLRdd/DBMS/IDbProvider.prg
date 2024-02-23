@@ -71,10 +71,6 @@ interface ISqlDbProvider
     /// </summary>
     property OrderByClause          as string get
     /// <summary>
-    /// default value for MaxRows
-    /// </summary>
-    property MaxRows                as int    get
-    /// <summary>
     /// Syntax for the statement to retrieve the identity value of the last inserted row
     /// </summary>
     property GetIdentity            as string get

@@ -71,7 +71,9 @@ class SqlDbProviderOracle inherit SqlDbProvider
         case DbFieldType.VarChar
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo.Length}) default ''"
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
-                sResult += " null "
+                sResult += NullClause
+            else
+                sResult += NotNullClause
             endif
         case DbFieldType.DateTime
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TIMESTAMP "

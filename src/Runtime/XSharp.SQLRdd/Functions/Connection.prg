@@ -127,7 +127,7 @@ end method
 /// </summary>
 /// <param name="list">List to convert</param>
 /// <returns>Comma separated list</returns>
-static method List2String(list as IList<string>) as string
+internal static method List2String(list as IList<string>) as string
     var sb := StringBuilder{}
     var first := true
     foreach var item in list
@@ -146,7 +146,7 @@ end method
 /// </summary>
 /// <param name="names">Comma separated list</param>
 /// <returns>List of strings</returns>
-static method String2List(names as string) as IList<string>
+internal static method String2List(names as string) as IList<string>
     var list := names:Split(<char>{','})
     var result := List<string>{}
     foreach var element in list
@@ -161,7 +161,7 @@ end method
 /// </summary>
 /// <param name="oValue">Source value</param>
 /// <returns>Result</returns>
-static method XsValueToSqlValue(oValue as object)  as string
+internal static method XsValueToSqlValue(oValue as object)  as string
     switch oValue
     case strValue as string
         return "'"+strValue:Replace("'","''")+"'"

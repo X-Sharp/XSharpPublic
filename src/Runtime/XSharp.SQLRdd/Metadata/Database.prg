@@ -120,7 +120,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         sb:Clear()
         sb:Append(prov:DropTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
-        Connection:ExecuteNonQuery(sb:ToString())
+        Connection:ExecuteNonQuery(sb:ToString(), "Metadata")
         sb:Clear()
         // build fields list
         var cols := TableFields()
@@ -140,14 +140,14 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         sb:Append(prov:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
-        Connection:ExecuteNonQuery(sb:ToString())
+        Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
         // create default values
         sb:Clear()
         sb:Append(prov:InsertStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
         sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
         sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
-        Connection:ExecuteNonQuery(sb:ToString())
+        Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
 
         var tables := Connection:GetTables()
         foreach var table in tables
@@ -159,7 +159,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
                 sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
                 sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
                 sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
-                Connection:ExecuteNonQuery(sb:ToString())
+                Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
             endif
         next
         cols := IndexFields()
@@ -178,7 +178,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         sb:Append(prov:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, IndexDictionary)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
-        Connection:ExecuteNonQuery(sb:ToString())
+        Connection:ExecuteNonQuery(sb:ToString(), "Metadata")
         RETURN
     end method
 
@@ -192,14 +192,14 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
             ELSE
                 // Check if the table dictionary has at least one record
                 var sql1 := i"SELECT COUNT(*) FROM {TableDictionary}"
-                var count := Connection:ExecuteScalar(sql1)
+                var count := Connection:ExecuteScalar(sql1, "Metadata")
                 if Convert.ToInt64(count) == 0
                     SELF:CreateDictionary()
                 endif
             ENDIF
             // Read the defaults from the database
             var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{DefaultSection}'"
-            local rdr := Connection:ExecuteReader(sql) as DbDataReader
+            local rdr := Connection:ExecuteReader(sql, "Metadata") as DbDataReader
             if rdr != null
                 if rdr:Read()
                     _connection:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames),_connection:LongFieldNames )
@@ -274,7 +274,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         endif
         oTable := SqlDbTableInfo{cTable, Connection}
         var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{cTable}'"
-        local rdr := SELF:Connection:ExecuteReader(sql) as DbDataReader
+        local rdr := SELF:Connection:ExecuteReader(sql, "Metadata") as DbDataReader
         if rdr != null
             if rdr:Read()
                 oTable:RealName            := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RealName),cTable)
@@ -312,7 +312,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         var sql := i"SELECT * FROM [{IndexDictionary}] WHERE {nameof(TableName)} = '{oTable.Name}' "+ ;
             i"and [{nameof(IndexName)}] = '{cIndexName}' Order by [Ordinal]"
 
-        local rdr := Connection:ExecuteReader(sql) as DbDataReader
+        local rdr := Connection:ExecuteReader(sql, "Metadata") as DbDataReader
         var oIndex  := SqlDbIndexInfo{oTable, cIndexName}
         if rdr != null
             while rdr:Read()

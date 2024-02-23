@@ -406,13 +406,14 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// Execute a SQL command and return the value returned by the command
     /// </summary>
     /// <param name="cCommand">SQL Statement</param>
+    /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>Result of the command or NULL when an exception occurred</returns>
 
-    method ExecuteScalar(cCommand as string) as OBJECT
+    method ExecuteScalar(cCommand as string, cTable := __FUNCTION__ as STRING) as OBJECT
         local result := null as object
         try
             _command:CommandText := cCommand
-            result := _command:ExecuteScalar()
+            result := _command:ExecuteScalar(cTable)
         catch e as Exception
             _lastException := e
             result := null
@@ -424,12 +425,13 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
    /// Execute a SQL command
    /// </summary>
    /// <param name="cCommand">SQL Statement</param>
+    /// <param name="cTable">Table name to display for Event Handler</param>
    /// <returns>TRUE when succesfull or FALSE when an exception occurred</returns>
-    method ExecuteNonQuery(cCommand as string) as LOGIC
+    method ExecuteNonQuery(cCommand as string, cTable := __FUNCTION__ as STRING) as LOGIC
         local result := true as logic
         try
              _command:CommandText := cCommand
-            result := _command:ExecuteNonQuery()
+            result := _command:ExecuteNonQuery(cTable)
         catch e as Exception
             _lastException := e
             result := false
@@ -441,12 +443,13 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// Execute a SQL command and return the DbDataReader returned by the command
     /// </summary>
     /// <param name="cCommand">SQL Statement</param>
+    /// <param name="cTable">Table name to display for Event Handler</param>
     /// <returns>DbDataReader or NULL when an exception occurred</returns>
-    method ExecuteReader(cCommand as string) as DbDataReader
+    method ExecuteReader(cCommand as string, cTable := __FUNCTION__ as STRING) as DbDataReader
        local result := null as DbDataReader
         try
              _command:CommandText := cCommand
-            result := _command:ExecuteReader()
+            result := _command:ExecuteReader(cTable)
         catch e as Exception
             _lastException := e
             result := null
@@ -458,13 +461,13 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// Execute a SQL command and read the DataTable returned by the command
     /// </summary>
     /// <param name="cCommand">SQL Statement</param>
-    /// <param name="cName">Table name for the Table</param>
+    /// <param name="cTable">Table name for the Table</param>
     /// <returns>DataTable or NULL when an exception occurred</returns>
-    method GetDataTable(cCommand as string, cName as STRING) as DataTable
+    method GetDataTable(cCommand as string, cTable as STRING) as DataTable
        local result := null as DataTable
         try
             _command:CommandText := cCommand
-            result := _command:GetDataTable(cName)
+            result := _command:GetDataTable(cTable)
         catch e as Exception
             _lastException := e
             result := null

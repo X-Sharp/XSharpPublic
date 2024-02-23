@@ -75,25 +75,21 @@ internal class SqlDbTableCommandBuilder
 
 
     method DropIndex(oTag as SqlDbOrder) as logic
-        var Name    := oTag:Name
-        var Columns := oTag:ColumnList
         var sb      := StringBuilder{Provider:DropIndexStatement}
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
-        sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(Name))
+        sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(oTag:Name))
         var stmt := sb:ToString()
-        var result := _connection:ExecuteNonQuery(stmt)
+        var result := _connection:ExecuteNonQuery(stmt, _cTable)
         return result
     method CreateIndex(oTag as SqlDbOrder) as logic
         SELF:DropIndex(oTag)
-        var Name    := oTag:Name
-        var Columns := oTag:ColumnList
         var sb      := StringBuilder{Provider:CreateIndexStatement}
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
-        sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(Name))
+        sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(oTag:Name))
         sb:Replace(SqlDbProvider.UniqueMacro, iif(oTag:Unique, " unique", ""))
-        sb:Replace(SqlDbProvider.FieldListMacro, Functions.List2String(Columns))
+        sb:Replace(SqlDbProvider.FieldListMacro, Functions.List2String(oTag:ColumnList))
         var stmt := sb:ToString()
-        var result := _connection:ExecuteNonQuery(stmt)
+        var result := _connection:ExecuteNonQuery(stmt, _cTable)
         return result
 
 

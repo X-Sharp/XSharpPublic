@@ -72,9 +72,9 @@ class SqlDbProviderMySql inherit SqlDbProvider
         case DbFieldType.VarChar
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
-                sResult += " null "
+                sResult += NullClause
             else
-                sResult += " not null "
+                sResult += NotNullClause
             endif
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "

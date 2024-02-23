@@ -8,6 +8,9 @@ using XSharp.RDD.SqlRDD
 using System.Collections.Generic
 using System.Text
 using System.Data
+/// <summary>
+/// The functions class exposes the functions in the X# SQL RDD
+/// </summary>
 partial static class XSharp.RDD.SqlRDD.Functions
 /// <summary>
 /// Create a new SqlDbCommand object for the given connection

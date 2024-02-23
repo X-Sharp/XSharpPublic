@@ -20,4 +20,11 @@ USING XSharp.Internal
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )]
 [assembly: ClassLibrary("XSharp.RDD.SqlRDD.Functions","XSharp")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows := TRUE)]
+[ASSEMBLY: AssemblyProduct(XSharp.Constants.Product)]
+[ASSEMBLY: AssemblyCompany(XSharp.Constants.Company)]
+[ASSEMBLY: AssemblyCopyright(XSharp.Constants.Copyright)]
+[ASSEMBLY: AssemblyCulture("")]
 
+[ASSEMBLY: AssemblyVersion("1.0.0.0")]
+[ASSEMBLY: AssemblyFileVersion("1.0.0.0")]
+[ASSEMBLY: AssemblyInformationalVersion("1.0.0.0 - beta 1")]

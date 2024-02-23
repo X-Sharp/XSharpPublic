@@ -265,9 +265,9 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     virtual property DropTableStatement     as string => "drop table if exists "+TableNameMacro
     /// <inheritdoc/>
     /// <remarks>
-    /// The default implementation returns <code> "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )" </code>
+    /// The default implementation returns <code>"drop index if exists "+IndexNameMacro+" on "+TableNameMacro</code>
     /// </remarks>
-    virtual property DropIndexStatement     as string => "drop index "+IndexNameMacro+" on "+TableNameMacro
+    virtual property DropIndexStatement     as string => "drop index if exists "+IndexNameMacro+" on "+TableNameMacro
     /// <inheritdoc/>
     /// <remarks>
     /// The default implementation returns <code> "delete from "+TableNameMacro </code>
@@ -300,11 +300,6 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     virtual property OrderByClause          as string => " order by "+ColumnsMacro+" "
     /// <inheritdoc/>
     /// <remarks>
-    /// The default implementation returns 1000
-    /// </remarks>
-    virtual property MaxRows                as int    => 1000
-    /// <inheritdoc/>
-    /// <remarks>
     /// The default implementation returns an empty string
     /// </remarks>
     virtual property GetIdentity            as string => ""
@@ -327,6 +322,10 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     public const AndClause       := " and " as string
     /// <summary>Literal that can be used in SQL statements to indicate a OR operator</summary>
     public const OrClause        := " or "  as string
+    /// <summary>Literal that can be used in SQL statements to indicate that a column may contain null values</summary>
+    public const NullClause      := " null "  as string
+    /// <summary>Literal that can be used in SQL statements to indicate that a column should not contain null values</summary>
+    public const NotNullClause   := " not null "  as string
 
     /// <summary>Literal that can be used in SQL statements to indicate a field list</summary>
     public const FieldListMacro  := "%FL%" as string

@@ -420,7 +420,7 @@ partial class SQLRDD inherit DBFVFP
         return true
     end method
 
-    method _ForceOpen() as logic
+    protected method _ForceOpen() as logic
         if self:_tableMode != TableMode.Table
             return true
         endif
@@ -432,7 +432,6 @@ partial class SQLRDD inherit DBFVFP
         endif
         return self:_OpenTable("")
     end method
-
 
     private method _OpenTable(sWhereClause as string) as logic
         try

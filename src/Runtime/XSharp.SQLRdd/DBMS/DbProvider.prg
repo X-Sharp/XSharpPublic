@@ -40,8 +40,9 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         RegisterProvider("OLEDB",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb))
         RegisterProvider("MYSQL",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql))
         RegisterProvider("ADS",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
-        RegisterProvider("Advantage",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
-        RegisterProvider("Oracle",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle ))
+        RegisterProvider("ADVANTAGE",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
+        RegisterProvider("ORACLE",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle ))
+        RegisterProvider("POSTGRESQL",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql ))
         SetDefaultProvider("ODBC")
     end constructor
 

@@ -4,6 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
+// This is a contribution from Andreas Trogmann - Riedmann GmbH - srl.
+
 
 using System
 using System.Collections.Generic
@@ -21,21 +23,20 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// This class depends on the DLL MySql.Data.dll
 /// </remarks>
 
-class SqlDbProviderMySql inherit SqlDbProvider
+class SqlDbProviderPostgresSql inherit SqlDbProvider
     /// <inheritdoc />
-    override property DllName as string => "MySql.Data.dll"
+    override property DllName                as string => "Npgsql.dll"
     /// <inheritdoc />
-    override property TypeName as string => "MySql.Data.MySqlClient.MySqlClientFactory"
-
+    override property TypeName               as string => "Npgsql.NpgsqlFactory"
     /// <inheritdoc />
     override property GetIdentity            as string => "select LAST_INSERT_ID()"
     /// <inheritdoc />
     override property GetRowCount            as string => "select FOUND_ROWS( )"
     /// <inheritdoc />
-    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
+    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
     private static lockObj := object{} as object
     constructor()
-        super("MySql")
+        super("PostgreSql")
         return
     end constructor
 
@@ -45,21 +46,23 @@ class SqlDbProviderMySql inherit SqlDbProvider
             begin lock lockObj
                 if aFuncs == null
                     aFuncs := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase} {;
+                        {"STR(%1%,%2%)"				,"LPAD(%1%::text,%2%)"},;
                         {"LEFT(%1%,%2%)"			,"LEFT(%1%,%2%)"},;
                         {"LOWER(%1%)"			    ,"LOWER(%1%)"},;
                         {"UPPER(%1%)"			    ,"UPPER(%1%)"},;
-                        {"DTOS(%1%)"				,"DATE_FORMAT(%1%,'%Y%m%d')"},;
-                        {"DAY(%1%)"					,"DAY(%1%)"},;
-                        {"MONTH(%1%)"				,"MONTH(%1%)"},;
-                        {"YEAR(%1%)"				,"YEAR(%1%)"},;
-                        {"TODAY()"					,"SYSDATE()"},;
-                        {"CHR(%1%)"					,"CHAR(%1%)"},;
+                        {"DTOS(%1%)"				,"TO_CHAR(CURRENT_DATE, 'YYYYMMDD')"},;
+                        {"DAY(%1%)"					,"EXTRACT('DAY' FROM %1%)"},;
+                        {"MONTH(%1%)"				,"EXTRACT('MONTH' FROM %1%)"},;
+                        {"YEAR(%1%)"				,"EXTRACT('YEAR' FROM %1%)"},;
+                        {"TODAY()"					,"CURRENT_DATE"},;
+                        {"CHR(%1%)"					,"CHR(%1%)"},;
                         {"LEN(%1%)"					,"LENGTH(%1%)"},;
                         {"REPL(%1%,%2%)"			,"REPEAT(%1%,%2%)"},;
                         {"ASC(%1%)"					,"ASCII(%1%)"},;
                         {"TRIM(%1%)"				,"RTRIM(%1%)"},;
                         {"ALLTRIM(%1%)"				,"TRIM(%1%)"},;
                         {"+"						,"||"}}
+
                 endif
             end lock
         endif
@@ -74,10 +77,12 @@ class SqlDbProviderMySql inherit SqlDbProvider
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
             endif
+        case DbFieldType.Logic
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int default 0"
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-                sResult += " AUTO_INCREMENT "
+                sResult := i"{QuoteIdentifier(oInfo.ColumnName)} serial4 "
             else
                 sResult += "default 0"
             endif
@@ -88,7 +93,6 @@ class SqlDbProviderMySql inherit SqlDbProvider
         case DbFieldType.Picture
         case DbFieldType.VarBinary
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
-
 
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo)

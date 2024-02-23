@@ -30,7 +30,7 @@ enum SqlRDDEventReason
 member ConnectionString
 /// <summary>Specifies the command text to be executed</summary>
 member CommandText
-/// <summary>Specifies the real name of the database</summary>
+/// <summary>Specifies the real name of a table</summary>
 member RealName
 /// <summary>Specifies the maximum number of records to be fetched</summary>
 member MaxRecords
@@ -42,9 +42,9 @@ member ServerFilter
 member OrderByClause
 /// <summary>Specifies the where clause for the table</summary>
 member WhereClause
-/// <summary>Specifies the record number column in the database</summary>
+/// <summary>Specifies the record number column in the table</summary>
 member RecnoColumn
-/// <summary>Specifies the deleted column in the database</summary>
+/// <summary>Specifies the deleted column in the table</summary>
 member DeletedColumn
 /// <summary>Specifies if long field names should be used</summary>
 member LongFieldNames
@@ -56,7 +56,7 @@ member TrimTrailingSpaces
 member AllowUpdates
 /// <summary>Specifies if memo fields should be used for where clauses (when no keycolumns are defined)</summary>
 member CompareMemo
-/// <summary>Specifies the updatable columns in the database</summary>
+/// <summary>Specifies the updatable columns in the table</summary>
 member UpdatableColumns
 /// <summary>Specifies the key columns that should be used in where clauses</summary>
 member KeyColumns
@@ -68,7 +68,7 @@ member Tags
 member Expression
 /// <summary>Specifies the condition for an index tag</summary>
 member Condition
-/// <summary>Specifies if the database is unique</summary>
+/// <summary>Specifies if the index tag is unique</summary>
 member Unique
 end enum
 

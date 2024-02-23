@@ -16,7 +16,7 @@ using XSharp.RDD.Support
 begin namespace XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The SqlDbProvider class.
+/// The SqlDbProvider class. Abstract base class for other providers.
 /// </summary>
 abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 
@@ -46,20 +46,43 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         SetDefaultProvider("ODBC")
     end constructor
 
+
+    /// <summary>
+    /// Register a provider in the table of providers
+    /// </summary>
+    /// <param name="Name">Unique name</param>
+    /// <param name="ClassName">Dotnet type of the class that implements the provider</param>
+    /// <returns>TRUE when succesfully registered</returns>
     static method RegisterProvider(Name as string, ClassName as System.Type) as logic
         return _ProviderClasses:TryAdd(Name, ClassName)
     end method
 
+
+    /// <summary>
+    /// UnRegister a provider by name
+    /// </summary>
+    /// <param name="name">Name that was previously registered</param>
+    /// <returns>TRUE when succesfully removed</returns>
     static method UnRegisterProvider(Name as string) as logic
         return _ProviderClasses:TryRemove(Name, out var _)
     end method
 
+    /// <summary>
+    /// Set the default provider
+    /// </summary>
+    /// <param name="provider">Provider object</param>
+    /// <returns>previous default provider</returns>
     static method SetDefaultProvider(provider as ISqlDbProvider) as ISqlDbProvider
         var old := Current
         Current := provider
         return old
     end method
 
+    /// <summary>
+    /// Set the default provider by name
+    /// </summary>
+    /// <param name="name">Name that was previously registered</param>
+    /// <returns>previous default provider</returns>
     static method SetDefaultProvider(name as string) as ISqlDbProvider
         var old := Current
         Current := GetProvider(name)
@@ -101,7 +124,15 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return null
     end method
 
-        static method GetProvider(Name as string) as ISqlDbProvider
+    /// <summary>
+    /// Get the provider object for a provide name
+    /// </summary>
+    /// <param name="name">Name that was previously registered</param>
+    /// <returns>The provider object or NULL when there was an error</returns>
+    /// <remarks>
+    /// When the provider object is not yet created, it will be created from the registered type name and stored in a dictionary
+    /// </remarks>
+    static method GetProvider(Name as string) as ISqlDbProvider
         if _ProviderObjects:TryGetValue(Name, out var result)
             return result
         endif
@@ -147,6 +178,14 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     abstract property DllName as string get
     /// <inheritdoc/>
     abstract property TypeName as string get
+    /// <summary>
+    /// Get a dictionary with the functions that are supported by this provider,
+    /// </summary>
+    /// <remarks>
+    /// The first string is the Xbase function name
+    /// The second string is the SQL function name
+    /// </remarks>
+    /// <returns>The dictionary</returns>
     abstract method GetFunctions() as Dictionary<string, string>
     /// <inheritdoc/>
     method GetFunction(cFunction as string) as string
@@ -218,7 +257,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// <remarks>
     /// The default implementation returns <code> "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )" </code>
     /// </remarks>
-    virtual property CreateIndexStatement   as string => "create "+UniqueMacro+" index "+TableNameMacro+"_"+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
+    virtual property CreateIndexStatement   as string => "create "+UniqueMacro+" index "+IndexNameMacro+" on "+TableNameMacro+"( "+FieldListMacro+" )"
     /// <inheritdoc/>
     /// <remarks>
     /// The default implementation returns <code> "drop table if exists "+TableNameMacro </code>
@@ -228,7 +267,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// <remarks>
     /// The default implementation returns <code> "create table "+TableNameMacro+" ( "+FieldDefinitionListMacro+" )" </code>
     /// </remarks>
-    virtual property DropIndexStatement     as string => "drop index "+TableNameMacro+"."+IndexNameMacro
+    virtual property DropIndexStatement     as string => "drop index "+IndexNameMacro+" on "+TableNameMacro
     /// <inheritdoc/>
     /// <remarks>
     /// The default implementation returns <code> "delete from "+TableNameMacro </code>
@@ -349,6 +388,8 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         if !String.IsNullOrEmpty(sResult)
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
+            else
+                sResult += " not null "
             endif
         endif
         return sResult

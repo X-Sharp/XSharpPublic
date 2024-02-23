@@ -71,13 +71,15 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
+            else
+                sResult += " not null "
             endif
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 sResult += " identity "
             else
-                sResult += "default 0"
+                sResult += " default 0"
             endif
 
         otherwise

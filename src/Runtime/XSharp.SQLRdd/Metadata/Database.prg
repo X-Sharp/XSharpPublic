@@ -15,7 +15,7 @@ using XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 
 /// <summary>
-/// The DatabaseMetadataProvider class. Reads Metadata from tables in the database.
+/// The SqlMetadataProviderDatabase class. Reads Metadata from tables in the database.
 /// </summary>
 /// <remarks>
 /// It uses the following tables (when they exist)
@@ -23,7 +23,16 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 /// - xs_indexInfo
 /// - xs_defaults
 /// </remarks>
-CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
+CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
+    internal class MetaFieldInfo
+        internal property FieldInfo as RddFieldInfo AUTO
+        internal property Value  as object AUTO
+        constructor(oField as RddFieldInfo, oValue as object)
+            FieldInfo := oField
+            Value := oValue
+        end constructor
+    end class
+
     private hasDefaults as logic
 
     /// <summary>
@@ -35,70 +44,62 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         SUPER(conn)
         RETURN
 
-    PRIVATE METHOD TableFields() as List<RddFieldInfo>
-        var cols := List<RddFieldInfo>{}
-        cols:Add(RddFieldInfo{TableName,"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.RealName),"C", 255,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.UpdateAllColumns),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Indexes),"C", 250,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.ServerFilter),"C", 255,0})
+    PRIVATE METHOD TableFields() as List<MetaFieldInfo>
+        var cols := List<MetaFieldInfo>{}
+        cols:Add(MetaFieldInfo{RddFieldInfo{TableName,"C", 50,0},""})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RealName),"C", 255,0},""})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0},_connection:LongFieldNames})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0},_connection:AllowUpdates})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdateAllColumns),"L", 1,0},_connection:UpdateAllColumns})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0},_connection:MaxRecords})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0},_connection:RecnoColumn})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ServerFilter),"C", 255,0},DEFAULT_SERVERFILTER})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Indexes),"C", 250,0},DEFAULT_INDEXES})
         RETURN cols
     END METHOD
 
-    PRIVATE METHOD IndexFields() AS List<RddFieldInfo>
-        var cols := List<RddFieldInfo>{}
-        cols:Add(RddFieldInfo{TableName         ,"C", 50,0})
-        cols:Add(RddFieldInfo{IndexName         ,"C", 50,0})
-        cols:Add(RddFieldInfo{Ordinal           ,"N", 10,0})
-        cols:Add(RddFieldInfo{TagName           ,"C", 50,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0})
-        cols:Add(RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0})
+    PRIVATE METHOD IndexFields() AS List<MetaFieldInfo>
+        var cols := List<MetaFieldInfo>{}
+        cols:Add(MetaFieldInfo{RddFieldInfo{TableName         ,"C", 50,0},""})
+        cols:Add(MetaFieldInfo{RddFieldInfo{IndexName         ,"C", 50,0},""})
+        cols:Add(MetaFieldInfo{RddFieldInfo{Ordinal           ,"N", 10,0},0})
+        cols:Add(MetaFieldInfo{RddFieldInfo{TagName           ,"C", 50,0},""})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0},DEFAULT_EXPRESSION})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0},DEFAULT_CONDITION})
+        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0},DEFAULT_UNIQUE})
         RETURN cols
     END METHOD
 
-    PRIVATE METHOD CreateDefaultColumnValues(cols as List<RddFieldInfo>, TableName as string) as string
+    PRIVATE METHOD CreateDefaultColumnValues(cols as List<MetaFieldInfo>, TableName as string) as string
         var sb  := StringBuilder{}
         var first := TRUE
         foreach var col in cols
+            var fi := col:FieldInfo
             if first
                 first := FALSE
             else
                 sb:Append(", ")
             endif
-            switch col:FieldTypeStr
-            case "C"
-                if col:Name == nameof(TableName)
-                    sb:Append(i"'{TableName}'")
-                else
-                    sb:Append("''")
-                endif
-            case "L"
-                sb:Append("1")
-            case "N"
-                if col:Name == nameof(MaxRecords)
-                    sb:Append("1000")
-                else
-                    sb:Append("0")
-                endif
-            otherwise
-                sb:Append("NULL")
-            end switch
+            if fi:Name == nameof(TableName)
+                sb:Append(i"'{TableName}'")
+            elseif col:Value is string var strValue
+                sb:Append(i"'{strValue}'")
+            elseif col:Value is logic var logValue
+                sb:Append( iif(logValue, 1, 0))
+            else
+                sb:Append(col:Value)
+            endif
         next
         return sb:ToString()
     end method
 
-    PRIVATE METHOD CreateColumnNames(cols as List<RddFieldInfo>) as string
+    PRIVATE METHOD CreateColumnNames(cols as List<MetaFieldInfo>) as string
         var sb  := StringBuilder{}
         var first := TRUE
         foreach var col in cols
@@ -107,7 +108,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             else
                 sb:Append(", ")
             endif
-            sb:Append(col:Name)
+            sb:Append(col:FieldInfo:Name)
         next
         return sb:ToString()
     end method
@@ -130,7 +131,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             else
                 sb:Append(", ")
             endif
-            sb:Append(prov:GetSqlColumnInfo(col))
+            sb:Append(prov:GetSqlColumnInfo(col:FieldInfo))
         next
         var fieldList := sb:ToString()
         var fieldValues := CreateDefaultColumnValues(cols, DefaultSection)
@@ -170,7 +171,7 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             else
                 sb:Append(", ")
             endif
-            sb:Append(prov:GetSqlColumnInfo(col))
+            sb:Append(prov:GetSqlColumnInfo(col:FieldInfo))
         next
         fieldList := sb:ToString()
         sb:Clear()
@@ -201,14 +202,14 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
             local rdr := Connection:ExecuteReader(sql) as DbDataReader
             if rdr != null
                 if rdr:Read()
-                    LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames))
-                    AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates))
-                    MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords))
-                    RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn))
-                    DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn))
-                    TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces))
-                    CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo))
-                    UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns))
+                    _connection:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames),_connection:LongFieldNames )
+                    _connection:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates),_connection:AllowUpdates)
+                    _connection:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords), _connection:MaxRecords)
+                    _connection:RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn), _connection:RecnoColumn )
+                    _connection:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn), _connection:DeletedColumn )
+                    _connection:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
+                    _connection:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
+                    _connection:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns), _connection:UpdateAllColumns)
                 endif
                 rdr:Close()
             endif
@@ -226,19 +227,19 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
         endif
     end method
 
-    private method _GetString(rdr as DbDataReader, cName as string) as string
+    private method _GetString(rdr as DbDataReader, cName as string, strDefault as string) as string
         try
             var pos := SELF:_GetPos(rdr, cName)
             if pos >= 0
                 return rdr:GetString(pos)
             endif
         catch
-            return ""
+            return strDefault
         end try
-        return ""
+        return strDefault
     end method
 
-    private method _GetNumber(rdr as DbDataReader, cName as string) as int
+    private method _GetNumber(rdr as DbDataReader, cName as string, nDefault as int) as int
         try
             var pos := SELF:_GetPos(rdr, cName)
             if pos >= 0
@@ -246,49 +247,49 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
                 return Convert.ToInt32(num)
             endif
         catch
-            return 0
+            return nDefault
         end try
-        return 0
+        return nDefault
     end method
 
-    private method _GetLogic(rdr as DbDataReader, cName as string) as logic
+    private method _GetLogic(rdr as DbDataReader, cName as string, lDefault as LOGIC) as logic
         try
             var pos := SELF:_GetPos(rdr, cName)
             if pos >= 0
                 return rdr:GetBoolean(pos)
             endif
         catch
-            return false
+            return lDefault
         end try
-        return false
+        return lDefault
     end method
 
     /// <inheritdoc />
-    OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlTableInfo
-        local oTable as SqlTableInfo
+    OVERRIDE METHOD GetTableInfo(cTable as STRING) AS SqlDbTableInfo
+        local oTable as SqlDbTableInfo
         SELF:ReadDefaults()
 
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
-        oTable := SqlTableInfo{cTable, Connection}
+        oTable := SqlDbTableInfo{cTable, Connection}
         var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{cTable}'"
         local rdr := SELF:Connection:ExecuteReader(sql) as DbDataReader
         if rdr != null
             if rdr:Read()
-                oTable:RealName            := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RealName))
-                oTable:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames))
-                oTable:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates))
-                oTable:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords))
-                oTable:RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn))
-                oTable:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn))
-                oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces))
-                oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo))
-                oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns))
-                oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns))
-                oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter))
-                oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns))
-                var cIndexes               := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Indexes))
+                oTable:RealName            := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RealName),cTable)
+                oTable:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames), _connection:LongFieldNames)
+                oTable:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates), _connection:AllowUpdates)
+                oTable:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords),_connection:MaxRecords)
+                oTable:RecnoColumn         := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RecnoColumn),_connection:RecnoColumn)
+                oTable:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn),_connection:DeletedColumn)
+                oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
+                oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
+                oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns),_connection:UpdateAllColumns)
+                oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns),DEFAULT_UPDATABLECOLUMNS)
+                oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns),DEFAULT_KEYCOLUMNS)
+                oTable:ServerFilter        := SELF:_GetString(rdr, nameof(SqlRDDEventReason.ServerFilter),DEFAULT_SERVERFILTER)
+                var cIndexes               := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Indexes),DEFAULT_INDEXES)
                 rdr:Close()
                 if (!String.IsNullOrEmpty(cIndexes))
                     var aIndexes := cIndexes:Split(c",")
@@ -306,19 +307,19 @@ CLASS DatabaseMetadataProvider INHERIT AbstractMetaDataProvider
     end method
 
     /// <inheritdoc />
-    OVERRIDE METHOD GetIndexInfo(oTable as SqlTableInfo, cIndexName as STRING) AS SqlIndexInfo
+    OVERRIDE METHOD GetIndexInfo(oTable as SqlDbTableInfo, cIndexName as STRING) AS SqlDbIndexInfo
         // Indexes are stored in a section TableName_IndexName
         var sql := i"SELECT * FROM [{IndexDictionary}] WHERE {nameof(TableName)} = '{oTable.Name}' "+ ;
             i"and [{nameof(IndexName)}] = '{cIndexName}' Order by [Ordinal]"
 
         local rdr := Connection:ExecuteReader(sql) as DbDataReader
-        var oIndex  := SqlIndexInfo{oTable, cIndexName}
+        var oIndex  := SqlDbIndexInfo{oTable, cIndexName}
         if rdr != null
             while rdr:Read()
-                var oTag           := SqlIndexTagInfo{oIndex, SELF:_GetString(rdr, nameof(TagName))}
-                oTag:Expression    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Expression))
-                oTag:Condition     := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Condition))
-                oTag:Unique        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.Unique))
+                var oTag           := SqlDbTagInfo{oIndex, SELF:_GetString(rdr, nameof(TagName),"")}
+                oTag:Expression    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Expression),DEFAULT_EXPRESSION)
+                oTag:Condition     := SELF:_GetString(rdr, nameof(SqlRDDEventReason.Condition),DEFAULT_CONDITION)
+                oTag:Unique        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.Unique), DEFAULT_UNIQUE)
                 oIndex:Tags:Add(oTag)
             enddo
             rdr:Close()

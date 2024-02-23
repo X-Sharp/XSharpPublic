@@ -19,6 +19,7 @@
     <StandardDefs />
     <StartupObject />
     <Unsafe>True</Unsafe>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />
@@ -50,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Classes\HandleObject.prg" />
     <Compile Include="DBMS\IDbProvider.prg" />
+    <None Include="Metadata.xh" />
     <None Include="Metadata\MetaData.md" />
     <None Include="SqlRddspecs.md" />
   </ItemGroup>
@@ -65,13 +67,14 @@
     <Compile Include="Classes\Connection.prg" />
     <Compile Include="Classes\EventObject.prg" />
     <Compile Include="Classes\Parameter.prg" />
+    <Compile Include="DBMS\PostgreSql.prg" />
     <Compile Include="Functions\Command.prg" />
     <Compile Include="Functions\Connection.prg" />
     <Compile Include="Functions\Provider.prg" />
-    <Compile Include="Metadata\AbstractMetaDataProvider.prg" />
-    <Compile Include="Metadata\CallbackMetaDataProvider.prg" />
-    <Compile Include="Metadata\DatabaseMetadataProvider.prg" />
-    <Compile Include="Metadata\IniMetaDataProvider.prg" />
+    <Compile Include="Metadata\Abstract.prg" />
+    <Compile Include="Metadata\CallBack.prg" />
+    <Compile Include="Metadata\Database.prg" />
+    <Compile Include="Metadata\IniFile.prg" />
     <Compile Include="Metadata\IMetadataProvider.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="DBMS\Advantage.prg" />
@@ -95,7 +98,6 @@
     <Compile Include="Support\IniFile.prg" />
     <Compile Include="Support\Segment.prg" />
     <Compile Include="Support\SqlDbTableCommandBuilder.prg" />
-    <Compile Include="Support\TableDef.prg" />
     <Compile Include="Support\TableInfo.prg" />
     <Compile Include="Support\Token.prg" />
     <Compile Include="Support\TokenType.prg" />

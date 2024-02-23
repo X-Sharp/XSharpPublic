@@ -76,6 +76,8 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
+            else
+                sResult += " not null "
             endif
         case DbFieldType.Logic
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int default 0"
@@ -84,7 +86,7 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 sResult := i"{QuoteIdentifier(oInfo.ColumnName)} serial4 "
             else
-                sResult += "default 0"
+                sResult += " default 0"
             endif
         case DbFieldType.Memo
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TEXT "

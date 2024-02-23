@@ -68,7 +68,7 @@ partial class SQLRDD inherit DBFVFP
         var selectStmt := XSharp.SQLHelpers.ReturnsRows(cQuery)
         if (selectStmt)
             self:_tableMode     := TableMode.Query
-            var longFieldNames  := _connection:MetadataProvider:LongFieldNames
+            var longFieldNames  := _connection:LongFieldNames
             self:_oTd           := _connection:GetStructureForQuery(cQuery,"QUERY",longFieldNames)
             _command:CommandText := cQuery
         else
@@ -218,13 +218,20 @@ partial class SQLRDD inherit DBFVFP
             endif
             if result is DateTime var dtValue
                 if self:_Fields[nFldPos]:FieldType == DbFieldType.Date
-                    result := DbDate{dtValue:Year, dtValue:Month, dtValue:Day}
+                    if dtValue == DateTime.MinValue
+                        result := DbDate{0,0,0}
+                    else
+                        result := DbDate{dtValue:Year, dtValue:Month, dtValue:Day}
+                    endif
                 endif
             endif
             if result == DBNull.Value
                 // The phantom row already is padded with trailing spaces
                 if ! self:_connection:UseNulls
                     result := _phantomRow[nFldPos]
+                endif
+                if result is DateTime .and. self:_Fields[nFldPos]:FieldType == DbFieldType.Date
+                    result := DbDate{0,0,0}
                 endif
             elseif _creatingIndex .and. result is string var strResult
                 result := strResult:PadRight(_Fields[nFldPos]:Length,' ')
@@ -378,8 +385,12 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        SELF:_RecNo := 1
-        return TRUE
+        IF SELF:_tableMode == TableMode.Table
+            self:_RecNo := 1
+            return TRUE
+        else
+            return super:GoTop()
+        endif
     end method
 
 	/// <summary>Position the cursor to the last logical row.</summary>

@@ -16,7 +16,12 @@ using XSharp.RDD.Enums
 using XSharp.RDD.SqlRDD.Providers
 
 begin namespace XSharp.RDD.SqlRDD
-public delegate SqlRDDEventHandler(oSender as object, e as XSharp.RDD.SqlRDD.SqlRddEventArgs) as object
+    /// <summary>
+    /// Delegate that describes the event handler for the RDD events
+    /// </summary>
+    /// <param name="oSender">Object that raised the event</param>
+    /// <param name="e">Event arguments</param>
+public delegate SqlRDDEventHandler(oSender as object, e as SqlRddEventArgs) as object
 
 
 /// <summary>
@@ -43,7 +48,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// <summary>Connection String</summary>
     property ConnectionString   as string auto
     /// <summary>Cache for the Table Schemas</summary>
-    property Schema             as Dictionary<string, SqlDbTableDef> auto
+    property Schema             as Dictionary<string, SqlDbTableInfo> auto
     /// <summary>Open RDDs for the connection</summary>
     property RDDs               as IList<SQLRDD> auto
     /// <summary>Should the connection stay open</summary>
@@ -52,24 +57,71 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     property TimeOut            as long auto
     /// <summary>Ado.Net DbTransaction object when a transaction is running</summary>
     property DbTransaction      as DbTransaction auto
-    /// <summary>Should the phantom record have Null values or empty values?</summary>
-    property UseNulls           as logic auto
-    /// <summary>Should trailing spaces be included when reading string values?</summary>
-    property TrimTrailingSpaces as logic auto
-    /// <summary>Should field names longer than 10 characters be returned, or should the field names be truncated?</summary>
-    property UseLongNames       as logic auto
-    /// <summary>Should field types from SQL be translated to the 'old' field types (CDLMN) or should also FoxPro types (BCDFGILMNPQTVWY0) be allowed?</summary>
-    property LegacyFieldTypes  as logic auto
 
     /// <summary>Provider for the Metadata, such as columnlist, maxrecords etc.</summary>
-    property MetadataProvider   as IMetadataProvider auto
+    property MetadataProvider   as ISqlMetadataProvider auto
     /// <summary>Last exception that occurred in the RDD</summary>
     property LastException      as Exception auto get internal set
     /// <summary>Connection State</summary>
     PROPERTY State              as ConnectionState get iif(self:DbConnection == null, ConnectionState.Closed, self:DbConnection:State)
 
 
+    /// <summary>Should field types from SQL be translated to the 'old' field types (CDLMN) or should also FoxPro types (BCDFGILMNPQTVWY0) be allowed?</summary>
+    property LegacyFieldTypes   as logic auto
+
+    /// <summary>Should the phantom record have Null values or empty values?</summary>
+    property UseNulls           as logic auto
+
 #endregion
+
+#region Metadata Defaults
+
+
+    /// <summary>
+    /// Can the table be updated ?
+    /// </summary>
+    /// <remarks>This is the default value for the AllowUpdates property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY AllowUpdates      as LOGIC auto
+    /// <summary>
+    /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
+    /// </summary>
+    /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY CompareMemo       as LOGIC auto
+    /// <summary>
+    /// Name of the Deleted column. When empty then rows will be physically deleted from the server
+    /// </summary>
+    /// <remarks>This is the default value for the DeletedColumn property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY DeletedColumn      as STRING auto
+    /// <summary>
+    /// Can field names longer than 10 characters be used (true) or should they be truncated (false)
+    /// </summary>
+    /// <remarks>This is the default value for the LongFieldNames property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY LongFieldNames     as LOGIC auto
+    /// <summary>
+    /// What is the maximum number of records that the RDD should fetch when unfiltered.
+    /// </summary>
+    /// <remarks>This is the default value for the MaxRecords property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY MaxRecords         as INT auto
+    /// <summary>
+    /// Name of the Recno column. When empty then the relative row number is the record number
+    /// </summary>
+    /// <remarks>This is the default value for the RecnoColumn property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY RecnoColumn        as STRING auto
+    /// <summary>
+    /// Should trailing spaces for string columns be trimmed?
+    /// </summary>
+    /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY TrimTrailingSpaces as LOGIC auto
+    /// <summary>
+    /// Should all columns be updated when a record is updated?
+    /// </summary>
+    /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
+    PROPERTY UpdateAllColumns as LOGIC auto
+
+#endregion
+
+
+
 
 #region static properties and methods
     internal const DefaultConnection := "DEFAULT" as string
@@ -134,14 +186,28 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         foreach key as string in options:Keys
             var value := options[key]:ToString()
             switch key:ToLower()
-            case "trimtrailingspaces"
+            case "allowupdates"
+                self:AllowUpdates := (value:ToLower() == "true")
+            case "comparememo"
+                self:CompareMemo := (value:ToLower() == "true")
+            case "deletedcolumn"
+                self:DeletedColumn := value
+            case "legacyfieldtypes"
+                self:LegacyFieldTypes := (value:ToLower() == "true")
+            case "longfieldnames"
+                self:LongFieldNames := (value:ToLower() == "true")
+            case "maxrecords"
+                if Int32.TryParse(value, out var max)
+                    self:MaxRecords := max
+                endif
+            case "recnocolumn"
+                self:RecnoColumn := value
+            case "updateallcolumns"
+                self:UpdateAllColumns := (value:ToLower() == "true")
+           case "trimtrailingspaces"
                 self:TrimTrailingSpaces := (value:ToLower() == "true")
             case "usenulls"
                 self:UseNulls := (value:ToLower() == "true")
-            case "uselongnames"
-                self:UseLongNames := (value:ToLower() == "true")
-            case "legacyfieldtypes"
-                self:LegacyFieldTypes := (value:ToLower() == "true")
             otherwise
                 builder:Add(key, value)
             end switch
@@ -162,12 +228,15 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     constructor(cName as string, cConnectionString as string, @@Callback := null as SqlRDDEventHandler)
         super(cName)
         RDDs             := List<SQLRDD>{}
-        Schema           := Dictionary<string, SqlDbTableDef>{StringComparer.OrdinalIgnoreCase}
+        Schema           := Dictionary<string, SqlDbTableInfo>{StringComparer.OrdinalIgnoreCase}
         Provider         := SqlDbProvider.Current
-        LegacyFieldTypes   := TRUE
-        UseNulls           := TRUE
-        UseLongNames       := TRUE
-        TrimTrailingSpaces := TRUE
+        LegacyFieldTypes   := DEFAULT_LEGACYFIELDTYPES
+        UseNulls           := DEFAULT_USENULLS
+        LongFieldNames     := DEFAULT_LONGFIELDNAMES
+        TrimTrailingSpaces := DEFAULT_TRIMTRAILINGSPACES
+        MaxRecords         := DEFAULT_MAXRECORDS
+        DeletedColumn      := DEFAULT_DELETEDCOLUMN
+        RecnoColumn        := DEFAULT_RECNOCOLUMN
         cConnectionString  := self:AnalyzeConnectionString(cConnectionString)
         self:ConnectionString := cConnectionString
         DbConnection    := Provider:CreateConnection()
@@ -178,9 +247,9 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         KeepOpen        := DefaultCached
         if @@Callback != null
             self:CallBack += @@Callback
-            SELF:MetadataProvider := CallBackMetaDataProvider{SELF}
+            SELF:MetadataProvider := SqlMetadataProviderCallBack{SELF}
         ELSE
-            SELF:MetadataProvider := IniMetaDataProvider{SELF}
+            SELF:MetadataProvider := SqlMetadataProviderIni{SELF}
         endif
         Connections.Add(self)
         _commands := List<SqlDbCommand>{}
@@ -427,10 +496,10 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// <param name="TableName">Name of the table that will be used</param>
     /// <param name="longFieldNames">Should long field names be returned</param>
     /// <returns>Object with Table Information or NULL when an error occurs</returns>
-    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlTableInfo
+    method GetStructureForQuery(cQuery as string, TableName as string, longFieldNames as LOGIC) as SqlDbTableInfo
          try
             cQuery := RaiseStringEvent(self, SqlRDDEventReason.CommandText, TableName, cQuery)
-            longFieldNames := SELF:MetadataProvider:LongFieldNames
+            longFieldNames := SELF:LongFieldNames
             _command:CommandText := cQuery
             var schema := _command:GetSchemaTable()
             var oCols := List<SqlDbColumnDef>{}
@@ -470,7 +539,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
                 endif
                 oCols:Add(SqlDbColumnDef{ colInfo })
             next
-            var oTd   := SqlTableInfo{TableName, SELF}
+            var oTd   := SqlDbTableInfo{TableName, SELF}
             foreach var oCol in oCols
                 oTd:Columns:Add(oCol)
             next
@@ -488,7 +557,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// <param name="oTable">Table Info (from the metadata provider)</param>
     /// <param name="cColumnNames">List of column names that we're interested in.</param>
     /// <returns>Object with Table Information or NULL when an error occurs</returns>
-    method GetStructureForTable(TableName as string, oTable as SqlTableInfo, cColumnNames as string) as SqlDbTableDef
+    method GetStructureForTable(TableName as string, oTable as SqlDbTableInfo, cColumnNames as string) as SqlDbTableInfo
         if self:Schema:TryGetValue(TableName, out var result)
             return result
         endif
@@ -577,6 +646,17 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
         super:Dispose()
     end method
 
-#endregion
+    #endregion
+INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_COMPAREMEMO := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_DELETEDCOLUMN := "" AS STRING
+    INTERNAL CONST DEFAULT_LEGACYFIELDTYPES := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_LONGFIELDNAMES := FALSE AS LOGIC
+    INTERNAL CONST DEFAULT_MAXRECORDS := 1000 AS INT
+    INTERNAL CONST DEFAULT_RECNOCOLUMN := "" AS STRING
+    INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
+    INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
+    INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
+
 end class
 end namespace

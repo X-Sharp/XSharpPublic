@@ -73,6 +73,8 @@ class SqlDbProviderMySql inherit SqlDbProvider
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
+            else
+                sResult += " not null "
             endif
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
@@ -88,8 +90,6 @@ class SqlDbProviderMySql inherit SqlDbProvider
         case DbFieldType.Picture
         case DbFieldType.VarBinary
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
-
-
         otherwise
             sResult := super:GetSqlColumnInfo(oInfo)
         end switch

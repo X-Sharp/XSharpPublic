@@ -19,7 +19,7 @@ begin namespace XSharp.RDD.SqlRDD
 
 
 partial class SQLRDD inherit DBFVFP
-    protect _currentOrder   as SqlDbOrder
+    internal _currentOrder   as SqlDbOrder
 
     internal property CurrentOrder   as SqlDbOrder get _currentOrder set _currentOrder := value
 
@@ -101,6 +101,9 @@ partial class SQLRDD inherit DBFVFP
                     oTag:Condition := orderInfo:OrdCondInfo:ForExpression
                 endif
             endif
+            // Now create the index on the server
+            self:_obuilder:CreateIndex(oTag)
+
             oBag:Tags:Add(oTag)
             oBag:Save()
             CurrentOrder := oTag
@@ -139,7 +142,13 @@ partial class SQLRDD inherit DBFVFP
         local result as logic
         if self:_tableMode == TableMode.Table
             // todo: Rebuild Orders in tablemode, query mode uses DBFVFP driver for indices
+            var order := self:FindOrder(orderInfo)
             result := false
+            if order != null
+                // Now delete the index from the server
+                result := self:_obuilder:DropIndex(order)
+            endif
+            
         else
             result := super:OrderDestroy(orderInfo)
         endif

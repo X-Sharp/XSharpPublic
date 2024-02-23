@@ -30,7 +30,7 @@ partial class SQLRDD inherit DBFVFP
     private _hasData        as logic
     private _realOpen       as logic
     private _connection     as SqlDbConnection
-    private _oTd            as SqlTableInfo
+    private _oTd            as SqlDbTableInfo
     private _obuilder       as SqlDbTableCommandBuilder
     private _command        as SqlDbCommand
     private _trimValues     as logic
@@ -435,8 +435,7 @@ partial class SQLRDD inherit DBFVFP
 
     private method _OpenTable(sWhereClause as string) as logic
         try
-            var query := self:_BuildSqlStatement(sWhereClause)
-            _command:CommandText := query
+            _command:CommandText := self:_BuildSqlStatement(sWhereClause)
             self:_hasData    := true
             self:DataTable   := _command:GetDataTable(self:Alias)
         catch as Exception
@@ -457,9 +456,6 @@ partial class SQLRDD inherit DBFVFP
                 query := self:_oTd:SelectStatement
             endif
         endif
-        // create filter from seek
-        // add server side filter
-        query := self:_connection:RaiseStringEvent(_connection, SqlRDDEventReason.CommandText, _oTd:Name, query)
         return query
     end method
 

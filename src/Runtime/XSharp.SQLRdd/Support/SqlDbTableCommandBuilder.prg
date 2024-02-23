@@ -17,23 +17,23 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The SqlDbTableCommandBuilder class.
 /// </summary>
-class SqlDbTableCommandBuilder
+internal class SqlDbTableCommandBuilder
     protected _cTable as string
-    protected _oTable as SqlTableInfo
+    protected _oTable as SqlDbTableInfo
     protected _oRdd  as SQLRDD
     protected _connection as SqlDbConnection
     property Connection as SqlDbConnection  get _connection
     property Provider   as ISqlDbProvider   get Connection:Provider
-    Property MetadataProvider as IMetadataProvider get Connection:MetadataProvider
+    Property MetadataProvider as ISqlMetadataProvider get Connection:MetadataProvider
     property OrderBagList as List<SqlDbOrderBag> get _oRdd:OrderBagList
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
         self:_oRdd        := oRdd
         _connection       := oRdd:Connection
         return
-    method FetchInfo(oRdd as SQLRDD) as SqlTableInfo
+    method FetchInfo(oRdd as SQLRDD) as SqlDbTableInfo
         // build initial information needed for SQL Query for a table
-        local oTable as SqlTableInfo
+        local oTable as SqlDbTableInfo
         local cTable as string
         cTable := self:_cTable
         oTable := MetadataProvider:GetTableInfo(cTable)
@@ -48,7 +48,7 @@ class SqlDbTableCommandBuilder
         return oTable
 
     method OpenIndex(cIndex as string) as void
-        local oProdIndex := NULL as SqlIndexInfo
+        local oProdIndex := NULL as SqlDbIndexInfo
         foreach var index in _oTable:Indexes
             if String.Compare(index:Name, cIndex, true) == 0
                 oProdIndex := index
@@ -72,6 +72,32 @@ class SqlDbTableCommandBuilder
                 oBag:Save()
             endif
         endif
+
+
+    method DropIndex(oTag as SqlDbOrder) as logic
+        var Name    := oTag:Name
+        var Columns := oTag:ColumnList
+        var sb      := StringBuilder{Provider:DropIndexStatement}
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
+        sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(Name))
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteNonQuery(stmt)
+        return result
+    method CreateIndex(oTag as SqlDbOrder) as logic
+        SELF:DropIndex(oTag)
+        var Name    := oTag:Name
+        var Columns := oTag:ColumnList
+        var sb      := StringBuilder{Provider:CreateIndexStatement}
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
+        sb:Replace(SqlDbProvider.IndexNameMacro, Provider:QuoteIdentifier(Name))
+        sb:Replace(SqlDbProvider.UniqueMacro, iif(oTag:Unique, " unique", ""))
+        sb:Replace(SqlDbProvider.FieldListMacro, Functions.List2String(Columns))
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteNonQuery(stmt)
+        return result
+
+
+
     method SetProductionIndex() as logic
         _oRdd:CurrentOrder := null
         if self:OrderBagList:Count > 0
@@ -92,11 +118,11 @@ class SqlDbTableCommandBuilder
             return whereList:First()
         endif
         local strResult := "" as string
-        local first := true as logic
+        local First := true as logic
 
         foreach var whereClause in whereList
-            if first
-                first := false
+            if First
+                First := false
             else
                 strResult += SqlDbProvider.AndClause
             endif
@@ -106,11 +132,11 @@ class SqlDbTableCommandBuilder
     method BuildSqlStatement(sWhereClause as string) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
-        var currentOrder := _oRdd:CurrentOrder
+        var CurrentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
         sb:Append(Provider:QuoteIdentifier(self:_oTable:RealName))
-        if currentOrder != null
-            scopeWhere := currentOrder:GetScopeClause()
+        if CurrentOrder != null
+            scopeWhere := CurrentOrder:GetScopeClause()
         endif
         if ! String.IsNullOrEmpty(sWhereClause)
             whereClauses:Add(sWhereClause)
@@ -127,9 +153,9 @@ class SqlDbTableCommandBuilder
             sb:Append(SqlDbProvider.WhereClause)
             sb:Append(sWhereClause)
         endif
-        if currentOrder != null
+        if CurrentOrder != null
             sb:Append(Provider.OrderByClause)
-            var cOrderby := Functions.List2String(currentOrder:OrderList)
+            var cOrderby := Functions.List2String(CurrentOrder:OrderList)
             cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
             sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         endif
@@ -142,36 +168,36 @@ class SqlDbTableCommandBuilder
         return sb:ToString()
     method ColumnList() as string
         var sb := StringBuilder{}
-        var list  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
-        var first := true
+        var List  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
+        var First := true
         foreach var c in _oTable:Columns
-            if first
-                first := false
+            if First
+                First := false
             else
                 sb:Append(", ")
             endif
             sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
 
-            list:Add(c:ColumnInfo:ColumnName, c)
+            List:Add(c:ColumnInfo:ColumnName, c)
         next
         if !String.IsNullOrEmpty(_oTable:RecnoColumn)
-            if !list:ContainsKey(_oTable:RecnoColumn)
+            if !List:ContainsKey(_oTable:RecnoColumn)
                 sb:Append(", ")
                 sb:Append(Provider.QuoteIdentifier(_oTable:RecnoColumn))
-                list:Add(_oTable:RecnoColumn, null)
+                List:Add(_oTable:RecnoColumn, null)
             else
-                var col := list[_oTable:RecnoColumn]
+                var col := List[_oTable:RecnoColumn]
                 col:ColumnFlags |= SqlDbColumnFlags.Recno
             endif
 
         endif
         if !String.IsNullOrEmpty(_oTable:DeletedColumn)
-            if !list:ContainsKey(_oTable:DeletedColumn)
+            if !List:ContainsKey(_oTable:DeletedColumn)
                 sb:Append(", ")
                 sb:Append(Provider.QuoteIdentifier(_oTable:DeletedColumn))
-                list:Add(_oTable:DeletedColumn,null)
+                List:Add(_oTable:DeletedColumn,null)
             else
-                var col := list[_oTable:DeletedColumn]
+                var col := List[_oTable:DeletedColumn]
                 if col != null
                     col:ColumnFlags |= SqlDbColumnFlags.Deleted
                 endif

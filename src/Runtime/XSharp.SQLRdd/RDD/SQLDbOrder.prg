@@ -17,7 +17,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The Order class.
 /// </summary>
-class SqlDbOrder inherit SqlDbObject
+internal class SqlDbOrder inherit SqlDbObject
     private _KeyCodeBlock as ICodeblock
     private _ForCodeBlock as ICodeblock
     property KeyCodeBlock as ICodeblock get _KeyCodeBlock

@@ -15,7 +15,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// Class to read/write an INI file
 /// </summary>
-class IniFile
+class SqlDbIniFile
     protected cFileName as string
     /// <summary>
     /// Full path and name of the INI file

@@ -1,0 +1,49 @@
+﻿// Metadata.xh
+// Created by    : robert
+// Creation Date : 2/23/2024 1:45:21 PM
+// Created for   :
+// WorkStation   : LEDA
+
+   /// <summary>
+    /// List of columns that have to be selected. Defaults to "*", which means all columns
+    /// </summary>
+    property ColumnList as string auto
+    /// <summary>
+    /// Name of the Recno column. When empty then the relative row number is the record number
+    /// </summary>
+    property RecnoColumn    as string auto
+    /// <summary>
+    /// Name of the Deleted column. When empty then rows will be physically deleted from the server
+    /// </summary>
+    property DeletedColumn  as string auto
+    /// <summary>
+    /// Additional server side filter that will be used as (additional) where clause when fetching data. This must be
+    /// a valid SQL expression for the target server
+    /// </summary>
+    property ServerFilter   as string auto
+    /// <summary>
+    /// Can the table be updated ?
+    /// </summary>
+    property AllowUpdates   as logic auto
+    /// <summary>
+    /// Can field names longer than 10 characters be used (true) or should they be truncated (false)
+    /// </summary>
+    property LongFieldNames as logic auto
+    /// <summary>
+    /// What is the maximum number of records that the RDD should fetch when unfiltered.
+    /// </summary>
+    property MaxRecords     as long auto
+    /// <summary>
+    /// Should trailing spaces for string columns be trimmed?
+    /// </summary>
+    property TrimTrailingSpaces as logic auto
+    /// <summary>
+    /// Should all columns be updated, or only the columns that were changed
+    /// </summary>
+    property UpdateAllColumns as logic auto
+
+    /// <summary>
+    /// Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
+    /// </summary>
+    /// <value></value>
+    property CompareMemo              as logic auto

@@ -14,7 +14,7 @@ begin namespace XSharp.RDD.SqlRDD
 /// <summary>
 /// The OrderBag class.
 /// </summary>
-class SqlDbOrderBag INHERIT BaseIndex
+internal class SqlDbOrderBag INHERIT BaseIndex
     /// <summary>
     /// Physical file name of the index. This does NOT include the path.
     /// </summary>
@@ -124,7 +124,7 @@ class SqlDbOrderBag INHERIT BaseIndex
     /// </summary>
     /// <returns></returns>
     method Load() AS LOGIC
-        var oIni := IniFile{SELF:FullPath}
+        var oIni := SqlDbIniFile{SELF:FullPath}
         if !oIni:Exists
             return FALSE
         endif
@@ -148,7 +148,7 @@ class SqlDbOrderBag INHERIT BaseIndex
     /// <param name="cTagName">Order/Tag name</param>
     /// <param name="oIni">Ini File object</param>
     /// <returns>The filled Order object</returns>
-    method GetTagInfo(cIndexName as STRING, cTagName as STRING, oIni as IniFile) as SqlDbOrder
+    method GetTagInfo(cIndexName as STRING, cTagName as STRING, oIni as SqlDbIniFile) as SqlDbOrder
         local oOrder as SqlDbOrder
         var section := TAGPREFIX+cIndexName+":"+cTagName
         var cExpression := oIni:GetString(section, EXPRESSION, "")
@@ -165,9 +165,9 @@ class SqlDbOrderBag INHERIT BaseIndex
     /// Save the index to the FullPath as an .SDX file.
     /// </summary>
     method Save()  as void
-        local oIni as IniFile
+        local oIni as SqlDbIniFile
         local cTags := "" as string
-        oIni := IniFile{self:FullPath}
+        oIni := SqlDbIniFile{self:FullPath}
         oIni:WriteString(INDEXPREFIX+SELF:LogicalName, TAGS,"")
         local first := TRUE as logic
         local cPreFix := TAGPREFIX+SELF:LogicalName+":" as string

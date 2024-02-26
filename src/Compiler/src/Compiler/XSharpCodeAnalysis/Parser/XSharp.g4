@@ -39,7 +39,7 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
 source              :  (Entities+=entity )* EOF
                     ;
 
-foxsource           :  ({HasMemVars}? MemVars += filewidememvar)*
+foxsource           :  (Vars += filewidevar)*
                        StmtBlk=statementBlock
                        (Entities+=entity )* EOF
                     ;
@@ -68,7 +68,7 @@ entity              : namespace_
                     | {IsXPP}? xppmethod        // XPP method, will be linked to XPP Class
                     | constructor               // Constructor Class xxx syntax
                     | destructor                // Destructor Class xxx syntax
-                    | {HasMemVars}? filewidememvar  // memvar declared at file level
+                    | filewidevar               // memvar or field declared at file level
                     | {IsFox}? foxdll           // FoxPro style of declaring Functions in External DLLs
                     | eos                       // Blank Lines between entities
                     ;
@@ -590,20 +590,20 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 globalAttributeTarget : Token=ID COLON      // We'll Check for ASSEMBLY and MODULE later
                       ;
 
-
-filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
-                    | {!IsFox }? Token=PUBLIC XVars+=memvar[$Token] (COMMA XVars+=memvar[$Token])*  end=EOS 
-                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=EOS
+filewidevar         : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=eos
+                    | Token=FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
+                    | {!IsFox }? Token=PUBLIC XVars+=memvar[$Token] (COMMA XVars+=memvar[$Token])*  end=eos
+                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=eos
                     ;
 
  
 statement           : Decl=localdecl                            #declarationStmt
                     | {IsFox}? Decl=foxlparameters              #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
-                    | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt  // Memvar declarations, not for FoxPro
+                    | {!IsFox }? Decl=memvardecl                #memvardeclStmt       // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt
-                    | {IsFox && HasMemVars}?  Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
-                    | {IsFox}? Decl=foxdimvardecl                #foxdimvardeclStmt        // DIMENSION this.Field(10)
+                    | {IsFox }? Decl=foxmemvardecl              #foxmemvardeclStmt    // Memvar declarations FoxPro specific
+                    | {IsFox }? Decl=foxdimvardecl              #foxdimvardeclStmt    // DIMENSION this.Field(10)
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
                       (e=END (DO|WHILE)? | e=ENDDO) eos	#whileStmt
@@ -978,7 +978,7 @@ boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName      
                     | LBRKT ArgList=bracketedArgumentList RBRKT                         #bindArrayAccess
                     ;
 
-aliasExpression     : {HasMemVars}? MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
+aliasExpression     : MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
                     | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched, this is matched by aliasedExpr later
                       Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME

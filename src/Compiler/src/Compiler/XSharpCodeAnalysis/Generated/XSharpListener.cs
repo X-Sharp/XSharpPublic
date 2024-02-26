@@ -2662,15 +2662,15 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitGlobalAttributeTarget([NotNull] XSharpParser.GlobalAttributeTargetContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.filewidememvar"/>.
+	/// Enter a parse tree produced by <see cref="XSharpParser.filewidevar"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context);
+	void EnterFilewidevar([NotNull] XSharpParser.FilewidevarContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.filewidememvar"/>.
+	/// Exit a parse tree produced by <see cref="XSharpParser.filewidevar"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context);
+	void ExitFilewidevar([NotNull] XSharpParser.FilewidevarContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.statement"/>.

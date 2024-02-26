@@ -267,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case XP.MemvardeclContext:
                             case XP.FoxmemvardeclContext:
                             case XP.FoxlparametersContext:
-                            case XP.FilewidememvarContext:
+                            case XP.FilewidevarContext:
 
                             case XP.ClassvarsContext:
                             case XP.VoglobalContext:

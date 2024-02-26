@@ -109,11 +109,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitSource(context);
         }
 
-        public override void EnterFilewidememvar([NotNull] XP.FilewidememvarContext context)
+        public override void EnterFilewidevar([NotNull] XP.FilewidevarContext context)
         {
             if (context._FoxVars.Count == 0)
             {
-                base.EnterFilewidememvar(context);
+                base.EnterFilewidevar(context);
                 return;
             }
             foreach (var memvar in context._FoxVars)
@@ -123,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var name = CleanVarName(memvar.Id.GetText());
                     var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
                     mv.IsPublic = true;
-                    _filewideMemvars.Add(mv.Name, mv);
+                    _fileWideVars.Add(mv.Name, mv);
                     GlobalEntities.FileWidePublics.Add(mv);
                 }
             }
@@ -163,7 +163,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var name = CleanVarName(context.Id.GetText());
                 var alias = XSharpSpecialNames.MemVarPrefix;
-                CheckForFileWideMemVar(name, context);
+                CheckForFileWideVar(name, context);
                 var field = findVar(name);
                 if (field == null)
                 {
@@ -174,7 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFoxmemvar([NotNull] XP.FoxmemvarContext context)
         {
-            if (CurrentMember == null || context.Parent is XP.FilewidememvarContext)
+            if (CurrentMember == null || context.Parent is XP.FilewidevarContext)
             {
                 return;
             }
@@ -262,7 +262,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.PutList(context.Decl.GetList<StatementSyntax>());
         }
-
 
         /*
                             // This includes array indices and optional type per name

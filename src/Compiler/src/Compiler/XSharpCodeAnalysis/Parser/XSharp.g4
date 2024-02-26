@@ -598,7 +598,7 @@ filewidevar         : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
  
 statement           : Decl=localdecl                            #declarationStmt
-                    | {IsFox}? Decl=foxlparameters              #foxlparametersStmt    // LPARAMETERS
+                    | Decl=foxlparameters                       #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
                     | {!IsFox }? Decl=memvardecl                #memvardeclStmt       // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt

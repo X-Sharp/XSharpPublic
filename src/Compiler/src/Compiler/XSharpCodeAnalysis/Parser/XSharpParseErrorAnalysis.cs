@@ -313,7 +313,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             CheckEmptyBlock(context, context.StmtBlk, "TRY block");
 
-            if (context.FinBlock != null )
+            if (context.FinBlock != null)
             {
                 CheckEmptyBlock(context.FinBlock, context.FinBlock, "FINALLY block");
             }
@@ -413,7 +413,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_Unsupported, "Adding Attributes to a DECLARE - DLL declaration"));
             }
-
         }
 
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
@@ -508,7 +507,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCantContainFields));
             }
-
         }
 
         private void interfacesCannotHaveTypes([NotNull] XSharpParser.ClassmemberContext context)
@@ -595,7 +593,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             CheckExpressionBodyStatements(context.ExpressionBody, context.Statements);
         }
-
 
         public override void ExitParameter([NotNull] XSharpParser.ParameterContext context)
         {

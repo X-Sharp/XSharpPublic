@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-27T17:45:27.938+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Record Oriented vs Set oriented.</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Record Oriented vs Set oriented.</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Since the SQLRDD uses SQL databases, it is not really complicated to support retrieving data with a SQL statement. However, emulating Record Oriented data access is a bit more complicated. There are several decisions to be made when for example you would open a customers table with the SQL RDD like this:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;" translate="true">USE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> Customers</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Some of the things we need to consider:</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Retrieve all the rows from the database, or limit the # of rows (do we really want to retrieve a million rows when opening a table, when you’re just interested in a particular customer)</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Retrieve all the columns or limit the # of columns to the ones you want to access. </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">DBF files have the concept of a record number. SQL databases do not have that. We can emulate a record number, based on the ordinal position of a row in the result set, but that means that changing the order of the rows will result in different record numbers or a row after changing the order of the result set.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">In DBF files rows are not directly deleted but marked for deletion. You can also undo that by calling RECALL. In SQL environments deleted rows are gone immediately</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Column names in DBF files are limited to 10 characters only. SQL does not have that limitation</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Column names in DBF files may be reserved words in the SQL database. How to handle that?</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">If you retrieve a character column from a DBF file, it will be always padded with spaces to its maximum length. </text><br/><text styleclass="Normal" translate="true">Most SQL databases do not pad the column values but return “trimmed” values. How to handle that?</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Which indexes are available?</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Which index tags are available for each index and what are the Xbase expressions for these orders?</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">We have decided to add a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MetaData" styleclass="Normal" translate="true">Metadata</link><text styleclass="Normal" translate="true"> layer to the SQLRDD that allows you to control how the RDD handles these issues. The next chapter describes that layer.</text></para>
+  </body>
+</topic>

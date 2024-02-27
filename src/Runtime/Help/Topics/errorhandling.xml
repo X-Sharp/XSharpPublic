@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-22T13:23:10.016+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Error Handling</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Error Handling</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The SQLRDD uses the standard X# structured error handling. Every time an error occurs in the RDD, a VO Error object is generated with at least the following properties filled:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td style="width:137px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">Subsystem</text></para>
+        </td>
+        <td style="width:554px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">SQLRDD</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:137px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">GenCode</text></para>
+        </td>
+        <td style="width:554px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">EG_OPEN, EG_READ, EG_WRITE, EG_CLOSE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:137px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">FuncSym</text></para>
+        </td>
+        <td style="width:554px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">The RDD method that caused the failure</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:137px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">SubError</text></para>
+        </td>
+        <td style="width:554px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">A number between 2000 and 2046 indicating an error code (see list below)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:137px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><text styleclass="Normal" translate="true">Description</text></para>
+        </td>
+        <td style="width:554px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">A textual description of the error</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"><tab /></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you have setup a local or global error handler you can catch this error and decide what to do.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you are using the RDD with the VO DbServer class you should note the following:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:13px left ; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:13px left ;"><text styleclass="Normal" translate="true">If you are using the DbServer object </text><text styleclass="Normal" style="font-weight:bold;" translate="true">without a client</text><text styleclass="Normal" translate="true"> (not on a DataWindow, DataBrowser, DataListView), the DbServer class will catch the error, and store it in its ErrInfo property. It will also create a Status hyper label and finally will call your </text><text styleclass="Normal" style="font-weight:bold;" translate="true">local or global error handler</text><text styleclass="Normal" translate="true">.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:13px left ; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:13px left ;"><text styleclass="Normal" translate="true">If you are using the DbServer object </text><text styleclass="Normal" style="font-weight:bold;" translate="true">with a client </text><text styleclass="Normal" translate="true">object, the DbServer class will also fill the ErrInfo and Status properties, but will not call the local error handler. In stead it will call the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Error method </text><text styleclass="Normal" translate="true">of the first client attached. &#160;Unfortunately</text><text styleclass="Normal" style="font-weight:bold;" translate="true"> the default implementation of the Error method on the DataWindow and DataBrowser classes is empty</text><text styleclass="Normal" translate="true">. So you will get no error messages ! We advise to create a useful Error method in your DataWindow subclass.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

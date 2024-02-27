@@ -271,8 +271,7 @@ partial class SQLRDD inherit DBFVFP
                 if !_updatedRows:Contains(row)
                     _updatedRows:Add(row)
                 endif
-                oValue := SELF:_HandleNullDate(oValue)
-                row[nFldPos-1] := oValue
+                row[nFldPos-1] := SELF:_HandleNullDate(oValue)
                 result := true
                 self:_Hot := true
             else
@@ -305,7 +304,7 @@ partial class SQLRDD inherit DBFVFP
                     end switch
                 catch e as Exception
                     lOk := false
-                    self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:PutValue", e:Message )
+                    self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:GoCold", e:Message )
                 end try
                 if !lOk
                     exit
@@ -519,7 +518,7 @@ partial class SQLRDD inherit DBFVFP
             endif
         endif
         if self:CurrentOrder == null
-            self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER )
+            self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER, "SQLRDD:Seek","No current Order" )
             return false
         endif
         var cSeekExpr := CurrentOrder:SeekExpression(seekInfo )

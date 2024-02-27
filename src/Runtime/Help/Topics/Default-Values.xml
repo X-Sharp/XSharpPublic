@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-23T15:30:17.454+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Default Values</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Default Values</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The default values for the metadata are set at the Connection Level and can be overridden by the provider. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Name</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Default Value</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">AllowUpdates</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">ColumnList</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;*&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">CompareMemo</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">DeletedColumn</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Indexes</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">KeyColumns</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;*&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">LegacyFieldTypes</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">LongFieldNames</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">FALSE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">MaxRecords</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">1000</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">RealName</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">RecnoColumn</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">ServerFilter</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">UpdatableColumns</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;*&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">UpdateAllColumns</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">FALSE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+        </td>
+        <td style="width:87px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Expression</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Condition</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Unique</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">FALSE</text></para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

@@ -137,6 +137,7 @@ interface ISqlDbProvider
     /// Create the column definition (in SQL syntax) from a RDDFieldInfo object
     /// </summary>
     /// <param name="oInfo">Object that contains the field definition</param>
+    /// <param name="oConn">Connection to the database</param>
     /// <returns>a string in SQL syntax</returns>
     /// <remarks>
     /// This is used when creating a SQL table with DbCreate()

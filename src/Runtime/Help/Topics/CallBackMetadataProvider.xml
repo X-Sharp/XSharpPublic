@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-23T15:29:09.981+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">CallBack</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">CallBack Function</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">SqlMetadataProviderCallBack gets its information from a callback event handler in the application.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The calls into the callback receive a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_SqlRddEventArgs.htm" domain="SqlRDDClasses.chm" styleclass="Body Text" translate="true">SqlRddEventArgs</link><text styleclass="Body Text" translate="true"> object that contains the event reason, the table/index name and a default value, and they must return a value in that object.</text></para>
+    <para styleclass="Normal"><text styleclass="Body Text" translate="true">When the connection is opened the RDD calls the Callback for the table called &quot;Defaults&quot; to retrieve some default values. Later when a table is opened the RDD calls the event handle for the table with the name from the USE statement.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="14" colcount="5">
+      <thead style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">SqlRDDEventReason</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Result Type</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Default</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Mandatory</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">AllowUpdates</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logic</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Are updated allowed?</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">ColumnList</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">A comma separated list of names of the columns that should be read. Defaults to all columns</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">CompareMemo</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logic</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should memo columns be included when generating where clause for updates or deletes?</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">DeletedColumn</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the column that emulates the deleted flag</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Indexes</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">A comma separated list of index names. For each index the provider will retrieve he tlist of tags</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">KeyColumns</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">A comma separated list of names of the columns that should be used as key columns for where clauses for update/ delete statements. Defaults to all columns, except when CompareMemo is set to false.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">LongFieldNames</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logic</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should long field names be used</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">MaxRecords</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Numeric</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The maximum number of rows to return</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">RealName</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">This real table name of the table on the server. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">RecnoColumn</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the column that emulates the recordnumber column</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">ServerFilter</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">An additional filter that can be used to filter rows. This must be in SQL syntax.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">UpdatableColumns</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">A comma separated list of names of the columns that may be updated. Defaults to all columns</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">UpdateAllColumns</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logic</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should all columns be included (written) in update statements, or only the changed columns</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If a table has one or more Indexes defined then the callback is called with the index name prefixed with &quot;Index:&quot;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="4">
+      <thead style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">SqlRDDEventReason</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Type</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Mandatory</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Tags</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Comma separated list of tag names</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To retrieve tag info the callback is called with the tagname prefixed with &quot;Tag:&lt;indexname&gt;:&quot;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="4">
+      <thead style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">SqlRDDEventReason</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Type</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Mandatory</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Expression</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Index expression in Xbase format</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Condition</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">String</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Index condition in Xbase format</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Unique</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logic</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should the entries in the index be unique</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

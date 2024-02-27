@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which assemblies to include from solution and
 				 project documentation sources -->
@@ -62,17 +63,17 @@
       <DocumentationSource sourceFile="..\Artifacts\Documentation\XSharp.Harbour.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.19.0.0</HelpFileVersion>
+    <HelpFileVersion>2.19.0.2</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>False</CleanIntermediates>
+    <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
@@ -154,18 +155,11 @@
           </configurations>
         </component>
       </ComponentConfig>
-      <ComponentConfig id="API Token Resolution" enabled="True">
-        <component id="API Token Resolution">
+<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">
                     {@TokenFiles}
-                    <replace elements="/*//token" item="string(.)" /></component>
-      </ComponentConfig>
-      <ComponentConfig id="IntelliSense Component" enabled="True">
-        <component id="IntelliSense Component">
-          <output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
-        </component>
-      </ComponentConfig>
-    </ComponentConfigurations>
-    <MissingTags>AutoDocumentCtors, Namespace, IncludeTargets, AutoDocumentDispose</MissingTags>
+                    <replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
+<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig></ComponentConfigurations>
+    <MissingTags>AutoDocumentCtors, Namespace, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="logo100.jpg" />
       <Argument Key="logoHeight" Value="50" />
@@ -189,7 +183,7 @@
     <FooterText>
     </FooterText>
     <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
-    <WarnOnMissingSourceContext>True</WarnOnMissingSourceContext>
+    <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations>
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
@@ -198,7 +192,6 @@
         <configuration>
           <expressions>
             <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
-            <expression>/reflection/apis/api[contains(@id,"XSharp.ADS.ACE")]</expression>
             <expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
             <expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression>
           </expressions>
@@ -208,7 +201,7 @@
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
-    <BuildLogFile>E:\XSharp\Dev\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
+    <BuildLogFile>..\..\Dev\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
     <VendorName>XSharp BV</VendorName>

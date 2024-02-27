@@ -124,7 +124,7 @@ partial class SQLRDD inherit DBFVFP
             // todo: Rebuild Orders in tablemode, query mode uses DBFVFP driver for indices
             result := false
             // todo: Create Order in tablemode, query mode uses DBFVFP driver for indices
-            SELF:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE)
+            SELF:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,"SQLRDD:OrderListRebuild", "Not yet implemented")
         else
             // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
             SELF:_creatingIndex := TRUE

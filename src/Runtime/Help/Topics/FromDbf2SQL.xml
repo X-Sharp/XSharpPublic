@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-23T16:56:30.083+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Converting from DBF to SQL</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Converting from DBF to SQL</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To convert DBF data to SQL you should do this:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Select a provider and open a connection, just like you can see in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="BasicUsage" styleclass="Normal" translate="true">Basic Usage</link><text styleclass="Normal" translate="true"> topic</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Open the DBF file with the DBFCDX or DBFNTX RDD</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Use DbCopy() or dbServer:Copy() to copy the file to the SQL database, by setting the target RDD to SQLRDD.</text><br/><text styleclass="Normal" translate="true">This will create the table and copy the data.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Then create the indexes. </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">You will then have to decide which method to use if give the &quot;metadata&quot; to the RDD. Depending on that you should add information to the ini file, callback or database tables.</text></li>
+    </list>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

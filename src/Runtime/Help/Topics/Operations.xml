@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-22T13:20:38.072+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Workarea Operations</title>
+  <keywords>
+    <keyword translate="true">DbAppend</keyword>
+    <keyword translate="true">DbCreate</keyword>
+    <keyword translate="true">DbCreateIndex</keyword>
+    <keyword translate="true">DbDelete</keyword>
+    <keyword translate="true">DbGoBottom</keyword>
+    <keyword translate="true">DbGoTo</keyword>
+    <keyword translate="true">DbGoTop</keyword>
+    <keyword translate="true">DbPack</keyword>
+    <keyword translate="true">DbReCall</keyword>
+    <keyword translate="true">DbSeek</keyword>
+    <keyword translate="true">DbSetIndex</keyword>
+    <keyword translate="true">DbSetOrder</keyword>
+    <keyword translate="true">DbSkip</keyword>
+    <keyword translate="true">DbUnLock</keyword>
+    <keyword translate="true">DbUseArea</keyword>
+    <keyword translate="true">DbZap</keyword>
+    <keyword translate="true">Deleted</keyword>
+    <keyword translate="true">FieldGet</keyword>
+    <keyword translate="true">FieldPut</keyword>
+    <keyword translate="true">FLock</keyword>
+    <keyword translate="true">LastRec</keyword>
+    <keyword translate="true">Operations</keyword>
+    <keyword translate="true">OrdCreate</keyword>
+    <keyword translate="true">OrdDestroy</keyword>
+    <keyword translate="true">OrdSetFocus</keyword>
+    <keyword translate="true">RecCount</keyword>
+    <keyword translate="true">Recno</keyword>
+    <keyword translate="true">RLock</keyword>
+    <keyword translate="true">WorkArea</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left,288px left,336px left,384px left,432px left,480px left ;"><text styleclass="Heading1" translate="true">Workarea Operations</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following table lists what is happening &apos;under the hood&apos; when you call a specific RDD operation.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">We are using the DB..() function syntax here, but of course this also applies to the corresponding commands, VODB..() function and DbServer methods:</text></para>
+    <para styleclass="" style="text-align:left; text-indent:-192px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:192px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:192px left ;"></para>
+    <para styleclass="Code Example"><table styleclass="Default" rowcount="24" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="" style="text-align:left; text-indent:-227px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:227px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:227px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:bold; color:#000000;" translate="true">Operation</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="" style="text-align:left; text-indent:-227px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:227px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:227px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:bold; color:#000000;" translate="true">Description</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbUseArea()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">The structure of the Table is read and the workarea information for the table is initialized. The table is NOT opened. Also some of the properties of the workarea are through the Metadata provider</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbGoTop()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the table is not open, it will be opened. If the table is open, and a where clause resulting from a Seek is active, the table will be closed and reopened without this where clause</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbGoBottom()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the table is not open, it will be opened.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbSkip()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the table is not open, it will be opened. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Recno()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If you have assigned a </text><text styleclass="Drie kolommen" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">RecnoColumn</text><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">, the value of this column will be returned, else the relative position in the current cursor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbGoTo()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If you have assigned a </text><text styleclass="Drie kolommen" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">RecnoColumn</text><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">, the row with this value will be located, else the cursor will be moved to the relative position. If the value does not exist or if the rownumber is larger than the # of rows in the current result set then the resultset will be positioned at EOF</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbCreate()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">A &quot;Drop Table&quot; SQL statement will be executed, followed by a Create Table SQL statement. The syntax of these statements can be set through the SqlDbProvider.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbDelete()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">If there is a DeletedColumn, then this column will be set to TRUE. </text><br/><text styleclass="Normal" translate="true">Otherwise the row will be deleted in the local cursor, and that change will be sent to the server when you </text><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">move the record pointer to another row.</text><text styleclass="Normal" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbReCall()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">If there is a DeletedColumn, then this column will be set to FALSE. </text><br/><text styleclass="Normal" translate="true">Otherwise the row will be restored in the local cursor. Once the deleted row is deleted on the server then you cannot undo the delete.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Deleted()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Will return TRUE if you have just deleted a row and have not moved the record pointer yet. In all other cases will return FALSE. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbAppend()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Will immediately append a blank row, fill all the columns of this row with the appropriate blank values and write the new row to the local buffer. The row will be sent to the server if you move the record pointer to another row.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">FieldGet()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the table is not open, it will be opened.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">FieldPut()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the cursor allows updates the new value will be written to the server.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">RLock() and FLock()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Will always return TRUE. Locking is handled by the server.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbUnLock()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Will always return TRUE.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">LastRec() and RecCount()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Return the number of rows in the current open cursor. This may be different from the real number of rows on the server</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbPack()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Will not do anything</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbZap()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Will execute a &quot;Delete All From &quot; SQL statement. The syntax of these statements can be set through the SqlDbProvider.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbCreateIndex()/</text></para>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">OrdCreate()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">A SDX file will be created that contains the index name and expression, and when possible an index is created on the server as well. The syntax of these statements can be set through the SqlDbProvider.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbSetIndex()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">The index information in the SDX file will be read, and the first tag in this file will be activated. A Current open cursor will be closed. </text><br/><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the index contains functions, then the function will be translated using the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RDD_SqlRDD_Providers_SqlDbProvider_GetFunction.htm" domain="SqlRDDClasses.chm" style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">GetFunction</link><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true"> method in the Database provider</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">DbSetOrder() / OrdSetFocus()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">If the order is available it will be activated. A Current open cursor will be closed. </text><br/><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">New data will be selected when an operation is done that requires new data.</text><br/><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Please NOTE that THE CURRENT RECORD POSITION WILL NOT BE SAVED</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">OrdDestroy()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">The order will be removed and a Current open cursor will be closed. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:205px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">DbSeek()</text></para>
+        </td>
+        <td style="width:779px;">
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">A where clause will be built based on the seek value and the current index. When Soft seek is used all rows greater then or equal to the seek value will be selected, else only the row(s) that match the seek value. Please not that this selection will remain active until you do a GO TOP or start another operation that closed the current cursor.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:-227px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:227px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:227px left ;"></para>
+    <para styleclass="" style="text-align:left; text-indent:-227px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:227px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:227px left ;"></para>
+    <para styleclass="" style="text-align:left; text-indent:-227px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:227px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:227px left ;"></para>
+  </body>
+</topic>

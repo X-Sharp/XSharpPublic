@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-27T17:53:27.223+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Indexes</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Indexes</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For a DBF table you can create indexes. These can be stored as files with a single sort order (NTX) or as files with multiple sort orders (CDX). The individual orders inside a CDX are often referred to as TAGS. </text><br/><text styleclass="Normal" translate="true">Indexes consist of an index expression, which can be an individual column name ( “CustomerNo”) but also as a combination of several fields in an Xbase expression (“CustomerNo+DTOS(OrderDate)”). </text><br/><text styleclass="Normal" translate="true">They can also contain a For condition that makes sure that only records where that condition evaluates to TRUE become part of the index.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">These index expressions do not always translate directly into SQL. </text><br/><text styleclass="Normal" translate="true">That is why the RDD parses the index expressions into individual elements and tries to translate them into SQL expressions. </text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

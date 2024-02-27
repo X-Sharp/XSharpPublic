@@ -284,7 +284,7 @@ partial class SQLRDD inherit DBFVFP
         IF nArrPos >= 0 .AND. nArrPos < self:_Fields:Length
             return self:_Fields[ nArrPos ]
         endif
-        self:_dbfError(EDB_FIELDINDEX, EG_ARG)
+        self:_dbfError(EDB_FIELDINDEX, EG_ARG,"SQLRDD:_GetColumn", "Invalid field index")
         return null
     end method
 

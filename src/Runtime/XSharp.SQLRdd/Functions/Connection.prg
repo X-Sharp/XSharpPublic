@@ -12,6 +12,9 @@ using XSharp.RDD.SqlRDD
 
 partial static class XSharp.RDD.SqlRDD.Functions
 
+    static constructor()
+        RegisteredRDD.Add( RegisteredRDD{"SQLRDD", typeof(SQLRDD)})
+
 /// <summary>
 /// Open a connection for the X# SQL RDD
 /// </summary>

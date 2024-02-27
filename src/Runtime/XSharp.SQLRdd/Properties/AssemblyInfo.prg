@@ -27,4 +27,6 @@ USING XSharp.Internal
 
 [ASSEMBLY: AssemblyVersion("1.0.0.0")]
 [ASSEMBLY: AssemblyFileVersion("1.0.0.0")]
-[ASSEMBLY: AssemblyInformationalVersion("1.0.0.0 - beta 1")]
+[assembly: AssemblyInformationalVersion("1.0.0.0 - beta 1")]
+[assembly: ImplicitNamespace("XSharp.RDD.SqlRDD")]
+[assembly: ImplicitNamespace("XSharp.RDD.SqlRDD.Providers")]

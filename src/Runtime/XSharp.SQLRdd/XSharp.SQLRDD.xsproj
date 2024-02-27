@@ -68,6 +68,7 @@
     <Compile Include="Functions\Command.prg" />
     <Compile Include="Functions\Connection.prg" />
     <Compile Include="Functions\Provider.prg" />
+    <Compile Include="Functions\RddExtensions.prg" />
     <Compile Include="Metadata\Abstract.prg" />
     <Compile Include="Metadata\CallBack.prg" />
     <Compile Include="Metadata\Database.prg" />

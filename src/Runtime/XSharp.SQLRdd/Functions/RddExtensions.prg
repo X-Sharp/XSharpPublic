@@ -1,15 +1,4 @@
-﻿// RddExtensions.prg
-// Created by    : robert
-// Creation Date : 1/30/2024 1:01:58 PM
-// Created for   :
-// WorkStation   : LEDA
-
-
-USING System
-USING System.Collections.Generic
-USING System.Text
-
-INTERNAL STATIC CLASS RddExtensions
+STATIC CLASS RddExtensions
     STATIC METHOD _dbfError(self area as Workarea, ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
         area:_dbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR, lThrow)
 

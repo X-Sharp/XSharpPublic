@@ -64,16 +64,18 @@ class SqlDbProviderOracle inherit SqlDbProvider
         endif
         return aFuncs
 
-    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+    override method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult as string
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} NVARCHAR ({oInfo.Length}) default ''"
-            if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
-                sResult += NullClause
-            else
-                sResult += NotNullClause
+            if oConn:UseNulls
+                if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
+                    sResult += NullClause
+                else
+                    sResult += NotNullClause
+                endif
             endif
         case DbFieldType.DateTime
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} TIMESTAMP "
@@ -98,7 +100,7 @@ class SqlDbProviderOracle inherit SqlDbProvider
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} BLOB "
 
         otherwise
-            sResult := super:GetSqlColumnInfo(oInfo)
+            sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch
         return sResult
 end class

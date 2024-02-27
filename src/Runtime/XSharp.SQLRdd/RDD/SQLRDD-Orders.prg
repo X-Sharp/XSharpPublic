@@ -1,10 +1,8 @@
-﻿// SQLRDD___Orders.prg
-// Created by    : robert
-// Creation Date : 2/8/2024 1:11:48 PM
-// Created for   :
-// WorkStation   : LEDA
-
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using XSharp.RDD.Enums
 using XSharp.RDD.Support
 using System.IO
@@ -148,7 +146,7 @@ partial class SQLRDD inherit DBFVFP
                 // Now delete the index from the server
                 result := self:_obuilder:DropIndex(order)
             endif
-            
+
         else
             result := super:OrderDestroy(orderInfo)
         endif

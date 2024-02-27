@@ -62,6 +62,9 @@ partial class SQLRDD inherit DBFVFP
             return false
         endif
         var cQuery := info:FileName
+        if cQuery:IndexOf(System.IO.Path.DirectorySeparatorChar) >= 0
+            cQuery := System.IO.Path.GetFileNameWithoutExtension(cQuery)
+        endif
         var tempFile   := self:_TempFileName(info)
         self:_FileName := tempFile
         // Determine if this is a single table name or a query (select or Execute)
@@ -183,7 +186,7 @@ partial class SQLRDD inherit DBFVFP
                 if c:AutoIncrement
                     row[c] := key
                 else
-                    row[c] := values[c:Ordinal]
+                    row[c] := SELF:_HandleNullDate(values[c:Ordinal])
                 endif
             next
             self:_Hot := true
@@ -203,7 +206,7 @@ partial class SQLRDD inherit DBFVFP
         if nFldPos > 0 .and. nFldPos <= self:FieldCount
             nFldPos -= 1
             local result as object
-            if !self:EoF
+            if self:DataTable:Rows:Count >= self:_RecNo .and. !self:EoF
                 var row := self:DataTable:Rows[self:_RecNo -1]
                 result  := row[nFldPos]
             else
@@ -268,6 +271,7 @@ partial class SQLRDD inherit DBFVFP
                 if !_updatedRows:Contains(row)
                     _updatedRows:Add(row)
                 endif
+                oValue := SELF:_HandleNullDate(oValue)
                 row[nFldPos-1] := oValue
                 result := true
                 self:_Hot := true

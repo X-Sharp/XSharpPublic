@@ -60,6 +60,10 @@ partial class SQLRDD inherit DBFVFP
             // The SqlStatement:CreateFile() method whichs gets called from SqlExec()
             // has the logic that creates the DBF from the Column properties
             //
+            if value == null
+                _table:Rows:Clear()
+                return
+            endif
             _table := value
             self:_RecNo := 1
             self:_RecCount   := _table:Rows:Count
@@ -222,7 +226,7 @@ partial class SQLRDD inherit DBFVFP
             else
                 sb:Append(", ")
             endif
-            sb:Append(self:Provider:GetSqlColumnInfo(fld))
+            sb:Append(self:Provider:GetSqlColumnInfo(fld, SELF:Connection))
         next
         var columns := sb:ToString()
         sb:Clear()
@@ -396,6 +400,15 @@ partial class SQLRDD inherit DBFVFP
             return res is int var i .and. i == 1
         endif
         return true
+    end method
+
+    private method _HandleNullDate(oValue as object) as object
+        if oValue is DateTime var dt .and. dt == DateTime.MinValue
+            return DBNull.Value
+        elseif oValue is IDate var d .and. d:IsEmpty
+            return DBNull.Value
+        endif
+        return oValue
     end method
 
     private method _ExecuteDeleteStatement(row as DataRow) as logic

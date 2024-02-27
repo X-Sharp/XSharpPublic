@@ -63,27 +63,30 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
     end method
 
     /// <inheritdoc />
-    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+    override method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult as string
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
-            if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
-                sResult += NullClause
-            else
-                sResult += NotNullClause
-            endif
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
-            if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-                sResult += " identity "
-            else
-                sResult += " default 0"
+            if oConn:UseNulls
+                if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
+                    sResult += " identity "
+                else
+                    sResult += " default 0"
+                endif
             endif
+        case DbFieldType.Date
+            sResult := i"{oInfo.ColumnName} date"
+        case DbFieldType.DateTime
+            sResult := i"{oInfo.ColumnName} datetime"
 
+        case DbFieldType.Number when oInfo:Decimals == 0
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int default 0"
         otherwise
-            sResult := super:GetSqlColumnInfo(oInfo)
+            sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch
         return sResult
     end method

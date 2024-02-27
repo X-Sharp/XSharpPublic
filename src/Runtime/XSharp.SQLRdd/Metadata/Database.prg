@@ -131,7 +131,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
             else
                 sb:Append(", ")
             endif
-            sb:Append(prov:GetSqlColumnInfo(col:FieldInfo))
+            sb:Append(prov:GetSqlColumnInfo(col:FieldInfo, SELF:Connection))
         next
         var fieldList := sb:ToString()
         var fieldValues := CreateDefaultColumnValues(cols, DefaultSection)
@@ -171,7 +171,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
             else
                 sb:Append(", ")
             endif
-            sb:Append(prov:GetSqlColumnInfo(col:FieldInfo))
+            sb:Append(prov:GetSqlColumnInfo(col:FieldInfo, SELF:Connection))
         next
         fieldList := sb:ToString()
         sb:Clear()
@@ -231,10 +231,10 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         try
             var pos := SELF:_GetPos(rdr, cName)
             if pos >= 0
-                return rdr:GetString(pos)
+                return rdr:GetString(pos):Trim()
             endif
         catch
-            return strDefault
+            return strDefault:Trim()
         end try
         return strDefault
     end method
@@ -301,6 +301,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
                     next
                 endif
             endif
+            rdr:Close()
         endif
         SELF:AddToCache(cTable, oTable)
         RETURN oTable

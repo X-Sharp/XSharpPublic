@@ -62,9 +62,6 @@ class SqlDbProviderODBC inherit SqlDbProvider
         endif
         return aFuncs
     /// <inheritdoc />
-    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
-        return super:GetSqlColumnInfo(oInfo)
-    /// <inheritdoc />
 
     override method CreateCommandBuilder() as DbCommandBuilder
         var cmdBuilder := super:CreateCommandBuilder()

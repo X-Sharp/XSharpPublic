@@ -65,10 +65,6 @@ class SqlDbProviderOleDb inherit SqlDbProvider
         return aFuncs
     end method
 
-    /// <inheritdoc />
-    override method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
-        return super:GetSqlColumnInfo(oInfo)
-    end method
 
     /// <inheritdoc />
     override method CreateCommandBuilder() as DbCommandBuilder

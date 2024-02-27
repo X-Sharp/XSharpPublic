@@ -141,7 +141,7 @@ interface ISqlDbProvider
     /// <remarks>
     /// This is used when creating a SQL table with DbCreate()
     /// </remarks>
-    method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+    method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
     /// <summary>
     /// Get the translation for an XBase function to a SQL function
     /// </summary>

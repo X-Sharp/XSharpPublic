@@ -351,7 +351,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 
 #endregion
     /// <inheritdoc/>
-    virtual method GetSqlColumnInfo(oInfo as RddFieldInfo) as string
+    virtual method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult := "" as string
         var name := i"{QuoteIdentifier(oInfo.ColumnName)}"
         switch oInfo:FieldType
@@ -384,7 +384,7 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         case DbFieldType.NullFlags
             sResult := ""
         end switch
-        if !String.IsNullOrEmpty(sResult)
+        if !String.IsNullOrEmpty(sResult) .and. oConn:UseNulls
             if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                 sResult += " null "
             else

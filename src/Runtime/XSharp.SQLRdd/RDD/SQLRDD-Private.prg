@@ -405,8 +405,12 @@ partial class SQLRDD inherit DBFVFP
     private method _HandleNullDate(oValue as object) as object
         if oValue is DateTime var dt .and. dt == DateTime.MinValue
             return DBNull.Value
-        elseif oValue is IDate var d .and. d:IsEmpty
-            return DBNull.Value
+        elseif oValue is IDate var d
+            if d:IsEmpty
+                return DBNull.Value
+            else
+                return DateTime{d:Year, d:Month, d:Day}
+            endif
         endif
         return oValue
     end method

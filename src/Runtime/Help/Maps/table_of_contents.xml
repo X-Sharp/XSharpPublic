@@ -42,22 +42,22 @@
       </topicref>
       <topicref type="topic" id="384611886619961" build="ALL" modified="2024-02-27T17:53:27.384Z" icon="0" href="Indexes">
         <caption translate="true">Indexes</caption>
-        <topicref type="topic" id="384612399907186" build="CHM,HLP,HTML,PDF" modified="2024-02-27T17:53:24.980Z" icon="0" href="Indexes_gs">
+        <topicref type="topic" id="384612399907186" build="ALL" modified="2024-02-28T08:40:08.393Z" icon="0" href="Indexes_gs">
           <caption translate="true">Index getting started</caption>
         </topicref>
-        <topicref type="topic" id="384612811386764" build="CHM,HLP,HTML,PDF" modified="2005-04-19T09:39:19.625Z" icon="0" href="indexfilesorcallback">
+        <topicref type="topic" id="384612811386764" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="indexfilesorcallback">
           <caption translate="true">Index Files or indexes through a callback</caption>
         </topicref>
-        <topicref type="topic" id="384613974369063" build="CHM,HLP,HTML,PDF" modified="2005-04-19T09:39:19.625Z" icon="0" href="Indexespart2">
+        <topicref type="topic" id="384613974369063" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="Indexespart2">
           <caption translate="true">Index support</caption>
         </topicref>
-        <topicref type="topic" id="384614069324223" build="CHM,HLP,HTML,PDF" modified="2005-04-19T09:39:19.625Z" icon="0" href="IndexExpressions">
+        <topicref type="topic" id="384614069324223" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="IndexExpressions">
           <caption translate="true">Index expressions</caption>
         </topicref>
-        <topicref type="topic" id="384615690079543" build="CHM,HLP,HTML,PDF" modified="2005-04-19T09:39:19.625Z" icon="0" href="IndexExpressionwithDescend()">
+        <topicref type="topic" id="384615690079543" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="IndexExpressionwithDescend()">
           <caption translate="true">Index Expression with Descend()</caption>
         </topicref>
-        <topicref type="topic" id="384612824009634" build="CHM,HLP,HTML,PDF" modified="2005-04-19T09:39:19.625Z" icon="0" href="Samplesofindexexpressions">
+        <topicref type="topic" id="384612824009634" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="Samplesofindexexpressions">
           <caption translate="true">Index expression examples</caption>
         </topicref>
       </topicref>

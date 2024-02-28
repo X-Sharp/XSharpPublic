@@ -137,12 +137,7 @@
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">.\Images\;.\;.\Baggage\;.\Maps\;.\Topics\</config-value>
       <config-value name="imageshortcuts"></config-value>
-      <config-group name="custombuilds">
-        <config-value name="demo">Demo Build</config-value>
-        <config-value name="user1">User defined 1</config-value>
-        <config-value name="user2">User defined 2</config-value>
-        <config-value name="user3">User defined 3</config-value>
-      </config-group>
+      <config-group name="custombuilds"/>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make0include">CHM</config-value>
       <config-value name="make0status">*</config-value>
@@ -556,12 +551,6 @@ AA(0x46,2,Find())
   <xi:include parse="xml" href="Maps/table_of_contents.xml"/>
   <project-files>
     <file href="Topics/*.xml" build="ALL" filetype="topic">
-      <file-mod href="Indexespart2.xml" build="CHM,HLP,HTML,PDF"/>
-      <file-mod href="IndexExpressions.xml" build="CHM,HLP,HTML,PDF"/>
-      <file-mod href="IndexExpressionwithDescend().xml" build="CHM,HLP,HTML,PDF"/>
-      <file-mod href="indexfilesorcallback.xml" build="CHM,HLP,HTML,PDF"/>
-      <file-mod href="Samplesofindexexpressions.xml" build="CHM,HLP,HTML,PDF"/>
-      <file-mod href="Indexes_gs.xml" build="CHM,HLP,HTML,PDF"/>
       <file-mod href="StyleSheet.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>

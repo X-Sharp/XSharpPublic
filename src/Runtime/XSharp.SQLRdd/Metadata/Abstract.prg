@@ -18,7 +18,10 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
     protected _cache as Dictionary<string, SqlDbTableInfo>
     protected _connection AS SqlDbConnection
-
+    /// <summary>
+    /// Construct a new instance of the SqlMetadataProviderAbstract class.
+    /// </summary>
+    /// <param name="conn">Connection to which the provider belongs</param>
     CONSTRUCTOR(conn as SqlDbConnection)
         self:_connection := conn
         self:_cache      := Dictionary<string, SqlDbTableInfo>{StringComparer.OrdinalIgnoreCase}
@@ -37,11 +40,11 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
     /// <inheritdoc />
     ABSTRACT METHOD GetIndexInfo(oTable AS SqlDbTableInfo, cIndex AS STRING) AS SqlDbIndexInfo
 
-    METHOD FindInCache( cTable as STRING, oTable OUT SqlDbTableInfo) AS LOGIC
-        oTable := null
+    /// <exclude />
+    PROTECTED INTERNAL METHOD FindInCache( cTable as STRING, oTable OUT SqlDbTableInfo) AS LOGIC
         RETURN _cache:TryGetValue(cTable, out oTable)
-
-    METHOD AddToCache( cTable as STRING, oTable AS SqlDbTableInfo) AS VOID
+    /// <exclude />
+    PROTECTED INTERNAL METHOD AddToCache( cTable as STRING, oTable AS SqlDbTableInfo) AS VOID
         _cache:Add(cTable, oTable)
         RETURN
 

@@ -201,7 +201,7 @@ partial class SQLRDD inherit DBFVFP
         if _connection == null
             return false
         endif
-        _connection:AddRdd(SELF)
+        _connection:RegisterRdd(SELF)
         _command    := SqlDbCommand{info:Alias, _connection}
         pos := query:IndexOf(SqlDbProvider.ConnectionDelimiter)
         if pos > 0

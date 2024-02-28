@@ -37,6 +37,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.SQLRdd.Xml</DocumentationFile>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -62,7 +63,6 @@
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\Command.prg" />
     <Compile Include="Classes\Connection.prg" />
-    <Compile Include="Classes\EventObject.prg" />
     <Compile Include="Classes\Parameter.prg" />
     <Compile Include="DBMS\PostgreSql.prg" />
     <Compile Include="Functions\Command.prg" />

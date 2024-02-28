@@ -20,20 +20,20 @@ INTERFACE ISqlMetadataProvider
     /// <summary>
     /// Get the metadata for a table
     /// </summary>
-    /// <param name="cTableName">Name of the table to lookup the data for</param>
+    /// <param name="cTable">Name of the table to lookup the data for</param>
     /// <returns>Filled SqlDbTableInfo object</returns>
     /// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbTableInfo"/>
-    METHOD GetTableInfo(cTableName as STRING) AS SqlDbTableInfo
+    METHOD GetTableInfo(cTable as STRING) AS SqlDbTableInfo
 
     /// <summary>
     /// Get the metadata for an Index
     /// </summary>
     /// <param name="oTable">Table object to lookup the data for</param>
-    /// <param name="cIndex">Name of the index to lookup the data for</param>
+    /// <param name="cIndexName">Name of the index to lookup the data for</param>
     /// <returns>Filled SqlDbIndexInfo object</returns>
     /// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbIndexInfo" />
     /// <remarks> This method should NOT append the indexc to the TableInfo class </remarks>
-    METHOD GetIndexInfo(oTable AS SqlDbTableInfo, cIndex AS STRING) AS SqlDbIndexInfo
+    METHOD GetIndexInfo(oTable AS SqlDbTableInfo, cIndexName AS STRING) AS SqlDbIndexInfo
 
 END INTERFACE
 END NAMESPACE // XSharp.SQLRdd.Metadata

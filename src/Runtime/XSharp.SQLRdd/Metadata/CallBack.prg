@@ -18,9 +18,9 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
     private const DefaultSection := "Defaults" as string
     private hasDefaults := false as logic
     /// <summary>
-    /// Create a new instance of the CallbackMetaDataProvider class.
+    /// Construct a new instance of the SqlMetadataProviderAbstract class.
     /// </summary>
-    /// <param name="conn">Connection associated with the provider</param>
+    /// <param name="conn">Connection to which the provider belongs</param>
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
         RETURN

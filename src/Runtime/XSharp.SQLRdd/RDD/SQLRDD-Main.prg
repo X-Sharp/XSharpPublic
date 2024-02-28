@@ -329,7 +329,7 @@ partial class SQLRDD inherit DBFVFP
         foreach var bag in self:OrderBagList
             bag:Close()
         next
-        _connection:RemoveRdd(self)
+        _connection:UnregisterRdd(self)
         lOk := super:Close()
         if File.Exists(SELF:FileName)
             File.Delete(SELF:FileName)

@@ -12,11 +12,11 @@ using System.Data
 
 begin namespace XSharp.RDD.SqlRDD
 /// <summary>
-/// The HandleObject class.
+/// The base class for objects that are decorated with a (unique) handle.
 /// </summary>
 class SqlDbHandleObject inherit SqlDbObject implements IDisposable
     /// <summary>
-    /// Unique handle for the object
+    /// The unique handle for the object
     /// </summary>
     property Handle             as IntPtr auto
     /// <summary>
@@ -27,6 +27,7 @@ class SqlDbHandleObject inherit SqlDbObject implements IDisposable
         super(cName)
         self:Handle := SqlDbHandles.GetHandle(self)
         return
+    /// <inheritdoc />
     public virtual method Dispose() as void
         SqlDbHandles.Remove(self)
         return

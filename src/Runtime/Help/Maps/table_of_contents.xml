@@ -89,11 +89,8 @@
         <caption translate="true">Callbacks</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="453414559595464" build="ALL" modified="2024-02-19T14:50:58.929Z" icon="0" href="Class-Reference">
-      <caption translate="true">Class Reference</caption>
-      <navref href="SqlRDDClasses.chm::\SqlRDDClasses.hhc" build="ALL" id="453417895461787" modified="2024-02-19T14:52:06.966Z" merge="runtime">
-        <caption translate="true">SqlRDDClasses.chm::\SqlRDDClasses.hhc</caption>
-      </navref>
-    </topicref>
+    <navref href="SqlRDDClasses.chm::\SqlRDDClasses.hhc" build="ALL" id="453417895461787" modified="2024-02-19T14:52:06.966Z" merge="runtime">
+      <caption translate="true">SqlRDDClasses.chm::\SqlRDDClasses.hhc</caption>
+    </navref>
   </topicref>
 </map>

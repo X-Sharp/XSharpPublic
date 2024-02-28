@@ -27,7 +27,7 @@ public delegate SqlRDDEventHandler(oSender as object, e as SqlRddEventArgs) as o
 /// <summary>
 /// Connection class.
 /// </summary>
-class SqlDbConnection inherit SqlDbEventObject implements IDisposable
+class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     // Constants for the Metadata collections
     internal const COLLECTIONNAME := "CollectionName" as string
     internal const TABLECOLLECTION := "Tables" as string
@@ -301,7 +301,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// Register a RDD with its connection object.
     /// </summary>
     /// <param name="oRDD">Object to register</param>
-    method AddRdd(oRDD as SQLRDD) as void
+    method RegisterRdd(oRDD as SQLRDD) as void
         RDDs:Add(oRDD)
         return
 
@@ -310,7 +310,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// </summary>
     /// <param name="oRDD">Object to unregister</param>
     /// <returns></returns>
-    method RemoveRdd(oRDD as SQLRDD) as logic
+    method UnregisterRdd(oRDD as SQLRDD) as logic
         if RDDs:Contains(oRDD)
             RDDs:Remove(oRDD)
         endif
@@ -646,7 +646,7 @@ class SqlDbConnection inherit SqlDbEventObject implements IDisposable
     /// <inheritdoc/>
     public override method Dispose() as void
         self:Close()
-        super:Dispose()
+        Super:Dispose()
     end method
 
     #endregion
@@ -660,6 +660,45 @@ INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC
-
+    #region Events
+    /// <summary>
+    /// Event handler for the SqlRDD events
+    /// </summary>
+    public event CallBack as SqlRDDEventHandler
+    internal method RaiseEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as object) as object
+        if String.IsNullOrEmpty(cTable)
+            cTable := oObject:Name
+        endif
+        var oArgs := SqlRddEventArgs{ nEvent, cTable, oValue}
+        if @@CallBack != null
+            var result := @@CallBack ( oObject, oArgs )
+            return result
+        endif
+        return oArgs:Value
+    internal method RaiseStringEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as string) as string
+        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        if result is string var strValue
+            return strValue
+        endif
+        return oValue
+    internal method RaiseIntEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as int) as int
+        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        if result is int var intValue
+            return intValue
+        endif
+        return oValue
+    internal method RaiseListEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as IList<string>) as IList<string>
+        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        if result is IList<string> var listValue
+            return listValue
+        endif
+        return oValue
+    internal method RaiseLogicEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as logic) as logic
+        var result := RaiseEvent(oObject, nEvent, cTable, oValue)
+        if result is logic var logValue
+            return logValue
+        endif
+        return oValue
+    #endregion
 end class
 end namespace

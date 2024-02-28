@@ -153,6 +153,7 @@
       <config-value name="historyfilecount">10</config-value>
       <config-value name="historykeepdeletedfiles">0</config-value>
       <config-value name="vcsmanuallycheckout">0</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>

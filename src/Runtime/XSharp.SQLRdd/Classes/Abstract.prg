@@ -19,18 +19,19 @@ begin namespace XSharp.RDD.SqlRDD
 class SqlDbObject
 #ifdef DEBUG
     static private nId := 0 as long
+    /// <exclude />
     property Id	  as long auto get private set
-    #endif
-
+#endif
+    /// <summary>
+    /// The Name of the object.
+    /// </summary>
+    /// <value></value>
     property Name as string auto get private set
-
-    constructor()
+    
+    constructor(cName as string)
 #ifdef DEBUG
         self:Id := ++nId
 #endif
-        return
-    constructor(cName as string)
-        self()
         self:Name := cName
         return
 

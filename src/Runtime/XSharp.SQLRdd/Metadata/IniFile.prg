@@ -18,9 +18,19 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
     private const DefaultSection := "Defaults" as string
     private hasDefaults as LOGIC
 
+    /// <summary>
+    /// Construct a new instance of the SqlMetadataProviderIni class.
+    /// </summary>
+    /// <param name="conn">Connection to which the provider belongs</param>
     CONSTRUCTOR(conn as SqlDbConnection)
         SELF("SQLRDD.INI", conn)
     END CONSTRUCTOR
+
+    /// <summary>
+    /// Construct a new instance of the SqlMetadataProviderIni class.
+    /// </summary>
+    /// <param name="conn">Connection to which the provider belongs</param>
+    /// <param name="cFile">File name where the metadata is stored</param>
     CONSTRUCTOR(cFile as STRING, conn as SqlDbConnection)
         SUPER(conn)
         _fileName := cFile

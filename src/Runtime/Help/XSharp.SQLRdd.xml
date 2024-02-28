@@ -4,9 +4,6 @@
     <name>XSharp.SQLRdd</name>
   </assembly>
   <members>
-    <member name="T:Functions">
-      <summary>This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.SQLRdd.dll assembly. </summary>
-    </member>
     <member name="T:XSharp.RDD.SqlRDD.Functions">
       <summary>
             The functions class exposes the functions in the X# SQL RDD
@@ -327,12 +324,6 @@
       <param name="cConnectionString">Connection String</param>
       <param name="Callback">(Optional) CallBack</param>
     </member>
-    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.AddRdd(XSharp.RDD.SqlRDD.SQLRDD)">
-      <summary>
-            Register a RDD with its connection object.
-            </summary>
-      <param name="oRDD">Object to register</param>
-    </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.AllowUpdates">
       <summary>
             Can the table be updated ?
@@ -349,6 +340,11 @@
             Begin a transaction
             </summary>
       <returns>TRUE when transaction was succesfully started</returns>
+    </member>
+    <member name="E:XSharp.RDD.SqlRDD.SqlDbConnection.CallBack">
+      <summary>
+            Event handler for the SqlRDD events
+            </summary>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.Close">
       <summary>
@@ -511,12 +507,11 @@
             Name of the Recno column. When empty then the relative row number is the record number
             </summary>
     </member>
-    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.RemoveRdd(XSharp.RDD.SqlRDD.SQLRDD)">
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.RegisterRdd(XSharp.RDD.SqlRDD.SQLRDD)">
       <summary>
-            Unregister a RDD from its connection object.
+            Register a RDD with its connection object.
             </summary>
-      <param name="oRDD">Object to unregister</param>
-      <returns></returns>
+      <param name="oRDD">Object to register</param>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.RollBackTrans">
       <summary>
@@ -538,6 +533,13 @@
             Should trailing spaces for string columns be trimmed?
             </summary>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.UnregisterRdd(XSharp.RDD.SqlRDD.SQLRDD)">
+      <summary>
+            Unregister a RDD from its connection object.
+            </summary>
+      <param name="oRDD">Object to unregister</param>
+      <returns></returns>
+    </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.UpdateAllColumns">
       <summary>
             Should all columns be updated when a record is updated?
@@ -546,25 +548,9 @@
     <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.UseNulls">
       <summary>Should the phantom record have Null values or empty values?</summary>
     </member>
-    <member name="T:XSharp.RDD.SqlRDD.SqlDbEventObject">
-      <summary>
-            The SqlDbEventObject class. This objectc is responsible for raising events
-            </summary>
-    </member>
-    <member name="M:XSharp.RDD.SqlRDD.SqlDbEventObject.#ctor(System.String)">
-      <summary>
-            Create a new instance of the SqlDbEventObject class
-            </summary>
-      <param name="cName">Name for the object</param>
-    </member>
-    <member name="E:XSharp.RDD.SqlRDD.SqlDbEventObject.CallBack">
-      <summary>
-            Event handler for the SqlRDD events
-            </summary>
-    </member>
     <member name="T:XSharp.RDD.SqlRDD.SqlDbHandleObject">
       <summary>
-            The HandleObject class.
+            The base class for objects that are decorated with a (unique) handle.
             </summary>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.SqlDbHandleObject.#ctor(System.String)">
@@ -574,17 +560,11 @@
       <param name="cName">Name to associate with the object</param>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.SqlDbHandleObject.Dispose">
-      <summary>
-        <markup>
-          <include item="SMCAutoDocDispose">
-            <parameter>XSharp.RDD.SqlRDD.SqlDbHandleObject</parameter>
-          </include>
-        </markup>
-      </summary>
+      <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
     </member>
     <member name="P:XSharp.RDD.SqlRDD.SqlDbHandleObject.Handle">
       <summary>
-            Unique handle for the object
+            The unique handle for the object
             </summary>
     </member>
     <member name="T:XSharp.RDD.SqlRDD.SqlDbIndexInfo">
@@ -716,15 +696,6 @@
             The Abstract class.
             </summary>
     </member>
-    <member name="M:XSharp.RDD.SqlRDD.SqlDbObject.#ctor">
-      <summary>
-        <markup>
-          <include item="SMCAutoDocConstructor">
-            <parameter>XSharp.RDD.SqlRDD.SqlDbObject</parameter>
-          </include>
-        </markup>
-      </summary>
-    </member>
     <member name="M:XSharp.RDD.SqlRDD.SqlDbObject.#ctor(System.String)">
       <summary>
         <markup>
@@ -734,8 +705,12 @@
         </markup>
       </summary>
     </member>
-    <member name="P:XSharp.RDD.SqlRDD.SqlDbObject.Id"></member>
-    <member name="P:XSharp.RDD.SqlRDD.SqlDbObject.Name"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbObject.Name">
+      <summary>
+            The Name of the object.
+            </summary>
+      <value></value>
+    </member>
     <member name="M:XSharp.RDD.SqlRDD.SqlDbObject.ToString"></member>
     <member name="T:XSharp.RDD.SqlRDD.SqlDbParameter">
       <summary>
@@ -1452,14 +1427,14 @@
             Get the metadata for an Index
             </summary>
       <param name="oTable">Table object to lookup the data for</param>
-      <param name="cIndex">Name of the index to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlMetadataProvider.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
             </summary>
-      <param name="cTableName">Name of the table to lookup the data for</param>
+      <param name="cTable">Name of the table to lookup the data for</param>
       <returns>Filled SqlDbTableInfo object</returns>
     </member>
     <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProvider">
@@ -1984,33 +1959,28 @@
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
       <summary>
-        <markup>
-          <include item="SMCAutoDocConstructor">
-            <parameter>XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract</parameter>
-          </include>
-        </markup>
-      </summary>
+            Construct a new instance of the SqlMetadataProviderAbstract class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
     </member>
-    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.AddToCache(System.String,XSharp.RDD.SqlRDD.SqlDbTableInfo)"></member>
     <member name="P:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.Connection">
       <summary>
              The connection that this metadata provider is using.
             </summary>
     </member>
-    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.FindInCache(System.String,XSharp.RDD.SqlRDD.SqlDbTableInfo@)"></member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
       <summary>
             Get the metadata for an Index
             </summary>
       <param name="oTable">Table object to lookup the data for</param>
-      <param name="cIndex">Name of the index to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
             </summary>
-      <param name="cTableName">Name of the table to lookup the data for</param>
+      <param name="cTable">Name of the table to lookup the data for</param>
       <returns>Filled SqlDbTableInfo object</returns>
     </member>
     <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack">
@@ -2020,23 +1990,23 @@
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
       <summary>
-            Create a new instance of the CallbackMetaDataProvider class.
+            Construct a new instance of the SqlMetadataProviderAbstract class.
             </summary>
-      <param name="conn">Connection associated with the provider</param>
+      <param name="conn">Connection to which the provider belongs</param>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
       <summary>
             Get the metadata for an Index
             </summary>
       <param name="oTable">Table object to lookup the data for</param>
-      <param name="cIndex">Name of the index to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
             </summary>
-      <param name="cTableName">Name of the table to lookup the data for</param>
+      <param name="cTable">Name of the table to lookup the data for</param>
       <returns>Filled SqlDbTableInfo object</returns>
     </member>
     <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase">
@@ -2055,14 +2025,14 @@
             Get the metadata for an Index
             </summary>
       <param name="oTable">Table object to lookup the data for</param>
-      <param name="cIndex">Name of the index to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
             </summary>
-      <param name="cTableName">Name of the table to lookup the data for</param>
+      <param name="cTable">Name of the table to lookup the data for</param>
       <returns>Filled SqlDbTableInfo object</returns>
     </member>
     <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni">
@@ -2072,35 +2042,30 @@
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.#ctor(System.String,XSharp.RDD.SqlRDD.SqlDbConnection)">
       <summary>
-        <markup>
-          <include item="SMCAutoDocConstructor">
-            <parameter>XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni</parameter>
-          </include>
-        </markup>
-      </summary>
+            Construct a new instance of the SqlMetadataProviderIni class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
+      <param name="cFile">File name where the metadata is stored</param>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
       <summary>
-        <markup>
-          <include item="SMCAutoDocConstructor">
-            <parameter>XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni</parameter>
-          </include>
-        </markup>
-      </summary>
+            Construct a new instance of the SqlMetadataProviderIni class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
       <summary>
             Get the metadata for an Index
             </summary>
       <param name="oTable">Table object to lookup the data for</param>
-      <param name="cIndex">Name of the index to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
       <returns>Filled SqlDbIndexInfo object</returns>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetTableInfo(System.String)">
       <summary>
             Get the metadata for a table
             </summary>
-      <param name="cTableName">Name of the table to lookup the data for</param>
+      <param name="cTable">Name of the table to lookup the data for</param>
       <returns>Filled SqlDbTableInfo object</returns>
     </member>
   </members>

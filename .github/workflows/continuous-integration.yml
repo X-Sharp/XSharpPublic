@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-2022 #Specify the OS to execute on
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
 #      - uses: actions/setup-dotnet@v1.7.2

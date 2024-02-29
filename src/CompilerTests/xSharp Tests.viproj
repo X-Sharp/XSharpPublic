@@ -124376,6 +124376,121 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C900 - INSTANCE field inconsistency with and without SELF
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C901 -  Harbour dialect FIELD statement not supported #1436 *************
+Application = C901 -  Harbour dialect FIELD statement not supported #1436
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C901\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C901
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = F14AF6D3-6F04-41B8-BA35-2E34C94BA21F
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C901 -  Harbour dialect FIELD statement not supported #1436 FileGroups]
+[C901 -  Harbour dialect FIELD statement not supported #1436 Files]
+File = %AppPath%\Prg\C901.prg
+FileGUID = D0111AB4-DB29-4A47-82ED-5F97C1CB6F3F
+FileType = Code
+CopyToBin = 0
+[C901 -  Harbour dialect FIELD statement not supported #1436 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+[C901 -  Harbour dialect FIELD statement not supported #1436 Resources]
+[C901 -  Harbour dialect FIELD statement not supported #1436 Native Resources]
+[C901 -  Harbour dialect FIELD statement not supported #1436 License files]
+[C901 -  Harbour dialect FIELD statement not supported #1436 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C901 -  Harbour dialect FIELD statement not supported #1436 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C901 -  Harbour dialect FIELD statement not supported #1436
 [EndApplications]
 
 [Configurations]

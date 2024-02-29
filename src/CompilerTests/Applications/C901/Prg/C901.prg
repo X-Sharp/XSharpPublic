@@ -1,8 +1,8 @@
-// 901.  Harbour dialect FIELD statement not supported #1436 
+// 901.  Harbour dialect FIELD statement not supported #1436
 // https://github.com/X-Sharp/XSharpPublic/issues/1436
 
 FIELD FLDCHAR2
-FIELD FLDNUM2
+FIELD FLDNUM2 IN alias
 
 FUNCTION Start() AS VOID
 	LOCAL cDbf AS STRING
@@ -15,8 +15,8 @@ FUNCTION Start() AS VOID
 	FieldPut(2, "TEST2")
 	FieldPut(3, 123)
 	FieldPut(4, 456)
-	
-	FIELD FLDCHAR1
+
+	FIELD FLDCHAR1 in alias
 	FIELD FLDNUM1
 	? FLDCHAR1
 	? FLDNUM1
@@ -25,7 +25,7 @@ FUNCTION Start() AS VOID
 
 	xAssert(FLDNUM1 == 123)
 	xAssert(FLDNUM2 == 456)
-	
+
 	DbCloseArea()
 
 PROC xAssert(l AS LOGIC)

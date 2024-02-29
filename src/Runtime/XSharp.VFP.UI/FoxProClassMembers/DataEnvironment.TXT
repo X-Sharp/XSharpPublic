@@ -1,0 +1,35 @@
+
+Class  DataEnvironment  BaseClass   Dataenvironment  Class  Dataenvironment 
+DataEnvironment  ADDOBJECT     Method 
+DataEnvironment  ADDPROPERTY      Method 
+DataEnvironment  AFTERCLOSETABLES        Event
+DataEnvironment  AUTOCLOSETABLES        Property
+DataEnvironment  AUTOOPENTABLES       Property
+DataEnvironment  BASECLASS     Property
+DataEnvironment  BEFOREOPENTABLES         Event
+DataEnvironment  CLASS   Property
+DataEnvironment  CLASSLIBRARY     Property
+DataEnvironment  CLOSETABLES      Method 
+DataEnvironment  COMMENT     Property
+DataEnvironment  DATASOURCE      Property
+DataEnvironment  DATASOURCETYPE        Property
+DataEnvironment  DESTROY    Event
+DataEnvironment  ERROR    Event
+DataEnvironment  INIT Event
+DataEnvironment  INITIALSELECTEDALIAS     Property
+DataEnvironment  NAME   Property
+DataEnvironment  NEWOBJECT      Method 
+DataEnvironment  OBJECTS    Property
+DataEnvironment  OPENTABLES      Method 
+DataEnvironment  OPENVIEWS     Property
+DataEnvironment  PARENT    Property
+DataEnvironment  PARENTCLASS      Property
+DataEnvironment  READEXPRESSION       Method 
+DataEnvironment  READMETHOD      Method 
+DataEnvironment  REMOVEOBJECT       Method 
+DataEnvironment  RESETTODEFAULT       Method 
+DataEnvironment  SAVEASCLASS      Method 
+DataEnvironment  TAG  Property
+DataEnvironment  WRITEEXPRESSION       Method 
+DataEnvironment  WRITEMETHOD      Method 
+

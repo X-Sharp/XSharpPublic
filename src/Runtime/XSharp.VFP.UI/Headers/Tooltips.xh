@@ -1,0 +1,27 @@
+﻿// Tooltips.xh
+// Created by    : fabri
+// Creation Date : 10/13/2022 8:04:02 PM
+// Created for   :
+// WorkStation   : FABXPS
+
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Activate the ToolTip")];
+		PROPERTY ShowTips AS LOGIC
+			GET
+				IF SELF:_vfpToolTip != NULL
+					RETURN SELF:_vfpToolTip:Active
+				ENDIF
+				RETURN False
+			END GET
+			SET
+				IF SELF:_vfpToolTip != NULL
+					SELF:_vfpToolTip:Active := Value
+				ENDIF
+			END SET
+		END PROPERTY
+
+		PROTECTED _vfpToolTip AS System.Windows.Forms.ToolTip
+
+		METHOD SetToolTipText( sender AS System.Windows.Forms.Control, caption AS STRING ) AS VOID
+			IF SELF:_vfpToolTip != NULL .AND. sender != NULL
+				SELF:_vfpToolTip:SetToolTip( sender, caption )
+			ENDIF

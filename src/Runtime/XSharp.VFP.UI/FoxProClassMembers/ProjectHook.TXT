@@ -1,0 +1,38 @@
+
+Class  ProjectHook  BaseClass   Projecthook  Class  Projecthook 
+ProjectHook  ACTIVATE   Event
+ProjectHook  ADDPROPERTY      Method 
+ProjectHook  AFTERBUILD    Event
+ProjectHook  BASECLASS     Property
+ProjectHook  BEFOREBUILD     Event
+ProjectHook  CLASS   Property
+ProjectHook  CLASSLIBRARY     Property
+ProjectHook  COMMENT     Property
+ProjectHook  DEACTIVATE    Event
+ProjectHook  DESTROY    Event
+ProjectHook  ERROR    Event
+ProjectHook  INIT Event
+ProjectHook  NAME   Property
+ProjectHook  OLEDRAGDROP       Event
+ProjectHook  OLEDRAGOVER       Event
+ProjectHook  OLEDROPEFFECTS       Property
+ProjectHook  OLEDROPHASDATA        Property
+ProjectHook  OLEDROPMODE       Property
+ProjectHook  OLEGIVEFEEDBACK       Event
+ProjectHook  PARENT    Property
+ProjectHook  PARENTCLASS      Property
+ProjectHook  QUERYADDFILE      Event
+ProjectHook  QUERYMODIFYFILE       Event
+ProjectHook  QUERYNEWFILE      Event
+ProjectHook  QUERYREMOVEFILE        Event
+ProjectHook  QUERYRUNFILE      Event
+ProjectHook  READEXPRESSION       Method 
+ProjectHook  READMETHOD      Method 
+ProjectHook  RESETTODEFAULT       Method 
+ProjectHook  SAVEASCLASS      Method 
+ProjectHook  SCCDESTROY      Event
+ProjectHook  SCCINIT  Event
+ProjectHook  TAG  Property
+ProjectHook  WRITEEXPRESSION       Method 
+ProjectHook  WRITEMETHOD      Method 
+

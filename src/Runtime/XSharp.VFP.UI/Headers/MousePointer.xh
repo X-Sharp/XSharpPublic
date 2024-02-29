@@ -1,0 +1,54 @@
+﻿// MousePointer.xh
+// Created by    : fabri
+// Creation Date : 10/11/2022 11:33:28 PM
+// Created for   : 
+// WorkStation   : FABXPS
+
+PRIVATE _VFPMousePointer := 0 AS INT
+	[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the shape of the mouse cursor")];
+PROPERTY MousePointer AS INT
+	GET
+		RETURN SELF:_VFPMousePointer
+	END GET
+	SET
+		SELF:_VFPMousePointer := Value
+		SWITCH SELF:_VFPMousePointer
+		CASE 0
+			SELF:Cursor := Cursors.Default
+		CASE 1
+			SELF:Cursor := Cursors.Arrow
+		CASE 2
+			SELF:Cursor := Cursors.Cross
+		CASE 3
+			SELF:Cursor := Cursors.IBeam
+		CASE 4
+			SELF:Cursor := Cursors.Arrow
+		CASE 5
+			SELF:Cursor := Cursors.SizeAll
+		CASE 6
+			SELF:Cursor := Cursors.SizeNESW
+		CASE 7
+			SELF:Cursor := Cursors.SizeNS
+		CASE 8
+			SELF:Cursor := Cursors.SizeNWSE
+		CASE 9
+			SELF:Cursor := Cursors.SizeWE
+		CASE 10
+			SELF:Cursor := Cursors.UpArrow
+		CASE 11
+			SELF:Cursor := Cursors.WaitCursor
+		CASE 12
+			SELF:Cursor := Cursors.No
+		CASE 13
+			SELF:Cursor := Cursors.Arrow
+		CASE 14
+			SELF:Cursor := Cursors.Arrow
+		CASE 15
+			SELF:Cursor := Cursors.Hand
+		CASE 16
+			SELF:Cursor := Cursors.Arrow
+			
+		END SWITCH
+	END SET
+	
+END PROPERTY

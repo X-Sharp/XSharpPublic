@@ -1,0 +1,29 @@
+
+Class  Exception  BaseClass   Exception  Class  Exception 
+Exception  ADDPROPERTY      Method 
+Exception  BASECLASS     Property
+Exception  CLASS   Property
+Exception  CLASSLIBRARY     Property
+Exception  COMMENT     Property
+Exception  DESTROY    Event
+Exception  DETAILS   Property
+Exception  ERROR    Event
+Exception  ERRORNO     Property
+Exception  INIT Event
+Exception  LINECONTENTS     Property
+Exception  LINENO   Property
+Exception  MESSAGE     Property
+Exception  NAME   Property
+Exception  PARENT    Property
+Exception  PARENTCLASS      Property
+Exception  PROCEDURE      Property
+Exception  READEXPRESSION       Method 
+Exception  READMETHOD      Method 
+Exception  RESETTODEFAULT       Method 
+Exception  SAVEASCLASS      Method 
+Exception  STACKLEVEL     Property
+Exception  TAG  Property
+Exception  USERVALUE     Property
+Exception  WRITEEXPRESSION       Method 
+Exception  WRITEMETHOD      Method 
+

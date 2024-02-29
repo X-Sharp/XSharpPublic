@@ -1,0 +1,25 @@
+
+Class  Separator BaseClass   Separator Class  Separator
+Separator ADDPROPERTY      Method 
+Separator BASECLASS     Property
+Separator CLASS   Property
+Separator CLASSLIBRARY     Property
+Separator COMMENT     Property
+Separator DESTROY    Event
+Separator ENABLED    Property
+Separator ERROR    Event
+Separator INIT Event
+Separator NAME   Property
+Separator PARENT    Property
+Separator PARENTCLASS      Property
+Separator READEXPRESSION       Method 
+Separator READMETHOD      Method 
+Separator RESETTODEFAULT       Method 
+Separator SAVEASCLASS      Method 
+Separator STYLE   Property
+Separator TAG  Property
+Separator VISIBLE  Property
+Separator WRITEEXPRESSION       Method 
+Separator WRITEMETHOD      Method 
+Separator ZORDER    Method 
+

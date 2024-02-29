@@ -1,0 +1,14 @@
+﻿// FormOverride.xh
+// These properties capture a Method, through VFPOverride
+
+
+
+PRIVATE _VFPRefresh AS VFPOverride
+
+[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
+PROPERTY vfpRefresh AS STRING GET _VFPRefresh?:SendTo SET Set_Refresh( VFPOverride{SELF, value} )
+
+METHOD Set_Refresh( methodCall AS VFPOverride ) AS VOID
+	// Set it, but don't attached it to the event
+	// In VFPForm, the Refresh() method will do the job
+	SELF:_VFPRefresh := methodCall

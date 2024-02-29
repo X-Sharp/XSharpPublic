@@ -1,0 +1,21 @@
+
+Class  Session  BaseClass   Session  Class  Session 
+Session  ADDPROPERTY      Method 
+Session  BASECLASS     Property
+Session  CLASS   Property
+Session  CLASSLIBRARY     Property
+Session  COMMENT     Property
+Session  DATASESSION     Property
+Session  DATASESSIONID     Property
+Session  DESTROY    Event
+Session  ERROR    Event
+Session  INIT Event
+Session  NAME   Property
+Session  PARENT    Property
+Session  PARENTCLASS      Property
+Session  READEXPRESSION       Method 
+Session  READMETHOD      Method 
+Session  RESETTODEFAULT       Method 
+Session  TAG  Property
+Session  WRITEEXPRESSION       Method 
+

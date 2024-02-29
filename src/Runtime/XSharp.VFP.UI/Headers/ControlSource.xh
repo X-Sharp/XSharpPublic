@@ -1,0 +1,19 @@
+﻿// ControlSource.xh
+// Created by    : fabri
+// Creation Date : 9/23/2022 6:11:50 PM
+// Created for   :
+// WorkStation   : FABXPS
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(false)];
+		[Browsable(false)];
+PROPERTY BindingDefinition AS System.Collections.Generic.Dictionary<System.Windows.Forms.Control,STRING> AUTO
+
+METHOD SetBinding( sender AS System.Windows.Forms.Control, bindingInfo AS STRING ) AS VOID
+	//
+	IF SELF:BindingDefinition == NULL
+		SELF:BindingDefinition := System.Collections.Generic.Dictionary<System.Windows.Forms.Control,STRING>{}
+	ENDIF
+	SELF:BindingDefinition:Add( sender, bindingInfo )
+

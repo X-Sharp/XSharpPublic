@@ -1,0 +1,437 @@
+﻿// ControlEventHandlers.xh
+// Created by    : fabri
+// Creation Date : 10/11/2022 11:18:04 PM
+// Created for   :
+// WorkStation   : FABXPS
+
+#include "AEventsSupport.xh"
+
+PRIVATE _VFPMouseLeave AS VFPOverride
+PRIVATE _VFPMouseEnter AS VFPOverride
+
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the MouseEnter handling method. Occurs when a mouse cursor moves into a control")];
+PROPERTY vfpMouseEnter AS STRING GET _VFPMouseEnter?:SendTo SET Set_MouseEnter( VFPOverride{SELF, VALUE} )
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the MouseLeave handling method. Occurs when a mouse cursor exits a control")];
+PROPERTY vfpMouseLeave AS STRING GET _VFPMouseLeave?:SendTo SET Set_MouseLeave( VFPOverride{SELF, VALUE} )
+
+
+METHOD Set_MouseEnter( methodCall AS VFPOverride ) AS VOID
+    // Remove the EventHandler that has been previously set
+    IF SELF:_VFPMouseEnter != NULL
+        SELF:MouseEnter -= System.EventHandler{ SELF, @OnVFPMouseEnter() }
+    ENDIF
+    //
+	SELF:MouseEnter += System.EventHandler{ SELF, @OnVFPMouseEnter() }
+	SELF:_VFPMouseEnter := methodCall
+
+PRIVATE METHOD OnVFPMouseEnter(sender AS OBJECT, e AS System.EventArgs) AS VOID
+	IF _VFPMouseEnter != NULL
+		LOCAL nButton AS INT
+		LOCAL nShift AS INT
+		LOCAL nXCoord AS INT
+		LOCAL nYCoord AS INT
+		//
+		nXCoord := System.Windows.Forms.Control.MousePosition:X - SELF:Location:X
+		nYCoord := System.Windows.Forms.Control.MousePosition:Y - SELF:Location:Y
+		SWITCH System.Windows.Forms.Control.MouseButtons
+		CASE MouseButtons.Right
+			nButton := 2
+		CASE MouseButtons.Middle
+			nButton := 4
+		OTHERWISE
+			nButton := 1
+		END SWITCH
+		nShift := 0
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Shift ) == Keys.Shift
+			nShift += 1
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Control ) == Keys.Control
+			nShift += 2
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Alt ) == Keys.Alt
+			nShift += 4
+		ENDIF
+		//
+		SELF:__aeventsData := AEventsDefinition{ sender, "MouseEnter" }
+		SELF:_VFPMouseEnter:Call( <USUAL>{nButton, nShift, nXCoord, nYCoord} )
+	ENDIF
+	RETURN
+
+
+
+METHOD Set_MouseLeave( methodCall AS VFPOverride ) AS VOID
+	SELF:MouseLeave += System.EventHandler{ SELF, @OnVFPMouseLeave() }
+	SELF:_VFPMouseLeave := methodCall
+
+PRIVATE METHOD OnVFPMouseLeave(sender AS OBJECT, e AS System.EventArgs) AS VOID
+	IF _VFPMouseLeave != NULL
+		LOCAL nButton AS INT
+		LOCAL nShift AS INT
+		LOCAL nXCoord AS INT
+		LOCAL nYCoord AS INT
+		//
+		nXCoord := System.Windows.Forms.Control.MousePosition:X - SELF:Location:X
+		nYCoord := System.Windows.Forms.Control.MousePosition:Y - SELF:Location:Y
+		SWITCH System.Windows.Forms.Control.MouseButtons
+		CASE MouseButtons.Right
+			nButton := 2
+		CASE MouseButtons.Middle
+			nButton := 4
+		OTHERWISE
+			nButton := 1
+		END SWITCH
+		nShift := 0
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Shift ) == Keys.Shift
+			nShift += 1
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Control ) == Keys.Control
+			nShift += 2
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Alt ) == Keys.Alt
+			nShift += 4
+		ENDIF
+		//
+        SELF:__aeventsData := AEventsDefinition{ sender, "MouseLeave" }
+		SELF:_VFPMouseLeave:Call( <USUAL>{nButton, nShift, nXCoord, nYCoord} )
+	ENDIF
+	RETURN
+
+	//		METHOD AddProperty(p1, p2, p3, p4 ) AS USUAL CLIPPER
+	//			IF VFPAddProperty != NULL
+	//				RETURN SELF:VFPAddProperty:Call( <USUAL>{p1, p2, p3, p4} )
+	//			ENDIF
+	//			RETURN NIL
+
+
+
+PRIVATE _VFPValid AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Valid handling method. Occurs before a control loses the focus.")];
+PROPERTY vfpValid AS STRING GET _VFPValid?:SendTo SET Set_Valid( VFPOverride{SELF, VALUE} )
+
+METHOD Set_Valid( methodCall AS VFPOverride ) AS VOID
+	SELF:Validating += System.ComponentModel.CancelEventHandler{ SELF, @OnVFPValid() }
+	SELF:_VFPValid := methodCall
+
+PRIVATE METHOD OnVFPValid( sender AS OBJECT, e AS CancelEventArgs ) AS VOID
+	//
+	IF SELF:_VFPValid != NULL
+        LOCAL retValue AS USUAL
+        SELF:__aeventsData := AEventsDefinition{ sender, "Valid" }
+		retValue := SELF:_VFPValid:Call( )
+		IF IsLogic( retValue )
+			e:Cancel := !retValue
+		ENDIF
+		IF IsNumeric( retValue )
+			IF retValue == 0
+				e.Cancel := TRUE
+			ELSE
+				NOP
+			ENDIF
+		ENDIF
+	ENDIF
+
+METHOD _Click() AS VOID
+	// If you call the Click() Method on a Button, let's try to send that as an Event
+	SELF:OnClick(EventArgs.Empty )
+END METHOD
+
+PRIVATE _VFPWhen AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the When handling method. Occurs before a control receives the focus.")];
+PROPERTY vfpWhen AS STRING GET _VFPWhen?:SendTo SET Set_When( VFPOverride{SELF, VALUE} )
+
+METHOD Set_When( methodCall AS VFPOverride ) AS VOID
+	SELF:_VFPWhen := methodCall
+	IF SELF:_VFPGotFocus == NULL
+		// No Set Focus, put one
+		SELF:Enter += System.EventHandler{ SELF, @OnVFPGotFocus() }
+	ENDIF
+
+PRIVATE _VFPGotFocus AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the GotFocus handling method. Occurs when an object receives the focus, either by user action or through code.")];
+PROPERTY vfpGotFocus AS STRING GET _VFPGotFocus?:SendTo SET Set_GotFocus( VFPOverride{SELF, VALUE} )
+
+METHOD Set_GotFocus( methodCall AS VFPOverride ) AS VOID
+	IF SELF:_VFPGotFocus == NULL .AND. SELF:_VFPWhen == NULL
+		// No Set Focus, put one (One might have been set by When)
+		SELF:Enter += System.EventHandler{ SELF, @OnVFPGotFocus() }
+	ENDIF
+	SELF:_VFPGotFocus := methodCall
+
+PRIVATE METHOD OnVFPGotFocus( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+	IF SELF:_VFPWhen != NULL
+        LOCAL retValue AS USUAL
+        SELF:__aeventsData := AEventsDefinition{ sender, "When" }
+		retValue := SELF:_VFPWhen:Call( )
+		IF IsLogic( retValue )
+			// When return FALSE ?
+			IF !retValue
+				// Go to next Control
+				// Get the parent of the current control
+				IF ((System.Windows.Forms.Control)sender).Parent IS System.Windows.Forms.Control VAR p
+					// And ask it for the next control
+					VAR ctl := p:GetNextControl( SELF, TRUE )
+					// If not Null, SetFocus
+					ctl?:Focus()
+					RETURN
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+#ifdef VFPAfterWhenCall
+	// Do we have something to do ?
+	SELF:VFPAfterWhen( sender, e )
+#endif
+	IF SELF:_VFPGotFocus != NULL
+		SELF:_VFPGotFocus:Call( )
+	ENDIF
+
+
+
+PRIVATE _VFPLostFocus AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the LostFocus handling method. Occurs when an object loses the focus.")];
+PROPERTY vfpLostFocus AS STRING GET _VFPLostFocus?:SendTo SET Set_LostFocus( VFPOverride{SELF, VALUE} )
+
+METHOD Set_LostFocus( methodCall AS VFPOverride ) AS VOID
+	SELF:Leave += System.EventHandler{ SELF, @OnVFPLostFocus() }
+	SELF:_VFPLostFocus := methodCall
+
+PRIVATE METHOD OnVFPLostFocus( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+    IF SELF:_VFPLostFocus != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "LostFocus" }
+		SELF:_VFPLostFocus:Call( )
+	ENDIF
+
+
+PRIVATE _VFPInteractiveChange AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the InteractiveChange handling method. Occurs when the user changes the value of a control using the keyboard or the mouse.")];
+PROPERTY vfpInteractiveChange AS STRING GET _VFPInteractiveChange?:SendTo SET Set_InteractiveChange( VFPOverride{SELF, VALUE} )
+
+
+METHOD Set_InteractiveChange( methodCall AS VFPOverride ) AS VOID
+	// Set it, but don't attached it to the event
+	// In VFPTextBox control, the OnTextChanged event-handler will do the job
+    SELF:_VFPInteractiveChange := methodCall
+
+PRIVATE METHOD OnVFPInteractiveChange( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+    IF SELF:_VFPInteractiveChange != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "InteractiveChange" }
+		SELF:_VFPInteractiveChange:Call( )
+	ENDIF
+
+
+PRIVATE _VFPClick AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Click")];
+PROPERTY vfpCLick AS STRING GET _VFPClick?:SendTo SET Set_Click( VFPOverride{SELF, VALUE} )
+
+METHOD Set_Click( methodCall AS VFPOverride ) AS VOID
+	SELF:Click += System.EventHandler{ SELF, @OnVFPClick() }
+	SELF:_VFPClick := methodCall
+
+PRIVATE METHOD OnVFPClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+    IF SELF:_VFPClick != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "Click" }
+		SELF:_VFPClick:Call( )
+	ENDIF
+
+
+PRIVATE _VFPDblClick AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("DblClick")];
+PROPERTY vfpDblClick AS STRING GET _VFPDblClick?:SendTo SET Set_DblClick( VFPOverride{SELF, VALUE} )
+
+METHOD Set_DblClick( methodCall AS VFPOverride ) AS VOID
+	SELF:DoubleClick += System.EventHandler{ SELF, @OnVFPDblClick() }
+	SELF:_VFPDblClick := methodCall
+
+PRIVATE METHOD OnVFPDblClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+    IF SELF:_VFPDblClick != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "DblClick" }
+		SELF:_VFPDblClick:Call( )
+    ENDIF
+
+
+PRIVATE _VFPDestroy AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Destroy")];
+PROPERTY vfpDestroy AS STRING GET _VFPDestroy?:SendTo SET Set_Destroy( VFPOverride{SELF, VALUE} )
+
+METHOD Set_Destroy( methodCall AS VFPOverride ) AS VOID
+	SELF:HandleDestroyed += System.EventHandler{ SELF, @OnVFPDestroy() }
+	SELF:_VFPDestroy := methodCall
+
+PRIVATE METHOD OnVFPDestroy( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+    IF SELF:_VFPDestroy != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "Destroy" }
+		SELF:_VFPDestroy:Call( )
+    ENDIF
+
+PRIVATE _VFPMouseUp AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseUp")];
+PROPERTY vfpMouseUp AS STRING GET _VFPMouseUp?:SendTo SET Set_MouseUp( VFPOverride{SELF, VALUE} )
+
+METHOD Set_MouseUp( methodCall AS VFPOverride ) AS VOID
+	SELF:MouseUp += System.Windows.Forms.MouseEventHandler{ SELF, @OnVFPMouseUp() }
+	SELF:_VFPMouseUp := methodCall
+
+PRIVATE METHOD OnVFPMouseUp(sender AS OBJECT, e AS System.Windows.Forms.MouseEventArgs) AS VOID
+	IF _VFPMouseUp != NULL
+		LOCAL nButton AS INT
+		LOCAL nShift AS INT
+		LOCAL nXCoord AS INT
+		LOCAL nYCoord AS INT
+		//
+		nXCoord := e:X - SELF:Location:X
+		nYCoord := e:Y - SELF:Location:Y
+		SWITCH e:Button
+		CASE MouseButtons.Right
+			nButton := 2
+		CASE MouseButtons.Middle
+			nButton := 4
+		OTHERWISE
+			nButton := 1
+		END SWITCH
+		nShift := 0
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Shift ) == Keys.Shift
+			nShift += 1
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Control ) == Keys.Control
+			nShift += 2
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Alt ) == Keys.Alt
+			nShift += 4
+		ENDIF
+		//
+		SELF:__aeventsData := AEventsDefinition{ sender, "MouseUp" }
+        SELF:_VFPMouseUp:Call( <USUAL>{nButton, nShift, nXCoord, nYCoord} )
+        //
+        IF (e:Button == MouseButtons.Right )
+            SELF:OnVFPRightClick( sender, e )
+        ENDIF
+	ENDIF
+    RETURN
+
+PRIVATE _VFPMouseDown AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseDown")];
+PROPERTY vfpMouseDown AS STRING GET _VFPMouseDown?:SendTo SET Set_MouseDown( VFPOverride{SELF, VALUE} )
+
+METHOD Set_MouseDown( methodCall AS VFPOverride ) AS VOID
+	SELF:MouseDown += System.Windows.Forms.MouseEventHandler{ SELF, @OnVFPMouseDown() }
+	SELF:_VFPMouseDown := methodCall
+
+PRIVATE METHOD OnVFPMouseDown(sender AS OBJECT, e AS System.Windows.Forms.MouseEventArgs) AS VOID
+	IF _VFPMouseDown != NULL
+		LOCAL nButton AS INT
+		LOCAL nShift AS INT
+		LOCAL nXCoord AS INT
+		LOCAL nYCoord AS INT
+		//
+		nXCoord := e:X - SELF:Location:X
+		nYCoord := e:Y - SELF:Location:Y
+		SWITCH e:Button
+		CASE MouseButtons.Right
+			nButton := 2
+		CASE MouseButtons.Middle
+			nButton := 4
+		OTHERWISE
+			nButton := 1
+		END SWITCH
+		nShift := 0
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Shift ) == Keys.Shift
+			nShift += 1
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Control ) == Keys.Control
+			nShift += 2
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Alt ) == Keys.Alt
+			nShift += 4
+		ENDIF
+		//
+		SELF:__aeventsData := AEventsDefinition{ sender, "MouseDown" }
+		SELF:_VFPMouseDown:Call( <USUAL>{nButton, nShift, nXCoord, nYCoord} )
+	ENDIF
+    RETURN
+
+PRIVATE _VFPMouseMove AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("MouseMove")];
+PROPERTY vfpMouseMove AS STRING GET _VFPMouseMove?:SendTo SET Set_MouseMove( VFPOverride{SELF, VALUE} )
+
+METHOD Set_MouseMove( methodCall AS VFPOverride ) AS VOID
+	SELF:MouseMove += System.Windows.Forms.MouseEventHandler{ SELF, @OnVFPMouseMove() }
+	SELF:_VFPMouseMove := methodCall
+
+PRIVATE METHOD OnVFPMouseMove(sender AS OBJECT, e AS System.Windows.Forms.MouseEventArgs) AS VOID
+	IF _VFPMouseMove != NULL
+		LOCAL nButton AS INT
+		LOCAL nShift AS INT
+		LOCAL nXCoord AS INT
+		LOCAL nYCoord AS INT
+		//
+		nXCoord := e:X - SELF:Location:X
+		nYCoord := e:Y - SELF:Location:Y
+		SWITCH e:Button
+		CASE MouseButtons.Right
+			nButton := 2
+		CASE MouseButtons.Middle
+			nButton := 4
+		OTHERWISE
+			nButton := 1
+		END SWITCH
+		nShift := 0
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Shift ) == Keys.Shift
+			nShift += 1
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Control ) == Keys.Control
+			nShift += 2
+		ENDIF
+		IF ( System.Windows.Forms.Control.ModifierKeys & Keys.Alt ) == Keys.Alt
+			nShift += 4
+		ENDIF
+		//
+		SELF:__aeventsData := AEventsDefinition{ sender, "MouseMove" }
+		SELF:_VFPMouseMove:Call( <USUAL>{nButton, nShift, nXCoord, nYCoord} )
+	ENDIF
+    RETURN
+
+
+PRIVATE _VFPRightClick AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("RightClick")];
+PROPERTY vfpRightCLick AS STRING GET _VFPRightClick?:SendTo SET Set_RightClick( VFPOverride{SELF, VALUE} )
+
+METHOD Set_RightClick( methodCall AS VFPOverride ) AS VOID
+	SELF:_VFPRightClick := methodCall
+
+PRIVATE METHOD OnVFPRightClick( sender AS OBJECT, e AS System.EventArgs) AS VOID
+	//
+    IF SELF:_VFPRightClick != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "RightClick" }
+		SELF:_VFPRightClick:Call( )
+    ENDIF
+
+
+PRIVATE _VFPKeyPress AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("KeyPress")];
+PROPERTY vfpKeyPress AS STRING GET _VFPKeyPress?:SendTo SET Set_KeyPress( VFPOverride{SELF, VALUE} )
+
+METHOD Set_KeyPress( methodCall AS VFPOverride ) AS VOID
+	SELF:_VFPKeyPress := methodCall
+
+PRIVATE METHOD OnVFPKeyPress( sender AS OBJECT, e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
+	//
+    IF SELF:_VFPKeyPress != NULL
+        SELF:__aeventsData := AEventsDefinition{ sender, "KeyPress" }
+		SELF:_VFPKeyPress:Call( )
+    ENDIF
+
+
+PRIVATE _VFPRefresh AS VFPOverride
+[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Refresh Method")];
+PROPERTY vfpRefresh AS STRING GET _VFPRefresh?:SendTo SET Set_Refresh( VFPOverride{SELF, VALUE} )
+
+METHOD Set_Refresh( methodCall AS VFPOverride ) AS VOID
+	// Set it, but don't attached it to the event
+	// In VFPForm, the Refresh() method will do the job
+	SELF:_VFPRefresh := methodCall

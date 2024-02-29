@@ -1,0 +1,9 @@
+﻿
+#ifndef VFP_GROUP_XH
+#define VFP_GROUP_XH
+PROPERTY MemberClass AS STRING AUTO
+PROPERTY MemberClassLibrary AS STRING AUTO
+
+
+#endif
+

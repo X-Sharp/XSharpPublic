@@ -90,7 +90,7 @@
     <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VFPXPorterLib\VFPXPorterLib.xsproj">
+    <ProjectReference Include="..\..\Tools\VFPXPorter\Source\VFPXPorterLib\VFPXPorterLib.xsproj">
       <Name>VFPXPorterLib</Name>
       <Project>{71f46150-aad7-4ed1-8e3f-263698800ba7}</Project>
       <Private>True</Private>

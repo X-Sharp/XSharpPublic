@@ -145,7 +145,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharp.VFP.UI\XSharp.VFP.UI.xsproj">
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP.UI\XSharp.VFP.UI.xsproj">
       <Name>XSharp.VFP.UI</Name>
       <Project>{7e2cbef6-9945-42c4-a7df-f9b8e2e68d44}</Project>
       <Private>True</Private>

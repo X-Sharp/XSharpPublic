@@ -124377,7 +124377,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C900 - INSTANCE field inconsistency with and without SELF
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C901 -  Harbour dialect FIELD statement not supported #1436 *************
 Application = C901 -  Harbour dialect FIELD statement not supported #1436
 IDEVersion = 1.06

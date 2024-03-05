@@ -1096,16 +1096,16 @@ METHOD __VerifyDataServer(oDataServer AS USUAL) AS LOGIC STRICT
 
 	dwParmType := UsualType(oDataServer)
 	IF dwParmType == STRING
-		oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
+		oAttachedServer := CreateInstance(#DBServer, oDataServer)
 		oAttachedServer:ConcurrencyControl := nCCMode
 	ELSEIF dwParmType == SYMBOL
-		oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
+		oAttachedServer := CreateInstance(#DBServer, oDataServer)
 		oAttachedServer:ConcurrencyControl := nCCMode
 	ELSEIF dwParmType == OBJECT
-		IF IsInstanceOfUsual(oDataServer, #DataServer)
+		IF (oDataServer IS DataServer)
 			oAttachedServer := oDataServer
-		ELSEIF IsInstanceOfUsual(oDataServer, #FileSpec)
-			oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
+		ELSEIF (oDataServer IS FileSpec)
+			oAttachedServer := CreateInstance(#DBServer, oDataServer)
 			oAttachedServer:ConcurrencyControl := nCCMode
 		ELSE
 			RETURN FALSE
@@ -1240,7 +1240,7 @@ ASSIGN Browser(oDataBrowser)
 	// If theres a browser already remove it and set up the new browser
 
 
-	IF !IsInstanceOfUsual(oDataBrowser, #Control) .OR. (oDataBrowser == NULL_OBJECT)
+	IF !(oDataBrowser IS Control) .OR. (oDataBrowser == NULL_OBJECT)
 		WCError{#Browser,#DataWindow,__WCSTypeError,oDataBrowser,1}:Throw()
 	ENDIF
 
@@ -1280,7 +1280,7 @@ METHOD ButtonClick(oControlEvent)
 	oButton := oControlEvent:Control
 
 
-	IF IsInstanceOfUsual(oButton:Owner, #DataWindow)
+	IF (oButton:Owner IS DataWindow)
 		oWindow := oButton:Owner
 	ELSE
 		oWindow := SELF
@@ -1351,7 +1351,7 @@ ASSIGN Caption(sNewCaption)
 METHOD ChangeFont(oFont, lUpdate)
 
 
-	IF !IsInstanceOfUsual(oFont,#Font)
+	IF !(oFont IS Font)
 		WCError{#ChangeFont,#DataWindow,__WCSTypeError,oFont,1}:Throw()
 	ENDIF
 
@@ -2354,7 +2354,7 @@ METHOD HelpRequest(oHelpRequestEvent)
 		oP:__EnableHelpCursor(FALSE)
 		oP := oP:owner
 	END
-	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
+	IF (oHelpRequestEvent IS HelpRequestEvent) ;
 			.AND. SELF:HelpDisplay != NULL_OBJECT ;
 			.AND. SELF:CurrentView == #FormView ;
 			.AND. (NULL_STRING != (cHelpContext := oHelpRequestEvent:HelpContext))

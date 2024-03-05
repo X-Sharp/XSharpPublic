@@ -7,10 +7,10 @@ CLASS DrawObject INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __SetWindow(oWindow AS Window) AS Window STRICT 
+	METHOD __SetWindow(oWindow AS Window) AS Window STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	oWnd := oWindow
@@ -20,9 +20,9 @@ CLASS DrawObject INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.BoundingBox/*" />
-ACCESS BoundingBox 
-	
-	
+ACCESS BoundingBox
+
+
 
 
 	RETURN BoundingBox{Point{0,0},Dimension{0,0}}
@@ -30,8 +30,8 @@ ACCESS BoundingBox
 
 /// <include file="Gui.xml" path="doc/DrawObject.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -47,18 +47,18 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.Draw/*" />
-METHOD Draw() 
-	
-	
+METHOD Draw()
+
+
 
 
 	RETURN SELF
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.Handle/*" />
-METHOD Handle(nHandleType) 
-	
-	
+METHOD Handle(nHandleType)
+
+
 
 
 	Default(@nHandleType, 0L)
@@ -82,16 +82,16 @@ METHOD Handle(nHandleType)
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.HitTest/*" />
-METHOD HitTest(oPoint) 
+METHOD HitTest(oPoint)
 	LOCAL oBB AS BoundingBox
 	LOCAL wX, wY AS WORD
 
 
-	
-	
 
 
-	IF !IsInstanceOfUsual(oPoint,#Point)
+
+
+	IF !(oPoint IS Point)
 		WCError{#HitTest,#DrawObject,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 
@@ -105,41 +105,41 @@ METHOD HitTest(oPoint)
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.ctor/*" />
-CONSTRUCTOR(oPoint) 
-	
-	
+CONSTRUCTOR(oPoint)
+
+
 
 
 	SUPER()
-	IF !IsInstanceOfUsual(oPoint,#Point)
+	IF !(oPoint IS Point)
 		WCError{#Init,#DrawObject,__WCSTypeError,oPoint,1}:Throw()
 	ENDIF
 
 
-	
-	
+
+
 	SELF:oPoint:=oPoint
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.Origin/*" />
-ACCESS Origin 
-	
-	
+ACCESS Origin
+
+
 
 
 	RETURN oPoint
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.Origin/*" />
-ASSIGN Origin(oNewPoint) 
-	
-	
+ASSIGN Origin(oNewPoint)
 
 
-	IF !IsInstanceOfUsual(oNewPoint,#Point)
+
+
+	IF !(oNewPoint IS Point)
 		WCError{#Origin,#DrawObject,__WCSTypeError,oNewPoint,1}:Throw()
 	ENDIF
 
@@ -148,18 +148,18 @@ ASSIGN Origin(oNewPoint)
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.RasterOperation/*" />
-ACCESS RasterOperation 
-	
-	
+ACCESS RasterOperation
+
+
 
 
 	RETURN wRop
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.RasterOperation/*" />
-ASSIGN RasterOperation(kRaster) 
-	
-	
+ASSIGN RasterOperation(kRaster)
+
+
 
 
 	IF !IsLong(kRaster)
@@ -171,21 +171,21 @@ ASSIGN RasterOperation(kRaster)
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.Size/*" />
-ACCESS Size 
-	
-	
+ACCESS Size
+
+
 
 
 	RETURN Dimension{0,0}
 
 
 /// <include file="Gui.xml" path="doc/DrawObject.Size/*" />
-ASSIGN Size(oNewSize) 
-	
-	
+ASSIGN Size(oNewSize)
 
 
-	IF !IsInstanceOfUsual(oNewSize,#Dimension)
+
+
+	IF !(oNewSize IS Dimension)
 		WCError{#Size,#DrawObject,__WCSTypeError,oNewSize,1}:Throw()
 	ENDIF
 

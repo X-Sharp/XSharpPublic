@@ -3,9 +3,9 @@ CLASS HorizontalSpinner INHERIT Spinner
 
 
 /// <include file="Gui.xml" path="doc/HorizontalSpinner.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
@@ -21,7 +21,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -33,33 +33,33 @@ CLASS Spinner INHERIT ScrollBar
 
 
 /// <include file="Gui.xml" path="doc/Spinner.Client/*" />
-ACCESS Client 
-	
-	
+ACCESS Client
+
+
 
 
 	RETURN oClient
 
 
 /// <include file="Gui.xml" path="doc/Spinner.Client/*" />
-ASSIGN Client(oNewClient) 
-	
-	
+ASSIGN Client(oNewClient)
 
 
-	IF !IsNil(oNewClient) .AND. IsInstanceOfUsual(oNewClient, #Control)
+
+
+	IF !IsNil(oNewClient) .AND. (oNewClient IS Control)
 		SendMessage(SELF:Handle(), UDM_SETBUDDY, DWORD(_CAST, oNewClient:Handle()), 0L)
 		RETURN oClient := oNewClient
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Spinner.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
+
+
 
 
 	Default(@lDataAware, TRUE)
@@ -72,50 +72,50 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Spinner.IsHexBased/*" />
-ACCESS IsHexBased 
-	
-	
+ACCESS IsHexBased
+
+
 
 
 	RETURN (SendMessage(SELF:Handle(), UDM_GETBASE, 0, 0) == 16)
 
 
 /// <include file="Gui.xml" path="doc/Spinner.IsHexBased/*" />
-ASSIGN IsHexBased(lNewValue) 
-	
-	
+ASSIGN IsHexBased(lNewValue)
+
+
 
 
 	SendMessage(SELF:Handle(), UDM_SETBASE, IIF(lNewValue, 16, 10), 0)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Spinner.Position/*" />
-ACCESS Position 
-	
-	
+ACCESS Position
+
+
 
 
 	RETURN SELF:ThumbPosition
 
 
 /// <include file="Gui.xml" path="doc/Spinner.Position/*" />
-ASSIGN Position(liPos) 
-	
-	
+ASSIGN Position(liPos)
+
+
 
 
 	RETURN SELF:ThumbPosition := liPos
 
 
 /// <include file="Gui.xml" path="doc/Spinner.Range/*" />
-ACCESS Range 
+ACCESS Range
 	LOCAL iLow, iHigh AS LONG
-	//LOCAL dwRes AS DWORD                                           
+	//LOCAL dwRes AS DWORD
 	//dwRes := DWORD(_CAST, SendMessage(SELF:Handle(), UDM_GETRANGE, 0, 0))
 	//RETURN Range{SHORT(_CAST, HiWord(dwRes)), SHORT(_CAST, LoWord(dwRes))}
 	SendMessage(SELF:Handle(), UDM_GETRANGE32, DWORD(_CAST, @iLow), LONG(_CAST, @iHigh))
@@ -123,37 +123,37 @@ ACCESS Range
 
 
 /// <include file="Gui.xml" path="doc/Spinner.Range/*" />
-ASSIGN Range(oNewRange) 
+ASSIGN Range(oNewRange)
 	LOCAL sUpper, sLower AS SHORTINT
-	IF !IsInstanceOfUsual(oNewRange, #Range)
+	IF !(oNewRange IS Range)
 		WCError{#Range, #Spinner, __WCSTypeError, oNewRange, 1}:Throw()
 	ENDIF
 	sUpper := oNewRange:Max
 	sLower := oNewRange:Min
-    SendMessage(SELF:Handle(), UDM_SETRANGE32, sLower, sUpper)	
+    SendMessage(SELF:Handle(), UDM_SETRANGE32, sLower, sUpper)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Spinner.ThumbPosition/*" />
-ACCESS ThumbPosition 
+ACCESS ThumbPosition
    RETURN SendMessage(SELF:Handle(), UDM_GETPOS32, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/Spinner.ThumbPosition/*" />
-ASSIGN ThumbPosition(nThumbPosition) 
-   	LOCAL liThumbPos AS LONG	
+ASSIGN ThumbPosition(nThumbPosition)
+   	LOCAL liThumbPos AS LONG
 	IF !IsLong(nThumbPosition)
 		WCError{#ThumbPosition, #Spinner, __WCSTypeError, nThumbPosition, 1}:Throw()
 	ENDIF
 	liThumbPos := nThumbPosition
-	 
-	 
+
+
 	SendMessage(SELF:Handle(), UDM_SETPOS32, 0, liThumbPos)
 
 
-	RETURN 
+	RETURN
 
 
 
@@ -166,9 +166,9 @@ CLASS VerticalSpinner INHERIT Spinner
 
 
 /// <include file="Gui.xml" path="doc/VerticalSpinner.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension)
@@ -179,7 +179,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

@@ -129,7 +129,7 @@ METHOD Insert(xType)
 		CloseClipboard()
 
 
-	ELSEIF IsInstanceOfUsual(xType,#Bitmap)
+	ELSEIF (xType IS Bitmap)
 
 
 		IF !OpenClipboard(NULL_PTR)
@@ -223,7 +223,7 @@ METHOD RetrieveBitmap(oBitmap)
 
 
 
-	IF !IsInstanceOfUsual(oBitmap,#Bitmap)
+	IF !(oBitmap IS Bitmap)
 		WCError{#RetrieveBitmap,#Clipboard,__WCSTypeError,oBitmap,1}:Throw()
 	ENDIF
 

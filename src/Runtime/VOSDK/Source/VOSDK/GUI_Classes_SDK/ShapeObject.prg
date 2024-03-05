@@ -6,13 +6,13 @@ CLASS ShapeObject INHERIT DrawObject
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.BoundingBox/*" />
-ACCESS BoundingBox 
+ACCESS BoundingBox
 	LOCAL oOrg AS Point
 	LOCAL oDim AS Dimension
 
 
-	
-	
+
+
 
 
 	oOrg := SELF:Origin
@@ -36,22 +36,22 @@ ACCESS BoundingBox
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Brush/*" />
-ACCESS Brush 
-	
-	
+ACCESS Brush
+
+
 
 
 	RETURN oBrush
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Brush/*" />
-ASSIGN Brush(oNewBrush) 
-	
-	
+ASSIGN Brush(oNewBrush)
+
+
 
 
 	IF !IsNil(oNewBrush)
-		IF !IsInstanceOfUsual(oNewBrush,#Brush)
+		IF !(oNewBrush IS Brush)
 			WCError{#Brush,#ShapeObject,__WCSTypeError,oNewBrush,1}:Throw()
 		ENDIF
 	ENDIF
@@ -60,8 +60,8 @@ ASSIGN Brush(oNewBrush)
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -76,25 +76,25 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.ctor/*" />
-CONSTRUCTOR(oPoint, oDimension, oPen, oBrush) 
-	
-	
+CONSTRUCTOR(oPoint, oDimension, oPen, oBrush)
+
+
 
 
 	SUPER(oPoint)
 
 
-	IF !IsInstanceOfUsual(oDimension,#Dimension)
+	IF !(oDimension IS Dimension)
 		WCError{#Init,#ShapeObject,__WCSTypeError,oDimension,2}:Throw()
 	ENDIF
 	IF !IsNil(oPen)
-		IF !IsInstanceOfUsual(oPen,#Pen)
+		IF !(oPen IS Pen)
 			WCError{#Init,#ShapeObject,__WCSTypeError,oPen,3}:Throw()
 		ENDIF
 		SELF:oPen:=oPen
 	ENDIF
 	IF !IsNil(oBrush)
-		IF !IsInstanceOfUsual(oBrush,#Brush)
+		IF !(oBrush IS Brush)
 			WCError{#Init,#ShapeObject,__WCSTypeError,oBrush,4}:Throw()
 		ENDIF
 		SELF:oBrush:=oBrush
@@ -102,24 +102,24 @@ CONSTRUCTOR(oPoint, oDimension, oPen, oBrush)
 	SELF:oDimension:=oDimension
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Pen/*" />
-ACCESS Pen 
-	
-	
+ACCESS Pen
+
+
 	RETURN oPen
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Pen/*" />
-ASSIGN Pen(oNewPen) 
-	
-	
+ASSIGN Pen(oNewPen)
+
+
 
 
 	IF !IsNil(oNewPen)
-		IF !IsInstanceOfUsual(oNewPen,#Pen)
+		IF !(oNewPen IS Pen)
 			WCError{#Pen,#ShapeObject,__WCSTypeError,oNewPen,1}:Throw()
 		ENDIF
 	ENDIF
@@ -129,13 +129,13 @@ ASSIGN Pen(oNewPen)
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Size/*" />
-ACCESS Size 
+ACCESS Size
 	RETURN oDimension
 
 
 /// <include file="Gui.xml" path="doc/ShapeObject.Size/*" />
-ASSIGN Size(oNewDimension) 
-	IF !IsInstanceOfUsual(oNewDimension,#Dimension)
+ASSIGN Size(oNewDimension)
+	IF !(oNewDimension IS Dimension)
 		WCError{#Size,#ShapeObject,__WCSTypeError,oNewDimension,1}:Throw()
 	ENDIF
 	RETURN oDimension := Dimension{oNewDimension:Width, oNewDimension:Height}

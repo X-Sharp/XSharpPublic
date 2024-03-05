@@ -1,0 +1,80 @@
+﻿
+
+#ifndef VFP_CONTAINER_XH
+#define VFP_CONTAINER_XH
+
+
+#include "VFPObject.xh"
+// In order to support it, we also need to have VFPProperties.xh
+#include "..\XSharp\VFPProperties.xh"
+
+
+// METHOD AddObject(cName, cClass , cOLEClass , aInit1, aInit2 ) AS USUAL CLIPPER
+METHOD AddObject( _args ) AS USUAL CLIPPER
+    LOCAL oObject AS USUAL
+    LOCAL cName AS STRING
+    LOCAL cClass AS STRING
+    //
+    VAR parms := _ARGS()
+    VAR success := TRUE
+    IF parms:Length >= 2
+        // At least a Object-Name and a Class-Name
+        IF IsString( parms[1] ) .AND. IsString( parms[2] )
+            // Don't forget to check the Parameters for Init()
+            cName := parms[1]
+            cClass := parms[2]
+            // First, search for the type in XSharp.VFP.UI
+            cClass := "XSharp.VFP.UI." + cClass
+            TRY
+                oObject := CreateInstance( cClass )
+            CATCH
+                NOP
+            END TRY
+            // No !?
+            IF oObject == NULL
+                // Ok let's try with just the name
+                cClass := parms[2]
+                // No TRY .. CATCH, Throw an error if needed
+                oObject := CreateInstance( cClass )
+            ENDIF
+            IF oObject != NULL
+                // Bingo !
+                // Create the Object
+                oObject := CreateInstance( cClass )
+                VAR uArgs := USUAL[]{parms:Length-2}
+                FOR VAR nArg := 1 TO uArgs:Length
+                    uArgs[nArg] := parms[nArg+2]
+                NEXT
+                // Now add the oObject as a Property, with cName
+                SELF:AddProperty( cName, oObject, PropertyVisibility.Public, "AddObject " + cClass )
+                // TODO : Watchout of the cOLEClass !!
+                // Now, call Init() with the Parameters
+                TRY
+                    Send( oObject, "Init", uArgs )
+                CATCH
+                    success := FALSE
+                END TRY
+                // Should we throw an Error if success is False... It would means no "Init" at least...
+                // Ok, let's forget it...
+            ENDIF
+        ENDIF
+    ENDIF
+   return success
+
+
+
+PROPERTY ControlCount AS LONG AUTO
+
+METHOD NewObject(cObjectName, cClassName , cModule , cInApplication, eParameter1, eParameter2) AS USUAL CLIPPER
+    RETURN NIL
+
+METHOD RemoveObject(cObjectName AS STRING) AS LOGIC
+    RETURN FALSE
+
+PROPERTY Objects AS Collection AUTO
+
+    #ifndef NOSET
+METHOD SetAll AS USUAL CLIPPER
+    RETURN NIL
+    #endif
+    #endif

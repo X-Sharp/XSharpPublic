@@ -21,4 +21,3 @@ USING XSharp.Internal
 [assembly: ClassLibrary("XSharp.RDD.Functions","XSharp")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows := TRUE)]
 
-[assembly: InternalsVisibleTo("XSharp.SQLRdd,"+Constants.PUBLICKEY)]

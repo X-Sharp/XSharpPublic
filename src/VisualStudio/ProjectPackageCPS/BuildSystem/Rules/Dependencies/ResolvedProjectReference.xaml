@@ -7,7 +7,7 @@
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
                 ItemType="ProjectReference"
-                MSBuildTarget="ResolveProjectReferencesDesignTime"
+                MSBuildTarget="ResolveProjectReferencesDesignTime2"
                 Persistence="ResolvedReference"
                 SourceOfDefaultValue="AfterContext"
                 SourceType="TargetResults" />
@@ -24,14 +24,23 @@
                   SourceOfDefaultValue="AfterContext" />
     </StringListProperty.DataSource>
   </StringListProperty>
+  <StringProperty Name="BrowsePath"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource ItemType="ProjectReference"
+                  PersistedName="Identity"
+                  Persistence="Intrinsic"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
 
-  <BoolProperty Name="CopyLocal"
+  <BoolProperty Name="Private"
                 Description="Indicates whether the reference will be copied to the output directory."
                 DisplayName="Copy Local">
     <BoolProperty.DataSource>
       <DataSource HasConfigurationCondition="False"
                   ItemType="ProjectReference"
-                  PersistedName="Private"
                   Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext" />
     </BoolProperty.DataSource>
@@ -200,4 +209,9 @@
                 ReadOnly="True"
                 Visible="false" />
 
+  <BoolProperty Name="TreatAsUsed"
+                Description="Indicates that this reference should be treated as if it were used."
+                DisplayName="Treat as used"
+                ReadOnly="True"
+                Visible="True" />
 </Rule>

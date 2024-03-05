@@ -16,7 +16,7 @@ METHOD AddAccelerator(oAccelerator)
 
 
 
-   IF ! IsInstanceOfUsual(oAccelerator, #Accelerator)
+   IF ! (oAccelerator IS Accelerator)
 		WCError{#AddAccelerator, #Accelerator, __WCSTypeError, oAccelerator, 1}:Throw()
 	ENDIF
 
@@ -203,10 +203,10 @@ CONSTRUCTOR(xResourceID)
 
 	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 		xResourceID := ResourceID{xResourceID}
-	ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
+	ELSEIF xResourceID IS ResourceID
 		// Ok
         NOP
-	ELSEIF IsNil(xResourceID) .OR. IsInstanceOfUsual(xResourceID, #Accelerator) //SE-060525
+	ELSEIF IsNil(xResourceID) .OR. (xResourceID IS Accelerator) //SE-060525
 		hAccel  := NULL_PTR
 		aAccels := {}
 		IF ! IsNil(xResourceID)

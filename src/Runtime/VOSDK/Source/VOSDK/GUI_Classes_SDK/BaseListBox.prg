@@ -3,19 +3,19 @@ CLASS BaseListBox INHERIT TextControl
 	PROTECT MsgGroup 					AS INT
 	PROTECT liSavedCurrentItemNo 	AS LONGINT
 	PROTECT sSavedCurrentItem 		AS STRING
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.AddItem/*" />
-METHOD AddItem(cItem, nItemNumber) 
+METHOD AddItem(cItem, nItemNumber)
 	LOCAL dwPosition AS DWORD
 	LOCAL dwMessType AS LONGINT
 	LOCAL liRetVal AS  LONGINT
-	
-	
-	
-	
+
+
+
+
 	IF !IsString(cItem)
 		WCError{#AddItem,#BaseListBox,__WCSTypeError,cItem,1}:Throw()
 	ENDIF
@@ -32,69 +32,69 @@ METHOD AddItem(cItem, nItemNumber)
 	ELSE
 		dwMessType := LBAddString
 	ENDIF
-	
-	
+
+
 	IF SELF:ValidateControl()
 		liRetVal := SendMessage(hwnd, LBMessages[dwMessType,MsgGroup], dwPosition, LONGINT(_CAST, String2Psz(cItem)))
-		
-		
+
+
 		IF liRetVal < LB_Okay
 			liRetVal := 0
 		ELSE
 			liRetVal++
 		ENDIF
 	ENDIF
-	
-	
+
+
 	RETURN liRetVal
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.Clear/*" />
-METHOD Clear() 
+METHOD Clear()
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), LBMessages[LBResetContent,MsgGroup], 0, 0)
 	ENDIF
 	RETURN SELF
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.CurrentItem/*" />
-ACCESS CurrentItem 
+ACCESS CurrentItem
 	RETURN NULL_STRING
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.CurrentItemNo/*" />
-ACCESS CurrentItemNo 
+ACCESS CurrentItemNo
 	RETURN 0
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.CurrentText/*" />
-ACCESS CurrentText 
+ACCESS CurrentText
 	IF IsInstanceOf(SELF, #ComboBox)
 		RETURN SUPER:CurrentText
 	ENDIF
 	RETURN NULL_STRING
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.DeleteItem/*" />
-METHOD DeleteItem(nItemNumber) 
+METHOD DeleteItem(nItemNumber)
 	LOCAL dwPos AS DWORD
 	LOCAL dwTemp AS DWORD
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
 			WCError{#DeleteItem,#BaseListBox,__WCSTypeError,nItemNumber,1}:Throw()
@@ -103,25 +103,25 @@ METHOD DeleteItem(nItemNumber)
 			dwPos := nItemNumber-1
 		ENDIF
 	ENDIF
-	
-	
+
+
 	IF (nItemNumber == 0)
 		IF ((dwPos := SELF:CurrentItemNo) == 0)
 			RETURN FALSE
 		ENDIF
 		dwPos--
 	ENDIF
-	
-	
+
+
 	IF SELF:ValidateControl()
 		dwTemp := LBMessages[LBDeleteString,MsgGroup]
 		RETURN (SendMessage(hwnd, dwTemp, dwPos, 0) >= 0)
 	ENDIF
-	
-	
+
+
 	RETURN FALSE
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.Destroy/*" />
@@ -130,15 +130,15 @@ METHOD Destroy()   AS USUAL CLIPPER
 		sSavedCurrentItem := SELF:CurrentItem
 		liSavedCurrentItemNo := SELF:CurrentItemNo
 	ENDIF
-	
-	
+
+
 	RETURN SUPER:Destroy()
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.FindItem/*" />
-METHOD FindItem(cItem, lWholeItem, nStart) 
+METHOD FindItem(cItem, lWholeItem, nStart)
 	LOCAL liIndex := LB_ERR AS LONGINT
 	LOCAL iMessType AS LONGINT
 	//RvdH 080516 Changed from DWORD to LONG (-1 means: search from start)
@@ -146,8 +146,8 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 	IF !IsString(cItem)
 		WCError{#FindItem,#BaseListBox,__WCSTypeError,cItem,1}:Throw()
 	ENDIF
-	
-	
+
+
 	iMessType := LBFindStringExact //Default is exact match
 	IF !IsNil(lWholeItem)
 		IF !IsLogic(lWholeItem)
@@ -157,38 +157,38 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 			iMessType := LBFindString
 		ENDIF
 	ENDIF
-	
-	
+
+
 	IF !IsNil(nStart)
 		IF !IsLong(nstart)
 			WCError{#FindItem,#BaseListBox,__WCSTypeError,nStart,3}:Throw()
 		ENDIF
 		liStart := nStart-1
 	ENDIF
-	
-	
+
+
 	IF (NULL_STRING == cItem)
 		RETURN 0
 	ENDIF
-	
-	
+
+
 	IF SELF:ValidateControl()
 		liIndex := SendMessage(hwnd, LBMessages[iMessType ,MsgGroup], DWORD(liStart), LONGINT(_CAST, String2Psz(cItem)))
 	ENDIF
-	
-	
+
+
 	IF (liIndex < LB_OKAY)
 		RETURN 0
 	ENDIF
-	
-	
+
+
 	RETURN liIndex+1
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.GetItem/*" />
-METHOD GetItem(nItemNumber, nLength) 
+METHOD GetItem(nItemNumber, nLength)
 	LOCAL liPosition AS LONGINT
 	LOCAL liMaxLength AS LONGINT
 	LOCAL ptrBuffer AS PTR
@@ -201,8 +201,8 @@ METHOD GetItem(nItemNumber, nLength)
 		ENDIF
 		liPosition := nItemNumber
 	ENDIF
-	
-	
+
+
 	IF !IsNil(nLength)
 		IF !IsLong(nLength)
 			WCError{#GetItem,#BaseListBox,__WCSTypeError,nLength,2}:Throw()
@@ -215,13 +215,13 @@ METHOD GetItem(nItemNumber, nLength)
 	ELSE
 		liLength := 65535
 	ENDIF
-	
-	
+
+
 	IF (liPosition == 0) .AND. ((liPosition := SELF:CurrentItemNo) == 0)
 		RETURN ""
 	ENDIF
-	
-	
+
+
 	liPosition--
 	hHandle := SELF:Handle()
 	liMaxLength := SendMessage(hHandle, LBMessages[LBGetTextLen,MsgGroup], DWORD(liPosition), 0 ) + 1
@@ -235,20 +235,20 @@ METHOD GetItem(nItemNumber, nLength)
 		ENDIF
 	ENDIF
 	MemFree(ptrBuffer)
-	
-	
+
+
 	RETURN cRetVal
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.ctor/*" />
-CONSTRUCTOR( oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
-	
-	
-	
-	
-	IF IsInstanceOfUsual(xID,#ResourceID)
+CONSTRUCTOR( oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
+
+
+
+
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle,lDataAware)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "ListBox", kStyle, lDataAware)
@@ -279,37 +279,37 @@ CONSTRUCTOR( oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 		LBMessages[10,1] := LB_SETCURSEL
 		LBMessages[10,2] := CB_SETCURSEL
 		LBMessages[11,1] := LB_FINDSTRINGEXACT
-		LBMessages[11,2] := CB_FINDSTRINGEXACT                  
+		LBMessages[11,2] := CB_FINDSTRINGEXACT
 	ENDIF
 	MsgGroup := 1
-	
-	
-	RETURN 
-	
-	
+
+
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.ItemCount/*" />
-ACCESS ItemCount 
+ACCESS ItemCount
 	LOCAL dwTemp AS DWORD
-	
-	
+
+
 	IF SELF:ValidateControl()
 		dwTemp 	:= LBMessages[LBGetCount, MsgGroup]
 		RETURN SendMessage(SELF:Handle(), dwTemp, 0, 0)
 	ENDIF
-	
-	
+
+
 	RETURN 0
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/BaseListBox.SetTop/*" />
-METHOD SetTop(nItemNumber) 
+METHOD SetTop(nItemNumber)
 	LOCAL liPosition AS DWORD
-	
-	
+
+
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
 			WCError{#SetTop,#BaseListBox,__WCSTypeError,nItemNumber,1}:Throw()
@@ -323,17 +323,17 @@ METHOD SetTop(nItemNumber)
 	IF SELF:ValidateControl()
 		SendMessage (SELF:Handle(), LB_SetTopIndex, DWORD(liPosition), 0)
 	ENDIF
-	
-	
+
+
 	RETURN SELF
-	
-	
+
+
 END CLASS
 
 
 /// <exclude/>
 GLOBAL DIM LBMessages [11,2] AS DWORD
-	
-	
-	
-	
+
+
+
+

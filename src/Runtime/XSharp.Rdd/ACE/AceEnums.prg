@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -215,67 +215,67 @@ ENUM AceError AS WORD
 	MEMBER NOT_VFP_VARIABLE_FIELD := ACE.AE_NOT_VFP_VARIABLE_FIELD
 	MEMBER ILLEGAL_EVENT_COMMAND := ACE.AE_ILLEGAL_EVENT_COMMAND
 	MEMBER KEY_CANNOT_BE_NULL := ACE.AE_KEY_CANNOT_BE_NULL
-    MEMBER COLLATIONS_DO_NOT_MATCH := ACE.AE_COLLATIONS_DO_NOT_MATCH 
-    MEMBER INVALID_APPID := ACE.AE_INVALID_APPID 
-    MEMBER UNICODE_CONVERSION := ACE.AE_UNICODE_CONVERSION 
-    MEMBER UNICODE_COLLATION := ACE.AE_UNICODE_COLLATION 
-    MEMBER SERVER_ENUMERATION_ERROR := ACE.AE_SERVER_ENUMERATION_ERROR 
-    MEMBER UNABLE_TO_LOAD_SSL := ACE.AE_UNABLE_TO_LOAD_SSL 
-    MEMBER UNABLE_TO_VERIFY_SIGNATURE := ACE.AE_UNABLE_TO_VERIFY_SIGNATURE 
-    MEMBER UNABLE_TO_LOAD_SSL_ENTRYPOINT := ACE.AE_UNABLE_TO_LOAD_SSL_ENTRYPOINT 
-    MEMBER CRYPTO_ERROR := ACE.AE_CRYPTO_ERROR 
-    MEMBER UNRECOGNIZED_CIPHER := ACE.AE_UNRECOGNIZED_CIPHER 
-    MEMBER FIPS_MODE_ENCRYPTION := ACE.AE_FIPS_MODE_ENCRYPTION 
-    MEMBER FIPS_REQUIRED := ACE.AE_FIPS_REQUIRED 
-    MEMBER FIPS_NOT_ALLOWED := ACE.AE_FIPS_NOT_ALLOWED 
-    MEMBER FIPS_MODE_FAILED := ACE.AE_FIPS_MODE_FAILED 
-    MEMBER PASSWORD_REQUIRED := ACE.AE_PASSWORD_REQUIRED 
-    MEMBER CONNECTION_TIMED_OUT := ACE.AE_CONNECTION_TIMED_OUT 
-    MEMBER DELTA_SUPPORT_NOT_POSSIBLE := ACE.AE_DELTA_SUPPORT_NOT_POSSIBLE 
-    MEMBER QUERY_LOGGING_ERROR := ACE.AE_QUERY_LOGGING_ERROR 
-    MEMBER COMPRESSION_FAILED := ACE.AE_COMPRESSION_FAILED 
+    MEMBER COLLATIONS_DO_NOT_MATCH := ACE.AE_COLLATIONS_DO_NOT_MATCH
+    MEMBER INVALID_APPID := ACE.AE_INVALID_APPID
+    MEMBER UNICODE_CONVERSION := ACE.AE_UNICODE_CONVERSION
+    MEMBER UNICODE_COLLATION := ACE.AE_UNICODE_COLLATION
+    MEMBER SERVER_ENUMERATION_ERROR := ACE.AE_SERVER_ENUMERATION_ERROR
+    MEMBER UNABLE_TO_LOAD_SSL := ACE.AE_UNABLE_TO_LOAD_SSL
+    MEMBER UNABLE_TO_VERIFY_SIGNATURE := ACE.AE_UNABLE_TO_VERIFY_SIGNATURE
+    MEMBER UNABLE_TO_LOAD_SSL_ENTRYPOINT := ACE.AE_UNABLE_TO_LOAD_SSL_ENTRYPOINT
+    MEMBER CRYPTO_ERROR := ACE.AE_CRYPTO_ERROR
+    MEMBER UNRECOGNIZED_CIPHER := ACE.AE_UNRECOGNIZED_CIPHER
+    MEMBER FIPS_MODE_ENCRYPTION := ACE.AE_FIPS_MODE_ENCRYPTION
+    MEMBER FIPS_REQUIRED := ACE.AE_FIPS_REQUIRED
+    MEMBER FIPS_NOT_ALLOWED := ACE.AE_FIPS_NOT_ALLOWED
+    MEMBER FIPS_MODE_FAILED := ACE.AE_FIPS_MODE_FAILED
+    MEMBER PASSWORD_REQUIRED := ACE.AE_PASSWORD_REQUIRED
+    MEMBER CONNECTION_TIMED_OUT := ACE.AE_CONNECTION_TIMED_OUT
+    MEMBER DELTA_SUPPORT_NOT_POSSIBLE := ACE.AE_DELTA_SUPPORT_NOT_POSSIBLE
+    MEMBER QUERY_LOGGING_ERROR := ACE.AE_QUERY_LOGGING_ERROR
+    MEMBER COMPRESSION_FAILED := ACE.AE_COMPRESSION_FAILED
     MEMBER INVALID_DATA := ACE.AE_INVALID_DATA
-    MEMBER ROWVERSION_REQUIRED := ACE.AE_ROWVERSION_REQUIRED 
-    
+    MEMBER ROWVERSION_REQUIRED := ACE.AE_ROWVERSION_REQUIRED
+
 END ENUM
 /// <summary>List of possible Trigger event codes</summary>
 
 ENUM AceTrigEvent AS DWORD
-    MEMBER INSERT       := ACE.ADS_TRIGEVENT_INSERT 
+    MEMBER INSERT       := ACE.ADS_TRIGEVENT_INSERT
     MEMBER UPDATE       := ACE.ADS_TRIGEVENT_UPDATE
     MEMBER DELETE       := ACE.ADS_TRIGEVENT_DELETE
-    MEMBER OPEN_TABLE   := ACE.ADS_TRIGEVENT_OPEN_TABLE         
-    MEMBER CLOSE_TABLE  := ACE.ADS_TRIGEVENT_CLOSE_TABLE        
-    MEMBER CONNECT      := ACE.ADS_TRIGEVENT_CONNECT            
-    MEMBER DISCONNECT   := ACE.ADS_TRIGEVENT_DISCONNECT         
-    
+    MEMBER OPEN_TABLE   := ACE.ADS_TRIGEVENT_OPEN_TABLE
+    MEMBER CLOSE_TABLE  := ACE.ADS_TRIGEVENT_CLOSE_TABLE
+    MEMBER CONNECT      := ACE.ADS_TRIGEVENT_CONNECT
+    MEMBER DISCONNECT   := ACE.ADS_TRIGEVENT_DISCONNECT
+
 END ENUM
 
 /// <summary>List of possible Trigger type codes</summary>
 ENUM AceTrigType  AS DWORD
-    MEMBER BEFORE       := ACE.ADS_TRIGTYPE_BEFORE 
-    MEMBER INSTEADOF    := ACE.ADS_TRIGTYPE_INSTEADOF 
-    MEMBER AFTER        := ACE.ADS_TRIGTYPE_AFTER 
-    MEMBER CONFLICTON   := ACE.ADS_TRIGTYPE_CONFLICTON 
+    MEMBER BEFORE       := ACE.ADS_TRIGTYPE_BEFORE
+    MEMBER INSTEADOF    := ACE.ADS_TRIGTYPE_INSTEADOF
+    MEMBER AFTER        := ACE.ADS_TRIGTYPE_AFTER
+    MEMBER CONFLICTON   := ACE.ADS_TRIGTYPE_CONFLICTON
 END ENUM
 
 /// <summary>List of possible Trigger option codes</summary>
 ENUM AceTrigOptions AS DWORD
-    MEMBER NO_VALUES            := ACE.ADS_TRIGOPTIONS_NO_VALUES 
-    MEMBER WANT_VALUES          := ACE.ADS_TRIGOPTIONS_WANT_VALUES 
-    MEMBER WANT_MEMOS_AND_BLOBS := ACE.ADS_TRIGOPTIONS_WANT_MEMOS_AND_BLOBS 
-    MEMBER DEFAULT              := ACE.ADS_TRIGOPTIONS_DEFAULT 
-    MEMBER NO_TRANSACTION       := ACE.ADS_TRIGOPTIONS_NO_TRANSACTION 
+    MEMBER NO_VALUES            := ACE.ADS_TRIGOPTIONS_NO_VALUES
+    MEMBER WANT_VALUES          := ACE.ADS_TRIGOPTIONS_WANT_VALUES
+    MEMBER WANT_MEMOS_AND_BLOBS := ACE.ADS_TRIGOPTIONS_WANT_MEMOS_AND_BLOBS
+    MEMBER DEFAULT              := ACE.ADS_TRIGOPTIONS_DEFAULT
+    MEMBER NO_TRANSACTION       := ACE.ADS_TRIGOPTIONS_NO_TRANSACTION
 END ENUM
 
 
 /// <summary>List of possible Validation codes</summary>
 ENUM AceValidate AS WORD
-	MEMBER NO           := ACE.ADS_NO_VALIDATE 
-	MEMBER NO_SAVE      := ACE.ADS_VALIDATE_NO_SAVE 
-	MEMBER WRITE_FAIL   := ACE.ADS_VALIDATE_WRITE_FAIL 
-	MEMBER APPEND_FAIL  := ACE.ADS_VALIDATE_APPEND_FAIL 
-	MEMBER RETURN_ERROR := ACE.ADS_VALIDATE_RETURN_ERROR 
+	MEMBER NO           := ACE.ADS_NO_VALIDATE
+	MEMBER NO_SAVE      := ACE.ADS_VALIDATE_NO_SAVE
+	MEMBER WRITE_FAIL   := ACE.ADS_VALIDATE_WRITE_FAIL
+	MEMBER APPEND_FAIL  := ACE.ADS_VALIDATE_APPEND_FAIL
+	MEMBER RETURN_ERROR := ACE.ADS_VALIDATE_RETURN_ERROR
 END ENUM
 
 
@@ -363,34 +363,63 @@ END ENUM
 
 /// <summary>List of possible field types.</summary>
 PUBLIC ENUM AdsFieldType
-    MEMBER LOGICAL              := ACE.ADS_LOGICAL 
-    MEMBER NUMERIC              := ACE.ADS_NUMERIC 
-    MEMBER DATE                 := ACE.ADS_DATE 
-    MEMBER STRING               := ACE.ADS_STRING 
-    MEMBER MEMO                 := ACE.ADS_MEMO 
-    MEMBER BINARY               := ACE.ADS_BINARY 
-    MEMBER IMAGE                := ACE.ADS_IMAGE 
-    MEMBER VARCHAR              := ACE.ADS_VARCHAR 
-    MEMBER COMPACTDATE          := ACE.ADS_COMPACTDATE 
-    MEMBER DOUBLE               := ACE.ADS_DOUBLE 
-    MEMBER INTEGER              := ACE.ADS_INTEGER 
-    MEMBER SHORTINT             := ACE.ADS_SHORTINT 
-    MEMBER TIME                 := ACE.ADS_TIME 
-    MEMBER TIMESTAMP            := ACE.ADS_TIMESTAMP 
-    MEMBER AUTOINC              := ACE.ADS_AUTOINC 
-    MEMBER RAW                  := ACE.ADS_RAW 
-    MEMBER CURDOUBLE            := ACE.ADS_CURDOUBLE 
-    MEMBER MONEY                := ACE.ADS_MONEY 
+    /// <summary>1 byte logical value</summary>
+    MEMBER LOGICAL              := ACE.ADS_LOGICAL
+    /// <summary>DBF character style numeric</summary>
+    MEMBER NUMERIC              := ACE.ADS_NUMERIC
+    /// <summary>Date field.</summary>
+    MEMBER DATE                 := ACE.ADS_DATE
+    /// <summary>Character data</summary>
+    MEMBER STRING               := ACE.ADS_STRING
+    /// <summary>Variable length character data</summary>
+    MEMBER MEMO                 := ACE.ADS_MEMO
+    /// <summary>BLOB - any data</summary>
+    MEMBER BINARY               := ACE.ADS_BINARY
+    /// <summary>BLOB - bitmap</summary>
+    MEMBER IMAGE                := ACE.ADS_IMAGE
+    /// <summary>variable length character FIELD </summary>
+    MEMBER VARCHAR              := ACE.ADS_VARCHAR
+    /// <summary>DBF date represented with 3 bytes </summary>
+    MEMBER COMPACTDATE          := ACE.ADS_COMPACTDATE
+    /// <summary>IEEE 8 byte floating point </summary>
+    MEMBER DOUBLE               := ACE.ADS_DOUBLE
+    /// <summary>IEEE 4 byte signed long integer </summary>
+    MEMBER INTEGER              := ACE.ADS_INTEGER
+    /// <summary>IEEE 2 byte signed short integer </summary>
+    MEMBER SHORTINT             := ACE.ADS_SHORTINT
+    /// <summary>4 byte long integer representing milliseconds since midnight </summary>
+    MEMBER TIME                 := ACE.ADS_TIME
+    /// <summary>8 bytes.  High order 4 bytes are a long integer representing Julian date.Low order 4 bytes are a long integer representing milliseconds since midnight </summary>
+    MEMBER TIMESTAMP            := ACE.ADS_TIMESTAMP
+    /// <summary>4 byte auto-increment value </summary>
+    MEMBER AUTOINC              := ACE.ADS_AUTOINC
+    /// <summary>Untranslated data </summary>
+    MEMBER RAW                  := ACE.ADS_RAW
+    /// <summary>IEEE 8 byte floating point currency </summary>
+    MEMBER CURDOUBLE            := ACE.ADS_CURDOUBLE
+    /// <summary>8 byte, 4 implied decimal Currency Field </summary>
+    MEMBER MONEY                := ACE.ADS_MONEY
+    /// <summary>8 byte integer </summary>
     MEMBER INT64                := ACE.ADS_INT64
-    MEMBER CISTRING             := ACE.ADS_CISTRING 
-    MEMBER ROWVERSION           := ACE.ADS_ROWVERSION 
-    MEMBER MODTIME              := ACE.ADS_MODTIME 
-    MEMBER VARCHAR_FOX          := ACE.ADS_VARCHAR_FOX 
-    MEMBER VARBINARY_FOX        := ACE.ADS_VARBINARY_FOX 
-    MEMBER SYSTEM_FIELD         := ACE.ADS_SYSTEM_FIELD 
-    MEMBER NCHAR                := ACE.ADS_NCHAR 
-    MEMBER NVARCHAR             := ACE.ADS_NVARCHAR  
+    /// <summary>CaSe INSensiTIVE character data </summary>
+    MEMBER CISTRING             := ACE.ADS_CISTRING
+    /// <summary>8 byte integer, incremented for every update, unique to entire table </summary>
+    MEMBER ROWVERSION           := ACE.ADS_ROWVERSION
+    /// <summary>8 byte timestamp, updated when record is updated </summary>
+    MEMBER MODTIME              := ACE.ADS_MODTIME
+    /// <summary>Visual FoxPro varchar field </summary>
+    MEMBER VARCHAR_FOX          := ACE.ADS_VARCHAR_FOX
+    /// <summary>Visual FoxPro varbinary field </summary>
+    MEMBER VARBINARY_FOX        := ACE.ADS_VARBINARY_FOX
+    /// <summary>For internal usage </summary>
+    MEMBER SYSTEM_FIELD         := ACE.ADS_SYSTEM_FIELD
+    /// <summary>Unicode Character data </summary>
+    MEMBER NCHAR                := ACE.ADS_NCHAR
+    /// <summary>Unpadded Unicode Character data </summary>
+    MEMBER NVARCHAR             := ACE.ADS_NVARCHAR
+    /// <summary>Variable Length Unicode Data </summary>
     MEMBER NMEMO                := ACE.ADS_NMEMO
+    /// <summary>16-byte binary data </summary>
     MEMBER GUID                 := ACE.ADS_GUID
 END ENUM
 

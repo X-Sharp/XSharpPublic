@@ -1,0 +1,18 @@
+﻿
+#include "VFPControl.xh"
+#ifndef VFP_ITEMS_XH
+#define VFP_ITEMS_XH
+PROPERTY BorderColor AS LONG AUTO
+PROPERTY DisabledBackColor AS LONG AUTO
+PROPERTY DisabledForeColor AS LONG AUTO
+PROPERTY DisabledEditItemBackColor AS LONG AUTO
+PROPERTY DisabledEditItemForeColor AS LONG AUTO
+PROPERTY IncrementalSearch AS LOGIC AUTO
+PROPERTY MultiSelect AS LONG AUTO
+PROPERTY NewIndex AS LONG AUTO GET
+PROPERTY NewItemID AS LONG AUTO
+PROPERTY NumberOfElements AS LONG AUTO
+PROPERTY SelectedBackColor AS LONG AUTO
+PROPERTY SelectedForeColor AS LONG AUTO
+#endif
+

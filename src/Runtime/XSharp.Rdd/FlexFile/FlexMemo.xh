@@ -1,0 +1,245 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+// This file contains the common Memo code for the various FlexFile implementations.
+//
+
+USING System
+USING System.Collections.Generic
+USING System.Text
+USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
+USING System.IO
+
+USING STATIC XSharp.Conversions
+using XSharp.RDD.FlexFile
+
+BEGIN NAMESPACE XSharp.RDD
+/// <summary>FPT Memo class. Implements the FTP support.</summary>
+// To also support FPT files created with FlexFile we also need to read the FlexFile header and decode that.
+INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
+   INTERNAL _area AS FlexArea
+   INTERNAL PROPERTY ExportMode as LONG GET _area:ExportMode SET _area:ExportMode := value
+
+   STATIC PROPERTY DefExt AS STRING AUTO
+
+   STATIC CONSTRUCTOR
+      DefExt := FPT_MEMOEXT
+
+   CONSTRUCTOR (oRDD AS DBF)
+      SUPER(oRDD)
+
+      _area := FlexArea{oRDD}
+
+#region Methods that are directly forwared to the FlexArea Class
+
+   INTERNAL METHOD DecodeValue(bData AS BYTE[]) AS OBJECT
+      RETURN _area:DecodeValue(bData)
+
+   INTERNAL METHOD DeleteBlock(blockNbr AS LONG) AS VOID
+      _area:DeleteBlock(blockNbr)
+
+   INTERNAL METHOD GetBlockType(blockNbr AS LONG) AS STRING
+      RETURN _area:GetBlockType(blockNbr)
+
+   INTERNAL METHOD GetBlockLen(blockNbr AS LONG) AS LONG
+      RETURN _area:GetBlockLen(blockNbr)
+
+   INTERNAL METHOD GetBlockPos(blockNbr AS LONG) AS LONG
+      RETURN _area:GetBlockPos(blockNbr)
+
+   INTERNAL METHOD EncodeValue(oValue AS OBJECT) AS BYTE[]
+      RETURN _area:EncodeValue(oValue )
+#endregion
+
+
+   PRIVATE METHOD _GetMemoExtFromDbfExt(cDbfName AS STRING) AS STRING
+#ifdef RDD_FPT
+      SWITCH System.IO.Path.GetExtension(cDbfName:ToLower())
+      CASE ".vcx"         // Control Library
+         RETURN ".VCT"
+      CASE ".scx"         // Screen
+         RETURN ".SCT"
+      CASE ".pjx"         // Project
+         RETURN ".PJT"
+      CASE ".frx"         // Report
+         RETURN ".FRT"
+      CASE ".lbx"         // Label
+         RETURN ".LBT"
+      CASE ".mnx"         // Menu
+         RETURN ".MNT"
+      CASE ".dbc"         // database container
+         RETURN ".dct"
+      END SWITCH
+      VAR cExt := RuntimeState.GetValue<STRING>(Set.MemoExt)
+      IF ! String.IsNullOrEmpty(cExt)
+         IF ! cExt.StartsWith(".")
+            cExt := "."+cExt
+            RuntimeState.SetValue(Set.MemoExt, cExt)
+         ENDIF
+         RETURN cExt
+      ENDIF
+      RETURN FPT_MEMOEXT
+#else
+      return DBV_MEMOEXT
+
+#endif
+
+   INTERNAL METHOD GetRawValueWithHeader(nFldPos as INT) AS BYTE[]
+      LOCAL blockNbr AS LONG
+      LOCAL block := NULL AS BYTE[]
+      IF SELF:IsOpen
+         blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
+         IF ( blockNbr > 0 )
+            block := _area:GetBlock(blockNbr)
+         ENDIF
+      ENDIF
+      RETURN block
+
+   /// <summary></summary>
+   /// <param name="nFldPos">One based field number</param>
+   OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
+      LOCAL block := SELF:GetRawValueWithHeader(nFldPos) AS BYTE[]
+      if block != NULL
+         var result := BYTE[]{block:Length - 8}
+         System.Array.Copy(block, 8, result,0, result:Length)
+         block := result
+      endif
+      RETURN block
+
+   /// <inheritdoc />
+   /// <param name="nFldPos">One based field number</param>
+   OVERRIDE METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+      IF SELF:_oRdd:_isMemoField( nFldPos )
+         // At this level, the return value is the raw Data, in BYTE[]
+         TRY
+            VAR blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
+            RETURN _area:WriteBlockToFile(blockNbr, fileName)
+         CATCH ex AS Exception
+            SELF:Error(ex, Subcodes.ERDD_READ, Gencode.EG_READ, "DBFFPT.GetValueFile")
+         END TRY
+      ENDIF
+      RETURN SUPER:GetValueFile(nFldPos, fileName)
+
+   /// <inheritdoc />
+   /// <param name="nFldPos">One based field number</param>
+   OVERRIDE METHOD GetValueLength(nFldPos AS INT) AS LONG
+      var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
+      var dataLen := _area:GetDataLen(blockNbr)
+      if dataLen == -1
+         dataLen := 0
+      ENDIF
+      RETURN dataLen
+
+   /// <summary>Write value to field.</summary>
+   /// <param name="nFldPos">One based field number</param>
+   /// <param name="oValue">Data to write. Should be BYTE[] and include the header with the type</param>
+   OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+      IF SELF:IsOpen .and. oValue IS BYTE[] VAR bytes
+         TRY
+            // At this level the bytes[] array already contains the header with type and length
+            var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
+            blockNbr     := _area:PutBlock(blockNbr, bytes)
+            SELF:LastWrittenBlockNumber := blockNbr
+            RETURN TRUE
+         CATCH ex AS Exception
+            SELF:Error(ex, Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
+         END TRY
+      ENDIF
+      RETURN FALSE
+
+
+
+   /// <inheritdoc />
+   OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+      TRY
+         VAR oColumn := SELF:_oRdd:_GetColumn(nFldPos) ASTYPE DbfColumn
+         IF oColumn != NULL .AND. oColumn:IsMemo
+            var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
+            blockNbr := _area:ReadBlockFromFile(blockNbr, fileName)
+            IF blockNbr >= 0
+               RETURN oColumn:PutValue(blockNbr, SELF:_oRdd:RecordBuffer)
+            ENDIF
+         ENDIF
+      CATCH ex AS Exception
+         SELF:Error(ex, Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValueFile")
+      END TRY
+      RETURN FALSE
+
+
+   /// <inheritdoc />
+   OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+      LOCAL isOk      AS LOGIC
+      SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
+      isOk := SUPER:CreateMemFile(info)
+      IF isOk
+         isOk := _area:Create(_oStream, _hFile, RuntimeState.MemoBlockSize)
+      ELSE
+         SELF:Error( FException(), ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE, "FPTMemo.CreateMemFile")
+      ENDIF
+
+      RETURN isOk
+
+   /// <inheritdoc />
+   OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
+      LOCAL isOk AS LOGIC
+      SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
+      isOk := SUPER:OpenMemFile(info)
+      IF isOk
+         isOk := _area:Open(_oStream, _hFile)
+      ELSE
+         SELF:Error( FException(),ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN ,"FPTMemo.OpenMemFile")
+         isOk := FALSE
+      ENDIF
+      //
+      RETURN isOk
+
+
+
+
+   OVERRIDE METHOD Zap() AS LOGIC
+      IF SELF:IsOpen
+         IF SELF:Shared
+            SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "FPTMemo.Zap")
+         ENDIF
+         _area:Zap()
+         RETURN TRUE
+      ELSE
+         SELF:Error(FException(), Subcodes.EDB_NOTABLE, Gencode.EG_NOTABLE, "FPTMemo.Zap")
+      ENDIF
+      RETURN FALSE
+
+   METHOD BlobInfo(nOrdinal AS INT, oBlobInfo as XSharp.RDD.IBlobData) AS OBJECT
+      LOCAL oResult := TRUE AS OBJECT
+      SWITCH nOrdinal
+
+      CASE DbInfo.BLOB_GET
+         VAR nFldPos := Convert.ToInt32(oBlobInfo:Data)
+         IF SELF:_oRdd:_isMemoField( nFldPos )
+            VAR rawData := SELF:GetRawValueWithHeader(nFldPos)
+            oResult := _area:DecodeValue(rawData)
+            IF oResult IS String VAR strResult
+               VAR nOffset := oBlobInfo:Start
+               VAR nLen    := oBlobInfo:Length
+               // Note that nOffSet is a 1 based offset !
+               nOffset -= 1
+               if nLen > strResult:Length - nOffset
+                  nLen := strResult:Length - nOffset
+               endif
+               oResult := strResult:Substring(nOffset, nLen)
+            ENDIF
+         ENDIF
+      OTHERWISE
+         oResult := _area:BlobInfo(nOrdinal, oBlobInfo)
+      END SWITCH
+
+      RETURN oResult
+
+
+END CLASS
+
+END NAMESPACE
+

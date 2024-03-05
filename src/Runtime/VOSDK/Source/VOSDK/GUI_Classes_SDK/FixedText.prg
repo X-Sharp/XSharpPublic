@@ -8,7 +8,7 @@ CLASS FixedText INHERIT TextControl
 
 
  /// <exclude />
-METHOD __SetColors(_hDC AS PTR) AS PTR STRICT 
+METHOD __SetColors(_hDC AS PTR) AS PTR STRICT
 	//PP-031129
 	IF SELF:lUseDrawText
 		RETURN NULL_PTR
@@ -17,7 +17,7 @@ METHOD __SetColors(_hDC AS PTR) AS PTR STRICT
 
 
  /// <exclude />
-METHOD __SetText(cNewText AS STRING) AS STRING STRICT 
+METHOD __SetText(cNewText AS STRING) AS STRING STRICT
 	//PP-030915
 	IF SELF:ValidateControl()
 		//PP-040107
@@ -29,7 +29,7 @@ METHOD __SetText(cNewText AS STRING) AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/FixedText.Dispatch/*" />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	//PP-040509 From S Ebert
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL uMsg   AS DWORD
@@ -138,9 +138,9 @@ METHOD Dispatch(oEvent)
         CASE WM_SETTEXT
 			hOwner := GetParent(hWnd)
 			GetWindowRect(hWnd, @sRect)
-#ifdef __VULCAN__	
+#ifdef __VULCAN__
       	MapWindowPoints(NULL_PTR, hOwner, (_winPOINT PTR) @sRect, 2)
-#else	
+#else
 	      MapWindowPoints(NULL_PTR, hOwner, @sRect, 2)
 #endif
 			InvalidateRect(hOwner, @sRect, TRUE)
@@ -154,13 +154,13 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/FixedText.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	LOCAL cClass AS USUAL
 	LOCAL lResID AS LOGIC
 
 
-	
-	
+
+
 	//PP-030915. Text will be displayed using API DrawText(). Default style set below.
 	// Standard styles will cause the appropriate draw style to be used.
 	// DT_END_ELLIPSIS will put ... if text does not fit in space provided
@@ -175,7 +175,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 
 
 	DEFAULT(@lDataAware, TRUE)
-	lResID:=IsInstanceOfUsual(xID,#ResourceID)
+	lResID:=(xID IS ResourceID)
 	IF !lResID
 		cClass:="Static"
 	ENDIF
@@ -192,17 +192,17 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/FixedText.Margin/*" />
-ASSIGN Margin (nNewValue) 
+ASSIGN Margin (nNewValue)
 	//PP-030915
 	RETURN (_dwMargin := nNewValue)
 
 
 /// <include file="Gui.xml" path="doc/FixedText.SetDrawStyle/*" />
-METHOD SetDrawStyle(dwDrawStyle, lEnable) 
+METHOD SetDrawStyle(dwDrawStyle, lEnable)
 	//PP-030915 from S Ebert
     EnForceNumeric(@dwDrawStyle)
 	IF IsLogic(lEnable)
@@ -220,13 +220,13 @@ METHOD SetDrawStyle(dwDrawStyle, lEnable)
 
 
 /// <include file="Gui.xml" path="doc/FixedText.SetStandardStyle/*" />
-METHOD SetStandardStyle(kTextStyle) 
+METHOD SetStandardStyle(kTextStyle)
 	LOCAL dwTempStyle, dwStyle AS DWORD
 	LOCAL hHandle AS PTR
 
 
-	
-	
+
+
 	IF !IsLong(kTextStyle)
 		WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:Throw()
 	ENDIF

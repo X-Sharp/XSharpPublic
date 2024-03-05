@@ -8,33 +8,46 @@ using XSharp.RDD.SqlRDD
 using XSharp.RDD.Support
 using System.Collections.Generic
 using System.Text
+using XSharp.RDD.SqlRDD
+
+partial static class XSharp.RDD.SqlRDD.Functions
+
+    static constructor()
+        RegisteredRDD.Add( RegisteredRDD{"SQLRDD", typeof(SQLRDD)})
+
 /// <summary>
 /// Open a connection for the X# SQL RDD
 /// </summary>
 /// <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
 /// <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
+/// <param name="CallBack">A delegate to an Event Handler function/method that will receive events </param>
 /// <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
 /// <remarks>This will open the default connection.
 /// If the connection string needs a UserName and/or Password then these need to be included in
 /// the connection string.</remarks>
 
-function SqlDbOpenConnection(ConnectionString as string) as IntPtr
+static method SqlDbOpenConnection(ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString}
     return oConn:Handle
+end method
 
-function SqlDbOpenConnection(ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
+/// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
+static method SqlDbOpenConnection(ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{SqlDbConnection.DefaultConnection, ConnectionString, @@CallBack}
     return oConn:Handle
+end method
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string) as IntPtr
+static method SqlDbOpenConnection(ConnectionName as string, ConnectionString as string) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString}
     return oConn:Handle
+end method
 
 /// <inheritdoc cref="SqlDbOpenConnection(System.String)" />
-function SqlDbOpenConnection(ConnectionName as string, ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
+static method SqlDbOpenConnection(ConnectionName as string, ConnectionString as string, @@CallBack as SqlRDDEventHandler) as IntPtr
     var oConn := SqlDbConnection{ConnectionName, ConnectionString, @@CallBack}
     return oConn:Handle
+end method
 
 /// <summary>
 /// Close a SQLRDD Connection.
@@ -42,26 +55,41 @@ function SqlDbOpenConnection(ConnectionName as string, ConnectionString as strin
 /// <param name="ConnectionName">Name of the connection to close.</param>
 /// <param name="Handle">Handle of the connection to close.</param>
 /// <returns>TRUE when the connection was successfully closed. FALSE if the connection did not exist or was already closed</returns>
-function SqlDbCloseConnection(ConnectionName as string) as logic
+static method SqlDbCloseConnection(ConnectionName as string) as logic
     var oConn := SqlDbConnection.FindByName(ConnectionName)
     if (oConn != null)
         oConn:Close()
         return true
     endif
     return false
+end method
+
 /// <inheritdoc cref="SqlDbCloseConnection(System.String)" />
-function SqlDbCloseConnection(Handle as IntPtr) as logic
+static method SqlDbCloseConnection(Handle as IntPtr) as logic
     var oConn := SqlDbConnection.FindByHandle(Handle)
     if oConn != null
         return oConn:Close()
     endif
     return oConn != null
+end method
 
-function SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
+/// <summary>
+/// Get the SqlDbConnectionObject based on a Connection Handle
+/// </summary>
+/// <param name="Handle">Handle of the opened connection</param>
+/// <returns>Connection Object, or NULL when Handle is invalid</returns>
+static method SqlDbGetConnection(Handle as IntPtr) as SqlDbConnection
     return SqlDbConnection.FindByHandle(Handle)
+end method
 
-function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
+/// <summary>
+/// Get the SqlDbConnectionObject based on a Connection Name
+/// </summary>
+/// <param name="ConnectionName">Name of the opened connection</param>
+/// <returns>Connection Object, or NULL when Name is invalid</returns>
+static method SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
     return SqlDbConnection.FindByName(ConnectionName)
+end method
 
 
 /// <summary>
@@ -80,7 +108,7 @@ function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
 /// </para>
 /// <para>
 /// If you open a new connection in your app later with the same connectionstring, username and password
-/// as a previously closed connection, then you may receive a the connection object from a previous connection.
+/// as a previously closed connection, then you may receive the connection object from a previous connection.
 /// This helps to keep the # of open connection used by apps low. <br/>
 /// </para>
 /// <para>
@@ -91,15 +119,18 @@ function SqlDbGetConnection(ConnectionName as string) as SqlDbConnection
 /// </para>
 /// </remarks>
 
-function SqlDbCacheConnection(ShouldCache as logic) as logic
+static method SqlDbCacheConnection(ShouldCache as logic) as logic
     var old := SqlDbConnection.DefaultCached
     SqlDbConnection.DefaultCached := ShouldCache
     return  old
+end method
 
-
-
-
-function List2String(list as IList<string>) as string
+/// <summary>
+/// Convert a list of strings to a single string with comma separated values
+/// </summary>
+/// <param name="list">List to convert</param>
+/// <returns>Comma separated list</returns>
+internal static method List2String(list as IList<string>) as string
     var sb := StringBuilder{}
     var first := true
     foreach var item in list
@@ -111,17 +142,29 @@ function List2String(list as IList<string>) as string
         sb:Append(item)
     next
     return sb:ToString()
+end method
 
-function String2List(names as string) as IList<string>
+/// <summary>
+/// Convert a a single string with comma separated values to a List of strings
+/// </summary>
+/// <param name="names">Comma separated list</param>
+/// <returns>List of strings</returns>
+internal static method String2List(names as string) as IList<string>
     var list := names:Split(<char>{','})
     var result := List<string>{}
     foreach var element in list
         result:Add(element:Trim())
     next
     return result
+end method
 
 
-function XsValueToSqlValue(oValue as object)  as string
+/// <summary>
+/// Convert a value to a string that can be used in a SQL statement
+/// </summary>
+/// <param name="oValue">Source value</param>
+/// <returns>Result</returns>
+internal static method XsValueToSqlValue(oValue as object)  as string
     switch oValue
     case strValue as string
         return "'"+strValue:Replace("'","''")+"'"
@@ -133,8 +176,11 @@ function XsValueToSqlValue(oValue as object)  as string
         return dFloat:Value:ToString()
     end switch
     return oValue:ToString()
+end method
 
-    function DToS(dDate as IDate) as string
-        return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
+internal static method DToS(dDate as IDate) as string
+    return dDate:Year:ToString()+"-"+dDate:Month:ToString()+"-"+dDate:Day:ToString()
+end method
+end class
 
 

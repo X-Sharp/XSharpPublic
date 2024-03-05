@@ -1,0 +1,41 @@
+
+Class  XMLTable  BaseClass   Xmltable Class  Xmltable
+XMLTable  ADDPROPERTY      Method 
+XMLTable  ALIAS  Property
+XMLTable  APPLYDIFFGRAM      Method 
+XMLTable  BASECLASS     Property
+XMLTable  CHANGESTOCURSOR         Method 
+XMLTable  CHILDTABLE    Property
+XMLTable  CLASS   Property
+XMLTable  CLASSLIBRARY     Property
+XMLTable  CODEPAGE     Property
+XMLTable  COMMENT     Property
+XMLTable  DECLAREXMLPREFIX       Property
+XMLTable  DESTROY    Event
+XMLTable  ERROR    Event
+XMLTable  FIELDS   Object
+XMLTable  FIRSTNESTEDTABLE       Property
+XMLTable  INIT Event
+XMLTable  NAME   Property
+XMLTable  NEST   Method 
+XMLTable  NESTEDINTO     Property
+XMLTable  NEXTSIBLINGTABLE      Property
+XMLTable  PARENT    Property
+XMLTable  PARENTCLASS      Property
+XMLTable  PARENTTABLE      Property
+XMLTable  READEXPRESSION       Method 
+XMLTable  READMETHOD      Method 
+XMLTable  RESETTODEFAULT       Method 
+XMLTable  SAVEASCLASS      Method 
+XMLTable  TAG  Property
+XMLTable  TOCURSOR     Method 
+XMLTable  UNNEST    Method 
+XMLTable  WRITEEXPRESSION       Method 
+XMLTable  WRITEMETHOD      Method 
+XMLTable  XMLADAPTER     Property
+XMLTable  XMLCONSTRAINTS      Property
+XMLTable  XMLNAME     Property
+XMLTable  XMLNAMEISXPATH      Property
+XMLTable  XMLNAMESPACE       Property
+XMLTable  XMLPREFIX    Property
+

@@ -1,19 +1,9 @@
-#command XSUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                         ;
-         [FOR <lfor>]                                                   ;
-         [WHILE <lwhile>]                                               ;
-         [NEXT <nnext>]                                                 ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
-                                                                        ;
-      => <v1> := [ <vn> := ] 0                                          ;
-       ; DbEval(                                                        ;
-               {|| <v1> += <x1> [, <vn> += <xn> ]},                     ;
-               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               )
+FUNCTION Start() AS VOID
+   ? UnsafeMethods.GetByte2of4(0x10203040) // 32 (hex 20)
 
-FUNCTION Start() AS VOID STRICT
-local b
-field a
-XSUM a TO b
+CLASS UnsafeMethods
+   UNSAFE STATIC METHOD GetByte2of4(d AS DWORD) AS BYTE
+      LOCAL p AS BYTE PTR
+      p := (BYTE PTR) @d // get direct pointer to the data
+       RETURN p[3]
+END CLASS

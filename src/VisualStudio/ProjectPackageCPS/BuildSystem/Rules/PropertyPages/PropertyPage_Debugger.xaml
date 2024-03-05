@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
-	Name="XSharpDebugger"
-	DisplayName="XSharp Debugger"
+	Name="Debugger"
+	DisplayName="Debugger"
 	PageTemplate="debugger"
 	Order="5"
     	Description="XSharpDebugger Debugger options"
@@ -23,7 +23,7 @@
     </EnumProperty>
     <StringProperty 
     	Category="General" 
-	Name="XSharpDebuggerCommand" 
+	Name="DebuggerCommand" 
 	DisplayName="Command"
         Default="$(TargetPath)"
         Description="The debug command to execute.">
@@ -44,20 +44,20 @@
 
     <StringProperty 
     	Category="General" 
-    	Name="XSharpDebuggerCommandArguments" 
+    	Name="DebuggerCommandArguments" 
 	DisplayName="Command Arguments"
         Description="The command line arguments to pass to the application.">
-        <Argument Property="XSharpDebuggerCommand" />
+        <Argument Property="DebuggerCommand" />
     </StringProperty>
     <StringProperty 
     	Category="General" 
-    	Name="XSharpDebuggerWorkingDirectory" 
+    	Name="DebuggerWorkingDirectory" 
 	DisplayName="Working Directory"
         Default="$(MSBuildProjectDirectory)"  
         Description="The application's working directory. By default, the directory containing the project file."
         Subtype="folder"/>
     <BoolProperty Category="General" 
-    	Name="XSharpDebuggerDebuggerAttach" 
+    	Name="DebuggerDebuggerAttach" 
 	DisplayName="Attach"
         Default="False"
         Description="Specifies whether the debugger should attempt to attach to an existing process when debugging starts." />

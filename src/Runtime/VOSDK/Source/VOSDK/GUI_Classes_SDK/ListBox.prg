@@ -244,7 +244,7 @@ METHOD ChangeSelected(oRange, lEnabled)
 	DEFAULT(@lEnabled, TRUE)
 
 
-	IF !IsInstanceOfUsual(oRange,#Range)
+	IF !(oRange IS Range)
 		WCError{#ChangeSelected,#ListBox,__WCSTypeError,oRange,1}:Throw()
 	ENDIF
 
@@ -498,7 +498,7 @@ METHOD FillUsing(aContents, symField1, symField2)
 	LOCAL wPosition AS DWORD
 
 
-	IF IsInstanceOfUsual(aContents, #DataServer) .AND. IsMethod(aContents, #GetLookUpTable)
+	IF (aContents IS DataServer) .AND. IsMethod(aContents, #GetLookUpTable)
 		aContents := Send(aContents, #GetLookUpTable, Min(0x7FFF, IVarGet(aContents, #RecCount)), symField1, symField2)
 	ELSEIF IsArray(aContents)
 		IF !IsNil(symField1) .OR. !IsNil(symField2)

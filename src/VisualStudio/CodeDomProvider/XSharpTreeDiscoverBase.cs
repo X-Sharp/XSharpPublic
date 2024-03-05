@@ -134,7 +134,7 @@ namespace XSharp.CodeDom
             else
             {
                 // not in our class, maybe in a parent class
-                var parentType = findType(type.BaseTypeName);
+                var parentType = findParentType(type);
                 return hasClassMember(parentType, name, mtype);
             }
             return result;
@@ -768,6 +768,13 @@ namespace XSharp.CodeDom
         {
             CodeExpression expr = null;
             memberType = null;
+            if (!_members.ContainsKey(name) && CurrentType.IsPartial)
+            {
+                // get all the members from the database
+                // and check if the member is in the list
+                // when so, then the _members collection will have the member afterwards
+                findMemberInMergedType(name);
+            }
             if (!_members.ContainsKey(name))
             {
                 findMemberInBaseTypes(name, MemberTypes.All);
@@ -803,6 +810,16 @@ namespace XSharp.CodeDom
             return expr;
         }
 
+        private bool findMemberInMergedType(string name)
+        {
+            var typeName = CurrentType.Name;
+            if (CurrentNamespace != null)
+            {
+                typeName = CurrentNamespace.Name+ "." + typeName;
+            }
+            var ftype = this.findType(typeName);
+            return hasClassMember(ftype, name, MemberTypes.All);
+        }
 
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {

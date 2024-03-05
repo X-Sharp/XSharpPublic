@@ -1,0 +1,27 @@
+﻿// InitCall.xh
+// Created by    : fabri
+// Creation Date : 9/13/2022 11:16:09 PM
+// Created for   : 
+// WorkStation   : FABXPS
+
+PRIVATE _initParamsList := USUAL[]{0} AS USUAL[]
+
+CONSTRUCTOR( args PARAMS USUAL[] )
+	// Init is Called at LoadTime
+	SELF:_initParamsList := args
+	SELF()
+
+
+PRIVATE _VFPInit AS VFPOverride
+[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Get/Set the name of the Init handling method. Occurs when an object is created.")];
+PROPERTY vfpInit AS STRING GET _VFPInit?:SendTo SET Set_Init( VFPOverride{SELF, value} )
+
+METHOD Set_Init( methodCall AS VFPOverride ) AS VOID
+	SELF:HandleCreated += System.EventHandler{ SELF, @OnVFPInit() }
+	SELF:_VFPInit := methodCall
+	
+PRIVATE METHOD OnVFPInit( sender AS OBJECT, e AS System.EventArgs) AS VOID 
+	//
+	IF SELF:_VFPInit != NULL
+		SELF:_VFPInit:Call( SELF:_initParamsList )
+	ENDIF

@@ -1,0 +1,121 @@
+{
+  "Form": {
+    "Caption": "Text",
+    "ClientSize": "System.Drawing.Size{<@Width@>, <@Height@>}",
+    "DoCreate": "",
+    "Top": "",
+    "Left": "",
+    "Width": "",
+    "Height": "",
+    "DataSession": ":DataSession(<@DataSession@>)",
+    "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
+    "AutoScaleMode": "System.Windows.Forms.AutoScaleMode.None",
+    "Picture": "??<@Picture@>??",
+    "Icon": "System.Drawing.Icon{??<@Icon@>??}",
+    "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
+    "ShowInTaskBar": "ShowInTaskbar",
+    "ShowWindow": "ShowWindowState"
+  },
+
+  "CommandButton": {
+    "Margin": "System.Windows.Forms.Padding{0,0,0,0}"
+  },
+
+  "OptionGroup": {
+    "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
+    "^Option99": "Buttons(99)"
+  },
+
+  "TextBox": {
+    "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "TextAlign": "VFPTextAlignmentConvert(<@Alignment@>)",
+    "Value": "!Value"
+  },
+
+  "EditBox": {
+    "Scrollbars": "VFPScrollbars"
+  },
+
+  "Label": {
+    "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
+    "WordWrap": "",
+    "BackStyle": ""
+  },
+
+  "Shape": {
+    "FillColor": ""
+  },
+
+  "Line": {
+    "Size": "System.Drawing.Size{<@Width@>, 2}"
+  },
+
+  "DataEnvironment": {
+    "Top": "",
+    "Left": "",
+    "Width": "",
+    "Height": ""
+  },
+
+  "Cursor": {
+    "CursorSource": "??<@CursorSource@>??",
+    "Database": "??<@Database@>??",
+    "Location": "",
+    "Width": "",
+    "Height": "",
+    "ClientSize": ""
+  },
+
+  "Timer": {
+    "Location": "",
+    "Name": "",
+    "Size": ""
+  },
+
+  "Container": {
+  },
+
+  "Panel": {
+    "MouseIcon": "??<@MouseIcon@>??"
+  },
+
+  "Image": {
+    "SizeMode": "VFPImageStrechConvert(<@Stretch@>)",
+    "Stretch": ""
+  },
+
+  "Grid": {
+    "^Column99": "Column(99)",
+    "Scrollbars": "VFPScrollbars"
+  },
+
+  "Common": {
+    "Caption": "Text",
+    "Comment": "",
+    "Location": "System.Drawing.Point{<@Left@>,<@Top@>}",
+    "Size": "System.Drawing.Size{<@Width@>, <@Height@>}",
+    "Top": "",
+    "Left": "",
+    "Width": "",
+    "Height": "",
+    "ForeColor": "System.Drawing.Color.FromArgb(<@ForeColor@>)",
+    "BackColor": "System.Drawing.Color.FromArgb(<@BackColor@>)",
+    "SelectedForeColor": "System.Drawing.Color.FromArgb(<@SelectedForeColor@>)",
+    "SelectedBackColor": "System.Drawing.Color.FromArgb(<@SelectedBackColor@>)",
+    "DisabledForeColor": "",
+    "DisabledBackColor": "",
+    "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
+    "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
+    "Image": "Image.FromFile(??<@Picture@>??)",
+    "Picture": "??<@Picture@>??",
+    "OLEDragPicture": "??<@OLEDragPicture@>",
+    "DragIcon": "??<@DragIcon@>??",
+    "MouseIcon": "??<@MouseIcon@>??",
+    "BorderColor": "",
+    "FontName": "??<@FontName@>??",
+    "TextAlign": "VFPAlignmentConvert(<@Alignment@>)",
+    "Alignment": "",
+    "ToolTipText": ""
+  }
+}

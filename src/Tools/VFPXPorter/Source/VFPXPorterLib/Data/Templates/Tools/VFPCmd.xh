@@ -1,0 +1,178 @@
+﻿///////////////////////////////////////////////////////////////////////////
+// VFPCmd.xh
+//
+#include "XSharpDefs.xh"
+
+
+#ifndef VFPCMD_XH
+#define VFPCMD_XH
+#command __XPORTERWARNIN__ <any> => #warning <(any)> " This command is not (yet) supported"
+
+// We must check that we are not overring the DO CASE, DO WHILE, ...
+//#command DO <ProgramName1> [IN <ProgramName2>] [WITH <ParameterList>] ;
+//        => <ProgramName1>( [<ParameterList>] )
+
+
+#command DO FORM <FormName> [NAME <VarName> [LINKED]] [WITH] [ <(p1)> ]   [, <(pn)> ]  [TO <ToVarName>] [<noread:NOREAD>] [<noshow:NOSHOW>] ;
+=> XSharp.VFP.UI.__VFPDoForm.InitParam();
+[;XSharp.VFP.UI.__VFPDoForm.Param( <p1> )] ;
+[;XSharp.VFP.UI.__VFPDoForm.Param( <pn> )] ;
+;XSharp.VFP.UI.__VFPDoForm.Create( <(FormName)>, [<(VarName)>], [<(ToVarName)>], [<.noread.>], [<.NOSHOW.>])
+
+#command READ EVENTS ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command ON SHUTDOWN [<(something1)>] [<(somethingn)>];
+=> __XPORTERWARNIN__ <(udc)>
+
+#command ON ERROR [<(something1)>] [<(somethingn)>];
+=> __XPORTERWARNIN__ <(udc)>
+
+#command MODIFY PROJECT [<(something1)>] [<(somethingn)>];
+=> __XPORTERWARNIN__ <(udc)>
+
+#command STORE <VarValue> TO <(param1)> [, <(paramn)>]  ;
+=>                           ;
+<(param1)>  := <VarValue>    ;
+[; <(paramn)> := <VarValue> ]
+
+#command ENDTRY => END TRY
+#command ENDPROC => END PROC
+#command ENDWITH => END WITH
+#command ENDFOR => NEXT
+
+#command ACTIVATE WINDOW <FormName> ;
+=> VFPActivateForm( <FormName> );
+
+#command HIDE WINDOW <FormName> ;
+=> VFPHideForm( <FormName> );
+
+#command EXTERNAL LIBRARY <LibName> ;
+=> ;
+
+#command DELETE FILE <FileName> ;
+=> FErase( <FileName> );
+
+#command ERASE <FileName> ;
+=> FErase( <FileName> );
+
+#command MODIFY WINDOW <WindowName> [TITLE <Title>] [FILL FILE <FillFile>] [ICON FILE <IconFile>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command CATCH WHEN <expr> ;
+=> CATCH dummy AS Exception WHEN <expr> ;
+
+#command SET LIBRARY TO [<FileName> [ADDITIVE]] ;
+=> ;
+
+#command SET REPROCESS TO [<none>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET POINT TO [<x:&>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET POINT TO [<none>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command WAIT [WINDOWS] [<cMessageText>] [TO <VarName>] [WINDOW [AT <nRow>, <nColumn>]] [NOWAIT] [CLEAR | NOCLEAR] [TIMEOUT <nSeconds>];
+=> MessageBox( <cMessageText>, 0, "" [,<nseconds>] );
+[; __XPORTERWARNIN__ <VarName>]
+
+#command SET FIELDS <x:ON,OFF,&>;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET MULTILOCKS <x:ON,OFF,&>;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET TALK <x:ON,OFF,&>;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET MESSAGE TO [<none>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET CLASS TO [<none>] [ADDITIVE];
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET DATE TO [<none>];
+=> __XPORTERWARNIN__ <(udc)>
+
+
+#command BEGIN TRANSACTION;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command END TRANSACTION;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command ROLLBACK;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command RELEASE [<var>];
+=> __XPORTERWARNIN__ <(udc)>
+
+#command SET DATASESSION TO [<sessionID>] ;
+    => __XPORTERWARNIN__ <(udc)>
+
+#command SET BELL TO [<sessionID>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command CLEAR RESOURCES [<ressource>] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command NODEFAULT;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command CLEAR EVENTS;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command REPORT FORM <report> TO <destination>;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command PRIVATE ARRAY <var>;
+=> PRIVATE <var>
+
+#command PRIVATE ALL LIKE <something>;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command DELETE ALL;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command USE <(db)>                            ;
+[VIA <rdd>]                       ;
+[ALIAS <a>]                       ;
+[<NEW: NEW>]                      ;
+[<AGAIN: AGAIN>]                  ;
+[IN <area>]						  ;
+[<ex: EXCLUSIVE>]                 ;
+[<sh: SHARED>]                    ;
+[<ro: READONLY,NOUPDATE>]         ;
+[INDEX <(index1)> [, <(indexn)>]] ;
+	;
+=> DbUseArea(                            ;
+<.new.>, <rdd>, <(db)>, <(a)>,         ;
+IF(<.sh.> .OR. <.ex.>, !<.ex.>, NIL),  ;
+<.ro.>  )     ;
+	;
+[; DbSetIndex( <(index1)> )];
+[; DbSetIndex( <(indexn)> )]
+
+#command REPORT FORM <ReportName> [PREVIEW] [NOWAIT] ;
+=> __XPORTERWARNIN__ <(udc)>
+
+#command COUNT														;
+[NEXT <nnext>]                                                 ;
+[RECORD <rec>]                                                 ;
+[<rest:REST>]                                                  ;
+[ALL]                                                          ;
+[FOR <lfor>]                                                   ;
+[WHILE <lwhile>]                                               ;
+TO <xvar>														;
+[<noopt: NOOPTIMIZE>]                                          ;
+	;
+=> <xvar> := 0                                                    ;
+; DbEval(                                                        ;
+{|| <xvar> += 1},                                        ;
+<{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+)
+
+#endif
+

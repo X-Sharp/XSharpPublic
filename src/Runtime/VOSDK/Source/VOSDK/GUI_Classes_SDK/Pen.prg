@@ -5,8 +5,8 @@ CLASS Pen INHERIT VObject
 
 /// <include file="Gui.xml" path="doc/Pen.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (hPen != NULL_PTR)
@@ -19,9 +19,9 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/Pen.Handle/*" />
-METHOD Handle ( uType ) 
-	
-	
+METHOD Handle ( uType )
+
+
 	IF !IsNil(uType)
 		IF !IsLong(uType)
 			WCError{#Handle,#Pen,__WCSTypeError,uType}:Throw()
@@ -33,15 +33,15 @@ METHOD Handle ( uType )
 
 
 /// <include file="Gui.xml" path="doc/Pen.ctor/*" />
-CONSTRUCTOR(uColor, uLineStyle, uWidth) 
+CONSTRUCTOR(uColor, uLineStyle, uWidth)
 	LOCAL liStyle AS LONGINT
 
 
-	
-	
+
+
 	SUPER()
 	IF !IsNil(uColor)
-		IF !IsInstanceOfUsual(uColor,#Color)
+		IF !(uColor IS Color)
 			WCError{#Init,#Pen,__WCSTypeError,uColor,1}:Throw()
 		ENDIF
 	ELSE
@@ -66,12 +66,12 @@ CONSTRUCTOR(uColor, uLineStyle, uWidth)
 	ENDIF
 
 
-	
-	
+
+
 	hPen:=CreatePen(liStyle,uWidth,uColor:ColorRef)
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

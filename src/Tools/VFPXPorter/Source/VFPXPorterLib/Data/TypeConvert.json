@@ -1,0 +1,127 @@
+﻿{
+  "form": [
+    "Form",
+    "true",
+    "false"
+  ],
+  "formset": [
+    "FormSet",
+    "false",
+    "false"
+  ],
+  "commandbutton": [
+    "CommandButton",
+    "false",
+    "true"
+  ],
+  "textbox": [
+    "TextBox",
+    "false",
+    "true"
+  ],
+  "editbox": [
+    "EditBox",
+    "false",
+    "true"
+  ],
+  "checkbox": [
+    "CheckBox",
+    "false",
+    "true"
+  ],
+  "optionbutton": [
+    "OptionButton",
+    "false",
+    "true"
+  ],
+  "optiongroup": [
+    "OptionGroup",
+    "false",
+    "true"
+  ],
+  "commandgroup": [
+    "CommandGroup",
+    "false",
+    "true"
+  ],
+  "listbox": [
+    "ListBox",
+    "false",
+    "true"
+  ],
+  "combobox": [
+    "ComboBox",
+    "false",
+    "true"
+  ],
+  "label": [
+    "Label",
+    "false",
+    "true"
+  ],
+  "image": [
+    "Image",
+    "false",
+    "true"
+  ],
+  "timer": [
+    "Timer",
+    "false",
+    "false"
+  ],
+  "container": [
+    "Container",
+    "true",
+    "true"
+  ],
+  "spinner": [
+    "Spinner",
+    "false",
+    "true"
+  ],
+  "grid": [
+    "Grid",
+    "false",
+    "true"
+  ],
+  "header": [
+    "ColumnHeader",
+    "false",
+    "true"
+  ],
+  "shape": [
+    "Container",
+    "false",
+    "true"
+  ],
+  "line": [
+    "Container",
+    "false",
+    "true"
+  ],
+  "DataEnvironment": [
+    "DataEnvironment",
+    "false",
+    "false"
+  ],
+  "Cursor": [
+    "DbCursor",
+    "false",
+    "false"
+  ],
+  "xsPorterMenuStrip": [
+    "System.Windows.Forms.MenuStrip",
+    "false",
+    "true"
+  ],
+  "xsPorterMenuItem": [
+    "System.Windows.Forms.ToolStripMenuItem",
+    "false",
+    "false"
+  ],
+  "xsPorterMenuSeparator": [
+    "System.Windows.Forms.ToolStripSeparator",
+    "false",
+    "false"
+  ]
+}

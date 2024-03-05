@@ -98,96 +98,253 @@
 #command GATHER MEMVAR [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
           => __GatherMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
-///////////////////////////////////////////////////////////////////////////////
-// Variations of the database commands with IN or ALIAS clause
-///////////////////////////////////////////////////////////////////////////////
 
-// FoxPro allows to close a workarea like this
+// Variations of the database commands for the FoxPro Dialect
+#command CLOSE  IN  <(a)>       => (<(a)>)->(DbCloseArea())
+#command USE IN <(area)>                => (<(area)>)->(DbCloseArea())
 
-/*
-#command USE <(db)>                            ;
-             [VIA <rdd>]                       ;
-             [ALIAS <a>]                       ;
-             [<new: NEW>]                      ;
-             [<ex: EXCLUSIVE>]                 ;
-             [<sh: SHARED>]                    ;
-             [<ro: READONLY,NOUPDATE>]         ;
-             [INDEX <(index1)> [, <(indexn)>]] ;
-                                               ;
-      => DbUseArea(                            ;
-                    <.new.>, <rdd>, <(db)>, <(a)>,         ;
-                    if(<.sh.> .or. <.ex.>, !<.ex.>, NIL),  ;
-                    <.ro.>  )     ;
-                                  ;
-      [; DbSetIndex( <(index1)> )];
-      [; DbSetIndex( <(indexn)> )]
-
-//  Todo FoxPro [[DatabaseName!] TableName | SQLViewName | ?]
-//  [IN nWorkArea | cTableAlias] [ONLINE] [ADMIN] [AGAIN]
-//  [NOREQUERY [nDataSessionNumber]] [NODATA]
-//  [INDEX IndexFileList | ? [ORDER [nIndexNumber | IDXFileName | [TAG] TagName [OF CDXFileName] [ASCENDING | DESCENDING]]]]
-//  [CONNSTRING cConnectionString | nStatementHandle ]
-
-#command SET INDEX TO [ <(index1)> [, <(indexn)>]]  ;
-                                                    ;
-      => DbClearIndex()                             ;
-      [; DbSetIndex( <(index1)> )]                  ;
-      [; DbSetIndex( <(indexn)> )]
-
-#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
-// Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
+#command USE <(db)>                                                     ;
+             [IN <(area)>]                                              ;
+             [<on: ONLINE> ]                                            ;
+             [<ad: ADMIN>]                                              ;
+             [<ag: AGAIN>]                                              ;
+             [<nr: NOREQUERY> <nSession>]                               ;
+             [<nd: NODATA> ]                                            ;
+             [INDEX <(index1)> [, <(indexn)>]]                          ;
+             [<ord: ORDER> [<tag: tag>] <ordername> [OF <bagname>]]     ;
+             [<asc: ASCENDING>]                                         ;
+             [<desc: DESCENDING>]                                       ;
+             [ALIAS <ALIAS>]                                                ;
+             [<ex: EXCLUSIVE>]                                          ;
+             [<sh: SHARED>]                                             ;
+             [<ro: NOUPDATE>]                                           ;
+             [CONNSTRING <connection> ]                                 ;
+             =>                                                         ;
+      ;  DbUseAreaFox( <(area)>, <(db)>, <(ALIAS)>, iif(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.>, ;
+               <.on.>, <.ad.>, <.ag.>, <.nd.>, <.nr.>, <nSession>, <connection>) ;
+      [; DbSetIndex( <(index1)> )] [; DbSetIndex( <(indexn)> )]           ;
+      [; IIF( <.ord.>,  OrdSetFocus( <(ordername)>, <(bagname)>) , NIL )] ;
+      [; IIF( <.desc.>, OrdDescend(<(ordername)>, <(bagname)>, <.desc.>) , NIL )]  ;
+      [; IIF( <.asc.> , OrdDescend(<(ordername)>, <(bagname)>, <.desc.>) , NIL )]
 
 
-#command COPY STRUCTURE EXTENDED TO <(file)>                      		;
-      => DbCopyXStruct( <(file)> )
-// FoxPro clauses [DATABASE DatabaseName [NAME LongTableName]] [FIELDS FieldList]
+#command INDEX ON <(key)>         										;
+     [tag <ORDER>]                										;
+     [<To:TO,OF> <file>]                								;
+     [FOR <fo>]                 										;
+     [<ALL:ALL>]                										;
+     [WHILE <wh>]               										;
+     [NEXT <nx>]                										;
+     [RECORD <rec>]             										;
+     [<rs:REST>]                										;
+     [<u:UNIQUE>]               										;
+     [<asd:ASCENDING>]          										;
+     [<dsd:DESCENDING>]         										;
+     [<lCur:USECURRENT>]        										;
+     [<lAdd:ADDITIVE>]          										;
+     [<lCus:CUSTOM>]            										;
+     [<lNop:NOOPTIMIZE>]        										;
+     [Binary <bin>]                  								;
+     [COLLATE <coll>]                								;
+     [<cmp:COMPACT>]          										;
+     [<cand:CANDIDATE>]          									;
+    => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, NIL, NIL, 	;
+          RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,	;
+          [<.lCur.>], [<.lCus.>], [<.lNop.>] ,      			;
+          [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;; ;
+       OrdCreate(<(file)>,<(ORDER)>,<(key)>,,IIF(<.u.>,.T., NIL))
 
-#command COPY STRUCTURE TO <(file)> [__FOXLIST__ <fldlist>]  [__FOXWILD__ <fldwild> ]   ;
-      => DbCopyStruct( <(file)>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
-// FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
-
-// Todo: IN <area> which should prefix the calls to DbSetRelation
 
 
-#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ] ;
-         [FOR <lfor>]                             ;
-         [WHILE <lwhile>]                         ;
-         [NEXT <nNext>]                           ;
-         [RECORD <rec>]                           ;
-         [<rest:REST>]                            ;
-         [<noopt: NOOPTIMIZE>]                    ;
-         [ALL]                                    ;
-                                                  ;
-      => <v1> := [ <vn> := ] 0                    ;
-       ; DbEval(                                  ;
-                 {|| <v1> := <v1> + <x1> [, <vn> := <vn> + <xn> ]},     ;
-                 <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
-               )
-// Todo FoxPro [TO ARRAY ArrayName]
 
-#command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]  ;
-         [FOR <lfor>]                                ;
-         [WHILE <lwhile>]                            ;
-         [NEXT <nNext>]                              ;
-         [RECORD <rec>]                              ;
-         [<rest:REST>]                               ;
-         [<noopt: NOOPTIMIZE>]                       ;
-         [ALL]                                       ;
-                                                     ;
-      => M->__Avg := <v1> := [ <vn> := ] 0           ;
-       ; DbEval(                                     ;
-                 {|| M->__Avg := M->__Avg + 1,       ;
-                 <v1> := <v1> + <x1> [, <vn> := <vn> + <xn>] },         ;
-                 <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
-               )  ;
-                  ;
-       ; <v1> := <v1> / M->__Avg [; <vn> := <vn> / M->__Avg ]
+// Commands with IN clause, commands without are defined in DBCMD.XH
 
-// Todo FoxPro [TO ARRAY ArrayName]
+#command REINDEX           IN <(a)>          => (<(a)>) -> (OrdListRebuild())
+#command SET ORDER TO <n>  IN <(a)>          => (<(a)>) -> (DbSetOrder( <n> ))  // No overload with area param
+#command SET ORDER TO      IN <(a)>          => (<(a)>) -> (DbSetOrder(0))      // No overload with area param
+#command APPEND BLANK      IN  <(a)>              => (<(a)>) -> (DbAppend())
+#command PACK              IN  <(a)>                      => (<(a)>) -> (DbPack())
+#command ZAP               IN  <(a)>                      => (<(a)>) -> (DbZap())
+#command COMMIT            IN  <(a)>                    => (<(a)>) -> (DbCommit())
+#command UNLOCK [RECORD <rcd>] IN  <(a)>    => (<(a)>) -> (DbUnLock(<rcd>))
 
-*/
+#command GOTO <n>  		   IN <(a)>     => (<a>)->(DbGoto(<n>))
+#command GO [RECORD] <n>   IN <(a)>     => (<a>)->(DbGoto(<n>))
+#command GOTO TOP  		   IN <(a)>     => (<a>)->(DbGoTop())
+#command GO TOP   		   IN <(a)>     => (<a>)->(DbGoTop())
+#command GOTO BOTTOM 	   IN <(a)>     => (<a>)->(DbGoBottom())
+#command GO BOTTOM  	      IN <(a)>     => (<a>)->(DbGoBottom())
+#command SKIP 			      IN <(a)>     => (<a>)->(DbSkip(1))
+#command SKIP <n> 		   IN <(a)>     => (<a>)->(DbSkip(<n>))
 
-/// Index on command with Binary, Collate, Candidate and Compact clauses
+#command SET FILTER TO     IN  <(a)>        => (<(a)>) -> (DbClearFilter())
+#command SET FILTER TO <xpr>  IN  <(a)>   => (<(a)>) -> (DbSetFilter( <{xpr}>, <"xpr"> ))
+#command SET FILTER TO <x:&>  IN <a>   ;
+      => IF ( Empty(<(x)>) )                     ;
+       ;    (<(a)>) -> (DbClearFilter())           ;
+       ; ELSE                                    ;
+       ;    (<(a)>) -> (DbSetFilter( <{x}>, <(x)> )) ;
+       ; END
+
+
+// Multiple record operations with IN Clause. Commands without are defined in DBCMD.XH
+
+#command REPLACE [<(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         IN <(a)>                                                       ;
+                                                                        ;
+      => (<(a)>)->(DbEval(                                              ;
+                 {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               ))
+
+
+
+#command DELETE                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         IN <(a)>                                                       ;
+                                                                        ;
+      => (<(a)>)->(DbEval(                                              ;
+                 {|| __DbDelete()},                                       ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               ))
+
+
+#command RECALL                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         IN <(a)>                                                       ;
+                                                                        ;
+      => (<(a)>)->(DBEval(                                              ;
+                 {|| __DbRecall()},                                     ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+               ))
+
+#command LOCATE                                                         ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [ALL]                                                          ;
+         IN <(a)>                                                       ;
+                                                                        ;
+      => (<(a)>)->(DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ))
+
+#command CONTINUE  IN  <(a)>   => (a)->(DbContinue())
+
+
+// Single record operations with IN Clause
+#command REPLACE <(f1)> WITH <v1> [, <(fN)> WITH <vN> ]                 ;
+          IN  <(a)>                                             ;
+         => DbAutoLockArea(<(a)>), __FieldSetWa(<(a)>, <(f1)>,<v1>) [,__FieldSetWa(<(a)>,<(fn)>,<vN>)], DbAutoUnLockArea(<(a)>)
+
+#command DELETE   IN  <(a)> =>  (<(a)>)->(__DbDelete())
+
+#command RECALL   IN  <(a)> =>  (a)->(__DbRecall())
+
+
+// Set Relation command with IN clause
+
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+         IN <(a)>                                                       ;
+         [ADDITIVE]                                                     ;
+      => (<(a)>)->(DbSetRelation( <(alias1)>, <{key1}>, <"key1"> ))     ;
+      [; (<(a)>)->(DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> ))]
+
+#command SET RELATION                                                   ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+         IN <(a)>                                                       ;
+      => (<(a)>)->(DbClearRelation())                              ;
+      ;  (<(a)>)->(DbSetRelation( <(alias1)>, <{key1}>, <"key1"> ))     ;
+      [; (<(a)>)->(DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> ))]
+
+#command SET RELATION TO         IN  <(a)>                      ;
+         => (<(a)>)->(DbClearRelation())
+
+
+#command  SET INDEX TO  => OrdListClear()
+
+#command  SET INDEX TO [ <(index1)> [, <(indexN)>]] ;
+         [<ord: ORDER> [<tag: tag> <ordername> [OF <bagname>]]]     ;
+         [<asc: ASCENDING>]                                         ;
+         [<desc: DESCENDING>]                                       ;
+      => OrdListClear()                                             ;
+      [; OrdListAdd( <(index1)> )] [; OrdListAdd( <(indexn)> )]     ;
+      [; IIF( <.ord.>,  OrdSetFocus( <(ordername)>, <(bagname)>) , NIL )] ;
+      [; IIF( <.desc.>, OrdDescend(<(ordername)>, <(bagname)>, <.desc.>) , NIL )]  ;
+      [; IIF( <.asc.> , OrdDescend(<(ordername)>, <(bagname)>, <.desc.>) , NIL )]
+
+
+#command  SET INDEX TO [ <(index1)> [, <(indexN)>]] ;
+         [<ord: ORDER> [<tag: TAG> <ordername> [OF <bagname>]]]     ;
+         [<asc: ASCENDING>]                                         ;
+         [<desc: DESCENDING>]                                       ;
+         <add:ADDITIVE>                                             ;
+      => [; OrdListAdd( <(index1)> )] [; OrdListAdd( <(indexn)> )]     ;
+      [; IIF( <.ord.>,  OrdSetFocus( <(ordername)>, <(bagname)>) , NIL )] ;
+      [; IIF( <.desc.>, OrdDescend(<(ordername)>, <(bagname)>, <.desc.>) , NIL )]  ;
+      [; IIF( <.asc.> , OrdDescend(<(ordername)>, <(bagname)>, <.desc.>) , NIL )]
+
+
+
+#command SEEK <xpr>                                                 ;
+         [<ord: ORDER> [<tag: tag> <ordername> [OF <bagname>]]]     ;
+         [<asc: ASCENDING>]                                         ;
+         [<desc: DESCENDING>]                                       ;
+         => DbSeekFox( <xpr>, IIF( <.ord.>, <(ordername)>, NIL),    ;
+         IIF( <.bagname.>, <(bagname)>, NIL), <.desc.> )
+
+#command SEEK <xpr>                                                 ;
+         [ORDER] [tag] [<ordername> [OF <bagname>]]                 ;
+         [<asc: ASCENDING>] [<desc: DESCENDING>]                    ;
+            => DbSeekFox( <xpr>, <(ordername)>,<(bagname)>, <.desc.> )
+
+#command SEEK <xpr>                                                 ;
+          IN  <(a)>                                          ;
+         [ORDER] [tag] [<ordername> [OF <bagname>]]                 ;
+         [<asc: ASCENDING>] [<desc: DESCENDING>]                     ;
+         => (<(a)>)->DbSeekFox( <xpr>, <(ordername)>,<(bagname)>, <.desc.> )
+
+// STRUCTURE and EXTENDED keyword can be optional, so it can be anywhere in the command. Same for TO <(file)>
+// The normal Copy and COPY STRUCTURE commands are declared later and will take precedence when the keywords are omitted
+
+#command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]   ;
+    => DbCopyXStructFox( <(file)>)
+
+#command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]  ;
+    DATABASE <dbname> [NAME <longtablename>] ;
+    => DbCopyXStructFox( <(file)>) ; DbAdd(<(dbname)>, <(longtablename)>)
+
+
+#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+    [WITH <cdx:CDX, PRODUCTION>] ;
+    => DbCopyStructFox( <(file)>, <fields> , <.cdx.>)
+
+#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+    [WITH <cdx:CDX, PRODUCTION>] ;
+    DATABASE <dbname> [NAME <longtablename>] ;
+    => DbCopyStructFox( <(file)>, <fields>, <.cdx.> ); DbAdd(<(dbname)>, <(longtablename)>)
+
 
 #command SORT  TO <(file)> ON <fields,...>    ;
          [<asc:ASCENDING>]                    ;
@@ -199,7 +356,7 @@
          [<rest:REST>]                        ;
          [<noopt: NOOPTIMIZE>]                ;
          [__FOXLIST__ <fldlist>]              ;
-		 [__FOXWILD__ <fldwild> ]             ;
+  		   [__FOXWILD__ <fldwild> ]             ;
          [ALL]                                ;
                                               ;
       => DbSortFox(                           ;
@@ -207,15 +364,6 @@
                    <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
                  , Iif(<.asc.> .or. <.desc.>, <.desc.>, Nil),           ;
                    Iif( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
-
-
-
-
-
-// Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
-
-
-// Commands without IN/ALIAS clause
 
 #command SCAN              ;
          [FOR <lfor>]       ;
@@ -246,19 +394,17 @@
                                      ;
       => <arrayName> := DbCopyToArray( <arrayName>, ;
                         iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
-                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
+                        <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, ;
                         <.noopt.>                                       ;
                         )
 
 
 // Todo FoxPro clauses
-// [ [WITH] CDX ] | [ [WITH] PRODUCTION ]
 // Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
-
 
 #command COPY [TO <(file)> ]                                            ;
          [DATABASE <dbname> [NAME <longtablename>]]                     ;
-         [WITH] [<cdx: CDX, PRODUCTION> ]                               ;
+         [[WITH] <cdx: cdx, PRODUCTION> ]                               ;
          [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]               ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
@@ -397,9 +543,9 @@
          ;
         => XSharp.RDD.Dbc.Open( <(db)>, iif(<.sh.> .or. <.ex.>, !<.ex.>, .T.), <.ro.>, <.val.>)
 
-#command SET DATABASE TO [<(db)>]                                => XSharp.RDD.Dbc.Select( <(db)>)
-#command CREATE DATABASE <(db)>                                  => XSharp.RDD.Dbc.Create( <(db)>)
-#command DELETE DATABASE <(db)> [<del:DELETETABLES>] [<rec:RECYCLE>]         => XSharp.RDD.Dbc.Delete( <(db)>, <.del.>, <.rec.>)
+#command SET DATABASE TO [<(db)>]                                       => XSharp.RDD.Dbc.Select( <(db)>)
+#command CREATE DATABASE <(db)>                                         => XSharp.RDD.Dbc.Create( <(db)>)
+#command DELETE DATABASE <(db)> [<del:DELETETABLES>] [<rec:RECYCLE>]    => XSharp.RDD.Dbc.Delete( <(db)>, <.del.>, <.rec.>)
 
 // connection commands
 #command CREATE CONNECTION <(conn)> ;

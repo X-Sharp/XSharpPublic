@@ -11,11 +11,14 @@ USING System.Text
 USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.IO
+USING System.Reflection
 /// <summary>Advantage Index support.</summary>
 CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PRIVATE oRDD AS ADSRDD
     PRIVATE _CallbackFn AS CallbackFn
     PRIVATE _iProgress  AS LONG
+    PRIVATE _mcompile as MethodInfo
+
     #region Helpers
 
     PROPERTY OrderCondInfo AS DbOrderCondInfo GET oRDD:OrderCondInfo SET oRDD:OrderCondInfo := value
@@ -23,6 +26,18 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     PROPERTY Table AS IntPtr GET oRDD:_Table
     PROPERTY BagName   AS STRING AUTO GET PRIVATE SET
     PROPERTY OrderName AS STRING AUTO GET PRIVATE SET
+
+    PRIVATE METHOD _GetMCompile() as MethodInfo
+        IF _mcompile == null
+            local asm := XSharp.AssemblyHelper.FindLoadedAssembly("XSharp.RT") as Assembly
+            if asm != null
+                local type := asm:GetType("XSharp.RT.Functions") as System.Type
+                if type != null
+                    _mcompile := type:GetMethod("MCompile", <System.Type>{TypeOf(STRING)})
+                endif
+            endif
+        ENDIF
+        RETURN _mcompile
 
     PRIVATE METHOD _CheckError(nResult AS DWORD, gencode AS DWORD) AS LOGIC
         IF nResult != 0
@@ -49,6 +64,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     CONSTRUCTOR(oArea AS Workarea)
         SUPER(oArea)
         SELF:oRDD := (ADSRDD) oArea
+        SELF:_mcompile := null
 
 
         /// <inheritdoc />
@@ -304,11 +320,23 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result := ""
             ELSE
-                num   := (WORD)(SELF:oRDD:_MaxKeySize + 1)
-                chars := CHAR[]{num}
-
-                SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
-                info:Result  := STRING{chars, 0, num}
+                // This does not work for ADSADT for numeric indices
+                //  num   := (WORD)(SELF:oRDD:_MaxKeySize + 1)
+                //  chars := CHAR[]{num}
+                //
+                //  SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
+                //  info:Result  := STRING{chars, 0, num}
+                // So we retrieve the key expression and compile it
+                IF OrderInfo(DBOI_EXPRESSION, info) IS LOGIC VAR lResult
+                    IF lResult .and. info:Result is string var strKey .and. strKey:Length > 0
+                         var mi  := SELF:_GetMCompile()
+                         if mi != null
+                            local cb as ICodeblock
+                            cb := (ICodeblock) mi:Invoke(NULL, <OBJECT>{strKey})
+                            info:Result := cb:EvalBlock()
+                          endif
+                     ENDIF
+                ENDIF
             ENDIF
 
         CASE DBOI_NAME

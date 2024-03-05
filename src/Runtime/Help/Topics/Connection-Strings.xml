@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-27T17:46:02.239+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Connection Strings</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Connection Strings</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The connection strings for the various DBMS&apos;s are all slightly different. We recommand that yo check the documentation for the DotNet provider for these.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The SQLRDD has added support for the following extra elements in the connection string.</text><br/><text styleclass="Normal" translate="true">Each of the settings can be enabled/disabled with a True/False value.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="4">
+      <thead style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Keyword (case insensitive)</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Description</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Default</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Can be overridden </text><br/><text styleclass="Normal" translate="true">by metadata per table</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">AllowUpdates</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should updates for tables be allowed by default</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">TRUE</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">DeletedColumn</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Default column name for the Deleted Column</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">LegacyFieldTypes</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should only legacy field types be returned (CDLMN) or should also the FoxPro field types such as I (Integer), T (DateTime) and Y (currency) be used.</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">LongFieldNames</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should the column names be truncated to 10 characters or are longer column names allowed</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">RecnoColumn</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Default column name for the Recno Column</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&quot;&quot;</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">TrimTrailingSpaces</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should trailing spaces be trimmed when values are read ?</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:174px;">
+          <para styleclass="Body Text"><text styleclass="Body Text" translate="true">UseNulls</text></para>
+        </td>
+        <td style="width:339px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should null values in the database be returned as DbNull.Value or as blank values?</text></para>
+        </td>
+        <td style="width:61px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">True</text></para>
+        </td>
+        <td style="width:142px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">These settings will be stored as properties in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Properties_T_XSharp_RDD_SqlRDD_SqlDbConnection.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">SqlDbConnection</link><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An example connection string for SqlServer to the Northwind Database on the server SRV001 could be</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text style="font-family:&apos;Cascadia Mono&apos;; font-size:9pt; color:#a31515;" translate="true">Server=SRV001;Initial catalog=Northwind;Trusted_Connection=True;TrimTrailingSpaces=False;UseNulls=False;LegacyFieldTypes=False;</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Each of the MetaData Providers has a mechanism to override the values from the connection object</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For the IniMetadataProvider that is the section [Defaults]</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For the DatabaseMetadataProvider that is the entry for the table with the name &quot;defaults&quot;</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For the CallbackMetdataProvider the RDD will callback with the tablename &quot;defaults&quot;</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+  </body>
+</topic>

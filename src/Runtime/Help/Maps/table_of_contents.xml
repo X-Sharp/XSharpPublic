@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns:xsi="http://www.w3.org/2001/XInclude">
+  <topicref type="topic" id="45339795882777" modified="2024-02-27T18:22:13.063Z" icon="0" href="StyleSheet">
+    <caption translate="true">StyleSheet</caption>
+  </topicref>
+  <topicref type="topic" id="384613055009473" build="ALL" modified="2024-02-19T14:25:33.952Z" icon="0">
+    <caption translate="true">The SqlRDD</caption>
+    <topicref type="topic" id="384613424012815" build="ALL" modified="2011-10-21T12:14:56.192Z" icon="0">
+      <caption translate="true">Basics</caption>
+      <topicref type="topic" id="384612775307646" build="ALL" modified="2024-02-23T11:18:05.547Z" icon="0" href="Welcome">
+        <caption translate="true">Welcome to the SQLRDD</caption>
+      </topicref>
+      <topicref type="topic" id="453415553958441" build="ALL" modified="2024-02-19T14:36:41.262Z" icon="0" href="Database-Independency">
+        <caption translate="true">Database Independency</caption>
+      </topicref>
+      <topicref type="topic" id="453417488239645" build="ALL" modified="2024-02-19T14:37:07.176Z" icon="0" href="Record-Oriented-vs-Set-oriente">
+        <caption translate="true">Record Oriented vs Set oriented.</caption>
+      </topicref>
+      <topicref type="topic" id="453414675120338" build="ALL" modified="2024-02-19T14:38:27.014Z" icon="0" href="MetaData">
+        <caption translate="true">MetaData</caption>
+        <topicref type="topic" id="453444594565712" build="ALL" modified="2024-02-23T15:28:22.838Z" icon="0" href="IniMetaDataProvider">
+          <caption translate="true">IniFile</caption>
+        </topicref>
+        <topicref type="topic" id="453446349082619" build="ALL" modified="2024-02-23T15:28:19.511Z" icon="0" href="CallBackMetadataProvider">
+          <caption translate="true">CallBack</caption>
+        </topicref>
+        <topicref type="topic" id="453442995636019" build="ALL" modified="2024-02-23T15:28:25.843Z" icon="0" href="DatabaseMetadataProvider">
+          <caption translate="true">Database</caption>
+        </topicref>
+        <topicref type="topic" id="453456206308470" build="ALL" modified="2024-02-23T11:29:15.579Z" icon="0" href="Default-Values">
+          <caption translate="true">Default Values</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="384614056124376" build="ALL" modified="2011-10-21T12:14:56.193Z" icon="0" href="Connections">
+        <caption translate="true">Connections</caption>
+        <topicref type="topic" id="453444400261518" build="ALL" modified="2024-02-22T11:46:26.719Z" icon="0" href="Connection-Strings">
+          <caption translate="true">Connection Strings</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="384614600359107" build="ALL" modified="2011-10-21T12:14:56.192Z" icon="0" href="BasicUsage">
+        <caption translate="true">Basic Usage</caption>
+      </topicref>
+      <topicref type="topic" id="384611886619961" build="ALL" modified="2024-02-27T17:53:27.384Z" icon="0" href="Indexes">
+        <caption translate="true">Indexes</caption>
+        <topicref type="topic" id="384612399907186" build="ALL" modified="2024-02-28T08:40:08.393Z" icon="0" href="Indexes_gs">
+          <caption translate="true">Index getting started</caption>
+        </topicref>
+        <topicref type="topic" id="384612811386764" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="indexfilesorcallback">
+          <caption translate="true">Index Files or indexes through a callback</caption>
+        </topicref>
+        <topicref type="topic" id="384613974369063" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="Indexespart2">
+          <caption translate="true">Index support</caption>
+        </topicref>
+        <topicref type="topic" id="384614069324223" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="IndexExpressions">
+          <caption translate="true">Index expressions</caption>
+        </topicref>
+        <topicref type="topic" id="384615690079543" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="IndexExpressionwithDescend()">
+          <caption translate="true">Index Expression with Descend()</caption>
+        </topicref>
+        <topicref type="topic" id="384612824009634" build="ALL" modified="2024-02-28T08:40:08.395Z" icon="0" href="Samplesofindexexpressions">
+          <caption translate="true">Index expression examples</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="384615963299645" build="ALL" modified="2011-10-21T12:14:56.192Z" icon="0" href="CompatibilitywithexistingRDDs">
+        <caption translate="true">Compatibility with existing RDDs</caption>
+      </topicref>
+      <topicref type="topic" id="384613197972801" build="ALL" modified="2011-10-21T12:14:56.192Z" icon="0" href="Operations">
+        <caption translate="true">Workarea Operations</caption>
+      </topicref>
+      <topicref type="topic" id="384612266665085" build="ALL" modified="2011-10-21T12:14:56.193Z" icon="0" href="Nameandreservedwords">
+        <caption translate="true">Names and reserved words</caption>
+      </topicref>
+      <topicref type="topic" id="384614818130834" build="ALL" modified="2011-10-21T12:14:56.193Z" icon="0" href="ValidationsandIntegrity">
+        <caption translate="true">Validations and Integrity</caption>
+      </topicref>
+      <topicref type="topic" id="384614832641043" build="ALL" modified="2011-10-21T12:14:56.194Z" icon="0" href="Transactions">
+        <caption translate="true">Transactions</caption>
+      </topicref>
+      <topicref type="topic" id="384614401263041" build="ALL" modified="2011-10-21T12:14:56.194Z" icon="0" href="FromDbf2SQL">
+        <caption translate="true">Converting from DBF to SQL</caption>
+      </topicref>
+      <topicref type="topic" id="384613528071805" build="ALL" modified="2011-10-21T12:14:56.194Z" icon="0" href="errorhandling">
+        <caption translate="true">Error Handling</caption>
+      </topicref>
+      <topicref type="topic" id="384614815047321" build="ALL" modified="2011-10-21T12:14:56.194Z" icon="0" href="versionhistory">
+        <caption translate="true">Version History</caption>
+      </topicref>
+      <topicref type="topic" id="453417695479632" build="ALL" modified="2024-02-19T16:11:06.337Z" icon="0" href="Callbacks">
+        <caption translate="true">Callbacks</caption>
+      </topicref>
+    </topicref>
+    <navref href="SqlRDDClasses.chm::\SqlRDDClasses.hhc" build="ALL" id="453417895461787" modified="2024-02-19T14:52:06.966Z" merge="runtime">
+      <caption translate="true">SqlRDDClasses.chm::\SqlRDDClasses.hhc</caption>
+    </navref>
+  </topicref>
+</map>

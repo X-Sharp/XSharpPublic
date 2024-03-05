@@ -42,6 +42,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <inheritdoc />
         OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Create(info)
+            File.SetAttributes(SELF:_FileName, _OR(File.GetAttributes(SELF:_FileName), FileAttributes.Temporary))
             SELF:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
             RETURN lResult
 
@@ -160,6 +161,8 @@ BEGIN NAMESPACE XSharp.RDD
     OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         IF uiOrdinal == DbInfo.DBI_CANPUTREC
             RETURN FALSE
+        ELSEIF uiOrdinal == DbInfo.DBI_ISDBF
+	        RETURN FALSE
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 

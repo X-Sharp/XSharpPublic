@@ -474,8 +474,8 @@ METHOD StatusMessage(oHL, nType)
 
 	IF oStatBar != NULL_OBJECT
 		DO CASE
-		CASE IsInstanceOfUsual(oHL, #HyperLabel) .AND. IsString(oHL:Description)
-			Message := oHL:Description
+		CASE oHL IS HyperLabel VAR oHL2 .AND. IsString(oHL2:Description)
+			Message := oHL2:Description
 		CASE IsString(oHL)
 			Message := oHL
 		OTHERWISE

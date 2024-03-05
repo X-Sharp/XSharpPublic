@@ -447,3 +447,49 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
         lRest, lNoOpt, lDesc, acOutPutFields)
 
 
+// function that handles extra options for the FoxPro variant of the USE command
+// At this moment the only extra thing this function does is to handle the uArea parameter
+// Several options are relevant for remote views in the Database only:
+// - Online
+// - Admin
+// - NoRequery
+// - NoData
+// - ConnString     
+
+FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
+    lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
+
+IF ! IsNil(uArea)
+    DbSelectArea(uArea)
+ENDIF
+LOCAL cDriver := "DBFVFP" AS STRING
+IF !IsNil(lAgain) .and. lAgain
+    // select other area where cDataFile is open and copy lShared, lReadonly
+    var ext := System.IO.Path.GetExtension(cDataFile)
+    if String.IsNullOrEmpty(ext)
+        cDataFile := System.IO.Path.ChangeExtension(cDataFile, ".dbf")
+    endif
+    if File(cDataFile)
+        cDataFile := FPathName()
+    endif
+    // locate the area with the same filename
+    for var i := 1u to Workareas.MaxWorkareas
+        var area := RuntimeState.DataSession.GetRDD(i)
+        if area is Workarea var wa .and. String.Compare(wa:FileName, cDataFile, TRUE) == 0
+            lShared := wa:Shared
+            lReadOnly := wa:ReadOnly
+            EXIT
+        endif
+    next
+ENDIF
+if IsNil(cAlias)
+    cAlias := System.IO.Path.GetFileNameWithoutExtension( cDataFile ):ToUpper()
+    if VoDbGetSelect(cAlias) > 0
+        cAlias := Chr(64+RuntimeState.DataSession.CurrentWorkareaNO)
+        DO WHILE VoDbGetSelect(cAlias) > 0
+            cAlias := Chr(Asc(cAlias)+1)
+        ENDDO
+    ENDIF
+
+ENDIF
+RETURN DbUseArea(FALSE, cDriver, cDataFile, cAlias, lShared, lReadOnly)

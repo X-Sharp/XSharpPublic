@@ -1,0 +1,2072 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>XSharp.SQLRdd</name>
+  </assembly>
+  <members>
+    <member name="T:XSharp.RDD.SqlRDD.Functions">
+      <summary>
+            The functions class exposes the functions in the X# SQL RDD
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCacheConnection(System.Boolean)">
+      <summary>
+            Specify if connections should remain open during the lifetime of an app.
+            </summary>
+      <param name="ShouldCache">When TRUE then connections remain open. The default is TRUE.</param>
+      <returns>The previous value for the setting</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCloseCommand(System.IntPtr)">
+      <summary>
+            Close a SqlDbCommand object
+            </summary>
+      <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
+      <returns>TRUE when the handle was correct and the command was closed.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCloseConnection(System.IntPtr)">
+      <summary>
+            Close a SQLRDD Connection.
+            </summary>
+      <param name="ConnectionName">Name of the connection to close.</param>
+      <param name="Handle">Handle of the connection to close.</param>
+      <returns>TRUE when the connection was successfully closed. FALSE if the connection did not exist or was already closed</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCloseConnection(System.String)">
+      <summary>
+            Close a SQLRDD Connection.
+            </summary>
+      <param name="ConnectionName">Name of the connection to close.</param>
+      <param name="Handle">Handle of the connection to close.</param>
+      <returns>TRUE when the connection was successfully closed. FALSE if the connection did not exist or was already closed</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCreateSQLCommand(System.IntPtr)">
+      <summary>
+            Create a new SqlDbCommand object for the given connection
+            </summary>
+      <param name="hConn">Handle of the connection</param>
+      <param name="name">Name of the connection</param>
+      <param name="oConn">The connection object</param>
+      <returns>The handle to a new SqlDbCommand object for the connection</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCreateSQLCommand(System.String)">
+      <summary>
+            Create a new SqlDbCommand object for the given connection
+            </summary>
+      <param name="hConn">Handle of the connection</param>
+      <param name="name">Name of the connection</param>
+      <param name="oConn">The connection object</param>
+      <returns>The handle to a new SqlDbCommand object for the connection</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbCreateSQLCommand(XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create a new SqlDbCommand object for the given connection
+            </summary>
+      <param name="hConn">Handle of the connection</param>
+      <param name="name">Name of the connection</param>
+      <param name="oConn">The connection object</param>
+      <returns>The handle to a new SqlDbCommand object for the connection</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbExecuteQueryDirect(System.IntPtr,System.String)">
+      <summary>
+            Execute a SQL query and return the result as a DataTable
+            </summary>
+      <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
+      <param name="sCommandText">Query to execute</param>
+      <returns> a Datatable or Null when an error occurred</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbExecuteSQLDirect(System.IntPtr,System.String)">
+      <summary>
+            Execute a SQL command and return the result as a single value
+            </summary>
+      <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
+      <returns>The result of the command or NULL when the handle is invalid</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbGetCommand(System.IntPtr)">
+      <summary>
+            Get a SqlDbCommand object from a Handle
+            </summary>
+      <param name="hCmd">Handle of a SqlDbCommand object that was previously created</param>
+      <returns>The SqlDbCommand object or NULL when the handle is invalid</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbGetConnection(System.IntPtr)">
+      <summary>
+            Get the SqlDbConnectionObject based on a Connection Handle
+            </summary>
+      <param name="Handle">Handle of the opened connection</param>
+      <returns>Connection Object, or NULL when Handle is invalid</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbGetConnection(System.String)">
+      <summary>
+            Get the SqlDbConnectionObject based on a Connection Name
+            </summary>
+      <param name="ConnectionName">Name of the opened connection</param>
+      <returns>Connection Object, or NULL when Name is invalid</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbGetProvider">
+      <summary>
+            Retrieve the default SqlDbProvider object
+            </summary>
+      <returns>The SqlDbProvider object or NULL when the ProviderName has not been registered.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbOpenConnection(System.String)">
+      <summary>
+            Open a connection for the X# SQL RDD
+            </summary>
+      <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
+      <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
+      <param name="CallBack">A delegate to an Event Handler function/method that will receive events </param>
+      <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbOpenConnection(System.String,System.String)">
+      <summary>
+            Open a connection for the X# SQL RDD
+            </summary>
+      <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
+      <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
+      <param name="CallBack">A delegate to an Event Handler function/method that will receive events </param>
+      <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbOpenConnection(System.String,System.String,XSharp.RDD.SqlRDD.SqlRDDEventHandler)">
+      <summary>
+            Open a connection for the X# SQL RDD
+            </summary>
+      <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
+      <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
+      <param name="CallBack">A delegate to an Event Handler function/method that will receive events </param>
+      <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbOpenConnection(System.String,XSharp.RDD.SqlRDD.SqlRDDEventHandler)">
+      <summary>
+            Open a connection for the X# SQL RDD
+            </summary>
+      <param name="ConnectionString">Connection string in the right format for the Ado.Net dataprovider.</param>
+      <param name="ConnectionName">Name for the connection. Defaults to 'DEFAULT'.</param>
+      <param name="CallBack">A delegate to an Event Handler function/method that will receive events </param>
+      <returns>A Handle to the connection, or IntPtr.Zero when opening the connection fails/</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbRegisterProvider(System.String,System.Type)">
+      <summary>
+            Register a Custom SqlDbProvider with the SqlRDD system
+            </summary>
+      <param name="ProviderName">Name to use for the provider. </param>
+      <param name="ProviderClass">Type of the class that implements the provider</param>
+      <returns>TRUE when the provider was registered.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbSetProvider(System.String)">
+      <summary>
+            Set the default ISqlDbProvider to use for the SqlDb Connections. The default SQLDbProvider is ODBC
+            </summary>
+      <param name="ProviderName">Name of the provider to use. This is case insensitive
+            Built in providers are: <br /><see cref="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql">MySql</see><br /><see cref="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC">ODBC</see><br /><see cref="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb">OleDb</see><br /><see cref="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle">Oracle</see><br /><see cref="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql">PostgresSql</see><br /><see cref="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer">SqlServer</see><br /></param>
+      <returns>TRUE when a provider was found matching the name.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Functions.SqlDbUnRegisterProvider(System.String)">
+      <summary>
+            Unregister a Custom SqlDbProvider from the SqlRDD system
+            </summary>
+      <param name="ProviderName">Name of the provider to unregister.</param>
+      <returns>TRUE when the provider was unregistered.</returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbColumnDef">
+      <summary>
+            The ColumnDef class. This class is used when reading the schema of a table.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbColumnDef.#ctor(XSharp.RDD.DbColumnInfo)">
+      <summary>
+            Create a new instance of the ColumnDef class.
+            </summary>
+      <param name="oCol">DBF column to derive from.</param>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.ColumnFlags"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.ColumnInfo"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.Identity"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.Length"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.Nullable"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.Precision"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.ReadOnly"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.Scale"></member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbColumnDef.Type"></member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbCommand">
+      <summary>
+            Connection class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.#ctor(System.String,XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create a SqlDbCommand object
+            </summary>
+      <param name="cName">Command name</param>
+      <param name="oConn">Connection object</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.AddParameter(System.Int32,System.Object)">
+      <summary>
+            Add a parameter to the command
+            </summary>
+      <param name="nId">Ordinal of the parameter</param>
+      <param name="oValue">Value for the parameter</param>
+      <param name="cName">Name of the parameter</param>
+      <returns>The SqlDbParameter object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.AddParameter(System.String,System.Object)">
+      <summary>
+            Add a parameter to the command
+            </summary>
+      <param name="nId">Ordinal of the parameter</param>
+      <param name="oValue">Value for the parameter</param>
+      <param name="cName">Name of the parameter</param>
+      <returns>The SqlDbParameter object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.BindParameters">
+      <summary>
+            Bind the parameters to the underlying DbCommand object
+            </summary>
+      <returns>TRUE when succesfull</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.ClearParameters">
+      <summary>
+            Remove all the parameters from the command
+            </summary>
+      <returns>Nothing</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.Close">
+      <summary>
+            Close a SqlDbCommand object
+            </summary>
+      <returns>Nothing</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.CommandText">
+      <summary>The text of the Command object.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.Connection">
+      <summary>The Connection object for this command.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.DbCommand">
+      <summary>The Ado.Net DbCommand object for this command.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.DbTransaction">
+      <summary>The Ado.Net DbTransaction object for this command.</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.Dispose">
+      <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.ExecuteNonQuery(System.String)">
+      <summary>
+            Execute a command that does not return data
+            </summary>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>TRUE when executed successfully</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.ExecuteReader(System.String)">
+      <summary>
+            Execute a command and return the DataReader
+            </summary>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>An Ado.Net DbDataReader object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.ExecuteScalar(System.String)">
+      <summary>
+            Execute a scalar command
+            </summary>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>Return value of the command</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.FindByHandle(System.IntPtr)">
+      <summary>
+            Find a command object by its handle
+            </summary>
+      <param name="id">Unique Handle returned when creating the command</param>
+      <returns>The matching Command object, or NULL when the handle is invalid</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.GetDataTable(System.String)">
+      <summary>
+            Get the datatable for the current Command
+            </summary>
+      <param name="cTable">The name of the DataTable</param>
+      <returns>An Ado.Net DataTable</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.GetSchemaTable">
+      <summary>
+            Get the schematable for the current Command
+            </summary>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>An Ado.Net DataTable</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.ParameterList">
+      <summary>
+            Return the parameterlist as a string
+            </summary>
+      <value>A list with Name/Value pairs</value>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.Parameters">
+      <summary>The List of Parameters.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbCommand.Provider">
+      <summary>The DBMS Provider class.</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbCommand.RemoveParameter(XSharp.RDD.SqlRDD.SqlDbParameter)">
+      <summary>
+            Remove a parameter object from the command
+            </summary>
+      <param name="oParam"></param>
+      <returns>TRUE when the parameter was part of the command Parameters collection</returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbConnection">
+      <summary>
+            Connection class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.#ctor(System.String,System.String,XSharp.RDD.SqlRDD.SqlRDDEventHandler)">
+      <summary>
+            Create a new connection object
+            </summary>
+      <param name="cName">Connection Name</param>
+      <param name="cConnectionString">Connection String</param>
+      <param name="Callback">(Optional) CallBack</param>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.AllowUpdates">
+      <summary>
+            Can the table be updated ?
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.BeginTrans">
+      <summary>
+            Begin a transaction
+            </summary>
+      <returns>TRUE when transaction was succesfully started</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.BeginTrans(System.Data.IsolationLevel)">
+      <summary>
+            Begin a transaction
+            </summary>
+      <returns>TRUE when transaction was succesfully started</returns>
+    </member>
+    <member name="E:XSharp.RDD.SqlRDD.SqlDbConnection.CallBack">
+      <summary>
+            Event handler for the SqlRDD events
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.Close">
+      <summary>
+            Close the connection.
+            </summary>
+      <returns>TRUE when the connection was closed.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.CommitTrans">
+      <summary>
+            Commit the current transaction
+            </summary>
+      <returns>TRUE when transaction was succesfully committed</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.CompareMemo">
+      <summary>
+            Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.ConnectionString">
+      <summary>Connection String</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.DbConnection">
+      <summary>Ado.Net DbConnection object used by the connection</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.DbTransaction">
+      <summary>Ado.Net DbTransaction object when a transaction is running</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.DeletedColumn">
+      <summary>
+            Name of the Deleted column. When empty then rows will be physically deleted from the server
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.DeleteTableDef(System.String)">
+      <summary>
+            Delete a Table from the schema information
+            </summary>
+      <param name="sTableName">Table to delete</param>
+      <returns></returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.Dispose">
+      <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.DoesTableExist(System.String)">
+      <summary>
+            Check to see if a table exists
+            </summary>
+      <param name="cTableName">Name of the table to check</param>
+      <returns>TRUE when the table exists. </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.ExecuteNonQuery(System.String,System.String)">
+      <summary>
+            Execute a SQL command
+            </summary>
+      <param name="cCommand">SQL Statement</param>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>TRUE when succesfull or FALSE when an exception occurred</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.ExecuteReader(System.String,System.String)">
+      <summary>
+            Execute a SQL command and return the DbDataReader returned by the command
+            </summary>
+      <param name="cCommand">SQL Statement</param>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>DbDataReader or NULL when an exception occurred</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.ExecuteScalar(System.String,System.String)">
+      <summary>
+            Execute a SQL command and return the value returned by the command
+            </summary>
+      <param name="cCommand">SQL Statement</param>
+      <param name="cTable">Table name to display for Event Handler</param>
+      <returns>Result of the command or NULL when an exception occurred</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.FindByHandle(System.IntPtr)">
+      <summary>
+            Find a connection object by its handle
+            </summary>
+      <param name="id">Unique Handle returned when creating the connection</param>
+      <returns>The matching Connection object, or NULL when the handle is invalid</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.FindByName(System.String)">
+      <summary>
+            Find a connection object by its name
+            </summary>
+      <param name="name">Unique name of the connection</param>
+      <returns>The matching Connection object, or NULL when the name is not found</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.GetDataTable(System.String,System.String)">
+      <summary>
+            Execute a SQL command and read the DataTable returned by the command
+            </summary>
+      <param name="cCommand">SQL Statement</param>
+      <param name="cTable">Table name for the Table</param>
+      <returns>DataTable or NULL when an exception occurred</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.GetMetaDataCollections">
+      <summary>
+            Return the list of metadata collections supported by the provider
+            </summary>
+      <returns>List of metadata collections</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.GetStructureForQuery(System.String,System.String,System.Boolean)">
+      <summary>
+            Read the table structure for a query
+            </summary>
+      <param name="cQuery">Select statement </param>
+      <param name="TableName">Name of the table that will be used</param>
+      <param name="longFieldNames">Should long field names be returned</param>
+      <returns>Object with Table Information or NULL when an error occurs</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.GetStructureForTable(System.String,XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Read the table structure for a table
+            </summary>
+      <param name="TableName">Name of the table</param>
+      <param name="oTable">Table Info (from the metadata provider)</param>
+      <param name="cColumnNames">List of column names that we're interested in.</param>
+      <returns>Object with Table Information or NULL when an error occurs</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.GetTables(System.String)">
+      <summary>
+            Return the table names from the database
+            </summary>
+      <param name="filter">filter to apply</param>
+      <returns>List of table names that match the filter</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.IsOpen">
+      <summary>Is the connection open</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.KeepOpen">
+      <summary>Should the connection stay open</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.LastException">
+      <summary>Last exception that occurred in the RDD</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.LegacyFieldTypes">
+      <summary>Should field types from SQL be translated to the 'old' field types (CDLMN) or should also FoxPro types (BCDFGILMNPQTVWY0) be allowed?</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.LongFieldNames">
+      <summary>
+            Can field names longer than 10 characters be used (true) or should they be truncated (false)
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.MaxRecords">
+      <summary>
+            What is the maximum number of records that the RDD should fetch when unfiltered.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.MetadataProvider">
+      <summary>Provider for the Metadata, such as columnlist, maxrecords etc.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.Provider">
+      <summary>ISqlDbProvider object used by the connection</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.RDDs">
+      <summary>Open RDDs for the connection</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.RecnoColumn">
+      <summary>
+            Name of the Recno column. When empty then the relative row number is the record number
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.RegisterRdd(XSharp.RDD.SqlRDD.SQLRDD)">
+      <summary>
+            Register a RDD with its connection object.
+            </summary>
+      <param name="oRDD">Object to register</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.RollBackTrans">
+      <summary>
+            Roll back the current transaction
+            </summary>
+      <returns>TRUE when transaction was succesfully rolled back</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.Schema">
+      <summary>Cache for the Table Schemas</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.State">
+      <summary>Connection State</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.TimeOut">
+      <summary>Timeout when Opening</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.TrimTrailingSpaces">
+      <summary>
+            Should trailing spaces for string columns be trimmed?
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbConnection.UnregisterRdd(XSharp.RDD.SqlRDD.SQLRDD)">
+      <summary>
+            Unregister a RDD from its connection object.
+            </summary>
+      <param name="oRDD">Object to unregister</param>
+      <returns></returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.UpdateAllColumns">
+      <summary>
+            Should all columns be updated when a record is updated?
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbConnection.UseNulls">
+      <summary>Should the phantom record have Null values or empty values?</summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbHandleObject">
+      <summary>
+            The base class for objects that are decorated with a (unique) handle.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbHandleObject.#ctor(System.String)">
+      <summary>
+            Create a new instance of the HandleObject class
+            </summary>
+      <param name="cName">Name to associate with the object</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbHandleObject.Dispose">
+      <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbHandleObject.Handle">
+      <summary>
+            The unique handle for the object
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbIndexInfo">
+      <summary>
+            This class stores metadata for indexes
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIndexInfo.#ctor(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Create a new instance of the SqlDbIndexInfo class
+            </summary>
+      <param name="oTable">Table to which the index belongs</param>
+      <param name="cIndex">Name of the index</param>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbIndexInfo.Table">
+      <summary>
+            Table to which the index belongs
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbIndexInfo.Tags">
+      <summary>
+            List of tags
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbIniFile">
+      <summary>
+            Class to read/write an INI file
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.#ctor(System.String)">
+      <summary>
+            Creaye a new INI file object
+            </summary>
+      <param name="cFile">File Name. May include path.</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.Create">
+      <summary>
+            Create a new INI file
+            </summary>
+      <returns>true when succesfully created</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.DeleteEntry(System.String,System.String)">
+      <summary>
+            Delete an entry from the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <returns>always true</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.DeleteSection(System.String)">
+      <summary>
+            Delete a section from the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <returns>always true</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbIniFile.Exists">
+      <summary>
+            Does the file exist
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbIniFile.FullName">
+      <summary>
+            Full path and name of the INI file
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.GetInt(System.String,System.String,System.Int32)">
+      <summary>
+            Read an integer from the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <param name="nDefault">Default value. This is returned when the entry is missing or not a valid number</param>
+      <returns>The number from the ini file or the default</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.GetLogic(System.String,System.String,System.Boolean)">
+      <summary>
+            Read a logic value from the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <param name="lDefault">Default value. This is returned when the entry is missing or not a valid logical</param>
+      <returns>The value from ini file or the default</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.GetSection(System.String)">
+      <summary>
+            Read a sectionfrom the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <returns>The complete section as a list of strings</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.GetString(System.String,System.String,System.String)">
+      <summary>
+            Read a string value from the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <param name="sDefault">Default value. This is returned when the entry is missing</param>
+      <returns>The value from ini file or the default</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.GetStringUpper(System.String,System.String,System.String)">
+      <summary>
+            Read a string value from the INI file and covert it to uppercase
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <param name="sDefault">Default value. This is returned when the entry is missing</param>
+      <returns>The value from ini file or the default</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.WriteInt(System.String,System.String,System.Int32)">
+      <summary>
+            Write an integer to the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <param name="nValue">Value to write</param>
+      <returns></returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbIniFile.WriteString(System.String,System.String,System.String)">
+      <summary>
+            Write an integer to the INI file
+            </summary>
+      <param name="sSection">Section Name</param>
+      <param name="sEntry">Entry Name</param>
+      <param name="sString">Value to write</param>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbObject">
+      <summary>
+            The Abstract class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbObject.#ctor(System.String)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.SqlDbObject</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbObject.Name">
+      <summary>
+            The Name of the object.
+            </summary>
+      <value></value>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbObject.ToString"></member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbParameter">
+      <summary>
+            The SqlDbParameter class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbParameter.#ctor(System.Int32,System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.SqlDbParameter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbParameter.#ctor(System.String,System.Object)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.SqlDbParameter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbParameter.DbParameter">
+      <summary>DbParameter object generated to pass the value to the Ado.Net dataprovider</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbParameter.Direction">
+      <summary>Direction (Input, Output, InputOutput) </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbParameter.Ordinal">
+      <summary>Ordinal position of the parameter</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbParameter.Value">
+      <summary>Value of the parameter</summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbTableInfo">
+      <summary>
+            This class stores metadata about tables
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbTableInfo.#ctor(System.String,XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create a new instance of the SqlDbTableInfo class
+            </summary>
+      <param name="cName">Table Name</param>
+      <param name="oConn">Connection to which the table belongs</param>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.AllowUpdates">
+      <summary>
+            Can the table be updated ?
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.ColumnList">
+      <summary>
+            List of columns that have to be selected. Defaults to "*", which means all columns
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.Columns">
+      <summary>
+            List of columns
+            </summary>
+      <value></value>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.CompareMemo">
+      <summary>
+            Specifies whether memo fields of type Long text or Long binary are included in the WHERE clause when using automatic updating. This defaults to TRUE
+            </summary>
+      <value></value>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.DeletedColumn">
+      <summary>
+            Name of the Deleted column. When empty then rows will be physically deleted from the server
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.EmptySelectStatement">
+      <summary>
+            Select statement with a where condition that returns no records
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.Indexes">
+      <summary>
+            List of Indexes and tags
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.KeyColumns">
+      <summary>
+            Specifies a comma separated list of columns that must be used for update commands. Defaults to all columns
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.LongFieldNames">
+      <summary>
+            Can field names longer than 10 characters be used (true) or should they be truncated (false)
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.MaxRecords">
+      <summary>
+            What is the maximum number of records that the RDD should fetch when unfiltered.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.RealName">
+      <summary>
+            Real tablename of the table in the SQL database. This is the name that is used in the SQL statements.
+            This allows you to declare an alias for a table with for example a server side filter.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.RecnoColumn">
+      <summary>
+            Name of the Recno column. When empty then the relative row number is the record number
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.SelectStatement">
+      <summary>
+            Current select statement for the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.ServerFilter">
+      <summary>
+            Additional server side filter that will be used as (additional) where clause when fetching data. This must be
+            a valid SQL expression for the target server
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.TrimTrailingSpaces">
+      <summary>
+            Should trailing spaces for string columns be trimmed?
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.UpdatableColumns">
+      <summary>
+            Specifies a comma-delimited list of fields in the view and includes fields from the cursor
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTableInfo.UpdateAllColumns">
+      <summary>
+            Should all columns be updated, or only the columns that were changed
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlDbTagInfo">
+      <summary>
+            This class stores metadata for index tags
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SqlDbTagInfo.#ctor(XSharp.RDD.SqlRDD.SqlDbIndexInfo,System.String)">
+      <summary>
+            Create a new instance of the SqlDbTagInfo class
+            </summary>
+      <param name="oIndex">Index to which the tag belongs</param>
+      <param name="name">Name of the Tag</param>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTagInfo.Condition">
+      <summary>
+            Index condition in Xbase format
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTagInfo.Expression">
+      <summary>
+            Index expression in Xbase format
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTagInfo.Index">
+      <summary>
+            Index to which the tag belongs
+            </summary>
+      <value></value>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlDbTagInfo.Unique">
+      <summary>
+             Should the index be unique ?
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SQLRDD">
+      <summary>
+            The SqlRDD class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.SQLRDD</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Append(System.Boolean)">
+      <summary>Append a blank row and position the cursor to the new row.</summary>
+      <param name="lReleaseLock">A flag that is TRUE if you want to clear all pending row locks before appending the new row and FALSE if you want to add the new row to the end of the current lock list.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Close">
+      <summary>Close a table.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Create(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Create a table.</summary>
+      <param name="info">object describing the file to create.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Delete">
+      <summary>Mark the row at the current cursor position for deletion.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.Deleted">
+      <summary>Is the current row deleted?</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.Driver"></member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GetValue(System.Int32)">
+      <summary>Get a value for the specified column.</summary>
+      <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
+      <returns>The value of the specified field.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GoBottom">
+      <summary>Position the cursor to the last logical row.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GoCold">
+      <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GoTo(System.Int32)">
+      <summary>Position the cursor to a specific, physical row.</summary>
+      <param name="nRec">The ONE based row number of the new cursor position.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.GoTop">
+      <summary>Position the cursor to the first logical row.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Info(System.Int32,System.Object)">
+      <summary>Retrieve and optionally change information about a work area.</summary>
+      <param name="nOrdinal">Specifies the type of information.</param>
+      <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Open(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Open a table.</summary>
+      <param name="info">object describing the file to open.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderCreate(XSharp.RDD.Support.DbOrderCreateInfo)">
+      <summary>Create a new index or tag.</summary>
+      <param name="info">An object containing information for order creation.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderDestroy(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Delete an index or tag.</summary>
+      <param name="info">An object containing information about the order to remove.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderInfo(System.UInt32,XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Retrieve information about an index.</summary>
+      <param name="info">An object containing information about the order to retrieve the info for.</param>
+      <param name="nOrdinal">Specifies the type of information to retrieve.</param>
+      <returns>The requested value for the specified index.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderListAdd(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
+      <param name="info">An object containing information about the orderlist (file)  to add.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderListDelete(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
+      <param name="info" />
+      <param name="info">An object containing information about the orderlist (file) to delete.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderListFocus(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
+      <param name="info">An object containing information about the order to select.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.OrderListRebuild">
+      <summary>Rebuild all indexes for the current Workarea.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.PutValue(System.Int32,System.Object)">
+      <summary>Write a value for a specified column</summary>
+      <param name="nFldPos">ONE based position for which the value should be written.</param>
+      <param name="oValue">New value that needs to written to the table this column.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Recall">
+      <summary>Remove the deletion marker from the row at the current cursor position.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.RecNo">
+      <summary>The physical row identifier at the current cursor position.</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Seek(XSharp.RDD.Support.DbSeekInfo)">
+      <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
+      <param name="info">An object containing containing the necessary seek information.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Skip(System.Int32)">
+      <summary>Position the cursor relative to its current position.</summary>
+      <param name="nToSkip">The number of rows to skip.
+            If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.SkipRaw(System.Int32)">
+      <summary>Position the cursor regardless of scope and filter conditions.</summary>
+      <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlRddEventArgs">
+      <summary>
+            The SqlRddEvent class. Gets sent by the RDD to the App
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlRddEventArgs.IntValue">
+      <summary>
+            Return the value as an integer or 0 when the value is not numeric
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlRddEventArgs.ListValue">
+      <summary>
+            Return the value as a list of strings or null when the value is not a list of strings
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlRddEventArgs.Name">
+      <summary>
+            Table/Index/Tag for which the event is happening (if any)
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlRddEventArgs.Reason">
+      <summary>
+            Reason for the event
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlRddEventArgs.StringValue">
+      <summary>
+            Return the value as a string or null when the value is not a string
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SqlRddEventArgs.Value">
+      <summary>
+            Default value calculated by the RDD
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlRDDEventHandler">
+      <summary>
+            Delegate that describes the event handler for the RDD events
+            </summary>
+      <param name="oSender">Object that raised the event</param>
+      <param name="e">Event arguments</param>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.SqlRDDEventReason">
+      <summary>
+            This enum is used to specify the reason for the RDD event
+            </summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.ConnectionString">
+      <summary>Specifies the connection string for the database</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.CommandText">
+      <summary>Specifies the command text to be executed</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.RealName">
+      <summary>Specifies the real name of a table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.MaxRecords">
+      <summary>Specifies the maximum number of records to be fetched</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.ColumnList">
+      <summary>Specifies the list of columns for the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.ServerFilter">
+      <summary>Specifies the server filter for the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.OrderByClause">
+      <summary>Specifies the order by clause for the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.WhereClause">
+      <summary>Specifies the where clause for the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.RecnoColumn">
+      <summary>Specifies the record number column in the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.DeletedColumn">
+      <summary>Specifies the deleted column in the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.LongFieldNames">
+      <summary>Specifies if long field names should be used</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.UpdateAllColumns">
+      <summary>Specifies if all columns can be updated</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.TrimTrailingSpaces">
+      <summary>Specifies if trailing spaces should be trimmed</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.AllowUpdates">
+      <summary>Specifies if updates are allowed</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.CompareMemo">
+      <summary>Specifies if memo fields should be used for where clauses (when no keycolumns are defined)</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.UpdatableColumns">
+      <summary>Specifies the updatable columns in the table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.KeyColumns">
+      <summary>Specifies the key columns that should be used in where clauses</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.Indexes">
+      <summary>Specifies the indexes for a table</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.Tags">
+      <summary>Specifies the tags for an index</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.Expression">
+      <summary>Specifies the expression for an index tag</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.Condition">
+      <summary>Specifies the condition for an index tag</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.SqlRDDEventReason.Unique">
+      <summary>Specifies if the index tag is unique</summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider">
+      <summary>
+            Interface for SQL Database Providers
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateCommand">
+      <summary>
+            Create a provider specific DbCommand Object
+            </summary>
+      <returns>A new DbCommand object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateCommandBuilder">
+      <summary>
+            Create a provider specific DbCommandBuilder Object
+            </summary>
+      <returns>A new DbCommandBuilder object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateConnection">
+      <summary>
+            Create a provider specific DbConnection Object
+            </summary>
+      <returns>A new DbConnection object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateConnectionStringBuilder">
+      <summary>
+            Create a provider specific DbConnectionStringBuilder Object
+            </summary>
+      <returns>A new DbConnectionStringBuilder object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateDataSourceEnumerator">
+      <summary>
+            Create a provider specific DbDataSourceEnumerator Object
+            </summary>
+      <returns>A new DbDataSourceEnumerator object</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateIndexStatement">
+      <summary>
+            Syntax for a CREATE INDEX statement.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateParameter">
+      <summary>
+            Create a provider specific DbParameter Object
+            </summary>
+      <returns>A new DbParameter object</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.CreateTableStatement">
+      <summary>
+            Syntax for a CREATE TABLE statement.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.DeleteAllRowsStatement">
+      <summary>
+            Syntax for the statement to delete all rows from a table (ZAP)
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.DeleteStatement">
+      <summary>
+            Syntax for the DELETE statement
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.DropIndexStatement">
+      <summary>
+            Syntax for a DROP INDEX statement.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.DropTableStatement">
+      <summary>
+            Syntax for a DROP TABLE statement.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.Factory">
+      <summary>
+            DbProviderFactory for this provider
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.GetFunction(System.String)">
+      <summary>
+            Get the translation for an XBase function to a SQL function
+            </summary>
+      <param name="sFunction">Function. Parameters are replaced with %1%, %2% etc.</param>
+      <returns>The translation of the function.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.GetFunctions">
+      <summary>
+            Return a list of function translations for this provider
+            </summary>
+      <returns>Dictionary with XBase functions mapped to SQL functions</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.GetIdentity">
+      <summary>
+            Syntax for the statement to retrieve the identity value of the last inserted row
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.GetRowCount">
+      <summary>
+            Syntax for the statement to retrieve the number of rows updated by the last statement
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.GetSqlColumnInfo(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create the column definition (in SQL syntax) from a RDDFieldInfo object
+            </summary>
+      <param name="oInfo">Object that contains the field definition</param>
+      <param name="oConn">Connection to the database</param>
+      <returns>a string in SQL syntax</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.InsertStatement">
+      <summary>
+            Syntax for the INSERT statement
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.Name">
+      <summary>
+            Name of the provider
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.OrderByClause">
+      <summary>
+            Syntax for the ORDER BY clause
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.QuoteIdentifier(System.String)">
+      <summary>
+            Surround an identifier with the correct quotes for the provider
+            </summary>
+      <param name="cId">Identifier</param>
+      <returns>Quoted Identifier</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.SelectTopStatement">
+      <summary>
+            Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.ISqlDbProvider.UpdateStatement">
+      <summary>
+            Syntax for the UPDATE statement
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.ISqlMetadataProvider">
+      <summary>
+            The MetadataProvider class. Contains properties for some default settings
+            and a method to retrieve the table information for a given table.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlMetadataProvider.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Get the metadata for an Index
+            </summary>
+      <param name="oTable">Table object to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
+      <returns>Filled SqlDbIndexInfo object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.ISqlMetadataProvider.GetTableInfo(System.String)">
+      <summary>
+            Get the metadata for a table
+            </summary>
+      <param name="cTable">Name of the table to lookup the data for</param>
+      <returns>Filled SqlDbTableInfo object</returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProvider">
+      <summary>
+            The SqlDbProvider class. Abstract base class for other providers.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.#ctor(System.String)">
+      <summary>
+            Create a new SqlDbProvider object
+            </summary>
+      <param name="cName">Name of the object</param>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.AndClause">
+      <summary>Literal that can be used in SQL statements to indicate a AND operator</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.ColumnsMacro">
+      <summary>Literal that can be used in SQL statements to indicate a list of columns</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.ConnectionDelimiter">
+      <summary>Connection Delimiter (::) </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateCommand">
+      <summary>
+            Create a provider specific DbCommand Object
+            </summary>
+      <returns>A new DbCommand object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateCommandBuilder">
+      <summary>
+            Create a provider specific DbCommandBuilder Object
+            </summary>
+      <returns>A new DbCommandBuilder object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateConnection">
+      <summary>
+            Create a provider specific DbConnection Object
+            </summary>
+      <returns>A new DbConnection object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateConnectionStringBuilder">
+      <summary>
+            Create a provider specific DbConnectionStringBuilder Object
+            </summary>
+      <returns>A new DbConnectionStringBuilder object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateDataSourceEnumerator">
+      <summary>
+            Create a provider specific DbDataSourceEnumerator Object
+            </summary>
+      <returns>A new DbDataSourceEnumerator object</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateIndexStatement">
+      <summary>
+            Syntax for a CREATE INDEX statement.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateParameter">
+      <summary>
+            Create a provider specific DbParameter Object
+            </summary>
+      <returns>A new DbParameter object</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.CreateTableStatement">
+      <summary>
+            Syntax for a CREATE TABLE statement.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.Current">
+      <summary>
+            The defaut SqlDbprovider
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.DeleteAllRowsStatement">
+      <summary>
+            Syntax for the statement to delete all rows from a table (ZAP)
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.DeleteStatement">
+      <summary>
+            Syntax for the DELETE statement
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.DropIndexStatement">
+      <summary>
+            Syntax for a DROP INDEX statement.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.DropTableStatement">
+      <summary>
+            Syntax for a DROP TABLE statement.
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.Factory">
+      <summary>
+            The DbProviderFactory for this provider
+            </summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.FieldDefinitionListMacro">
+      <summary>Literal that can be used in SQL statements to indicate a fielddefinition list</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.FieldListMacro">
+      <summary>Literal that can be used in SQL statements to indicate a field list</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.FromClause">
+      <summary>Literal that can be used in SQL statements to indicate a FROM clause</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.GetFunction(System.String)">
+      <summary>
+            Get the translation for an XBase function to a SQL function
+            </summary>
+      <param name="sFunction">Function. Parameters are replaced with %1%, %2% etc.</param>
+      <returns>The translation of the function.</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.GetFunctions">
+      <summary>
+            Get a dictionary with the functions that are supported by this provider,
+            </summary>
+      <returns>The dictionary</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.GetIdentity">
+      <summary>
+            Syntax for the statement to retrieve the identity value of the last inserted row
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.GetProvider(System.String)">
+      <summary>
+            Get the provider object for a provide name
+            </summary>
+      <param name="name">Name that was previously registered</param>
+      <returns>The provider object or NULL when there was an error</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.GetRowCount">
+      <summary>
+            Syntax for the statement to retrieve the number of rows updated by the last statement
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.GetSqlColumnInfo(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create the column definition (in SQL syntax) from a RDDFieldInfo object
+            </summary>
+      <param name="oInfo">Object that contains the field definition</param>
+      <param name="oConn">Connection to the database</param>
+      <returns>a string in SQL syntax</returns>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.IndexNameMacro">
+      <summary>Literal that can be used in SQL statements to indicate an index name</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.InsertStatement">
+      <summary>
+            Syntax for the INSERT statement
+            </summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.NotNullClause">
+      <summary>Literal that can be used in SQL statements to indicate that a column should not contain null values</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.NullClause">
+      <summary>Literal that can be used in SQL statements to indicate that a column may contain null values</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.OrClause">
+      <summary>Literal that can be used in SQL statements to indicate a OR operator</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.OrderByClause">
+      <summary>
+            Syntax for the ORDER BY clause
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.QuoteIdentifier(System.String)">
+      <summary>
+            Surround an identifier with the correct quotes for the provider
+            </summary>
+      <param name="cId">Identifier</param>
+      <returns>Quoted Identifier</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.RegisterProvider(System.String,System.Type)">
+      <summary>
+            Register a provider in the table of providers
+            </summary>
+      <param name="Name">Unique name</param>
+      <param name="ClassName">Dotnet type of the class that implements the provider</param>
+      <returns>TRUE when succesfully registered</returns>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.SelectClause">
+      <summary>Literal that can be used in SQL statements to indicate a SELECT clause</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.SelectTopStatement">
+      <summary>
+            Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.SetDefaultProvider(System.String)">
+      <summary>
+            Set the default provider by name
+            </summary>
+      <param name="name">Name that was previously registered</param>
+      <returns>previous default provider</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.SetDefaultProvider(XSharp.RDD.SqlRDD.Providers.ISqlDbProvider)">
+      <summary>
+            Set the default provider
+            </summary>
+      <param name="provider">Provider object</param>
+      <returns>previous default provider</returns>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.TableNameMacro">
+      <summary>Literal that can be used in SQL statements to indicate the table name</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.TopCountMacro">
+      <summary>Literal that can be used in SQL statements to indicate the top count</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.UniqueMacro">
+      <summary>Literal that can be used in SQL statements to indicate the unique keyword</summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.UnRegisterProvider(System.String)">
+      <summary>
+            UnRegister a provider by name
+            </summary>
+      <param name="name">Name that was previously registered</param>
+      <returns>TRUE when succesfully removed</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.UpdateStatement">
+      <summary>
+            Syntax for the UPDATE statement
+            </summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.ValuesMacro">
+      <summary>Literal that can be used in SQL statements to indicate a list of values</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.WhereClause">
+      <summary>Literal that can be used in SQL statements to indicate a WHERE clause</summary>
+    </member>
+    <member name="F:XSharp.RDD.SqlRDD.Providers.SqlDbProvider.WhereMacro">
+      <summary>Literal that can be used in SQL statements to indicate a WHERE clause</summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage">
+      <summary>
+            The SqlDbProvider for the Advantage Database Server
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage.GetFunctions">
+      <summary>
+            Get a dictionary with the functions that are supported by this provider,
+            </summary>
+      <returns>The dictionary</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql">
+      <summary>
+            The SqlDbProvider for MySql
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.GetFunctions"></member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.GetIdentity">
+      <summary>
+            Syntax for the statement to retrieve the identity value of the last inserted row
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.GetRowCount">
+      <summary>
+            Syntax for the statement to retrieve the number of rows updated by the last statement
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.GetSqlColumnInfo(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.SqlRDD.SqlDbConnection)"></member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.SelectTopStatement">
+      <summary>
+            Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderMySql.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC">
+      <summary>
+            The SqlDbProvider for ODBC
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC.CreateCommandBuilder">
+      <summary>
+            Create a provider specific DbCommandBuilder Object
+            </summary>
+      <returns>A new DbCommandBuilder object</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC.GetFunctions">
+      <summary>
+            Get a dictionary with the functions that are supported by this provider,
+            </summary>
+      <returns>The dictionary</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderODBC.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb">
+      <summary>
+            The SqlDbProvider for OLEDB
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb.CreateCommandBuilder">
+      <summary>
+            Create a provider specific DbCommandBuilder Object
+            </summary>
+      <returns>A new DbCommandBuilder object</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb.GetFunctions">
+      <summary>
+            Get a dictionary with the functions that are supported by this provider,
+            </summary>
+      <returns>The dictionary</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOleDb.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle">
+      <summary>
+            The SqlDbProvider for Oracle, using the System.Data.OracleClient namespace.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.GetFunctions"></member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.GetIdentity">
+      <summary>
+            Syntax for the statement to retrieve the identity value of the last inserted row
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.GetRowCount">
+      <summary>
+            Syntax for the statement to retrieve the number of rows updated by the last statement
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.GetSqlColumnInfo(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.SqlRDD.SqlDbConnection)"></member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.SelectTopStatement">
+      <summary>
+            Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql">
+      <summary>
+            The SqlDbProvider for MySql
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.GetFunctions"></member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.GetIdentity">
+      <summary>
+            Syntax for the statement to retrieve the identity value of the last inserted row
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.GetRowCount">
+      <summary>
+            Syntax for the statement to retrieve the number of rows updated by the last statement
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.GetSqlColumnInfo(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.SqlRDD.SqlDbConnection)"></member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.SelectTopStatement">
+      <summary>
+            Syntax for the statement to select a limited number of rows from the table
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer">
+      <summary>
+            The SqlServer provider class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.DllName">
+      <summary>
+            Name of the DLL that contains the DbProviderFactory
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.GetFunctions">
+      <summary>
+            Get a dictionary with the functions that are supported by this provider,
+            </summary>
+      <returns>The dictionary</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.GetIdentity">
+      <summary>
+            Syntax for the statement to retrieve the identity value of the last inserted row
+            </summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.GetRowCount">
+      <summary>
+            Syntax for the statement to retrieve the number of rows updated by the last statement
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.GetSqlColumnInfo(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create the column definition (in SQL syntax) from a RDDFieldInfo object
+            </summary>
+      <param name="oInfo">Object that contains the field definition</param>
+      <param name="oConn">Connection to the database</param>
+      <returns>a string in SQL syntax</returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlDbProviderSqlServer.TypeName">
+      <summary>
+            Type name of the DbProviderFactory
+            </summary>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract">
+      <summary>
+            The SqlMetadataProviderAbstract class.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Construct a new instance of the SqlMetadataProviderAbstract class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.Connection">
+      <summary>
+             The connection that this metadata provider is using.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Get the metadata for an Index
+            </summary>
+      <param name="oTable">Table object to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
+      <returns>Filled SqlDbIndexInfo object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderAbstract.GetTableInfo(System.String)">
+      <summary>
+            Get the metadata for a table
+            </summary>
+      <param name="cTable">Name of the table to lookup the data for</param>
+      <returns>Filled SqlDbTableInfo object</returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack">
+      <summary>
+            The SqlMetadataProviderCallBack class. Provides metadata for the RDD from a callback function.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Construct a new instance of the SqlMetadataProviderAbstract class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Get the metadata for an Index
+            </summary>
+      <param name="oTable">Table object to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
+      <returns>Filled SqlDbIndexInfo object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderCallBack.GetTableInfo(System.String)">
+      <summary>
+            Get the metadata for a table
+            </summary>
+      <param name="cTable">Name of the table to lookup the data for</param>
+      <returns>Filled SqlDbTableInfo object</returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase">
+      <summary>
+            The SqlMetadataProviderDatabase class. Reads Metadata from tables in the database.
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Create a new instance of the DatabaseMetadataProvider class.
+            </summary>
+      <param name="conn">Connection associated with the provider</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Get the metadata for an Index
+            </summary>
+      <param name="oTable">Table object to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
+      <returns>Filled SqlDbIndexInfo object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderDatabase.GetTableInfo(System.String)">
+      <summary>
+            Get the metadata for a table
+            </summary>
+      <param name="cTable">Name of the table to lookup the data for</param>
+      <returns>Filled SqlDbTableInfo object</returns>
+    </member>
+    <member name="T:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni">
+      <summary>
+            The SqlMetadataProviderIni class. Provides metadata for the RDD from an INI file
+            </summary>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.#ctor(System.String,XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Construct a new instance of the SqlMetadataProviderIni class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
+      <param name="cFile">File name where the metadata is stored</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.#ctor(XSharp.RDD.SqlRDD.SqlDbConnection)">
+      <summary>
+            Construct a new instance of the SqlMetadataProviderIni class.
+            </summary>
+      <param name="conn">Connection to which the provider belongs</param>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetIndexInfo(XSharp.RDD.SqlRDD.SqlDbTableInfo,System.String)">
+      <summary>
+            Get the metadata for an Index
+            </summary>
+      <param name="oTable">Table object to lookup the data for</param>
+      <param name="cIndexName">Name of the index to lookup the data for</param>
+      <returns>Filled SqlDbIndexInfo object</returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.Providers.SqlMetadataProviderIni.GetTableInfo(System.String)">
+      <summary>
+            Get the metadata for a table
+            </summary>
+      <param name="cTable">Name of the table to lookup the data for</param>
+      <returns>Filled SqlDbTableInfo object</returns>
+    </member>
+  </members>
+</doc>

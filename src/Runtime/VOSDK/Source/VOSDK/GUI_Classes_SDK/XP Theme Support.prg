@@ -100,7 +100,7 @@ FUNCTION GetWindowTheme(hWnd AS PTR) AS PTR STRICT
    RETURN Null_Ptr
 
 
-// dcaton 070625 - added prototypes so PCALL() can work.  
+// dcaton 070625 - added prototypes so PCALL() can work.
 // Somehow this compiles in VO with these typed simply as PTR,
 // but Vulcan needs parameter and return type
 // information in order to generate proper IL code.
@@ -108,50 +108,50 @@ FUNCTION GetWindowTheme(hWnd AS PTR) AS PTR STRICT
 
 STATIC FUNCTION _CloseThemeData( hTheme AS PTR ) AS INT PASCAL
    RETURN 0
-   
-   
+
+
 STATIC FUNCTION _DrawThemeBackground( hTheme AS PTR, hDC AS PTR, iPartId AS INT, iStateId AS INT, pRect AS PTR, pClipRect AS PTR ) AS INT PASCAL
    RETURN 0
 
 
 STATIC FUNCTION _DrawThemeEdge( hTheme AS PTR, hDC AS PTR, iPartId AS INT, iStateId AS INT, pDestRect AS PTR, uEdge AS DWORD, uFlags AS DWORD, pContentRect AS PTR ) AS INT PASCAL
    RETURN 0
-   
-   
+
+
 STATIC FUNCTION _DrawThemeParentBackground( hTheme AS PTR, hDC AS PTR, prc AS PTR ) AS INT PASCAL
    RETURN 0
-   
-   
+
+
 STATIC FUNCTION _EnableThemeDialogTexture( hwnd AS PTR, dwFlags AS DWORD ) AS INT PASCAL
    RETURN 0
-   
-   
+
+
 STATIC FUNCTION _GetThemeAppProperties() AS DWORD PASCAL
    RETURN 0
-   
-   
+
+
 STATIC FUNCTION _GetThemeColor( hTheme AS PTR, iPartId AS INT, iStateId AS INT, iPropId AS INT, pColor AS PTR ) AS INT PASCAL
    RETURN 0
 
 
 STATIC FUNCTION _GetWindowTheme( hWnd AS PTR ) AS PTR PASCAL
    RETURN 0
-   
-   
+
+
 STATIC FUNCTION _OpenThemeData( hWnd AS PTR, lpcwstr AS PTR ) AS PTR PASCAL
    RETURN 0
 
 
 STATIC FUNCTION _SetThemeAppProperties( dwFlags AS DWORD ) AS VOID PASCAL
-   RETURN   
-   
-   
+   RETURN
+
+
 STATIC FUNCTION _SetWindowTheme( hWnd AS PTR, SubAppName AS PTR, SubIdList AS PTR ) AS PTR PASCAL
-   RETURN 0   
+   RETURN 0
 
 
 STATIC FUNCTION _IsAppThemed() AS LOGIC PASCAL
-   RETURN FALSE   
+   RETURN FALSE
 
 
 STATIC GLOBAL gfpCloseThemeData            AS _CloseThemeData PTR
@@ -266,11 +266,11 @@ FUNCTION DrawThemeBackground(hTheme AS PTR, hdc AS PTR, iPartId AS INT, iStateId
 /// <exclude/>
 FUNCTION EnableThemeDialogTexture(oWindow AS USUAL, dwStyle AS DWORD) AS LOGIC STRICT
 	//PP-030909
-   LOCAL hwnd AS PTR            
+   LOCAL hwnd AS PTR
 
 
    IF ! gfpEnableThemeDialogTexture == NULL_PTR .and. glThemeEnabled
-   	IF IsInstanceOfUsual(oWindow, #Window)
+   	IF (oWindow IS Window)
    		IF IsInstanceOf(oWindow, #DataWindow)
    			oWindow := oWindow:__GetFormSurface()
    		ENDIF

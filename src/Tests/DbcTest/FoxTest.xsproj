@@ -22,7 +22,7 @@
     <Unsafe>false</Unsafe>
     <INS>true</INS>
     <NS>false</NS>
-    <NoStandardDefs>false</NoStandardDefs>
+    <NoStandardDefs>False</NoStandardDefs>
     <IncludePaths />
     <StandardDefs />
     <MemVar>True</MemVar>

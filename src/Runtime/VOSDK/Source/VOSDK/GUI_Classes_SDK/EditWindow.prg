@@ -1,5 +1,7 @@
 /// <include file="Gui.xml" path="doc/EditWindow/*" />
+#pragma options("lb", off)
 CLASS EditWindow INHERIT ControlWindow
+   PROPERTY __Edit AS MultiLineEdit GET (MultilineEdit) SELF:oCtrl
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.AsString/*" />
@@ -15,7 +17,7 @@ METHOD AsString()
 METHOD Clear()
 
 
-	oCtrl:Clear()
+	SELF:__Edit:Clear()
 	RETURN SELF
 
 
@@ -23,7 +25,7 @@ METHOD Clear()
 METHOD Copy()
 
 
-	oCtrl:Copy()
+	SELF:__Edit:Copy()
 
 
 	RETURN SELF
@@ -33,14 +35,16 @@ METHOD Copy()
 METHOD Cut()
 
 
-	oCtrl:Cut()
+	SELF:__Edit:Cut()
 
 
 	RETURN SELF
 
 /// <include file="Gui.xml" path="doc/EditWindow.Font/*" />
 ASSIGN Font(oNewFont)
-	LOCAL hFont AS PTR
+    LOCAL hFont AS PTR
+    LOCAL oFont AS Font
+    oFont := oNewFont
 
 
 
@@ -48,10 +52,10 @@ ASSIGN Font(oNewFont)
 
 
 	IF (hWnd != NULL_PTR)
-		SELF:__SetFont(oNewFont)
-		IF (oNewFont != NULL_OBJECT)
-			oNewFont:Create()
-			hFont := oNewFont:Handle()
+		SELF:__SetFont(oFont)
+		IF (oFont != NULL_OBJECT)
+			oFont:Create()
+			hFont := oFont:Handle()
 		ELSE
 			hFont := GetStockObject ( System_Font )
 		ENDIF
@@ -68,7 +72,7 @@ METHOD GetLine(nLineNumber, nMaxLength)
 
 
 
-	RETURN oCtrl:GetLine(nLineNumber, nMaxLength)
+	RETURN SELF:__Edit:GetLine(nLineNumber, nMaxLength)
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.ctor/*" />
@@ -78,8 +82,6 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 
 
 	SUPER(MultiLineEdit{oOwner,xID,oPoint,oDimension})
-
-
 	RETURN
 
 
@@ -89,7 +91,7 @@ ACCESS Length
 
 
 
-	RETURN oCtrl:Length
+	RETURN SELF:__Edit:Length
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.LineCount/*" />
@@ -98,7 +100,7 @@ ACCESS LineCount
 
 
 
-	RETURN oCtrl:LineCount
+	RETURN SELF:__Edit:LineCount
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.LineDown/*" />
@@ -107,7 +109,7 @@ METHOD LineDown()
 
 
 
-	oCtrl:LineDown()
+	SELF:__Edit:LineDown()
 
 
 	RETURN SELF
@@ -119,7 +121,7 @@ METHOD LineUp()
 
 
 
-	oCtrl:LineUp()
+	SELF:__Edit:LineUp()
 
 
 	RETURN SELF
@@ -131,7 +133,7 @@ METHOD PageDown()
 
 
 
-	oCtrl:PageDown()
+	SELF:__Edit:PageDown()
 
 
 	RETURN SELF
@@ -143,7 +145,7 @@ METHOD PageUp()
 
 
 
-	oCtrl:PageUp()
+	SELF:__Edit:PageUp()
 
 
 	RETURN SELF
@@ -155,7 +157,7 @@ METHOD Paste(cNewString)
 
 
 
-	oCtrl:Paste(cNewString)
+	SELF:__Edit:Paste(cNewString)
 
 
 	RETURN SELF
@@ -167,7 +169,7 @@ METHOD ScrollHorizontal(nChars)
 
 
 
-	oCtrl:ScrollHorizontal(nChars)
+	SELF:__Edit:ScrollHorizontal(nChars)
 
 
 	RETURN SELF
@@ -179,7 +181,7 @@ METHOD ScrollVertical(nLines)
 
 
 
-	oCtrl:ScrollVertical(nLines)
+	SELF:__Edit:ScrollVertical(nLines)
 
 
 	RETURN SELF
@@ -191,7 +193,7 @@ ACCESS Selection
 
 
 
-	RETURN oCtrl:Selection
+	RETURN SELF:__Edit:Selection
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Selection/*" />
@@ -200,7 +202,7 @@ ASSIGN Selection(oSelection)
 
 
 
-	RETURN oCtrl:Selection:=oSelection
+	RETURN SELF:__Edit:Selection:=oSelection
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.TextLimit/*" />
@@ -209,7 +211,7 @@ ASSIGN TextLimit(nChars)
 
 
 
-	RETURN oCtrl:TextLimit:=nChars
+	RETURN SELF:__Edit:TextLimit:=nChars
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
@@ -218,7 +220,7 @@ ACCESS TextValue
 
 
 
-	RETURN oCtrl:TextValue
+	RETURN SELF:__Edit:TextValue
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
@@ -227,7 +229,7 @@ ASSIGN TextValue(cText)
 
 
 
-	RETURN oCtrl:TextValue:=cText
+	RETURN SELF:__Edit:TextValue:=cText
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Undo/*" />
@@ -236,7 +238,7 @@ METHOD Undo()
 
 
 
-	RETURN oCtrl:Undo()
+	RETURN SELF:__Edit:Undo()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Value/*" />

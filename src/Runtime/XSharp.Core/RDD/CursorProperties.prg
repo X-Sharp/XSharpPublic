@@ -1,4 +1,9 @@
-﻿USING System.Collections.Generic
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections.Generic
 USING System.Reflection
 /// <summary>Enum that matches the various FoxPro cursor properties, used in CursorGetProp() and CursorSetProp()</summary>
 /// <seealso cref="O:XSharp.VFP.Functions.CursorGetProp" />

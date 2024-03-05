@@ -1,56 +1,43 @@
-﻿using XSharp.VFP
-FUNCTION Start( ) AS VOID
-	local aStruct as Array
-	local i as dword
-	aStruct := {{"FLD1","C",10,0}, {"FLD2","N",10,0}}
-	DbCreate("R915", aStruct)
-	DbUseArea(TRUE, ,"R915")
-	For  i := 1 to 10
-        local oTest as Test
-	    local oObj as Empty
-        local array aValues[10]
-	    oObj := Empty{}
-        otest := Test{i}
-        with oTest
-    	    DbAppend()
-    	    REPLACE FLD1 with GetText()
-    	    REPLACE FLD2 with :Number
-        end with
-        ? "SCATTER MEMVAR"
-        SCATTER MEMVAR
-        ? M->FLD1, M->FLD2
-        ? "SCATTER NAME"
-        SCATTER NAME oObj
-        ? oObj:FLD1, oObj:FLD2
-        ? "SCATTER ARRAY"
-        SCATTER TO aValues
-        ? aValues[1], aValues[2]
-    next
-	DbCommit()
-	var fld := "FLD1"
-    For  i := 1 to 10
-        locate for  &fld ==  Repl(Chr(64+i),10)
-        xAssert(FieldGet(2) == i )
-    next
+﻿
+#command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]   ;
+    => DbCopyXStructFox( <(file)>)
+
+
+#command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]  ;
+    DATABASE <dbname> [NAME <longtablename>] ;
+    => DbCopyXStructFox( <(file)>) ;; DbAdd(<(dbname)>,  <(file)>, <(longtablename)>)
+
+
+#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+    [WITH <cdx:CDX, PRODUCTION>] ;
+    => DbCopyStructFox( <(file)>, <fields> , <.cdx.>)
+
+#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+    [WITH <cdx:CDX, PRODUCTION>] ;
+    DATABASE <dbname> [NAME <longtablename>] ;
+    => DbCopyStructFox( <(file)>, <fields>, <.cdx.> );; DbAdd(<(dbname)>, <(file)>, <(longtablename)>)
+
+
+
+using XSharp.VFP
+FUNCTION Start () as void
+    USE C:\Test\Orders.dbf
+    USE customer  && Opens Customer table
+    COPY STRUCTURE TO backup && Creates a backup of the Customer table
+    USE backup
+    APPEND FROM customer FOR country = 'UK'
+    //BROWSE FIELDS contact, country
+    USE
+    DELETE FILE backup.dbf
     wait
-    RETURN
 
-FUNCTION GetText()
-    RETURN :Text
-
-
-PROC xAssert(l AS LOGIC)
-IF .not. l
-	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
-END IF
-? "Assertion passed"
-RETURN
+function DbAdd(cDb, cFile, cTable    )
+    ? cDb, cFile, cTable
+    return true
 
 
-CLASS Test
-    PROPERTY Text as STRING AUTO
-    PROPERTY Number as DWORD AUTO
-    CONSTRUCTOR(nNum as DWORD)
-        SELF:Text   :=  Repl(Chr(64+nNum),10)
-        SELF:Number := nNum
-END CLASS
+FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC STRICT
+    RETURN DbCopyXStruct(cTargetFile)
+
+FUNCTION DbCopyStructFox(cTargetFile AS STRING, acStruct := NULL_ARRAY AS ARRAY, lCopyCdx as LOGIC) AS LOGIC STRICT
+    RETURN DbCopyStruct(cTargetFile,acStruct)

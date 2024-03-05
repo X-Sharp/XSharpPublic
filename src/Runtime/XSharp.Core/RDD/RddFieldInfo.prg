@@ -69,6 +69,7 @@ CLASS RddFieldInfo
     PUBLIC StepValue    AS LONG
 
     /// <summary>Dynamic list of optional properties, such as Caption, Description.</summary>
+    /// <remarks>These properties are used to store VFP specific properties and are read from the DBC file.</remarks>
     PUBLIC PROPERTY Properties AS DatabasePropertyCollection
         GET
             if _lazyProperties == NULL
@@ -81,7 +82,9 @@ CLASS RddFieldInfo
         END SET
     END PROPERTY
     PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+    /// <summary>Does the field have properties.</summary>
     property HasProperties as logic get _lazyProperties != null
+    /// <summary>FieldType as a string</summary>
     property FieldTypeFlags as string
         get
             if self:Flags == DBFFieldFlags.None
@@ -191,7 +194,7 @@ CLASS RddFieldInfo
         IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
             SELF:Decimals 	:= oInfo:Decimals
         ENDIF
-        
+
         foreach var prop in oInfo:Properties
             SELF:Properties:Add(prop:Key, prop:Value)
         next
@@ -306,45 +309,70 @@ CLASS RddFieldInfo
         END GET
     END PROPERTY
 
+    PRIVATE METHOD _GetPropertyValue<T> (Key as DatabasePropertyType) AS T
+        if self:_lazyProperties != NULL
+            return SELF:_lazyProperties:GetValue<T>(Key)
+        endif
+        return default(T)
+
     // These dynamic properties can be used to automatically generate databrowsers etc.
+    /// <summary>Dynamic property for the Caption. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY Caption      AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.Caption) DEFAULT SELF:Name;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.Caption) DEFAULT SELF:Name;
         SET SELF:Properties:Add(DatabasePropertyType.Caption, value)
 
+    /// <summary>Dynamic property for the Description. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY Description  AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.Comment)  DEFAULT String.Empty;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.Comment)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.Comment, value)
 
+    /// <summary>Dynamic property for the InputMask. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY InputMask    AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.InputMask)  DEFAULT String.Empty;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.InputMask)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.InputMask, value)
 
+    /// <summary>Dynamic property for the Format. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY Format       AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.Format)  DEFAULT String.Empty;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.Format)  DEFAULT String.Empty;
         SET SELF:Properties:Add(DatabasePropertyType.Format, value)
 
+    /// <summary>Dynamic property for the ColumnName. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY ColumnName   AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.ColumnName)  DEFAULT SELF:Name;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.ColumnName)  DEFAULT SELF:Name;
         SET SELF:Properties:Add(DatabasePropertyType.ColumnName, value)
 
+    /// <summary>Dynamic property for the PrimaryKey. Read from the VFP properties collection.</summary>
     PROPERTY PrimaryKey   AS LOGIC ;
-        GET SELF:Properties:GetValue<LOGIC>(DatabasePropertyType.KeyField)   ;
+        GET SELF:_GetPropertyValue<LOGIC>(DatabasePropertyType.KeyField)   ;
         SET SELF:Properties:Add(DatabasePropertyType.KeyField, value)
 
+    /// <summary>Dynamic property for the DefaultValue. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY DefaultValue   AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.DefaultValue)  DEFAULT String.Empty ;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.DefaultValue)  DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.DefaultValue, value)
 
+    /// <summary>Dynamic property for the IsUnique. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY IsUnique   AS LOGIC ;
-        GET SELF:Properties:GetValue<LOGIC>(DatabasePropertyType.IsUnique)  ;
+        GET SELF:_GetPropertyValue<LOGIC>(DatabasePropertyType.IsUnique)  ;
         SET SELF:Properties:Add(DatabasePropertyType.IsUnique, value)
 
+    /// <summary>Dynamic property for the RuleExpression. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY RuleExpression   AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.RuleExpression)    DEFAULT String.Empty ;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.RuleExpression)    DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.RuleExpression, value)
 
+    /// <summary>Dynamic property for the RuleText. Read from the VFP properties collection.</summary>
+    /// <seealso cref="P:Properties"/>
     PROPERTY RuleText   AS STRING ;
-        GET SELF:Properties:GetValue<STRING>(DatabasePropertyType.RuleText)    DEFAULT String.Empty ;
+        GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.RuleText)    DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.RuleText, value)
 
 END CLASS

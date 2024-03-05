@@ -7,10 +7,10 @@ CLASS ProgressBar INHERIT Control
 
 
  /// <exclude />
-ASSIGN __Value(nValue AS USUAL)  STRICT 
+ASSIGN __Value(nValue AS USUAL)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF IsString(nValue)
@@ -19,11 +19,11 @@ ASSIGN __Value(nValue AS USUAL)  STRICT
 
 
 	SELF:Position := LONGINT(Round(nValue, 0))
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.Advance/*" />
-METHOD Advance(dwNewPosition) 
+METHOD Advance(dwNewPosition)
 
 
 	// Instruct the ProgressBar to update its position and save the old position
@@ -40,27 +40,27 @@ METHOD Advance(dwNewPosition)
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.BackgroundColor/*" />
-ASSIGN BackgroundColor(oColor) 
+ASSIGN BackgroundColor(oColor)
 	SendMessage(SELF:Handle(), PBM_SETBKCOLOR, 0, LONGINT(_CAST, oColor:ColorRef))
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.BarColor/*" />
-ASSIGN BarColor(oColor) 
+ASSIGN BarColor(oColor)
 	SendMessage(SELF:Handle(), PBM_SETBARCOLOR, 0, LONGINT(_CAST, oColor:ColorRef))
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 
 
-	
-	
+
+
 
 
 	Default(@lDataAware, TRUE)
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle, lDataAware)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, PROGRESS_CLASS, kStyle, lDataAware)
@@ -76,22 +76,22 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 	dwOldPosition		:= 0
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.OldPosition/*" />
-ACCESS OldPosition 
-	
-	
+ACCESS OldPosition
+
+
 
 
 	RETURN dwOldPosition
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.Position/*" />
-ACCESS Position 
-	
-	
+ACCESS Position
+
+
 
 
 	//RvdH 050602 Fixed issue 12973
@@ -102,9 +102,9 @@ ACCESS Position
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.Position/*" />
-ASSIGN Position(dwNewPosition) 
-	
-	
+ASSIGN Position(dwNewPosition)
+
+
 
 
 	// Instruct the ProgressBar to update its position and save the old position
@@ -115,11 +115,11 @@ ASSIGN Position(dwNewPosition)
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.Range/*" />
-ACCESS Range 
+ACCESS Range
 	//RvdH 050602 Changed to retrieve real range from Control
 	LOCAL DIM aInt[2] AS LONGINT
-	
-	
+
+
 	SendMessage(hWnd, PBM_GETRANGE, 1, LONGINT(_CAST, @aInt[1]))
 	SELF:oRange := Range{aInt[1], aInt[2]}
 
@@ -128,11 +128,11 @@ ACCESS Range
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.Range/*" />
-ASSIGN Range(oNewRange) 
+ASSIGN Range(oNewRange)
 	LOCAL oDllVers AS WinDLLVersion
 	LOCAL nVers AS FLOAT
-	
-	
+
+
 
 
 	//RvdH 050602 Handle large ranges when ComCtrl32 > 4.70
@@ -154,18 +154,18 @@ ASSIGN Range(oNewRange)
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.UnitSize/*" />
-ACCESS UnitSize 
-	
-	
+ACCESS UnitSize
+
+
 
 
 	RETURN dwUnitSize
 
 
 /// <include file="Gui.xml" path="doc/ProgressBar.UnitSize/*" />
-ASSIGN UnitSize(dwNewUnitSize) 
-	
-	
+ASSIGN UnitSize(dwNewUnitSize)
+
+
 
 
 	// Instruct the ProgressBar to set the single-step increment

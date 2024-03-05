@@ -24,6 +24,7 @@ INTERNAL FUNCTION  _AdsGetString(pBytes as Byte PTR, nLen as LONG) AS STRING
 //   UNSIGNED16  usFieldDecimal;
 //   } ADD_FIELD_DESC;
 
+    /// <exclude />
 [VoStructAttribute(6, 2)];
 [StructLayout(LayoutKind.Explicit, Size := 6)];
 STRUCTURE ADD_FIELD_DESC
@@ -42,6 +43,10 @@ END STRUCTURE
 //   } ADS_MGMT_RECORD_INFO;
 //
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about a locked record.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 [VoStructAttribute(4, 4)];
 STRUCTURE ADS_MGMT_RECORD_INFO
     PUBLIC ulRecordNumber AS DWORD      /* Record number that is locked */
@@ -58,6 +63,10 @@ END STRUCTURE
 //   UNSIGNED16  usSeconds;     /* Number of seconds server has been up */
 //   } ADS_MGMT_UPTIME_INFO;
 //
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the server's uptime.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(8, 2)];
 [StructLayout(LayoutKind.Explicit, Size := 8)];
@@ -81,6 +90,10 @@ END STRUCTURE
 //   } ADS_MGMT_USAGE_INFO;
 
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the server's usage.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(12, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 12)];
@@ -116,6 +129,10 @@ END STRUCTURE
 //   ADS_MGMT_USAGE_INFO  stStatelessUsers; /* Stateless users in use          */
 //   } ADS_MGMT_ACTIVITY_INFO;
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the server's activity.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(172, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 172)];
@@ -157,6 +174,11 @@ END STRUCTURE
 //   } ADS_MGMT_COMM_STATS;
 //
 
+
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the server's  communication statistics.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(48, 8)];
 STRUCTURE ADS_MGMT_COMM_STATS
@@ -208,6 +230,11 @@ END STRUCTURE
 //   } ADS_MGMT_CONFIG_MEMORY;
 
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the server's memory configuration.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
+
 [VoStructAttribute(56, 8)];
 STRUCTURE ADS_MGMT_CONFIG_MEMORY
     PUBLIC ulTotalConfigMem          AS DWORD  /* Total mem taken by cfg params */
@@ -251,6 +278,11 @@ END STRUCTURE
 //   UNSIGNED16 usLockType;                      /* Advantage locking mode     */
 //   } ADS_MGMT_TABLE_INFO;
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about a table.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
+
 
 [VoStructAttribute(262, 2)];
 [StructLayout(LayoutKind.Explicit, Size := 262)];
@@ -272,6 +304,10 @@ END STRUCTURE
 //   UNSIGNED8  aucIndexName[ADS_MGMT_MAX_PATH]; /* Fully qualified table name */
 //   } ADS_MGMT_INDEX_INFO;
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about an index.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(260, 1)];
 [StructLayout(LayoutKind.Explicit, Size := 260)];
@@ -291,6 +327,12 @@ END STRUCTURE
 //   UNSIGNED16 usReserved1;                    /* Reserved                    */
 //   UNSIGNED8  aucOSUserLoginName[ADS_MAX_USER_NAME]; /* OS user login name   */
 //   } ADS_MGMT_THREAD_ACTIVITY;
+
+
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about worker threads.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(110, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 110)];
@@ -333,6 +375,10 @@ END STRUCTURE
 //   UNSIGNED16 usReserved1;                    /* reserved to maintain byte alignment (ace.pas structs are not packed) */
 //   } ADS_MGMT_USER_INFO;
 
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about users.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(290, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 290)];
@@ -385,6 +431,11 @@ END STRUCTURE
 //   UNSIGNED32  ulMaxStatelessUsers;                     /* How many stateless connections allowed */
 //   } ADS_MGMT_INSTALL_INFO;
 
+
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the installation.<br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
 
 [VoStructAttribute(144, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 144)];
@@ -476,9 +527,14 @@ END STRUCTURE
 //   } ADS_MGMT_CONFIG_PARAMS;
 
 
-    [VoStructAttribute(866, 4)];
-    [StructLayout(LayoutKind.Explicit, Size := 866)];
-    STRUCTURE ADS_MGMT_CONFIG_PARAMS
+/// <summary>
+/// Structure used by the ADS MGMT API to return information about the configuration parameters. <br/>
+/// See the ADS documentation for a description of this structure.
+/// </summary>
+
+[VoStructAttribute(866, 4)];
+[StructLayout(LayoutKind.Explicit, Size := 866)];
+STRUCTURE ADS_MGMT_CONFIG_PARAMS
     PRIVATE CONST a01 := 0   AS LONG
     PRIVATE CONST a02 := a01 + sizeof(DWORD) AS LONG
     PRIVATE CONST a03 := a02 + sizeof(DWORD) AS LONG

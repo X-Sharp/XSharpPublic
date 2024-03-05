@@ -35,7 +35,7 @@ METHOD ChangeBackground(oBrush, kWhere)
 
 
 
-	IF !IsInstanceOfUsual(oBrush, #Brush)
+	IF !(oBrush IS Brush)
 		WCError{#ChangeBackground, #__SplitView, __WCSTypeError, oBrush, 1}:Throw()
 	ENDIF
 	IF !IsNil(kWhere)
@@ -352,7 +352,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 
 
 	// the owner must be a window
-	IF !IsInstanceOfUsual(oOwner, #Window)
+	IF !(oOwner IS Window)
 		WCError{#Init, #__SplitView, __WCSTypeError, oOwner, 1}:Throw()
 	ENDIF
 	oWin := oOwner
@@ -493,7 +493,7 @@ METHOD SetPaneClient(oWindow, nPane)
 	//PP-030910 Bug 99
 	//PP-030916 // Check oWindow is a Window before changing style
 	//PP-030923 move SetWindowLong call, so only done if oWindow is a window
-	IF IsInstanceOfUsual(oWindow,#Window)
+	IF (oWindow IS Window)
       //SE-050113 S. Ebert
      //avoids the side effect, that after a call of SetPaneClient() a formerly been set
       //WS_CLIPCHILDREN style is reset.
@@ -509,7 +509,7 @@ METHOD SetPaneClient(oWindow, nPane)
 
 
 	// store the client in the array, and connect it to the pane
-	IF IsInstanceOfUsual(oWindow, #Window) .OR. IsInstanceOfUsual(oWindow, #Control)
+	IF (oWindow IS Window) .OR. (oWindow IS Control)
 		PCALL(gpfnSpltPaneAssocSet, SELF:Handle(), oWindow:Handle(), nPane - 1)
 	ELSEIF (oWindow == NULL_OBJECT)
 		PCALL(gpfnSpltPaneAssocSet, SELF:Handle(), NULL_PTR, nPane - 1)

@@ -3,36 +3,36 @@ CLASS PushButton INHERIT Button
 
 
 /// <include file="Gui.xml" path="doc/PushButton.ctor/*" />
-CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle) 
-	
-	
+CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, FALSE)
-	IF IsInstanceOfUsual(xID,#ResourceID)
+	IF (xID IS ResourceID)
 		SELF:SetStyle(BS_PushButton)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/PushButton.Value/*" />
-ACCESS Value() 
-	
-	
+ACCESS Value()
+
+
 
 
 	RETURN FALSE
 
 
 /// <include file="Gui.xml" path="doc/PushButton.Value/*" />
-ASSIGN Value(uNewValue) 
-	
-	
+ASSIGN Value(uNewValue)
 
 
-	RETURN 
+
+
+	RETURN
 END CLASS
 
 

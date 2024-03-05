@@ -216,6 +216,8 @@ DEFINE DBI_SEPARATOR           := DbInfo.DBI_SEPARATOR       /* The record separ
 /// <exclude />
 DEFINE DBI_MEMOVERSION         := DbInfo.DBI_MEMOVERSION     /* sub version of memo file */
 /// <exclude />
+DEFINE DBI_MEMOPATH            := DbInfo.DBI_MEMOPATH        /* path to memo file */
+/// <exclude />
 DEFINE DBI_TABLETYPE           := DbInfo.DBI_TABLETYPE       /* Type of table file */
 /// <exclude />
 DEFINE DBI_SCOPEDRELATION      := DbInfo.DBI_SCOPEDRELATION  /* Is given relation scoped */

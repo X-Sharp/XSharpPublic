@@ -4,20 +4,22 @@
 // XSharp Customizable Preprocessor Directives
 //
 ///////////////////////////////////////////////////////////////////////////
-// 
+//
 //  This file can be used to add custom UDC directives to X#.
 //  (UDC = User Defined Command)
 //  The file will NOT be overwritten by the installer
 //  You can choose to put the custom UDC directives in this file
-//  Or you can add your own version of CustomDefs.xh in your project 
+//  Or you can add your own version of CustomDefs.xh in your project
 //  directory or in an include folder that you have defined in your project
 //  The file XSharpDefs.xh will automatically include CustomDefs.xh
 //
 //  Please see the XSharp documentation for the syntax for User Defined Commands
-//  You can see examples of UDCs in the header files in the folder 
-// "c:\Program Files (x86)\XSharp\Include" 
+//  You can see examples of UDCs in the header files in the folder
+// "c:\Program Files (x86)\XSharp\Include"
 ///////////////////////////////////////////////////////////////////////////
 
 #ifndef CUSTOMDEFS_XH
 #define CUSTOMDEFS_XH
 #endif
+
+// EOF

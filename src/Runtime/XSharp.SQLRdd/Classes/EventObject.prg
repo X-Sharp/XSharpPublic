@@ -13,14 +13,20 @@ using System.Text
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
-/// The EventObject class.
+/// The SqlDbEventObject class. This objectc is responsible for raising events
 /// </summary>
 class SqlDbEventObject inherit SqlDbHandleObject
-
+    /// <summary>
+    /// Create a new instance of the SqlDbEventObject class
+    /// </summary>
+    /// <param name="cName">Name for the object</param>
     constructor(cName as string)
         super(cName)
         return
 
+    /// <summary>
+    /// Event handler for the SqlRDD events
+    /// </summary>
     public event CallBack as SqlRDDEventHandler
     internal method RaiseEvent(oObject as SqlDbObject, nEvent as SqlRDDEventReason, cTable as string, oValue as object) as object
         if String.IsNullOrEmpty(cTable)
@@ -58,4 +64,4 @@ class SqlDbEventObject inherit SqlDbHandleObject
         return oValue
 
 end class
-end namespace // XSharp.RDD.SqlRDD.Classes
+end namespace

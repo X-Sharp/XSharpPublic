@@ -9,6 +9,7 @@ USING System.Runtime.InteropServices
 USING System.Text
 
 BEGIN NAMESPACE XSharp.ADS
+    /// <exclude />
     PUBLIC STATIC CLASS ACE64
     [DllImport("ACE64.dll", CharSet := CharSet.Ansi)];
     PUBLIC STATIC EXTERN METHOD AdsAddCustomKey(hIndex AS IntPtr ) AS DWORD
@@ -907,7 +908,7 @@ BEGIN NAMESPACE XSharp.ADS
     PUBLIC STATIC EXTERN METHOD AdsGetTime(hTable AS IntPtr , lFieldOrdinal AS DWORD, [@@In] [@@Out] pucBuf AS CHAR[] , pusLen REF WORD ) AS DWORD
 
     [DllImport("ACE64.dll", CharSet := CharSet.Ansi)];
-    PUBLIC STATIC EXTERN METHOD AdsGetVersion(pulMajor OUT DWORD , pulMinor OUT DWORD , pucLetter AS STRING , [@@In] [@@Out] pucDesc AS CHAR[] , pusDescLen REF WORD ) AS DWORD
+    PUBLIC STATIC EXTERN METHOD AdsGetVersion(pulMajor OUT DWORD , pulMinor OUT DWORD , pucLetter REF CHAR , [@@In] [@@Out] pucDesc AS CHAR[] , pusDescLen REF WORD ) AS DWORD
 
     [DllImport("ACE64.dll", CharSet := CharSet.Ansi)];
     PUBLIC STATIC EXTERN METHOD AdsGotoBookmark(hTable AS IntPtr , hBookmark AS IntPtr ) AS DWORD

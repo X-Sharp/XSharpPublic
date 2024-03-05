@@ -26,7 +26,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, kStyle)
 	SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle)
 
 
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		SELF:SetStyle(BS_RADIOBUTTON)
 	ENDIF
 	//	self:Pressed := .T.
@@ -78,8 +78,8 @@ ACCESS TextValue
 
 
 	lTicked := SELF:pressed
-	IF IsInstanceOfUsual(oFieldSpec, #FieldSpec)
-		cTickValue := oFieldSpec:Transform(lTicked)
+	IF oFieldSpec IS FieldSpec VAR oFS
+		cTickValue := oFS:Transform(lTicked)
 	ELSE
 		cTickValue := AsString(lTicked)
 	ENDIF
@@ -104,8 +104,8 @@ ASSIGN TextValue(cNewValue)
 	lOldTicked := SELF:pressed
 
 
-	IF IsInstanceOfUsual(oFieldSpec, #FieldSpec)
-		lTicked := oFieldSpec:Val(cNewValue)
+	IF oFieldSpec IS FieldSpec VAR oFS
+		lTicked := oFS:Val(cNewValue)
 	ELSE
 		lTicked:=Unformat(cNewValue,"","L")
 	ENDIF

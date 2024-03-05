@@ -1,9 +1,8 @@
-﻿// AbstractMemo.prg
-// Created by    : robert
-// Creation Date : 4/1/2020 10:21:25 AM
-// Created for   :
-// WorkStation   : ARTEMIS
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
 USING System
 USING System.Collections.Generic
@@ -30,6 +29,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE PROPERTY FullPath   AS STRING GET FileName
         VIRTUAL PROPERTY BlockSize 	AS WORD GET SELF:_blockSize SET SELF:_blockSize := value
 
+        /// <inheritdoc />
        CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd  := oRDD

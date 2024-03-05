@@ -1,16 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule Name="SdkReference"
+      Description="SDK Reference Properties"
 	DisplayName="SDK Reference"
 	PageTemplate="generic"
-	Description="SDK reference properties"
       xmlns="http://schemas.microsoft.com/build/2009/properties">
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
                 ItemType="SDKReference"
-                MSBuildTarget="CollectSDKReferencesDesignTime"
                 Persistence="ProjectFile"
-                SourceOfDefaultValue="AfterContext"
-                SourceType="TargetResults" />
+                SourceOfDefaultValue="AfterContext" />
   </Rule.DataSource>
 
   <StringProperty Name="AppXLocation"

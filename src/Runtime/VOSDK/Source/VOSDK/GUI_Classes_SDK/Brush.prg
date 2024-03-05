@@ -5,9 +5,9 @@ CLASS Brush INHERIT VObject
 
 
  /// <exclude />
-	METHOD __SetBrushOrg(_hDc AS PTR, hClient AS PTR) AS VOID STRICT 
+	METHOD __SetBrushOrg(_hDc AS PTR, hClient AS PTR) AS VOID STRICT
 	LOCAL sRect   	IS _winRect
-	LOCAL sPoint	IS _winPoint	
+	LOCAL sPoint	IS _winPoint
 	LOCAL hParent AS PTR
 
 
@@ -30,7 +30,7 @@ CLASS Brush INHERIT VObject
 
 
 	IF hParent != hClient
-		UnrealizeObject(hBrush)                                   
+		UnrealizeObject(hBrush)
 		GetWindowRect(hClient, @sRect)
 		//RvdH 020705 ClientToScreen wants a Point not a Rect !
 		sPoint:x := sRect:left
@@ -46,12 +46,12 @@ CLASS Brush INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Brush.CreateNew/*" />
-METHOD CreateNew(xColor, kHatchStyle) 
+METHOD CreateNew(xColor, kHatchStyle)
 	LOCAL argTypeError AS LOGIC
 
 
-	
-	
+
+
 
 
 	IF (hBrush != NULL_PTR)
@@ -60,24 +60,24 @@ METHOD CreateNew(xColor, kHatchStyle)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(xColor, #Color)
+	IF xColor IS Color var oColor
 		DEFAULT(@kHatchStyle, HATCHSOLID)
 
 
 		IF IsNumeric(kHatchStyle)
 			IF (kHatchStyle == HATCHSOLID)
-				hBrush := CreateSolidBrush(xColor:ColorRef)
+				hBrush := CreateSolidBrush(oColor:ColorRef)
 			ELSE
-				hBrush := CreateHatchBrush(__ConvertHatch(kHatchStyle), xColor:ColorRef)
+				hBrush := CreateHatchBrush(__ConvertHatch(kHatchStyle), oColor:ColorRef)
 			ENDIF
 		ELSE
 			argTypeError := TRUE
 		ENDIF
 
 
-	ELSEIF IsInstanceOfUsual(xColor, #Bitmap)
+	ELSEIF xColor IS Bitmap VAR oBmp
 		IF IsNil(kHatchStyle)
-			hBrush := CreatePatternBrush(xColor:Handle())
+			hBrush := CreatePatternBrush(oBmp:Handle())
 		ELSE
 			argTypeError := TRUE
 		ENDIF
@@ -104,8 +104,8 @@ METHOD CreateNew(xColor, kHatchStyle)
 
 /// <include file="Gui.xml" path="doc/Brush.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (hBrush != NULL_PTR)
@@ -122,19 +122,19 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 /// <include file="Gui.xml" path="doc/Brush.Handle/*" />
 METHOD Handle() AS PTR
-	
-	
+
+
 
 
 	RETURN hBrush
 
 
 /// <include file="Gui.xml" path="doc/Brush.ctor/*" />
-CONSTRUCTOR(xColor, kHatchStyle, oParent) 
+CONSTRUCTOR(xColor, kHatchStyle, oParent)
 
 
-	
-	
+
+
 
 
 	SUPER()
@@ -146,19 +146,19 @@ CONSTRUCTOR(xColor, kHatchStyle, oParent)
 	SELF:Parent := oParent
 
 
-	
-	
 
 
-	RETURN 
+
+
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Brush.Parent/*" />
-ASSIGN Parent (oWindow) 
+ASSIGN Parent (oWindow)
 	LOCAL oParent AS Window
 
 
-	IF IsInstanceOfUsual(oWindow, #Window)
+	IF oWindow IS Window
 		IF IsInstanceOf(oWindow, #DataWindow)
 			oParent := oWindow:__GetFormSurface()
 		ELSE
@@ -168,7 +168,7 @@ ASSIGN Parent (oWindow)
 	ELSE
 		_hParent := NULL_PTR
 	ENDIF
-   RETURN 
+   RETURN
 
 
 END CLASS
@@ -203,7 +203,7 @@ FUNCTION __ConvertBrush(brushType AS INT) AS INT STRICT
 	LOCAL retVal AS INT
 
 
-	SWITCH brushType 
+	SWITCH brushType
 	CASE BRUSHBLACK
 		retVal := BLACK_BRUSH
 	CASE BRUSHDARK

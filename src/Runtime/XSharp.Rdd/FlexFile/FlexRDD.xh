@@ -1,0 +1,246 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+// This file contains the common RDD code for the various FlexFile implementations.
+
+
+USING System.Text
+USING XSharp.RDD.Enums
+USING XSharp.RDD.Support
+USING XSharp.RDD.CDX
+USING System.Diagnostics
+USING System.IO
+USING STATIC XSharp.Conversions
+
+BEGIN NAMESPACE XSharp.RDD
+    /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
+
+   [DebuggerDisplay("{Driver,q} ({Alias,nq})")];
+   CLASS RDDCLASS INHERIT PARENTCLASS IMPLEMENTS IRawData
+        PRIVATE oFlexMemo AS MEMOCLASS
+#ifdef RDD_FPT
+        PROPERTY ReturnRawData as LOGIC AUTO
+#endif
+#ifdef RDD_BLOB
+        PROPERTY ReturnRawData as LOGIC AUTO
+#endif
+         
+        CONSTRUCTOR
+            SUPER()
+            SELF:ReturnRawData := FALSE
+            SELF:_Memo := oFlexMemo := MEMOCLASS{SELF}
+
+            SELF:oFlexMemo:ExportMode := BLOB_EXPORT_APPEND
+
+            /// <inheritdoc />
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(RDDCLASS)
+
+            /// <inheritdoc />
+        OVERRIDE METHOD GetValue(nFldPos AS LONG) AS OBJECT
+            IF SELF:_isMemoField( nFldPos )
+                // At this level, the return value is the raw Data, in BYTE[]
+                VAR rawData := oFlexMemo:GetRawValueWithHeader(nFldPos)
+                if rawData != NULL
+                    IF SELF:ReturnRawData
+                        RETURN rawData
+                    ENDIF
+                    RETURN SELF:oFlexMemo:DecodeValue(rawData)
+                else
+                    IF SELF:ReturnRawData
+                        RETURN <BYTE>{}
+                    ENDIF
+                    var column  := SELF:_GetColumn(nFldPos)
+                    return column:BlankValue()
+                ENDIF
+            ENDIF
+            RETURN SUPER:GetValue(nFldPos)
+
+        OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+            IF SELF:_ReadOnly
+                SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            ENDIF
+            SELF:ForceRel()
+            IF SELF:_readRecord()
+                // GoHot() must be called first because this saves the current index values
+                IF ! SELF:_Hot
+                    SELF:GoHot()
+                ENDIF
+                VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
+                IF oColumn != NULL
+                    IF oColumn:IsMemo
+                        IF SELF:HasMemo
+                            IF oValue == NULL .OR. oValue IS STRING VAR cValue .AND. cValue:Length == 0
+                                VAR oldValue := oColumn:GetValue(SELF:_RecordBuffer)
+                                IF oldValue != NULL .and. oldValue != DBNull.Value
+                                    SELF:oFlexMemo:DeleteBlock((INT) oldValue)
+                                ENDIF
+                                RETURN oColumn:PutValue(0, SELF:_RecordBuffer)
+                            ENDIF
+                            LOCAL bData AS BYTE[]
+                            if oColumn:IsBinary
+                                bData := (Byte[]) oValue
+                            ELSE
+                                bData := SELF:oFlexMemo:EncodeValue(oValue)
+                            ENDIF
+                            IF SELF:oFlexMemo:PutValue(nFldPos, bData)
+                                // Update the Field Info with the new MemoBlock Position
+                                RETURN oColumn:PutValue(SELF:oFlexMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+                            ENDIF
+                        ELSE
+                            RETURN SUPER:PutValue(nFldPos, oValue)
+                        ENDIF
+                    ELSE
+                        RETURN oColumn:PutValue(oValue, SELF:_RecordBuffer)
+                    ENDIF
+                 ENDIF
+            ENDIF
+            RETURN FALSE
+
+      OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+         if !SELF:_isMemoField(nFldPos)
+            RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+         ENDIF
+         SWITCH nOrdinal
+         CASE DBS_BLOB_TYPE
+            VAR blockNbr := SELF:_getMemoBlockNumber( nFldPos )
+            RETURN SELF:oFlexMemo:GetBlockType(blockNbr)
+         CASE DBS_BLOB_LEN
+            VAR blockNbr := SELF:_getMemoBlockNumber( nFldPos )
+            RETURN SELF:oFlexMemo:GetBlockLen(blockNbr)
+         CASE DBS_BLOB_POINTER
+            var blockNbr := SELF:_getMemoBlockNumber( nFldPos )
+            var blockPos := SELF:oFlexMemo:GetBlockPos(blockNbr)
+            RETURN blockPos + 8
+         END SWITCH
+
+         RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+
+            /// <inheritdoc />
+        OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+            LOCAL oResult := NULL AS OBJECT
+            SWITCH nOrdinal
+            CASE DbInfo.DBI_MEMOHANDLE
+                IF ( SELF:oFlexMemo != NULL .AND. SELF:oFlexMemo:IsOpen)
+                    oResult := SELF:oFlexMemo:_hFile
+                ELSE
+                    oResult := IntPtr.Zero
+                ENDIF
+            CASE DbInfo.DBI_MEMOSTREAM
+                IF ( SELF:oFlexMemo != NULL .AND. SELF:oFlexMemo:IsOpen)
+                    oResult := SELF:oFlexMemo:_oStream
+                ELSE
+                    oResult := NULL
+                ENDIF
+            CASE DbInfo.DBI_MEMOEXT
+                IF ( SELF:oFlexMemo != NULL .AND. SELF:oFlexMemo:IsOpen)
+                    oResult := System.IO.Path.GetExtension(SELF:oFlexMemo:FileName)
+                ELSE
+                    oResult := FPTMemo.DefExt
+                ENDIF
+                IF oNewValue IS STRING VAR strExt
+                    FPTMemo.DefExt := strExt
+                ENDIF
+            CASE DbInfo.DBI_MEMOBLOCKSIZE
+                oResult := SELF:oFlexMemo:BlockSize
+                IF oNewValue != NULL
+                    TRY
+                        LOCAL size AS LONG
+                        size:= Convert.ToInt32(oNewValue)
+                        SELF:oFlexMemo:BlockSize := (WORD) size
+                    CATCH ex AS Exception
+                        oResult := ""
+                        SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
+                    END TRY
+                ENDIF
+
+            CASE DbInfo.DBI_MEMOFIELD
+                oResult := ""
+                IF oNewValue != NULL
+                    TRY
+                        LOCAL fldPos AS LONG
+                        fldPos := Convert.ToInt32(oNewValue)
+                        oResult := SELF:GetValue(fldPos)
+                    CATCH ex AS Exception
+                        oResult := ""
+                        SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
+                    END TRY
+                ENDIF
+            CASE DbInfo.DBI_MEMOTYPE
+                oResult := DB_MEMO_FPT
+            CASE DbInfo.DBI_MEMOVERSION
+                oResult := DB_MEMOVER_STD
+            CASE DbInfo.BLOB_GET
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+
+            CASE DbInfo.BLOB_NMODE
+                IF oNewValue IS LONG VAR iExportMode
+                    SELF:oFlexMemo:ExportMode := iExportMode
+                ENDIF
+            CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_DIRECT_IMPORT
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_DIRECT_EXPORT
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_DIRECT_GET
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_DIRECT_PUT
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_GET
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_PUT
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_LOCK
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_UNLOCK
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := oFlexMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            OTHERWISE
+                oResult := SUPER:Info(nOrdinal, oNewValue)
+            END SWITCH
+            RETURN oResult
+
+            /// <inheritdoc />
+        OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+           IF SELF:_ReadOnly
+                SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            ENDIF
+            SELF:ForceRel()
+            IF SELF:_readRecord()
+                // GoHot() must be called first because this saves the current index values
+                IF ! SELF:IsHot
+                    SELF:GoHot()
+                ENDIF
+                RETURN SELF:oFlexMemo:PutValueFile(nFldPos, FileName)
+            ENDIF
+            RETURN FALSE
+
+    END CLASS
+
+ END NAMESPACE

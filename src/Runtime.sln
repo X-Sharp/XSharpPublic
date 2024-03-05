@@ -186,6 +186,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CursorAdapterTests", "Tests
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "FoxEmbeddedSql", "Tests\FoxEmbeddedSql\FoxEmbeddedSql.xsproj", "{7940544F-CC35-4FBA-887E-7CC0F262646C}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "SqlRddDataexpl", "Tests\SqlDataexpl\SqlRddDataexpl.xsproj", "{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -483,6 +485,12 @@ Global
 		{7940544F-CC35-4FBA-887E-7CC0F262646C}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{7940544F-CC35-4FBA-887E-7CC0F262646C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7940544F-CC35-4FBA-887E-7CC0F262646C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -540,6 +548,7 @@ Global
 		{E83C6C8C-773F-4B01-A597-3D38398A9373} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
 		{15F2F105-C135-48EB-88BD-7014D12512AA} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{7940544F-CC35-4FBA-887E-7CC0F262646C} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
+		{544D5F4F-1CA0-4CF0-A62A-7B4D6BA97AEA} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

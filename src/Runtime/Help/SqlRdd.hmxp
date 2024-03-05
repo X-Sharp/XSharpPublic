@@ -1,0 +1,558 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<helpproject xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd" version="2.2" isskin="false" isrepository="false">
+  <config>
+    <namespaces/>
+    <export-task-groups>
+      <export-task-group name="Recent Publishes">
+        <export-tasks>
+          <export-task name="Publish as CHM" format="CHM">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">sqlrdd.chm</task-config-value>
+              <task-config-value name="skin">..\..\..\..\Dev\docs\Help\XSharp.hmskin</task-config-value>
+              <task-config-value name="deletetemp">1</task-config-value>
+              <task-config-value name="make0include">CHM</task-config-value>
+              <task-config-value name="make0status">*</task-config-value>
+            </task-config-group>
+          </export-task>
+        </export-tasks>
+      </export-task-group>
+    </export-task-groups>
+    <helpwindows>
+      <helpwindow name="Main" left="-1" top="-1" width="-1" height="-1">
+        <caption translate="true">Vo2Ado</caption>
+        <window-options-chm navigation="true" navigationwidth="200" index="true" search="true" favorite="true" saveregistry="true" buttons="12366">
+          <user-button name="home">
+            <caption translate="true">home</caption>
+          </user-button>
+        </window-options-chm>
+      </helpwindow>
+    </helpwindows>
+    <styleclasses>
+      <styleclass name="Normal" shortcut="0">
+        <style-set media="screen" type="para">text-indent:0px; margin-left:0px; tabstops:48px left,96px left,144px left,192px left,240px left ;</style-set>
+        <style-set media="screen" type="text">font-family:Arial; font-size:11pt; letter-spacing:normal;</style-set>
+      </styleclass>
+      <styleclass name="Body Text" parentclass="Normal" shortcut="114"/>
+      <styleclass name="List" parentclass="Body Text" shortcut="32882">
+        <style-set media="screen" type="para">text-indent:-192px; margin-left:192px; tabstops:192px left,240px left ;</style-set>
+      </styleclass>
+      <styleclass name="List1" parentclass="List" shortcut="0">
+        <style-set media="screen" type="para">text-indent:-48px; margin-left:48px; tabstops:48px left,96px left,144px left,192px left,240px left ;</style-set>
+      </styleclass>
+      <styleclass name="Bold" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="text">font-weight:bold;</style-set>
+      </styleclass>
+      <styleclass name="Callouts" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="para">margin-bottom:5px;</style-set>
+        <style-set media="screen" type="text">font-family:Verdana; font-size:10pt; letter-spacing:-1px;</style-set>
+      </styleclass>
+      <styleclass name="Code Example" parentclass="Normal" shortcut="24643">
+        <style-set media="screen" type="para">margin-top:24px; margin-right:24px; margin-bottom:24px; margin-left:24px;</style-set>
+        <style-set media="screen" type="text">font-family:Consolas;</style-set>
+      </styleclass>
+      <styleclass name="Code with box" parentclass="Code Example" shortcut="16507">
+        <style-set media="screen" type="para">margin-right:24px; margin-left:24px; border-style:single; border-width:1px; padding:10px;</style-set>
+      </styleclass>
+      <styleclass name="Comment" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="para">text-align:center;</style-set>
+      </styleclass>
+      <styleclass name="Heading1" parentclass="Normal" nextclass="Normal" shortcut="41009">
+        <style-set media="screen" type="para">margin-top:24px; margin-bottom:10px; page-break-after:avoid;</style-set>
+        <style-set media="screen" type="text">font-size:16pt; font-weight:bold; color:#0000ff;</style-set>
+      </styleclass>
+      <styleclass name="Heading1 Black" parentclass="Heading1" nextclass="Normal" shortcut="0">
+        <style-set media="screen" type="para">margin-top:24px;</style-set>
+        <style-set media="screen" type="text">color:#000000;</style-set>
+      </styleclass>
+      <styleclass name="Heading2" parentclass="Heading1" nextclass="Normal" shortcut="41010">
+        <style-set media="screen" type="para">border:none;</style-set>
+        <style-set media="screen" type="text">font-size:14pt; color:#339966;</style-set>
+      </styleclass>
+      <styleclass name="Heading3" parentclass="Heading2" nextclass="Normal" shortcut="41011">
+        <style-set media="screen" type="para">margin-top:10px; border:none;</style-set>
+        <style-set media="screen" type="text">font-size:12pt; color:#00a8d2;</style-set>
+      </styleclass>
+      <styleclass name="Image Caption" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="text">font-style:italic;</style-set>
+      </styleclass>
+      <styleclass name="Italic" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="text">font-style:italic;</style-set>
+      </styleclass>
+      <styleclass name="link" parentclass="Normal" shortcut="41036">
+        <style-set media="screen" type="text">font-weight:bold;</style-set>
+      </styleclass>
+      <styleclass name="Notes" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="text">font-style:italic;</style-set>
+      </styleclass>
+      <styleclass name="NotesBox" parentclass="Notes" shortcut="0">
+        <style-set media="screen" type="para">margin-top:10px;</style-set>
+      </styleclass>
+      <styleclass name="Popup Box" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="text">font-size:9pt;</style-set>
+      </styleclass>
+      <styleclass name="SeeAlso" parentclass="Normal" nextclass="Normal" shortcut="0">
+        <style-set media="screen" type="para">margin-top:10px; page-break-after:avoid;</style-set>
+        <style-set media="screen" type="text">font-size:12pt; font-style:italic;</style-set>
+        <style-set media="print" type="text">font-size:12pt; font-weight:bold; font-style:italic;</style-set>
+      </styleclass>
+      <styleclass name="Tip Body" parentclass="Normal" shortcut="0">
+        <style-set media="screen" type="text">font-family:Verdana; letter-spacing:-1px;</style-set>
+        <style-set media="print" type="text">font-size:9pt;</style-set>
+      </styleclass>
+      <styleclass name="Tip Heading" parentclass="Normal" nextclass="Body Text HowTo" shortcut="0">
+        <style-set media="screen" type="text">font-family:Tahoma; font-weight:bold;</style-set>
+      </styleclass>
+      <styleclass name="T_Emphasis" shortcut="0">
+        <style-set media="screen" type="text">font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;</style-set>
+      </styleclass>
+      <styleclass name="T_Entry" shortcut="24645">
+        <style-set media="screen" type="text">font-family:'Courier New'; font-size:11pt; font-weight:bold; font-style:normal; letter-spacing:-1px;</style-set>
+      </styleclass>
+      <styleclass name="T_Entry 10pt" parentclass="T_Entry" shortcut="0">
+        <style-set media="screen" type="text">font-size:10pt; font-style:italic;</style-set>
+      </styleclass>
+      <styleclass name="T_Menu" shortcut="24653">
+        <style-set media="screen" type="text">font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; color:#000000; letter-spacing:normal;</style-set>
+      </styleclass>
+      <styleclass name="T_Menu 10p" parentclass="T_Menu" shortcut="0"/>
+      <tablestyleclass name="Default">
+        <style-set media="screen">width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;</style-set>
+      </tablestyleclass>
+      <imagestyleclass name="Default"/>
+    </styleclasses>
+    <config-group name="project">
+      <config-value name="title" translate="true">X# SQLRDD Help</config-value>
+      <config-value name="author" translate="true">Robert van der Hulst</config-value>
+      <config-value name="copyright" translate="true">© 2024 XSharp BV</config-value>
+      <config-value name="versionmajor">1</config-value>
+      <config-value name="versionminor">0</config-value>
+      <config-value name="versionbuild">0</config-value>
+      <config-value name="lcid" translate="true">en-us</config-value>
+      <config-value name="bidimode"></config-value>
+      <config-value name="charset" translate="true">DEFAULT_CHARSET</config-value>
+      <config-value name="deffont">font-family:'MS Sans Serif'; font-size:8pt; color:#000000;</config-value>
+      <config-value name="contents">Welcome</config-value>
+      <config-value name="autohelpstart">0</config-value>
+      <config-value name="autohelpincrement">1</config-value>
+      <config-value name="autohelpanchor">0</config-value>
+      <config-value name="searchpath">.\Images\;.\;.\Baggage\;.\Maps\;.\Topics\</config-value>
+      <config-value name="imageshortcuts"></config-value>
+      <config-group name="custombuilds"/>
+      <config-value name="imageshortcuts_includebaggage">1</config-value>
+      <config-value name="make0include">CHM</config-value>
+      <config-value name="make0status">*</config-value>
+      <config-value name="openchildreadonly">1</config-value>
+      <config-value name="mustcalculatefiguretables">0</config-value>
+      <config-value name="tidyxml">0</config-value>
+      <config-value name="historyfiles">0</config-value>
+      <config-value name="historyfilecount">10</config-value>
+      <config-value name="historykeepdeletedfiles">0</config-value>
+      <config-value name="vcsmanuallycheckout">0</config-value>
+      <config-group name="bookmarks"/>
+    </config-group>
+    <config-group name="hlp">
+      <config-value name="citation" translate="true"></config-value>
+      <config-value name="afootnotes">A</config-value>
+      <config-value name="fts">1</config-value>
+      <config-value name="anchorseparator">:</config-value>
+      <config-value name="cntoffset">0</config-value>
+      <config-value name="hpj" translate="true"><![CDATA[[CONFIG]
+AA(0x46,2,Find())
+]]></config-value>
+      <config-value name="outputfile">adordd.hlp</config-value>
+      <config-value name="deletetemp">1</config-value>
+    </config-group>
+    <config-group name="chm">
+      <config-value name="htmlpopup">1</config-value>
+      <config-value name="htmlpopuptextfile">CSHelp.txt</config-value>
+      <config-value name="mastertoc"></config-value>
+      <config-value name="hhp" translate="true"><![CDATA[[FILES]
+..\nonscroll.js
+..\button_main_h.gif
+..\button_prev_h.gif
+..\button_next_h.gif
+..\button_prev_d.gif
+..\button_next_d.gif]]></config-value>
+      <config-value name="hhcwindowstyles">8388645</config-value>
+      <config-value name="usesecondarywindows">0</config-value>
+      <config-value name="outputfile">sqlrdd.chm</config-value>
+      <config-value name="deletetemp">1</config-value>
+      <config-value name="skin">..\..\..\..\Dev\docs\Help\XSharp.hmskin</config-value>
+    </config-group>
+    <config-group name="hxs">
+      <config-value name="namespace"></config-value>
+      <config-value name="uniqueid"></config-value>
+      <config-value name="filetype">0</config-value>
+      <config-value name="fts">1</config-value>
+      <config-value name="akeywords">1</config-value>
+      <config-value name="htmlpopup">0</config-value>
+      <config-value name="outputfile"></config-value>
+      <config-value name="buildhwproj">0</config-value>
+      <config-value name="deletetemp">0</config-value>
+    </config-group>
+    <config-group name="html">
+      <config-value name="topiceditor">1</config-value>
+      <config-value name="topicsimpletext1" translate="true"></config-value>
+      <config-value name="topicsimpletext2" translate="true"></config-value>
+      <config-value name="topicsimplebuttons">1</config-value>
+      <config-group name="topicsimplebutton1">
+        <config-value name="caption" translate="true">Top</config-value>
+        <config-value name="image" translate="true"></config-value>
+      </config-group>
+      <config-group name="topicsimplebutton2">
+        <config-value name="caption" translate="true">Previous</config-value>
+        <config-value name="image" translate="true"></config-value>
+      </config-group>
+      <config-group name="topicsimplebutton3">
+        <config-value name="caption" translate="true">Next</config-value>
+        <config-value name="image" translate="true"></config-value>
+      </config-group>
+      <config-group name="topictemplates">
+        <config-value name="default" translate="true"><![CDATA[<%DOCTYPE%>
+<html>
+<head>
+   <title><%TOPIC_TITLE%></title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
+   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+</head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;">
+
+<IF_TOPIC_HEADER>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#C0C0C0">
+  <tr valign="middle">
+    <td align="left">
+      <%TOPIC_HEADER%>
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="<%HREF_DEFAULT_PAGE%>">Top</a>&nbsp;
+     <IF_PREVIOUS_PAGE><a href="<%HREF_PREVIOUS_PAGE%>">Previous</a>&nbsp;</IF_PREVIOUS_PAGE>
+     <IF_NEXT_PAGE><a href="<%HREF_NEXT_PAGE%>">Next</a></IF_NEXT_PAGE>
+     </span>
+    </td>
+  </tr>
+</table>
+</IF_TOPIC_HEADER>
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<%TOPIC_TEXT%>
+</td></tr></table>
+
+</body>
+</html>]]></config-value>
+        <config-value name="popup" translate="true"><![CDATA[<%DOCTYPE%>
+<html>
+<head>
+   <title><%TOPIC_TITLE%></title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
+   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+</head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;">
+
+<IF_TOPIC_HEADER>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr valign="middle">
+    <td align="left">
+      <%TOPIC_HEADER%>
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="<%HREF_DEFAULT_PAGE%>">Top</a>&nbsp;
+     <IF_PREVIOUS_PAGE><a href="<%HREF_PREVIOUS_PAGE%>">Previous</a>&nbsp;</IF_PREVIOUS_PAGE>
+     <IF_NEXT_PAGE><a href="<%HREF_NEXT_PAGE%>">Next</a></IF_NEXT_PAGE>
+     </span>
+    </td>
+  </tr>
+</table>
+</IF_TOPIC_HEADER>
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<%TOPIC_TEXT%>
+</td></tr></table>
+
+</body>
+</html>]]></config-value>
+      </config-group>
+      <config-value name="topicsimpleheadercolor">#C0C0C0</config-value>
+      <config-value name="topicsimpletextcolor">#FFFFFF</config-value>
+      <config-value name="navigationstyle">2</config-value>
+      <config-value name="frameeditor">0</config-value>
+      <config-value name="contentborder">1</config-value>
+      <config-value name="contentwidth">320</config-value>
+      <config-value name="headframeheight">30</config-value>
+      <config-value name="headframescroll">0</config-value>
+      <config-value name="frametemplate" translate="true"></config-value>
+      <config-value name="headframesrc"></config-value>
+      <config-value name="headframehtml" translate="true"></config-value>
+      <config-value name="hasindex">1</config-value>
+      <config-value name="hassearch">1</config-value>
+      <config-value name="contentnumbers">0</config-value>
+      <config-value name="contentlazysync">0</config-value>
+      <config-value name="contentindent">20</config-value>
+      <config-value name="contentsingleclick">0</config-value>
+      <config-value name="contentautocollapse">0</config-value>
+      <config-value name="contentexpand">0</config-value>
+      <config-value name="defaulticons">0</config-value>
+      <config-value name="iconopenbook">button_openbook.gif</config-value>
+      <config-value name="iconclosedbook">button_closedbook.gif</config-value>
+      <config-value name="icontopic">button_topic.gif</config-value>
+      <config-value name="toceditor">1</config-value>
+      <config-value name="tocsimpletext1" translate="true"><![CDATA[<font face="Arial,Helvetica" size="4"><b><%TITLE%></b></font><br>
+<font face="Arial,Helvetica" size="2">
+<a href="<%HREF_INDEX_PAGE%>">Keyword Index</a>
+</font><br><br><br>]]></config-value>
+      <config-value name="tocsimpletext2" translate="true"><![CDATA[<hr><font face="Arial,Helvetica" size="1"><%COPYRIGHT%></font>]]></config-value>
+      <config-value name="tocsimplefont1">font-family:Arial,Helvetica; font-size:9pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="tocsimplefont2">font-family:Arial,Helvetica; font-size:9pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="tocsimplefont3">font-family:Arial,Helvetica; font-size:7pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="tocsimplefont4">font-family:Arial,Helvetica; font-size:7pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="tocsimplefont5">font-family:Arial,Helvetica; font-size:7pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="tocsimplefont6">font-family:Arial,Helvetica; font-size:7pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="contenttemplate" translate="true"><![CDATA[<html>
+<head></head>
+<link rel="stylesheet" type="text/css" href="../fonts.css">
+<style type="text/css">
+       SPAN.heading1 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none }
+       SPAN.heading2 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none }
+       SPAN.heading3 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #000000; text-decoration: none }
+       SPAN.heading4 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #000000; text-decoration: none }
+       SPAN.heading5 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #000000; text-decoration: none }
+       SPAN.heading6 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #000000; text-decoration: none }
+
+       SPAN.hilight1 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #FFFFFF; background: #002682; text-decoration: none }
+       SPAN.hilight2 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #FFFFFF; background: #002682; text-decoration: none }
+       SPAN.hilight3 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #FFFFFF; background: #002682; text-decoration: none }
+       SPAN.hilight4 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #FFFFFF; background: #002682; text-decoration: none }
+       SPAN.hilight5 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #FFFFFF; background: #002682; text-decoration: none }
+       SPAN.hilight6 { font-family: Arial,Helvetica; font-weight: normal; font-size: 7pt; color: #FFFFFF; background: #002682; text-decoration: none }
+</style>
+<body bgcolor="#FFFFFF" background="../lines.gif">
+  <span class="h2">Help &amp; Manual Online Help</span><br><br>
+  <span class="fsmall"><b>Contents</b>&nbsp;|&nbsp;<a href="<%HREF_INDEX_PAGE%>">Index</a></span>
+  <hr>
+  <br>
+  <!-- Place holder for the TOC, do not delete the line below -->
+  <%TABLE_OF_CONTENTS%>
+  <hr>
+  <span class="fnote">
+  &copy; EC Software. This online help was created with Help &amp; Manual. Product and company names are trademarks or registered trademarks of their respective owners.<br>
+  </span>
+</body>
+</html>
+]]></config-value>
+      <config-value name="indexeditor">1</config-value>
+      <config-value name="indexsimpletext1" translate="true"><![CDATA[<font face="Arial,Helvetica" size="4"><b>Keyword Index</b></font><br>
+<font face="Arial,Helvetica" size="2">
+<a href="<%HREF_CONTENT_PAGE%>">Table of Contents</a>
+</font><br><br>]]></config-value>
+      <config-value name="indexsections" translate="true">A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z</config-value>
+      <config-value name="indexsimplefont1">font-family:Arial,Helvetica; font-size:14pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="indexsimplefont2">font-family:Arial,Helvetica; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="indexsimplefont3">font-family:Arial,Helvetica; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="indexsimplefont4">font-family:Arial,Helvetica; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none;</config-value>
+      <config-value name="indextemplate" translate="true"><![CDATA[<html>
+<head></head>
+<link rel="stylesheet" type="text/css" href="../fonts.css">
+<style type="text/css">
+       SPAN.idxsection  { font-family: Arial,Helvetica; font-weight: bold; font-size: 12pt; color: #000000; text-decoration: none }
+       SPAN.idxkeyword  { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none }
+       SPAN.idxkeyword2 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none }
+       SPAN.idxlink     { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #000000 }
+
+</style>
+<body bgcolor="#FFFFFF" background="../lines.gif">
+  <span class="h2">Help &amp; Manual Online Help</span><br><br>
+  <span class="fsmall"><a href="<%HREF_CONTENT_PAGE%>">Contents</a>&nbsp;|&nbsp;<b>Index</b>
+  <br><br><a href="#A">A</a>
+  <a href="#B">B</a>
+  <a href="#C">C</a>
+  <a href="#D">D</a>
+  <a href="#E">E</a>
+  <a href="#F">F</a>
+  <a href="#H">H</a>
+  <a href="#I">I</a>
+  <a href="#J">J</a>
+  <a href="#K">K</a>
+  <a href="#L">L</a>
+  <a href="#M">M</a>
+  <a href="#N">N</a>
+  <a href="#O">O</a>
+  <a href="#P">P</a>
+  <a href="#R">R</a>
+  <a href="#S">S</a>
+  <a href="#T">T</a>
+  <a href="#U">U</a>
+  <a href="#V">V</a>
+  <a href="#W">W</a><br>
+  </span>
+  <hr><br>
+
+  <!-- Place holder for the index, do not delete the line below -->
+  <%KEYWORD_INDEX%>
+
+</body>
+</html>
+]]></config-value>
+      <config-value name="searcheditor">0</config-value>
+      <config-value name="searchsimpletext1" translate="true"></config-value>
+      <config-value name="searchtemplate" translate="true"></config-value>
+      <config-value name="searchstoplist" translate="true"></config-value>
+      <config-value name="searchskipwordsmin">3</config-value>
+      <config-value name="searchjoinwordchars" translate="true">.-_'</config-value>
+      <config-value name="searchhighlight">1</config-value>
+      <config-value name="searchallowdate">0</config-value>
+      <config-value name="searchaccentinsensitive">0</config-value>
+      <config-value name="searchsinglecase">0</config-value>
+      <config-value name="htmlpopup">3</config-value>
+      <config-value name="defaultext">.htm</config-value>
+      <config-value name="cssfile"></config-value>
+      <config-value name="fontsizeencoding">0</config-value>
+      <config-value name="fontsizebase">100</config-value>
+      <config-value name="exportmarkersastext">1</config-value>
+      <config-value name="exportstylenames">1</config-value>
+      <config-value name="exportxhtml">0</config-value>
+      <config-value name="imageconversion">2</config-value>
+      <config-value name="jpgquality">90</config-value>
+      <config-value name="imagehint">1</config-value>
+      <config-value name="outputfile">.\RddHtml\index.html</config-value>
+    </config-group>
+    <config-group name="pdf">
+      <config-value name="template">..\Docs\Standard_manual_A4.mnl</config-value>
+      <config-value name="style">0</config-value>
+      <config-value name="createoutline">1</config-value>
+      <config-value name="createhotspots">1</config-value>
+      <config-value name="createthumbnails">0</config-value>
+      <config-value name="insertseealso">1</config-value>
+      <config-value name="linkcolor">#0000FF</config-value>
+      <config-value name="ignoreblank">1</config-value>
+      <config-value name="embedfilesext"></config-value>
+      <config-value name="compression">1</config-value>
+      <config-value name="jpegquality">100</config-value>
+      <config-value name="openmode">1</config-value>
+      <config-value name="zoommode">0</config-value>
+      <config-value name="ownerpassword">kooltje</config-value>
+      <config-value name="userpassword"></config-value>
+      <config-value name="userprint">1</config-value>
+      <config-value name="usercopy">1</config-value>
+      <config-value name="userchange">0</config-value>
+      <config-value name="encrypt128bit">0</config-value>
+      <config-value name="title" translate="true">&lt;%Title%&gt;</config-value>
+      <config-value name="subject" translate="true">&lt;%Summary%&gt;</config-value>
+      <config-value name="author" translate="true">&lt;%Author%&gt;</config-value>
+      <config-value name="keywords" translate="true"></config-value>
+      <config-value name="embedfonts">1</config-value>
+      <config-value name="embedfontsexclude">Arial;Courier;Courier New;Times New Roman;</config-value>
+      <config-value name="cidfontmode">0</config-value>
+      <config-value name="newfontsubsetting">1</config-value>
+      <config-value name="textasglyphs">0</config-value>
+      <config-value name="outputfile">adordd.pdf</config-value>
+    </config-group>
+    <config-group name="rtf">
+      <config-value name="papersize">A4 210 x 297 mm</config-value>
+      <config-value name="pageorientation">Portrait</config-value>
+      <config-value name="topmargin">720</config-value>
+      <config-value name="bottommargin">720</config-value>
+      <config-value name="leftmargin">720</config-value>
+      <config-value name="rightmargin">720</config-value>
+      <config-value name="flipmargin">0</config-value>
+      <config-value name="headerfont">font-family:Arial; font-size:10pt; font-weight:bold; font-style:italic; text-decoration:none; color:#000000;</config-value>
+      <config-value name="headertext" translate="true">Vo2Ado Documentation</config-value>
+      <config-value name="footerfont">font-family:Arial; font-size:8pt; font-weight:bold; font-style:italic; text-decoration:none; color:#000000;</config-value>
+      <config-value name="footertext" translate="true"></config-value>
+      <config-value name="pagenumfont">font-family:Arial; font-size:10pt; font-weight:bold; font-style:italic; text-decoration:none; color:#000000;</config-value>
+      <config-value name="pagenumtext" translate="true">Page</config-value>
+      <config-value name="chapterfont1">font-family:Arial; font-size:18pt; font-weight:bold; font-style:normal; text-decoration:none; color:#000000;</config-value>
+      <config-value name="chapternumbering1">1.2.3 (outside)</config-value>
+      <config-value name="chapterbreak1">Yes</config-value>
+      <config-value name="chapterfont2">font-family:Arial; font-size:14pt; font-weight:bold; font-style:normal; text-decoration:none; color:#000000;</config-value>
+      <config-value name="chapternumbering2">1.2.3 (outside)</config-value>
+      <config-value name="chapterbreak2">No</config-value>
+      <config-value name="chapterfont3">font-family:Arial; font-size:14pt; font-weight:bold; font-style:normal; text-decoration:none; color:#000000;</config-value>
+      <config-value name="chapternumbering3">1.2.3 (outside)</config-value>
+      <config-value name="chapterbreak3">No</config-value>
+      <config-value name="chapterfont4">font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; color:#000000;</config-value>
+      <config-value name="chapternumbering4">1.2.3 (outside)</config-value>
+      <config-value name="chapterbreak4">No</config-value>
+      <config-value name="chapterfont5">font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; color:#000000;</config-value>
+      <config-value name="chapternumbering5">1.2.3</config-value>
+      <config-value name="chapterbreak5">No</config-value>
+      <config-value name="chapterfont6">font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; color:#000000;</config-value>
+      <config-value name="chapternumbering6">1.2.3</config-value>
+      <config-value name="chapterbreak6">No</config-value>
+      <config-value name="imagemarker">0</config-value>
+      <config-value name="activehyperlinks">1</config-value>
+      <config-value name="outputfile">adordd_manual.rtf</config-value>
+    </config-group>
+    <config-group name="ebook">
+      <config-value name="template"></config-value>
+      <config-value name="icon"></config-value>
+      <config-value name="splashbmp"></config-value>
+      <config-value name="left">-1</config-value>
+      <config-value name="top">-1</config-value>
+      <config-value name="width">-1</config-value>
+      <config-value name="height">-1</config-value>
+      <config-value name="maximized">0</config-value>
+      <config-value name="language" translate="true">English.lng</config-value>
+      <config-value name="showindex">1</config-value>
+      <config-value name="showsearch">1</config-value>
+      <config-value name="compressviewer">0</config-value>
+      <config-value name="saveregistry">0</config-value>
+      <config-value name="about" translate="true"></config-value>
+      <config-value name="splashwav"></config-value>
+      <config-value name="pagewav"></config-value>
+      <config-value name="password"></config-value>
+      <config-value name="serialnumber"></config-value>
+      <config-value name="enableselect">1</config-value>
+      <config-value name="outputfile">adordd_Help.exe</config-value>
+    </config-group>
+    <config-group name="user">
+      <config-group name="roberth">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
+      <config-group name="robert">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
+    </config-group>
+    <variables>
+      <variable type="text" translate="true"></variable>
+    </variables>
+    <helpcontext-numbers>
+      <helpcontext-number href="BasicUsage" value="1030"/>
+      <helpcontext-number href="CompatibilitywithexistingRDDs" value="1010"/>
+      <helpcontext-number href="Connections" value="1090"/>
+      <helpcontext-number href="errorhandling" value="1130"/>
+      <helpcontext-number href="FromDbf2SQL" value="1120"/>
+      <helpcontext-number href="Indexes_gs" value="1150"/>
+      <helpcontext-number href="Indexespart2" value="1170"/>
+      <helpcontext-number href="IndexExpressions" value="1180"/>
+      <helpcontext-number href="IndexExpressionwithDescend()" value="1190"/>
+      <helpcontext-number href="indexfilesorcallback" value="1160"/>
+      <helpcontext-number href="Nameandreservedwords" value="1060"/>
+      <helpcontext-number href="Operations" value="1050"/>
+      <helpcontext-number href="Samplesofindexexpressions" value="1200"/>
+      <helpcontext-number href="Transactions" value="1110"/>
+      <helpcontext-number href="ValidationsandIntegrity" value="1080"/>
+      <helpcontext-number href="versionhistory" value="1140"/>
+      <helpcontext-number href="Welcome" value="1000"/>
+    </helpcontext-numbers>
+  </config>
+  <xi:include parse="xml" href="Maps/table_of_contents.xml"/>
+  <project-files>
+    <file href="Topics/*.xml" build="ALL" filetype="topic">
+      <file-mod href="StyleSheet.xml"/>
+    </file>
+    <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
+  </project-files>
+</helpproject>

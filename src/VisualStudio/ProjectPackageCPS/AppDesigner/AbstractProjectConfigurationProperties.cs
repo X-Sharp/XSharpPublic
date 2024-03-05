@@ -9,7 +9,7 @@ using VSLangProj80;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     public abstract class AbstractProjectConfigurationProperties : ProjectConfigurationProperties3
     {

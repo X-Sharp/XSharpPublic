@@ -6,7 +6,7 @@ CLASS AnimationControl INHERIT Control
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.Create/*" />
-METHOD Create() 
+METHOD Create()
 	LOCAL oDevPoint AS Point
 
 
@@ -42,14 +42,14 @@ METHOD Create()
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.FileSpec/*" />
-ACCESS FileSpec() 
+ACCESS FileSpec()
 
 
 	RETURN oAVIFileSpec
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.FileSpec/*" />
-ASSIGN FileSpec(oFileSpec) 
+ASSIGN FileSpec(oFileSpec)
 
 
 	IF IsString(oFileSpec)
@@ -59,11 +59,11 @@ ASSIGN FileSpec(oFileSpec)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst)
 
 
 	IF xID IS ResourceID
@@ -88,11 +88,11 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.Open/*" />
-METHOD Open() 
+METHOD Open()
 	LOCAL pszFileName	AS PSZ
 	LOCAL lReturnValue	AS LOGIC
 
@@ -110,12 +110,12 @@ METHOD Open()
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.OpenResource/*" />
-METHOD OpenResource(xID) 
+METHOD OpenResource(xID)
 	LOCAL pszResID 		AS PSZ
 	LOCAL lReturnValue	AS LOGIC
 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		pszResID	:= PSZ(_CAST, xID:ID)
 	ELSE
 		pszResID	:= PTR(_CAST, xID)
@@ -131,7 +131,7 @@ METHOD OpenResource(xID)
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.Play/*" />
-METHOD Play(nFrom, nTo, nRepeatCount) 
+METHOD Play(nFrom, nTo, nRepeatCount)
 	LOCAL wFrom			AS WORD
 	LOCAL wTo			AS WORD
 	LOCAL dwRepeatCount	AS DWORD
@@ -139,7 +139,7 @@ METHOD Play(nFrom, nTo, nRepeatCount)
 
 
 
-	Default(@nFrom, 0) 
+	Default(@nFrom, 0)
 	Default(@nTo, -1)
 	Default(@nRepeatCount, -1)
 
@@ -153,7 +153,7 @@ METHOD Play(nFrom, nTo, nRepeatCount)
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.Seek/*" />
-METHOD Seek(nFrame) 
+METHOD Seek(nFrame)
 
 
 
@@ -162,7 +162,7 @@ METHOD Seek(nFrame)
 
 
 /// <include file="Gui.xml" path="doc/AnimationControl.Stop/*" />
-METHOD Stop() 
+METHOD Stop()
 
 
 

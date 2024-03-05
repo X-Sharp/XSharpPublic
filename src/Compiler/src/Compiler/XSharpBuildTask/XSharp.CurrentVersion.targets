@@ -348,7 +348,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <CallTarget Targets="$(TargetsTriggeredByCompilation)" Condition="'$(TargetsTriggeredByCompilation)' != ''"/>
   </Target>
 
-    <Import Project="$(XSharpDesignTimeTargetsPath)" Condition="'$(XSharpDesignTimeTargetsPath)' != '' and Exists('$(CSharpDesignTimeTargetsPath)')" />
+    <Import Project="$(XSharpDesignTimeTargetsPath)" Condition="'$(XSharpDesignTimeTargetsPath)' != '' and Exists('$(XSharpDesignTimeTargetsPath)')" />
 
     <Import Project="$(MSBuildToolsPath)\Microsoft.ServiceModel.targets" Condition="('$(TargetFrameworkVersion)' != 'v2.0' and '$(TargetFrameworkVersion)' != 'v3.0' and '$(TargetFrameworkVersion)' != 'v3.5') and Exists('$(MSBuildToolsPath)\Microsoft.ServiceModel.targets')"/>
     <Target Name="_SetTargetFrameworkMonikerAttribute" BeforeTargets="GenerateTargetFrameworkMonikerAttribute">

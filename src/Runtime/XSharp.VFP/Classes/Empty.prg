@@ -19,7 +19,11 @@ using XSharp.Internal
 class XSharp.VFP.Empty implements XSharp.IDynamicProperties, XSharp.IDynamicProperties2
 
     constructor()
+        SELF:_InitProperties()
         return
+
+    PROTECTED VIRTUAL METHOD _InitProperties AS VOID
+        RETURN
 
     // include common vfp dynamic properties support
     // no other properties and fields needed
@@ -34,6 +38,7 @@ class XSharp.VFP.Empty implements XSharp.IDynamicProperties, XSharp.IDynamicProp
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)] ;
         [DebuggerDisplay("Count = {_count}", Type:="Dynamic Properties")];
         public property Properties as IList<NameValuePair> get _value:Properties:GetProperties()
+
 
 
     end class

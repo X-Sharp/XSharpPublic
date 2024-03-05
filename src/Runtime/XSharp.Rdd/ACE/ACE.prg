@@ -10,6 +10,16 @@ USING System.Text
 USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.ADS
+    /// <summary>
+    /// the ACE class has all the constants and functions from the ACE API <br />
+    /// Please look in the ADS documentation for more information about the functions and constants.
+    /// <note type='tip'>
+    /// There is a 32 bits API and a 64 bits API. The ACE class automatically dispatches to the right version of the API.
+    /// </note>
+    /// </summary>
+    /// <seealso cref="T:XSharp.ADS.ACEUNPUB"/>
+
+
     STATIC CLASS ACE
 
     #region Constants
@@ -4087,11 +4097,11 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN ACE64.AdsGetTime(hTable, strFldName, strBuf, REF wLen )
         ENDIF
 
-    PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter AS STRING, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
+    PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter REF CHAR, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
         IF Is32Bits
-            RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen )
+            RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, REF strLetter, strDesc, REF pusDescLen )
         ELSE
-            RETURN ACE64.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen )
+            RETURN ACE64.AdsGetVersion(OUT pulMajor, OUT pulMinor, REF strLetter, strDesc, REF pusDescLen )
         ENDIF
 
     PUBLIC STATIC METHOD AdsGotoBookmark(hTable AS IntPtr, hBookmark AS IntPtr ) AS DWORD

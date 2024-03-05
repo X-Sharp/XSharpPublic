@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-19T15:13:13.647+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Index expressions</title>
+  <keywords>
+    <keyword translate="true">#Clipper</keyword>
+    <keyword translate="true">Descend()</keyword>
+    <keyword translate="true">Index</keyword>
+    <keyword translate="true">Index Expression</keyword>
+    <keyword translate="true">Limitations</keyword>
+    <keyword translate="true">SetCollation</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left,288px left,336px left,384px left,432px left,480px left ;"><text styleclass="Heading1" translate="true">Index expressions</text></para>
+    </header>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Index expression should be valid Xbase &#160;expressions, but these expressions are rarely valid SQL expressions. We therefore need to translate the index expression to its SQL counterpart.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The SQLRDD has a built-in index expression parser that parses your index expression. What it does is the following:</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">First it parses the index expression and tries to locate the field names, function, operators and constants that you have used in your expression. </text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">For every field name it checks if the field name is valid for the workarea. If you have used a name that doesn&apos;t exist an error will be generated.</text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">For every function in the VO key expression, the RDD calls back into the program&apos;s SqlDbProvider Callback method, allowing you to replace the function with the equivalent for your server/provider. The function names will have the following layout: UPPER(%1%) or STR(%1%,%2%, %3%) etc.</text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">The RDD also calls back to find the string concatenator (&apos;+&apos; sign). Some providers use another operator such as &apos;||&apos;</text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">After this a corresponding SQL Index expression is built by putting the index key elements back in place.</text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">The SQL index key expression is then used to build:</text></li>
+      <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Body Text"><text styleclass="Body Text" translate="true">an OrderBy clause to open the data</text></li>
+        <li styleclass="Body Text"><text styleclass="Body Text" translate="true">a Where clause when you are Seeking in the workarea</text></li>
+        <li styleclass="Body Text"><text styleclass="Body Text" translate="true">Where clauses when you are setting Scopes</text></li>
+      </list>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">If your index expression is a simple expression (without functions) the SQLRDD will also build an index on the server. </text></li>
+    </list>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><text styleclass="Body Text" translate="true">When building where clauses the SQLRDD uses the SUBSTR() function if you are seeking on partial strings, or setting scopes on partial key values</text></li>
+    </list>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

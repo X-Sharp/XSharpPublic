@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-27T17:53:24.883Z" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Compatibility with existing RDDs</title>
+  <keywords>
+    <keyword translate="true">Compatibility</keyword>
+    <keyword translate="true">Debugging</keyword>
+    <keyword translate="true">performance</keyword>
+    <keyword translate="true">RDD</keyword>
+    <keyword translate="true">retrieve rows</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left,288px left,336px left,384px left,432px left,480px left ;"><text styleclass="Heading1" translate="true">Compatibility with existing RDDs</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The primary targets when designing the SQLRDD was: </text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">To be as much compatible as possible with the existing RDDs, especially the DBFNTX and DBFCDX RDD.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">To allow you to work with ANY Ado.Net dataprovider</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">We have the feeling that we have succeeded in doing so, but the compatibility is not 100%.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The most important difference (we feel) is:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" style="font-weight:bold;" translate="true">The SQLRDD (for performance reasons) does not automatically read the first row from the result set. </text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" style="font-weight:bold;" translate="true">You must call one of the navigational commands / functions or DbServer methods such as Go Top, Go Bottom or Go to, Append or Seek to execute the SQL Query and retrieve rows from the back end. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the SQLRDD means using XSharp default workarea based data access. </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">That means that you can operate the RDD 4 different ways:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the Data Access commands </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the DB..() functions</text><tab/><tab/></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the VODB..() functions</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the DbServer Class</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Of course there are also some differences between the existing RDDs and the SQLRDD</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Connections" styleclass="Normal" translate="true">Connections</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Indexes_gs" styleclass="Normal" translate="true">Index support</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ValidationsandIntegrity" styleclass="Normal" translate="true">Null_Date</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ValidationsandIntegrity" styleclass="Normal" translate="true">Table level validations</link></li>
+    </list>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

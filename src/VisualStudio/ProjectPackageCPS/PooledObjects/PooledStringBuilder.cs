@@ -13,12 +13,12 @@ namespace Microsoft.VisualStudio.Buffers.PooledObjects
     /// </summary>
     internal class PooledStringBuilder
     {
-        private readonly StringBuilder _builder = new StringBuilder();
+        private readonly StringBuilder _builder = new();
         private readonly ObjectPool<PooledStringBuilder> _pool;
 
         private PooledStringBuilder(ObjectPool<PooledStringBuilder> pool)
         {
-            Requires.NotNull(pool, nameof(pool));
+            Requires.NotNull(pool);
             _pool = pool;
         }
 

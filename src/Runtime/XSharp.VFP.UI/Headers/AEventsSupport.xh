@@ -1,0 +1,62 @@
+﻿// AEventsSupport.xh
+// AEVENTS & AMOUSEOBJ
+
+// HACK : It should be PROTECTED
+PUBLIC __aeventsData AS AEventsDefinition
+
+
+
+METHOD AEVENTS( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
+    IF IsArray( arrayName )
+        IF IsNumeric( uMode )
+            IF ( uMode == 0 )
+                IF __aeventsData != NULL
+                    arrayName := {}
+                    AAdd( arrayName, { __aeventsData:EventSource, __aeventsData:EventName, __aeventsData:EventType } )
+                ENDIF
+            ENDIF
+        ELSEIF IsObject( uMode )
+            NOP
+        ENDIF
+    ENDIF
+    RETURN 0
+
+
+METHOD AMOUSEOBJ( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
+    IF IsArray( arrayName )
+        IF IsNumeric( uMode )
+            IF ( uMode == 0 )
+                arrayName := {}
+                AAdd( arrayName, SELF )
+                AAdd( arrayName, SELF:_Parent )
+                AAdd( arrayName, System.Windows.Forms.Control.MousePosition:X )
+                AAdd( arrayName, System.Windows.Forms.Control.MousePosition:Y )
+            ENDIF
+        ELSEIF IsObject( uMode )
+            NOP
+        ENDIF
+    ENDIF
+    RETURN 0
+    
+    
+METHOD BINDEVENT( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
+    IF IsNumeric( oEventSource )
+        RETURN BindEvent2( oEventSource, cEvent, oEventHandler, cDelegate, nFlags )
+    ENDIF
+    IF IsObject( oEventSource ) .AND. IsString( cEvent ) .AND. IsObject( oEventHandler ) .AND. IsString( cDelegate )
+        // Does the cDelegate exists ?
+        IF IsMethod( oEventHandler, cDelegate )
+            // Our handler is prefixed by "vfp"
+            VAR xsHandler := "vfp" + cEvent
+            // Does it exist ?
+            IF IsAssign( oEventSource, xsHandler )
+                IVarPut( oEventSource, xsHandler, VFPOverride{oEventHandler, cDelegate} )
+                RETURN 1
+            ENDIF
+        ENDIF
+    ENDIF
+    // 0 => Error
+    RETURN 0
+
+INTERNAL METHOD BINDEVENT2( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
+    RETURN 0

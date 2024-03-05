@@ -5,16 +5,16 @@ CLASS ResourceString INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/ResourceString.AsString/*" />
-METHOD AsString() 
-	
-	
+METHOD AsString()
+
+
 
 
 	RETURN sBuffer
 
 
 /// <include file="Gui.xml" path="doc/ResourceString.ctor/*" />
-CONSTRUCTOR(xResourceID, nMaxLen) 
+CONSTRUCTOR(xResourceID, nMaxLen)
 	LOCAL hInst AS PTR
 	LOCAL wID AS DWORD
 	LOCAL ptrBuffer AS PTR
@@ -25,7 +25,7 @@ CONSTRUCTOR(xResourceID, nMaxLen)
 
 	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID)
 		xResourceID := ResourceID{xResourceID} // , GetNatDLLHandle()}
-	ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
+	ELSEIF !(xResourceID IS ResourceID)
 		WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:Throw()
 	ENDIF
 
@@ -54,7 +54,7 @@ CONSTRUCTOR(xResourceID, nMaxLen)
    IF hInst == GetNatDllHandle()
       sBuffer := __CavoStr( wID )
       RETURN
-   ENDIF   
+   ENDIF
 #endif
 
 
@@ -66,22 +66,22 @@ CONSTRUCTOR(xResourceID, nMaxLen)
 	MemFree(ptrBuffer)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ResourceString.Length/*" />
-ACCESS Length 
-	
-	
+ACCESS Length
+
+
 
 
 	RETURN iLength
 
 
 /// <include file="Gui.xml" path="doc/ResourceString.Value/*" />
-ACCESS Value 
-	
-	
+ACCESS Value
+
+
 
 
 	RETURN sBuffer

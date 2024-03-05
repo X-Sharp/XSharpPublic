@@ -1,8 +1,10 @@
 /// <include file="Gui.xml" path="doc/ControlWindow/*" />
+#pragma options("lb", off)
+
 CLASS ControlWindow INHERIT Window
 	//export __ptrOldProc as ptr
 	EXPORT __lpfnDefaultProc AS PTR
-	PROTECT oCtrl AS OBJECT
+	PROTECT oCtrl AS Control
 
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Control/*" />
@@ -20,9 +22,7 @@ METHOD DEFAULT(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL lRetVal
 
-
 	lRetVal := CallWindowProc(oCtrl:__lpfnDefaultProc, oEvt:hWnd, oEvt:umsg, oEvt:wParam, oEvt:lParam)
-
 
 	SELF:EventReturnValue := lRetVal
 
@@ -36,8 +36,12 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 
-	IF !InCollect()
-		oCtrl:Destroy()
+    IF !InCollect()
+        IF oCtrl IS VObject VAR vObj
+            vObj:Destroy()
+        ELSE
+            oCtrl:Destroy()
+        ENDIF
 		hWnd := NULL_PTR
 	ENDIF
 

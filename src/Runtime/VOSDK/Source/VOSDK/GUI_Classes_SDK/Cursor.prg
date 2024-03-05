@@ -11,10 +11,10 @@ CLASS Cursor INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __Update(lCreate AS LOGIC) AS VOID STRICT 
+	METHOD __Update(lCreate AS LOGIC) AS VOID STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 	IF lCreate
 		IF !lCreated
 			IF (oBitmap != NULL_OBJECT)
@@ -46,10 +46,6 @@ METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL oWndCursor AS Cursor
 
 
-	
-	
-
-
 	IF lCreated
 		DestroyCaret()
 		lCreated := FALSE
@@ -73,9 +69,9 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/Cursor.Handle/*" />
-METHOD Handle(nHandleType) 
-	
-	
+METHOD Handle(nHandleType)
+
+
 
 
 	IF !IsNil(nHandleType)
@@ -89,9 +85,9 @@ METHOD Handle(nHandleType)
 
 
 /// <include file="Gui.xml" path="doc/Cursor.Hide/*" />
-METHOD Hide() 
-	
-	
+METHOD Hide()
+
+
 
 
 	IF lCreated .AND. lVisible
@@ -106,22 +102,22 @@ METHOD Hide()
 
 
 /// <include file="Gui.xml" path="doc/Cursor.ctor/*" />
-CONSTRUCTOR(oOwner, oObject, lDimmed) 
+CONSTRUCTOR(oOwner, oObject, lDimmed)
 	LOCAL oOldCursor AS Cursor
 
 
 	SUPER()
-	
-	
 
 
-	IF !IsInstanceOfUsual(oOwner,#Window)
+
+
+	IF !(oOwner IS Window)
 		WCError{#Init,#Cursor,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
 
 	oWnd := oOwner
-	IF IsInstanceOfUsual(oObject,#Dimension)
+	IF (oObject IS Dimension)
 		oDim := oObject
 		IF !IsNil(lDimmed)
 			IF !IsLogic(lDimmed)
@@ -133,7 +129,7 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 		ENDIF
 		SELF:Position := Point{0,0}
 	ELSE
-		IF !IsInstanceOfUsual(oObject,#Bitmap)
+		IF !(oObject IS Bitmap)
 			WCError{#Init,#Cursor,__WCSTypeError,oObject,2}:Throw()
 		ENDIF
 		IF !IsNil(lDimmed)
@@ -158,16 +154,16 @@ CONSTRUCTOR(oOwner, oObject, lDimmed)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Cursor.Position/*" />
-ACCESS Position 
+ACCESS Position
 	LOCAL strucPoint IS _WinPoint
 
 
-	
-	
+
+
 
 
 	IF !lCreated
@@ -182,15 +178,15 @@ ACCESS Position
 
 
 /// <include file="Gui.xml" path="doc/Cursor.Position/*" />
-ASSIGN Position(oNewPoint) 
+ASSIGN Position(oNewPoint)
 	LOCAL oTempPoint AS Point
 
 
-	
-	
 
 
-	IF !IsInstanceOfUsual(oNewPoint,#Point)
+
+
+	IF !(oNewPoint IS Point)
 		WCError{#Position,#Cursor,__WCSTypeError,oNewPoint,1}:Throw()
 	ENDIF
 
@@ -202,13 +198,13 @@ ASSIGN Position(oNewPoint)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Cursor.Show/*" />
-METHOD Show() 
-	
-	
+METHOD Show()
+
+
 
 
 	IF lCreated .AND. !lVisible

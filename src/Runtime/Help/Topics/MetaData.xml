@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-23T15:28:01.054+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">MetaData</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Metadata</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To allow you to emulate record-oriented data access as best as possible, we have created a mechanism (a so called MetadataProvider) that your application can use to communicate with the RDD and tell the RDD what to do for a particular table. Maybe you want to limit the # of rows or columns for one relatively small table, but not for a large table with transactions. </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The SQLRDD contains 3 built-in mechanisms to provider this metadata (again in the XSharp.RDD.SqlRDD.Providers namespace)</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_Providers_SqlMetadataProviderIni.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">SqlMetadataProviderIni</link><text styleclass="Normal" translate="true">, which gets its information from an ini-file</text></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_Providers_SqlMetadataProviderCallBack.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">SqlMetadataProviderCallBack</link><text styleclass="Normal" translate="true">, which gets its information from a call back function in code.</text></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_Providers_SqlMetadataProviderDatabase.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">SqlMetadataProviderDatabase</link><text styleclass="Normal" translate="true">, which gets its information from tables inside the SQL database.</text></li>
+    </list>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Further in this document we will describe the 3 providers and how they work.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">And of course you can inherit from one of these 3 providers or create your own provider that implements the IMetadataProvider interface.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For performance reasons the built in providers read values only once for a table, as long as the connection is open. The tables are stored in a cache in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_Providers_SqlMetadataProviderAbstract.htm" domain="SqlRDDClasses.chm" styleclass="Body Text" translate="true">SqlMetadataProviderAbstract</link><text styleclass="Body Text" translate="true"> class.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Per </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Connections" styleclass="Body Text" translate="true">connection</link><text styleclass="Body Text" translate="true"> you can setup the MetadataProvider. If you do not assign a MetadataProvider to a connection, then the RDD will assume that you use the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_Providers_SqlMetadataProviderIni.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">SqlMetadataProviderIni</link><text styleclass="Body Text" translate="true">, unless you create the connection with a callback event handler. In that case the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_RDD_SqlRDD_Providers_SqlMetadataProviderCallBack.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">SqlMetadataProviderCallBack</link><text styleclass="Normal" translate="true"> will be used.</text></para>
+  </body>
+</topic>

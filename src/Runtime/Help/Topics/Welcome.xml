@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-27T17:53:27.381Z" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Welcome to the SQLRDD</title>
+  <keywords>
+    <keyword translate="true">Support</keyword>
+    <keyword translate="true">Welcome</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left,288px left,336px left,384px left,432px left,480px left ;"><text styleclass="Heading1" translate="true">Welcome to the SQLRDD</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">We are proud with the release of the SQLRDD</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# SQL RDD was created to help fill the void that is created because SAP no longer develops the Advantage Database Server (ADS).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">ADS is/was used by many of our clients because it offers a reliable and fast way to access data in a networked environment. Data stored in traditional DBF files and customized ADS specific data files. This data can be accessed both in Index/Sequential (Record oriented) mode and with SQL syntax in set-oriented mode.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">As with all our development we try to avoid reinventing the wheel, so we did not want to add a SQL engine on top of the existing RDDs that we created to access DBF based data. Instead, we have chosen to build record-oriented data access on top of existing SQL engines, such as SQL Server, Oracle, MySql, Postgress etc.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">We have done our best to ensure that this RDD will work with your existing code with as little modifications as possible.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Before you get started please read at least the contents of the first few chapters of this help file, since they describe the problems that you may encounter during integrating the SQLRDD in your application:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CompatibilitywithexistingRDDs" styleclass="Normal" translate="true">Compatibility with the existing RDD&apos;s</link></li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="BasicUsage" styleclass="Normal" translate="true">Basic Usage</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Indexes" styleclass="Normal" translate="true">Indexes</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="versionhistory" styleclass="Normal" translate="true">Version History</link></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:96px left,144px left,192px left,240px left,288px left,336px left,384px left,432px left,480px left ;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">X# RDD&apos;s can be used in three different ways:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">1.</text><tab/><text styleclass="Normal" translate="true">Using the (Clipper compatible) Db..() functions</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">2.</text><tab/><text styleclass="Normal" translate="true">Using the strongly typed VoDb..() versions of these functions</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">3.</text><tab/><text styleclass="Normal" translate="true">Using the DbServer class and its methods</text></para>
+    <para styleclass="" style="text-align:left; text-indent:-27px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left,96px left,144px left,192px left,240px left,288px left,336px left,384px left,432px left,480px left ;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In most of our sample code we have used method 1, but of course everything that can be done with the Db..() functions can also be done with the other two methods. Please remember that when you see a problem using the DbServer class, that the DbServer class may expect DBF specific behavior and may not always be handling the SQL environment well.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

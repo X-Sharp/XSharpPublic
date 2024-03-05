@@ -8015,9 +8015,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var size in context.ArgList?._Args)
                     {
                         if (size.Name != null)
-                            ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_BadNamedArgument, size));
+                            ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_UnexpectedNamedArgument, size.Name.GetText()));
                         if (size.RefOut != null)
-                            ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_BadTypeArgument, size));
+                            ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_BadMemberFlag, size.RefOut.Text));
                         if (sizes.Count > 0)
                             sizes.AddSeparator(SyntaxFactory.CommaToken);
                         sizes.Add(size.Expr.Get<ExpressionSyntax>());

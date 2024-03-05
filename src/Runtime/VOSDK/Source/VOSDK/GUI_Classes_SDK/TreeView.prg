@@ -124,8 +124,8 @@ METHOD __GetHandleFromSymbol(symItem AS USUAL) AS PTR STRICT
    	RETURN symItem
 	ELSEIF IsSymbol(symItem)
 		symToLookUp := symItem
-	ELSEIF IsInstanceOf(symItem, #TreeViewItem)
-		symToLookUp := symItem:NameSym
+	ELSEIF symItem  is TreeViewItem var oTVI
+		symToLookUp := oTVI:NameSym
 	ELSE
 		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:Throw()
 	ENDIF
@@ -172,8 +172,8 @@ METHOD __GetValueFromSymbol(symItem AS USUAL) AS USUAL STRICT
 
 	IF IsSymbol(symItem)
 		symToLookUp := symItem
-	ELSEIF IsInstanceOf(symItem, #TreeViewItem)
-		symToLookUp := symItem:NameSym
+	ELSEIF symItem IS TreeViewItem var oTVI
+		symToLookUp := oTVI:NameSym
 	ELSE
 		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:Throw()
 	ENDIF
@@ -327,8 +327,8 @@ METHOD __UpdateValue(symItem AS USUAL, uNewValue AS USUAL) AS USUAL STRICT
 
 	IF IsSymbol(symItem)
 		symToLookUp := symItem
-	ELSEIF IsInstanceOf(symItem, #TreeViewItem)
-		symToLookUp := symItem:NameSym
+	ELSEIF symItem IS TreeViewItem var oTVI
+		symToLookUp := oTVI:NameSym
 	ELSE
 		WCError{#__GetHandleFromSymbol,#TreeView,__WCSTypeError,symItem,1}:Throw()
 	ENDIF
@@ -436,22 +436,24 @@ METHOD DeleteItem(symName, lChildsOnly)
 
 /// <include file="Gui.xml" path="doc/TreeView.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-
-
-
-
-	IF !InCollect()
-		oImageList := NULL_OBJECT
-		oStateImageList := NULL_OBJECT
-		oDragImageList := NULL_OBJECT
-		aValues := NULL_ARRAY
-		aTreeItems := NULL_ARRAY
-	ENDIF
-
-
+    // One customer reported problems, so we clear this now.
+    if oImageList != NULL_OBJECT
+        oImageList:Destroy()
+        TreeView_SetImageList(SELF:Handle(), NULL, TVSIL_NORMAL)
+    	oImageList := NULL_OBJECT
+    endif
+    if oStateImageList != NULL_OBJECT
+        oStateImageList:Destroy()
+        TreeView_SetImageList(SELF:Handle(), NULL, TVSIL_STATE)
+    	oStateImageList := NULL_OBJECT
+    endif
+    if oDragImageList != NULL_OBJECT
+        oDragImageList:Destroy()
+    	oDragImageList := NULL_OBJECT
+    endif
+	aValues := NULL_ARRAY
+	aTreeItems := NULL_ARRAY
 	SUPER:Destroy()
-
-
 	RETURN NIL
 /*
 TEXTBLOCK METHOD dispatch(oE) CLASS TreeView
@@ -891,7 +893,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , dwStyle, TRUE)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "SysTreeView32", dwStyle, TRUE)
@@ -1021,9 +1023,9 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 		strucInsertItem:u:item:mask := (DWORD) _OR(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, (INT) dwMask) //, TVIF_PARAM
 		//strucInsertItem.u.item.lparam := LONG(_CAST, oTreeViewItem:NameSym)
 		strucInsertItem:u:item:statemask := dwStateMask
-		strucInsertItem:u:item:state := dwState 
+		strucInsertItem:u:item:state := dwState
 		strucInsertItem:hParent := hParentItem
-		strucInsertItem:hInsertAfter := hInsertAfter  
+		strucInsertItem:hInsertAfter := hInsertAfter
 
 
 		// insert the item into the tree view and add the new item handle to the list

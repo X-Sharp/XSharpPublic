@@ -38,7 +38,6 @@ The RDD will not only be an RDD but will also have several helper classes:
    - UserId
    - Password
    - PreExecute
-   - TranslateFunction (see below)
    
    Each of these callback events will retrieve the table name and the generated SQL code. You can modify the SQL in the event when you want.
    The default syntax for some of these values will come from the Provider (see 2))

@@ -3,36 +3,36 @@ CLASS GroupBox INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/GroupBox.AsString/*" />
-METHOD AsString () 
-	
-	
+METHOD AsString ()
+
+
 	RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
 
 
 /// <include file="Gui.xml" path="doc/GroupBox.CurrentText/*" />
-ACCESS CurrentText 
-	
-	
+ACCESS CurrentText
+
+
 	RETURN Null_String
 
 
 /// <include file="Gui.xml" path="doc/GroupBox.CurrentText/*" />
-ASSIGN CurrentText(cValue) 
-	
-	
-	RETURN 
+ASSIGN CurrentText(cValue)
+
+
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/GroupBox.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
+
+
 
 
 	Default(@lDataAware, FALSE)
 
 
-	IF IsInstanceOfUsual(xID,#ResourceID)
+	IF (xID IS ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , , lDataAware)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, "Button", _Or(BS_GroupBox, WS_TabStop), lDataAware)
@@ -42,7 +42,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

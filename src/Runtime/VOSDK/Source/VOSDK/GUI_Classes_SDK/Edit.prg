@@ -122,7 +122,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 
 
-	IF !IsInstanceOfUsual(xID,#ResourceID)
+	IF !(xID IS ResourceID)
 		dwStyle:= _OR(WS_CHILD, WS_CLIPSIBLINGS)
 		IF !IsNil(kStyle)
 			dwStyle := _OR(DWORD(kStyle), dwStyle)
@@ -319,7 +319,7 @@ ACCESS Selection
 /// <include file="Gui.xml" path="doc/Edit.Selection/*" />
 ASSIGN Selection(oSelection)
 	LOCAL oSel AS Selection
-	IF !IsInstanceOfUsual(oSelection,#Selection)
+	IF !(oSelection IS Selection)
 		WCError{#Selection,#Edit,__WCSTypeError,oSelection,1}:Throw()
 	ENDIF
 	oSel := oSelection
@@ -434,8 +434,8 @@ ASSIGN TextValue(cNewText)
 	cTextValue := SELF:__SetText(cNewText)
 
 
-	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
-		uValue := SELF:FieldSpec:Val(cTextValue)
+	IF SELF:FieldSpec IS FieldSpec var oFS
+		uValue := oFS:Val(cTextValue)
 	ELSE
 		uValue := cTextValue
 	ENDIF

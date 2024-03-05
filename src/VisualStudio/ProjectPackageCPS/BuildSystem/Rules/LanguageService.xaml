@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="LanguageService"
+      DisplayName="LanguageService"
+      PageTemplate="generic"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <!--
+      Properties defined in this file are passed to the language service in response to evaluation changes.
+
+      The class Microsoft.VisualStudio.ProjectSystem.LanguageServices.Handlers.ProjectPropertiesItemHandler
+      passes the values via the IWorkspaceProjectContext.SetProperty(string, string) method.
+
+      Note that Roslyn may also request properties from the project during IWorkspaceProjectContext construction,
+      however that occurs via a different mechanism.
+  -->
+
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+  </Rule.DataSource>
+
+  <StringProperty Name="ProjectAssetsFile"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RootNamespace"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetPath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetRefPath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="MaxSupportedLangVersion"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RunAnalyzers"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RunAnalyzersDuringLiveAnalysis"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetFrameworkIdentifier"
+                  ReadOnly="True"
+                  Visible="False" />
+
+    <StringProperty Name="SolutionPath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <!--
+      Roslyn needs a way to identify which workspace project context a given dependencies tree node relates to.
+      Ideally we would store the project context ID on the node itself for Roslyn to query, however we are late
+      in the 16.9 cycle and the magnitude of that change would likely make it too risky. For now, we pass the
+      TargetFramework property value to the language service, so it can match the value against the
+      "$TFM:net5.0"-style value found in the nodes capabilities property value.
+
+      Note, the "$TFM" prefix exists for back compat. It's not actually the TFM, but the TF.
+
+      To discourage misuse of this value, we rename it.
+  -->
+  <StringProperty Name="TemporaryDependencyNodeTargetIdentifier"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile"
+                  SourceOfDefaultValue="AfterContext"
+                  PersistedName="TargetFramework" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+</Rule>

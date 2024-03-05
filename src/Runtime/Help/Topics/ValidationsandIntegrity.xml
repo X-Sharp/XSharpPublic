@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-02-27T17:40:54.104+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Validations and Integrity</title>
+  <keywords>
+    <keyword translate="true">Append</keyword>
+    <keyword translate="true">Blank</keyword>
+    <keyword translate="true">DateTime.Minvalue</keyword>
+    <keyword translate="true">DbAppend</keyword>
+    <keyword translate="true">Integrity</keyword>
+    <keyword translate="true">NULL_DATE</keyword>
+    <keyword translate="true">Validation</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:151px left,302px left ;"><text styleclass="Heading1" translate="true">Validations and Integrity</text></para>
+    </header>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">If the back end that your application talks to supports validation and integrity rules, such as &#160;primary and foreign keys and mandatory fields, the SQLRDD application will of course follow those rules.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">One problem may be here, that when you insert a record in the table (using Append Blank or DbAppend()), the RDD will fill all the updatable columns of that record with blank values (for compatibility with DBF applications).</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">It is up to you to make sure that you fill the new record with valid information.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">If the validation and integrity rules of your server don&apos;t allow you to add a blank row, you must be sure you will update this new row properly, or else a runtime error will be generated.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Another area where you may encounter problems is when deleting or updating records. If you break the integrity rules of your server by deleting or updating a record, this operation will fail.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">NULL_DATE and DateTime.MinValue</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Most SQL databases do not know the concept of an empty Date. The SQLRDD therefore converts the values NULL_DATE and DateTime.Minvalue into a NULL.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When your database does not allow NULL in Date or DateTime columns, then you will have to make sure in your application that you write a different value.</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

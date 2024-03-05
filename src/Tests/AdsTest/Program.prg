@@ -1,7 +1,7 @@
 USING XSHarp.ADS
 using static XSHarp.ADS
 using static System.Console
-using VO
+
 
 FUNCTION MyThrow(e as Exception)
     THROW e

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Namespaces</name>
+  </assembly>
+  <members>
+    <member name="N:XSharp.RDD">
+      <summary>This namespace contains types used by the RDD system.</summary>
+    </member>
+    <member name="N:XSharp.RDD.Enums">
+      <summary>This namespace contains enumerated types used by the RDD system.</summary>
+    </member>
+    <member name="N:XSharp.RDD.SqlRDD">
+      <summary>This namespace contains the SQLRDD and its helper classes</summary>
+    </member>
+    <member name="N:XSharp.RDD.SqlRDD.Providers">
+      <summary>This namespace contains the SQLRDD DBMS related providers as well as the SQLRDD Metadata Providers</summary>
+    </member>
+    <member name="N:XSharp.RDD.Support">
+      <summary>This namespace contains several helper types used by the RDD system.</summary>
+    </member>
+    <member name="R:Project_SqlRDDClasses">
+      <summary>The classes in the X# SQL RDD are part of the 2 XSharp.RDD.SqlRDD namespaces below.<br />
+The other classes and namespaces in this file are part of the normal XSharp Classes and are included in this documentation for reference.<br />
+If you enable the "implicit namespace lookup" option in your project (the /ins commandline option) then you do not need to add USING statements in your code and you an use them like you would expect, because we have decorated the SQLRDD assembly with ImplicitNamespace Attributes that tell the X# compiler to look for classes in these namespaces</summary>
+    </member>
+  </members>
+</doc>

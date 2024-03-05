@@ -3,13 +3,13 @@ CLASS ErrorBox INHERIT TextBox
 
 
 /// <include file="Gui.xml" path="doc/ErrorBox.ctor/*" />
-CONSTRUCTOR(uParent, uText) 
-	
-	
+CONSTRUCTOR(uParent, uText)
 
 
-	IF IsInstanceOfUsual( uText, #HyperLabel )
-		uText := uText:Description
+
+
+	IF uText IS HyperLabel var oHL
+		uText := oHL:Description
 	ENDIF
 
 
@@ -20,7 +20,7 @@ CONSTRUCTOR(uParent, uText)
 	SELF:Beep := TRUE
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -31,14 +31,14 @@ CLASS InfoBox INHERIT TextBox
 
 
 /// <include file="Gui.xml" path="doc/InfoBox.ctor/*" />
-CONSTRUCTOR(uParent, uCaption, uText) 
-	
-	
+CONSTRUCTOR(uParent, uCaption, uText)
 
 
-	IF IsInstanceOfUsual(uCaption,#HyperLabel) .AND. IsNil(uText)
-		uText := uCaption:Description
-		uCaption := uCaption:Caption
+
+
+	IF uCaption IS HyperLabel var oHL .AND. IsNil(uText)
+		uText := oHL:Description
+		uCaption := oHL:Caption
 	ENDIF
 
 
@@ -49,7 +49,7 @@ CONSTRUCTOR(uParent, uCaption, uText)
 	SELF:Type := BOXICONASTERISK
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 
@@ -63,18 +63,18 @@ CLASS TextBox INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Beep/*" />
-ACCESS Beep 
-	
-	
+ACCESS Beep
+
+
 
 
 	RETURN lBeep
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Beep/*" />
-ASSIGN Beep(uBeep) 
-	
-	
+ASSIGN Beep(uBeep)
+
+
 
 
 	IF !IsLogic(uBeep)
@@ -86,18 +86,18 @@ ASSIGN Beep(uBeep)
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Caption/*" />
-ACCESS Caption 
-	
-	
+ACCESS Caption
+
+
 
 
 	RETURN cCaption
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Caption/*" />
-ASSIGN Caption(uCaption) 
-	
-	
+ASSIGN Caption(uCaption)
+
+
 
 
 	IF !IsString(uCaption)
@@ -107,16 +107,16 @@ ASSIGN Caption(uCaption)
 
 
 /// <include file="Gui.xml" path="doc/TextBox.ctor/*" />
-CONSTRUCTOR(uParent, uCaption, uText, nType) 
-	
-	
+CONSTRUCTOR(uParent, uCaption, uText, nType)
+
+
 
 
 	SUPER()
 
 
 	IF !IsNil(uParent)
-		IF !IsInstanceOfUsual(uParent, #Window)
+		IF !(uParent IS Window)
 			WCError{#Init,#TextBox,__WCSTypeError,uParent,1}:Throw()
 		ELSE
 			oParent := uParent
@@ -124,9 +124,9 @@ CONSTRUCTOR(uParent, uCaption, uText, nType)
 	ENDIF
 
 
-	IF IsInstanceOfUsual(uCaption,#HyperLabel) .AND. IsNil(uText)
-		uText := uCaption:Description
-		uCaption := uCaption:Caption
+	IF uCaption IS HyperLabel VAR oHL .AND. IsNil(uText)
+		uText := oHL:Description
+		uCaption := oHL:Caption
 	ENDIF
 
 
@@ -155,24 +155,24 @@ CONSTRUCTOR(uParent, uCaption, uText, nType)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Message/*" />
-ACCESS Message 
-	
-	
+ACCESS Message
+
+
 
 
 	RETURN cText
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Message/*" />
-ASSIGN Message(uText) 
-	
-	
+ASSIGN Message(uText)
+
+
 
 
 	IF !IsString(uText)
@@ -184,18 +184,18 @@ ASSIGN Message(uText)
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Show/*" />
-METHOD Show() 
+METHOD Show()
 	LOCAL iRetVal AS INT
 	LOCAL aRetVal AS ARRAY
 	LOCAL hParent AS PTR
 
 
-	
-	
+
+
 	aRetVal:= {BoxReplyOkay, BoxReplyCancel, BoxReplyAbort, BoxReplyRetry,;
 		BoxReplyIgnore, BoxReplyYes, BoxReplyNo, BoxReplyClose, ;
 		-1, BoxReplyTryAgain, BoxReplyContinue}
-    // Note IDHELP is 8, but this is never a return value 
+    // Note IDHELP is 8, but this is never a return value
 
 
 	IF (oParent != NULL_OBJECT)
@@ -219,16 +219,16 @@ METHOD Show()
 
 
 /// <include file="Gui.xml" path="doc/TextBox.Type/*" />
-ACCESS Type 
-	
-	
+ACCESS Type
+
+
 	RETURN dwType
 
 
 /// <include file="Gui.xml" path="doc/TextBox.TYPE/*" />
-ASSIGN TYPE(uType) 
-	
-	
+ASSIGN TYPE(uType)
+
+
 
 
 	IF !IsLong(uType)
@@ -237,7 +237,7 @@ ASSIGN TYPE(uType)
 	dwType := uType
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -248,14 +248,14 @@ CLASS WarningBox INHERIT TextBox
 
 
 /// <include file="Gui.xml" path="doc/WarningBox.ctor/*" />
-CONSTRUCTOR(uParent, uCaption, uText) 
-	
-	
+CONSTRUCTOR(uParent, uCaption, uText)
 
 
-	IF IsInstanceOfUsual(uCaption,#HyperLabel) .AND. IsNil(uText)
-		uText := uCaption:Description
-		uCaption := uCaption:Caption
+
+
+	IF uCaption IS HyperLabel VAR oHL .AND. IsNil(uText)
+		uText := oHL:Description
+		uCaption := oHL:Caption
 	ENDIF
 
 
@@ -269,7 +269,7 @@ CONSTRUCTOR(uParent, uCaption, uText)
 	SELF:Beep := TRUE
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 

@@ -72,7 +72,8 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECTED _Order			AS IOrder
 
 		/// <summary>Result of the last Block evaluation.</summary>
-		PROTECTED _EvalResult    AS OBJECT
+        PROTECTED _EvalResult    AS OBJECT
+        /// <summary>Has the workarea been closed.</summary>
         PUBLIC PROPERTY Closed as LOGIC => SELF:_Closed
         PUBLIC PROPERTY Properties AS DatabasePropertyCollection
             GET
@@ -86,7 +87,9 @@ BEGIN NAMESPACE XSharp.RDD
             END SET
         END PROPERTY
         PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+        /// <summary>Does the workarea have properties.</summary>
         PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+        /// <summary>Does the workarea have relations.</summary>
         PROPERTY HasRelations   AS LOGIC GET _Relations:Count > 0
         #endregion
  	        /// <exclude />
@@ -660,6 +663,11 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         END PROPERTY
 
+        /// <summary>
+        /// Return the (1 based) RddFieldInfo object for the specified field
+        /// </summary>
+        /// <param name="nFldPos">1 based index</param>
+        /// <returns>FieldInfo object or NULL when the index is not valid</returns>
 		VIRTUAL METHOD GetField(nFldPos AS INT) AS RddFieldInfo
 			IF SELF:_FieldIndexValidate(nFldPos)
 				RETURN SELF:_Fields[nFldPos-1]
@@ -1129,6 +1137,12 @@ BEGIN NAMESPACE XSharp.RDD
                 oResult := FALSE
             CASE DbInfo.DBI_RDD_OBJECT
                 oResult := SELF
+            CASE DbInfo.DBI_MEMOPATH
+                if SELF:_Memo != NULL
+                    oResult := SELF:_Memo:FullPath
+                ELSE
+                    oResult := ""
+                ENDIF
             OTHERWISE
                 // Register an error that the info is not supported and return NULL
                 // CoreDb.Info will detect that and will return FALSE

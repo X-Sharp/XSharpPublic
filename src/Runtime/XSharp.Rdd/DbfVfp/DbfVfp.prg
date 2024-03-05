@@ -44,6 +44,12 @@ CLASS DBFVFP INHERIT DBFCDX
             IF ! String.IsNullOrEmpty(cMemoName) .AND. File(cMemoName)
                 FErase(FPathName())
             ENDIF
+            // delete production index
+            cFileName := System.IO.Path.ChangeExtension(cFileName, "cdx")
+            IF File(cFileName)
+                FErase(FPathName())
+            ENDIF
+
         ENDIF
         RETURN lOk
 

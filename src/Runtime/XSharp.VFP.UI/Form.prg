@@ -189,7 +189,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR(  ) STRICT
 			SUPER()
 			// Default Values
-			SELF:BindControls := TRUE
+            SELF:BindControls := TRUE
+            SELF:Size := System.Drawing.Size{375, 250}
 
 
 		PRIVATE _VFPLoad AS VFPOverride

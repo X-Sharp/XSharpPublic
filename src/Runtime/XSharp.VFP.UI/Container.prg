@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
          #include ".\XSharp\VFPProperties.xh"
 		 #include ".\Headers\ControlProperties.xh"
 
-		 #include ".\Headers\Tooltips.xh" 
+		 #include ".\Headers\Tooltips.xh"
 
 			// This is a fake property, just here to ease Code Generation
 			//PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
@@ -30,12 +30,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR( ) STRICT
 			SUPER()
 			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, true)
-			SELF:BackColor := Color.Transparent
+            SELF:BackColor := Color.Transparent
+            SELF:Size := Size{75,75}
 			RETURN
 
-            
-        PROPERTY BorderColor AS System.Drawing.Color AUTO        
-            
+
+        PROPERTY BorderColor AS System.Drawing.Color AUTO
+
 		PRIVATE _backStyle := 1 AS INT
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
 		PROPERTY BackStyle AS INT

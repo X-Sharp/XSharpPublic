@@ -30,7 +30,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR( )
 			SUPER()
 			SELF:Multiline := TRUE
-			SELF:ScrollBars := ScrollBars.Both
+            SELF:ScrollBars := ScrollBars.Both
+            SELF:Size := Size{100,75}
+
 
 #include ".\Headers\ControlSource.xh"
 

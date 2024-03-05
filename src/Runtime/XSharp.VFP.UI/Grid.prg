@@ -49,6 +49,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
             SELF:CurrentCellChanged += System.EventHandler{ SELF, @VFPCurrentCellChanged() }
+            SELF:Size := System.Drawing.Size{320, 200}
+
             RETURN
 
         PUBLIC METHOD Column( i AS INT ) AS Column

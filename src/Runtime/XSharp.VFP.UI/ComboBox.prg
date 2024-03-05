@@ -23,7 +23,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		#include "Headers/VFPObject.xh"
 
 		CONSTRUCTOR(  ) STRICT
-			SUPER()
+            SUPER()
+            SELF:Size := Size{100,24}
 			RETURN
 
 #include ".\Headers\ControlProperties.xh"

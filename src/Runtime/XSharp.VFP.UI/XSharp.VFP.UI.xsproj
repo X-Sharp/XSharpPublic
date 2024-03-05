@@ -38,6 +38,7 @@
     <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
     <CS>False</CS>
     <TargetFrameworkProfile />
+    <NoStandardDefs>False</NoStandardDefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

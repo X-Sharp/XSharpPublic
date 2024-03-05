@@ -27,7 +27,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, TRUE)
 			SELF:BackColor := Color.Transparent
 			//
-			SELF:_vfpStyle := 0
+            SELF:_vfpStyle := 0
+            SELF:Size := Size{100, 17}
+
 			//
 
 

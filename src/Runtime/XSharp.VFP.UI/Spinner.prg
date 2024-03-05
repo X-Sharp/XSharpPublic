@@ -29,7 +29,8 @@ BEGIN NAMESPACE  XSharp.VFP.UI
     CONSTRUCTOR()
 			SUPER()
 			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, true)
-			SELF:BackColor := Color.Transparent
+            SELF:BackColor := Color.Transparent
+            SELF:Size := Size{100,24}
 
 #include "Headers\ControlProperties.xh"
 

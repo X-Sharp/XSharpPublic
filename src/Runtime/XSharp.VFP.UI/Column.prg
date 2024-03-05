@@ -19,7 +19,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	PARTIAL CLASS Column INHERIT System.Windows.Forms.DataGridViewTextBoxColumn IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
 		CONSTRUCTOR(  )
-			SUPER()
+            SUPER()
+            SELF:Width := 75
 			RETURN
 
 			// Todo

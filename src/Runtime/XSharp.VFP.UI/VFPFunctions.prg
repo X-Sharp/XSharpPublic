@@ -61,9 +61,11 @@ FUNCTION Sys(nSetting, uNewValue) As USUAL CLIPPER
 	LOCAL retVal AS OBJECT
 	retVal := FALSE
 	//
-	SWITCH nSetting
-	CASE 5
-		retVal := GetDefaultDir()
+    SWITCH nSetting
+    CASE 0
+        retVal := __GetEnv("LOGONSERVER") + "#" + __GetEnv("USERNAME")
+	CASE 5 // Default drive or volume.
+        retVal := GetDefaultDir()
 	CASE 16
 		var asm := System.Reflection.Assembly.GetExecutingAssembly()
 		var path := asm:Location
@@ -72,10 +74,15 @@ FUNCTION Sys(nSetting, uNewValue) As USUAL CLIPPER
 		RETURN FALSE
 	CASE 2003
 		retVal := Environment.CurrentDirectory
-
+    case 2023
+        retVal := __GetEnv("TEMP")
 	END SWITCH
 	RETURN retVal
 
+INTERNAL FUNCTION __GetEnv(cVariableName as STRING) AS STRING
+    LOCAL cRetVal AS STRING
+    cRetVal := Environment.GetEnvironmentVariable(cVariableName)
+    RETURN cRetVal
 
 // FUNCTION MessageBox(eMessageText As USUAL, cTitleBarText := "" As STRING, nTimeOut := 0 As INT) As INT
 //     RETURN MessageBox(eMessageText, 0, cTitleBarText, nTimeOut)

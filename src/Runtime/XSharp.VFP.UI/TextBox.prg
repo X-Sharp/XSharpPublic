@@ -100,7 +100,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			// Default work
 			SELF:_format := NULL
 			SELF:_inputMask := NULL
-			SELF:_valueType := "C"
+            SELF:_valueType := "C"
+            SELF:Size := Size{100,21}
 
 
 		PROTECTED METHOD OnKeyDown( e AS KeyEventArgs ) AS VOID

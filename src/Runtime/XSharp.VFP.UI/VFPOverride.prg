@@ -11,14 +11,14 @@ BEGIN NAMESPACE XSharp.VFP.UI
     /// At code generation it captures the Owner and the Late-bound method to be called.
     /// When the Call() is called, a late-bound called is done, using Send()
     /// </summary>
-    CLASS	 VFPOverride
+    CLASS VFPOverride
         PRIVATE _owner AS OBJECT
         PRIVATE _sendTo AS STRING
-            
+
         PROPERTY InCall AS LOGIC AUTO GET PRIVATE SET
-            
+
         PROPERTY SendTo AS STRING GET _sendTo
-            
+
         CONSTRUCTOR( o AS OBJECT, s AS STRING )
             // Before calling the method we will check we are at Form Level
             // But at creation-time, the Control may hasn't been Added to Controls...so no parent.
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     _sendTo := _sendTo:Substring(0, _sendTo:Length-2 )
                 ENDIF
             ENDIF
-            
+
         METHOD Call( args AS USUAL[] ) AS USUAL
             //
             TRY
@@ -49,11 +49,12 @@ BEGIN NAMESPACE XSharp.VFP.UI
             FINALLY
                 SELF:InCall := FALSE
             END TRY
-            
+            RETURN NULL
+
         METHOD Call( ) AS USUAL
             //
             TRY
-                SELF:InCall := TRUE                
+                SELF:InCall := TRUE
                 IF _owner != NULL .AND. _sendTo != NULL
                     IF IsMethod( _owner, _sendTo )
                         RETURN Send( _owner, _sendTo )
@@ -68,7 +69,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
             FINALLY
                 SELF:InCall := FALSE
             END TRY
-            
+            RETURN NULL
+
         PRIVATE METHOD CallParent( args AS USUAL[] ) AS VOID
             LOCAL oForm AS OBJECT
             //
@@ -92,7 +94,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
                     ENDIF
                 ENDIF
             ENDIF
-            
-            
+
+
     END CLASS
 END NAMESPACE

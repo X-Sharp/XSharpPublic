@@ -912,6 +912,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas) && context._Vars.Count > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
+                }
                 foreach (var memvar in context._XVars)
                 {
                     if (memvar.Amp != null)

@@ -64,7 +64,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsVO => Options.Dialect switch { XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
         public bool IsCoreVO => Options.Dialect switch { XSharpDialect.Core => true, XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
         public bool ModernSyntax => Options.ModernSyntax;
-
+        public bool HasMemVars => Options.SupportsMemvars;
         bool ExpectToken(int type)
         {
             int icurrent = 1;

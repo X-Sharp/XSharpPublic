@@ -600,9 +600,9 @@ filewidevar         : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 statement           : Decl=localdecl                            #declarationStmt
                     | Decl=foxlparameters                       #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
-                    | {!IsFox }? Decl=memvardecl                #memvardeclStmt       // Memvar declarations, not for FoxPro
+                    | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt       // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt
-                    | {IsFox }? Decl=foxmemvardecl              #foxmemvardeclStmt    // Memvar declarations FoxPro specific
+                    | {IsFox && HasMemVars}? Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
                     | {IsFox }? Decl=foxdimvardecl              #foxdimvardeclStmt    // DIMENSION this.Field(10)
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
@@ -978,7 +978,7 @@ boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName      
                     | LBRKT ArgList=bracketedArgumentList RBRKT                         #bindArrayAccess
                     ;
 
-aliasExpression     : MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
+aliasExpression     : {HasMemVars}? MEMVAR ALIAS VarName=identifier             #aliasedMemvar        // MEMVAR->Name
                     | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched, this is matched by aliasedExpr later
                       Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME

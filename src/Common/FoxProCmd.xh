@@ -98,11 +98,11 @@
 #command GATHER MEMVAR [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
           => __GatherMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
-***
-* Variations of the database commands with IN or ALIAS clause
-***
+///////////////////////////////////////////////////////////////////////////////
+// Variations of the database commands with IN or ALIAS clause
+///////////////////////////////////////////////////////////////////////////////
 
-** FoxPro allows to close a workarea like this
+// FoxPro allows to close a workarea like this
 
 /*
 #command USE <(db)>                            ;
@@ -122,11 +122,11 @@
       [; DbSetIndex( <(index1)> )];
       [; DbSetIndex( <(indexn)> )]
 
-**  Todo FoxPro [[DatabaseName!] TableName | SQLViewName | ?]
-**  [IN nWorkArea | cTableAlias] [ONLINE] [ADMIN] [AGAIN]
-**  [NOREQUERY [nDataSessionNumber]] [NODATA]
-**  [INDEX IndexFileList | ? [ORDER [nIndexNumber | IDXFileName | [TAG] TagName [OF CDXFileName] [ASCENDING | DESCENDING]]]]
-**  [CONNSTRING cConnectionString | nStatementHandle ]
+//  Todo FoxPro [[DatabaseName!] TableName | SQLViewName | ?]
+//  [IN nWorkArea | cTableAlias] [ONLINE] [ADMIN] [AGAIN]
+//  [NOREQUERY [nDataSessionNumber]] [NODATA]
+//  [INDEX IndexFileList | ? [ORDER [nIndexNumber | IDXFileName | [TAG] TagName [OF CDXFileName] [ASCENDING | DESCENDING]]]]
+//  [CONNSTRING cConnectionString | nStatementHandle ]
 
 #command SET INDEX TO [ <(index1)> [, <(indexn)>]]  ;
                                                     ;
@@ -135,18 +135,18 @@
       [; DbSetIndex( <(indexn)> )]
 
 #command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
-** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
+// Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
 
 
 #command COPY STRUCTURE EXTENDED TO <(file)>                      		;
       => DbCopyXStruct( <(file)> )
-** FoxPro clauses [DATABASE DatabaseName [NAME LongTableName]] [FIELDS FieldList]
+// FoxPro clauses [DATABASE DatabaseName [NAME LongTableName]] [FIELDS FieldList]
 
 #command COPY STRUCTURE TO <(file)> [__FOXLIST__ <fldlist>]  [__FOXWILD__ <fldwild> ]   ;
       => DbCopyStruct( <(file)>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
-** FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
+// FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
 
-** Todo: IN <area> which should prefix the calls to DbSetRelation
+// Todo: IN <area> which should prefix the calls to DbSetRelation
 
 
 #command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ] ;
@@ -163,7 +163,7 @@
                  {|| <v1> := <v1> + <x1> [, <vn> := <vn> + <xn> ]},     ;
                  <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
                )
-** Todo FoxPro [TO ARRAY ArrayName]
+// Todo FoxPro [TO ARRAY ArrayName]
 
 #command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]  ;
          [FOR <lfor>]                                ;
@@ -183,7 +183,7 @@
                   ;
        ; <v1> := <v1> / M->__Avg [; <vn> := <vn> / M->__Avg ]
 
-** Todo FoxPro [TO ARRAY ArrayName]
+// Todo FoxPro [TO ARRAY ArrayName]
 
 */
 
@@ -212,10 +212,10 @@
 
 
 
-** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
+// Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
 
 
-** Commands without IN/ALIAS clause
+// Commands without IN/ALIAS clause
 
 #command SCAN              ;
          [FOR <lfor>]       ;
@@ -251,9 +251,9 @@
                         )
 
 
-** Todo FoxPro clauses
-** [ [WITH] CDX ] | [ [WITH] PRODUCTION ]
-** Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
+// Todo FoxPro clauses
+// [ [WITH] CDX ] | [ [WITH] PRODUCTION ]
+// Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
 
 
 #command COPY [TO <(file)> ]                                            ;
@@ -461,3 +461,4 @@
 #include "FoxProSql.xh"
 #endif
 
+// EOF

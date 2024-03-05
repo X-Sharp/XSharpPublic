@@ -459,7 +459,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private static MethodSymbol GetConstructor(this TypeSymbol type, TypeSymbol paramType)
         {
-            return (MethodSymbol)type.GetMembers(".ctor").Where(m => m.GetParameterCount() == 1 &&
+            return (MethodSymbol)type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Where(m => m.GetParameterCount() == 1 &&
                                                 TypeSymbol.Equals(m.GetParameterTypes()[0].Type, paramType)).FirstOrDefault();
         }
 

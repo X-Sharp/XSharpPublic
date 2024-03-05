@@ -1023,6 +1023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaseKeyword, text);
                     break;
                 case XSharpParser.DEFAULT:
+                case XSharpParser.NULL:
                     r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword, text);
                     break;
                 case XSharpParser.DELEGATE:
@@ -1214,6 +1215,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.BY:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ByKeyword, text);
+                    break;
+
+                case XSharpParser.FOX_NOT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NotKeyword, text);
                     break;
 
                 case XSharpParser.ACCESS:

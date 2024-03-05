@@ -1,0 +1,35 @@
+
+Class  Custom   BaseClass   Custom   Class  Custom  
+Custom   ADDOBJECT     Method 
+Custom   ADDPROPERTY      Method 
+Custom   BASECLASS     Property
+Custom   CLASS   Property
+Custom   CLASSLIBRARY     Property
+Custom   COMMENT     Property
+Custom   CONTROLCOUNT       Property
+Custom   CONTROLS     Property
+Custom   DESTROY    Event
+Custom   ERROR    Event
+Custom   HEIGHT   Property
+Custom   HELPCONTEXTID     Property
+Custom   INIT Event
+Custom   LEFT  Property
+Custom   NAME   Property
+Custom   NEWOBJECT      Method 
+Custom   OBJECTS    Property
+Custom   PARENT    Property
+Custom   PARENTCLASS      Property
+Custom   PICTURE   Property
+Custom   READEXPRESSION       Method 
+Custom   READMETHOD      Method 
+Custom   REMOVEOBJECT       Method 
+Custom   RESETTODEFAULT       Method 
+Custom   SAVEASCLASS      Method 
+Custom   SHOWWHATSTHIS       Method 
+Custom   TAG  Property
+Custom   TOP  Property
+Custom   WHATSTHISHELPID      Property
+Custom   WIDTH   Property
+Custom   WRITEEXPRESSION       Method 
+Custom   WRITEMETHOD      Method 
+

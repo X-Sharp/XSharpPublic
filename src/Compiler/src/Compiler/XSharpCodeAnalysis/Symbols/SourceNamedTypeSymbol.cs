@@ -166,7 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             var attributeType = DeclaringCompilation.VOStructAttributeType();
             var int32type = DeclaringCompilation.GetSpecialType(SpecialType.System_Int32);
-            var attributeConstructor = attributeType.GetMembers(".ctor").FirstOrDefault() as MethodSymbol;
+            var attributeConstructor = attributeType.GetMembers(WellKnownMemberNames.InstanceConstructorName).FirstOrDefault() as MethodSymbol;
             var constructorArguments = ArrayBuilder<TypedConstant>.GetInstance();
             constructorArguments.Add(new TypedConstant(int32type, TypedConstantKind.Primitive, VoStructSize));
             constructorArguments.Add(new TypedConstant(int32type, TypedConstantKind.Primitive, VoStructElementSize));

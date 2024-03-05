@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-09T23:24:08.297+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-02-23T09:40:14.853+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options Listed Alphabetically</title>
   <keywords>
     <keyword>Compiler Options</keyword>
@@ -12,7 +12,7 @@
     </header>
     <para styleclass="Body Text">The following compiler options are sorted by category. For an alphabetical list, see : <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph">X# Compiler Options Listed Alphabetically</link></para>
     <para styleclass="Body Text">The options in <text style="font-weight:bold; color:#ff0000;">RED</text> are not supported yet.</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="104" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="106" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -375,6 +375,14 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modernsyntax">-modernsyntax</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Disable certain legacy compiler options</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-modulenamestring">-modulename</link></para>
         </td>
         <td>
@@ -427,6 +435,14 @@
         </td>
         <td>
           <para styleclass="Normal">Suppresses compiler banner information.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-norun</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Obsolete compiler option in X#, inherited from Vulcan. To achieve this simply remove the references to the runtime DLLs and compile in the Core dialect</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

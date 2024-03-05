@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         static CSharpSyntaxNode s_lastNode = null;
         static int s_lastPos = 0;
         static CSharpSyntaxNode s_lastResult = null;
-        static readonly object s_gate = new ();
+        static readonly object s_gate = new();
 
         private static CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
         {
@@ -267,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case XP.MemvardeclContext:
                             case XP.FoxmemvardeclContext:
                             case XP.FoxlparametersContext:
-                            case XP.FilewidememvarContext:
+                            case XP.FilewidevarContext:
 
                             case XP.ClassvarsContext:
                             case XP.VoglobalContext:

@@ -1,0 +1,28 @@
+﻿// Anchor.xh
+// Created by    : fabri
+// Creation Date : 9/20/2022 7:44:02 PM
+// Created for   : 
+// WorkStation   : FABXPS
+
+
+METHOD SetAnchor( sender AS System.Windows.Forms.Control, anchorValue AS INT ) AS VOID
+	LOCAL anchor := AnchorStyles.None AS AnchorStyles
+	//
+	IF ( anchorValue == 0 )
+		anchor := AnchorStyles.Top | AnchorStyles.Left
+	ELSE
+		IF ( anchorValue & 1 ) != 0
+			anchor |= AnchorStyles.Top
+		ENDIF
+		IF ( anchorValue & 2 ) != 0
+			anchor |= AnchorStyles.Left
+		ENDIF
+		IF ( anchorValue & 4 ) != 0
+			anchor |= AnchorStyles.Bottom
+		ENDIF
+		IF ( anchorValue & 8 ) != 0
+			anchor |= AnchorStyles.Right
+		ENDIF
+	ENDIF
+	sender:Anchor := anchor
+END METHOD

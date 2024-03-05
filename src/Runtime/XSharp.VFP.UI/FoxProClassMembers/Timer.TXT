@@ -1,0 +1,29 @@
+
+Class  Timer BaseClass   Timer Class  Timer
+Timer ADDPROPERTY      Method 
+Timer BASECLASS     Property
+Timer CLASS   Property
+Timer CLASSLIBRARY     Property
+Timer COMMENT     Property
+Timer DESTROY    Event
+Timer ENABLED    Property
+Timer ERROR    Event
+Timer HEIGHT   Property
+Timer INIT Event
+Timer INTERVAL   Property
+Timer LEFT  Property
+Timer NAME   Property
+Timer PARENT    Property
+Timer PARENTCLASS      Property
+Timer READEXPRESSION       Method 
+Timer READMETHOD      Method 
+Timer RESET   Method 
+Timer RESETTODEFAULT       Method 
+Timer SAVEASCLASS      Method 
+Timer TAG  Property
+Timer TIMER   Event
+Timer TOP  Property
+Timer WIDTH   Property
+Timer WRITEEXPRESSION       Method 
+Timer WRITEMETHOD      Method 
+

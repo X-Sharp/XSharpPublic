@@ -1216,7 +1216,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var cls = info.Parent;
                             if (string.Compare(propName, cls.BaseClassName, StringComparison.OrdinalIgnoreCase) == 0)
                             {
-                                expr = MakeSimpleMemberAccess(GenerateSuper(), GenerateSimpleName(".ctor"));
+                                expr = MakeSimpleMemberAccess(GenerateSuper(), GenerateSimpleName(WellKnownMemberNames.InstanceConstructorName));
                                 ArgumentListSyntax argList;
                                 if (context.ArgList != null)
                                 {

@@ -63,7 +63,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
         public bool IsVO => Options.Dialect switch { XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
         public bool IsCoreVO => Options.Dialect switch { XSharpDialect.Core => true, XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
-        public bool HasMemVars => Options.SupportsMemvars;
+        public bool ModernSyntax => Options.ModernSyntax;
 
         bool ExpectToken(int type)
         {
@@ -76,7 +76,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return la == type;
         }
-
 
         bool IsTypeCastAllowed()
         {
@@ -554,7 +553,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool HasRefArguments { get; set; }
             public ArgumentListContext Arguments => ArgList;
         }
-        public partial class CtorCallContext: ICallContext
+        public partial class CtorCallContext : ICallContext
         {
             public bool HasRefArguments { get; set; }
             public ArgumentListContext Arguments => ArgList;
@@ -1207,7 +1206,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public int Count => this._Vars.Count;
         }
-        public partial class FilewidememvarContext : IMultiElementContext
+        public partial class FilewidevarContext : IMultiElementContext
         {
             public int Count => this._Vars.Count + this._XVars.Count + this._FoxVars.Count;
         }

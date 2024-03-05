@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-02-13T11:21:56.862+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0169</title>
   <keywords>
     <keyword>XS0169</keyword>
@@ -10,6 +10,8 @@
       <para styleclass="Heading1">Warning XS0169</para>
     </header>
     <para styleclass="Normal">The field &apos;{0}&apos; is never used</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning will be shown when you declare a private field or method and you are never using that inside the class where it is defined.</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -5385,6 +5385,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                                This only works for the VO, XPP and Harbour dialects.
 -undeclared[+|-]               Should the compiler allow undeclared variables
                                This only works for the VO, XPP and Harbour dialects.
+-modernsyntax[+|-]             Disable some old Xbase compatibility features, such as &amp;&amp; and * comments, bracketed strings etc.
+                               This only works for the VO, XPP and Harbour dialects.
 
 
                         - PREPROCESOR -
@@ -7709,5 +7711,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_FileWideMemVarName" xml:space="preserve">
   <value>File Wide Memory Variable found with the same name '{0}'. You must use the MEMVAR or M prefix to access that variable.</value>
  </data>
+  <data name="ERR_ClipperOverloaded" xml:space="preserve">
+  <value>Type '{0}' cannot have an overloaded method '{1}' because one of the overloads has the CLIPPER calling convention.</value>
+ </data>
+  
 </root>
 

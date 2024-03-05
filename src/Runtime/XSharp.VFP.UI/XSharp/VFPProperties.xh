@@ -1,0 +1,56 @@
+///////////////////////////////////////////////////////////////////////////
+// VFPProperties.xh
+//
+// Include this file in a class that wants to add VFP Property support
+// Additionally add IMPLEMENTS XSharp.IDynamicProperties to the class definition
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+#ifndef VFP_PROPERTIES_XH
+#define VFP_PROPERTIES_XH
+
+    PROTECTED _Properties AS PropertyContainer
+    PUBLIC PROPERTY Properties AS PropertyContainer
+      GET
+         SELF:__InitProperties()
+         RETURN SELF:_Properties
+      END GET
+    END PROPERTY
+
+    PRIVATE METHOD __InitProperties() AS VOID
+      IF _Properties == NULL
+         _Properties := PropertyContainer{SELF}
+      ENDIF
+
+    method _AddProperty(cPropertyName as string, uValue as usual, nVisibility := PropertyVisibility.Public as long, cDescription := "" as string) as logic
+        SELF:__InitProperties()
+        RETURN _Properties:Add(cPropertyName, uValue, nVisibility, cDescription) != NULL
+
+    METHOD _RemoveProperty(cPropertyName AS STRING) AS LOGIC
+        SELF:__InitProperties()
+        RETURN _Properties:Remove(cPropertyName)
+
+    #region IDynamicProperties
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+        SELF:__InitProperties()
+        _Properties:NoIvarPut(cName, uValue)
+
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
+        SELF:__InitProperties()
+        RETURN _Properties:NoIvarGet(cName)
+
+    VIRTUAL METHOD GetPropertyNames() AS STRING[]
+        SELF:__InitProperties()
+        RETURN _Properties:GetPropertyNames()
+
+    METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
+        RETURN SELF:_AddProperty(cPropertyName, uValue, nVisibility, cDescription)
+
+    METHOD RemoveProperty(cPropertyName AS STRING) AS LOGIC
+        RETURN SELF:_RemoveProperty(cPropertyName)
+
+    #endregion
+
+
+#ENDIF

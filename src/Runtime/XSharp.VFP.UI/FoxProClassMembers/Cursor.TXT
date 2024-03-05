@@ -1,0 +1,31 @@
+
+Class  Cursor BaseClass   Cursor Class  Cursor
+Cursor ADDPROPERTY      Method 
+Cursor ALIAS  Property
+Cursor BASECLASS     Property
+Cursor BUFFERMODEOVERRIDE         Property
+Cursor CLASS   Property
+Cursor CLASSLIBRARY     Property
+Cursor COMMENT     Property
+Cursor CURSORSOURCE       Property
+Cursor DATABASE     Property
+Cursor DESTROY    Event
+Cursor ERROR    Event
+Cursor EXCLUSIVE    Property
+Cursor FILTER  Property
+Cursor INIT Event
+Cursor NAME   Property
+Cursor NODATAONLOAD       Property
+Cursor ORDER    Property
+Cursor ORDERDIRECTION      Property
+Cursor PARENT    Property
+Cursor PARENTCLASS      Property
+Cursor READEXPRESSION       Method 
+Cursor READMETHOD      Method 
+Cursor READONLY     Property
+Cursor RESETTODEFAULT       Method 
+Cursor SAVEASCLASS      Method 
+Cursor TAG  Property
+Cursor WRITEEXPRESSION       Method 
+Cursor WRITEMETHOD      Method 
+

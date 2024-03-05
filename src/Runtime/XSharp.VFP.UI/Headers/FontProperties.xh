@@ -1,0 +1,146 @@
+﻿// FontProperties.xh
+// Created by    : fabri
+// Creation Date : 5/4/2022 2:57:00 PM
+// Created for   :
+// WorkStation   : FABXPS
+
+
+		// Todo
+
+		private method _SetFont(chStyle as char, lValue as LOGIC) AS VOID
+			VAR ft := SELF:Font
+			IF ft != NULL
+				VAR style := System.Drawing.FontStyle.Regular
+				if chStyle == c'I'
+					if lValue
+						style := style | System.Drawing.FontStyle.Italic
+					endif
+				elseIF ft:Italic
+					style := style | System.Drawing.FontStyle.Italic
+				ENDIF
+				if chStyle == c'U'
+					if lValue
+						style := style | System.Drawing.FontStyle.Underline
+					endif
+				elseif ft:Underline
+					style := style | System.Drawing.FontStyle.Underline
+				ENDIF
+				if chStyle == c'X'
+					if lValue
+						style := style | System.Drawing.FontStyle.Strikeout
+					endif
+				elseIF ft:Strikeout
+					style := style | System.Drawing.FontStyle.Strikeout
+				ENDIF
+				IF chStyle == c'B'
+					IF lValue
+						style := style | System.Drawing.FontStyle.Bold
+					endif
+				elseif ft:Bold
+					style := style | System.Drawing.FontStyle.Bold
+				ENDIF
+				VAR newFont := System.Drawing.Font{ ft:Name, ft.Size, (System.Drawing.FontStyle)style, ft.Unit}
+				SELF:Font := newFont
+			ENDIF
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is bold")];
+		PROPERTY FontBold AS LOGIC
+			GET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					RETURN ft:Bold
+				ELSE
+					RETURN FALSE
+				ENDIF
+			END GET
+			SET
+				_SetFont(c'B', value)
+			END SET
+		END PROPERTY
+
+		// Todo
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is italic")];
+		PROPERTY FontItalic AS LOGIC
+			GET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					RETURN ft:Italic
+				ELSE
+					RETURN FALSE
+				ENDIF
+			END GET
+			SET
+				_SetFont(c'I', value)
+			END SET
+		END PROPERTY
+
+		// Todo
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is underline")];
+		PROPERTY FontUnderline AS LOGIC
+			GET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					RETURN ft:Underline
+				ELSE
+					RETURN FALSE
+				ENDIF
+			END GET
+			SET
+				_SetFont(c'U', value)
+			END SET
+		END PROPERTY
+
+		// Todo
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set if the Font is strikethru")];
+		PROPERTY FontStrikeThru AS LOGIC
+			GET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					RETURN ft:Strikeout
+				ELSE
+					RETURN FALSE
+				ENDIF
+			END GET
+			SET
+				_SetFont(c'X', value)
+			END SET
+		END PROPERTY
+
+		// Todo
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Font size")];
+		PROPERTY FontSize AS Single
+			GET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					RETURN ft:Size
+				ELSE
+					RETURN (Single) 0.0
+				ENDIF
+			END GET
+			SET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					VAR newFont := System.Drawing.Font{ ft.Name, (Single)VALUE, ft.Style, ft.Unit}
+					SELF:Font := newFont
+				ENDIF
+			END SET
+		END PROPERTY
+
+		// Todo
+		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Font Name")];
+		PROPERTY FontName AS STRING
+			GET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					RETURN ft:Name
+				ELSE
+					RETURN NULL
+				ENDIF
+			END GET
+			SET
+				VAR ft := SELF:Font
+				IF ft != NULL
+					VAR newFont := System.Drawing.Font{ VALUE, ft.Size, ft.Style, ft.Unit}
+					SELF:Font := newFont
+				ENDIF
+			END SET
+		END PROPERTY

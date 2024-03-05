@@ -47,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal static MethodSymbol BaseConstructor(this SourceMemberContainerTypeSymbol type)
         {
             var baseType = type.BaseTypeNoUseSiteDiagnostics;
-            var members = baseType.GetMembers(".ctor");
+            var members = baseType.GetMembers(WellKnownMemberNames.InstanceConstructorName);
             if (members.Length == 1)
             {
                 var member = members[0] as MethodSymbol;
@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return null;
         }
-        internal static bool suppressGeneratedConstructorParams( this ConstructorDeclarationSyntax syntax, SourceMemberContainerTypeSymbol type)
+        internal static bool SuppressGeneratedConstructorParams( this ConstructorDeclarationSyntax syntax, SourceMemberContainerTypeSymbol type)
         {
             if (!syntax.XGenerated)
                 return false;
@@ -76,9 +76,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal static bool IsGeneratedConstructor(this MethodSymbol  ctor)
         {
-            if (ctor is SourceConstructorSymbol)
+            if (ctor is SourceConstructorSymbol ctorSymbol)
             {
-                var ctorSymbol = ctor as SourceConstructorSymbol;
                 var syntax = ctorSymbol.SyntaxNode;
                 return syntax.XGenerated;
             }
@@ -86,17 +85,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool HasClipperCallingConvention(this Symbol method)
         {
-            if (method is SourceMemberMethodSymbol)
+            if (method is SourceMemberMethodSymbol sms)
             {
-                var sms = method as SourceMemberMethodSymbol;
                 var xnode = sms.SyntaxNode?.XNode;
-                if (xnode != null)
+                if (xnode is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.ClsmethodContext clsmethod)
                 {
-                    var clsmethod = xnode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.ClsmethodContext;
-                    if (clsmethod != null)
-                    {
-                        return clsmethod.Member.Data.HasClipperCallingConvention;
-                    }
+                    return clsmethod.Member.Data.HasClipperCallingConvention;
                 }
             }
             if (method != null)
@@ -114,13 +108,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool EndsWithUsualParams(this Symbol method)
         {
-            if (method is MethodSymbol ms)
+            if (method is MethodSymbol ms && ms.IsParams())
             {
-                if (ms.IsParams())
-                {
-                    var parType = ms.Parameters[ms.ParameterCount - 1].Type;
-                    return parType is ArrayTypeSymbol at && at.ElementType.IsUsualType();
-                }
+                var parType = ms.Parameters[ms.ParameterCount - 1].Type;
+                return parType is ArrayTypeSymbol at && at.ElementType.IsUsualType();
             }
             return false;
         }

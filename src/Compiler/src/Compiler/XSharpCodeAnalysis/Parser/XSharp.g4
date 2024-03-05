@@ -39,7 +39,7 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
 source              :  (Entities+=entity )* EOF
                     ;
 
-foxsource           :  ({HasMemVars}? MemVars += filewidememvar)*
+foxsource           :  (Vars += filewidevar)*
                        StmtBlk=statementBlock
                        (Entities+=entity )* EOF
                     ;
@@ -68,7 +68,7 @@ entity              : namespace_
                     | {IsXPP}? xppmethod        // XPP method, will be linked to XPP Class
                     | constructor               // Constructor Class xxx syntax
                     | destructor                // Destructor Class xxx syntax
-                    | {HasMemVars}? filewidememvar  // memvar declared at file level
+                    | filewidevar               // memvar or field declared at file level
                     | {IsFox}? foxdll           // FoxPro style of declaring Functions in External DLLs
                     | eos                       // Blank Lines between entities
                     ;
@@ -590,20 +590,20 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 globalAttributeTarget : Token=ID COLON      // We'll Check for ASSEMBLY and MODULE later
                       ;
 
-
-filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
-                    | {!IsFox }? Token=PUBLIC XVars+=memvar[$Token] (COMMA XVars+=memvar[$Token])*  end=EOS 
-                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=EOS
+filewidevar         : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=eos
+                    | Token=FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
+                    | {!IsFox }? Token=PUBLIC XVars+=memvar[$Token] (COMMA XVars+=memvar[$Token])*  end=eos
+                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar[$Token] (COMMA FoxVars+=foxmemvar[$Token])*  end=eos
                     ;
 
  
 statement           : Decl=localdecl                            #declarationStmt
-                    | {IsFox}? Decl=foxlparameters              #foxlparametersStmt    // LPARAMETERS
+                    | Decl=foxlparameters                       #foxlparametersStmt    // LPARAMETERS
                     | Decl=localfuncproc                        #localFunctionStmt
-                    | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt  // Memvar declarations, not for FoxPro
+                    | {!IsFox }? Decl=memvardecl                #memvardeclStmt       // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                            #fieldStmt
-                    | {IsFox && HasMemVars}?  Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
-                    | {IsFox}? Decl=foxdimvardecl                #foxdimvardeclStmt        // DIMENSION this.Field(10)
+                    | {IsFox }? Decl=foxmemvardecl              #foxmemvardeclStmt    // Memvar declarations FoxPro specific
+                    | {IsFox }? Decl=foxdimvardecl              #foxdimvardeclStmt    // DIMENSION this.Field(10)
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
                       (e=END (DO|WHILE)? | e=ENDDO) eos	#whileStmt
@@ -901,6 +901,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC | EXP) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
+                    | Expr=expression Op=IS Not=FOX_NOT? Null=NULL              #typeCheckExpression    // expr IS NOT? NULL
                     | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
@@ -931,6 +932,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     // Note: No need to check for extra ) } or ] tokens. The expression rule does that already
 primary             : Key=SELF                                                  #selfExpression
                     | Key=SUPER                                                 #superExpression
+                    | Key=NULL LPAREN Type=datatype? RPAREN                     #defaultExpression		// NULL( typeORid ), NULL()
                     | Literal=literalValue                                      #literalExpression		// literals
                     | Literal=parserLiteralValue                                #parserLiteralExpression		// literals created by the preprocessor
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
@@ -946,7 +948,7 @@ primary             : Key=SELF                                                  
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		  // typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		  // sizeof( typeORid )
-                    | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
+                    | Key=DEFAULT LPAREN Type=datatype? RPAREN                  #defaultExpression		// default( typeORid ), default()
                     | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
@@ -963,7 +965,8 @@ primary             : Key=SELF                                                  
                     | {ExpectToken(ALIAS)}? Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
-                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | { !ModernSyntax}? LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
+                    | { ModernSyntax}? LPAREN Exprs+=expression RPAREN #parenExpression		// ( expr )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 
@@ -975,7 +978,7 @@ boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName      
                     | LBRKT ArgList=bracketedArgumentList RBRKT                         #bindArrayAccess
                     ;
 
-aliasExpression     : {HasMemVars}? MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
+aliasExpression     : MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
                     | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched, this is matched by aliasedExpr later
                       Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME

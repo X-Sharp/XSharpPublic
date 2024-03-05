@@ -124492,7 +124492,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C901 -  Harbour dialect FIELD statement not supported #1436
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
 ; ************** APPLICATION R919 - IS NOT pattern *************
 Application = R919 - IS NOT pattern
 IDEVersion = 1.06

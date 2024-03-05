@@ -3,40 +3,30 @@ FUNCTION Start( ) AS VOID
 	local e as object
 	e := Exception{}
 	? "Exception"
-	if e is Exception
-	    ? "Exception"
-	endif
-	if e is not Exception
-	    ? "Not Exception"
-	endif
-	if e is not null
-	    ? "Not null"
-	endif
+    xAssert(e is Exception)
+	xAssert(!e is not Exception)
+	xAssert(e is not null)
+	xAssert(!e is null)
 	e := "123"
 	? "String"
-	if e is Exception
-	    ? "Exception"
-	endif
-	if e is not Exception
-	    ? "Not Exception"
-	endif
-	if e is not null
-	    ? "Not null"
-	endif
+	xAssert(!e is Exception)
+	xAssert(e is not Exception)
+	xAssert(e is not null)
+	xAssert(!e is null)
 	e := null
 	? "NULL_OBJECT"
-	if e is Exception
-	    ? "Exception"
-	endif
-	if e is not Exception
-	    ? "Not Exception"
-	endif
-	if e is not null
-	    ? "Not null"
-	endif
-    if e is null
-	    ? "null"
-	endif
+	xAssert(!e is Exception)
+	xAssert(e is not Exception)
+	xAssert(e is null)
+	xAssert(!e is not null)
 	Console.ReadLine()
 
+RETURN
+
+
+PROC xAssert(l AS LOGIC)
+IF .NOT. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
 RETURN

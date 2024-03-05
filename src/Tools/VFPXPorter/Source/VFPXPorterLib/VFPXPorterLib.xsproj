@@ -73,6 +73,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
     <Compile Include="BlockCode.prg" />
     <Compile Include="IXPorterWorker.prg" />
     <Compile Include="SCXVCXEntity.prg" />

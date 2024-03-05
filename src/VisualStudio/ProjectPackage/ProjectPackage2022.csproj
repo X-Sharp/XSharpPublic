@@ -8,6 +8,7 @@
     <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' != '15.0'">14.0</MinimumVisualStudioVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Ngen>true</Ngen>
   </PropertyGroup>
@@ -247,10 +248,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
-    <Content Include="ProjectSelectors.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">

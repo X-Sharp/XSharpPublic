@@ -422,6 +422,8 @@ BEGIN NAMESPACE VFPXPorterLib
             LOCAL dataEnvItem AS SCXVCXItem
             IF orgDataEnvItem != NULL
                 dataEnvItem := SCXVCXItem{ orgDataEnvItem }
+            ELSE
+                dataEnvItem := NULL
             ENDIF
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}
@@ -549,11 +551,11 @@ BEGIN NAMESPACE VFPXPorterLib
             LOCAL ctrlRules AS Dictionary<STRING,STRING>
             // As we will change Properties/Events, working on Clone
             VAR oneItem := SCXVCXItem{ orgItem }
-            LOCAL dataEnvItem AS SCXVCXItem
-            IF orgDataEnvItem != NULL
-                dataEnvItem := SCXVCXItem{ orgDataEnvItem }
-            ENDIF
-            //
+//             LOCAL dataEnvItem AS SCXVCXItem
+//             IF orgDataEnvItem != NULL
+//                 dataEnvItem := SCXVCXItem{ orgDataEnvItem }
+//             ENDIF
+//             //
             dest:Write( SELF:DesignerPrefix )
             IF !String.IsNullOrEmpty( SELF:NamespaceDefinition )
                 dest.WriteLine("")
@@ -673,6 +675,8 @@ BEGIN NAMESPACE VFPXPorterLib
             LOCAL dataEnvItem AS SCXVCXItem
             IF orgDataEnvItem != NULL
                 dataEnvItem := SCXVCXItem{ orgDataEnvItem }
+            ELSE
+                dataEnvItem := NULL
             ENDIF
             VAR declareDataEnv := StringBuilder{}
             VAR setDataEnv := StringBuilder{}

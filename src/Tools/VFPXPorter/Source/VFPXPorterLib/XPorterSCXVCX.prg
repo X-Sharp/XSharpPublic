@@ -28,7 +28,7 @@ BEGIN NAMESPACE VFPXPorterLib
         PROPERTY CustomControls AS Dictionary<STRING, SCXVCXItem> AUTO
         PROPERTY GeneratedFiles AS List<GeneratedFile> AUTO GET PRIVATE SET
         PROPERTY NamespaceDefinition AS STRING AUTO GET PRIVATE SET
-        PROPERTY FileName AS STRING GET _fileName
+        NEW PROPERTY FileName AS STRING GET _fileName
 
         CONSTRUCTOR(  )
 

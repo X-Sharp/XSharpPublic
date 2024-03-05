@@ -7692,6 +7692,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.LSHIFT:
                     right = MakeCastTo(IntType, right, true);
                     goto default;
+                case XP.DOTDOT:
+                    context.Put(_syntaxFactory.RangeExpression(
+                        context.Left?.Get<ExpressionSyntax>(),
+                        context.Op.SyntaxOp(),
+                        context.Right?.Get<ExpressionSyntax>()));
+                    break;
                 default:
                     // Note
                     // in VO ~is XOR for binary expressions and bitwise negation for unary expressions
@@ -8382,7 +8388,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                        (PatternSyntax)pattern));
+                        pattern));
                 }
                 else if (context.Id != null)
                 {
@@ -8391,15 +8397,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                        (PatternSyntax)pattern));
+                        pattern));
                 }
                 else
                 {
-                    context.Put(_syntaxFactory.BinaryExpression(
-                        SyntaxKind.IsExpression,
+                    PatternSyntax pattern = _syntaxFactory.TypePattern(context.Type.Get<TypeSyntax>());
+                    if (context.Not != null)
+                        pattern = _syntaxFactory.UnaryPattern(context.Not.SyntaxKeyword(), pattern);
+                    context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                        context.Type.Get<ExpressionSyntax>()));
+                        pattern));
                 }
             }
             else if (context.Op.Type == XP.ASTYPE)

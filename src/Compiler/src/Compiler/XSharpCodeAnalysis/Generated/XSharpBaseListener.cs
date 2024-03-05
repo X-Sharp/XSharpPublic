@@ -1746,21 +1746,6 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitYieldStmt([NotNull] XSharpParser.YieldStmtContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>fieldStmt</c>
-	/// labeled alternative in <see cref="XSharpParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFieldStmt([NotNull] XSharpParser.FieldStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>fieldStmt</c>
-	/// labeled alternative in <see cref="XSharpParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFieldStmt([NotNull] XSharpParser.FieldStmtContext context) { }
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>memvardeclStmt</c>
 	/// labeled alternative in <see cref="XSharpParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -1774,6 +1759,21 @@ public partial class XSharpBaseListener : IXSharpListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMemvardeclStmt([NotNull] XSharpParser.MemvardeclStmtContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>fieldStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFieldStmt([NotNull] XSharpParser.FieldStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>fieldStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFieldStmt([NotNull] XSharpParser.FieldStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>localFunctionStmt</c>

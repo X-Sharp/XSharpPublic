@@ -5,10 +5,10 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C6CBB0DC-CDFC-4840-BCBC-49D0E8641BB4}"
 	ProjectSection(SolutionItems) = preProject
-		DocumentationAndRules.md = DocumentationAndRules.md
-		ExportAdvices.md = ExportAdvices.md
-		README.md = README.md
-		Todo.md = Todo.md
+		Tools\VFPXPorter\DocumentationAndRules.md = Tools\VFPXPorter\DocumentationAndRules.md
+		Tools\VFPXPorter\ExportAdvices.md = Tools\VFPXPorter\ExportAdvices.md
+		Tools\VFPXPorter\README.md = Tools\VFPXPorter\README.md
+		Tools\VFPXPorter\Todo.md = Tools\VFPXPorter\Todo.md
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VFPXPorter", "Tools\VFPXPorter\Source\VFPXPorter\VFPXPorter.xsproj", "{23BB62E9-A405-416A-B0A5-0E4E178B839F}"

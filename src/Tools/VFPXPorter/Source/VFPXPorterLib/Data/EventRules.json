@@ -1,0 +1,40 @@
+﻿{
+  "Common": {
+    "Click": [ "vfpClick:=", "", "" ],
+    "RightClick": [ "vfpRightClick:=", "", "" ],
+    "DblClick": [ "vfpDblClick", "", "" ],
+    "Destroy": [ "vfpDestroy:=", "", "" ],
+    "GotFocus": [ "vfpGotFocus:=", "", "" ],
+    "Init": [ "vfpInit:=", "", "" ],
+    "InteractiveChange": [ "TextChanged", "(sender AS OBJECT, e AS System.EventArgs) AS VOID", "System.EventHandler" ],
+    "LostFocus": [ "vfpLostFocus:=", "", "" ],
+    "MouseEnter": [ "vfpMouseEnter:=", "", "" ],
+    "MouseLeave": [ "vfpMouseLeave:=", "", "" ],
+    "MouseUp": [ "vfpMouseUp:=", "", "" ],
+    "MouseDown": [ "vfpMouseDown:=", "", "" ],
+    "MouseMove": [ "vfpMouseMove:=", "", "" ],
+    "Refresh": [ "vfpRefresh:=", "", "" ],
+    "Valid": [ "vfpValid:=", "", "" ],
+    "When": [ "vfpWhen:=", "", "" ],
+    "KeyPress": [ "vfpKeyPress:=", "", "" ]
+  },
+
+  "timer": {
+    "Timer": [ "Tick", "(sender AS OBJECT, e AS System.EventArgs) AS VOID", "System.EventHandler" ]
+  },
+
+  "textbox": {
+    "InteractiveChange": [ "vfpInteractiveChange:=", "", "" ]
+  },
+
+  "grid": {
+    "AfterRowColChange": [ "vfpAfterRowColChange:=", "", "" ]
+  },
+
+  "form": {
+    "QueryUnload": [ "vfpQueryUnload:=", "", "" ],
+    "Load": [ "vfpLoad:=", "", "" ]
+  }
+}
+
+

@@ -238,7 +238,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
-
         }
 
         public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
@@ -253,7 +252,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
             }
-
         }
 
         public override void ExitFoxdimvar([NotNull] XSharpParser.FoxdimvarContext context)
@@ -315,7 +313,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             CheckEmptyBlock(context, context.StmtBlk, "TRY block");
 
-            if (context.FinBlock != null )
+            if (context.FinBlock != null)
             {
                 CheckEmptyBlock(context.FinBlock, context.FinBlock, "FINALLY block");
             }
@@ -415,7 +413,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_Unsupported, "Adding Attributes to a DECLARE - DLL declaration"));
             }
-
         }
 
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
@@ -510,7 +507,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCantContainFields));
             }
-
         }
 
         private void interfacesCannotHaveTypes([NotNull] XSharpParser.ClassmemberContext context)
@@ -597,7 +593,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             CheckExpressionBodyStatements(context.ExpressionBody, context.Statements);
         }
-
 
         public override void ExitParameter([NotNull] XSharpParser.ParameterContext context)
         {
@@ -701,7 +696,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
                 }
             }
-
         }
 
         public override void ExitXppaccessors([NotNull] XSharpParser.XppaccessorsContext context)
@@ -883,15 +877,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 NotInCore(context, "Dynamic Memory Variables");
                 return;
             }
-            if (context.T.Type == XSharpParser.LPARAMETERS || context.T.Type == XSharpParser.FIELD)
-            {
-                // this declares local vars or fields, so always allowed outside of the Core dialect
-                return;
-            }
-            if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas))
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
-            }
         }
         public override void ExitMemvar([NotNull] XSharpParser.MemvarContext context)
         {
@@ -918,16 +903,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context)
+        public override void ExitFilewidevar([NotNull] XSharpParser.FilewidevarContext context)
         {
             if (_options.Dialect == XSharpDialect.Core)
             {
                 NotInCore(context, "Dynamic Memory Variables");
                 return;
-            }
-            if (!_options.HasOption(CompilerOption.MemVars, context, _pragmas))
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }
             else
             {
@@ -969,7 +950,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             checkMissingKeyword(context.End, context, "END NAMESPACE");
         }
-
 
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {
@@ -1064,6 +1044,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
     }
-
 }
 

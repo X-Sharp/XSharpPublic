@@ -155,10 +155,17 @@
           </configurations>
         </component>
       </ComponentConfig>
-<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">
+      <ComponentConfig id="API Token Resolution" enabled="True">
+        <component id="API Token Resolution">
                     {@TokenFiles}
-                    <replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
-<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig></ComponentConfigurations>
+                    <replace elements="/*//token" item="string(.)" /></component>
+      </ComponentConfig>
+      <ComponentConfig id="IntelliSense Component" enabled="True">
+        <component id="IntelliSense Component">
+          <output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
+        </component>
+      </ComponentConfig>
+    </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, Namespace, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="logo100.jpg" />
@@ -200,7 +207,7 @@
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2015-2024 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
     <BuildLogFile>..\..\Dev\Artifacts\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>

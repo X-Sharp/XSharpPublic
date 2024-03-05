@@ -141,35 +141,33 @@ namespace XSharp.Project
             if (!Core)
             {
                 EnableMemVars(); // this sets Undefined
-                chkNamedArgs.Checked = false;
             }
             else
             {
-                chkNamedArgs.Checked = true;
                 chkUndefined.Enabled = false; 
                 chkMemVar.Checked = false;
                 chkUndefined.Checked = false;
                 chkLB.Checked = false;
                 this.ParentPropertyPage.IsDirty = true;
             }
-            if (Core || FoxPro)
+            var strAllowDot = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Allowdot);
+            // 2 properties have a default of TRUE for some dialects and FALSE for others
+            if (string.IsNullOrEmpty(strAllowDot))
             {
-                var strAllowDot = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Allowdot);
-                if (string.IsNullOrEmpty(strAllowDot))
+                if (Core || FoxPro)
                 {
                     this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.Allowdot, "True");
                     chkAllowDot.Checked = true;
                 }
             }
-            if (Core)
-            { 
-                var strNamedArgs = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.NamedArgs);
-                if (string.IsNullOrEmpty(strNamedArgs))
-                {
-                    this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.NamedArgs, "True");
-                    chkNamedArgs.Checked = true;
-                }
+            var strNamedArgs = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.NamedArgs);
+            if (string.IsNullOrEmpty(strNamedArgs))
+            {
+                this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.NamedArgs, Core.ToString());
+                chkNamedArgs.Checked = Core;
+
             }
+
         }
 
         internal void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)

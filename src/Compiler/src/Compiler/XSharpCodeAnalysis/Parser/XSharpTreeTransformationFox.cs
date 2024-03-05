@@ -109,11 +109,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _exitSource(context);
         }
 
-        public override void EnterFilewidememvar([NotNull] XP.FilewidememvarContext context)
+        public override void EnterFilewidevar([NotNull] XP.FilewidevarContext context)
         {
             if (context._FoxVars.Count == 0)
             {
-                base.EnterFilewidememvar(context);
+                base.EnterFilewidevar(context);
                 return;
             }
             foreach (var memvar in context._FoxVars)
@@ -123,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var name = CleanVarName(memvar.Id.GetText());
                     var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
                     mv.IsPublic = true;
-                    _filewideMemvars.Add(mv.Name, mv);
+                    _fileWideVars.Add(mv.Name, mv);
                     GlobalEntities.FileWidePublics.Add(mv);
                 }
             }
@@ -142,10 +142,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.foxFlags |= XP.FoxFlags.MPrefix;
                 context.Put(context.Name.Get<ExpressionSyntax>());
-                var ent = CurrentMember;
-                if (ent != null && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
+                if (CurrentMember != null && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                 {
-                    ent.Data.HasMemVars = true;
+                    CurrentMember.Data.HasMemVars = true;
                 }
             }
         }
@@ -163,7 +162,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var name = CleanVarName(context.Id.GetText());
                 var alias = XSharpSpecialNames.MemVarPrefix;
-                CheckForFileWideMemVar(name, context);
+                CheckForFileWideVar(name, context);
                 var field = findVar(name);
                 if (field == null)
                 {
@@ -174,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFoxmemvar([NotNull] XP.FoxmemvarContext context)
         {
-            if (CurrentMember == null || context.Parent is XP.FilewidememvarContext)
+            if (CurrentMember == null || context.Parent is XP.FilewidevarContext)
             {
                 return;
             }
@@ -232,11 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxdimvar([NotNull] XP.FoxdimvarContext context)
         {
-            if (CurrentMember == null)
-            {
-                return;
-            }
-            if (context.Id != null)
+            if (context.Id != null && CurrentMember != null)
             {
                 var name = context.Id.GetText();
                 CurrentMember.Data.HasMemVars = true;
@@ -262,7 +257,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.PutList(context.Decl.GetList<StatementSyntax>());
         }
-
 
         /*
                             // This includes array indices and optional type per name
@@ -1293,14 +1287,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {
             base.ExitStatementBlock(context);
-            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
+            if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && CurrentMember != null)
             {
                 // Make sure we have a privates level in case we want to
                 // keep track of locals for the macro compiler or Type()
-                if (CurrentMember != null)
-                {
-                    CurrentMember.Data.HasMemVars = true;
-                }
+                CurrentMember.Data.HasMemVars = true;
             }
         }
     }

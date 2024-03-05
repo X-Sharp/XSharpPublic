@@ -8,7 +8,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.ProjectSystem;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     [Export]
     [AppliesTo(XSharpConstants.LanguageName)]

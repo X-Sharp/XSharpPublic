@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-2022 #Specify the OS to execute on
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
 #      - uses: actions/setup-dotnet@v1.7.2
@@ -32,12 +32,12 @@ jobs:
           echo "VSEDITION=Enterprise" >> $GITHUB_ENV
           call ContinuousIntegrationBuild.cmd
       - name: Upload Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: BuildResults
             path: ./Artifacts/Zips/*.zip
       - name: Upload BuildLogs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: BuildLogs
             path: ./src/build*.Log
@@ -46,12 +46,12 @@ jobs:
         run: |
           call RunCompilertests.cmd 
       - name: Upload TestLogs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: TestLogs
             path: ./Artifacts/Tests/*.Log
       - name: Upload Shared Files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: Shared
             path: |

@@ -1,0 +1,14 @@
+﻿
+#ifndef VFP_IMAGE_XH
+#define VFP_IMAGE_XH
+		PROPERTY DisabledBackColor AS LONG AUTO
+		PROPERTY DisabledForeColor AS LONG AUTO
+		PROPERTY DisabledPicture AS STRING AUTO
+		PROPERTY DownPicture AS STRING AUTO
+		PROPERTY Picture AS STRING AUTO
+		PROPERTY PictureMargin AS LONG AUTO
+		PROPERTY PicturePosition AS LONG AUTO
+		PROPERTY PictureSpacing AS LONG AUTO
+
+#endif
+

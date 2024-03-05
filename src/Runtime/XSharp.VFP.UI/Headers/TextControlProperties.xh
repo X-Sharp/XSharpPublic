@@ -1,0 +1,27 @@
+﻿// TextControlProperties.xh
+// Created by    : fabri
+// Creation Date : 9/9/2022 4:28:40 PM
+// Created for   : 
+// WorkStation   : FABXPS
+
+
+#include "ControlProperties.xh"
+
+					PRIVATE _backStyle := 1 AS INT
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+		[EditorBrowsable(EditorBrowsableState.Never)];
+		[Bindable(false)];
+		[Browsable(false)];
+		PROPERTY BackStyle AS INT
+			GET
+				RETURN _backStyle
+			END GET
+			SET
+				_backStyle := VALUE
+				// Controls doesn't support transparent colors.....
+				// Remove it in DesignMode to avoid Designer crash
+				IF (VALUE == 0 )
+					SELF:BackColor := System.Drawing.Color.Transparent
+				ENDIF
+			END SET
+		END PROPERTY

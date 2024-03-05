@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <Rule Name="ProjectReference"
       Description="Project Reference Properties"
       DisplayName="Project Reference"
@@ -23,14 +22,23 @@
                   SourceOfDefaultValue="AfterContext" />
     </StringListProperty.DataSource>
   </StringListProperty>
+  <StringProperty Name="BrowsePath"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource ItemType="ProjectReference"
+                  PersistedName="Identity"
+                  Persistence="Intrinsic"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
 
-  <BoolProperty Name="CopyLocal"
+  <BoolProperty Name="Private"
                 Description="Indicates whether the reference will be copied to the output directory."
                 DisplayName="Copy Local">
     <BoolProperty.DataSource>
       <DataSource HasConfigurationCondition="False"
                   ItemType="ProjectReference"
-                  PersistedName="Private"
                   Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext" />
     </BoolProperty.DataSource>
@@ -132,4 +140,9 @@
   <BoolProperty Name="Visible"
                 ReadOnly="True"
                 Visible="False" />
+  <BoolProperty Name="TreatAsUsed"
+                Description="Indicates that this reference should be treated as if it were used."
+                DisplayName="Treat as used"
+                ReadOnly="True"
+                Visible="True" />
 </Rule>

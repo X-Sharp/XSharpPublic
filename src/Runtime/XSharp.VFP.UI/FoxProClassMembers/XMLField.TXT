@@ -1,0 +1,43 @@
+
+Class  XMLField  BaseClass   Xmlfield Class  Xmlfield
+XMLField  ADDPROPERTY      Method 
+XMLField  ALIAS  Property
+XMLField  BASECLASS     Property
+XMLField  CLASS   Property
+XMLField  CLASSLIBRARY     Property
+XMLField  CODEPAGE     Property
+XMLField  COMMENT     Property
+XMLField  DATATYPE    Property
+XMLField  DESTROY    Event
+XMLField  DISABLEENCODE      Property
+XMLField  ERROR    Event
+XMLField  FRACTIONDIGITS     Property
+XMLField  INIT Event
+XMLField  ISATTRIBUTE    Property
+XMLField  ISBASE64   Property
+XMLField  ISBINARY   Property
+XMLField  ISNULL  Property
+XMLField  KEYFIELD    Property
+XMLField  MAXLENGTH     Property
+XMLField  NAME   Property
+XMLField  NOCPTRANS     Property
+XMLField  PARENT    Property
+XMLField  PARENTCLASS      Property
+XMLField  READEXPRESSION       Method 
+XMLField  READMETHOD      Method 
+XMLField  RESETTODEFAULT       Method 
+XMLField  SAVEASCLASS      Method 
+XMLField  TAG  Property
+XMLField  UNICODE    Property
+XMLField  WRAPINCDATA      Property
+XMLField  WRITEEXPRESSION       Method 
+XMLField  WRITEMETHOD      Method 
+XMLField  XMLNAME     Property
+XMLField  XMLNAMEISXPATH      Property
+XMLField  XMLTABLE    Property
+XMLField  XMLTYPE    Property
+XMLField  XSDFRACTIONDIGITS      Property
+XMLField  XSDMAXLENGTH      Property
+XMLField  XSDTOTALDIGITS     Property
+XMLField  XSDTYPE    Property
+

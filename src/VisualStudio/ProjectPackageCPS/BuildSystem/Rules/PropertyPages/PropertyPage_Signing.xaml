@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Rule Name="SigningPropertyPage"
+<Rule Name="Signing"
       Description="Properties related to producing signing assemblies."
       DisplayName="Signing"
       PageTemplate="generic"

@@ -1,0 +1,37 @@
+﻿#ifndef VFP_OBJECT_XH
+#define VFP_OBJECT_XH
+// Common properties that all VFP Objects support.
+// Some are only necessary in a design environment like VFP
+PROPERTY BaseClass AS STRING AUTO
+PROPERTY Class AS STRING AUTO
+PROPERTY ClassLibrary AS STRING AUTO
+PROPERTY Comment AS STRING AUTO
+
+	[Obsolete];
+METHOD ReadExpression(cPropertyName AS STRING) AS STRING
+	RETURN ""
+
+	[Obsolete];
+METHOD WriteExpression(cPropertyName as string, cExpression AS STRING) AS STRING
+	RETURN ""
+	[Obsolete];
+METHOD WriteMethod(cMethodName AS STRING, cMethodText AS STRING ,lCreateMethod AS LOGIC, nVisibility AS LONG, cDescription AS STRING) AS VOID
+	RETURN
+
+	[Obsolete];
+METHOD ReadMethod(cMethod as STRING) AS STRING
+	RETURN ""
+
+	[Obsolete];
+METHOD ResetToDefault(cPropertyName AS STRING) AS VOID
+	RETURN
+
+
+	[Obsolete];
+METHOD SaveAsClass(ClassLibName AS STRING, ClassName AS STRING, Description AS STRING) AS LOGIC
+	RETURN FALSE
+
+#endif
+
+
+

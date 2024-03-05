@@ -288,20 +288,25 @@ partial class SQLRDD inherit DBFVFP
         if lWasHot .and. self:DataTable != null .and. self:DataTable:Rows:Count >=self:_RecNo
             foreach var row in _updatedRows
                 try
-                    switch row:RowState
-                    case DataRowState.Added
-                        lOk := _ExecuteInsertStatement(row)
-                    case DataRowState.Deleted
-                        lOk := _ExecuteDeleteStatement(row)
-                    case DataRowState.Modified
-                        lOk := _ExecuteUpdateStatement(row)
-                    case DataRowState.Unchanged
-                    case DataRowState.Detached
-                        lOk := true
-                        if super:Deleted
+                    lOk := true
+                    if super:Deleted
+                        if self:_deletedColumn > 0
+                            lOk := _ExecuteUpdateStatement(row)
+                            if lOk
+                                row:AcceptChanges()
+                            endif
+                        else
                             lOk := _ExecuteDeleteStatement(row)
+                            row:CancelEdit()  // keep the row in the collection, so the record numbers match
                         endif
-                    end switch
+                    else
+                        if row:RowState.HasFlag(DataRowState.Added)
+                            lOk := _ExecuteInsertStatement(row)
+                        endif
+                        if row:RowState.HasFlag(DataRowState.Modified)
+                            lOk := _ExecuteUpdateStatement(row)
+                        endif
+                    endif
                 catch e as Exception
                     lOk := false
                     self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:GoCold", e:Message )
@@ -346,10 +351,9 @@ partial class SQLRDD inherit DBFVFP
 
     override method Delete() as logic
         if self:_deletedColumn >= 0
-            return self:PutValue(self:_deletedColumn, 1)
-        else
-            return super:Delete()
-        endif
+            self:PutValue(self:_deletedColumn, 1)
+         endif
+        return super:Delete()
     end method
 
 	/// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
@@ -361,9 +365,8 @@ partial class SQLRDD inherit DBFVFP
     override method Recall() as logic
         if self:_deletedColumn >= 0
             return self:PutValue(self:_deletedColumn, 0)
-        else
-            return super:Recall()
         endif
+        return super:Recall()
     end method
 
 	/// <summary>Retrieve and optionally change information about a work area.</summary>

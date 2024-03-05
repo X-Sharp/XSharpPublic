@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+  <PropertyGroup>
+    <Name>XSharp.VFP.UI_Test</Name>
+    <ProjectGuid>b4f3862c-82bc-407f-8a84-5241f7321f9f</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>xsVFPLibrary_Test</RootNamespace>
+    <AssemblyName>xsVFPLibrary_Test</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <Nologo>true</Nologo>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>FoxPro</Dialect>
+    <vo15>false</vo15>
+    <OutputName>xsVFPLibrary_Test</OutputName>
+    <StartupObject />
+    <MemVar>True</MemVar>
+    <Undeclared>True</Undeclared>
+    <Allowdot>True</Allowdot>
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <LB>True</LB>
+    <Fox2>True</Fox2>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Data, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Data</Name>
+      <AssemblyName>XSharp.Data.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VFP, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VFP</Name>
+      <AssemblyName>XSharp.VFP.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.VFP.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MainWindow.Designer.prg">
+      <DependentUpon>MainWindow.prg</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Program.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MiscControl.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MiscControl.Designer.prg">
+      <DependentUpon>MiscControl.prg</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestVFPForm.Designer.prg">
+      <DependentUpon>TestVFPForm.prg</DependentUpon>
+    </Compile>
+    <Compile Include="TestVFPForm.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestVFPTextBox.Designer.prg">
+      <DependentUpon>TestVFPTextBox.prg</DependentUpon>
+    </Compile>
+    <Compile Include="TestVFPTextBox.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Customer.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MiscControl.resx">
+      <DependentUpon>MiscControl.prg</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestVFPTextBox.resx">
+      <DependentUpon>TestVFPTextBox.prg</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.prg</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP.UI\XSharp.VFP.UI.xsproj">
+      <Name>XSharp.VFP.UI</Name>
+      <Project>{7e2cbef6-9945-42c4-a7df-f9b8e2e68d44}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

@@ -26,13 +26,22 @@
     </StringListProperty.DataSource>
   </StringListProperty>
 
-  <BoolProperty Name="CopyLocal"
+  <StringProperty Name="BrowsePath"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource ItemType="COMReference"
+                  PersistedName="Identity"
+                  Persistence="Intrinsic"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="Private"
                 Description="Indicates whether the reference will be copied to the output directory."
                 DisplayName="Copy Local">
     <BoolProperty.DataSource>
       <DataSource HasConfigurationCondition="False"
                   ItemType="COMReference"
-                  PersistedName="Private"
                   Persistence="ProjectFile"
                   SourceOfDefaultValue="AfterContext" />
     </BoolProperty.DataSource>
@@ -145,6 +154,14 @@
     </StringProperty.DataSource>
   </StringProperty>
 
+  <StringProperty Name="Path"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource PersistedName="Identity"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
   <StringProperty Name="RuntimeVersion"
                   ReadOnly="True"
                   Visible="False" />

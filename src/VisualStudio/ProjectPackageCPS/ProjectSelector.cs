@@ -21,7 +21,7 @@ using Microsoft;
 using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Composition;
 
-namespace XSharp.ProjectSystem
+namespace XSharp.VisualStudio.ProjectSystem
 {
     [Export(typeof(IPackageService))]
     [Guid(XSharpConstants.guidProjectSelectorString)]
@@ -34,6 +34,7 @@ namespace XSharp.ProjectSystem
         private IVsRegisterProjectSelector _projectSelector;
         private uint _cookie = VSConstants.VSCOOKIE_NIL;
 
+        [ImportingConstructor]
         public XSharpProjectSelector(JoinableTaskContext context)
         {
             _context = context;

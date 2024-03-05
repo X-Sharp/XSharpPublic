@@ -179,6 +179,8 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.VODefine
                 CASE Kind.Function
                 CASE Kind.Procedure
+                CASE Kind.LocalFunc
+                CASE Kind.LocalProc
                 CASE Kind.VODLL
                 CASE Kind.Define
                 CASE Kind.Undefine

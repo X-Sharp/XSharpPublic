@@ -1,0 +1,164 @@
+﻿// CommonProperties.xh
+// Created by    : fabri
+// Creation Date : 4/27/2022 10:43:46 PM
+// Created for   :
+// WorkStation   : FABXPS
+
+
+
+
+/// <Summary>
+/// Retrieves the form that the control is on, as a USUAL to enforce Late-Binding
+/// </Summary>
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+[EditorBrowsable(EditorBrowsableState.Never)];
+[Bindable(false)];
+[Browsable(false)];
+PROPERTY ThisForm AS USUAL GET THIS.FindForm()
+
+/// <summary>
+/// Return the Parent of the Control, but as Object.
+/// This will force Late-Bound call
+/// </summary>
+/// <value></value>
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+[EditorBrowsable(EditorBrowsableState.Never)];
+[Bindable(false)];
+[Browsable(false)];
+PROPERTY _Parent AS OBJECT GET SELF:Parent
+
+
+	// Todo
+[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the StatusBar Text.")];
+PROPERTY StatusBarText AS STRING AUTO
+	// Todo
+	[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Specifies the text that appears as a ToolTip for a control.")];
+PROPERTY ToolTipText AS STRING
+	GET
+		RETURN _toolTipText
+	END GET
+	SET
+        _toolTipText := VALUE
+        IF SELF:ThisForm != NULL
+            Send( SELF:ThisForm, "SetToolTipText", SELF, _toolTipText )
+        ENDIF
+	END SET
+END PROPERTY
+PRIVATE PROPERTY _toolTipText AS STRING AUTO
+
+/// <summary>
+/// Change the Z-Order to the Control
+/// </summary>
+/// <param name="uValue">0: Bring to Front; 1: Send To Back</param>
+/// <returns></returns>
+METHOD ZOrder( uValue AS USUAL ) AS USUAL
+	VAR zOrderValue := 0
+	IF IsLong( uValue )
+		zOrderValue := uValue
+	ENDIF
+	IF zOrderValue == 0
+		SELF:BringToFront()
+	ELSEIF zOrderValue == 1
+		SELF:SendToBack()
+	ENDIF
+	RETURN zOrderValue
+END METHOD
+
+METHOD SetFocus() AS VOID STRICT
+	SELF:Focus()
+
+	// Todo
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+	[EditorBrowsable(EditorBrowsableState.Never)];
+	[Bindable(false)];
+	[Browsable(false)];
+PROPERTY ColorSource AS INT AUTO
+	// Todo
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+	[EditorBrowsable(EditorBrowsableState.Never)];
+	[Bindable(false)];
+	[Browsable(false)];
+PROPERTY SpecialEffect AS INT AUTO
+
+	// Text of the Button
+[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the Text of the Control")];
+PROPERTY Caption AS STRING GET SELF:Text SET SELF:Text :=VALUE
+
+[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the ZOrder of the Control")];
+PROPERTY ZOrderSet AS INT
+    GET
+        IF SELF:Parent == NULL
+            RETURN SELF:_ZOrderSet
+        ELSE
+            RETURN SELF:Parent:Controls:GetChildIndex(SELF)
+        ENDIF
+    END GET
+    SET
+        SELF:Parent?:Controls:SetChildIndex(SELF,VALUE)
+        SELF:_ZOrderSet := VALUE
+    END SET
+END PROPERTY
+PRIVATE PROPERTY _ZOrderSet AS INT AUTO
+
+PROTECTED VIRTUAL METHOD InitLayout() AS VOID
+    SUPER:InitLayout()
+    // Set the ZOrder
+    SELF:Parent:Controls:SetChildIndex(SELF,ZOrderSet)
+END METHOD
+
+
+
+#include "MousePointer.xh"
+
+#include "ControlEventHandlers.xh"
+
+#include "InitCall.xh"
+
+#include "Anchor.xh"
+
+
+// This is a fake property, just here to ease Code Generation
+PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
+
+// We cannot "capture" the color settings : It would ease the VFP Code port, but it would break the WinForms designer
+/*
+//		NEW PROPERTY BackColor AS INT
+//			GET
+//				VAR currentColor := SUPER:BackColor
+//				RETURN currentColor:ToArgb()
+//			END GET
+//			SET
+//				SUPER:BackColor := System.Drawing.Color.FromArgb( Value )
+//			END SET
+//		END PROPERTY
+//
+//		NEW PROPERTY ForeColor AS INT
+//			GET
+//				VAR currentColor := SUPER:ForeColor
+//				RETURN currentColor:ToArgb()
+//			END GET
+//			SET
+//				SUPER:ForeColor := System.Drawing.Color.FromArgb( Value )
+//			END SET
+//		END PROPERTY
+//
+//		NEW PROPERTY SelectedForeColor AS INT
+//			GET
+//				VAR currentColor := SUPER:SelectedForeColor
+//				RETURN currentColor:ToArgb()
+//			END GET
+//			SET
+//				SUPER:SelectedForeColor := System.Drawing.Color.FromArgb( Value )
+//			END SET
+//		END PROPERTY
+//
+//		NEW PROPERTY SelectedBackColor AS INT
+//			GET
+//				VAR currentColor := SUPER:SelectedBackColor
+//				RETURN currentColor:ToArgb()
+//			END GET
+//			SET
+//				SUPER:SelectedBackColor := System.Drawing.Color.FromArgb( Value )
+//			END SET
+//		END PROPERTY
+*/

@@ -47,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        bool PreferFirstOverSecond(Symbol first, Symbol second)
+        bool PreferFirstOverSecond(Symbol first, Symbol second, ref bool warning)
         {
             if (first.Kind != second.Kind)
             {
@@ -56,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (first.DeclaredAccessibility <= Accessibility.Protected)
                     {
                         // when protected then we are inside the class itself.
-                        if (first.HasInstanceAttribute() )
+                        if (first.HasInstanceAttribute())
                         {
                             // inside the property we return the INSTANCE field
                             // otherwise we return the property
@@ -90,11 +90,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (first.Kind == SymbolKind.Local ||
                     first.Kind == SymbolKind.Parameter ||
-                    first.Kind == SymbolKind.Property ||
                     first.Kind == SymbolKind.Event ||
                     first.Kind == SymbolKind.Field)
                 {
                     return true;
+                }
+                // Prevent warning for properties that are write only
+                // when the other symbol is a NamedType
+                // See Compiler test C120
+                if (first is PropertySymbol prop)
+                {
+                    if (!prop.IsWriteOnly)
+                    {
+                        return true;
+                    }
+                    warning = false;
                 }
             }
             return false;
@@ -103,10 +113,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal Symbol XSharpResolveEqualSymbols(Symbol first, Symbol second, ImmutableArray<Symbol> originalSymbols, CSharpSyntaxNode where, DiagnosticBag diagnostics)
         {
             CSDiagnosticInfo info;
+            bool warning = true;
             bool usefirst = false;
-            if (PreferFirstOverSecond(first, second))
+            if (PreferFirstOverSecond(first, second, ref warning))
                 return first;
-            if (PreferFirstOverSecond(second, first))
+            if (PreferFirstOverSecond(second, first, ref warning))
                 return second;
             if (first.IsFromCompilation(Compilation) && !second.IsFromCompilation(Compilation))
             {
@@ -128,17 +139,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (usefirst)
             {
-                info = GenerateWarning(first, second);
-                diagnostics.Add(info, where.Location);
+                if (warning)
+                {
+                    info = GenerateWarning(first, second);
+                    diagnostics.Add(info, where.Location);
+                }
                 return first;
             }
             else
             {
-                info = GenerateWarning(second, first);
-                diagnostics.Add(info, where.Location);
+                if (warning)
+                {
+                    info = GenerateWarning(second, first);
+                    diagnostics.Add(info, where.Location);
+                }
                 return second;
             }
-
 
             CSDiagnosticInfo GenerateWarning(Symbol s1, Symbol s2)
             {

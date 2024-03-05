@@ -2536,6 +2536,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         VAR xMember := XSourceMemberSymbol{sig, kind, _attributes, range, interval, _modifiers, FALSE}
         xMember:SourceCode := source
         xMember:File := SELF:_file
+        xMember:Namespace := SELF:CurrentEntity:FullName
         RETURN <XSourceEntity>{xMember}
 
 

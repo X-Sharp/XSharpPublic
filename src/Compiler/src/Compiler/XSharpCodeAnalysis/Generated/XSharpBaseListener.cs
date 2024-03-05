@@ -3094,17 +3094,17 @@ public partial class XSharpBaseListener : IXSharpListener {
 	public virtual void ExitGlobalAttributeTarget([NotNull] XSharpParser.GlobalAttributeTargetContext context) { }
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XSharpParser.filewidememvar"/>.
+	/// Enter a parse tree produced by <see cref="XSharpParser.filewidevar"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context) { }
+	public virtual void EnterFilewidevar([NotNull] XSharpParser.FilewidevarContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XSharpParser.filewidememvar"/>.
+	/// Exit a parse tree produced by <see cref="XSharpParser.filewidevar"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context) { }
+	public virtual void ExitFilewidevar([NotNull] XSharpParser.FilewidevarContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XSharpParser.statement"/>.

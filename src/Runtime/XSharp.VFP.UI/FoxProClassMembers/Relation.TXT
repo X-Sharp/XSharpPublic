@@ -1,0 +1,26 @@
+
+Class  Relation BaseClass   Relation Class  Relation
+Relation ADDPROPERTY      Method 
+Relation BASECLASS     Property
+Relation CHILDALIAS   Property
+Relation CHILDORDER     Property
+Relation CLASS   Property
+Relation CLASSLIBRARY     Property
+Relation COMMENT     Property
+Relation DESTROY    Event
+Relation ERROR    Event
+Relation INIT Event
+Relation NAME   Property
+Relation ONETOMANY      Property
+Relation PARENT    Property
+Relation PARENTALIAS     Property
+Relation PARENTCLASS      Property
+Relation READEXPRESSION       Method 
+Relation READMETHOD      Method 
+Relation RELATIONALEXPR      Property
+Relation RESETTODEFAULT       Method 
+Relation SAVEASCLASS      Method 
+Relation TAG  Property
+Relation WRITEEXPRESSION       Method 
+Relation WRITEMETHOD      Method 
+

@@ -287,16 +287,20 @@ namespace XSharp.LanguageService
             XSourceTypeSymbol parentType = _file.GlobalType;
             if (selectedElement is XSourceMemberSymbol)
             {
-                // For local functions the parent is a member
+                // For local functions the parentmember name is stored as Namespace
                 // and the type is the parent of the member
                 if (selectedElement.Kind.IsLocal())
                 {
-                    var parent = selectedElement.Parent;
-                    while (!(parent is XSourceTypeSymbol))
+                    foreach (var member in _file.EntityList)
                     {
-                        parent = parent.Parent;
+                        if (member.FullName == selectedElement.Namespace)
+                        {
+                            var parMember = member;
+                            parentType = parMember.Parent as XSourceTypeSymbol;
+                            break;
+                        }
                     }
-                    parentType = parent as XSourceTypeSymbol;
+
                 }
                 else
                 {
@@ -359,7 +363,15 @@ namespace XSharp.LanguageService
             else
             {
                 // Load the members from the type itself
-                members.AddRange(type.XMembers);
+                // but exclude the local functions and procedures
+                if (type.IsGlobal)
+                {
+                    members.AddRange(type.XMembers.Where(e => !e.Kind.IsLocal()));
+                }
+                else
+                {
+                    members.AddRange(type.XMembers);
+                }
                 foreach (XSourceTypeSymbol child in type.Children)
                 {
                     members.Add(child);
@@ -500,6 +512,14 @@ namespace XSharp.LanguageService
             if (_settings.CurrentTypeOnly)
             {
                 members.AddRange(GetTypeMembers(currentType));
+                // also add local functions and procedures
+                foreach (var member in _file.EntityList.Where( m => m.Kind.IsLocal()))
+                {
+                    if (member.Namespace.StartsWith(currentType.FullName))
+                    {
+                        members.Add(member);
+                    }
+                }
             }
             else
             {
@@ -580,7 +600,17 @@ namespace XSharp.LanguageService
                     }
                     if (member.Kind.IsLocal())
                     {
-                        prototype = member.Parent.Name + "." + prototype;
+                        if (_settings.CurrentTypeOnly)
+                        {
+                            var prefix = member.Namespace;
+                            prefix = prefix.Substring(prefix.LastIndexOf('.')+1);
+                            prototype = prefix + "." + prototype;
+                        }
+                        else
+                        {
+                            prototype = member.Namespace + "." + prototype;
+                        }
+
                     }
                     if (otherFile)
                     {

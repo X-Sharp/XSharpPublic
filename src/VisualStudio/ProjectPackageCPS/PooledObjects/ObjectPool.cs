@@ -73,7 +73,7 @@ namespace Microsoft.VisualStudio.Buffers.PooledObjects
             // We will interlock only when we have a candidate. in a worst case we may miss some
             // recently returned objects. Not a big deal.
             T inst = _firstItem;
-            if (inst == null || inst != Interlocked.CompareExchange(ref _firstItem, null, inst))
+            if (inst is null || inst != Interlocked.CompareExchange(ref _firstItem, null, inst))
             {
                 inst = AllocateSlow();
             }
@@ -91,7 +91,7 @@ namespace Microsoft.VisualStudio.Buffers.PooledObjects
                 // We will interlock only when we have a candidate. in a worst case we may miss some
                 // recently returned objects. Not a big deal.
                 T inst = items[i].Value;
-                if (inst != null)
+                if (inst is not null)
                 {
                     if (inst == Interlocked.CompareExchange(ref items[i].Value, null, inst))
                     {
@@ -113,7 +113,7 @@ namespace Microsoft.VisualStudio.Buffers.PooledObjects
         /// </remarks>
         internal void Free(T obj)
         {
-            if (_firstItem == null)
+            if (_firstItem is null)
             {
                 // Intentionally not using interlocked here. 
                 // In a worst case scenario two objects may be stored into same slot.
@@ -131,7 +131,7 @@ namespace Microsoft.VisualStudio.Buffers.PooledObjects
             Element[] items = _items;
             for (int i = 0; i < items.Length; i++)
             {
-                if (items[i].Value == null)
+                if (items[i].Value is null)
                 {
                     // Intentionally not using interlocked here. 
                     // In a worst case scenario two objects may be stored into same slot.

@@ -6,21 +6,21 @@
     PageTemplate="Generic"
 	Description="Advanced Build Options"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
-    <Rule.Categories>
-        <Category Name="Build"  DisplayName="Build" Description="Advanced build options" />
-        <Category Name="Debug"  DisplayName="Debug" Description="Advanced debug options" />
-    </Rule.Categories>
-    <Rule.DataSource>
-        <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" />
-    </Rule.DataSource>
-     <BoolProperty Category="Build" Name="Optimize" Description="Should compiler optimize output?" />
-    <EnumProperty Category="Build" Name="FileAlignment" DisplayName="File Alignment" Default="512" >
-        <EnumValue Name="512"  />
-        <EnumValue Name="1024"  />
-        <EnumValue Name="2048"  />
-        <EnumValue Name="4096"  />
-        <EnumValue Name="8192"  />
-    </EnumProperty>
-    <StringProperty Category="Build" Name="BaseAddress" DisplayName="DLL Base Address" Description="Sets a base address for the program." />
+  <Rule.Categories>
+    <Category Name="Build"  DisplayName="Build" Description="Advanced build options" />
+    <Category Name="Debug"  DisplayName="Debug" Description="Advanced debug options" />
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" />
+  </Rule.DataSource>
+  <BoolProperty Category="Build" Name="Optimize" Description="Should compiler optimize output?" />
+  <EnumProperty Category="Build" Name="FileAlignment" DisplayName="File Alignment" Default="512" >
+    <EnumValue Name="512"  />
+    <EnumValue Name="1024"  />
+    <EnumValue Name="2048"  />
+    <EnumValue Name="4096"  />
+    <EnumValue Name="8192"  />
+  </EnumProperty>
+  <StringProperty Category="Build" Name="BaseAddress" DisplayName="DLL Base Address" Description="Sets a base address for the program." />
 
 </Rule>

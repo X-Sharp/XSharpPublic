@@ -8,11 +8,20 @@
   <Rule.DataSource>
     <DataSource HasConfigurationCondition="False"
                 ItemType="Analyzer"
-                MSBuildTarget="CollectAnalyzersDesignTime"
                 Persistence="ProjectFile"
-                SourceOfDefaultValue="AfterContext"
-                SourceType="TargetResults" />
+                SourceOfDefaultValue="AfterContext" />
   </Rule.DataSource>
+
+  <StringProperty Name="BrowsePath"
+                  ReadOnly="True"
+                  Visible="False">
+    <StringProperty.DataSource>
+      <DataSource ItemType="Analyzer"
+                  PersistedName="Identity"
+                  Persistence="Intrinsic"
+                  SourceOfDefaultValue="AfterContext" />
+    </StringProperty.DataSource>
+  </StringProperty>
 
   <StringProperty Name="IsImplicitlyDefined"
                   ReadOnly="True"

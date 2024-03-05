@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C6CBB0DC-CDFC-4840-BCBC-49D0E8641BB4}"
+	ProjectSection(SolutionItems) = preProject
+		DocumentationAndRules.md = DocumentationAndRules.md
+		ExportAdvices.md = ExportAdvices.md
+		README.md = README.md
+		Todo.md = Todo.md
+	EndProjectSection
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VFPXPorter", "Tools\VFPXPorter\Source\VFPXPorter\VFPXPorter.xsproj", "{23BB62E9-A405-416A-B0A5-0E4E178B839F}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VFPXPorterLib", "Tools\VFPXPorter\Source\VFPXPorterLib\VFPXPorterLib.xsproj", "{71F46150-AAD7-4ED1-8E3F-263698800BA7}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VFPXPorterCmd", "Tools\VFPXPorter\Source\VFPXPorterCmd\VFPXPorterCmd.xsproj", "{8FFA9199-E4A3-4AC4-9A97-9BA2AC8D13CD}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.UI", "Runtime\XSharp.VFP.UI\XSharp.VFP.UI.xsproj", "{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.UI_Test", "Tests\XSharp.VFP.UI_Test\XSharp.VFP.UI_Test.xsproj", "{B4F3862C-82BC-407F-8A84-5241F7321F9F}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VFPXPorterTest", "Tests\VFPXPorterTest\VFPXPorterTest.xsproj", "{421A1A64-A17D-451E-B7E0-DBF3A173B65D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23BB62E9-A405-416A-B0A5-0E4E178B839F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23BB62E9-A405-416A-B0A5-0E4E178B839F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23BB62E9-A405-416A-B0A5-0E4E178B839F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23BB62E9-A405-416A-B0A5-0E4E178B839F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71F46150-AAD7-4ED1-8E3F-263698800BA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71F46150-AAD7-4ED1-8E3F-263698800BA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71F46150-AAD7-4ED1-8E3F-263698800BA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71F46150-AAD7-4ED1-8E3F-263698800BA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FFA9199-E4A3-4AC4-9A97-9BA2AC8D13CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FFA9199-E4A3-4AC4-9A97-9BA2AC8D13CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FFA9199-E4A3-4AC4-9A97-9BA2AC8D13CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FFA9199-E4A3-4AC4-9A97-9BA2AC8D13CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F3862C-82BC-407F-8A84-5241F7321F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F3862C-82BC-407F-8A84-5241F7321F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F3862C-82BC-407F-8A84-5241F7321F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F3862C-82BC-407F-8A84-5241F7321F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{421A1A64-A17D-451E-B7E0-DBF3A173B65D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{421A1A64-A17D-451E-B7E0-DBF3A173B65D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{421A1A64-A17D-451E-B7E0-DBF3A173B65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{421A1A64-A17D-451E-B7E0-DBF3A173B65D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B2B0E435-AF71-4FA2-AC09-C4B659133779}
+	EndGlobalSection
+EndGlobal

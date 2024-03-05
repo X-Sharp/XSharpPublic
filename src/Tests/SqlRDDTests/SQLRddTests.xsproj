@@ -73,7 +73,7 @@
     <PPO>False</PPO>
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
-    <EnableUnmanagedDebugging>True</EnableUnmanagedDebugging>
+    <EnableUnmanagedDebugging>False</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -106,6 +106,16 @@
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+      <Name>VORDDClasses</Name>
+      <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
@@ -124,6 +134,11 @@
     <ProjectReference Include="..\..\Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj">
       <Name>XSharp.SQLRDD</Name>
       <Project>{e83c6c8c-773f-4b01-a597-3d38398a9373}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

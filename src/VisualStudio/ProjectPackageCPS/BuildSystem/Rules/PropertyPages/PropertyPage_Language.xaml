@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
-	Name="LanguageSettings"
+	Name="Languages"
 	DisplayName="Language"
 	PageTemplate="generic"
 	Description="Language Settings"

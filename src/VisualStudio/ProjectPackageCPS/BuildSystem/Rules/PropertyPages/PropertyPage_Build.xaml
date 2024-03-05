@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Rule
-    Name="BuildOptions"
+    Name="Build"
       Description="Specifies properties that control how the project builds."
 	DisplayName="Build"
 	PageTemplate="generic"

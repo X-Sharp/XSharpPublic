@@ -14,7 +14,6 @@ global OleDbConnStr := "Provider=sqloledb;Data Source=(local);Initial Catalog=No
 global showEvents := true as logic
 
 function Start as void
-    RegisteredRDD.Add( RegisteredRDD{"SQLRDD", typeof(SqlRDD)})
     //TestProviders()
     //TestSqlServer()
     //TestODBC()
@@ -22,24 +21,30 @@ function Start as void
     //     TestRDDODBC()
     //     TestRDDOLEDB()
     //TestRDDSql()
-    TestCommandSql()
-    TestCommandSql()
-    TestCommandODBC()
-    TestCommandODBC()
-    TestCommandOLEDB()
-    TestCommandOLEDB()
-//     TestParametersODBC()
-//     TestParametersSQL()
-//     TestParametersOLEDB()
-    //TestTable()
+    //     TestCommandSql()
+    //     TestCommandSql()
+    //     TestCommandODBC()
+    //     TestCommandODBC()
+    //     TestCommandOLEDB()
+    //     TestCommandOLEDB()
+    //     TestParametersODBC()
+    //     TestParametersSQL()
+    //     TestParametersOLEDB()
+    TestTable()
+    //TestCreateIndex()
+    //TestServerFilter()
+    //TestTableRecno()
+    //TestTransaction()
     //testCreate()
+    //FillGsTutor()
     wait
     return
 
 function TestCreate() as void
     local aStruct as array
     SqlDbSetProvider("SQLSERVER")
-    var handle := SqlDbOpenConnection(SqlConnStr, EventHandler)
+    var handle := SqlDbOpenConnection(SqlConnStr)
+
     ? handle
     aStruct := {{"Key","I:+",4,0},{"FirstName","C",10,0},{"LastName","C",10,0},{"DOB","D",8,0}, {"Salary","Y",10,2},{"Married","L",1,0},{"Notes","M",10,0}}
     ? DbCreate("TEST",aStruct,"SQLRDD")
@@ -84,12 +89,15 @@ function TestTable() as void
     SqlDbSetProvider("SQLSERVER")
     var handle := SqlDbOpenConnection(SqlConnStr)
     var conn   := SqlDbGetConnection(handle)
-    conn:MetadataProvider := DatabaseMetaDataProvider{conn}
+    //conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
     conn:CallBack += @@EventHandler
     ? handle
     VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
-
+    ? Cdx(1)
+    DbSetIndex("Customers.sdx")
+    ? Cdx(2)
     DumpIndexes()
+
     ? "SetDeleted(TRUE)"
     SetDeleted(true)
     DbGoTop()
@@ -126,6 +134,7 @@ function TestTable() as void
     ? "Create Index on City"
     DbCreateOrder("City",,"City")
     DbCreateOrder("Name",,"ContactName")
+    DbSetIndex("Customers.sdx")
     DumpIndexes()
     ? DbSetOrder("City")
     DbGoTop()
@@ -146,6 +155,20 @@ function TestTable() as void
 
     VODbCloseArea()
 
+
+function TestCreateIndex() as void
+    SqlDbSetProvider("SQLSERVER")
+    var handle := SqlDbOpenConnection(SqlConnStr)
+    var conn   := SqlDbGetConnection(handle)
+    conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
+    conn:CallBack += @@EventHandler
+    ? handle
+    VoDbUseArea(true, "SQLRDD","Customers","Customers",true, true)
+    DbCreateOrder("Name",,"Upper(ContactName)")
+    DbCreateOrder("City",,"Upper(City)")
+    //DbDeleteOrder("Name")
+    //DbDeleteOrder("City")
+    VODbCloseArea()
 
 function ListSeek as void
     ? "Seek Customer with key ALFKI"
@@ -205,7 +228,7 @@ function TestParametersODBC() AS VOID
                 ? col:ColumnName
             next
         endif
-                ? stopWatch:Elapsed:ToString()
+        ? stopWatch:Elapsed:ToString()
         stopWatch:Stop()
     CATCH e as Exception
         ? e:Message
@@ -234,7 +257,7 @@ function TestParametersOleDb() AS VOID
         stopWatch:Start()
 
         SqlDbSetProvider("OLEDB")
-        var handle := SqlDbOpenConnection(OLEDBConnStr, EventHandler)
+        var handle := SqlDbOpenConnection(OleDbConnStr, EventHandler)
         conn := SqlDbGetConnection(handle)
         cmd := SqlDbCommand{"TEST", conn}
         cmd:CommandText := "Select * from Customers where CustomerId like ? or Country = ?"
@@ -254,7 +277,7 @@ function TestParametersOleDb() AS VOID
                 ? col:ColumnName
             next
         endif
-                ? stopWatch:Elapsed:ToString()
+        ? stopWatch:Elapsed:ToString()
         stopWatch:Stop()
     CATCH e as Exception
         ? e:Message
@@ -402,9 +425,8 @@ function DumpCustomers() as VOID
         DbSkip(1)
     ENDDO
     // Test creating an index
-    ? "Create Index on City"
-    DbCreateOrder("City",,"City")
-    DbCreateOrder("Name",,"ContactName")
+    ? "Create Index on City", DbCreateOrder("City",,"City")
+    ? "Create Index on name", DbCreateOrder("Name",,"ContactName")
     DumpIndexes()
     OrdSetFocus("City")
     DbGoTop()
@@ -471,7 +493,7 @@ Function DumpConnection(conn as SqlDbConnection) as void
         next
     ENDIF
     ? Seconds() - secs
-function DumpStructure(oTd as SqlDbTableDef) as VOID
+function DumpStructure(oTd as SqlDbTableInfo) as VOID
     ? "Table", oTd:Name, "Columns", oTd:Columns:Count
     foreach oCol as SqlDbColumnDef in oTd:Columns
         ? oCol:Name, oCol:ColumnInfo:ColumnName, oCol:ColumnInfo:FieldTypeFlags, oCol:Type:Name, oCol:Length, oCol:Scale, oCol:Precision
@@ -480,13 +502,6 @@ function DumpStructure(oTd as SqlDbTableDef) as VOID
 
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
     local strValue as string
-    if e:Value is IList<string>  var listValue
-        strValue := List2String(listValue)
-    elseif e:Value != null
-        strValue := e:Value:ToString()
-    else
-        strValue := "NULL"
-    endif
     // Tags default
     switch e:Reason
     case SqlRDDEventReason.Condition
@@ -494,7 +509,7 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
     case SqlRDDEventReason.Unique
         e:Value := FALSE
     case SqlRDDEventReason.Expression
-        switch e:Table
+        switch e:Name
         case "Tag:Customers:PK"
             e:Value := "CustomerID"
         case "Tag:Customers:CompanyName"
@@ -505,23 +520,23 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
             e:Value := "Upper(Country)+Upper(City)"
         end switch
     case SqlRDDEventReason.Indexes
-        switch e:Table
+        switch e:Name
         case "Customers"
             e:Value := "Customers"
         end switch
     case SqlRDDEventReason.Tags
-        switch e:Table
+        switch e:Name
         case "Index:Customers"
             e:Value := "PK,CompanyName,ContactName,Address"
         end switch
     end switch
     if showEvents
-        ? "Event", e:Table, e:Reason:ToString(), e:Table, strValue
+        ? "Event", e:Name, e:Reason:ToString(), e:Value
     endif
     return e:Value
 
 function TestProviders as void
-    local oProv as SqlDbProvider
+    local oProv as ISqlDbProvider
     local oProvider := MySqlClientFactory.Instance AS DbProviderFactory
     ? oProvider:CreateConnection():GetType():FullName
     oProvider := Advantage.Data.Provider.AdsFactory.Instance
@@ -571,30 +586,159 @@ FUNCTION SqlTranslator(cFunc as String) as String
     return sqlFunc
 
 
-Function DumpExpression(oExpr as SqlDbExpression) AS VOID
-    ? "Expression", oExpr:XsKey
-    foreach var oSeg in oExpr:Segments
-        ? "Seg", oSeg:Key
-    next
-    ? "Order", oExpr:OrderListString
-    ? "Cols ",oExpr:ColumnListString
-    ? "SqlKey", oExpr:SQLKey
-    ?
+// Function DumpExpression(oExpr as SqlDbExpression) AS VOID
+//     ? "Expression", oExpr:XsKey
+//     foreach var oSeg in oExpr:Segments
+//         ? "Seg", oSeg:Key
+//     next
+//     ? "Order", oExpr:OrderListString
+//     ? "Cols ",oExpr:ColumnListString
+//     ? "SqlKey", oExpr:SQLKey
+//     ?
 function DumpIndexes as Void
     // Dump the indexes and orders
+    ? "Bags", DbOrderInfo(DBOI_BAGCOUNT)
     ? "Indexes", DbOrderInfo(DBOI_ORDERCOUNT)
     var focus := OrdSetFocus()
-    FOR var i := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
+    OrdSetFocus(0)
+    var Count := DbOrderInfo(DBOI_ORDERCOUNT)
+    FOR var i := 1 TO Count
         OrdSetFocus(i)
         ? "Order", i, DbOrderInfo(DBOI_FULLPATH), DbOrderInfo(DBOI_BAGNAME), DbOrderInfo(DBOI_NAME), DbOrderInfo(DBOI_EXPRESSION), DbOrderInfo(DBOI_CONDITION)
     NEXT
     OrdSetFocus(focus)
     WAIT
 
+function TestServerFilter as Void
+    SqlDbSetProvider("SQLSERVER")
+    var handle := SqlDbOpenConnection(SqlConnStr)
+    var conn   := SqlDbGetConnection(handle)
+    conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
+    conn:CallBack += @@EventHandler
+    ? handle
+    VoDbUseArea(true, "SQLRDD","OpenOrders","OpenOrders",true, true)
+
+    SetDeleted(true)
+    DbGoTop()
+    do while ! Eof()
+        ? Recno(),FieldGetSym(#OrderID), FieldGetSym(#CustomerID), FieldGetSym(#OrderDate), FieldGetSym(#ShippedDate)
+        DbSkip(1)
+    enddo
+    DbCloseArea()
+    SqlDbCloseConnection(handle)
+    RETURN
+function TestTableRecno as Void
+    SqlDbSetProvider("SQLSERVER")
+    var handle := SqlDbOpenConnection(SqlConnStr)
+    var conn   := SqlDbGetConnection(handle)
+    conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
+    conn:CallBack += @@EventHandler
+    VoDbUseArea(true, "SQLRDD","Orders","Orders",true, true)
+
+    DbGoTop()
+    var recnos := List<dword>{}
+    do while ! Eof()
+        recnos:Add(Recno())
+        //? Recno(),FieldGetSym(#OrderID), FieldGetSym(#CustomerID), FieldGetSym(#OrderDate), FieldGetSym(#ShippedDate)
+        VoDbSkip(1)
+    enddo
+    ? LastRec(), "Records found"
+    var Count := 0
+    foreach var Recno in recnos
+        VoDbGoto(Recno)
+        ? Recno, FieldGetSym(#OrderID), FieldGetSym(#CustomerID), FieldGetSym(#OrderDate), FieldGetSym(#ShippedDate)
+        if ++Count == 20
+            exit
+        endif
+    next
+
+    DbCloseArea()
+    RETURN
+function TestTransaction()
+    // Tell the RDD to use the SQLServer SqlDbProvider class
+    // store the handle as hConn1
+    SqlDbSetProvider("SQLSERVER")
+    RddSetDefault("SQLRDD")
+    // Open a connection to the local Northwind sample database for SqlServer
+    // This connection will be the 'default' connection
+    // store the handle as hConn1
+    var hConn1 := SqlDbOpenConnection("Server=(local);Initial catalog=Northwind;Trusted_Connection=True;")
+    var oConn1 := SqlDbGetConnection(hConn1)
+    oConn1:CallBack += @@MyEventHandler
+
+    // open a server
+    var oServer := DbServer{"Customers"}
+    oServer:GoTop()
+    oConn1:BeginTrans()
+    // write to the server
+    oServer:FieldPut(#ContactName, "Jones")
+    // commit and close
+    oServer:Commit()
+    oServer:Close()
+    ? "Count Before Rollback"
+    ? oConn1:ExecuteScalar("Select count(*) from Customers where ContactName = 'Jones'")
+    wait
+
+    // Rollback the changes
+    oConn1:RollBackTrans()
+    // Close the connection
+    ? "Count After Rollback"
+    ? oConn1:ExecuteScalar("Select count(*) from Customers where ContactName = 'Jones'")
+    wait
+    SqlDbCloseConnection(hConn1)
+    return true
+
+    FUNCTION MyEventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
+	? "Event", e:Name, e:Reason:ToString(), e:Value
+	RETURN e:Value
 
 
 
+    FUNCTION FillGsTutor() AS VOID
+        local aOrders as array
+        aOrders := {}
+        TRY
+            SqlDbSetProvider("SQLSERVER")
+            SqlDbOpenConnection("Server=(local);Initial catalog=GsTutor;Trusted_Connection=True;", EventHandler)
+            var oConn  := SqldbGetConnection("DEFAULT")
+            oConn:MetadataProvider := SqlMetaDataProviderDatabase{oConn}
+            oConn:UseNulls := FALSE
+            RddSetDefault("SQLRDD")
+            if !oConn:DoesTableExist("Customer")
+                aOrders := {}
+                USE ("c:\cavo28SP3\Samples\Gstutor\customer.dbf") via "DBFNTX"
+                DbSetIndex("CustNum.ntx")
+                aadd(aOrders, {"Custnum", OrdKey()})
+                DbSetIndex("CustName.ntx")
+                aadd(aOrders, {"Custname", OrdKey()})
 
+                DbCopy("Customer")
+                DbCloseAll()
+                USE Customer
+                foreach var item in aOrders
+                    OrdCreate(,item[1], item[2])
+                next
+                DbCloseArea()
+            endif
+            if !oConn:DoesTableExist("Orders")
+                aOrders := {}
+                USE ("c:\cavo28SP3\Samples\Gstutor\Orders.dbf") via "DBFNTX"
+                DbSetIndex("OrdCust.ntx")
+                aadd(aOrders, {"OrdCust", OrdKey()})
+                DbSetIndex("OrderNum.ntx")
+                aadd(aOrders, {"OrderNum", OrdKey()})
 
+                DbCopy("Orders")
+                DbCloseAll()
+                USE Orders
+                foreach var item in aOrders
+                    OrdCreate(,item[1], item[2])
+                next
+                DbCloseAll()
+            endif
+        CATCH e as Exception
+            ? e:Message
+        END TRY
+        RETURN
 
 

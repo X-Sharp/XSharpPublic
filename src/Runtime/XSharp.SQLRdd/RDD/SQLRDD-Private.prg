@@ -453,6 +453,7 @@ partial class SQLRDD inherit DBFVFP
     private method _OpenTable(sWhereClause as string) as logic
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause)
+            _command:ClearParameters()
             self:_hasData    := true
             self:DataTable   := _command:GetDataTable(self:Alias)
         catch as Exception

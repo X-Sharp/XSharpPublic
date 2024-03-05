@@ -654,6 +654,21 @@
       </topicref>
       <topicref type="topic" id="453305634100468" build="ALL" modified="2024-02-13T11:11:32.050Z" icon="0" href="Modifiers">
         <caption translate="true">Modifiers</caption>
+        <topicref type="topic" id="453384530482641" build="ALL" modified="2024-02-19T11:56:45.260Z" icon="0" href="Modifiers_Visibility">
+          <caption translate="true">Access/Visibility modifiers</caption>
+        </topicref>
+        <topicref type="topic" id="453383721769049" build="ALL" modified="2024-02-19T11:56:54.932Z" icon="0" href="Modifiers_ClassHierarchy">
+          <caption translate="true">Class hierarchy modifiers</caption>
+        </topicref>
+        <topicref type="topic" id="453383233807824" build="ALL" modified="2024-02-19T11:57:01.144Z" icon="0" href="Modifiers_Static">
+          <caption translate="true">STATIC modifier</caption>
+        </topicref>
+        <topicref type="topic" id="453415562205418" build="ALL" modified="2024-02-19T11:57:07.703Z" icon="0" href="Modifiers_Async_Await">
+          <caption translate="true">ASYNC/AWAIT</caption>
+        </topicref>
+        <topicref type="topic" id="453384960751694" build="ALL" modified="2024-02-19T11:57:12.540Z" icon="0" href="Modifiers_Others">
+          <caption translate="true">Other modifiers</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="42389463199336" build="ALL" modified="2023-12-19T12:00:06.418Z" icon="0" href="Namespaces2">
         <caption translate="true">Namespaces</caption>
@@ -1712,6 +1727,9 @@
         </topicref>
         <topicref type="topic" id="434894709779629" build="ALL" modified="2019-01-24T12:20:14.327Z" icon="0" href="opt-memvar">
           <caption translate="true">-memvar</caption>
+        </topicref>
+        <topicref type="topic" id="453456164454670" build="ALL" modified="2024-02-23T09:38:49.541Z" icon="0" href="opt-modernsyntax">
+          <caption translate="true">-modernsyntax</caption>
         </topicref>
         <topicref type="topic" id="42388171085567" build="ALL" modified="2016-01-20T09:47:00.545Z" icon="0" href="opt-moduleassemblyname">
           <caption translate="true">-moduleassemblyname</caption>

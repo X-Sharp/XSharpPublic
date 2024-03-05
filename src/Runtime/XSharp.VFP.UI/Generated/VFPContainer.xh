@@ -16,6 +16,7 @@ METHOD AddObject( _args ) AS USUAL CLIPPER
     LOCAL cClass AS STRING
     //
     VAR parms := _ARGS()
+    VAR success := TRUE
     IF parms:Length >= 2
         // At least a Object-Name and a Class-Name
         IF IsString( parms[1] ) .AND. IsString( parms[2] )
@@ -48,7 +49,6 @@ METHOD AddObject( _args ) AS USUAL CLIPPER
                 SELF:AddProperty( cName, oObject, PropertyVisibility.Public, "AddObject " + cClass )
                 // TODO : Watchout of the cOLEClass !!
                 // Now, call Init() with the Parameters
-                VAR success := TRUE
                 TRY
                     Send( oObject, "Init", uArgs )
                 CATCH
@@ -59,7 +59,7 @@ METHOD AddObject( _args ) AS USUAL CLIPPER
             ENDIF
         ENDIF
     ENDIF
-
+   return success
 
 
 

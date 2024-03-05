@@ -82,18 +82,14 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.Core" />
-    <Reference Include="XSharp.Data, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Data</Name>
-      <AssemblyName>XSharp.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.Rt" />
-    <Reference Include="XSharp.VFP" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
     <Compile Include="AEventsDefinition.prg" />
     <Compile Include="Generated\CheckBox.generated.prg" />
     <Compile Include="Generated\_Interfaces.prg" />
@@ -207,6 +203,28 @@
     <None Include="Generated\VFPObject.xh" />
     <None Include="Headers\VFPObject.xh" />
     <None Include="XSharp\VFPProperties.xh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj">
+      <Name>XSharp.Data</Name>
+      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

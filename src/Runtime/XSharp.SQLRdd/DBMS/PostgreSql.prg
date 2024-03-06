@@ -23,15 +23,17 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// This class depends on the DLL MySql.Data.dll
 /// </remarks>
 
-class SqlDbProviderPostgresSql inherit SqlDbProvider
+class SqlDbProviderPostgreSQL inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName                as string => "Npgsql.dll"
     /// <inheritdoc />
     override property TypeName               as string => "Npgsql.NpgsqlFactory"
     /// <inheritdoc />
-    override property GetIdentity            as string => "select LAST_INSERT_ID()"
+    override property GetIdentity            as string => " RETURNING "+ColumnsMacro
+
+    override property GetIdentityNeedsSeperator as logic => false
     /// <inheritdoc />
-    override property GetRowCount            as string => "select FOUND_ROWS( )"
+    override property GetRowCount            as string => ""
     /// <inheritdoc />
     override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
     private static lockObj := object{} as object
@@ -73,7 +75,7 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} varchar ({oInfo.Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause
@@ -102,5 +104,11 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
             sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch
         return sResult
+
+    override method CaseSync(cIdentifier as string) as string
+        return cIdentifier:ToLower()
+
+
+end method
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

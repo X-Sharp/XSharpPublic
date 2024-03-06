@@ -116,10 +116,13 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
     PRIVATE METHOD CreateDictionary() as VOID
         var sb  := StringBuilder{}
         var prov := Connection:Provider
+        var tableName := SELF:Connection:Provider:QuoteIdentifier(TableDictionary)
+        var indexName :=SELF:Connection:Provider:QuoteIdentifier(IndexDictionary)
 
         sb:Clear()
         sb:Append(prov:DropTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
+
+        sb:Replace(SqlDbProvider.TableNameMacro, tableName)
         Connection:ExecuteNonQuery(sb:ToString(), "Metadata")
         sb:Clear()
         // build fields list
@@ -138,13 +141,13 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         var colNames := CreateColumnNames(cols)
         sb:Clear()
         sb:Append(prov:CreateTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
+        sb:Replace(SqlDbProvider.TableNameMacro, tableName)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
         Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
         // create default values
         sb:Clear()
         sb:Append(prov:InsertStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
+        sb:Replace(SqlDbProvider.TableNameMacro, tableName)
         sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
         sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
         Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
@@ -176,7 +179,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         fieldList := sb:ToString()
         sb:Clear()
         sb:Append(prov:CreateTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, IndexDictionary)
+        sb:Replace(SqlDbProvider.TableNameMacro, indexName)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
         Connection:ExecuteNonQuery(sb:ToString(), "Metadata")
         RETURN
@@ -184,6 +187,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
 
     PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
+            var dict := SELF:Connection:Provider:QuoteIdentifier(TableDictionary)
             // Check if the table dictionary exists
             IF !Connection:DoesTableExist(TableDictionary)
                 SELF:CreateDictionary()
@@ -191,14 +195,15 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
                 SELF:CreateDictionary()
             ELSE
                 // Check if the table dictionary has at least one record
-                var sql1 := i"SELECT COUNT(*) FROM {TableDictionary}"
+
+                var sql1 := i"SELECT COUNT(*) FROM {dict}"
                 var count := Connection:ExecuteScalar(sql1, "Metadata")
                 if Convert.ToInt64(count) == 0
                     SELF:CreateDictionary()
                 endif
             ENDIF
             // Read the defaults from the database
-            var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{DefaultSection}'"
+            var sql := i"SELECT * FROM {dict} WHERE {nameof(TableName)} = '{DefaultSection}'"
             local rdr := Connection:ExecuteReader(sql, "Metadata") as DbDataReader
             if rdr != null
                 if rdr:Read()
@@ -272,8 +277,10 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
-        oTable := SqlDbTableInfo{cTable, Connection}
-        var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{cTable}'"
+        oTable   := SqlDbTableInfo{cTable, Connection}
+        var dict := SELF:Connection:Provider:QuoteIdentifier(TableDictionary)
+        var tbl  := SELF:Connection:Provider:CaseSync(cTable)
+        var sql  := i"SELECT * FROM {dict} WHERE {nameof(TableName)} = '{tbl}'"
         local rdr := SELF:Connection:ExecuteReader(sql, "Metadata") as DbDataReader
         if rdr != null
             if rdr:Read()
@@ -310,8 +317,13 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
     /// <inheritdoc />
     OVERRIDE METHOD GetIndexInfo(oTable as SqlDbTableInfo, cIndexName as STRING) AS SqlDbIndexInfo
         // Indexes are stored in a section TableName_IndexName
-        var sql := i"SELECT * FROM [{IndexDictionary}] WHERE {nameof(TableName)} = '{oTable.Name}' "+ ;
-            i"and [{nameof(IndexName)}] = '{cIndexName}' Order by [Ordinal]"
+        var index := SELF:Connection:Provider:CaseSync(IndexDictionary)
+        var tbl   := SELF:Connection:Provider:CaseSync(oTable.Name)
+        var ind   := SELF:Connection:Provider:CaseSync(cIndexName)
+        var ord   := SELF:Connection:Provider:CaseSync(nameof(Ordinal))
+
+        var sql := i"SELECT * FROM {index} WHERE {nameof(TableName)} = '{tbl}' "+ ;
+            i"and {nameof(IndexName)} = '{ind}' Order by {ord}"
 
         local rdr := Connection:ExecuteReader(sql, "Metadata") as DbDataReader
         var oIndex  := SqlDbIndexInfo{oTable, cIndexName}

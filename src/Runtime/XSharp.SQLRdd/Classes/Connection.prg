@@ -630,7 +630,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 longFieldNames := oTable:LongFieldNames
             endif
             var columnList := cColumnNames
-            var cols := SELF:GetTableColumns(TableName)
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             var oTd := GetStructureForQuery(query,TableName, longFieldNames)
@@ -755,34 +754,35 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         sb:Append(SELF:Provider:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro,LICENSETABLE)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "name varchar(50), value varchar(50)")
-        self:_command:CommandText := sb:ToString()
-        self:_command:ExecuteNonQuery("License")
+        using var cmd := SqlDbCommand{"Licenses", self, false}
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery("License")
         sb:Clear()
         sb:Append(SELF:Provider:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro,CONNECTIONSTABLE)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "station varchar(50), username varchar(50), lastlogin varchar(10), refcount int")
-        self:_command:CommandText := sb:ToString()
-        self:_command:ExecuteNonQuery("License")
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery("License")
 
         sb:Clear()
         sb:Append("Insert into "+LICENSETABLE+"( name, value) values(@p1, @p2)")
-        self:_command:CommandText := sb:ToString()
-        self:_command:ClearParameters()
-        self:_command:AddParameter("@p1","version")
-        self:_command:AddParameter("@p2","SQLRDD Beta 2")
-        self:_command:ExecuteNonQuery("License")
-        self:_command:ClearParameters()
-        self:_command:AddParameter("@p1","serial")
-        self:_command:AddParameter("@p2","1234567890")
-        self:_command:ExecuteNonQuery("License")
-        self:_command:ClearParameters()
-        self:_command:AddParameter("@p1","users")
-        self:_command:AddParameter("@p2","999")
-        self:_command:ExecuteNonQuery("License")
-        self:_command:ClearParameters()
-        self:_command:AddParameter("@p1","validationcode")
-        self:_command:AddParameter("@p2","AAAA-BBBB-CCCC-DDDD")
-        self:_command:ExecuteNonQuery("License")
+        cmd:CommandText := sb:ToString()
+        cmd:ClearParameters()
+        cmd:AddParameter("@p1","version")
+        cmd:AddParameter("@p2","SQLRDD Beta 2")
+        cmd:ExecuteNonQuery("License")
+        cmd:ClearParameters()
+        cmd:AddParameter("@p1","serial")
+        cmd:AddParameter("@p2","1234567890")
+        cmd:ExecuteNonQuery("License")
+        cmd:ClearParameters()
+        cmd:AddParameter("@p1","users")
+        cmd:AddParameter("@p2","999")
+        cmd:ExecuteNonQuery("License")
+        cmd:ClearParameters()
+        cmd:AddParameter("@p1","validationcode")
+        cmd:AddParameter("@p2","AAAA-BBBB-CCCC-DDDD")
+        cmd:ExecuteNonQuery("License")
 
 
     private method _Login() as void
@@ -795,27 +795,28 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         var dDate   := DateTime.Now
         var today   := dDate:Year:ToString()+"-"+dDate:Month:ToString("0#")+"-"+dDate:Day:ToString("0#")
         SELF:BeginTrans()
-        self:_command:CommandText := "Delete from "+CONNECTIONSTABLE+" where lastlogin < @p3"
-        self:_command:ClearParameters()
-        self:_command:AddParameter("@p1",user)
-        self:_command:AddParameter("@p2",station)
-        self:_command:AddParameter("@p3",today:ToString())
-        self:_command:ExecuteNonQuery("License")
+        using var cmd := SqlDbCommand{"Licenses", self, false}
+        cmd:CommandText := "Delete from "+CONNECTIONSTABLE+" where lastlogin < @p3"
+        cmd:ClearParameters()
+        cmd:AddParameter("@p1",user)
+        cmd:AddParameter("@p2",station)
+        cmd:AddParameter("@p3",today:ToString())
+        cmd:ExecuteNonQuery("License")
         var sWhere := "where username = @p1 and station = @p2 and lastlogin = @p3"
         if lIn
-            SELF:_command:CommandText := "select count(*) from "+CONNECTIONSTABLE+" "+sWhere
-            var result := Convert.ToInt64(self:_command:ExecuteScalar())
+            cmd:CommandText := "select count(*) from "+CONNECTIONSTABLE+" "+sWhere
+            var result := Convert.ToInt64(cmd:ExecuteScalar())
             if result == 0
-                self:_command:CommandText := "Insert into "+CONNECTIONSTABLE+"(username, station, lastlogin, refcount) values(@p1, @p2, @p3, 0)"
-                self:_command:ExecuteNonQuery("License")
+                cmd:CommandText := "Insert into "+CONNECTIONSTABLE+"(username, station, lastlogin, refcount) values(@p1, @p2, @p3, 0)"
+                cmd:ExecuteNonQuery("License")
             endif
-            self:_command:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount + 1 "+sWhere
-            self:_command:ExecuteNonQuery("License")
+            cmd:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount + 1 "+sWhere
+            cmd:ExecuteNonQuery("License")
         else
-            self:_command:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount - 1 "+sWhere
-            self:_command:ExecuteNonQuery("License")
-            self:_command:CommandText := "delete from "+CONNECTIONSTABLE+" "+sWhere+" and refcount <= 0"
-            self:_command:ExecuteNonQuery("License")
+            cmd:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount - 1 "+sWhere
+            cmd:ExecuteNonQuery("License")
+            cmd:CommandText := "delete from "+CONNECTIONSTABLE+" "+sWhere+" and refcount <= 0"
+            cmd:ExecuteNonQuery("License")
 
         endif
         SELF:CommitTrans()

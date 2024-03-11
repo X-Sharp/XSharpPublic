@@ -66,6 +66,7 @@
     <Compile Include="Classes\Connection.prg" />
     <Compile Include="Classes\Parameter.prg" />
     <Compile Include="DBMS\PostgreSql.prg" />
+    <Compile Include="DBMS\ProviderSqlite.prg" />
     <Compile Include="Functions\Command.prg" />
     <Compile Include="Functions\Connection.prg" />
     <Compile Include="Functions\Provider.prg" />

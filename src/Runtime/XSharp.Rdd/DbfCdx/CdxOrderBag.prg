@@ -78,11 +78,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cTag AS STRING
             IF info:Order IS STRING VAR strOrder .and. ! String.IsNullOrWhiteSpace(strOrder)
                 cTag := strOrder
+                // Visual Objects truncates the name to 10 characters
+                // FoxPro throws an error and so does Xbase++
                 IF cTag:Length > MAX_TAGNAME_LEN
-                    SELF:_oRdd:_dbfError(Subcodes.ERDD_CREATE_ORDER,Gencode.EG_LIMIT,;
-                        "DBFCDX.OrderCreate",i"Tag name '{cTag}' is too long. The maximum tag name length is {MAX_TAGNAME_LEN} characters",TRUE)
+                    if RuntimeState.Dialect == XSharpDialect.VO .or. ;
+                        RuntimeState.Dialect == XSharpDialect.Vulcan .or. ;
+                        RuntimeState.Dialect == XSharpDialect.Harbour
+                        cTag := cTag:Substring(0, MAX_TAGNAME_LEN)
+                        info:Order := cTag
+                    ELSE
+                        SELF:_oRdd:_dbfError(Subcodes.ERDD_CREATE_ORDER,Gencode.EG_LIMIT,;
+                            "DBFCDX.OrderCreate",i"Tag name '{cTag}' is too long. The maximum tag name length is {MAX_TAGNAME_LEN} characters",TRUE)
+                    endif
                 ENDIF
             ELSE
+                // When we create the tag ourselves, then we'll always truncate it to 10 chars
                 cTag := Path.GetFileNameWithoutExtension(info:BagName)
                 if cTag:Length > MAX_TAGNAME_LEN
                     cTag := cTag:Substring(0, MAX_TAGNAME_LEN)
@@ -121,7 +131,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL found := FALSE AS LOGIC
             VAR aTags   := SELF:Tags:ToArray()
             FOREACH tag AS CdxTag IN aTags
-                IF String.Compare(tag:OrderName, oParam:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                IF String.Compare(tag:OrderName, oParam:OrderName, TRUE) == 0
                     oParam := tag
                     found := TRUE
                     EXIT
@@ -205,7 +215,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 cFullName := Path.ChangeExtension(cDbf, cExt)
             ELSEIF String.IsNullOrEmpty(Path.GetExtension(cFullName))
                 cFullName := Path.ChangeExtension(cFullName, cExt)
-            ELSEIF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
+            ELSEIF String.Compare(cDbf, cFullName, TRUE) == 0
                  cFullName := Path.ChangeExtension(cFullName, cExt)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
@@ -241,7 +251,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD _FindTagByName(cName AS STRING) AS CdxTag
             IF SELF:Tags != NULL
                 FOREACH oTag AS CdxTag IN SELF:Tags
-                    IF String.Compare(oTag:OrderName, cName,StringComparison.OrdinalIgnoreCase) == 0
+                    IF String.Compare(oTag:OrderName, cName,TRUE) == 0
                         RETURN oTag
                     ENDIF
                 NEXT
@@ -325,12 +335,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF String.IsNullOrEmpty(cExt)
                 cFileName := Path.ChangeExtension(cFileName, CDX_EXTENSION)
             ENDIF
-            IF String.Compare(SELF:FullPath, cFileName, StringComparison.OrdinalIgnoreCase) == 0
+            IF String.Compare(SELF:FullPath, cFileName, TRUE) == 0
                 RETURN TRUE
             ENDIF
             VAR cPath := Path.GetDirectoryName(cFileName)
             IF String.IsNullOrEmpty(cPath)
-                IF String.Compare(Path.GetFileName(FullPath), cFileName, StringComparison.OrdinalIgnoreCase) == 0
+                IF String.Compare(Path.GetFileName(FullPath), cFileName, TRUE) == 0
                     RETURN TRUE
                 ENDIF
             ENDIF

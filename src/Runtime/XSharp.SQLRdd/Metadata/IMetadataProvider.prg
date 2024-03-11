@@ -8,6 +8,8 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+using XSharp.RDD.Support
+
 
 BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 
@@ -34,6 +36,19 @@ INTERFACE ISqlMetadataProvider
     /// <seealso cref="T:XSharp.RDD.SqlRDD.SqlDbIndexInfo" />
     /// <remarks> This method should NOT append the indexc to the TableInfo class </remarks>
     METHOD GetIndexInfo(oTable AS SqlDbTableInfo, cIndexName AS STRING) AS SqlDbIndexInfo
+
+    /// <summary>
+    /// This method is called when a table is created. It can be used to update the metadata
+    /// </summary>
+    /// <param name="cTable">TableName</param>
+    /// <param name="info">Object with information</param>
+    METHOD CreateTable(cTable AS STRING, info as DbOpenInfo) AS VOID
+    /// <summary>
+    /// This method is called when an index is created. It can be used to update the metadata
+    /// </summary>
+    /// <param name="cTable">TableName</param>
+    /// <param name="info">Object with information about the index and tag that are created</param>
+    METHOD CreateIndex(cTable as String, orderInfo as DbOrderCreateInfo) AS VOID
 
 END INTERFACE
 END NAMESPACE // XSharp.SQLRdd.Metadata

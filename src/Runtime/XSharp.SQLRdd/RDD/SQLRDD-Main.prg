@@ -12,6 +12,7 @@ using System.Text
 using System.Diagnostics
 using System.Reflection
 using System.Data.Common
+using System.Linq
 using XSharp.RDD.SqlRDD.Providers
 
 begin namespace XSharp.RDD.SqlRDD
@@ -28,6 +29,36 @@ partial class SQLRDD inherit DBFVFP
     override property Driver as string get "SQLRDD"
 #endregion
 
+    PRIVATE METHOD _adjustFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
+        local fields := aFields:ToList() as List<RddFieldInfo>
+        if ! String.IsNullOrEmpty(SELF:Connection:RecnoColumn)
+            var found := false
+            foreach var field in fields
+                if String.Compare(field:ColumnName, SELF:Connection:RecnoColumn, true) == 0
+                    found := true
+                endif
+            next
+            if ! found
+                fields:Add( RddFieldInfo{SELF:Connection:RecnoColumn,"I:+",4,0})
+                SELF:_RecordLength += 4
+            endif
+        endif
+        if ! String.IsNullOrEmpty(SELF:Connection:DeletedColumn)
+            var found := false
+            foreach var field in fields
+                if String.Compare(field:ColumnName, SELF:Connection:DeletedColumn, true) == 0
+                    found := true
+                endif
+            next
+            if ! found
+                fields:Add( RddFieldInfo{SELF:Connection:DeletedColumn,"L",1,0})
+                SELF:_RecordLength += 1
+            endif
+        endif
+        return fields:ToArray()
+    end method
+
+
 	/// <summary>Create a table.</summary>
 	/// <param name="info">object describing the file to create.</param>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -39,13 +70,15 @@ partial class SQLRDD inherit DBFVFP
         self:_tableMode := TableMode.Table
         self:_TempFileName(info)
         self:_creating := true
-        var fields := self:_Fields
+        self:_Fields := self:_adjustFields(self:_Fields)
         var lResult := super:Create(info)
         self:_creating := false
         self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
         // create SQL table Now
-        self:_CreateSqlFields(fields)
-
+        self:_CreateSqlFields(self:_Fields)
+        if lResult
+            self:Connection:MetadataProvider:CreateTable(_cTable, info )
+        endif
         return lResult
     end method
 
@@ -102,9 +135,11 @@ partial class SQLRDD inherit DBFVFP
         foreach var oCol in _oTd:Columns
             var oField := oCol:ColumnInfo
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
-                self:_recnoColumn   := oField:Ordinal+1
+                self:_recnoColumNo   := oField:Ordinal
+                oField:Flags |= DBFFieldFlags.AutoIncrement
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
-                self:_deletedColumn := oField:Ordinal+1
+                self:_deletedColumnNo := oField:Ordinal
+                self:_deletedColumnIsLogic := oField:FieldType == DbFieldType.Logic
             endif
             oFields:Add(oField)
             if aKeyColumns == null
@@ -169,13 +204,12 @@ partial class SQLRDD inherit DBFVFP
         if lResult
             var key := _identityKey
             var row := self:DataTable:NewRow()
-            if _identityColumn != null
+            if _recnoColumNo >= 0
                 _identityKey -= 1
             endif
             if row is IDbRow var dbRow
                 dbRow:RecNo := super:RecNo
             endif
-            _RecNo := super:RecNo
             self:DataTable:Rows:Add(row)
             _updatedRows:Add(row)
             if _emptyValues == null
@@ -186,7 +220,7 @@ partial class SQLRDD inherit DBFVFP
                 if c:AutoIncrement
                     row[c] := key
                 else
-                    row[c] := SELF:_HandleNullDate(values[c:Ordinal])
+                    row[c] := SELF:_HandleNullDate(values[c:Ordinal],c)
                 endif
             next
             self:_Hot := true
@@ -204,6 +238,7 @@ partial class SQLRDD inherit DBFVFP
         // nFldPos is 1 based, the RDD compiles with /az+
         SELF:_ForceOpen()
         if nFldPos > 0 .and. nFldPos <= self:FieldCount
+            var col := self:_GetColumn(nFldPos)
             nFldPos -= 1
             local result as object
             if self:DataTable:Rows:Count >= self:_RecNo .and. !self:EoF
@@ -226,6 +261,11 @@ partial class SQLRDD inherit DBFVFP
                     else
                         result := DbDate{dtValue:Year, dtValue:Month, dtValue:Day}
                     endif
+                endif
+            endif
+            if result is Decimal var decValue
+                if col:Decimals == 0
+                    result := Convert.ToInt64(decValue)
                 endif
             endif
             if result == DBNull.Value
@@ -261,9 +301,13 @@ partial class SQLRDD inherit DBFVFP
             return false
         endif
         if self:EoF
-            return false
+            return true
         endif
         var result := false
+        if nFldPos == SELF:_recnoColumNo +1 .or. nFldPos == SELF:_deletedColumnNo +1
+            // silently ingore the fieldput
+            return true
+        endif
         if nFldPos > 0 .and. nFldPos <= self:FieldCount
             var col := self:_GetColumn(nFldPos)
             if SELF:_updatableColumns:Contains(col)
@@ -271,7 +315,8 @@ partial class SQLRDD inherit DBFVFP
                 if !_updatedRows:Contains(row)
                     _updatedRows:Add(row)
                 endif
-                row[nFldPos-1] := SELF:_HandleNullDate(oValue)
+
+                row[nFldPos-1] := SELF:_HandleNullDate(oValue,self:DataTable:Columns[nFldPos-1])
                 result := true
                 self:_Hot := true
             else
@@ -285,26 +330,41 @@ partial class SQLRDD inherit DBFVFP
     override method GoCold() as logic
         local lWasHot := self:_Hot as logic
         local lOk := super:GoCold() as logic
-        if lWasHot .and. self:DataTable != null .and. self:DataTable:Rows:Count >=self:_RecNo
+        if lWasHot .and. self:DataTable != null .and. self:DataTable:Rows:Count >= SELF:_RecNo
             foreach var row in _updatedRows
                 try
                     lOk := true
                     if super:Deleted
-                        if self:_deletedColumn > 0
-                            lOk := _ExecuteUpdateStatement(row)
-                            if lOk
-                                row:AcceptChanges()
+                        local wasNew := false as logic
+                        // Append from may add deleted rows
+                        if row:RowState.HasFlag(DataRowState.Added)
+                            lOk := _ExecuteInsertStatement(row)
+                            row:AcceptChanges()
+                            wasNew  := true
+                        endif
+                        if self:_deletedColumnNo > -1
+                            if !wasNew
+                                // already written with _deletedColumnNo with the correct value
+                                lOk := _ExecuteUpdateStatement(row, true)
+                                if lOk
+                                    row:AcceptChanges()
+                                endif
                             endif
                         else
-                            lOk := _ExecuteDeleteStatement(row)
-                            row:CancelEdit()  // keep the row in the collection, so the record numbers match
+                            lOk := _ExecuteDeleteStatement(row, true)
+                            // clear the fields
+                            row:ItemArray := _phantomRow:ItemArray
+                            // keep the row in the collection, so the record numbers match
+                            row:AcceptChanges()
                         endif
+
                     else
                         if row:RowState.HasFlag(DataRowState.Added)
                             lOk := _ExecuteInsertStatement(row)
-                        endif
-                        if row:RowState.HasFlag(DataRowState.Modified)
-                            lOk := _ExecuteUpdateStatement(row)
+                            row:AcceptChanges()
+                        elseif row:RowState.HasFlag(DataRowState.Modified)
+                            lOk := _ExecuteUpdateStatement(row, true)
+                            row:AcceptChanges()
                         endif
                     endif
                 catch e as Exception
@@ -350,8 +410,13 @@ partial class SQLRDD inherit DBFVFP
 	/// </remarks>
 
     override method Delete() as logic
-        if self:_deletedColumn >= 0
-            self:PutValue(self:_deletedColumn, 1)
+        if self:_deletedColumnNo > -1
+            var row := self:DataTable:Rows[SELF:_RecNo -1]
+            if self:_deletedColumnIsLogic
+                row[_deletedColumnNo] := true
+            else
+                row[_deletedColumnNo] := 1
+            endif
          endif
         return super:Delete()
     end method
@@ -363,8 +428,13 @@ partial class SQLRDD inherit DBFVFP
     /// Otherwise when the current row is deleted and not persisted to the server yet, then the deletion is undone.
 	/// </remarks>
     override method Recall() as logic
-        if self:_deletedColumn >= 0
-            return self:PutValue(self:_deletedColumn, 0)
+        if self:_deletedColumnNo >= 0
+            var row := self:DataTable:Rows[SELF:_RecNo -1]
+            if self:_deletedColumnIsLogic
+                row[_deletedColumnNo] := false
+            else
+                row[_deletedColumnNo] := 0
+            endif
         endif
         return super:Recall()
     end method
@@ -391,12 +461,7 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        IF SELF:_tableMode == TableMode.Table
-            self:_RecNo := 1
-            return TRUE
-        else
-            return super:GoTop()
-        endif
+	    return super:GoTop()
     end method
 
 	/// <summary>Position the cursor to the last logical row.</summary>
@@ -409,7 +474,7 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        return super:GoBottom()
+    	RETURN super:GoBottom()
     end method
 
 	/// <summary>Position the cursor regardless of scope and filter conditions.</summary>
@@ -422,10 +487,10 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        var old := SELF:_relativeRecNo
-        SELF:_relativeRecNo := TRUE
+        var old := SELF:_baseRecNo
+        SELF:_baseRecNo := TRUE
         var result := super:SkipRaw(move)
-        SELF:_relativeRecNo := old
+        SELF:_baseRecNo := old
         RETURN result
     end method
 
@@ -442,18 +507,21 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        if self:_recnoColumn > 0 .and. nRec > 0
+        IF SELF:_baseRecNo
+            RETURN super:GoTo(nRec)
+        ENDIF
+        if self:_recnoColumNo > -1 .and. nRec > 0
             local result as logic
-            IF ! _relativeRecNo
+            IF ! _baseRecNo
                 if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
                     self:_RecNo := nRowNum + 1
                 else
                     self:_RecNo := nRec
                 endif
-                var old := SELF:_relativeRecNo
-                SELF:_relativeRecNo := TRUE
+                var old := SELF:_baseRecNo
+                SELF:_baseRecNo := TRUE
                 result := super:GoTo(_RecNo)
-                SELF:_relativeRecNo := old
+                SELF:_baseRecNo := old
                 return result
             ENDIF
         endif
@@ -476,19 +544,20 @@ partial class SQLRDD inherit DBFVFP
     override property RecNo		as int
         get
             self:ForceRel()
-            if self:_recnoColumn > 0
+            if self:_recnoColumNo > -1
                 // HACK  The code inside Xsharp.RDD for _CheckEofBof should check _RecNo and not RecNo
                 if _GetCheckEofBof()
                     LOCAL st := StackTrace{ FALSE } AS StackTrace
                     IF st:GetFrame(1):GetMethod() == miCheckEofBof
-                        RETURN super:RecNo
+                        RETURN SELF:_RecNo
                     endif
                 endif
-                if ! _relativeRecNo
-                    return (int) self:GetValue(self:_recnoColumn)
+                if ! _baseRecNo
+                    var obj := self:GetValue(self:_recnoColumNo+1)
+                    return Convert.ToInt32(obj)
                 endif
             endif
-            return super:RecNo
+            return SELF:_RecNo
         end get
     end property
 	/// <summary>Position the cursor relative to its current position.</summary>
@@ -496,10 +565,10 @@ partial class SQLRDD inherit DBFVFP
     /// If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Skip(nSkip as long) as logic
-        var old := SELF:_relativeRecNo
-        SELF:_relativeRecNo := TRUE
+        var old := SELF:_baseRecNo
+        SELF:_baseRecNo := TRUE
         var result := super:Skip(nSkip)
-        self:_relativeRecNo := old
+        self:_baseRecNo := old
         return result
     end method
 
@@ -537,8 +606,18 @@ partial class SQLRDD inherit DBFVFP
     override property Deleted		as logic
         get
             self:ForceRel()
-            if self:_deletedColumn > 0
-                return (logic) self:GetValue(self:_deletedColumn)
+            if self:_deletedColumnNo > 0
+                var res:= self:GetValue(self:_deletedColumnNo)
+                if res is logic
+                    return (logic) res
+                else
+                    try
+                        var iRes := Convert.ToInt64(res)
+                        return iRes != 0
+                    catch
+                        return false
+                    end try
+                endif
             else
                 return super:Deleted
             endif

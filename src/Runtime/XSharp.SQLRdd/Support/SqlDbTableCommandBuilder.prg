@@ -81,6 +81,7 @@ internal class SqlDbTableCommandBuilder
         var stmt := sb:ToString()
         var result := _connection:ExecuteNonQuery(stmt, _cTable)
         return result
+
     method CreateIndex(oTag as SqlDbOrder) as logic
         SELF:DropIndex(oTag)
         var sb      := StringBuilder{Provider:CreateIndexStatement}
@@ -162,6 +163,7 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList())
         sb:Replace(SqlDbProvider.TableNameMacro, selectStmt)
         return sb:ToString()
+
     method ColumnList() as string
         var sb := StringBuilder{}
         var List  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}

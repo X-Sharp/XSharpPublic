@@ -8,6 +8,7 @@
 
 using System
 using System.Linq
+using System.Diagnostics
 using System.Collections.Generic
 using System.Text
 using System.Data
@@ -27,16 +28,22 @@ public delegate SqlRDDEventHandler(oSender as object, e as SqlRddEventArgs) as o
 /// <summary>
 /// Connection class.
 /// </summary>
+[DebuggerDisplay("{Name,nq} ({ProductName,nq})")];
 class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     // Constants for the Metadata collections
     internal const COLLECTIONNAME := "CollectionName" as string
     internal const TABLECOLLECTION := "Tables" as string
+    internal const COLUMNCOLLECTION := "Columns" as string
+    internal const DATABASECOLLECTION := "Databases" as string
+    internal const DATASOURCECOLLECTION := "DataSourceInformation" as string
     internal const TABLENAME := "TABLE_NAME" as string
     internal const TABLETYPE := "TABLE_TYPE" as string
     // Constants for the columns in a schema
     private _lastException as Exception
     private _command       as SqlDbCommand
     private _commands      as List<SqlDbCommand>
+    private _datasourceProperties as Dictionary<string, string>
+    private _metadataCollections as List<string>
 
     #region Properties
     /// <summary>Is the connection open</summary>
@@ -65,12 +72,18 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <summary>Connection State</summary>
     PROPERTY State              as ConnectionState get iif(self:DbConnection == null, ConnectionState.Closed, self:DbConnection:State)
 
-
     /// <summary>Should field types from SQL be translated to the 'old' field types (CDLMN) or should also FoxPro types (BCDFGILMNPQTVWY0) be allowed?</summary>
     property LegacyFieldTypes   as logic auto
 
     /// <summary>Should the phantom record have Null values or empty values?</summary>
     property UseNulls           as logic auto
+
+    property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
+
+    property QuotedIdentifierCase     as System.Data.Common.IdentifierCase auto get private set
+
+    property ProductName        as string auto get private set
+
 
 #endregion
 
@@ -219,6 +232,46 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         end method
 #endif
 
+    private method _FillDataSourceProperties() as VOID
+
+        IF ! SELF:HasCollection(DATASOURCECOLLECTION)
+            return
+        endif
+        var tbl := SELF:GetMetaDataCollection(DATASOURCECOLLECTION)
+        if tbl:Rows:Count > 0
+            var row := tbl:Rows[0]
+            foreach col as DataColumn in tbl:Columns
+                SELF:_datasourceProperties:Add(col:ColumnName, row[col]:ToString())
+            next
+        endif
+
+        if _datasourceProperties:TryGetValue("IdentifierCase", out var id)
+            if Enum.TryParse<IdentifierCase>(id, true, out var idCase)
+                self:IdentifierCase := idCase
+            endif
+        endif
+        if _datasourceProperties:TryGetValue("QuotedIdentifierCase", out id)
+            if Enum.TryParse<IdentifierCase>(id, true, out var idCase)
+                self:QuotedIdentifierCase := idCase
+            endif
+        endif
+        if _datasourceProperties:TryGetValue("DataSourceProductName", out id)
+            self:ProductName := id
+        endif
+
+    private method _FillMetadataCollections() as void
+        var coll := SELF:GetMetaDataCollections()
+        self:_metadataCollections := List<string>{}
+        foreach var c in coll
+            _metadataCollections:Add(c:ToLower())
+        next
+        return
+    end method
+
+    private method HasCollection(cCollection as string) as logic
+        return _metadataCollections != null .and. _metadataCollections:Contains(cCollection:ToLower())
+    end method
+
     /// <summary>
     /// Create a new connection object
     /// </summary>
@@ -252,9 +305,14 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             SELF:MetadataProvider := SqlMetadataProviderIni{SELF}
         endif
         Connections.Add(self)
+        _datasourceProperties := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
         _commands := List<SqlDbCommand>{}
         _command  := SqlDbCommand{"Worker", self}
         self:ForceOpen()
+        SELF:_FillMetadataCollections()
+        SELF:_FillDataSourceProperties()
+        SELF:_CheckLicenseTables()
+        SELF:_Login()
         // Todo: Check for # of open users and close the connection when no users are left and then throw an exception
         return
     end constructor
@@ -270,6 +328,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         if self:RDDs:Count > 0
             return false
         endif
+        self:_Logout()
         // Logout the workstation from the Open Connections table
         _command:Dispose()
         foreach var cmd in SELF:_commands:ToArray()
@@ -571,6 +630,7 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 longFieldNames := oTable:LongFieldNames
             endif
             var columnList := cColumnNames
+            var cols := SELF:GetTableColumns(TableName)
             var selectStmt := SqlDbProvider.SelectClause+columnList+SqlDbProvider.FromClause+table
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             var oTd := GetStructureForQuery(query,TableName, longFieldNames)
@@ -591,6 +651,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <returns>TRUE when the table exists. </returns>
     method DoesTableExist(cTableName as string) as logic
         try
+            if !SELF:HasCollection(TABLECOLLECTION)
+                return false
+            endif
             local aTableRestrictions := string[]{4} as string[]
             aTableRestrictions[2] := cTableName
             var dt := self:DbConnection:GetSchema(TABLECOLLECTION, aTableRestrictions)
@@ -601,6 +664,37 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         return false
     end method
 
+    method DoesDatabaseExist(cTableName as string) as logic
+        try
+            //local aRestrictions := string[]{1} as string[]
+            //aRestrictions[0] := cTableName
+            if !SELF:HasCollection(DATABASECOLLECTION)
+                return false
+            endif
+            var dt := self:DbConnection:GetSchema(DATABASECOLLECTION)
+            if dt:Rows:Count > 0
+                return true
+            endif
+            return false
+        catch e as Exception
+            _lastException := e
+        end try
+        return false
+    end method
+    method GetTableColumns(cTableName as string) as DataTable
+        try
+            if !SELF:HasCollection(COLUMNCOLLECTION)
+                return null
+            endif
+            local aRestrictions := string[]{4} as string[]
+            aRestrictions[2] := self:Provider:CaseSync(cTableName)
+            var dt := self:DbConnection:GetSchema(COLUMNCOLLECTION, aRestrictions)
+            return dt
+        catch e as Exception
+            _lastException := e
+        end try
+        return null
+
     /// <summary>
     /// Return the table names from the database
     /// </summary>
@@ -608,18 +702,20 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <returns>List of table names that match the filter</returns>
     method GetTables(filter := "" as string) as List<string>
         try
-            var dt := self:DbConnection:GetSchema(TABLECOLLECTION)
             var result := List<string>{}
-            foreach row as DataRow in dt:Rows
-                if String.IsNullOrEmpty(filter)
-                    result:Add(row[TABLENAME]:ToString())
-                else
-                    var type := row[TABLETYPE]:ToString()
-                    if type:IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+            if self:HasCollection(TABLECOLLECTION)
+                var dt := self:DbConnection:GetSchema(TABLECOLLECTION)
+                foreach row as DataRow in dt:Rows
+                    if String.IsNullOrEmpty(filter)
                         result:Add(row[TABLENAME]:ToString())
+                    else
+                        var type := row[TABLETYPE]:ToString()
+                        if type:IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                            result:Add(row[TABLENAME]:ToString())
+                        endif
                     endif
-                endif
-            next
+                next
+            endif
             return result
         catch e as Exception
             _lastException := e
@@ -639,10 +735,91 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         next
         return result
     end method
+/// <summary>
+/// Return the list of metadata collections supported by the provider
+/// </summary>
+/// <returns>List of metadata collections</returns>
+   method GetMetaDataCollection(cCollection as string) as DataTable
+       var dt := self:DbConnection:GetSchema(cCollection)
+       return dt
+   end method
 #endregion
 
 
-#region Implement IDisposable
+
+    private method _CheckLicenseTables() as void
+        if SELF:DoesTableExist(CONNECTIONSTABLE) .and. self:DoesTableExist(LICENSETABLE)
+            return
+        endif
+        var sb := StringBuilder{}
+        sb:Append(SELF:Provider:CreateTableStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro,LICENSETABLE)
+        sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "name varchar(50), value varchar(50)")
+        self:_command:CommandText := sb:ToString()
+        self:_command:ExecuteNonQuery("License")
+        sb:Clear()
+        sb:Append(SELF:Provider:CreateTableStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro,CONNECTIONSTABLE)
+        sb:Replace(SqlDbProvider.FieldDefinitionListMacro, "station varchar(50), username varchar(50), lastlogin varchar(10), refcount int")
+        self:_command:CommandText := sb:ToString()
+        self:_command:ExecuteNonQuery("License")
+
+        sb:Clear()
+        sb:Append("Insert into "+LICENSETABLE+"( name, value) values(@p1, @p2)")
+        self:_command:CommandText := sb:ToString()
+        self:_command:ClearParameters()
+        self:_command:AddParameter("@p1","version")
+        self:_command:AddParameter("@p2","SQLRDD Beta 2")
+        self:_command:ExecuteNonQuery("License")
+        self:_command:ClearParameters()
+        self:_command:AddParameter("@p1","serial")
+        self:_command:AddParameter("@p2","1234567890")
+        self:_command:ExecuteNonQuery("License")
+        self:_command:ClearParameters()
+        self:_command:AddParameter("@p1","users")
+        self:_command:AddParameter("@p2","999")
+        self:_command:ExecuteNonQuery("License")
+        self:_command:ClearParameters()
+        self:_command:AddParameter("@p1","validationcode")
+        self:_command:AddParameter("@p2","AAAA-BBBB-CCCC-DDDD")
+        self:_command:ExecuteNonQuery("License")
+
+
+    private method _Login() as void
+        _LoginWorker(true)
+    private method _Logout() as void
+        _LoginWorker(false)
+    private method _LoginWorker(lIn as LOGIC) as void
+        var user    := Environment.UserName
+        var station := Environment.MachineName
+        var dDate   := DateTime.Now
+        var today   := dDate:Year:ToString()+"-"+dDate:Month:ToString("0#")+"-"+dDate:Day:ToString("0#")
+        SELF:BeginTrans()
+        self:_command:CommandText := "Delete from "+CONNECTIONSTABLE+" where lastlogin < @p3"
+        self:_command:ClearParameters()
+        self:_command:AddParameter("@p1",user)
+        self:_command:AddParameter("@p2",station)
+        self:_command:AddParameter("@p3",today:ToString())
+        self:_command:ExecuteNonQuery("License")
+        var sWhere := "where username = @p1 and station = @p2 and lastlogin = @p3"
+        if lIn
+            SELF:_command:CommandText := "select count(*) from "+CONNECTIONSTABLE+" "+sWhere
+            var result := Convert.ToInt64(self:_command:ExecuteScalar())
+            if result == 0
+                self:_command:CommandText := "Insert into "+CONNECTIONSTABLE+"(username, station, lastlogin, refcount) values(@p1, @p2, @p3, 0)"
+                self:_command:ExecuteNonQuery("License")
+            endif
+            self:_command:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount + 1 "+sWhere
+            self:_command:ExecuteNonQuery("License")
+        else
+            self:_command:CommandText := "Update "+CONNECTIONSTABLE+" set refcount = refcount - 1 "+sWhere
+            self:_command:ExecuteNonQuery("License")
+            self:_command:CommandText := "delete from "+CONNECTIONSTABLE+" "+sWhere+" and refcount <= 0"
+            self:_command:ExecuteNonQuery("License")
+
+        endif
+        SELF:CommitTrans()
+        #region Implement IDisposable
     /// <inheritdoc/>
     public override method Dispose() as void
         self:Close()
@@ -650,13 +827,16 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     end method
 
     #endregion
-INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
+
+    INTERNAL CONST LICENSETABLE := "xs_license" as string
+    INTERNAL CONST CONNECTIONSTABLE := "xs_connections" as string
+    INTERNAL CONST DEFAULT_ALLOWUPDATES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_COMPAREMEMO := TRUE AS LOGIC
-    INTERNAL CONST DEFAULT_DELETEDCOLUMN := "" AS STRING
+    INTERNAL CONST DEFAULT_DELETEDCOLUMN := "xs_deleted" AS STRING
     INTERNAL CONST DEFAULT_LEGACYFIELDTYPES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_LONGFIELDNAMES := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_MAXRECORDS := 1000 AS INT
-    INTERNAL CONST DEFAULT_RECNOCOLUMN := "" AS STRING
+    INTERNAL CONST DEFAULT_RECNOCOLUMN := "xs_recno" AS STRING
     INTERNAL CONST DEFAULT_TRIMTRAILINGSPACES := TRUE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATEALLCOLUMNS := FALSE AS LOGIC
     INTERNAL CONST DEFAULT_USENULLS := TRUE AS LOGIC

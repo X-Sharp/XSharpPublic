@@ -106,6 +106,7 @@ partial class SQLRDD inherit DBFVFP
             oBag:Save()
             CurrentOrder := oTag
             self:_hasData := false
+            self:Connection:MetadataProvider:CreateIndex(SELF:_cTable, orderInfo)
             return TRUE
         else
             // The _creatingIndex flag is used to make sure that string fields are returned untrimmed

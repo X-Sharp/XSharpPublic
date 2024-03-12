@@ -44,8 +44,13 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     private _commands      as List<SqlDbCommand>
     private _datasourceProperties as Dictionary<string, string>
     private _metadataCollections as List<string>
+    private _databaseRestrictions as int
+    private _tableRestrictions as int
 
     #region Properties
+    /// <summary>Dictionary with properties defined by the Ado.Net provider</summary>
+    property DataSourceProperties as Dictionary<string, string> get _datasourceProperties
+
     /// <summary>Is the connection open</summary>
     property IsOpen             as logic get DbConnection != null .and. DbConnection:State == ConnectionState.Open
     /// <summary>ISqlDbProvider object used by the connection</summary>
@@ -78,10 +83,11 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// <summary>Should the phantom record have Null values or empty values?</summary>
     property UseNulls           as logic auto
 
+    /// <summary>Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property IdentifierCase     as System.Data.Common.IdentifierCase auto get private set
-
+    /// <summary>Quoted Identifier Case as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property QuotedIdentifierCase     as System.Data.Common.IdentifierCase auto get private set
-
+    /// <summary>ProductName as returned by the Ado.Net provider in the DataSourceInformation metadata collection.</summary>
     property ProductName        as string auto get private set
 
 
@@ -656,28 +662,52 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             if !SELF:HasCollection(TABLECOLLECTION)
                 return false
             endif
-            local aTableRestrictions := string[]{4} as string[]
-            aTableRestrictions[2] := cTableName
-            var dt := self:DbConnection:GetSchema(TABLECOLLECTION, aTableRestrictions)
-            return dt:Rows:Count > 0
+            if self:_tableRestrictions != 0
+                local aTableRestrictions := string[]{4} as string[]
+                aTableRestrictions[2] := cTableName
+                var dt := self:DbConnection:GetSchema(TABLECOLLECTION, aTableRestrictions)
+                return dt:Rows:Count > 0
+            else
+                var dt := self:DbConnection:GetSchema(TABLECOLLECTION)
+                foreach row as DataRow in dt:Rows
+                    var tbl := row["TABLE_NAME"]:ToString()
+                    if String.Compare(tbl, cTableName, true) == 0
+                        return true
+                    endif
+                next
+            endif
         catch e as Exception
             _lastException := e
         end try
         return false
     end method
 
-    method DoesDatabaseExist(cTableName as string) as logic
+
+    /// <summary>
+    /// Check to see if a database exists
+    /// </summary>
+    /// <param name="cDatabase">Name of the database to check</param>
+    method DoesDatabaseExist(cDatabase as string) as logic
         try
-            //local aRestrictions := string[]{1} as string[]
-            //aRestrictions[0] := cTableName
             if !SELF:HasCollection(DATABASECOLLECTION)
-                return false
+                    return false
             endif
-            var dt := self:DbConnection:GetSchema(DATABASECOLLECTION)
-            if dt:Rows:Count > 0
-                return true
+            if self:_databaseRestrictions != 0
+                local aRestrictions := string[]{1} as string[]
+                aRestrictions[0] := cDatabase
+                var dt := self:DbConnection:GetSchema(DATABASECOLLECTION, aRestrictions)
+                if dt:Rows:Count > 0
+                    return true
+                endif
+            else
+                var dt := self:DbConnection:GetSchema(DATABASECOLLECTION)
+                foreach row as DataRow in dt:Rows
+                    var db := row[0]:ToString()
+                    if String.Compare(db, cDatabase, true) == 0
+                        return true
+                    endif
+                next
             endif
-            return false
         catch e as Exception
             _lastException := e
         end try
@@ -719,7 +749,13 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         var dt := self:DbConnection:GetSchema(DbMetaDataCollectionNames.MetaDataCollections)
         var result := List<string>{}
         foreach row as DataRow in dt:Rows
-            result:Add(row[COLLECTIONNAME]:ToString())
+            var cColl := row[COLLECTIONNAME]:ToString()
+            result:Add(cColl)
+            if String.Compare(cColl, TABLECOLLECTION, true) == 0
+                _tableRestrictions := Convert.ToInt32(row["NumberOfRestrictions"])
+            elseif String.Compare(cColl, DATABASECOLLECTION, true) == 0
+                _databaseRestrictions := Convert.ToInt32(row["NumberOfRestrictions"])
+            endif
         next
         return result
     end method

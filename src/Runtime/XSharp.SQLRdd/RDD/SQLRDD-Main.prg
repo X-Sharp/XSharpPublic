@@ -527,7 +527,8 @@ partial class SQLRDD inherit DBFVFP
                 if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
                     self:_RecNo := nRowNum + 1
                 else
-                    self:_RecNo := nRec
+                    // when record number does not exist, then go to phantom record
+                    self:_RecNo := 0
                 endif
                 var old := SELF:_baseRecNo
                 SELF:_baseRecNo := TRUE

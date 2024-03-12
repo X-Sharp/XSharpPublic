@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-03-12T17:42:21.210+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Record Numbers and Reccount</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Record Numbers and Reccount and Reccount</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">One of the areas where the DBF world distinguishes itself from the SQL world is the concept of Record Numbers.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In the SQL RDD we try to emulate the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">record number</text><text styleclass="Normal" translate="true">. There are 2 ways to do this:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">By creating a special column in the table that holds a unique numeric identifier. Preferable an identity column or a column with a sequence attached. You can define that by setting the value for RecnoColumn in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MetaData" styleclass="Normal" translate="true">metadata provider</link><text styleclass="Normal" translate="true">.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">If such a column does not exist then the relative position in the current result set is used to emulate a record number</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Reccount</text><text styleclass="Normal" translate="true"> is defined by the SQLRDD as the number of rows in the table. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Some remarks about working with a Recno Column</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Emulating a record number works fine, but has the disadvantage that (after deleting rows in the database) you may have record numbers that are larger than the # of rows in the table. Assume you start with records 1 .. 10 and delete the first 2 records. Then the RecCount for the table will be 8, but the largest record number will be 10 and the smallest record number 3.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In a DBF environment you would never be able to Goto(10) for a table with 8 rows. In this scenario you could do that.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In a similar way you cannot do a Goto(1) in the SQL table, because that record is deleted from the database. If you do that, then the RDD will position itself on the Phantom record.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you append records in a DBF then the Recno automatically becomes the value of what previously was RecCount +1.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In a SQL environment the new record is not written to the database, so we do not know what the new value of Recno is until the record has been written.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The RDD will assign the current maximum value of the Recno Column +1 to the record number of the newly appended record, and after the record is written to the server then the RDD will fetch the real value of the record number. In theory it is possible that 2 users are appending a record to the same SQL table at the same time. They will initially both get the same record number. However after the record was written to the SQL table then both result sets will have a unique number for that column.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Retrieving the new record number is either done by executing the code that is defined in the provider for </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\P_XSharp_RDD_SqlRDD_Providers_SqlDbProvider_GetIdentity.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">GetIdentity</link><text styleclass="Normal" translate="true">.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When the provider does not support that, then a query is executed to retrieve the maximum value of the Recno Column.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

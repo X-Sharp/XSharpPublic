@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-27T17:53:24.883Z" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-03-12T17:43:04.584+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Compatibility with existing RDDs</title>
   <keywords>
     <keyword translate="true">Compatibility</keyword>
@@ -15,7 +15,7 @@
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The primary targets when designing the SQLRDD was: </text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">To be as much compatible as possible with the existing RDDs, especially the DBFNTX and DBFCDX RDD.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">To allow you to work with ANY Ado.Net dataprovider</text></li>
     </list>
@@ -30,20 +30,22 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the SQLRDD means using XSharp default workarea based data access. </text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">That means that you can operate the RDD 4 different ways:</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the Data Access commands </text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the DB..() functions</text><tab/><tab/></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the DB..() functions</text><tab /><tab /></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the VODB..() functions</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Using the DbServer Class</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Of course there are also some differences between the existing RDDs and the SQLRDD</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Connections" styleclass="Normal" translate="true">Connections</link></li>
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Indexes_gs" styleclass="Normal" translate="true">Index support</link></li>
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ValidationsandIntegrity" styleclass="Normal" translate="true">Null_Date</link></li>
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ValidationsandIntegrity" styleclass="Normal" translate="true">Table level validations</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Record-Numbers" styleclass="Normal" translate="true">Record Numbers and Reccount</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Deleted-Records" styleclass="Normal" translate="true">Deleted Records</link></li>
     </list>
     <para styleclass="Normal"></para>
   </body>

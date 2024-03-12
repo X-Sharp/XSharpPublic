@@ -67,6 +67,12 @@
       <topicref type="topic" id="384613197972801" build="ALL" modified="2011-10-21T12:14:56.192Z" icon="0" href="Operations">
         <caption translate="true">Workarea Operations</caption>
       </topicref>
+      <topicref type="topic" id="453637657338752" build="ALL" modified="2024-03-12T17:22:08.007Z" icon="0" href="Record-Numbers">
+        <caption translate="true">Record Numbers and Reccount</caption>
+      </topicref>
+      <topicref type="topic" id="453636465491969" build="ALL" modified="2024-03-12T17:30:23.814Z" icon="0" href="Deleted-Records">
+        <caption translate="true">Deleted Records</caption>
+      </topicref>
       <topicref type="topic" id="384612266665085" build="ALL" modified="2011-10-21T12:14:56.193Z" icon="0" href="Nameandreservedwords">
         <caption translate="true">Names and reserved words</caption>
       </topicref>

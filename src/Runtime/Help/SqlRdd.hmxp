@@ -137,7 +137,6 @@
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">.\Images\;.\;.\Baggage\;.\Maps\;.\Topics\</config-value>
       <config-value name="imageshortcuts"></config-value>
-      <config-group name="custombuilds"/>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make0include">CHM</config-value>
       <config-value name="make0status">*</config-value>
@@ -148,7 +147,6 @@
       <config-value name="historyfilecount">10</config-value>
       <config-value name="historykeepdeletedfiles">0</config-value>
       <config-value name="vcsmanuallycheckout">0</config-value>
-      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>

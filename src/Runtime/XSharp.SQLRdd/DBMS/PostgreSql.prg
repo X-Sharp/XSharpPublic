@@ -29,9 +29,8 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
     /// <inheritdoc />
     override property TypeName               as string => "Npgsql.NpgsqlFactory"
     /// <inheritdoc />
-    override property GetIdentity            as string => " RETURNING "+ColumnsMacro
+    override property GetIdentity            as string => ""
 
-    override property GetIdentityNeedsSeperator as logic => false
     /// <inheritdoc />
     override property GetRowCount            as string => ""
     /// <inheritdoc />
@@ -43,6 +42,8 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
     end constructor
 
     private static aFuncs := null as Dictionary<string, string>
+
+    /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
             begin lock lockObj
@@ -70,7 +71,8 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
         endif
         return aFuncs
 
-    override method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
+        /// <inheritdoc />
+        override method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult as string
         switch oInfo:FieldType
         case DbFieldType.Character
@@ -104,9 +106,6 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
             sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch
         return sResult
-
-    override method CaseSync(cIdentifier as string) as string
-        return cIdentifier:ToLower()
 
 
 end method

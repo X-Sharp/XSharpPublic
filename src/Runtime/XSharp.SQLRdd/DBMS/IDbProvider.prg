@@ -74,20 +74,11 @@ interface ISqlDbProvider
     /// Syntax for the statement to retrieve the identity value of the last inserted row
     /// </summary>
     property GetIdentity            as string get
-    /// <summary>
-    /// Should the GetIdentity statement be prefixed with a separator?
-    /// </summary>
-    property GetIdentityNeedsSeperator as logic get
 
     /// <summary>
     /// Syntax for the statement to retrieve the number of rows updated by the last statement
     /// </summary>
     property GetRowCount            as string get
-    /// <summary>
-    /// Should the GetRowCount statement be prefixed with a separator?
-    /// </summary>
-    property GetRowCountNeedsSeperator as logic get
-
 
     /// <summary>
     /// Return a list of function translations for this provider
@@ -159,9 +150,7 @@ interface ISqlDbProvider
     /// <returns>The translation of the function.</returns>
     method GetFunction(sFunction as string) as string
 
-    /// <summary>
-    /// Synchronize the case of an identifier with the case of the database
-    /// </summary
+    /// <summary>Synchronize the case of an identifier with the case of the database</summary>
     /// <param name="cIdentifier">String to Synchronize</param>
     /// <returns>String with the correct case</returns>
     method CaseSync(cIdentifier as STRING) as STRING

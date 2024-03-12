@@ -311,21 +311,10 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 
     /// <inheritdoc/>
     /// <remarks>
-    /// The default implementation returns TRUE
-    /// </remarks>
-    virtual property GetIdentityNeedsSeperator as logic => true
-
-    /// <inheritdoc/>
-    /// <remarks>
     /// The default implementation returns an empty string
     /// </remarks>
     virtual property GetRowCount            as string => ""
 
-    /// <inheritdoc/>
-    /// <remarks>
-    /// The default implementation returns TRUE
-    /// </remarks>
-    virtual property GetRowCountNeedsSeperator as logic => true
 
 
 #endregion
@@ -413,9 +402,10 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return sResult
     end method
 
-    /// <inheritdoc>
+    /// <inheritdoc />
+    /// <remarks>The default implementation returns the identifier in lowercase</remarks>
     virtual method CaseSync(cIdentifier as string) as string
-        return cIdentifier
+        return cIdentifier:ToLower()
     end method
 end class
 

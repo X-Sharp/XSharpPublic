@@ -113,19 +113,20 @@ partial class SQLRDD inherit DBFVFP
                 throw Exception{}
             endif
         endif
-        local aUpdatableColumns as HashSet<string>
-        var strUpdatableColumns  := _oTd:UpdatableColumns
-        if String.IsNullOrEmpty(strUpdatableColumns) .or. strUpdatableColumns == "*"
-            aUpdatableColumns := null
-        else
-            aUpdatableColumns    := HashSet<string>{strUpdatableColumns:Split(','), StringComparer.OrdinalIgnoreCase}
+        local aUpdatableColumns := null as HashSet<string>
+        if _oTd:HasUpdatableColumns
+            aUpdatableColumns    := HashSet<string>{_oTd:UpdatableColumns:Split(','), StringComparer.OrdinalIgnoreCase}
         endif
-        local aKeyColumns as HashSet<string>
-        var strKeyColumns        := _oTd:KeyColumns
-        if String.IsNullOrEmpty(strKeyColumns) .or. strKeyColumns == "*"
-            aKeyColumns := null
-        else
-            aKeyColumns    := HashSet<string>{strKeyColumns:Split(','), System.StringComparer.OrdinalIgnoreCase}
+        local aKeyColumns := null as HashSet<string>
+        if _oTd:HasKeyColumns .or. _oTd:HasRecnoColumn
+            if _oTd:HasKeyColumns
+                aKeyColumns          := HashSet<string>{_oTd:KeyColumns:Split(','), System.StringComparer.OrdinalIgnoreCase}
+            else
+                aKeyColumns          := HashSet<string>{System.StringComparer.OrdinalIgnoreCase}
+            endif
+            if _oTd:HasRecnoColumn .and. ! aKeyColumns:Contains(_oTd:RecnoColumn)
+                aKeyColumns:Add(_oTd:RecnoColumn)
+            endif
         endif
 
         // Get the structure

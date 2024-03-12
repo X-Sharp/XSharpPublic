@@ -100,6 +100,14 @@ class SqlDbTableInfo inherit SqlDbObject
     property CompareMemo              as logic auto
 
 
+    internal property HasRecnoColumn        as LOGIC GET !String.IsNullOrEmpty(SELF:RecnoColumn)
+    internal property HasDeletedColumn      as LOGIC GET !String.IsNullOrEmpty(SELF:DeletedColumn)
+    internal property HasServerFilter       as LOGIC GET !String.IsNullOrEmpty(SELF:ServerFilter)
+    internal property HasKeyColumns         as LOGIC GET !String.IsNullOrEmpty(SELF:KeyColumns) .and. SELF:KeyColumns != "*"
+    internal property HasUpdatableColumns   as LOGIC GET !String.IsNullOrEmpty(SELF:UpdatableColumns) .and. SELF:UpdatableColumns != "*"
+
+
+
     protected _connection as SqlDbConnection
 
     /// <summary>

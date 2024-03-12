@@ -18,14 +18,15 @@ begin namespace XSharp.RDD.SqlRDD
 /// The SqlDbTableCommandBuilder class.
 /// </summary>
 internal class SqlDbTableCommandBuilder
-    protected _cTable as string
-    protected _oTable as SqlDbTableInfo
-    protected _oRdd  as SQLRDD
-    protected _connection as SqlDbConnection
-    property Connection as SqlDbConnection  get _connection
-    property Provider   as ISqlDbProvider   get Connection:Provider
-    Property MetadataProvider as ISqlMetadataProvider get Connection:MetadataProvider
-    property OrderBagList as List<SqlDbOrderBag> get _oRdd:OrderBagList
+    protected _cTable           as string
+    protected _oTable           as SqlDbTableInfo
+    protected _oRdd             as SQLRDD
+    protected _connection       as SqlDbConnection
+    property Connection         as SqlDbConnection  get _connection
+    property Provider           as ISqlDbProvider   get Connection:Provider
+    Property MetadataProvider   as ISqlMetadataProvider get Connection:MetadataProvider
+    property OrderBagList       as List<SqlDbOrderBag> get _oRdd:OrderBagList
+
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
         self:_oRdd        := oRdd
@@ -94,7 +95,6 @@ internal class SqlDbTableCommandBuilder
         return result
 
 
-
     method SetProductionIndex() as logic
         _oRdd:CurrentOrder := null
         if self:OrderBagList:Count > 0
@@ -141,7 +141,7 @@ internal class SqlDbTableCommandBuilder
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif
-        if ! String.IsNullOrEmpty(_oTable:ServerFilter)
+        if SELF:_oTable:HasServerFilter
             whereClauses:Add(_oTable:ServerFilter)
         endif
         sWhereClause := self:CombineWhereClauses(whereClauses)
@@ -150,12 +150,23 @@ internal class SqlDbTableCommandBuilder
             sb:Append(SqlDbProvider.WhereClause)
             sb:Append(sWhereClause)
         endif
+        local cOrderby := "" AS string
         if CurrentOrder != null
             sb:Append(Provider.OrderByClause)
-            var cOrderby := Functions.List2String(CurrentOrder:OrderList)
+            cOrderby := Functions.List2String(CurrentOrder:OrderList)
+            if SELF:_oTable:HasRecnoColumn
+                if ! String.IsNullOrEmpty(cOrderby)
+                    cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                else
+                    cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                endif
+            endif
             cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
-            sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
+        elseif SELF:_oTable:HasRecnoColumn
+            cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
         endif
+        cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
+        sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         var selectStmt := sb:ToString()
         sb:Clear()
         sb:Append(Provider:SelectTopStatement)
@@ -178,7 +189,7 @@ internal class SqlDbTableCommandBuilder
 
             List:Add(c:ColumnInfo:ColumnName, c)
         next
-        if !String.IsNullOrEmpty(_oTable:RecnoColumn)
+        if SELF:_oTable:HasRecnoColumn
             if !List:ContainsKey(_oTable:RecnoColumn)
                 sb:Append(", ")
                 sb:Append(Provider.QuoteIdentifier(_oTable:RecnoColumn))
@@ -189,7 +200,7 @@ internal class SqlDbTableCommandBuilder
             endif
 
         endif
-        if !String.IsNullOrEmpty(_oTable:DeletedColumn)
+        if SELF:_oTable:HasDeletedColumn
             if !List:ContainsKey(_oTable:DeletedColumn)
                 sb:Append(", ")
                 sb:Append(Provider.QuoteIdentifier(_oTable:DeletedColumn))

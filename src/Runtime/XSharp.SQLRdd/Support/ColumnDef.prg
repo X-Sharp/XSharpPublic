@@ -15,6 +15,7 @@ begin namespace XSharp.RDD.SqlRDD
     /// </summary>
     [Flags];
     enum SqlDbColumnFlags
+        member None    := 0
         member Recno   := 1
         member Deleted := 2
     end enum

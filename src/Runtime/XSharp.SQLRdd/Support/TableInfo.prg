@@ -200,12 +200,7 @@ class SqlDbTagInfo inherit SqlDbObject
         super(name)
         self:Index := oIndex
         return
-
-
-
 end class
-
-
 
 end namespace // XSharp.RDD.SqlRDD
 

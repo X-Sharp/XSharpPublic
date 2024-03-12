@@ -178,17 +178,41 @@ internal class SqlDbTableCommandBuilder
     method ColumnList() as string
         var sb := StringBuilder{}
         var List  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
+        var newColumns     := List<SqlDbColumnDef>{}
+        var specialColumns := List<SqlDbColumnDef>{}
         var First := true
+        var changedOrder := false
         foreach var c in _oTable:Columns
-            if First
-                First := false
+            if _oTable:HasRecnoColumn .and. String.Compare(_oTable:RecnoColumn, c:ColumnInfo:ColumnName, true) == 0
+                specialColumns:Add(c)
+                changedOrder := true
+            elseif _oTable:HasDeletedColumn .and. String.Compare(_oTable:DeletedColumn, c:ColumnInfo:ColumnName, true) == 0
+                specialColumns:Add(c)
+                changedOrder := true
             else
-                sb:Append(", ")
+                if First
+                    First := false
+                else
+                    sb:Append(", ")
+                endif
+                sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
+                List:Add(c:ColumnInfo:ColumnName, c)
+                newColumns:Add(c)
             endif
-            sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
-
-            List:Add(c:ColumnInfo:ColumnName, c)
         next
+        foreach var c in specialColumns
+            sb:Append(", ")
+            sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
+            List:Add(c:ColumnInfo:ColumnName, c)
+            newColumns:Add(c)
+        next
+        if changedOrder
+            _oTable:Columns:Clear()
+            foreach var c in newColumns
+                _oTable:Columns:Add(c)
+            next
+        endif
+
         if SELF:_oTable:HasRecnoColumn
             if !List:ContainsKey(_oTable:RecnoColumn)
                 sb:Append(", ")

@@ -39,7 +39,9 @@ partial class SQLRDD inherit DBFVFP
                 endif
             next
             if ! found
-                fields:Add( RddFieldInfo{SELF:Connection:RecnoColumn,"I:+",4,0})
+                var fld := RddFieldInfo{SELF:Connection:RecnoColumn,"I:+",4,0}
+                fld:Flags |= DBFFieldFlags.System
+                fields:Add( fld )
                 SELF:_RecordLength += 4
             endif
         endif
@@ -51,7 +53,9 @@ partial class SQLRDD inherit DBFVFP
                 endif
             next
             if ! found
-                fields:Add( RddFieldInfo{SELF:Connection:DeletedColumn,"L",1,0})
+                var fld  := RddFieldInfo{SELF:Connection:DeletedColumn,"L",1,0}
+                fld:Flags |= DBFFieldFlags.System
+                fields:Add( fld )
                 SELF:_RecordLength += 1
             endif
         endif
@@ -138,9 +142,11 @@ partial class SQLRDD inherit DBFVFP
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
                 self:_recnoColumNo   := oField:Ordinal
                 oField:Flags |= DBFFieldFlags.AutoIncrement
+                oField:Flags |= DBFFieldFlags.System
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
                 self:_deletedColumnNo := oField:Ordinal
                 self:_deletedColumnIsLogic := oField:FieldType == DbFieldType.Logic
+                oField:Flags |= DBFFieldFlags.System
             endif
             oFields:Add(oField)
             if aKeyColumns == null
@@ -636,6 +642,20 @@ partial class SQLRDD inherit DBFVFP
         end get
     end property
 
+
+    override property FieldCount as Long
+        get
+            var result := super:FieldCount
+            if self:_recnoColumNo >= 0
+                result -= 1
+            endif
+            if self:_deletedColumnNo >= 0
+                result -= 1
+            endif
+            return result
+        end get
+
+    end property
 
 end class
 

@@ -680,20 +680,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
         end try
         return false
     end method
-    method GetTableColumns(cTableName as string) as DataTable
-        try
-            if !SELF:HasCollection(COLUMNCOLLECTION)
-                return null
-            endif
-            local aRestrictions := string[]{4} as string[]
-            aRestrictions[2] := self:Provider:CaseSync(cTableName)
-            var dt := self:DbConnection:GetSchema(COLUMNCOLLECTION, aRestrictions)
-            return dt
-        catch e as Exception
-            _lastException := e
-        end try
-        return null
-
     /// <summary>
     /// Return the table names from the database
     /// </summary>

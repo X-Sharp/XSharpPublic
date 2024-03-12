@@ -23,13 +23,12 @@ partial class SQLRDD inherit DBFVFP
     private _table          as DataTable
     private _phantomRow     as DataRow
     private _creatingIndex  as logic
-    private _identityKey    as long
     private _tableMode      as TableMode
     private _hasData        as logic
     private _realOpen       as logic
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
-    private _obuilder       as SqlDbTableCommandBuilder
+    private _builder        as SqlDbTableCommandBuilder
     private _command        as SqlDbCommand
     private _trimValues     as logic
     private _creating       as logic
@@ -49,6 +48,8 @@ partial class SQLRDD inherit DBFVFP
     /// </summary>
     private _recnoColumNo   as long
     private _recordKeyCache as Dictionary<long, long>
+
+    private _numHiddenColumns as long
     private _baseRecNo as logic
     private _serverReccount as LONG
 
@@ -127,12 +128,11 @@ partial class SQLRDD inherit DBFVFP
 
    constructor()
         super()
-        _identityKey      := -1
         _creatingIndex    := false
         _tableMode        := TableMode.Query
         _ReadOnly         := true
         _connection       := null
-        _obuilder         := null
+        _builder          := null
         _deletedColumnNo  := -1
         _recnoColumNo     := -1
         self:_trimValues := true // trim String Valuess
@@ -188,13 +188,13 @@ partial class SQLRDD inherit DBFVFP
 
     private method _GetTableInfo(cTable as string) as logic
         // First check to see if there is a tableDef for this table in the connection
-        self:_obuilder  := SqlDbTableCommandBuilder{cTable, self}
+        self:_builder   := SqlDbTableCommandBuilder{cTable, self}
         self:_cTable    := cTable
-        var info        := _obuilder:FetchInfo(self)
+        var info        := _builder:FetchInfo(self)
         self:_oTd       := info
         self:_trimValues:= info:TrimTrailingSpaces
         if XSharp.RuntimeState.AutoOpen
-            _obuilder:SetProductionIndex()
+            _builder:SetProductionIndex()
         endif
         return true
     end method
@@ -339,11 +339,7 @@ partial class SQLRDD inherit DBFVFP
                 row[_recnoColumNo] := result
             elseif hasGetIdentity
                 var result := _command:ExecuteScalar()
-                var col := SELF:DataTable:Columns[self:_recnoColumNo]
-                var name := col:ColumnName
-                _command:CommandText := "Select Max (" + SELF:Connection:Provider:QuoteIdentifier(name)+") from " + SELF:Connection:Provider:QuoteIdentifier(_cTable)
-                result := _command:ExecuteScalar()
-                row[_recnoColumNo] := result
+                row[_recnoColumNo] := _builder:GetMaxRecno()
             endif
             _command:Connection:CommitTrans()
         catch
@@ -489,7 +485,7 @@ partial class SQLRDD inherit DBFVFP
             _command:ClearParameters()
             self:_hasData    := true
             self:DataTable   := _command:GetDataTable(self:Alias)
-            self:_serverReccount := _obuilder:GetRecCount()
+            self:_serverReccount := _builder:GetRecCount()
         catch as Exception
             return false
         end try
@@ -503,7 +499,7 @@ partial class SQLRDD inherit DBFVFP
             query := self:_oTd:EmptySelectStatement
         else
             if self:_tableMode == TableMode.Table
-                query := _obuilder:BuildSqlStatement(sWhereClause)
+                query := _builder:BuildSqlStatement(sWhereClause)
             else
                 query := self:_oTd:SelectStatement
             endif

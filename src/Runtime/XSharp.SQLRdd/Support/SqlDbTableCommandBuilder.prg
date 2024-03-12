@@ -260,6 +260,30 @@ internal class SqlDbTableCommandBuilder
         var result := _connection:ExecuteScalar(stmt, _cTable)
         return Convert.ToInt32(result)
 
+    method GetMaxRecno() as LONG
+        if ! _oTable:HasRecnoColumn
+            return 0
+        endif
+        var sb := StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append(" max(" +Provider.QuoteIdentifier(_oTable:RecnoColumn) +" ) ")
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteScalar(stmt, _cTable)
+        if result == DBNull.Value
+            return 0
+        endif
+        return Convert.ToInt32(result)
+
+    method GetNextKey() as LONG
+        local maxVal := 0 as long
+        if _oTable:HasRecnoColumn
+            maxVal := self:GetMaxRecno()
+        else
+            maxVal := Self:GetRecCount()
+        endif
+        return maxVal + 1
 
 
 end class

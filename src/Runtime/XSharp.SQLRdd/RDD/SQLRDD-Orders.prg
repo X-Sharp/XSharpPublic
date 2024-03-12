@@ -100,7 +100,7 @@ partial class SQLRDD inherit DBFVFP
                 endif
             endif
             // Now create the index on the server
-            self:_obuilder:CreateIndex(oTag)
+            self:_builder:CreateIndex(oTag)
 
             oBag:Tags:Add(oTag)
             oBag:Save()
@@ -145,7 +145,7 @@ partial class SQLRDD inherit DBFVFP
             result := false
             if order != null
                 // Now delete the index from the server
-                result := self:_obuilder:DropIndex(order)
+                result := self:_builder:DropIndex(order)
             endif
 
         else

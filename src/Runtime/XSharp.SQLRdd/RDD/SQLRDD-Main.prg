@@ -29,7 +29,7 @@ partial class SQLRDD inherit DBFVFP
     override property Driver as string get "SQLRDD"
 #endregion
 
-    PRIVATE METHOD _adjustFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
+    PRIVATE METHOD _adjustCreateFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
         local fields := aFields:ToList() as List<RddFieldInfo>
         if ! String.IsNullOrEmpty(SELF:Connection:RecnoColumn)
             var found := false
@@ -74,7 +74,7 @@ partial class SQLRDD inherit DBFVFP
         self:_tableMode := TableMode.Table
         self:_TempFileName(info)
         self:_creating := true
-        self:_Fields := self:_adjustFields(self:_Fields)
+        self:_Fields := self:_adjustCreateFields(self:_Fields)
         var lResult := super:Create(info)
         self:_creating := false
         self:_RecordLength := 2 // 1 byte "pseudo" data + deleted flag
@@ -137,16 +137,19 @@ partial class SQLRDD inherit DBFVFP
         var oFields := List<RddFieldInfo>{}
         self:_updatableColumns := List<RddFieldInfo>{}
         self:_keyColumns       := List<RddFieldInfo>{}
+        self:_numHiddenColumns := 0
         foreach var oCol in _oTd:Columns
             var oField := oCol:ColumnInfo
             if oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Recno)
                 self:_recnoColumNo   := oField:Ordinal
                 oField:Flags |= DBFFieldFlags.AutoIncrement
                 oField:Flags |= DBFFieldFlags.System
+                self:_numHiddenColumns += 1
             elseif oCol:ColumnFlags:HasFlag(SqlDbColumnFlags.Deleted)
                 self:_deletedColumnNo := oField:Ordinal
                 self:_deletedColumnIsLogic := oField:FieldType == DbFieldType.Logic
                 oField:Flags |= DBFFieldFlags.System
+                self:_numHiddenColumns += 1
             endif
             oFields:Add(oField)
             if aKeyColumns == null
@@ -209,11 +212,8 @@ partial class SQLRDD inherit DBFVFP
         self:_ForceOpen()
         var lResult := super:Append(lReleaseLock)
         if lResult
-            var key := _identityKey
+            var key := self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
-            if _recnoColumNo >= 0
-                _identityKey -= 1
-            endif
             if row is IDbRow var dbRow
                 dbRow:RecNo := super:RecNo
             endif
@@ -244,7 +244,7 @@ partial class SQLRDD inherit DBFVFP
     override method GetValue(nFldPos as int) as object
         // nFldPos is 1 based, the RDD compiles with /az+
         SELF:_ForceOpen()
-        if nFldPos > 0 .and. nFldPos <= self:FieldCount
+        if nFldPos > 0 .and. nFldPos <= self:RealFieldCount
             var col := self:_GetColumn(nFldPos)
             nFldPos -= 1
             local result as object
@@ -315,7 +315,7 @@ partial class SQLRDD inherit DBFVFP
             // silently ingore the fieldput
             return true
         endif
-        if nFldPos > 0 .and. nFldPos <= self:FieldCount
+        if nFldPos > 0 .and. nFldPos <= self:RealFieldCount
             var col := self:_GetColumn(nFldPos)
             if SELF:_updatableColumns:Contains(col)
                 var row := self:DataTable:Rows[self:_RecNo -1]
@@ -388,7 +388,7 @@ partial class SQLRDD inherit DBFVFP
                 self:DataTable:RejectChanges()
             endif
             _updatedRows:Clear()
-            self:_serverReccount := _obuilder:GetRecCount()
+            self:_serverReccount := _builder:GetRecCount()
         endif
         return lOk
     end method
@@ -643,19 +643,9 @@ partial class SQLRDD inherit DBFVFP
     end property
 
 
-    override property FieldCount as Long
-        get
-            var result := super:FieldCount
-            if self:_recnoColumNo >= 0
-                result -= 1
-            endif
-            if self:_deletedColumnNo >= 0
-                result -= 1
-            endif
-            return result
-        end get
+    internal property RealFieldCount as long => Super:FieldCount
 
-    end property
+    override property FieldCount as Long => super:FieldCount - self:_numHiddenColumns
 
 end class
 

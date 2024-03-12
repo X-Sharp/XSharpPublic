@@ -573,6 +573,9 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                     switch colInfo:FieldType
                     case DbFieldType.Integer
                     case DbFieldType.Currency
+                        if colInfo:FieldType == DbFieldType.Currency
+                            colInfo:Decimals := Math.Min(4, colInfo:Decimals)
+                        endif
                         colInfo:FieldType := DbFieldType.Number
                         colInfo:Length := 10
                     case DbFieldType.Double

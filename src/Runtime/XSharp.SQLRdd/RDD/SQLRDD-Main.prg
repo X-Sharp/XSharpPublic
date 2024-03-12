@@ -230,6 +230,9 @@ partial class SQLRDD inherit DBFVFP
                     row[c] := SELF:_HandleNullDate(values[c:Ordinal],c)
                 endif
             next
+            if self:_recnoColumNo > -1
+                self:_recordKeyCache:Add(key, SELF:DataTable:Rows:Count-1)
+            endif
             self:_Hot := true
         endif
         return lResult

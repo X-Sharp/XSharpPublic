@@ -327,18 +327,18 @@ partial class SQLRDD inherit DBFVFP
         try
             _command:Connection:BeginTrans()
             _command:BindParameters()
-            local lInsertWithIdentity := false as LOGIC
+            local lInsertWithGetIdentity := false as LOGIC
             if hasGetIdentity .and. ! String.IsNullOrEmpty(Provider:GetIdentity)
                 sb:Append("; ")
                 sb:Append(Provider:GetIdentity)
-                lInsertWithIdentity := TRUE
+                lInsertWithGetIdentity := TRUE
             endif
             _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
-            if lInsertWithIdentity
+            if lInsertWithGetIdentity
                 var result := _command:ExecuteScalar()
                 row[_recnoColumNo] := result
             elseif hasGetIdentity
-                var result := _command:ExecuteScalar()
+                _command:ExecuteScalar()
                 row[_recnoColumNo] := _builder:GetMaxRecno()
             endif
             _command:Connection:CommitTrans()

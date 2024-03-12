@@ -253,7 +253,7 @@ internal class SqlDbTableCommandBuilder
     method GetRecCount() AS LONG
         var sb := StringBuilder{}
         sb:Append(SqlDbProvider.SelectClause)
-        sb:Append(" count(*) ")
+        sb:Append("count(*)")
         sb:Append(SqlDbProvider.FromClause)
         sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
         var stmt := sb:ToString()
@@ -266,7 +266,7 @@ internal class SqlDbTableCommandBuilder
         endif
         var sb := StringBuilder{}
         sb:Append(SqlDbProvider.SelectClause)
-        sb:Append(" max(" +Provider.QuoteIdentifier(_oTable:RecnoColumn) +" ) ")
+        sb:Append("max(" +Provider.QuoteIdentifier(_oTable:RecnoColumn) +" )")
         sb:Append(SqlDbProvider.FromClause)
         sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
         var stmt := sb:ToString()

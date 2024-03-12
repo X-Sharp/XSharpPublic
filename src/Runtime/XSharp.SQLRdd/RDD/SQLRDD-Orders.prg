@@ -388,7 +388,6 @@ partial class SQLRDD inherit DBFVFP
             else
                 info:Result := DBNull.Value
             endif
-            /*
         case DBOI_NUMBER
             if workOrder != null
                 var i := 0
@@ -409,7 +408,6 @@ partial class SQLRDD inherit DBFVFP
         case DBOI_RECNO
             // our position is the row number in the local cursor
             info:Result := self:_RecNo
-            */
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch

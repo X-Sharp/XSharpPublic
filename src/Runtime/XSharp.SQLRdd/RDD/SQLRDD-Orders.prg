@@ -388,6 +388,28 @@ partial class SQLRDD inherit DBFVFP
             else
                 info:Result := DBNull.Value
             endif
+            /*
+        case DBOI_NUMBER
+            if workOrder != null
+                var i := 0
+                foreach var tag in oBag:Tags
+                    i++
+                    if tag == workOrder
+                        info:Result := i
+                        exit
+                    endif
+                next
+            else
+                info:Result := 0
+            endif
+        case DBOI_KEYCOUNT
+            self:_ForceOpen()
+            info:Result := self:DataTable:Rows:Count
+        case DBOI_POSITION
+        case DBOI_RECNO
+            // our position is the row number in the local cursor
+            info:Result := self:_RecNo
+            */
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch

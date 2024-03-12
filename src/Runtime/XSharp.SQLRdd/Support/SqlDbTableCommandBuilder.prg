@@ -226,6 +226,17 @@ internal class SqlDbTableCommandBuilder
         return
 
 
+    method GetRecCount() AS LONG
+        var sb := StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append(" count(*) ")
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteScalar(stmt, _cTable)
+        return Convert.ToInt32(result)
+
+
 
 end class
 end namespace // XSharp.SQLRdd.SupportClasses

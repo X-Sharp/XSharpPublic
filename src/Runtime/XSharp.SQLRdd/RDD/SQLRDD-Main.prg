@@ -382,6 +382,7 @@ partial class SQLRDD inherit DBFVFP
                 self:DataTable:RejectChanges()
             endif
             _updatedRows:Clear()
+            self:_serverReccount := _obuilder:GetRecCount()
         endif
         return lOk
     end method
@@ -462,7 +463,7 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-	    return super:GoTop()
+        return super:GoTop()
     end method
 
 	/// <summary>Position the cursor to the last logical row.</summary>
@@ -561,6 +562,16 @@ partial class SQLRDD inherit DBFVFP
             return SELF:_RecNo
         end get
     end property
+
+    /// <inheritdoc />
+    override property  RecCount as int
+        get
+            if _baseRecNo
+                return Super:RecCount
+            endif
+            return Self:_serverReccount
+        end get
+    end property
 	/// <summary>Position the cursor relative to its current position.</summary>
 	/// <param name="nToSkip">The number of rows to skip.
     /// If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
@@ -608,7 +619,7 @@ partial class SQLRDD inherit DBFVFP
         get
             self:ForceRel()
             if self:_deletedColumnNo > 0
-                var res:= self:GetValue(self:_deletedColumnNo)
+                var res:= self:GetValue(self:_deletedColumnNo+1)
                 if res is logic
                     return (logic) res
                 else

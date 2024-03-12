@@ -50,6 +50,7 @@ partial class SQLRDD inherit DBFVFP
     private _recnoColumNo   as long
     private _recordKeyCache as Dictionary<long, long>
     private _baseRecNo as logic
+    private _serverReccount as LONG
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -488,6 +489,7 @@ partial class SQLRDD inherit DBFVFP
             _command:ClearParameters()
             self:_hasData    := true
             self:DataTable   := _command:GetDataTable(self:Alias)
+            self:_serverReccount := _obuilder:GetRecCount()
         catch as Exception
             return false
         end try

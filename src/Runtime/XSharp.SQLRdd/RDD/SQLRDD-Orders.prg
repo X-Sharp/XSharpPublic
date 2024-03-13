@@ -403,11 +403,11 @@ partial class SQLRDD inherit DBFVFP
             endif
         case DBOI_KEYCOUNT
             self:_ForceOpen()
-            info:Result := self:DataTable:Rows:Count
+            info:Result := self:RowCount
         case DBOI_POSITION
         case DBOI_RECNO
             // our position is the row number in the local cursor
-            info:Result := self:_RecNo
+            info:Result := self:RowNumber
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch

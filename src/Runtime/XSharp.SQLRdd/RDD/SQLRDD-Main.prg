@@ -15,6 +15,8 @@ using System.Data.Common
 using System.Linq
 using XSharp.RDD.SqlRDD.Providers
 
+#undef TRACERDD
+
 begin namespace XSharp.RDD.SqlRDD
 
 /// <summary>
@@ -23,7 +25,7 @@ begin namespace XSharp.RDD.SqlRDD
 [DebuggerDisplay("SQLRDD ({Alias,nq})")];
 partial class SQLRDD inherit DBFVFP
 
-// Overridden properties and methods, these should all be documented
+    // Overridden properties and methods, these should all be documented
 
 #region Overridden properties
     override property Driver as string get "SQLRDD"
@@ -63,9 +65,9 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-	/// <summary>Create a table.</summary>
-	/// <param name="info">object describing the file to create.</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <summary>Create a table.</summary>
+    /// <param name="info">object describing the file to create.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Create(info as DbOpenInfo) as logic
         _cTable := System.IO.Path.GetFileName(info:FileName)
         if ! self:_PrepareOpen(info)
@@ -86,9 +88,9 @@ partial class SQLRDD inherit DBFVFP
         return lResult
     end method
 
-	/// <summary>Open a table.</summary>
-	/// <param name="info">object describing the file to open.</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <summary>Open a table.</summary>
+    /// <param name="info">object describing the file to open.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>
     /// Open() will open the table and read the table structure from the database.
     /// If the table is a query then the data will be read from the database as well.
@@ -202,9 +204,9 @@ partial class SQLRDD inherit DBFVFP
 
 
 
-	/// <summary>Append a blank row and position the cursor to the new row.</summary>
-	/// <param name="lReleaseLock">A flag that is TRUE if you want to clear all pending row locks before appending the new row and FALSE if you want to add the new row to the end of the current lock list.</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <summary>Append a blank row and position the cursor to the new row.</summary>
+    /// <param name="lReleaseLock">A flag that is TRUE if you want to clear all pending row locks before appending the new row and FALSE if you want to add the new row to the end of the current lock list.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
@@ -214,9 +216,6 @@ partial class SQLRDD inherit DBFVFP
         if lResult
             var key := self:_builder:GetNextKey()
             var row := self:DataTable:NewRow()
-            if row is IDbRow var dbRow
-                dbRow:RecNo := super:RecNo
-            endif
             self:DataTable:Rows:Add(row)
             _updatedRows:Add(row)
             if _emptyValues == null
@@ -231,15 +230,15 @@ partial class SQLRDD inherit DBFVFP
                 endif
             next
             if self:_recnoColumNo > -1
-                self:_recordKeyCache:Add(key, SELF:DataTable:Rows:Count-1)
+                self:_recordKeyCache:Add(key, SELF:RowCount-1)
             endif
-            self:_Hot := true
+            self:GoHot()
         endif
         return lResult
     end method
 
     /// <summary>Get a value for the specified column.</summary>
-	/// <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
+    /// <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
     /// <returns>The value of the specified field.</returns>
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
@@ -251,12 +250,7 @@ partial class SQLRDD inherit DBFVFP
             var col := self:_GetColumn(nFldPos)
             nFldPos -= 1
             local result as object
-            if self:DataTable:Rows:Count >= self:_RecNo .and. !self:EoF
-                var row := self:DataTable:Rows[self:_RecNo -1]
-                result  := row[nFldPos]
-            else
-                result := _phantomRow[nFldPos]
-            endif
+            result  := SELF:CurrentRow[nFldPos]
             if result is string var strValue .and. ! _creatingIndex
                 if self:_trimValues
                     result := strValue:TrimEnd()
@@ -289,16 +283,18 @@ partial class SQLRDD inherit DBFVFP
             elseif _creatingIndex .and. result is string var strResult
                 result := strResult:PadRight(_Fields[nFldPos]:Length,' ')
             endif
-
+            #ifdef TRACERDD
+                System.Diagnostics.Debug.WriteLine("GetValue recno {0}, row {1}, col {2}, value {3} ", RecNo, RowNumber, nFldPos, result)
+            #endif
             return result
         endif
         return super:GetValue(nFldPos)
     end method
 
 
-	/// <summary>Write a value for a specified column</summary>
-	/// <param name="nFldPos">ONE based position for which the value should be written.</param>
-	/// <param name="oValue">New value that needs to written to the table this column.</param>
+    /// <summary>Write a value for a specified column</summary>
+    /// <param name="nFldPos">ONE based position for which the value should be written.</param>
+    /// <param name="oValue">New value that needs to written to the table this column.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
@@ -321,14 +317,14 @@ partial class SQLRDD inherit DBFVFP
         if nFldPos > 0 .and. nFldPos <= self:RealFieldCount
             var col := self:_GetColumn(nFldPos)
             if SELF:_updatableColumns:Contains(col)
-                var row := self:DataTable:Rows[self:_RecNo -1]
+                var row := SELF:CurrentRow
                 if !_updatedRows:Contains(row)
                     _updatedRows:Add(row)
                 endif
 
                 row[nFldPos-1] := SELF:_HandleNullDate(oValue,self:DataTable:Columns[nFldPos-1])
                 result := true
-                self:_Hot := true
+                SELF:GoHot()
             else
                 self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:PutValue", i"Column {col.ColumnName} is not Updatable"  )
             endif
@@ -340,7 +336,7 @@ partial class SQLRDD inherit DBFVFP
     override method GoCold() as logic
         local lWasHot := self:_Hot as logic
         local lOk := super:GoCold() as logic
-        if lWasHot .and. self:DataTable != null .and. self:DataTable:Rows:Count >= SELF:_RecNo
+        if lWasHot .and. self:DataTable != null
             foreach var row in _updatedRows
                 try
                     lOk := true
@@ -397,8 +393,8 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-	/// <summary>Close a table.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <summary>Close a table.</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     override method Close() as logic
         local lOk as logic
         // This method deletes the temporary file after the file is closed
@@ -413,44 +409,48 @@ partial class SQLRDD inherit DBFVFP
         return lOk
     end method
 
-	/// <summary>Mark the row at the current cursor position for deletion.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	/// <remarks>
+    /// <summary>Mark the row at the current cursor position for deletion.</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
     /// When a DeletedColumn is defined, then his set the value of that column to TRUE
     /// Otherwise current row is deleted. The deletion at the server will be done when the record pointer is moved or the table is closed.
-	/// </remarks>
+    /// </remarks>
 
     override method Delete() as logic
         if self:_deletedColumnNo > -1
-            var row := self:DataTable:Rows[SELF:_RecNo -1]
+            var row := self:CurrentRow
             if self:_deletedColumnIsLogic
                 row[_deletedColumnNo] := true
             else
                 row[_deletedColumnNo] := 1
             endif
-         endif
+        endif
+        // Must position the DBF on the right row for the deletion
+        super:GoTo(SELF:RowNumber)
         return super:Delete()
     end method
 
-	/// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	/// <remarks>
+    /// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <remarks>
     /// When a DeletedColumn is defined, then his set the value of that column to TRUE
     /// Otherwise when the current row is deleted and not persisted to the server yet, then the deletion is undone.
-	/// </remarks>
+    /// </remarks>
     override method Recall() as logic
         if self:_deletedColumnNo >= 0
-            var row := self:DataTable:Rows[SELF:_RecNo -1]
+            var row := self:CurrentRow
             if self:_deletedColumnIsLogic
                 row[_deletedColumnNo] := false
             else
                 row[_deletedColumnNo] := 0
             endif
         endif
+        // Must position the DBF on the right row for the recall
+        super:GoTo(SELF:RowNumber)
         return super:Recall()
     end method
 
-	/// <summary>Retrieve and optionally change information about a work area.</summary>
+    /// <summary>Retrieve and optionally change information about a work area.</summary>
     /// <param name="nOrdinal">Specifies the type of information.</param>
     /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
     override method Info(uiOrdinal as long, oNewValue as object) as object
@@ -463,8 +463,7 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
-	/// <summary>Position the cursor to the first logical row.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <inheritdoc />
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
@@ -472,43 +471,78 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        return super:GoTop()
+        SELF:RowNumber  := 1
+        SELF:_Top       := TRUE
+        SELF:_Bottom    := FALSE
+        SELF:_BufferValid := FALSE
+        SELF:_SetEOF(FALSE)
+        SELF:_SetBOF(FALSE)
+        // Apply Filter and SetDeleted
+        VAR result := SELF:SkipFilter(1)
+        SELF:_CheckEofBof()
+        #ifdef TRACERDD
+        System.Diagnostics.Debug.WriteLine("GoTop Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _RecCount, RecNo, RowNumber, EoF, BoF)
+        #endif
+        RETURN result
     end method
 
-	/// <summary>Position the cursor to the last logical row.</summary>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+    /// <inheritdoc />
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
     /// </remarks>
-
     override method GoBottom() as logic
         if !self:_ForceOpen()
             return false
         endif
-    	RETURN super:GoBottom()
-    end method
-
-	/// <summary>Position the cursor regardless of scope and filter conditions.</summary>
-	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
-	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    /// <remarks>
-    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
-    /// </remarks>
-    override method SkipRaw(move as long) as logic
-        if !self:_ForceOpen()
-            return false
-        endif
-        var old := SELF:_baseRecNo
-        SELF:_baseRecNo := TRUE
-        var result := super:SkipRaw(move)
-        SELF:_baseRecNo := old
+        SELF:RowNumber  := SELF:RowCount
+        SELF:_Top       := FALSE
+        SELF:_Bottom    := TRUE
+        SELF:_BufferValid := FALSE
+        // Apply Filter and SetDeleted
+        VAR result := SELF:SkipFilter(-1)
+        SELF:_CheckEofBof()
+        #ifdef TRACERDD
+        System.Diagnostics.Debug.WriteLine("GoBottom Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", result, _RecCount, RecNo, RowNumber, EoF, BoF)
+        #endif
         RETURN result
     end method
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database
+    /// </remarks>
+    override method SkipRaw(nToSkip as long) as logic
+        if !self:_ForceOpen()
+            return false
+        endif
+        LOCAL isOK := TRUE AS LOGIC
+        //
+        IF nToSkip == 0
+            // Refresh current Recno
+            SELF:GoCold()
+        ELSE
+            var newRow := SELF:RowNumber + nToSkip
+            IF newRow > 0
+                if newRow <= SELF:RowCount
+                    SELF:RowNumber := newRow
+                    SELF:_SetEOF(FALSE)
+                ELSE
+                    SELF:RowNumber := 0
+                    SELF:_SetEOF(TRUE)
+                endif
+            ELSE
+                isOK := SELF:GoTop()
+                SELF:_SetBOF(TRUE)
+            ENDIF
+        ENDIF
+        #ifdef TRACERDD
+        System.Diagnostics.Debug.WriteLine("SkipRaw Result: {0}, RecCount {1}, Recno {2}, RowNumber {3}, EOF {4}, BOF {5}", isOK, _RecCount, RecNo, RowNumber, EoF, BoF)
+        #endif
+        return isOK
+    end method
 
-	/// <summary>Position the cursor to a specific, physical row.</summary>
-	/// <param name="nRec">The ONE based row number of the new cursor position.</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+
+    /// <inheritdoc />
     /// <remarks>
     /// When the area is in Tablemode, and no data has been read before, then this will trigger fetching the data from the database <br/>
     /// When a RecnoColumn is defined, then the cursor will be positioned on the row with the specified Recno, when it exists.
@@ -518,84 +552,105 @@ partial class SQLRDD inherit DBFVFP
         if !self:_ForceOpen()
             return false
         endif
-        IF SELF:_baseRecNo
-            RETURN super:GoTo(nRec)
-        ENDIF
-        if self:_recnoColumNo > -1 .and. nRec > 0
-            local result as logic
-            IF ! _baseRecNo
-                if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
-                    self:_RecNo := nRowNum + 1
-                else
-                    // when record number does not exist, then go to phantom record
-                    self:_RecNo := 0
-                endif
-                var old := SELF:_baseRecNo
-                SELF:_baseRecNo := TRUE
-                result := super:GoTo(_RecNo)
-                SELF:_baseRecNo := old
-                return result
-            ENDIF
+        SELF:GoCold()
+        if self:_recnoColumNo > -1
+            var row := self:DataTable:Rows:Find(nRec)
+            if self:_recordKeyCache:TryGetValue(nRec, out var nRowNum)
+                nRec := nRowNum + 1
+            else
+                // when record number does not exist, then go to phantom record
+                nRec := 0
+            endif
         endif
-        self:_RecNo := nRec
-        return super:GoTo(nRec)
+        LOCAL nCount := SELF:RowCount AS LONG
+        // Normal positioning, VO resets FOUND to FALSE after a recprd movement
+        SELF:_Found := FALSE
+        SELF:_BufferValid := FALSE
+        IF  nRec <= nCount  .AND.  nRec > 0
+            SELF:RowNumber := nRec
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(FALSE)
+        ELSEIF nRec < 0 .AND. nCount > 0
+            // skip to BOF. Move to record 1.
+            SELF:RowNumber := 1
+            SELF:_SetEOF(FALSE)
+            SELF:_SetBOF(TRUE)
+        ELSE
+            // File empty, or move after last record
+            SELF:RowNumber := nCount + 1
+            SELF:_SetEOF(TRUE)
+            SELF:_SetBOF(nCount == 0)
+        ENDIF
+        IF SELF:_Relations:Count != 0
+            SELF:SyncChildren()
+        ENDIF
+        SELF:_CheckEofBof()
+        RETURN TRUE
     end method
 
-    private miCheckEofBof as MethodInfo
-    private method _GetCheckEofBof() as logic
-        if miCheckEofBof == null
-            miCheckEofBof := typeof(DBF):GetMethod("_CheckEofBof", BindingFlags.NonPublic+BindingFlags.Instance)
-        endif
-        return miCheckEofBof != null
-    end method
-	/// <summary>The physical row identifier at the current cursor position.</summary>
-	/// <remarks>
+
+    /// <summary>The physical row identifier at the current cursor position.</summary>
+    /// <remarks>
     /// When a RecnoColumn is defined, then his will return the value of that column.
     /// Otherwise the relative position inside the cursor will be returned.
-	/// </remarks>
+    /// </remarks>
     override property RecNo		as int
         get
             self:ForceRel()
-            if self:_recnoColumNo > -1
-                // HACK  The code inside Xsharp.RDD for _CheckEofBof should check _RecNo and not RecNo
-                if _GetCheckEofBof()
-                    LOCAL st := StackTrace{ FALSE } AS StackTrace
-                    IF st:GetFrame(1):GetMethod() == miCheckEofBof
-                        RETURN SELF:_RecNo
-                    endif
-                endif
-                if ! _baseRecNo
-                    var obj := self:GetValue(self:_recnoColumNo+1)
-                    return Convert.ToInt32(obj)
-                endif
+            if self:_recnoColumNo > -1 .and. ! SELF:EoF
+                var obj := SELF:CurrentRow[self:_recnoColumNo]
+                return Convert.ToInt32(obj)
             endif
-            return SELF:_RecNo
+            return SELF:RowNumber
         end get
     end property
 
     /// <inheritdoc />
-    override property  RecCount as int
+    override property RecCount as int
         get
-            if _baseRecNo
-                return Super:RecCount
-            endif
             return Self:_serverReccount
         end get
     end property
-	/// <summary>Position the cursor relative to its current position.</summary>
-	/// <param name="nToSkip">The number of rows to skip.
-    /// If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    override method Skip(nSkip as long) as logic
-        var old := SELF:_baseRecNo
-        SELF:_baseRecNo := TRUE
-        var result := super:Skip(nSkip)
-        self:_baseRecNo := old
-        return result
+
+    /// <inheritdoc />
+    override method Skip(nToSkip as long) as logic
+        LOCAL result := FALSE AS LOGIC
+        //var oldRow := SELF:RowNumber
+        //var oldRecNo := SELF:RecNo
+        SELF:ForceRel()
+        IF SELF:IsOpen
+
+			SELF:_Top := SELF:_Bottom := FALSE
+            IF nToSkip == 0
+                result := SELF:GoCold()
+            ELSE
+                result := SELF:SkipRaw( nToSkip )
+                if result
+                    result := SELF:SkipFilter( iif(nToSkip > 0, 1, -1) )
+                endif
+                // We reached the top ?
+                IF result
+                    IF ( nToSkip < 0 ) .AND. SELF:_BoF
+                        SELF:GoTop()
+                        SELF:BoF := TRUE
+                    ENDIF
+                    // when we land at EOF then do not reset the EOF flag
+                    IF nToSkip < 0 .AND. SELF:RowNumber < SELF:RowCount
+                        SELF:_SetEOF(FALSE)
+                    ELSEIF nToSkip > 0
+                        SELF:_SetBOF(FALSE)
+                    ENDIF
+                ENDIF
+            ENDIF
+        endif
+        #ifdef TRACERDD
+        System.Diagnostics.Debug.WriteLine(" Skip {0}, from row {1}, recno {2} to row {3}, recno {4}, EOF {5}, BOF {6}", nToSkip, oldRow, oldRecNo, SELF:RowNumber, SELF:RecNo, SELF:EoF, SELF:BoF)
+        #endif
+        RETURN result
     end method
 
-	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
-	/// <param name="info">An object containing containing the necessary seek information.</param>
+    /// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
+    /// <param name="info">An object containing containing the necessary seek information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
     /// <remarks>
@@ -620,16 +675,16 @@ partial class SQLRDD inherit DBFVFP
         return true
     end method
 
-	/// <summary>Is the current row deleted?</summary>
-	/// <remarks>
+    /// <summary>Is the current row deleted?</summary>
+    /// <remarks>
     /// When a DeletedColumn is defined, then his will return the value of that column.
     /// Otherwise the state of the current row is returned.
-	/// </remarks>
+    /// </remarks>
     override property Deleted		as logic
         get
             self:ForceRel()
             if self:_deletedColumnNo > 0
-                var res:= self:GetValue(self:_deletedColumnNo+1)
+                var res:= CurrentRow[self:_deletedColumnNo]
                 if res is logic
                     return (logic) res
                 else
@@ -647,9 +702,46 @@ partial class SQLRDD inherit DBFVFP
     end property
 
 
-    internal property RealFieldCount as long => Super:FieldCount
+    /// <summary>Return the # of fields/Columns in the current work area, including the RecnoColumn and DeletedColum (if hey exist).</summary>
+    public property RealFieldCount as long => Super:FieldCount
 
-    override property FieldCount as Long => super:FieldCount - self:_numHiddenColumns
+    public override property FieldCount  as long => super:FieldCount - self:_numHiddenColumns
+
+    /// <summary>Returns the # of rows in the local buffer (DataTable).</summary>
+    public property RowCount    as long => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
+
+    /// <summary>The current rownumber in the buffer (DataTable).</summary>
+    public property RowNumber   as long GET _RecNo INTERNAL SET _RecNo := value
+
+    /// <summary>The current row in the buffer (DataTable). When the server is at EOF then the phantomrow is returned.</summary>
+    public property CurrentRow as DataRow
+        get
+            if self:RowNumber == 0 .or. self:RowNumber > self:RowCount
+                return self:_phantomRow
+            endif
+            return self:DataTable:Rows[self:RowNumber -1]
+        end get
+    end property
+
+    PRIVATE METHOD _CheckEofBof() AS VOID
+        VAR nRecs := SELF:RowCount
+        IF nRecs == 0
+            SELF:_SetEOF(TRUE)
+            SELF:_SetBOF(TRUE)
+        ELSEIF SELF:RowNumber > nRecs
+            SELF:_SetEOF(TRUE)
+        ENDIF
+    END METHOD
+
+    INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
+        IF lNewValue != SELF:_EoF
+            SELF:_EoF := lNewValue
+        ENDIF
+    INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
+        IF lNewValue != SELF:_BoF
+            SELF:_BoF := lNewValue
+        ENDIF
+
 
 end class
 

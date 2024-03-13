@@ -14,7 +14,7 @@ using System.Reflection
 using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
 
-
+#undef TRACERDD
 begin namespace XSharp.RDD.SqlRDD
 
 // Private methods and fields
@@ -50,7 +50,6 @@ partial class SQLRDD inherit DBFVFP
     private _recordKeyCache as Dictionary<long, long>
 
     private _numHiddenColumns as long
-    private _baseRecNo as logic
     private _serverReccount as LONG
 
 #region Properties
@@ -108,6 +107,9 @@ partial class SQLRDD inherit DBFVFP
                     var recno  := Convert.ToInt32(obj)
                     _recordKeyCache[recno] := rowNum
                     rowNum++
+                    #ifdef TRACERDD
+                    System.Diagnostics.Debug.WriteLine("Datatable Row {0}, Record {1}", rowNum, recno )
+                    #endif
                 next
             else
                 _recordKeyCache := null
@@ -120,7 +122,7 @@ partial class SQLRDD inherit DBFVFP
             _oStream:SafeWriteByte(26)
             _oStream:SafeSetLength(lOffset+1)
             // now set the file size and reccount in the header
-            self:GoTop()
+            super:GoTop()
         end set
     end property
 
@@ -277,7 +279,9 @@ partial class SQLRDD inherit DBFVFP
             case TypeCode.Boolean
                 values.Add(false)
             case TypeCode.DateTime
-                values.Add(DateTime.MinValue)
+            case TypeCode.Object
+            case TypeCode.DBNull
+            case TypeCode.Empty
             otherwise
                 values.Add(DBNull.Value)
             end switch

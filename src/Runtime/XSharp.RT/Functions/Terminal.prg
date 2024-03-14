@@ -347,6 +347,9 @@ FUNCTION GetColor() AS STRING
     RETURN ConsoleHelpers.ColNum2String(Console.ForegroundColor)+"/"+ConsoleHelpers.ColNum2String(Console.BackgroundColor)
 
 
+FUNCTION SetColor() AS STRING
+    RETURN GetColor()
+
 FUNCTION SetColor(cNewColor as STRING) AS STRING
     LOCAL nFore, nBack		 AS BYTE
     VAR cOldCol  := GetColor()

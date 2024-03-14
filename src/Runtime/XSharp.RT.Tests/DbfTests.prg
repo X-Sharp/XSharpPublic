@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD testInputBufferDeletedWhenClosed AS VOID
             LOCAL cDbf AS STRING
-            local cCopy as STRING
+            LOCAL cCopy AS STRING
             cDbf := "test.dbf"
             cCopy := System.IO.Path.ChangeExtension(cDbf, "TMP")
             RddSetDefault("DBFNTX")
@@ -61,16 +61,16 @@ BEGIN NAMESPACE XSharp.RT.Tests
             DbAppend()
             FieldPut(1,2)
             DbCloseArea("test")
-            System.IO.File.Copy(cDbf, cCopy, true)
+            System.IO.File.Copy(cDbf, cCopy, TRUE)
             DbUseArea(TRUE,,cDbf)
-            Assert.Equal(1, (int) FieldGet(1))
+            Assert.Equal(1, (INT) FieldGet(1))
             FieldPut(1,3)
-            Assert.Equal(3, (int) FieldGet(1))
+            Assert.Equal(3, (INT) FieldGet(1))
             DbCloseArea()
-            System.IO.File.Copy(cCopy, cDbf, true)
+            System.IO.File.Copy(cCopy, cDbf, TRUE)
             DbUseArea(TRUE,,cDbf)
             // field 1 should be 1 and not 3
-            Assert.Equal(1, (int) FieldGet(1))
+            Assert.Equal(1, (INT) FieldGet(1))
             DbCloseArea()
 
 
@@ -1456,8 +1456,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
             RddSetDefault ( "DBFCDX" ) // DBFNTX
             _CreateFromTests()
         METHOD _CreateFromTests() AS VOID
-            LOCAL cDbf, cDbf2, cDbf3 as STRING
-            LOCAL aStruct as ARRAY
+            LOCAL cDbf, cDbf2, cDbf3 AS STRING
+            LOCAL aStruct AS ARRAY
 	        cDbf := GetTempFileName()
             cDbf2 := GetTempFileName()
             cDbf3 := GetTempFileName()
@@ -1502,6 +1502,51 @@ BEGIN NAMESPACE XSharp.RT.Tests
 	        RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD LongOrderNames() AS VOID
+			
+			LOCAL eDialect := RuntimeState.Dialect AS XSharpDialect
+			RuntimeState.Dialect := XSharpDialect.VO
+
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , { {"FLD","N",1,0} } )
+			DbUseArea(,"DBFCDX",cDbf)
+		
+			DbAppend()
+			FieldPut(1,1)
+			DbAppend()
+			FieldPut(1,0)
+			DbAppend()
+			FieldPut(1,3)
+			DbAppend()
+			FieldPut(1,2)
+			
+			Assert.True( DbCreateOrder("TESTa67890",,"FLD") )
+			Assert.True( DbSetOrder("TESTa67890") )
+			DbGoTop()
+			Assert.True( FieldGet(1) == 0)
+		
+			Assert.True( DbSetOrder("TESTa67890dumy") )
+			DbGoTop()
+			Assert.True( FieldGet(1) == 0)
+		
+	
+			Assert.True( DbCreateOrder("TESTb67890abcde",,"-FLD") )
+		
+			Assert.True( DbSetOrder("TESTb67890abcde") )
+			DbGoTop()
+			Assert.True( FieldGet(1) == 3)
+		
+			Assert.True( DbSetOrder("TESTb67890") )
+			DbGoTop()
+			Assert.True( FieldGet(1) == 3 )
+		
+			DbCloseArea()
+			
+			RuntimeState.Dialect := eDialect
+
+
 		STATIC INTERNAL METHOD GetTempFileName() AS STRING
             STATIC nCounter AS LONG
             ++nCounter
@@ -1534,6 +1579,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			    FErase ( FPathName() )
             ENDIF
 			IF File ( cFileName + ".dbt" )
+			    FErase ( FPathName() )
+            ENDIF
+			IF File ( cFileName + ".cdx" )
+			    FErase ( FPathName() )
+            ENDIF
+			IF File ( cFileName + ".ntx" )
 			    FErase ( FPathName() )
             ENDIF
 			DbCreate( cFileName , aFields)

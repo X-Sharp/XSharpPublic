@@ -1,0 +1,12 @@
+EditMenu MENU
+Begin
+	POPUP "&Edit"
+	BEGIN
+		MENUITEM "Cut\tCtrl+X", 20754
+		MENUITEM "&Copy\tCtrl+C", 20755
+		MENUITEM "&Paste\tCtrl+V", 20756
+		MENUITEM SEPARATOR
+		MENUITEM "Clos&e Window\tCtrl+F4", 20758
+	END
+End
+ 

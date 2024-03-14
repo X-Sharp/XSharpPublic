@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <DBServer Name="Orders">
+    <classname>Orders</classname>
+    <hlcaption>Orders</hlcaption>
+    <hldescription>
+    </hldescription>
+    <hlhelpcontext>Orders</hlhelpcontext>
+    <share>False</share>
+    <rdd>DBFNTX</rdd>
+    <filename>%CavoSamplesRootDir%\GSTUTOR\Orders.dbf</filename>
+    <noaccass>No</noaccass>
+    <superclass>DBSERVER</superclass>
+    <order>1</order>
+    <Fields>
+      <Field Name="CUSTNUM">
+        <fldname>CUSTNUM</fldname>
+        <included>1</included>
+        <pos>1</pos>
+        <FieldSpec>Orders_CUSTNUM</FieldSpec>
+      </Field>
+      <Field Name="ORDERNUM">
+        <fldname>ORDERNUM</fldname>
+        <included>1</included>
+        <pos>2</pos>
+        <FieldSpec>Orders_ORDERNUM</FieldSpec>
+      </Field>
+      <Field Name="ORDER_DATE">
+        <fldname>ORDER_DATE</fldname>
+        <included>1</included>
+        <pos>3</pos>
+        <FieldSpec>Orders_ORDER_DATE</FieldSpec>
+      </Field>
+      <Field Name="SHIP_DATE">
+        <fldname>SHIP_DATE</fldname>
+        <included>1</included>
+        <pos>4</pos>
+        <FieldSpec>Orders_SHIP_DATE</FieldSpec>
+      </Field>
+      <Field Name="SHIP_ADDRS">
+        <fldname>SHIP_ADDRS</fldname>
+        <included>1</included>
+        <pos>5</pos>
+        <FieldSpec>Orders_SHIP_ADDRS</FieldSpec>
+      </Field>
+      <Field Name="SHIP_CITY">
+        <fldname>SHIP_CITY</fldname>
+        <included>1</included>
+        <pos>6</pos>
+        <FieldSpec>Orders_SHIP_CITY</FieldSpec>
+      </Field>
+      <Field Name="SHIP_STATE">
+        <fldname>SHIP_STATE</fldname>
+        <included>1</included>
+        <pos>7</pos>
+        <FieldSpec>Orders_SHIP_STATE</FieldSpec>
+      </Field>
+      <Field Name="SHIP_ZIP">
+        <fldname>SHIP_ZIP</fldname>
+        <included>1</included>
+        <pos>8</pos>
+        <FieldSpec>Orders_SHIP_ZIP</FieldSpec>
+      </Field>
+      <Field Name="ORDERPRICE">
+        <fldname>ORDERPRICE</fldname>
+        <included>1</included>
+        <pos>9</pos>
+        <FieldSpec>Orders_ORDERPRICE</FieldSpec>
+      </Field>
+      <Field Name="SELLER_ID">
+        <fldname>SELLER_ID</fldname>
+        <included>1</included>
+        <pos>10</pos>
+        <FieldSpec>Orders_SELLER_ID</FieldSpec>
+      </Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Orders_Ordcust">
+        <name>Orders_Ordcust</name>
+        <filename>%CavoSamplesRootDir%\GSTUTOR\Ordcust.ntx</filename>
+        <Orders>
+          <Order Name="Ordcust">
+            <tag>Ordcust</tag>
+            <Duplicate>Yes</Duplicate>
+            <Ascending>Yes</Ascending>
+            <KeyExp>custnum</KeyExp>
+            <ForExp>
+            </ForExp>
+          </Order>
+        </Orders>
+      </Index>
+    </Indexes>
+  </DBServer>
+</Designers>

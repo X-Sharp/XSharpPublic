@@ -1,0 +1,70 @@
+[FORM:DATAWINDOW:GSG_DATAWINDOW]
+ContTitle=Data Window
+text=DataWindow Caption
+InitMethod=DATAWINDOW(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=MyDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2065
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[FORM:DATAWINDOW:GSG_BALKEN]
+ContTitle=Balken Window
+text=DataWindow Caption
+InitMethod=DATAWINDOW(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=MyDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2065
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[FORM:DATAWINDOW:GSG_DATAWINDOWAUSWAHL]
+ContTitle=Data Window
+text=DataWindow Caption
+InitMethod=DATAWINDOW(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=MyDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2065
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[FORM:DIALOGWINDOW:GSG_DIALOGWINDOW]
+Method01=Font,Font(FONT)
+Method02=Modeless,Modeless(LOGIC)
+Assign01=Background Color,Background(COLOR)
+Assign02=Mouse Pointer,Pointer(CLASS:POINTER)
+Assign03=Help File Name,HelpDisplay(string)
+WindowStyle01=Disabled,WS_DISABLED(BOOL)
+WindowStyle03=Clip Siblings,WS_CLIPSIBLINGS(BOOL)
+WindowStyle04=Local Edit,DS_LOCALEDIT(BOOL)
+WindowStyle05=Absolute Align,DS_ABSALIGN(BOOL)
+WindowStyle06=Clip Children,WS_CLIPCHILDREN(BOOL)
+WindowStyle09=System Modal,DS_SYSMODAL(BOOL)
+WindowStyle10=No Idle Message,DS_NOIDLEMSG(BOOL)
+WindowStyle11=Resizable,WS_THICKFRAME:DS_MODALFRAME(BOOL)
+WindowStyle12=Caption Bar,WS_NULL:WS_CAPTION:WS_CAPTION|WS_SYSMENU:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX(CAPTIONBAR)
+WindowStyle13=Fixed Font,DS_FIXEDSYS(BOOL)
+WindowStyle14=Position,WS_NULL:DS_CENTER:DS_CENTERMOUSE(DIALOGPOSITON)
+WindowStyle15=Type,WS_POPUP:WS_CHILD|DS_CONTROL(DIALOGTYPE)
+ContTitle=Dialog Window
+DialogTemplate=1
+text=Dialog Caption
+InitMethod=DialogWindow(oParent,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DialogWindow)
+Name=TheDialog
+Size=400,240
+Position=5,5
+Style=DS_MODALFRAME|WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_3DLOOK
+ExStyle=WS_EX_DLGMODALFRAME
+HelpID=2070
+PropTabs=HyperLabel,DlgWindow,DlgWndStyles:Styles,Mouse Events,Window Events,Control Events,CommonControl Events,TreeView Events,ListView Events,Menu Events
+

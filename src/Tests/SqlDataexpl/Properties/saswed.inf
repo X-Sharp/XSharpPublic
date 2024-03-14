@@ -1,0 +1,167 @@
+[FORM:DIALOGWINDOW:S_DIALOGWINDOW]
+ContTitle=SAS Dialog Window
+DialogTemplate=1
+text=Dialog Caption
+InitMethod=S_DialogWindow(oParent,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:S_DialogWindow)
+Name=TheDialog
+Size=400,240
+Position=5,5
+Style=DS_MODALFRAME|WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_3DLOOK
+ExStyle=WS_EX_DLGMODALFRAME
+PropTabs=HyperLabel,DlgWindow,DlgWndStyles:Styles,Mouse Events,Window Events,Control Events,CommonControl Events,TreeView Events,ListView Events,Menu Events
+
+
+[FORM:DATAWINDOW:S_DATAWINDOW]
+ContTitle=SAS Data Window
+text=DataWindow Caption
+InitMethod=S_DATAWINDOW(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:S_DataWindow)
+Name=MyDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT]
+Name=sle
+
+[FORM:DATAWINDOW:dtaWindow]
+ContTitle=Data Window
+text=dtaWindow Caption
+InitMethod=dtaWindow (oWindow, iCtlID, oServer)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=dtaWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+; PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+PropTabs=HyperLabel,DataWindow
+
+[FORM:DATAWINDOW:subWindow]
+ContTitle=Data Window
+text=subWindow Caption
+InitMethod=subWindow (oWindow, iCtlID, oServer)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=subWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[FORM:DATAWINDOW:tabWindow]
+ContTitle=Data Window
+text=tabWindow Caption
+InitMethod=tabWindow (oWindow, iCtlID, oServer)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=tabWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+; PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+PropTabs=HyperLabel,DataWindow
+
+[FORM:DATADIALOG:dtaDialog]
+ContTitle=Data Dialog
+text=dtaDialog Caption
+InitMethod=dtaDialog (oWindow, iCtlID, oServer, uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataDialog)
+Name=dtaDialog
+Size=400,240
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+PropTabs=HyperLabel,DataDialog,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[FORM:DIALOGWINDOW:dlgWindow]
+Method01=Font,Font(FONT)
+Method02=Modeless,Modeless(LOGIC)
+Assign01=Background Color,Background(COLOR)
+Assign02=Mouse Pointer,Pointer(CLASS:POINTER)
+Assign03=Help File Name,HelpDisplay(string)
+WindowStyle01=Disabled,WS_DISABLED(BOOL)
+WindowStyle03=Clip Siblings,WS_CLIPSIBLINGS(BOOL)
+WindowStyle04=Local Edit,DS_LOCALEDIT(BOOL)
+WindowStyle05=Absolute Align,DS_ABSALIGN(BOOL)
+WindowStyle06=Clip Children,WS_CLIPCHILDREN(BOOL)
+WindowStyle09=System Modal,DS_SYSMODAL(BOOL)
+WindowStyle10=No Idle Message,DS_NOIDLEMSG(BOOL)
+WindowStyle11=Resizable,WS_THICKFRAME:DS_MODALFRAME(BOOL)
+WindowStyle12=Caption Bar,WS_NULL:WS_CAPTION:WS_CAPTION|WS_SYSMENU:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX(CAPTIONBAR)
+WindowStyle13=Fixed Font,DS_FIXEDSYS(BOOL)
+WindowStyle14=Position,WS_NULL:DS_CENTER:DS_CENTERMOUSE(DIALOGPOSITON)
+WindowStyle15=Type,WS_POPUP:WS_CHILD|DS_CONTROL(DIALOGTYPE)
+ContTitle=dlgWindow Window
+DialogTemplate=1
+text=Dialog Caption
+InitMethod=dlgWindow (oParent, uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DialogWindow)
+Name=dlgWindow
+Size=400,240
+Position=5,5
+Style=DS_MODALFRAME|WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_3DLOOK
+ExStyle=WS_EX_DLGMODALFRAME
+; PropTabs=HyperLabel,DlgWindow,DlgWndStyles:Styles,Mouse Events,Window Events,Control Events,CommonControl Events,TreeView Events,ListView Events,Menu Events
+PropTabs=HyperLabel,DlgWindow,DlgWndStyles:Styles
+
+[FORM:DIALOGWINDOW:tabDialog]
+Method01=Font,Font(FONT)
+Method02=Modeless,Modeless(LOGIC)
+Assign01=Background Color,Background(COLOR)
+Assign02=Mouse Pointer,Pointer(CLASS:POINTER)
+Assign03=Help File Name,HelpDisplay(string)
+WindowStyle01=Disabled,WS_DISABLED(BOOL)
+WindowStyle03=Clip Siblings,WS_CLIPSIBLINGS(BOOL)
+WindowStyle04=Local Edit,DS_LOCALEDIT(BOOL)
+WindowStyle05=Absolute Align,DS_ABSALIGN(BOOL)
+WindowStyle06=Clip Children,WS_CLIPCHILDREN(BOOL)
+WindowStyle09=System Modal,DS_SYSMODAL(BOOL)
+WindowStyle10=No Idle Message,DS_NOIDLEMSG(BOOL)
+WindowStyle11=Resizable,WS_THICKFRAME:DS_MODALFRAME(BOOL)
+WindowStyle12=Caption Bar,WS_NULL:WS_CAPTION:WS_CAPTION|WS_SYSMENU:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX(CAPTIONBAR)
+WindowStyle13=Fixed Font,DS_FIXEDSYS(BOOL)
+WindowStyle14=Position,WS_NULL:DS_CENTER:DS_CENTERMOUSE(DIALOGPOSITON)
+WindowStyle15=Type,WS_POPUP:WS_CHILD|DS_CONTROL(DIALOGTYPE)
+ContTitle=Dialog Window
+DialogTemplate=1
+text=tabDialog Caption
+InitMethod=tabDialog (oParent, uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DialogWindow)
+Name=tabDialog
+Size=400,240
+Position=5,5
+Style=DS_MODALFRAME|WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_3DLOOK
+ExStyle=WS_EX_DLGMODALFRAME
+PropTabs=HyperLabel,DlgWindow,DlgWndStyles:Styles,Mouse Events,Window Events,Control Events,CommonControl Events,TreeView Events,ListView Events,Menu Events
+
+[CONTROL:TEXTCONTROL:BASELISTBOX:LISTBOX:KBWEDCONTROLWINDOW]
+ContTitle=GridPro2 Control
+ClassName=Listbox
+Name=theGrid
+Floatbar=Grid
+Size=80,80
+Style=WS_TABSTOP|WS_CHILD|LBS_NOTIFY|WS_BORDER
+InitMethod=KBWEDControlWindow(PARENT,ID)
+PropTabs=HyperLabel,GenListbox:General,ListBoxStyles:Styles,ExStyles
+InheritClassName=Inherit from Class,InheritClassName(CLASS:KbWedControlWindow)
+
+
+[FORM:DATAWINDOW:GeneralDataWindow]
+ContTitle=Data Window
+text=GeneralDataWindow Caption
+InitMethod=GeneralDataWindow(oWindow,iCtlID,oServer,oCaller)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:GeneralDataWindow)
+Name=MyDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2065
+PropTabs=HyperLabel,GenDataWindow
+Method93=ESC Key Close,EscKeyClose(LOGIC)
+Method94=No Resize,SetNonResize(LOGIC)
+Assign18=Owner Alignment,OwnerAlignment(OWNERALIGNMENT)

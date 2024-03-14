@@ -1,0 +1,65 @@
+DataExplorerMenu ACCELERATORS
+Begin
+	115, 20734, ALT, VIRTKEY
+	112, 20743, VIRTKEY
+	112, 20744, CONTROL, VIRTKEY
+End
+ 
+EditMenu ACCELERATORS
+Begin
+	88, 20754, CONTROL, VIRTKEY
+	67, 20755, CONTROL, VIRTKEY
+	86, 20756, CONTROL, VIRTKEY
+	115, 20758, CONTROL, VIRTKEY
+End
+ 
+DataExplorerMenu MENU
+Begin
+	POPUP "&File"
+	BEGIN
+		MENUITEM "E&xit\tAlt+F4", 20734
+	END
+	POPUP "&Edit Orders"
+	BEGIN
+		MENUITEM "&New Order", 20736, GRAYED
+		MENUITEM "&Edit Order", 20737, GRAYED
+		MENUITEM SEPARATOR
+		MENUITEM "&Delete Order", 20739, GRAYED
+	END
+	POPUP "&View"
+	BEGIN
+		MENUITEM "&Show all Fields in Treeview", 20741
+	END
+	POPUP "&Help"
+	BEGIN
+		MENUITEM "&Index\tF1", 20743
+		MENUITEM "&Context Help\tCtrl+F1", 20744
+		MENUITEM "&Using Help", 20745
+		MENUITEM SEPARATOR
+		MENUITEM "&About...", 32031
+	END
+End
+ 
+DataLVContext MENU
+Begin
+	POPUP "&DataListView"
+	BEGIN
+		MENUITEM "&New Order", 21243
+		MENUITEM "&Edit Order", 21244
+		MENUITEM SEPARATOR
+		MENUITEM "&Delete Order", 21246
+	END
+End
+ 
+EditMenu MENU
+Begin
+	POPUP "&Edit"
+	BEGIN
+		MENUITEM "Cut\tCtrl+X", 20754
+		MENUITEM "&Copy\tCtrl+C", 20755
+		MENUITEM "&Paste\tCtrl+V", 20756
+		MENUITEM SEPARATOR
+		MENUITEM "Clos&e Window\tCtrl+F4", 20758
+	END
+End
+ 

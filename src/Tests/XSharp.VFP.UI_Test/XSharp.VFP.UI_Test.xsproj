@@ -54,34 +54,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Core</Name>
-      <AssemblyName>XSharp.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.Data, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Data</Name>
-      <AssemblyName>XSharp.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.RT, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.RT</Name>
-      <AssemblyName>XSharp.RT.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.RT.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.VFP, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.VFP</Name>
-      <AssemblyName>XSharp.VFP.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.VFP.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow.Designer.prg">
@@ -145,9 +117,39 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Data\XSharp.Data.xsproj">
+      <Name>XSharp.Data</Name>
+      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.VFP.UI\XSharp.VFP.UI.xsproj">
       <Name>XSharp.VFP.UI</Name>
       <Project>{7e2cbef6-9945-42c4-a7df-f9b8e2e68d44}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

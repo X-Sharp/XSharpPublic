@@ -52,7 +52,7 @@ BEGIN NAMESPACE VFPXPorterLib
             TRY
                 // Open the MNX (DBF) File
                 DbUseArea(TRUE, "DBFVFP", SELF:Settings:ItemsPath, SELF:Settings:ItemsPath,FALSE,TRUE )
-                SET DELETED ON
+                SetDeleted(FALSE)
                 // Now load with data
                 DbGoTop()
                 DO WHILE ! Eof()

@@ -106,7 +106,7 @@ BEGIN NAMESPACE VFPXPorterLib
             TRY
                 // Open the PJX (DBF) File
                 DbUseArea(TRUE, "DBFVFP", SELF:pjxFilePath, SELF:pjxFilePath,FALSE,TRUE )
-                SET DELETED ON
+                SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()
                 DO WHILE ! Eof()

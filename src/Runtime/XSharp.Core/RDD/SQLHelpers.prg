@@ -45,9 +45,10 @@ STATIC CLASS SQLHelpers
             result := DbColumnInfo{columnName,"L",1 ,0 }
 
         CASE TypeCode.Decimal
-            result := DbColumnInfo{columnName,"Y",16 ,4 }
+            result := DbColumnInfo{columnName,"Y",16 ,nPrec }
+            result:Decimals         := Math.Min(nPrec,4)
             result:NumericScale     := 16
-            result:NumericPrecision := 4
+            result:NumericPrecision := nPrec
 
         CASE TypeCode.Double
         CASE TypeCode.Single

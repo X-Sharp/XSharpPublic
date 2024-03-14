@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-03-12T18:27:26.374+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-03-14T12:43:32.659+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Version History</title>
   <keywords>
     <keyword translate="true">BeforeConnect</keyword>
@@ -10,8 +10,9 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Version History</text></para>
     </header>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.1 - March 2024</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Second beta. Change are:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Second beta. Changes are:</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We Implemented Pack() and Zap()</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Several changes in the providers</text></li>
       <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal"><text styleclass="Normal" translate="true">All providers must implement CaseSync()</text></li>
@@ -27,7 +28,7 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The implementation of these methods by the Database Metadataprovider is this:</text></li>
       <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal"><text styleclass="Normal" translate="true">Creating a table with DbCreate() will now also add the table to the xs_tableinfo table</text></li>
-        <li styleclass="Normal"><text styleclass="Normal" translate="true">Creating an order with the Database Metadata provider now also adds the index and tag to the xs_infoinfo table</text></li>
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">Creating an order with the Database Metadata provider now also adds the index and tag to the xs_infoinfo table and the index name to the xs_tableinfo table</text></li>
       </list>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -44,6 +45,7 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Some Ado.Net providers are returning System.Decimal values for columns without decimals. These are now converted to Integer values.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The SqlDbConnection class now reads several properties from the Ado.Net datasource and stores these in the DataSourceProperties collection</text></li>
     </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.0 - February 2024</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">First Beta</text></li>

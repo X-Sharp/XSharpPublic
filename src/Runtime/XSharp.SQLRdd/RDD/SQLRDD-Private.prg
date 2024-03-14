@@ -10,6 +10,7 @@ using System.Collections.Generic
 using System.Data
 using System.Text
 using System.Diagnostics
+using System.Linq
 using System.Reflection
 using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
@@ -512,6 +513,63 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
+    PRIVATE METHOD _CheckEofBof() AS VOID
+        VAR nRecs := SELF:RowCount
+        IF nRecs == 0
+            SELF:_SetEOF(TRUE)
+            SELF:_SetBOF(TRUE)
+        ELSEIF SELF:RowNumber > nRecs
+            SELF:_SetEOF(TRUE)
+        ENDIF
+    END METHOD
+
+    INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
+        IF lNewValue != SELF:_EoF
+            SELF:_EoF := lNewValue
+        ENDIF
+    INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
+        IF lNewValue != SELF:_BoF
+            SELF:_BoF := lNewValue
+        ENDIF
+
+   PRIVATE METHOD _adjustCreateFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
+        local fields := aFields:ToList() as List<RddFieldInfo>
+        if ! String.IsNullOrEmpty(SELF:Connection:RecnoColumn)
+            var found := false
+            foreach var field in fields
+                if String.Compare(field:ColumnName, SELF:Connection:RecnoColumn, true) == 0
+                    found := true
+                endif
+            next
+            if ! found
+                var fld := RddFieldInfo{SELF:Connection:RecnoColumn,"I:+",4,0}
+                fld:Flags |= DBFFieldFlags.System
+                fields:Add( fld )
+                SELF:_RecordLength += 4
+            endif
+        endif
+        if ! String.IsNullOrEmpty(SELF:Connection:DeletedColumn)
+            var found := false
+            foreach var field in fields
+                if String.Compare(field:ColumnName, SELF:Connection:DeletedColumn, true) == 0
+                    found := true
+                endif
+            next
+            if ! found
+                var fld  := RddFieldInfo{SELF:Connection:DeletedColumn,"L",1,0}
+                fld:Flags |= DBFFieldFlags.System
+                fields:Add( fld )
+                SELF:_RecordLength += 1
+            endif
+        endif
+        return fields:ToArray()
+    end method
+
+    private method _CloseCursor() as void
+        self:_hasData       := FALSE
+        self:_table         := null
+        self:_recordKeyCache := null
+        return
 end class
 
 end namespace // XSharp.RDD.SqlRDD

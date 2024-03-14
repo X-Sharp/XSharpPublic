@@ -285,6 +285,18 @@ internal class SqlDbTableCommandBuilder
         endif
         return maxVal + 1
 
+    method ZapStatement() as STRING
+        var sb := StringBuilder{}
+        sb:Append(Provider:DeleteAllRowsStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        return sb.ToString()
+
+    method PackStatement() as STRING
+        var sb := StringBuilder{}
+        sb:Append(Provider:DeleteStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        sb:Replace(SqlDbProvider.WhereMacro, _oTable:DeletedColumn + " = 1")
+        return sb.ToString()
 
 end class
 end namespace // XSharp.SQLRdd.SupportClasses

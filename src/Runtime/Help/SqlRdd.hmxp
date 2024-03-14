@@ -163,14 +163,8 @@ AA(0x46,2,Find())
     <config-group name="chm">
       <config-value name="htmlpopup">1</config-value>
       <config-value name="htmlpopuptextfile">CSHelp.txt</config-value>
-      <config-value name="mastertoc"></config-value>
       <config-value name="hhp" translate="true"><![CDATA[[FILES]
-..\nonscroll.js
-..\button_main_h.gif
-..\button_prev_h.gif
-..\button_next_h.gif
-..\button_prev_d.gif
-..\button_next_d.gif]]></config-value>
+]]></config-value>
       <config-value name="hhcwindowstyles">8388645</config-value>
       <config-value name="usesecondarywindows">0</config-value>
       <config-value name="outputfile">sqlrdd.chm</config-value>

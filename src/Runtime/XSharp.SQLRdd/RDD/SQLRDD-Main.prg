@@ -30,39 +30,32 @@ partial class SQLRDD inherit DBFVFP
 #region Overridden properties
     override property Driver as string get "SQLRDD"
 #endregion
+    #region Own properties
+    /// <summary>Return the # of fields/Columns in the current work area,
+    /// including the RecnoColumn and DeletedColum (if they exist).</summary>
+    public property RealFieldCount as long => Super:FieldCount
 
-    PRIVATE METHOD _adjustCreateFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
-        local fields := aFields:ToList() as List<RddFieldInfo>
-        if ! String.IsNullOrEmpty(SELF:Connection:RecnoColumn)
-            var found := false
-            foreach var field in fields
-                if String.Compare(field:ColumnName, SELF:Connection:RecnoColumn, true) == 0
-                    found := true
-                endif
-            next
-            if ! found
-                var fld := RddFieldInfo{SELF:Connection:RecnoColumn,"I:+",4,0}
-                fld:Flags |= DBFFieldFlags.System
-                fields:Add( fld )
-                SELF:_RecordLength += 4
+    public override property FieldCount  as long => super:FieldCount - self:_numHiddenColumns
+
+    /// <summary>Returns the # of rows in the local buffer (DataTable).</summary>
+    public property RowCount    as long => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
+
+    /// <summary>The current rownumber in the buffer (DataTable).</summary>
+    public property RowNumber   as long GET _RecNo INTERNAL SET _RecNo := value
+
+    /// <summary>The current row in the buffer (DataTable).
+    /// When the server is at EOF then the phantomrow is returned.</summary>
+    public property CurrentRow as DataRow
+        get
+            if self:RowNumber == 0 .or. self:RowNumber > self:RowCount
+                return self:_phantomRow
             endif
-        endif
-        if ! String.IsNullOrEmpty(SELF:Connection:DeletedColumn)
-            var found := false
-            foreach var field in fields
-                if String.Compare(field:ColumnName, SELF:Connection:DeletedColumn, true) == 0
-                    found := true
-                endif
-            next
-            if ! found
-                var fld  := RddFieldInfo{SELF:Connection:DeletedColumn,"L",1,0}
-                fld:Flags |= DBFFieldFlags.System
-                fields:Add( fld )
-                SELF:_RecordLength += 1
-            endif
-        endif
-        return fields:ToArray()
-    end method
+            return self:DataTable:Rows[self:RowNumber -1]
+        end get
+    end property
+#endregion
+
+
 
 
     /// <summary>Create a table.</summary>
@@ -193,7 +186,7 @@ partial class SQLRDD inherit DBFVFP
         next
         if self:_tableMode == TableMode.Table
             cQuery := self:_oTd:EmptySelectStatement
-            self:_hasData := false
+            self:_CloseCursor()
         else
             self:DataTable      := _command:GetDataTable(self:Alias)
         endif
@@ -358,9 +351,9 @@ partial class SQLRDD inherit DBFVFP
                             endif
                         else
                             lOk := _ExecuteDeleteStatement(row, true)
-                            // clear the fields
-                            row:ItemArray := _phantomRow:ItemArray
-                            // keep the row in the collection, so the record numbers match
+                            // we do not clear the fields, but leave the row unchanged.
+                            // the DBF has the deleted flag. This emulates what DBF files do
+
                             row:AcceptChanges()
                         endif
 
@@ -591,7 +584,7 @@ partial class SQLRDD inherit DBFVFP
 
     /// <summary>The physical row identifier at the current cursor position.</summary>
     /// <remarks>
-    /// When a RecnoColumn is defined, then his will return the value of that column.
+    /// When a RecnoColumn is defined, then this will return the value of that column.
     /// Otherwise the relative position inside the cursor will be returned.
     /// </remarks>
     override property RecNo		as int
@@ -701,46 +694,43 @@ partial class SQLRDD inherit DBFVFP
         end get
     end property
 
+    /// <inheritdoc />
+    /// <remarks>This method will delete all rows from the table and then close the cursor</remarks>
+    override method Zap() as logic
+        if self:_ReadOnly
+            self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:Zap", "Table is not Updatable" )
+            return false
+        endif
+        self:GoCold()
+        if self:_tableMode == TableMode.Table
+            var stmt := self:_builder:ZapStatement()
+            _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, stmt)
+            _command:ExecuteNonQuery()
+        endif
+        self:_CloseCursor()
+        return super:Zap()
+    end method
 
-    /// <summary>Return the # of fields/Columns in the current work area, including the RecnoColumn and DeletedColum (if hey exist).</summary>
-    public property RealFieldCount as long => Super:FieldCount
-
-    public override property FieldCount  as long => super:FieldCount - self:_numHiddenColumns
-
-    /// <summary>Returns the # of rows in the local buffer (DataTable).</summary>
-    public property RowCount    as long => iif(Self:DataTable == null, 0, Self:DataTable:Rows:Count)
-
-    /// <summary>The current rownumber in the buffer (DataTable).</summary>
-    public property RowNumber   as long GET _RecNo INTERNAL SET _RecNo := value
-
-    /// <summary>The current row in the buffer (DataTable). When the server is at EOF then the phantomrow is returned.</summary>
-    public property CurrentRow as DataRow
-        get
-            if self:RowNumber == 0 .or. self:RowNumber > self:RowCount
-                return self:_phantomRow
-            endif
-            return self:DataTable:Rows[self:RowNumber -1]
-        end get
-    end property
-
-    PRIVATE METHOD _CheckEofBof() AS VOID
-        VAR nRecs := SELF:RowCount
-        IF nRecs == 0
-            SELF:_SetEOF(TRUE)
-            SELF:_SetBOF(TRUE)
-        ELSEIF SELF:RowNumber > nRecs
-            SELF:_SetEOF(TRUE)
-        ENDIF
-    END METHOD
-
-    INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
-        IF lNewValue != SELF:_EoF
-            SELF:_EoF := lNewValue
-        ENDIF
-    INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
-        IF lNewValue != SELF:_BoF
-            SELF:_BoF := lNewValue
-        ENDIF
+    /// <inheritdoc />
+    /// <remarks>
+    /// This method will delete all rows from the table where the deleted column has the value true / 1 and then close the cursor. <br/>
+    /// When the there is no deleted column then the rows are already deleted from the server,
+    /// and then they will also be deleted from the local cursor.
+    /// </remarks>
+    override method Pack() as logic
+        if self:_ReadOnly
+            self:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY, "SqlRDD:Pack", "Table is not Updatable" )
+            return false
+        endif
+        self:GoCold()
+        if self:_tableMode == TableMode.Table .and. _oTd:HasDeletedColumn
+            var stmt := self:_builder:PackStatement()
+            _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, stmt)
+            _command:ExecuteNonQuery()
+        endif
+        self:_CloseCursor()
+        return super:Pack()
+    end method
 
 
 end class

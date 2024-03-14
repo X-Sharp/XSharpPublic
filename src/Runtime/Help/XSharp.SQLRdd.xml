@@ -959,6 +959,10 @@
         </span>
       </returns>
     </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.CurrentRow">
+      <summary>The current row in the buffer (DataTable).
+            When the server is at EOF then the phantomrow is returned.</summary>
+    </member>
     <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Delete">
       <summary>Mark the row at the current cursor position for deletion.</summary>
       <returns>
@@ -1120,6 +1124,17 @@
         </span>
       </returns>
     </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Pack">
+      <summary>Physically remove rows marked for deletion.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
     <member name="M:XSharp.RDD.SqlRDD.SQLRDD.PutValue(System.Int32,System.Object)">
       <summary>Write a value for a specified column</summary>
       <param name="nFldPos">ONE based position for which the value should be written.</param>
@@ -1132,6 +1147,10 @@
             the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
         </span>
       </returns>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.RealFieldCount">
+      <summary>Return the # of fields/Columns in the current work area,
+            including the RecnoColumn and DeletedColum (if they exist).</summary>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Recall">
       <summary>Remove the deletion marker from the row at the current cursor position.</summary>
@@ -1149,6 +1168,12 @@
     </member>
     <member name="P:XSharp.RDD.SqlRDD.SQLRDD.RecNo">
       <summary>The physical row identifier at the current cursor position.</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.RowCount">
+      <summary>Returns the # of rows in the local buffer (DataTable).</summary>
+    </member>
+    <member name="P:XSharp.RDD.SqlRDD.SQLRDD.RowNumber">
+      <summary>The current rownumber in the buffer (DataTable).</summary>
     </member>
     <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Seek(XSharp.RDD.Support.DbSeekInfo)">
       <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
@@ -1178,6 +1203,17 @@
     <member name="M:XSharp.RDD.SqlRDD.SQLRDD.SkipRaw(System.Int32)">
       <summary>Position the cursor regardless of scope and filter conditions.</summary>
       <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.SqlRDD.SQLRDD.Zap">
+      <summary>Physically remove all rows from a table.</summary>
       <returns>
         <span>
             TRUE when the operation succeeded or FALSE when the operation failed. <br />

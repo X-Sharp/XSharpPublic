@@ -105,7 +105,7 @@ partial class SQLRDD inherit DBFVFP
             oBag:Tags:Add(oTag)
             oBag:Save()
             CurrentOrder := oTag
-            self:_hasData := false
+            self:_CloseCursor()
             self:Connection:MetadataProvider:CreateIndex(SELF:_cTable, orderInfo)
             return TRUE
         else
@@ -122,10 +122,7 @@ partial class SQLRDD inherit DBFVFP
     override method OrderListRebuild() as logic
         local result as logic
         if self:_tableMode == TableMode.Table
-            // todo: Rebuild Orders in tablemode, query mode uses DBFVFP driver for indices
-            result := false
-            // todo: Create Order in tablemode, query mode uses DBFVFP driver for indices
-            SELF:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,"SQLRDD:OrderListRebuild", "Not yet implemented")
+            result := true
         else
             // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
             SELF:_creatingIndex := TRUE
@@ -160,7 +157,7 @@ partial class SQLRDD inherit DBFVFP
     override method OrderListFocus(orderInfo as DbOrderInfo) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
-            self:_hasData := false
+            self:_CloseCursor()
             SELF:CurrentOrder := self:FindOrder(orderInfo)
             result := CurrentOrder != null
         else
@@ -366,7 +363,7 @@ partial class SQLRDD inherit DBFVFP
         case DBOI_SCOPEBOTTOMCLEAR
             if workOrder != null
                 workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
-                self:_hasData := false
+                self:_CloseCursor()
             endif
             info:Result := null
         case DBOI_SCOPETOP
@@ -384,7 +381,7 @@ partial class SQLRDD inherit DBFVFP
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                 endif
                 info:Result := oldValue
-                self:_hasData := false
+                self:_CloseCursor()
             else
                 info:Result := DBNull.Value
             endif
@@ -413,6 +410,6 @@ partial class SQLRDD inherit DBFVFP
         end switch
         return info:Result
     end method
-
+    
 END CLASS
 END NAMESPACE // XSharp.SQLRdd

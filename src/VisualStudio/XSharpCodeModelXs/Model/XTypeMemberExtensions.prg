@@ -48,15 +48,21 @@ BEGIN NAMESPACE XSharpModel
                endif
                vars:Append("}")
             ELSE
-               IF ( !tm:Kind:IsProperty() )
-                  vars:Append("(")
-                  if lApplyCallingConvention .and. tm:CallingConvention == CallingConvention.Clipper
+                IF tm:Kind:IsProperty()        
+                    vars:Append( "[")
+                ELSE
+                    vars:Append( "(")
+                ENDIF                    
+                if lApplyCallingConvention .and. tm:CallingConvention == CallingConvention.Clipper
                     vars:Append(tm:ClipperParameters())
-                  else
+                else
                     vars:Append(tm:ParameterList)
-                  endif
-                  vars:Append(")")
-               ENDIF
+                endif
+                IF tm:Kind:IsProperty()        
+                    vars:Append( "]")
+                ELSE
+                    vars:Append( ")")
+                ENDIF                    
             ENDIF
          ENDIF
          IF tm:Kind == Kind.VODefine .OR. tm:Kind == Kind.EnumMember .OR. tm:Kind == Kind.VOGlobal

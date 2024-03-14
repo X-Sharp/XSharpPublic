@@ -22,9 +22,10 @@ BEGIN NAMESPACE XSharp.VFP.UI
         PROPERTY MainMenu AS System.Windows.Forms.MainMenu AUTO
 
 		CONSTRUCTOR()
-			Super()
+            Super()
             SELF:_Forms := List<Form>{}
             SELF:MainMenu := System.Windows.Forms.MainMenu{}
+            SELF:Size := System.Drawing.Size{ 800, 600 }
 			RETURN
 
 		PUBLIC METHOD Forms( i AS INT ) AS Form

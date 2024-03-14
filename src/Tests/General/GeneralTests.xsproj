@@ -11,7 +11,7 @@
     <Name>GeneralTests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>XPP</Dialect>
     <OutputName>ConsoleApplication2</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -50,7 +50,7 @@
     <MemVar>False</MemVar>
     <Undeclared>False</Undeclared>
     <InitLocals>false</InitLocals>
-    <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
+    <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

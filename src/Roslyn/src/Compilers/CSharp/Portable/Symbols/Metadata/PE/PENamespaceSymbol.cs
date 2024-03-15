@@ -178,6 +178,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var builder = ArrayBuilder<NamedTypeSymbol>.GetInstance();
                 foreach (var ns in siblings)
                 {
+                    ns.EnsureAllMembersLoaded();
                     if (ns.lazyTypes.TryGetValue(name, out t))
                         builder.AddRange(t);
                 }

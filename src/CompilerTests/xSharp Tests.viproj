@@ -115317,7 +115317,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = Core
 Folder = %ProjectPath%\Applications\Tester\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
@@ -115354,25 +115354,23 @@ CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
 [Tester General Options]
-Switches=/ppo
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
-VO1=1
+VO1=0
 VO2=0
 VO3=0
 VO4=0
 VO5=0
-VO6=1
-VO7=1
+VO6=0
+VO7=0
 VO8=0
-VO9=1
+VO9=0
 VO10=0
 VO11=0
 VO12=0
@@ -115383,7 +115381,7 @@ VO17=0
 FOX1=0
 FOX2=0
 XPP1=0
-LateBound=1
+LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0

@@ -2657,7 +2657,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (expr.GetChild(0) is XP.ParenExpressionContext paren)
                 {
-                    return GetLiteralExpression(paren.Expr);
+                    return GetLiteralExpression(paren.LastExpression);
                 }
             }
             return null;

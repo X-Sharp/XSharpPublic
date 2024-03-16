@@ -961,8 +961,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (prim.Expr is XP.ParenExpressionContext)
                 {
                     var e = prim.Expr as XP.ParenExpressionContext;
-                    type = GetExpressionType(e.Expr, ref isConst);
-                    isConst = e.Expr.GetLiteralToken() != null;
+                    type = GetExpressionType(e.LastExpression, ref isConst);
+                    isConst = e.LastExpression.GetLiteralToken() != null;
                 }
                 else if (prim.Expr is XP.IifExpressionContext)
                 {
@@ -8147,18 +8147,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
                     SyntaxFactory.OpenParenToken,
-                    context.Expr.Get<ExpressionSyntax>(),
+                    context.LastExpression.Get<ExpressionSyntax>(),
                     SyntaxFactory.CloseParenToken));
             }
             else
             {
                 if (HandleTupleAssignmentExpression(context))
                     return;
-
+                if (_options.ModernSyntax)
+                {
+                    // we do not allow parenthesized expression list with the modern syntax
+                    var node = context.LastExpression.Get<ExpressionSyntax>();
+                    node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParenthesizedExpressionList));
+                    context.Put(node);
+                    return;
+                }
                 // move the expressions into a local function
                 // and call this local function here
                 var statements = new List<StatementSyntax>();
-                var last = context._Exprs.Last();
+                var last = context.LastExpression;
                 bool usesDiscard = false;
                 ExpressionSyntax expr;
                 // create statements too so we can set breakpoint info

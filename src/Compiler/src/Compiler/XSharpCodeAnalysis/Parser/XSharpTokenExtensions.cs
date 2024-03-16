@@ -1805,7 +1805,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (pe.Expr is XSharpParser.ParenExpressionContext)
                 {
                     var paren = pe.Expr as XSharpParser.ParenExpressionContext;
-                    return paren.Expr.GetLiteralToken();
+                    return paren.LastExpression.GetLiteralToken();
                 }
             }
             return null;

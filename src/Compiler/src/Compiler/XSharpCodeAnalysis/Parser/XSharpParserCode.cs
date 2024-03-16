@@ -195,7 +195,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class ParenExpressionContext
         {
-            public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
+            public ExpressionContext LastExpression => _Exprs.Count == 0 ? null : _Exprs[_Exprs.Count - 1];
         }
         public partial class PragmaContext
         {

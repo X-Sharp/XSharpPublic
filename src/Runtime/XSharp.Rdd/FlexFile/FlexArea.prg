@@ -31,9 +31,11 @@ INTERNAL CLASS FlexArea
     PRIVATE _hotHeader AS LOGIC
     PRIVATE _hFile	    AS IntPtr
     PRIVATE _oStream   AS FileStream
+#ifdef DELETEDBLOCKS
     PRIVATE _DeadIndexBlocks AS ULStack
     internal LocIndex as LocationIndex
     internal LenIndex as LengthIndex
+#endif
     PROTECT _lockScheme AS DbfLocking
     PROTECT _blockSize  AS WORD
     internal property LenIndexRoot AS DWORD
@@ -59,7 +61,9 @@ INTERNAL CLASS FlexArea
 
     internal property FileHandle as IntPtr get _hFile
     internal property Stream as FileStream get _oStream
+#ifdef DELETEDBLOCKS
     internal property DeadIndexBlocks as ULStack get _DeadIndexBlocks
+#endif    
     INTERNAL PROPERTY IsOpen     AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero
     INTERNAL PROPERTY ReadOnly   AS LOGIC GET _oRdd:ReadOnly
     INTERNAL PROPERTY Shared     AS LOGIC GET _oRdd:Shared
@@ -83,10 +87,11 @@ INTERNAL CLASS FlexArea
         SELF:_flexHeader  := FlexHeader{oRdd}
         SELF:_lockCount   := 0
         SELF:ExportMode   := BLOB_EXPORT_APPEND
+        #ifdef DELETEDBLOCKS
         SELF:_DeadIndexBlocks := ULStack{}
         SELF:LenIndex     := LengthIndex{}
         SELF:LocIndex     := LocationIndex{}
-
+        #endif
 
     INTERNAL METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
         SELF:_oRdd:_dbfError(ex, iSubCode, iGenCode,strFunction)
@@ -117,11 +122,12 @@ INTERNAL CLASS FlexArea
         // Per default, Block Size if 512
         IF SELF:LockHeader(FALSE)
             SELF:_initContext()
+#ifdef DELETEDBLOCKS
             IF SELF:IsFlex
-                SELF:LenIndex:Init(SELF)
-                SELF:LocIndex:Init(SELF)
+                 SELF:LenIndex:Init(SELF)
+                 SELF:LocIndex:Init(SELF)
             ENDIF
-
+#endif
 
             SELF:UnLockHeader(FALSE)
         ENDIF
@@ -129,11 +135,13 @@ INTERNAL CLASS FlexArea
 
     INTERNAL METHOD Close() AS LOGIC
         IF SELF:IsOpen
+#ifdef DELETEDBLOCKS
             IF SELF:IsFlex
-                SELF:LocIndex:Close()
-                SELF:LenIndex:Close()
-            ENDIF
-            IF SELF:_lockCount > 0
+                 SELF:LocIndex:Close()
+                 SELF:LenIndex:Close()
+             ENDIF
+#endif
+IF SELF:_lockCount > 0
                 SELF:UnLockHeader(FALSE)
             ENDIF
             _oStream:Close()
@@ -146,10 +154,12 @@ INTERNAL CLASS FlexArea
     PRIVATE METHOD KillIndexes() AS VOID
         // This is called when an operation on indexes detects a problem.
         IF SELF:LockHeader(TRUE)
-            SELF:LocIndex:KillIndex()
-            SELF:LenIndex:KillIndex()
-            SELF:DeadIndexBlocks:Clear()
-            SELF:_flexHeader:IndexDefect := TRUE
+#ifdef DELETEDBLOCKS
+             SELF:LocIndex:KillIndex()
+             SELF:LenIndex:KillIndex()
+             SELF:DeadIndexBlocks:Clear()
+#endif
+             SELF:_flexHeader:IndexDefect := TRUE
             SELF:_hotHeader := TRUE
             SELF:UnLockHeader(TRUE)
         ENDIF
@@ -168,8 +178,12 @@ INTERNAL CLASS FlexArea
             IF refreshHeaders
                 IF SELF:ReadHeader()
                     IF SELF:IsFlex
+#ifdef DELETEDBLOCKS
                         LocIndex:DiskCache:Clear()
                         LenIndex:DiskCache:Clear()
+#else
+			NOP
+#endif
                     ENDIF
                 ELSE
                     SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FlexArea.LockHeader")
@@ -179,6 +193,7 @@ INTERNAL CLASS FlexArea
             SELF:_lockCount += 1
         ENDIF
         RETURN lOk
+
 
     PRIVATE METHOD UnLockHeader(updated AS LOGIC) AS LOGIC
         IF updated
@@ -252,6 +267,39 @@ INTERNAL CLASS FlexArea
         ENDIF
         RETURN FALSE
 
+    INTERNAL METHOD SetBlockPos(blockNbr AS LONG) AS LOGIC
+        // Get the raw data length
+        IF blockNbr > 0
+            LOCAL iOffset := SELF:GetBlockPos(blockNbr) AS LONG
+            // Go to the blockNbr position
+            RETURN _oStream:SafeSetPos(iOffset)
+        ENDIF
+        RETURN FALSE
+
+    INTERNAL METHOD GetDataLen(blockNbr AS LONG) AS LONG
+        LOCAL blockLen := 0 AS INT
+        IF SELF:SetBlockPos(blockNbr)
+            VAR token := FlexMemoToken{NULL, _oStream}
+            IF token:Read()
+                blockLen     := token:Length
+            ELSE
+                blockLen     := -1
+            ENDIF
+        ENDIF
+        RETURN blockLen
+
+    INTERNAL METHOD GetBlockLen(blockNbr AS LONG) AS LONG
+        var nLen := GetDataLen(blockNbr)
+        if nLen >= 0
+            nLen += FlexMemoToken.TokenLength
+        endif
+        return nLen
+
+
+    INTERNAL METHOD GetBlockPos(blockNbr AS LONG) AS LONG
+        RETURN blockNbr * SELF:_blockSize
+
+
     INTERNAL METHOD WriteFiller(nToWrite AS LONG, fillByte as Byte) AS LOGIC
         local lOk := TRUE as LOGIC
         nToWrite -= 1
@@ -291,6 +339,9 @@ INTERNAL CLASS FlexArea
                 SELF:UnLockHeader(TRUE)
                 RETURN lOk
             ENDIF
+#ifdef DELETEDBLOCKS
+
+
             LOCAL bDone := FALSE as LOGIC
             LOCAL uReleasePos := 0 as DWORD
             LOCAL uReleaseLen := 0 AS DWORD
@@ -305,6 +356,10 @@ INTERNAL CLASS FlexArea
                         // No error, just exit
                         bDone := TRUE
                         LOOP
+                    endif
+                    if token:Length < 0
+                        bDone := TRUE
+                        loop
                     endif
                     uReleaseLen := (DWORD) (token:Length + FlexMemoToken.TokenLength)
                 endif
@@ -369,10 +424,12 @@ INTERNAL CLASS FlexArea
                     bDone := TRUE
                 endif
             ENDDO
-            SELF:UnLockHeader(TRUE)
         ELSE
             lOk := FALSE
+#endif
+            SELF:UnLockHeader(TRUE)
         ENDIF
+
         RETURN lOk
 
 
@@ -415,7 +472,7 @@ INTERNAL CLASS FlexArea
         LOCAL blockNr := nOldPtr as INT
         LOCAL nCurrentLen AS LONG
         LOCAL lNewBlock := FALSE AS LOGIC
-        LOCAL liExcessLen := 0 AS DWORD
+        //LOCAL liExcessLen := 0 AS DWORD
         LOCAL lDelete  := FALSE as LOGIC
         VAR neededLen  := (DWORD) SELF:RoundToBlockSize(bytes:Length)
         IF blockNr != 0
@@ -446,28 +503,32 @@ INTERNAL CLASS FlexArea
                 LOCAL nPos AS DWORD
                 LOCAL lFoundDeletedBlock as LOGIC
                 LOCAL liDataPos as DWORD
-                LOCAL liFoundLen as DWORD
+#ifdef DELETEDBLOCKS
+                //LOCAL liFoundLen as DWORD
                 // Try to find block of the right size in the free list
                 IF SELF:IsFlex
-                    lFoundDeletedBlock := SELF:LenIndex:SeekSoft(neededLen)
-                    liDataPos := SELF:LenIndex:CurrentPos
-                    liFoundLen := SELF:LenIndex:CurrentLen
-                ELSE
+                     lFoundDeletedBlock := SELF:LenIndex:SeekSoft(neededLen)
+                     liDataPos := SELF:LenIndex:CurrentPos
+                     liFoundLen := SELF:LenIndex:CurrentLen
+                 ELSE
+#endif
                     lFoundDeletedBlock := FALSE
                     liDataPos := 0
-                    liFoundLen := 0
+#ifdef DELETEDBLOCKS
+                    //liFoundLen := 0
                 ENDIF
-                IF lFoundDeletedBlock
-                    liExcessLen := liFoundLen - neededLen
-                    if liExcessLen > 0 .and. liExcessLen < FlexMemoToken.TokenLength +1
-                        // If excess space was allocated but it isn't enough for
-                        // the FPT token, search for another spot that has enough
-                        // excess space to contain the token.
-                        lFoundDeletedBlock := LenIndex:SeekSoft(neededLen + RoundToBlockSize(FlexMemoToken.TokenLength + 1))
-                        liDataPos := LenIndex:CurrentPos
-                        liFoundLen := LenIndex:CurrentLen
-                    endif
-                ENDIF
+                 IF lFoundDeletedBlock
+                     liExcessLen := liFoundLen - neededLen
+                     if liExcessLen > 0 .and. liExcessLen < FlexMemoToken.TokenLength +1
+                         // If excess space was allocated but it isn't enough for
+                         // the FPT token, search for another spot that has enough
+                         // excess space to contain the token.
+                         lFoundDeletedBlock := LenIndex:SeekSoft(neededLen + RoundToBlockSize(FlexMemoToken.TokenLength + 1))
+                         liDataPos := LenIndex:CurrentPos
+                         liFoundLen := LenIndex:CurrentLen
+                     endif
+                 ENDIF
+#endif
                 IF ! lFoundDeletedBlock
                     nPos := (DWORD) _oStream:Length
                     _oStream:SafeSetPos(nPos)
@@ -476,29 +537,31 @@ INTERNAL CLASS FlexArea
                     ENDIF
                     VAR nFileSize := _oStream:Length
                     SELF:SetNewFileLength(nFileSize)
-                    SELF:UnLockHeader(TRUE)
                     blockNr := (LONG) (nPos / _blockSize )
+#ifdef DELETEDBLOCKS
                 ELSE
-                    blockNr := (LONG) (liDataPos / _blockSize )
-                    liExcessLen := liFoundLen - neededLen
-                    _oStream:SafeSetPos(liDataPos)
-                    if SELF:WriteBlock(bytes)
-                        SELF:WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)
-                    endif
-                    liDataPos := liDataPos + neededLen
+                     blockNr := (LONG) (liDataPos / _blockSize )
+                     liExcessLen := liFoundLen - neededLen
+                     _oStream:SafeSetPos(liDataPos)
+                     if SELF:WriteBlock(bytes)
+                         SELF:WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)
+                     endif
+                     liDataPos := liDataPos + neededLen
                     // Now delete the block from the index
-                    LOCAL lKill := FALSE as LOGIC
-                    IF LocIndex:Seek(LenIndex:CurrentPos, LenIndex:CurrentLen)
-                        IF !( LenIndex:Delete() .and. LocIndex:Delete())
-                            lKill := TRUE
-                        ENDIF
-                    ELSE
+                     LOCAL lKill := FALSE as LOGIC
+                     IF LocIndex:Seek(LenIndex:CurrentPos, LenIndex:CurrentLen)
+                         IF !( LenIndex:Delete() .and. LocIndex:Delete())
+                             lKill := TRUE
+                         ENDIF
+                     ELSE
                         lKill := TRUE
                     ENDIF
-                    IF lKill
-                        SELF:KillIndexes()
-                    ENDIF
+                     IF lKill
+                         SELF:KillIndexes()
+                     ENDIF
+#endif
                 ENDIF
+#ifdef DELETEDBLOCKS
                 IF liExcessLen > 0
                     // Create a new block with the excess space
                     VAR bData := BYTE[]{liExcessLen}
@@ -509,10 +572,11 @@ INTERNAL CLASS FlexArea
                     IF token:Write(FlexMemoToken.TokenLength)
                         WriteFiller(token:Length, EXCESS_DATASPACE_FILLER)
                     ENDIF
-                    IF ! (LenIndex:Insert(liExcessLen, liDataPos) .and. LocIndex:Insert(liDataPos, liExcessLen))
-                        SELF:KillIndexes()
-                    ENDIF
+                     IF ! (LenIndex:Insert(liExcessLen, liDataPos) .and. LocIndex:Insert(liDataPos, liExcessLen))
+                         SELF:KillIndexes()
+                     ENDIF
                 endif
+#endif
                 SELF:UnLockHeader(TRUE)
             ENDIF
         ENDIF
@@ -564,27 +628,9 @@ INTERNAL CLASS FlexArea
         ENDIF
         RETURN 0
 
-    INTERNAL METHOD GetBlockPos(blockNbr AS LONG) AS LONG
-        RETURN blockNbr * SELF:_blockSize
 
-    INTERNAL METHOD GetBlockLen(blockNbr AS LONG) AS LONG
-        var nLen := GetDataLen(blockNbr)
-        if nLen >= 0
-            nLen += FlexMemoToken.TokenLength
-        endif
-        return nLen
 
-    INTERNAL METHOD GetDataLen(blockNbr AS LONG) AS LONG
-        LOCAL blockLen := 0 AS INT
-        IF SELF:SetBlockPos(blockNbr)
-            VAR token := FlexMemoToken{NULL, _oStream}
-            IF token:Read()
-                blockLen     := token:Length
-            ELSE
-                blockLen     := -1
-            ENDIF
-        ENDIF
-        RETURN blockLen
+
 
     PROPERTY BlockSize 	 AS WORD
         GET
@@ -651,14 +697,14 @@ INTERNAL CLASS FlexArea
             SELF:_foxHeader:Clear()
             IF SELF:IsFlex
                 SELF:_flexHeader:Clear()
-                SELF:LenIndex:Clear()
-                SELF:LenIndex:Clear()
+//                 SELF:LenIndex:Clear()
+//                 SELF:LenIndex:Clear()
             ENDIF
             SELF:WriteHeader()
-            IF SELF:IsFlex
-                SELF:LenIndex:Init(SELF)
-                SELF:LocIndex:Init(SELF)
-            ENDIF
+//            IF SELF:IsFlex
+//                 SELF:LenIndex:Init(SELF)
+//                 SELF:LocIndex:Init(SELF)
+//            ENDIF
             RETURN TRUE
         ENDIF
         RETURN FALSE
@@ -711,15 +757,6 @@ INTERNAL CLASS FlexArea
         SELF:_hotHeader := FALSE
         RETURN
 
-
-    INTERNAL METHOD SetBlockPos(blockNbr AS LONG) AS LOGIC
-        // Get the raw data length
-        IF blockNbr > 0
-            LOCAL iOffset := SELF:GetBlockPos(blockNbr) AS LONG
-            // Go to the blockNbr position
-            RETURN _oStream:SafeSetPos(iOffset)
-        ENDIF
-        RETURN FALSE
 
     INTERNAL METHOD GetBlockType(blockNbr as LONG) AS STRING
         LOCAL cDataType := "?" as STRING
@@ -951,124 +988,129 @@ INTERNAL CLASS FlexArea
         aValues := OBJECT[]{iLen}
         FOR VAR i := 0 TO iLen-1
             VAR nFldType := bData[nOffset]
-            LOCAL oValue AS OBJECT
+            LOCAL element AS OBJECT
             LOCAL Length AS LONG
             nOffset += 1
             VAR nArrType := (FlexArrayTypes) nFldType
             SWITCH nArrType
             CASE FlexArrayTypes.NIL
-                oValue := DBNull.Value
+                element := DBNull.Value
             CASE FlexArrayTypes.Char
-                oValue := (SByte) bData[ nOffset]
+                element := (SByte) bData[ nOffset]
                 nOffset += 1
             CASE FlexArrayTypes.UChar
-                oValue := (BYTE) bData[ nOffset]
+                element := (BYTE) bData[ nOffset]
                 nOffset += 1
             CASE FlexArrayTypes.Short
-                oValue := BitConverter.ToInt16(bData,nOffset)
+                element := BitConverter.ToInt16(bData,nOffset)
                 nOffset += 2
             CASE FlexArrayTypes.UShort
-                oValue := BitConverter.ToUInt16(bData,nOffset)
+                element := BitConverter.ToUInt16(bData,nOffset)
                 nOffset += 2
             CASE FlexArrayTypes.Long
-                oValue := BitConverter.ToInt32(bData,nOffset)
+                element := BitConverter.ToInt32(bData,nOffset)
                 nOffset += 4
             CASE FlexArrayTypes.String32
                 Length := BitConverter.ToInt32(bData,nOffset)
                 nOffset += 4
-                oValue := SELF:Encoding:GetString(bData, nOffset, Length)
+                element := SELF:Encoding:GetString(bData, nOffset, Length)
                 nOffset += Length
             CASE FlexArrayTypes.String16
                 Length := BitConverter.ToInt16(bData,nOffset)
                 nOffset += 2
-                oValue := SELF:Encoding:GetString(bData, nOffset, Length)
+                element := SELF:Encoding:GetString(bData, nOffset, Length)
                 nOffset += Length
             CASE FlexArrayTypes.Float
-                oValue := 0.0
+                element := 0.0
                 nOffset += 10
             CASE FlexArrayTypes.Double
-                oValue := BitConverter.ToDouble(bData, nOffset)
+                element := BitConverter.ToDouble(bData, nOffset)
                 nOffset += 8
             CASE FlexArrayTypes.Date
-                oValue := BitConverter.ToInt32(bData, nOffset)
+                element := BitConverter.ToInt32(bData, nOffset)
                 nOffset += 4
             CASE FlexArrayTypes.Logic
-                oValue := bData[nOffset] != 0
+                element := bData[nOffset] != 0
                 nOffset += 1
             CASE FlexArrayTypes.Array
-                oValue := SELF:DecodeFlexArray(FlexFieldType.Array16, bData, REF nOffset)
+                element := SELF:DecodeFlexArray(FlexFieldType.Array16, bData, REF nOffset)
 
             CASE FlexArrayTypes.CodeBlock
-                oValue := NULL
+                element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
             CASE FlexArrayTypes.DateJ
-                oValue := BitConverter.ToInt32(bData, nOffset)
+                element := BitConverter.ToInt32(bData, nOffset)
                 nOffset += 4
 
             CASE FlexArrayTypes.Double2
-                oValue := BitConverter.ToDouble(bData, nOffset)
+                element := BitConverter.ToDouble(bData, nOffset)
                 nOffset += 6
 
             CASE FlexArrayTypes.Cyclic
-                oValue := NULL
+                element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
             CASE FlexArrayTypes.UCHar1
-                oValue := (SByte) bData[ nOffset]
+                element := (SByte) bData[ nOffset]
                 nOffset += 2
 
             CASE FlexArrayTypes.Char1
-                oValue := (BYTE) bData[ nOffset]
+                element := (BYTE) bData[ nOffset]
                 nOffset += 2
 
             CASE FlexArrayTypes.Short1
-                oValue := BitConverter.ToInt16(bData, nOffset)
+                element := BitConverter.ToInt16(bData, nOffset)
                 nOffset += 3
             CASE FlexArrayTypes.UShort1
-                oValue := BitConverter.ToUInt16(bData, nOffset)
+                element := BitConverter.ToUInt16(bData, nOffset)
                 nOffset += 3
             CASE FlexArrayTypes.Long1
-                oValue := BitConverter.ToInt32(bData, nOffset)
+                element := BitConverter.ToInt32(bData, nOffset)
                 nOffset += 5
             CASE FlexArrayTypes.Unused
-                oValue := NULL
+                element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
+
             CASE FlexArrayTypes.Object
-                oValue := NULL
+                element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
+
             CASE FlexArrayTypes.Null
-                oValue := String.Empty
+                element := String.Empty
+
             CASE FlexArrayTypes.True
-                oValue := TRUE
+                element := TRUE
+
             CASE FlexArrayTypes.False
-                oValue := FALSE
+                element := FALSE
+
             CASE FlexArrayTypes.LDouble
-                oValue := NULL
+                element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
             CASE FlexArrayTypes.UCHar2
-                oValue := (SByte) bData[ nOffset]
+                element := (SByte) bData[ nOffset]
                 nOffset += 3
             CASE FlexArrayTypes.CHar2
-                oValue := (BYTE) bData[ nOffset]
+                element := (BYTE) bData[ nOffset]
                 nOffset += 3
             CASE FlexArrayTypes.Short2
-                oValue := BitConverter.ToInt16(bData, nOffset)
+                element := BitConverter.ToInt16(bData, nOffset)
                 nOffset += 4
             CASE FlexArrayTypes.UShort2
-                oValue := BitConverter.ToUInt16(bData, nOffset)
+                element := BitConverter.ToUInt16(bData, nOffset)
                 nOffset += 4
             CASE FlexArrayTypes.Long2
-                oValue := BitConverter.ToInt32(bData, nOffset)
+                element := BitConverter.ToInt32(bData, nOffset)
                 nOffset += 6
             CASE FlexArrayTypes.ULong2
-                oValue := BitConverter.ToUInt32(bData, nOffset)
+                element := BitConverter.ToUInt32(bData, nOffset)
                 nOffset += 6
             OTHERWISE
-                oValue := NULL
+                element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
             END SWITCH
-            aValues[i] := oValue
+            aValues[i] := element
         NEXT
         RETURN aValues
 

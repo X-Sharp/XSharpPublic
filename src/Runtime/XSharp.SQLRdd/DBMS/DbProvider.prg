@@ -315,6 +315,16 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// </remarks>
     virtual property GetRowCount            as string => ""
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// The default implementation returns the value "true"
+    /// </remarks>
+    virtual property TrueLiteral            as string => "true"
+    /// <inheritdoc />
+    /// <remarks>
+    /// The default implementation returns the value "false"
+    /// </remarks>
+    virtual property FalseLiteral            as string => "false"
 
 
 #endregion

@@ -48,6 +48,7 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
             _connection:RecnoColumn         := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.RecnoColumn), _connection:RecnoColumn)
             _connection:DeletedColumn       := SELF:GetString(DefaultSection, nameof(SqlRDDEventReason.DeletedColumn), _connection:DeletedColumn)
             _connection:CompareMemo         := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.CompareMemo), _connection:CompareMemo)
+            _connection:MaxRecnoAsRecCount  := SELF:GetLogic(DefaultSection,  nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
             ENDIF
         RETURN
     END METHOD
@@ -69,12 +70,13 @@ CLASS SqlMetadataProviderIni Inherit SqlMetadataProviderAbstract
         oTable:RecnoColumn       := SELF:GetString(cTable,  nameof(SqlRDDEventReason.RecnoColumn),   _connection:RecnoColumn)
         oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.TrimTrailingSpaces), _connection:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.CompareMemo),   _connection:CompareMemo)
+        oTable:MaxRecnoAsRecCount:= SELF:GetLogic(cTable,   nameof(SqlRDDEventReason.MaxRecnoAsRecCount),   _connection:MaxRecnoAsRecCount)
 
         // these fields have no defaults
-         oTable:ServerFilter         := SELF:GetString(cTable, nameof(SqlRDDEventReason.ServerFilter), DEFAULT_SERVERFILTER)
-         oTable:ColumnList           := SELF:GetString(cTable, nameof(SqlRDDEventReason.ColumnList), DEFAULT_COLUMNLIST)
-         oTable:UpdatableColumns     := SELF:GetString(cTable, nameof(SqlRDDEventReason.UpdatableColumns), DEFAULT_UPDATABLECOLUMNS)
-         oTable:KeyColumns           := SELF:GetString(cTable, nameof(SqlRDDEventReason.KeyColumns), DEFAULT_KEYCOLUMNS)
+        oTable:ServerFilter         := SELF:GetString(cTable, nameof(SqlRDDEventReason.ServerFilter), DEFAULT_SERVERFILTER)
+        oTable:ColumnList           := SELF:GetString(cTable, nameof(SqlRDDEventReason.ColumnList), DEFAULT_COLUMNLIST)
+        oTable:UpdatableColumns     := SELF:GetString(cTable, nameof(SqlRDDEventReason.UpdatableColumns), DEFAULT_UPDATABLECOLUMNS)
+        oTable:KeyColumns           := SELF:GetString(cTable, nameof(SqlRDDEventReason.KeyColumns), DEFAULT_KEYCOLUMNS)
 
         var cIndexes := SELF:GetString(cTable, nameof(SqlRDDEventReason.Indexes), DEFAULT_INDEXES)
         if (!String.IsNullOrEmpty(cIndexes))

@@ -262,8 +262,7 @@ METHOD TreeViewSelectionChanged(oTVSEvent)
 	SUPER:TreeViewSelectionChanged(oTVSEvent)
 
 	// set the record pointer
-	SELF:TreeView:Server:Goto(nPos)
-
+    SELF:TreeView:Server:Goto(nPos)
 
 	RETURN SELF
 

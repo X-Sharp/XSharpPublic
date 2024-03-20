@@ -18,10 +18,10 @@ FUNCTION Start() AS INT
         endif
         // This makes sure that the provider is linked in
        fact := System.Data.SQLite.SQLiteFactory.Instance
-        SqlDbSetProvider("SQLITE")
-        var hnd:= SqlDbOpenConnection(i"Data Source={cDataFile};Pooling=False;LegacyFieldTypes=True;") //
-//        SqlDbSetProvider("SQLSERVER")
-//        var hnd:= SqlDbOpenConnection("Server=(local);Initial catalog=gsTutor;Trusted_Connection=True;") // LegacyFieldTypes=True;
+        //SqlDbSetProvider("SQLITE")
+        //var hnd:= SqlDbOpenConnection(i"Data Source={cDataFile};Pooling=False;LegacyFieldTypes=True;") //
+        SqlDbSetProvider("SQLSERVER")
+        var hnd:= SqlDbOpenConnection("Server=(local);Initial catalog=gsTutor;Trusted_Connection=True;") // LegacyFieldTypes=True;
 
       var oConn := SqlDbGetConnection(hnd)
       oConn:MetadataProvider := SqlMetadataProviderDatabase{oConn}

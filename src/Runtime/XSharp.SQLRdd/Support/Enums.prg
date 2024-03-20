@@ -70,6 +70,8 @@ enum SqlRDDEventReason
     member Condition
 /// <summary>Specifies if the index tag is unique</summary>
     member Unique
+    /// <summary>Should the reccount be calculated from the highest value in the RecnoColumn</summary>
+    member MaxRecnoAsRecCount
 end enum
 
 

@@ -44,7 +44,7 @@ internal class SqlDbTableCommandBuilder
         var oTd := Connection:GetStructureForTable(oTable:RealName, oTable,oTable:ColumnList)
         self:_oTable := oTable
         oTable:CopyFromTd(oTd)
-        self:AdjustSelects()
+         self:AdjustSelects()
         self:OpenIndex(cTable)  // open production index
         return oTable
 
@@ -74,7 +74,6 @@ internal class SqlDbTableCommandBuilder
             endif
         endif
 
-
     method DropIndex(oTag as SqlDbOrder) as logic
         var sb      := StringBuilder{Provider:DropIndexStatement}
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
@@ -93,7 +92,6 @@ internal class SqlDbTableCommandBuilder
         var stmt := sb:ToString()
         var result := _connection:ExecuteNonQuery(stmt, _cTable)
         return result
-
 
     method SetProductionIndex() as logic
         _oRdd:CurrentOrder := null
@@ -126,6 +124,7 @@ internal class SqlDbTableCommandBuilder
             strResult += "( " + whereClause + " )"
         next
         return strResult
+
     method BuildSqlStatement(sWhereClause as string) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
@@ -246,7 +245,7 @@ internal class SqlDbTableCommandBuilder
         _oTable:SelectStatement := sb:ToString()
         sb:Append(SqlDbProvider.WhereClause)
         sb:Append("1=0")
-        _oTable:EmptySelectStatement :=sb:ToString()
+         _oTable:EmptySelectStatement :=sb:ToString()
         return
 
 
@@ -295,7 +294,7 @@ internal class SqlDbTableCommandBuilder
         var sb := StringBuilder{}
         sb:Append(Provider:DeleteStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
-        sb:Replace(SqlDbProvider.WhereMacro, _oTable:DeletedColumn + " = 1")
+        sb:Replace(SqlDbProvider.WhereMacro, _oTable:DeletedColumn + " = "+Provider:TrueLiteral)
         return sb.ToString()
 
 end class

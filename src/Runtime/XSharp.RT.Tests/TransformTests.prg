@@ -142,11 +142,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal("",     Transform( #somesymbol, "abc XXXXXXXXXXXXX def" )  )
 
         	LOCAL p AS PTR
-        	p := @p
-            Assert.Equal("",     Transform( p, "" )  )
-            Assert.Equal("",     Transform( p, "@z " )  )
-            Assert.Equal("",     Transform( p, "9999999999999" )  )
-            Assert.Equal("",     Transform( p, "abc XXXXXXXXXXXXX def" )  )
+            p := @p
+             Assert.Equal("",     Transform( p, "" )  )
+             Assert.Equal("",     Transform( p, "@z " )  )
+             Assert.Equal("",     Transform( p, "9999999999999" )  )
+             Assert.Equal("",     Transform( p, "abc XXXXXXXXXXXXX def" )  )
 
             LOCAL u AS USUAL
             u := #somesymbol
@@ -154,7 +154,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.Equal("",     Transform( u, "@z " )  )
             Assert.Equal("",     Transform( u, "XXXXXXXXXXXXX" )  )
             Assert.Equal("",     Transform( u, "abc XXXXXXXXXXXXX def" )  )
-            
+
             u := p
             Assert.Equal("",     Transform( u, "" )  )
             Assert.Equal("",     Transform( u, "@z " )  )

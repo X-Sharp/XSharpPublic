@@ -34,6 +34,11 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
     /// <inheritdoc />
     override property GetRowCount            as string => ""
     /// <inheritdoc />
+    override property TrueLiteral            as string => "1"
+    /// <inheritdoc />
+    override property FalseLiteral            as string => "0"
+
+    /// <inheritdoc />
     override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
     private static lockObj := object{} as object
     constructor()
@@ -86,7 +91,7 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
                 endif
             endif
         case DbFieldType.Logic
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int default 0"
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} bool "
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)

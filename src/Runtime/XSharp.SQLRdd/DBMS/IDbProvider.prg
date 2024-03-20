@@ -81,6 +81,15 @@ interface ISqlDbProvider
     property GetRowCount            as string get
 
     /// <summary>
+    /// Literal value for the True value
+    /// </summary>
+    property TrueLiteral            as string get
+    /// <summary>
+    /// Literal value for the False value
+    /// </summary>
+    property FalseLiteral           as string get
+
+    /// <summary>
     /// Return a list of function translations for this provider
     /// </summary>
     /// <returns>Dictionary with XBase functions mapped to SQL functions</returns>

@@ -81,7 +81,7 @@ class SqlDbProviderMySql inherit SqlDbProvider
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-                sResult += " AUTO_INCREMENT "
+                sResult += " PRIMARY KEY AUTO_INCREMENT "
             else
                 sResult += "default 0"
             endif

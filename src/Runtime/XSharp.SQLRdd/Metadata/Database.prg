@@ -67,6 +67,7 @@ end class
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0},_connection:MaxRecnoAsRecCount})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
@@ -252,13 +253,28 @@ end class
                 if Convert.ToInt64(count) == 0
                     SELF:CreateDictionary()
                 endif
+                cmd:CommandText := i"Select maxrecnoasreccount from {tableDict}"
+                local ok := false as logic
+
+                ok := cmd:ExecuteNonQuery(tableDict)
+                if ! ok
+                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0}
+                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
+                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
+                    ok := cmd:ExecuteNonQuery(tableDict)
+                    if ok
+                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
+                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:FalseLiteral
+                        ok := cmd:ExecuteNonQuery(tableDict)
+                    endif
+                endif
             ENDIF
             // Read the defaults from the database
             cmd:AddParameter("@p1",DefaultSection)
             cmd:CommandText := i"SELECT * FROM {tableDict} WHERE {nameof(TableName)} = @p1"
             local rdr := cmd:ExecuteReader("Metadata") as DbDataReader
             if rdr != null
-                if rdr:Read()
+                if rdr:Read() .and. rdr.HasRows
                     _connection:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames),_connection:LongFieldNames )
                     _connection:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates),_connection:AllowUpdates)
                     _connection:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords), _connection:MaxRecords)
@@ -267,6 +283,7 @@ end class
                     _connection:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
                     _connection:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
                     _connection:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns), _connection:UpdateAllColumns)
+                    _connection:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
                 endif
                 rdr:Close()
             endif
@@ -349,6 +366,7 @@ end class
                 oTable:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn),_connection:DeletedColumn)
                 oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
                 oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
+                oTable:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount),_connection:MaxRecnoAsRecCount)
                 oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns),_connection:UpdateAllColumns)
                 oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns),DEFAULT_UPDATABLECOLUMNS)
                 oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns),DEFAULT_KEYCOLUMNS)
@@ -473,6 +491,7 @@ end class
             sb:Append(sbValues:ToString())
             sb:Append(")")
             cmd:CommandText := sb:ToString()
+            cmd:ClearParameters()
             cmd:AddParameter("@p1", cTable)
             cmd:AddParameter("@p2", cIndex)
             cmd:AddParameter("@p3", nOrdinal)

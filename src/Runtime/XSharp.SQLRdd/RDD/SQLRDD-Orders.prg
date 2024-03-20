@@ -158,8 +158,12 @@ partial class SQLRDD inherit DBFVFP
         local result as logic
         if self:_tableMode == TableMode.Table
             self:_CloseCursor()
+            var currentRecord := SELF:RecNo
             SELF:CurrentOrder := self:FindOrder(orderInfo)
             result := CurrentOrder != null
+            if result .and. SELF:_recnoColumNo > -1
+                self:GoTo(currentRecord)
+            endif
         else
             result := super:OrderListFocus(orderInfo)
         endif
@@ -410,6 +414,6 @@ partial class SQLRDD inherit DBFVFP
         end switch
         return info:Result
     end method
-    
+
 END CLASS
 END NAMESPACE // XSharp.SQLRdd

@@ -166,12 +166,12 @@
     <NativeResource Include="Icons.RBNTOOLBAR.rc">
       <DependentUpon>Icons.prg</DependentUpon>
     </NativeResource>
-    <Content Include="CATO3SPL.DLL">
+    <None Include="CATO3SPL.DLL">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="gstutor.db">
+    </None>
+    <None Include="gstutor.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Properties\cavowed.inf" />
     <None Include="Properties\saswed.inf" />
     <None Include="Properties\GSGWED.INF" />

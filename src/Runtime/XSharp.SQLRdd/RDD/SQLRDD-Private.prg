@@ -26,7 +26,7 @@ partial class SQLRDD inherit DBFVFP
     private _creatingIndex  as logic
     private _tableMode      as TableMode
     private _hasData        as logic
-    private _realOpen       as logic
+    private _getStructureOnly as logic
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
     private _builder        as SqlDbTableCommandBuilder
@@ -52,6 +52,8 @@ partial class SQLRDD inherit DBFVFP
 
     private _numHiddenColumns as long
     private _serverReccount as LONG
+    private _baseRecno as logic
+    private _allRowsRead as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -90,7 +92,7 @@ partial class SQLRDD inherit DBFVFP
                 endif
                 self:_phantomRow[index] := blank
                 dbColumn:Caption     := oColumn:Caption
-                if oColumn:AutoIncrement
+                if oColumn:AutoIncrement .or. oColumn:ColumnName == SELF:_oTd:RecnoColumn
                     _recnoColumNo := oColumn:Ordinal
                     oColumn:ReadOnly := false
                 endif
@@ -123,7 +125,13 @@ partial class SQLRDD inherit DBFVFP
             _oStream:SafeWriteByte(26)
             _oStream:SafeSetLength(lOffset+1)
             // now set the file size and reccount in the header
-            super:GoTop()
+            var old := self:_baseRecno
+            self:_baseRecno  := true
+            super:GoTo(1)
+            self:_baseRecno  := old
+            SELF:_CheckEofBof()
+            var serverRowCount := _builder:GetRecCount()
+            self:_allRowsRead  := serverRowCount == _RecCount
         end set
     end property
 
@@ -144,6 +152,7 @@ partial class SQLRDD inherit DBFVFP
         _keyColumns      := List<RddFieldInfo>{}
         _updatableColumns:= List<RddFieldInfo>{}
         _orderBagList    := List<SqlDbOrderBag>{}
+        self:_baseRecno  := false
         return
     end constructor
 
@@ -257,7 +266,7 @@ partial class SQLRDD inherit DBFVFP
     private method _GetEmptyValues() as logic
         var values := List<object>{}
         foreach col as DataColumn in self:DataTable:Columns
-            if col:AutoIncrement
+            if col:AutoIncrement .or. col:ColumnName == SELF:_oTd:RecnoColumn
                 values.Add(DBNull.Value)
                 loop
             endif
@@ -307,7 +316,7 @@ partial class SQLRDD inherit DBFVFP
         local iCounter := 1 as long
         _command:ClearParameters()
         foreach c as DataColumn in DataTable:Columns
-            if c:AutoIncrement
+            if c:AutoIncrement .or. c:ColumnName == SELF:_oTd:RecnoColumn
                 loop
             endif
             if sbColumns:Length > 0
@@ -385,7 +394,7 @@ partial class SQLRDD inherit DBFVFP
         local iCounter := 1 as long
         _command:ClearParameters()
         foreach c as DataColumn in DataTable:Columns
-            if c:AutoIncrement
+            if c:AutoIncrement .or. c:ColumnName == SELF:_oTd:RecnoColumn
                 loop
             endif
 
@@ -488,9 +497,9 @@ partial class SQLRDD inherit DBFVFP
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause)
             _command:ClearParameters()
-            self:_hasData    := true
-            self:DataTable   := _command:GetDataTable(self:Alias)
-            self:_serverReccount := _builder:GetRecCount()
+            self:_hasData        := true
+            self:DataTable       := _command:GetDataTable(self:Alias)
+            self:_GetRecCount()
         catch as Exception
             return false
         end try
@@ -500,7 +509,7 @@ partial class SQLRDD inherit DBFVFP
 
     private method _BuildSqlStatement(sWhereClause as string) as string
         local query as string
-        if ! self:_realOpen
+        if self:_getStructureOnly
             query := self:_oTd:EmptySelectStatement
         else
             if self:_tableMode == TableMode.Table
@@ -570,6 +579,14 @@ partial class SQLRDD inherit DBFVFP
         self:_table         := null
         self:_recordKeyCache := null
         return
+
+    private method _GetRecCount() as void
+        if self:_oTd:MaxRecnoAsRecCount .and. self:_recnoColumNo != -1
+            self:_serverReccount := self:_builder:GetMaxRecno()
+        else
+            self:_serverReccount := self:_builder:GetRecCount()
+        endif
+    end method
 end class
 
 end namespace // XSharp.RDD.SqlRDD

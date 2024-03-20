@@ -136,6 +136,11 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
     /// </summary>
     /// <remarks>This is the default value for the CompareMemo property for tables opened with the RDD. This can be overridden at the table level</remarks>
     PROPERTY UpdateAllColumns as LOGIC auto
+    /// <summary>
+    /// Specifies whether the maximum value in the Recno column should be used as the RecCount property.
+    /// This defaults to FALSE which means that the RecCount property returns the number of records in the table
+    /// </summary>
+    property MaxRecnoAsRecCount       as logic auto
 
 #endregion
 
@@ -227,6 +232,8 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
                 self:TrimTrailingSpaces := (value:ToLower() == "true")
             case "usenulls"
                 self:UseNulls := (value:ToLower() == "true")
+            case "maxrecnoasreccount"
+                self:MaxRecnoAsRecCount := (value:ToLower() == "true")
             otherwise
                 builder:Add(key, value)
             end switch
@@ -643,7 +650,6 @@ class SqlDbConnection inherit SqlDbHandleObject implements IDisposable
             var query := selectStmt+SqlDbProvider.WhereClause+"0=1"
             var oTd := GetStructureForQuery(query,TableName, longFieldNames)
             oTd:SelectStatement := selectStmt
-            oTd:EmptySelectStatement := query
             self:Schema:Add(TableName, oTd)
             return oTd
         catch e as Exception

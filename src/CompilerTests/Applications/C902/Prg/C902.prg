@@ -17,8 +17,8 @@ FUNCTION Start() AS VOID STRICT
 
 	cCmd := "o:Test2(ref p1,ref p2)"
 	Eval(&("{||"+cCmd+"}")) // OK
-	
-	cCmd := "o:Test4(ref p1,ref p2,ref p2,ref p4)"
+
+	cCmd := "o:Test4(ref p1,ref p2,ref p3,ref p4)"
 	Eval(&("{||"+cCmd+"}")) // Exception
 
 	? p1,p2,p3,p4
@@ -35,6 +35,6 @@ CLASS TestClass
 		c := 1
 		d := 2
 	RETURN TRUE
-	
+
 END CLASS
 

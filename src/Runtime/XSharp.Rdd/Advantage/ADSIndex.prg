@@ -382,16 +382,9 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                     if res == 0
                         info:Result  := dwKeyNo
                     elseif res == ACE.AE_NOT_FOUND
-                        // when there is a filter then GetKeyNum may fail with 5041
+                        // when there is a filter then GetKeyNum may fail with 5041.
+                        // the ADS VO RDD returns NIL then
                         info:Result := null
-//                         res := ACE.AdsGetKeyNum(hIndex, ACE.ADS_IGNOREFILTERS, OUT dwKeyNo)
-//                         if res == 0
-//                             info:Result  := dwKeyNo
-//                         elseif res == ACE.AE_NOT_FOUND
-//                             exact := false
-//                         else
-//                             SELF:_CheckError(res, EG_CORRUPTION)
-//                         endif
                     else
                         SELF:_CheckError(res, EG_CORRUPTION)
                     endif

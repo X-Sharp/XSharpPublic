@@ -5919,6 +5919,40 @@ RETURN
 			Assert.Equal("A", (STRING) OrdScope(TOPSCOPE) )
 
 			DbCloseArea()
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetIndex_eof() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1448
+			LOCAL cDbf,cIndex AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			cIndex := cDbf + "_index.cdx"
+            IF File(cIndex)
+			    FErase ( FPathName() )
+            ENDIF
+
+			DbfTests.CreateDatabase(cDbf, {{"NFIELD","N",5,0}} , {2,1,3} , TRUE)
+			Assert.True( DbCreateIndex(cIndex,"NFIELD") )
+			DbCloseArea()
+
+			DbUseArea( TRUE,,cDbf,,FALSE)
+
+			Assert.Equal(1, RecNo() )
+			Assert.False(Eof() )
+
+			Assert.True( DbSetIndex(cIndex) )
+
+			Assert.Equal(2, RecNo() )
+			Assert.False(Eof() )
+			
+			DbGoTop()
+
+			Assert.Equal(2, RecNo() )
+			Assert.False(Eof() )
+
+			DbCloseArea()
 			
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

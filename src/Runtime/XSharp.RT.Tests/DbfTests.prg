@@ -1570,8 +1570,10 @@ BEGIN NAMESPACE XSharp.RT.Tests
             ENDIF
 		    RETURN cFileName
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY) AS VOID
-			CreateDatabase(cFileName, aFields , {})
+			CreateDatabase(cFileName, aFields , {}, FALSE)
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID
+			CreateDatabase(cFileName, aFields , aValues, TRUE)
+		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY, lKeepOpen AS LOGIC) AS VOID
             IF File(cFileName + IndexExt())
 			    FErase ( FPathName() )
             ENDIF
@@ -1597,6 +1599,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				FieldPut (1 , aValues[i])
             NEXT
             DbGoTop()
+            IF .not. lKeepOpen
+            	DbCloseArea()
+            END IF
 		RETURN
 
 

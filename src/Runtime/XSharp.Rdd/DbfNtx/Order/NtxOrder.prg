@@ -242,6 +242,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:Close()
             ENDIF
             SELF:AllocateBuffers()
+            SELF:GoTop()
             RETURN isOk
 
         INTERNAL METHOD AllocateBuffers() AS VOID

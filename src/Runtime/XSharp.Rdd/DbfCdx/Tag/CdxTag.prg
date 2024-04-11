@@ -182,6 +182,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:AllocateBuffers()
+            SELF:GoTop()
             RETURN TRUE
 
         INTERNAL METHOD AllocateBuffers() AS VOID

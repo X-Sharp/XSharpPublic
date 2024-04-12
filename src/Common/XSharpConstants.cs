@@ -132,6 +132,7 @@ namespace XSharp
         internal const string IntermediateOutputPath = nameof(IntermediateOutputPath);
         internal const string LB = nameof(LB);
         internal const string MemVar = nameof(MemVar);
+        internal const string ModernSyntax = nameof(ModernSyntax);
         internal const string NamedArgs = nameof(NamedArgs);
         internal const string NativeResource = nameof(NativeResource);
         internal const string NoStandardDefs = nameof(NoStandardDefs);

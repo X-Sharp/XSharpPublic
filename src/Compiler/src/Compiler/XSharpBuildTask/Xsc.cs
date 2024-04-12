@@ -85,6 +85,11 @@ namespace XSharp.Build
             set { _store[nameof(MemVar)] = value; }
             get { return _store.GetOrDefault(nameof(MemVar), false); }
         }
+        public bool ModernSyntax
+        {
+            set { _store[nameof(ModernSyntax)] = value; }
+            get { return _store.GetOrDefault(nameof(ModernSyntax), false); }
+        }
         public bool NamedArgs
         {
             set { _store[nameof(NamedArgs)] = value; }
@@ -767,6 +772,7 @@ namespace XSharp.Build
             }
             commandline.AppendPlusOrMinusSwitch("/enforceself", _store, nameof(EnforceSelf));
             commandline.AppendPlusOrMinusSwitch("/enforceoverride", _store, nameof(EnforceOverride));
+            commandline.AppendPlusOrMinusSwitch("/modernsyntax", _store, nameof(ModernSyntax));
             commandline.AppendPlusOrMinusSwitch("/noinit", _store, nameof(NoInit));
             commandline.AppendPlusOrMinusSwitch("/ovf", _store, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", _store, nameof(PPO));

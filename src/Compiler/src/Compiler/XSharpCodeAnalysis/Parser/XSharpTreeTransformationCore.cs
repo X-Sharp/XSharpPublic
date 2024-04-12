@@ -1752,7 +1752,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 mods = TokenList(SyntaxKind.PrivateKeyword);
 
-            var body = nobody ? null : context.Statements.Get<BlockSyntax>();
+            var member = context.CsNode as MethodDeclarationSyntax;
+            var body = member.Body;
             var expressionBody = GetExpressionBody(context.ExpressionBody);
 
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(

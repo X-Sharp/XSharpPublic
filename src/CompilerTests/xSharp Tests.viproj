@@ -36,6 +36,9 @@ RecentReference = GAC:XSharp.Core,v4,2.6.0.0
 RecentReference = GAC:XSharp.RT,v4,2.6.0.0
 RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
 RecentReference = GAC:XSharp.VO,v4,2.6.0.0
+RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll
+RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
+RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2
@@ -124764,7 +124767,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) Resources]
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) Native Resources]
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) License files]
@@ -124878,9 +124881,9 @@ CopyToBin = 0
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes Resources]
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes Native Resources]
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes License files]

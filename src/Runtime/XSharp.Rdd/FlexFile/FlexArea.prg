@@ -64,7 +64,7 @@ INTERNAL CLASS FlexArea
     internal property Stream as FileStream get _oStream
 #ifdef DELETEDBLOCKS
     internal property DeadIndexBlocks as ULStack get _DeadIndexBlocks
-#endif    
+#endif
     INTERNAL PROPERTY IsOpen     AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero
     INTERNAL PROPERTY ReadOnly   AS LOGIC GET _oRdd:ReadOnly
     INTERNAL PROPERTY Shared     AS LOGIC GET _oRdd:Shared
@@ -473,7 +473,9 @@ IF SELF:_lockCount > 0
         LOCAL blockNr := nOldPtr as INT
         LOCAL nCurrentLen AS LONG
         LOCAL lNewBlock := FALSE AS LOGIC
+#ifdef DELETEDBLOCKS
         LOCAL liExcessLen := 0 AS DWORD
+#endif
         LOCAL lDelete  := FALSE as LOGIC
         VAR neededLen  := (DWORD) SELF:RoundToBlockSize(bytes:Length)
         IF blockNr != 0
@@ -503,8 +505,8 @@ IF SELF:_lockCount > 0
             IF SELF:LockHeader(TRUE)
                 LOCAL nPos AS DWORD
                 LOCAL lFoundDeletedBlock as LOGIC
-                LOCAL liDataPos as DWORD
 #ifdef DELETEDBLOCKS
+                LOCAL liDataPos as DWORD
                 LOCAL liFoundLen as DWORD
                 // Try to find block of the right size in the free list
                 IF SELF:IsFlex
@@ -514,9 +516,9 @@ IF SELF:_lockCount > 0
                  ELSE
 #endif
                     lFoundDeletedBlock := FALSE
-                    liDataPos := 0
 #ifdef DELETEDBLOCKS
                     liFoundLen := 0
+                    liDataPos := 0
                 ENDIF
                  IF lFoundDeletedBlock
                      liExcessLen := liFoundLen - neededLen

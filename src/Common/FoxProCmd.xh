@@ -189,7 +189,7 @@
 
 // Multiple record operations with IN Clause. Commands without are defined in DBCMD.XH
 
-#command REPLACE [<(f1)> WITH <x1> [, <(fn)> WITH <xn>]]                ;
+#command REPLACE <(f1)> WITH <x1> [, <(fn)> WITH <xn>]                  ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;

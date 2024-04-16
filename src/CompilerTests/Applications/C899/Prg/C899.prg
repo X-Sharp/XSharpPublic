@@ -43,6 +43,12 @@ set COLLATION TO WINDOWS
 ? SetCollation()
 xAssert(SetCollation() == "WINDOWS")
 
+
+LOCAL replace := "abc" AS STRING
+replace:GetType()
+replace:Replace('a','c')
+
+
 RETURN
 
 PROCEDURE Othertests()

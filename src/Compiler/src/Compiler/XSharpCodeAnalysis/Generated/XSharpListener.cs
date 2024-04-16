@@ -1514,19 +1514,6 @@ public interface IXSharpListener : IParseTreeListener {
 	void ExitYieldStmt([NotNull] XSharpParser.YieldStmtContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by the <c>fieldStmt</c>
-	/// labeled alternative in <see cref="XSharpParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFieldStmt([NotNull] XSharpParser.FieldStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>fieldStmt</c>
-	/// labeled alternative in <see cref="XSharpParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFieldStmt([NotNull] XSharpParser.FieldStmtContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by the <c>memvardeclStmt</c>
 	/// labeled alternative in <see cref="XSharpParser.statement"/>.
 	/// </summary>
@@ -1538,6 +1525,19 @@ public interface IXSharpListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMemvardeclStmt([NotNull] XSharpParser.MemvardeclStmtContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by the <c>fieldStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFieldStmt([NotNull] XSharpParser.FieldStmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>fieldStmt</c>
+	/// labeled alternative in <see cref="XSharpParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFieldStmt([NotNull] XSharpParser.FieldStmtContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>localFunctionStmt</c>

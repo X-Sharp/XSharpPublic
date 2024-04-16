@@ -147,6 +147,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case ASSIGN_BITOR:                    // SyntaxKind.BarEqualsToken:
                 case ASSIGN_LSHIFT:                   // SyntaxKind.LessThanLessThanEqualsToken:
                 case ASSIGN_RSHIFT:                   // SyntaxKind.GreaterThanGreaterThanEqualsToken:
+                                                      // SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken // we do not have this
                 case QMARK:                           // SyntaxKind.QuestionToken:
                 case COLON:                           // SyntaxKind.ColonToken:
                 case OR:                              // SyntaxKind.BarBarToken:
@@ -163,6 +164,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case GTE:                             // SyntaxKind.GreaterThanEqualsToken:
                 case LSHIFT:                          // SyntaxKind.LessThanLessThanToken:
                 case RSHIFT:                          // SyntaxKind.GreaterThanGreaterThanToken:
+                                                      // SyntaxKind.GreaterThanGreaterThanGreaterThanToken // we do not have this
                 case PLUS:                            // SyntaxKind.PlusToken:
                 case MINUS:                           // SyntaxKind.MinusToken:
                 case MULT:                            // SyntaxKind.AsteriskToken:
@@ -175,8 +177,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // case ALIAS                         // SyntaxKind.MinusGreaterThanToken     Disabled we allow (ABC)->FieldName
                 case DEFAULT:                         // SyntaxKind.QuestionQuestionToken:
                 case Eof:                             // SyntaxKind.EndOfFileToken:
+                case SWITCH:                          // SyntaxKind.SwitchKeyword:
                 case UDCSEP:                          // SyntaxKind.EqualsGreaterThanToken: for lambda expressions
-                                                      // SyntaxKind.DotDotToken:  // used for ranges. We do not have that
+                case DOTDOT:                          // SyntaxKind.DotDotToken:
                     return false;
             }
             return true;
@@ -192,7 +195,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class ParenExpressionContext
         {
-            public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
+            public ExpressionContext LastExpression => _Exprs.Count == 0 ? null : _Exprs[_Exprs.Count - 1];
         }
         public partial class PragmaContext
         {

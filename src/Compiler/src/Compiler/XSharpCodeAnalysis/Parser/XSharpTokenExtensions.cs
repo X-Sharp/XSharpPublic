@@ -894,6 +894,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
+                case XSharpParser.DOTDOT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DotDotToken);
+                    break;
                 // C# does not have an EXP operator
                 case XSharpParser.ASSIGN_EXP:
                 default:
@@ -1802,7 +1805,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (pe.Expr is XSharpParser.ParenExpressionContext)
                 {
                     var paren = pe.Expr as XSharpParser.ParenExpressionContext;
-                    return paren.Expr.GetLiteralToken();
+                    return paren.LastExpression.GetLiteralToken();
                 }
             }
             return null;

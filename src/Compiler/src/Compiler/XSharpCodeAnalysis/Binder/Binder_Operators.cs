@@ -806,28 +806,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression RewriteIndexAccess(BoundExpression index, DiagnosticBag diagnostics)
         {
             var syntax = (CSharpSyntaxNode)index.Syntax;
-            if (!index.HasAnyErrors && !this.Compilation.Options.HasOption(CompilerOption.ArrayZero, syntax))
+            if (!index.HasAnyErrors && !this.Compilation.Options.HasOption(CompilerOption.ArrayZero, syntax) && !(index is BoundFromEndIndexExpression))
             {
                 syntax.XGenerated = true;
-                var kind = BinaryOperatorKind.Subtraction;
-                var left = index;
-                var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
-                var leftType = left.Type;
-                var opKind = leftType.SpecialType switch
-                {
-                    SpecialType.System_Int32 => BinaryOperatorKind.IntSubtraction,
-                    SpecialType.System_Int64 => BinaryOperatorKind.LongSubtraction,
-                    SpecialType.System_UInt32 => BinaryOperatorKind.UIntSubtraction,
-                    _ => BinaryOperatorKind.ULongSubtraction
-                };
-                var resultConstant = FoldBinaryOperator(syntax, opKind, left, right, left.Type.SpecialType, diagnostics);
-                var sig = this.Compilation.builtInOperators.GetSignature(opKind);
-                index = new BoundBinaryOperator(syntax, kind, left, right, resultConstant, sig.Method,
-                    resultKind: LookupResultKind.Viable,
-                    originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
-                    type: index.Type,
-                    hasErrors: false)
-                { WasCompilerGenerated = true };
+                index = SubtractIndex(index, diagnostics);
             }
             return index;
         }

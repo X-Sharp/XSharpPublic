@@ -3120,6 +3120,22 @@ namespace Microsoft.CodeAnalysis
                      (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Int32,
                      (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Int32,
 
+#if XSHARP
+                 // System_Index__get_IsFromEnd
+                 (byte)MemberFlags.PropertyGet,                                                                                                                      // Flags
+                 (byte)WellKnownType.ExtSentinel, (byte)(WellKnownType.System_Index - WellKnownType.ExtSentinel),                                               // DeclaringTypeId
+                 0,                                                                                                                                             // Arity
+                     0,                                                                                                                                         // Method Signature
+                     (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Boolean,
+
+                 // System_Index__get_Value
+                 (byte)MemberFlags.PropertyGet,                                                                                                                      // Flags
+                 (byte)WellKnownType.ExtSentinel, (byte)(WellKnownType.System_Index - WellKnownType.ExtSentinel),                                               // DeclaringTypeId
+                 0,                                                                                                                                             // Arity
+                     0,                                                                                                                                         // Method Signature
+                     (byte)SignatureTypeCode.TypeHandle, (byte)SpecialType.System_Int32,
+
+#endif
                  // System_Range__ctor
                  (byte)(MemberFlags.Constructor),
                  (byte)WellKnownType.ExtSentinel, (byte)(WellKnownType.System_Range - WellKnownType.ExtSentinel),                                               // DeclaringTypeId
@@ -3895,6 +3911,10 @@ namespace Microsoft.CodeAnalysis
 
                 ".ctor",                                    // System_Index__ctor
                 "GetOffset",                                // System_Index__GetOffset
+#if XSHARP
+                "get_IsFromEnd",                            // System_Index__get_IsFromEnd
+                "get_Value",                                // System_Index__get_Value
+#endif
                 ".ctor",                                    // System_Range__ctor
                 "StartAt",                                  // System_Range__StartAt
                 "EndAt",                                    // System_Range__StartAt

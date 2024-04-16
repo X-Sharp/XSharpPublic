@@ -261,12 +261,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         if ((object)nextScope != null)
                         {
+#if !XSHARP                            
                             Debug.Assert((object)nextScope == null, "Why did we run into an unmerged namespace?");
+#endif
                             nextScope = null;
                             break;
                         }
 
-                        nextScope = ns;
+                            nextScope = ns;
                     }
                 }
 

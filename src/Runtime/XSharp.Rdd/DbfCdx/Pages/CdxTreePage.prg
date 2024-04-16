@@ -142,7 +142,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 #endif
-*/
+
         #endregion
 
         ABSTRACT INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID

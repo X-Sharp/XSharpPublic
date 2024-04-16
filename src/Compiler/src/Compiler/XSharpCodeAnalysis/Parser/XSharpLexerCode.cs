@@ -1155,7 +1155,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '*':
                         parseOne(MULT);
-                        if (!ModernSyntax && StartOfLine(LastToken) )
+                        if (AllowOldStyleComments && StartOfLine(LastToken) )
                             parseSlComment();
                         else if (Expect('='))
                             parseOne(ASSIGN_MUL);

@@ -13,7 +13,7 @@ See License.txt in the project root for license information.
   <PropertyGroup>
       <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <MajorVersion>2</MajorVersion>
-    <MinorVersion>19</MinorVersion>
+    <MinorVersion>20</MinorVersion>
     <PatchVersion>0</PatchVersion>
     <PreReleaseVersionLabel>0</PreReleaseVersionLabel>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>

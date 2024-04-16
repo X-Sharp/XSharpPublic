@@ -12,6 +12,7 @@ USING XSharp.RDD.Support
 USING System.IO
 USING STATIC XSharp.Conversions
 
+#undef DELETEDBLOCKS
 #ifdef DEBUG
 #define BLANK_DELETED
 #else
@@ -472,7 +473,7 @@ IF SELF:_lockCount > 0
         LOCAL blockNr := nOldPtr as INT
         LOCAL nCurrentLen AS LONG
         LOCAL lNewBlock := FALSE AS LOGIC
-        //LOCAL liExcessLen := 0 AS DWORD
+        LOCAL liExcessLen := 0 AS DWORD
         LOCAL lDelete  := FALSE as LOGIC
         VAR neededLen  := (DWORD) SELF:RoundToBlockSize(bytes:Length)
         IF blockNr != 0
@@ -504,7 +505,7 @@ IF SELF:_lockCount > 0
                 LOCAL lFoundDeletedBlock as LOGIC
                 LOCAL liDataPos as DWORD
 #ifdef DELETEDBLOCKS
-                //LOCAL liFoundLen as DWORD
+                LOCAL liFoundLen as DWORD
                 // Try to find block of the right size in the free list
                 IF SELF:IsFlex
                      lFoundDeletedBlock := SELF:LenIndex:SeekSoft(neededLen)
@@ -515,7 +516,7 @@ IF SELF:_lockCount > 0
                     lFoundDeletedBlock := FALSE
                     liDataPos := 0
 #ifdef DELETEDBLOCKS
-                    //liFoundLen := 0
+                    liFoundLen := 0
                 ENDIF
                  IF lFoundDeletedBlock
                      liExcessLen := liFoundLen - neededLen
@@ -530,7 +531,7 @@ IF SELF:_lockCount > 0
                  ENDIF
 #endif
                 IF ! lFoundDeletedBlock
-                    nPos := (DWORD) _oStream:Length
+                    nPos := _nextFree  * _blockSize
                     _oStream:SafeSetPos(nPos)
                     IF SELF:WriteBlock(bytes)
                         SELF:WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)

@@ -125,10 +125,15 @@ namespace XSharp.Project
             _cachedProjectProperties.Clear();
         }
 
+        public bool HasProjectProperty(string propertyName)
+        {
+            return !string.IsNullOrEmpty(GetProjectProperty(propertyName));
+        }
+
         public bool GetLogicProjectProperty(string propertyName)
         {
             var prop = GetProjectProperty(propertyName);
-            return prop != null && String.Compare(prop, "true",true) == 0;
+            return prop != null && string.Compare(prop, "true",true) == 0;
         }
 
         public override string GetProjectProperty(string propertyName)

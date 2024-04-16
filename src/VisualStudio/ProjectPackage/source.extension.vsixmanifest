@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem.2022" Version="2.19.0.3" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem.2022" Version="2.20.0.0" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp VS Integration for 2022 and later</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
@@ -37,8 +37,6 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Debugger.UI2022" Path="|Debugger.UI2022|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger.Support" Path="|Debugger.Support|" AssemblyName="|Debugger.Support;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="CodeGenerator" Path="|CodeGenerator|" AssemblyName="|CodeGenerator;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="ProjectPackageCPS2022" Path="|ProjectPackageCPS2022;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="ProjectPackageCPS2022" Path="|ProjectPackageCPS2022|" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

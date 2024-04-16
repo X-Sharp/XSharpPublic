@@ -152,13 +152,17 @@ namespace XSharp.Project
                 XSharpProjectFileConstants.Allowdot,
                 XSharpProjectFileConstants.EnforceSelf,
                 XSharpProjectFileConstants.EnforceOverride,
+                XSharpProjectFileConstants.ModernSyntax,
                 };
             foreach (var flag in flags)
             {
-                if (_prjNode.GetLogicProjectProperty(flag))
-                    options.Add(flag.ToLower() + "+");
-                else
-                    options.Add(flag.ToLower() + "-");
+                if (_prjNode.HasProjectProperty(flag))
+                {
+                    if (_prjNode.GetLogicProjectProperty(flag))
+                        options.Add(flag.ToLower() + "+");
+                    else
+                        options.Add(flag.ToLower() + "-");
+                }
             }
             string value = _prjNode.GetProjectProperty(XSharpProjectFileConstants.StandardDefs);
             if (value != null && value.Trim().Length > 0)

@@ -146,6 +146,8 @@ class LanguagePropertyPagePanel
     const EnforceOverrideDescription := "Enforce the use of VIRTUAL and OVERRIDE for members of a class. (/enforceoverride)" as string
     const allowDotDescription := "Allow the DOT operator to access instance fields, properties and methods (/allowdot)" as string
     const allowOldStyleDescription := "Allow old style assignments with the '=' operator. This defaults to TRUE for the FoxPro dialect. (/allowoldstyleassignments)" as string
+    const ModernSyntaxDescription := "Suppress old style comments and other legacy language features. (/modernsyntax)" as string
+    const ModernSyntaxCaption := "Modern Syntax" as string
     const CatGeneral := "General" as string
     const CatNamespaces := "Namespaces" as string
     const CatPreprocessor := "Preprocessor" as string

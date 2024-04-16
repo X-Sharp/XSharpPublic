@@ -961,8 +961,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (prim.Expr is XP.ParenExpressionContext)
                 {
                     var e = prim.Expr as XP.ParenExpressionContext;
-                    type = GetExpressionType(e.Expr, ref isConst);
-                    isConst = e.Expr.GetLiteralToken() != null;
+                    type = GetExpressionType(e.LastExpression, ref isConst);
+                    isConst = e.LastExpression.GetLiteralToken() != null;
                 }
                 else if (prim.Expr is XP.IifExpressionContext)
                 {
@@ -1752,7 +1752,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 mods = TokenList(SyntaxKind.PrivateKeyword);
 
-            var body = nobody ? null : context.Statements.Get<BlockSyntax>();
+            var member = context.CsNode as MethodDeclarationSyntax;
+            var body = member.Body;
             var expressionBody = GetExpressionBody(context.ExpressionBody);
 
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
@@ -7692,6 +7693,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.LSHIFT:
                     right = MakeCastTo(IntType, right, true);
                     goto default;
+                case XP.DOTDOT:
+                    context.Put(_syntaxFactory.RangeExpression(
+                        context.Left?.Get<ExpressionSyntax>(),
+                        context.Op.SyntaxOp(),
+                        context.Right?.Get<ExpressionSyntax>()));
+                    break;
                 default:
                     // Note
                     // in VO ~is XOR for binary expressions and bitwise negation for unary expressions
@@ -8141,18 +8148,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(_syntaxFactory.ParenthesizedExpression(
                     SyntaxFactory.OpenParenToken,
-                    context.Expr.Get<ExpressionSyntax>(),
+                    context.LastExpression.Get<ExpressionSyntax>(),
                     SyntaxFactory.CloseParenToken));
             }
             else
             {
                 if (HandleTupleAssignmentExpression(context))
                     return;
-
+                if (_options.ModernSyntax)
+                {
+                    // we do not allow parenthesized expression list with the modern syntax
+                    var node = context.LastExpression.Get<ExpressionSyntax>();
+                    node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParenthesizedExpressionList));
+                    context.Put(node);
+                    return;
+                }
                 // move the expressions into a local function
                 // and call this local function here
                 var statements = new List<StatementSyntax>();
-                var last = context._Exprs.Last();
+                var last = context.LastExpression;
                 bool usesDiscard = false;
                 ExpressionSyntax expr;
                 // create statements too so we can set breakpoint info
@@ -8382,7 +8396,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                        (PatternSyntax)pattern));
+                        pattern));
                 }
                 else if (context.Id != null)
                 {
@@ -8391,15 +8405,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                        (PatternSyntax)pattern));
+                        pattern));
                 }
                 else
                 {
-                    context.Put(_syntaxFactory.BinaryExpression(
-                        SyntaxKind.IsExpression,
+                    PatternSyntax pattern = _syntaxFactory.TypePattern(context.Type.Get<TypeSyntax>());
+                    if (context.Not != null)
+                        pattern = _syntaxFactory.UnaryPattern(context.Not.SyntaxKeyword(), pattern);
+                    context.Put(_syntaxFactory.IsPatternExpression(
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                        context.Type.Get<ExpressionSyntax>()));
+                        pattern));
                 }
             }
             else if (context.Op.Type == XP.ASTYPE)

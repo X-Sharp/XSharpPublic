@@ -17,6 +17,9 @@
     <StartupObject />
     <NamedArgs>True</NamedArgs>
     <CS>True</CS>
+    <Allowdot>True</Allowdot>
+    <NoStandardDefs>True</NoStandardDefs>
+    <IncludePaths />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

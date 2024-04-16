@@ -1,9 +1,21 @@
 FUNCTION Start() AS VOID
-   ? UnsafeMethods.GetByte2of4(0x10203040) // 32 (hex 20)
+  LOCAL oCustomer AS TUPLE(Name AS STRING, Age AS INT)
+  oCustomer := TUPLE{"Nikos", 47}
 
-CLASS UnsafeMethods
-   UNSAFE STATIC METHOD GetByte2of4(d AS DWORD) AS BYTE
-      LOCAL p AS BYTE PTR
-      p := (BYTE PTR) @d // get direct pointer to the data
-       RETURN p[3]
-END CLASS
+  LOCAL name AS STRING
+  LOCAL age AS INT
+
+  (name, age) := oCustomer
+  ? name, age // "Nikos", 47
+  ? iif (age = 47, (age -= 1,age += 1,age), 46)
+  return
+
+
+FUNCTION Start2() AS VOID
+  LOCAL oCustomer AS TUPLE(STRING, INT)
+  oCustomer := TUPLE{"Nikos", 47}
+
+  LOCAL (name AS STRING, age AS INT) := oCustomer
+  ? name, age // "Nikos", 47
+  // You can also deconstruct into existing local variables without the LOCAL keyword:
+  (name, age) := oCustomer

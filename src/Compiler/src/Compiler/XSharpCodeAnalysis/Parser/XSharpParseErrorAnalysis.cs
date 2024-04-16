@@ -363,7 +363,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
         {
-            if (context.Left != null && context.Right == null)
+            if (context.Left != null && context.Right == null && context.Op.Type != XSharpLexer.DOTDOT)
             {
                 var err = ErrorCode.ERR_SyntaxError;
                 IToken anchor = context.Stop;

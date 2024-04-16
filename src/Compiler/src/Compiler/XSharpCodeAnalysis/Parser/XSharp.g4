@@ -902,7 +902,7 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC | EXP) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
                     | Expr=expression Op=IS Not=FOX_NOT? Null=NULL              #typeCheckExpression    // expr IS NOT? NULL
-                    | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
+                    | Expr=expression Op=IS Not=FOX_NOT? Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
                     | Left=expression Op=(MULT | DIV | MOD) Right=expression    #binaryExpression       // expr * expr
@@ -919,6 +919,8 @@ expression          : Expr=expression Op=(DOT|COLON) Name=simpleName          #a
                     | Left=expression Op=(LOGIC_XOR |FOX_XOR) Right=expression  #binaryExpression       // expr .xor. expr (logical xor)
                     | Left=expression Op=(LOGIC_OR |OR|FOX_OR) Right=expression #binaryExpression       // expr .or. expr (logical or)  also ||
                     | Left=expression Op=(DEFAULT|QQMARK) Right=expression               #binaryExpression       // expr DEFAULT expr
+                    | Op=DOTDOT Right=expression?                               #binaryExpression       // .. expr?
+                    | Left=expression Op=DOTDOT Right=expression?               #binaryExpression       // expr .. expr?
                     | <assoc=right> Left=expression
                       Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
                             | ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
@@ -951,9 +953,9 @@ primary             : Key=SELF                                                  
                     | Key=DEFAULT LPAREN Type=datatype? RPAREN                  #defaultExpression		// default( typeORid ), default()
                     | Name=simpleName                                           #nameExpression			  // generic name
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
-                    | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
+                    | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
                     | {ExpectToken(LPAREN)}? Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// nativetype(_CAST, expr )
-                    | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// xbaseType(_CAST, expr )
+                    | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// nativetype(_CAST, expr )
                     | CASTCLASS LPAREN Type = nativeType COMMA Expr=expression RPAREN #voCastExpression		// __CastClass( nativetype, expression)
                     | CASTCLASS LPAREN XType = xbaseType COMMA Expr=expression RPAREN #voCastExpression		// __CastClass( xbaseType, expression)
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN     #voCastPtrExpression	// PTR( typeName, expr )
@@ -965,8 +967,7 @@ primary             : Key=SELF                                                  
                     | {ExpectToken(ALIAS)}? Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
-                    | { !ModernSyntax}? LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
-                    | { ModernSyntax}? LPAREN Exprs+=expression RPAREN #parenExpression		// ( expr )
+                    | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
                     | Key=ARGLIST                                               #argListExpression		// __ARGLIST
                     ;
 

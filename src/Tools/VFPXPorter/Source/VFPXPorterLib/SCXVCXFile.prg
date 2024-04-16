@@ -63,7 +63,7 @@ BEGIN NAMESPACE VFPXPorterLib
             TRY
                 // Open the SCX (DBF) File
                 DbUseArea(TRUE, "DBFVFP", SELF:_fileName, SELF:_fileName,FALSE,TRUE )
-                SET DELETED ON
+                SetDeleted(TRUE)
                 // Now load with data
                 DbGoTop()
                 DO WHILE ! Eof()

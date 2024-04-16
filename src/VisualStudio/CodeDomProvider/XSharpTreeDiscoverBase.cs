@@ -636,9 +636,9 @@ namespace XSharp.CodeDom
                 case XSharpParser.LPAREN:
                     var pe = amc.Expr as XSharpParser.PrimaryExpressionContext;
                     var pec = pe.Expr as XSharpParser.ParenExpressionContext;
-                    var exp = pec.Expr as XSharpParser.TypeCastContext;
+                    var exp = pec._Exprs.First() as XSharpParser.TypeCastContext;
                     xtype = findType(exp.Type.GetCleanText());
-                    lhs = BuildExpression(pec.Expr, false);
+                    lhs = BuildExpression(exp, false);
                     lhs = new CodeCastExpression(xtype.FullName, lhs);
                     break;
                 case XSharpParser.ID:
@@ -934,7 +934,7 @@ namespace XSharp.CodeDom
             }
             else if (ctx is XSharpParser.ParenExpressionContext par)
             {
-                expr = BuildExpression(par.Expr, true);
+                expr = BuildExpression(par._Exprs.First(), true);
             }
             else if (ctx is XSharpParser.TypeExpressionContext typ)
             {

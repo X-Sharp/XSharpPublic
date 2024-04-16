@@ -2100,17 +2100,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     current += 1;
                 }
             }
-            else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.BACKSLASH && t2.Start == t1.Start + 1)    // .\ .... 
+            else if ((t1.Type == XSharpLexer.DOT || t1.Type == XSharpLexer.DOTDOT)
+                && t2.Type == XSharpLexer.BACKSLASH && t2.Start == t1.Start + t1.Text.Length)    // .\ .... or ..\.....
             {
                 current = start + 2;
             }
-            else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.DOT && t3.Type == XSharpLexer.BACKSLASH
-                && t2.Start == t1.Start + 1 && t3.Start == t2.Start + 1)    // ..\ .....
-            {
-                current = start + 3;
-            }
             else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && IsFilenamePart(t3)
-                && t2.Start == t1.Start + 1 && t3.Start == t2.Start + 1)    // \\Computer\ID .....
+                && t2.Start == t1.Start + t1.Text.Length && t3.Start == t2.Start + t2.Text.Length)    // \\Computer\ID .....
             {
                 if (start < tokens.Count - 4)
                 {

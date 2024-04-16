@@ -97,6 +97,10 @@ namespace XSharp.Project
             chkOldStyleAssignments.Tag = XSharpProjectFileConstants.AllowOldStyleAssignments;
             toolTip1.SetToolTip(chkOldStyleAssignments, LanguagePropertyPagePanel.allowOldStyleDescription);
 
+            chkModernSyntax.Text = LanguagePropertyPagePanel.ModernSyntaxCaption;
+            chkModernSyntax.Tag = XSharpProjectFileConstants.ModernSyntax;
+            toolTip1.SetToolTip(chkAllowDot, LanguagePropertyPagePanel.ModernSyntaxDescription);
+
             // hook up the form to both editors
             Color defaultBackground = SystemColors.ButtonFace;
             Color defaultForeground = SystemColors.WindowText;

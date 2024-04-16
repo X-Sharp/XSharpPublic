@@ -272,6 +272,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             LinkResources="@(LinkResource)"
             MainEntryPoint="$(StartupObject)"
             MemVar="$(MemVar)"
+            ModernSyntax="$(ModernSyntax)"
             ModuleAssemblyName="$(ModuleAssemblyName)"
             NamedArgs="$(NamedArgs)"
             NoConfig="true"

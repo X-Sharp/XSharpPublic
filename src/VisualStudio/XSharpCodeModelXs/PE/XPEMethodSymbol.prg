@@ -44,9 +44,12 @@ CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
             modifiers |= Modifiers.External
         ENDIF
         IF attributes:HasFlag(MethodAttributes.Virtual)
-            modifiers |= Modifiers.Virtual
-        ENDIF
-        IF attributes:HasFlag(MethodAttributes.NewSlot)
+            IF attributes:HasFlag(MethodAttributes.NewSlot)
+                modifiers |= Modifiers.Virtual
+            ELSE
+                modifiers |= Modifiers.Override
+            ENDIF
+        ELSEIF attributes:HasFlag(MethodAttributes.NewSlot)
             modifiers |= Modifiers.New
         ENDIF
         IF attributes:HasFlag(MethodAttributes.Static)

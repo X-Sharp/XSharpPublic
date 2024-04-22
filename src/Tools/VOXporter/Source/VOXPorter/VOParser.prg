@@ -126,7 +126,7 @@ STRUCTURE Range
 	PROPERTY Empty AS LOGIC GET SELF:Begins == 0 .and. SELF:Ends == 0
 	PROPERTY NotEmpty AS LOGIC GET .not. Empty
 	PROPERTY HasBeginAndEnd AS LOGIC GET SELF:Begins != 0 .and. SELF:Ends != 0
-	METHOD ToString() AS STRING
+	OVERRIDE METHOD ToString() AS STRING
 	RETURN SELF:Begins:ToString() + "-" + SELF:Ends:ToString()
 END STRUCTURE
 
@@ -154,7 +154,7 @@ PARTIAL CLASS LineObject
 
 	EXPORT cArgument AS STRING
 	EXPORT cExtra AS STRING
-		
+
 
 	EXPORT oSubLine AS LineObject
 	EXPORT oEntity AS EntityObject
@@ -163,11 +163,11 @@ PARTIAL CLASS LineObject
 	EXPORT nCollapsed AS INT
 	EXPORT nCollapsedSubline AS INT
 	EXPORT cBookmarkDescr AS STRING
-	
+
 	EXPORT oMoreInfo AS LineInfo
 
 	CONST PROTECT _internlimit := 0 AS INT
-		
+
 	ACCESS LineText AS STRING
 	RETURN SELF:cLineText
 	ASSIGN LineText(cLine AS STRING)
@@ -196,10 +196,10 @@ PARTIAL CLASS LineObject
 		SELF:cArgument := NULL
 		SELF:cBookmarkDescr := NULL
 	RETURN
-		
+
 	ACCESS StartCol AS INT
 	RETURN SELF:nStartCol
-	
+
 	METHOD AddSubLine(nCol AS INT) AS LineObject
 		IF SELF:oSubLine == NULL
 			SELF:oSubLine := LineObject{""}
@@ -234,8 +234,8 @@ PARTIAL CLASS LineObject
 			RETURN FALSE
 		END IF
 	RETURN SELF:aFields[0]:eType == EntityType._Event
-	
-	
+
+
 	ACCESS ContainsEntity AS LOGIC
 		IF SELF:oEntity != NULL
 			RETURN TRUE
@@ -318,12 +318,12 @@ PARTIAL CLASS LineObject
 	RETURN SELF:eType == LineType.RegionIn
 	ACCESS IsRegionOut AS LOGIC
 	RETURN SELF:eType == LineType.RegionOut
-	
+
 	ACCESS IsIfdefIn AS LOGIC
 	RETURN SELF:eType == LineType.IfdefIn
 	ACCESS IsIfdefOut AS LOGIC
 	RETURN SELF:eType == LineType.IfdefOut
-	
+
 	ACCESS IsBeginProperty AS LOGIC
 //	RETURN SELF:eType == LineType.BeginProperty
 	RETURN SELF:oEntity != NULL .and. SELF:oEntity:eType == EntityType._Property
@@ -336,12 +336,12 @@ PARTIAL CLASS LineObject
 	RETURN SELF:eType == LineType.EndNameSpace
 	ACCESS IsBeginNamespace AS LOGIC
 	RETURN SELF:eType == LineType.BeginNamespace
-	
+
 	ACCESS IsUsing AS LOGIC
 	RETURN SELF:eType == LineType.Using
 	ACCESS IsInclude AS LOGIC
 	RETURN SELF:eType == LineType.Include
-	
+
 /*	ACCESS IsEntity AS LOGIC
 	RETURN SELF:oEntity != NULL*/
 
@@ -349,7 +349,7 @@ PARTIAL CLASS LineObject
 	RETURN SELF:eType == LineType.Define .or. SELF:eType == LineType.IfdefIn .or. SELF:eType == LineType.IfdefOut .or. ;
 			SELF:eType == LineType.Include .or. SELF:eType == LineType.RegionIn .or. SELF:eType == LineType.RegionOut .or. ;
 			SELF:eType == LineType.Using .or. SELF:eType == LineType.OtherDirective
-			
+
 ACCESS IsStartClass AS LOGIC
 // prepei na exei prohghthei CheckBlockComments()
 RETURN SELF:lEntity .and. (SELF:oEntity:eType == EntityType._Class .or. SELF:oEntity:eType == EntityType._Structure .or. SELF:oEntity:eType == EntityType._Interface)
@@ -358,7 +358,7 @@ RETURN SELF:lEntity .and. (SELF:oEntity:eType == EntityType._Class .or. SELF:oEn
 		LOCAL cLine AS STRING
 		cLine := SELF:LineText:ToUpper()
 	RETURN cLine:Contains("##USER##") .or. cLine:Contains("{{%UC%}}") .or. cLine:Contains("USER CODE STARTS")
-			
+
 	METHOD SetClassClauseStart(nStart AS INT) AS VOID
 		IF SELF:oMoreInfo == NULL
 			SELF:oMoreInfo := LineInfo{}
@@ -401,7 +401,7 @@ RETURN SELF:lEntity .and. (SELF:oEntity:eType == EntityType._Class .or. SELF:oEn
 		GET
 			RETURN .not. SELF:lInBlockComment .and. SELF:cLineCased:TrimStart():StartsWith("///") .and. .not. SELF:cLineCased:TrimStart():StartsWith("////")
 		END GET
-	END PROPERTY	
+	END PROPERTY
 
 	VIRTUAL METHOD ToString() AS STRING
 	RETURN "Line: " + SELF:LineText
@@ -500,7 +500,7 @@ CLASS EntityObject
 		SELF:cRetType := ""
 		SELF:cClassType := ""
 	RETURN
-	
+
 	VIRTUAL METHOD Clone() AS EntityObject
 		LOCAL oEntity AS EntityObject
 		oEntity := (EntityObject)SELF:MemberwiseClone()
@@ -517,9 +517,9 @@ CLASS EntityObject
 			NEXT
 		END IF
 	RETURN oEntity
-	
+
 	PROPERTY HasParams AS LOGIC GET aParams != NULL .and. aParams:Count != 0
-	
+
 	METHOD NamespacesEqual(_aNameSpaces AS List<STRING>) AS LOGIC
 		LOCAL n AS INT
 		IF SELF:aNameSpaces == NULL .or. SELF:aNameSpaces:Count != _aNameSpaces:Count
@@ -535,7 +535,7 @@ CLASS EntityObject
 		LOCAL n AS INT
 		IF SELF:NamespacesEqual(_aNameSpaces)
 			RETURN
-		END IF 
+		END IF
 		IF SELF:aNameSpaces == NULL
 			SELF:aNameSpaces := List<STRING>{_aNameSpaces:Count}
 		END IF
@@ -543,7 +543,7 @@ CLASS EntityObject
 			SELF:aNameSpaces:Add(_aNameSpaces[n])
 		NEXT
 	RETURN
-	
+
 	ACCESS FullClassName AS STRING
 		LOCAL cRet AS STRING
 		cRet := SELF:cShortClassName
@@ -571,7 +571,7 @@ CLASS EntityObject
 			cRet := ""
 		END CASE
 	RETURN cRet
-	
+
 	ACCESS IsType AS LOGIC
 	RETURN SELF:eType == EntityType._Class .or. SELF:eType == EntityType._Structure .or. ;
 			SELF:eType == EntityType._VOStruct .or. SELF:eType == EntityType._Union .or. ;
@@ -659,7 +659,7 @@ CLASS EntityObject
 			cRet += " (" + SELF:cInherit + ") "
 		END IF
 	RETURN cRet
-	
+
 END CLASS
 
 INTERNAL ENUM LexerStep
@@ -729,7 +729,7 @@ INTERNAL STRUCTURE ParseState
 	EXPORT lNameFound AS LOGIC
 	EXPORT lField AS LOGIC
 	EXPORT lLocal AS LOGIC
-	EXPORT lImpliedLocal AS LOGIC
+	//EXPORT lImpliedLocal AS LOGIC
 	EXPORT lEvent AS LOGIC
 	EXPORT lParam AS LOGIC
 	EXPORT lDirective AS LOGIC
@@ -780,7 +780,7 @@ CLASS VoBuffer
 	STATIC CONSTRUCTOR()
 		LOCAL aWords AS STRING[]
 		LOCAL n AS INT
-		
+
 		VoBuffer.oVoParsingOptions := ParsingOptions{}
 		InitHashTables()
 
@@ -814,7 +814,7 @@ CLASS VoBuffer
 		FOR n := 1 UPTO aWords:Length
 			VoBuffer.oVoParsingOptions:oReserved:Add(aWords[n]:ToUpper() , aWords[n])
 		NEXT
-		
+
 /*		aWords := <STRING>{;
 		"CLASS","CLAS","METHOD","FUNCTION","PROCEDURE","FUNC","PROC","ACCESS","ASSIGN",;
 		"GLOBAL","STRUCTURE","STRUCT","VOSTRUCT","UNION","DEFINE","RESOURCE","TEXTBLOCK"}*/
@@ -882,10 +882,10 @@ CLASS VoBuffer
 
 	STATIC METHOD CreateBuffer(aLines AS List<LineObject>) AS VOBuffer
 	RETURN VoBuffer{aLines}
-	
+
 	ACCESS Count AS INT
 	RETURN SELF:aLines:Count
-						
+
 	METHOD FullParse() AS LOGIC
 		SELF:Parse(BufferParseItems.Entities + BufferParseItems.Tokens)
 	RETURN TRUE
@@ -935,7 +935,7 @@ CLASS VoBuffer
 		LOCAL nBracketCount AS INT
 		LOCAL cBracketOpen , cBracketClose AS Char
 		LOCAL n,n1 AS INT
-		
+
 		LOCAL aRet AS ArrayList
 		LOCAL oWord AS WordObject
 		LOCAL lMustLoop AS LOGIC
@@ -963,9 +963,9 @@ CLASS VoBuffer
 		LOCAL hVis , hEnt AS Dictionary<STRING,STRING>
 		LOCAL nCaseReserved AS INT
 		LOCAL nCaseFunctions AS INT
-		
+
 		LOCAL lCanStartBracketString AS LOGIC
-		
+
 		LOCAL _lLinesModified AS LOGIC
 		LOCAL _lEntities AS LOGIC
 		LOCAL _lRetrieveEntities AS LOGIC
@@ -975,7 +975,7 @@ CLASS VoBuffer
 		LOCAL _lWords AS LOGIC
 		LOCAL _lFinalize AS LOGIC
 		LOCAL _lAddTyped AS LOGIC
-		
+
 #endregion
 		_lLinesModified := _And(eItems , BufferParseItems.LinesModified) != 0
 		_lEntities := _And(eItems , BufferParseItems.Entities) != 0
@@ -989,22 +989,22 @@ CLASS VoBuffer
 		IF _lRetrieveEntities .or. _lEntities
 			_lFields := TRUE
 		END IF
-		IF _lRetrieveLocals
-			_lRetrieveLocals := _lRetrieveLocals
-		END IF
-		
+// 		IF _lRetrieveLocals
+// 			_lRetrieveLocals := _lRetrieveLocals
+// 		END IF
+
 #region init
 		aFields := ArrayList{}
 		aLocals := ArrayList{}
 		cShortClassName := ""
 		cTypedClassName := ""
 		cClassType := ""
-		
+
 		hEnt := SELF:oParsingOptions:oEntityMarkers
 		hVis := SELF:oParsingOptions:oEntityVisibility
 		nCaseReserved := 0
 		nCaseFunctions := 0
-		
+
 		cWordBeforeSpace := NULL
 		IF _lWords .or. _lRetrieveEntities .or. _lRetrieveLocals
 			aRet := ArrayList{}
@@ -1012,7 +1012,7 @@ CLASS VoBuffer
 		IF _lFinalize
 			sLine := System.Text.StringBuilder{}
 		ENDIF
-		
+
 		IF _lLinesModified .and. nStartLine != 0
 			DO WHILE nStartLine > 1 .and. SELF:aLines[nStartLine - 2]:lOutAmpersand
 				lMoreModified := TRUE
@@ -1032,7 +1032,7 @@ CLASS VoBuffer
 				END DO
 			END IF
 		END IF
-#endregion		
+#endregion
 		IF nStartLine == 0
 			nStartLine := 1
 			nEndLine := SELF:aLines:Count
@@ -1050,14 +1050,14 @@ CLASS VoBuffer
 				nEndLine := SELF:aLines:Count
 			END IF
 		END IF
-		
+
 		sWord := System.Text.StringBuilder{20}
 		sFoundType := System.Text.StringBuilder{20}
 
 //		nLine := 0
 		nLine := nStartLine
 		DO WHILE nLine <= nEndLine
-		
+
 			// Line parsing
 			oLine := SELF:aLines[nLine - 1]
 			oLine:lInAmpersand := lContinueNextLine
@@ -1125,9 +1125,9 @@ CLASS VoBuffer
 			IF eLexer != LexerStep.BlockComment
 				eLexer := LexerStep.None
 			END IF
-			
+
 			DO WHILE nChar <= nLineLen // one more than chars in line
-				
+
 				// Lexing
 				IF sWord:Length == 0
 					cCharBeforeWord := cRealChar
@@ -1205,7 +1205,7 @@ CLASS VoBuffer
 					END IF
 				END IF
 
-				
+
 /*				// performance hack
 				IF state:lIgnore
 					DO WHILE nChar < nLineLen
@@ -1229,13 +1229,13 @@ CLASS VoBuffer
 				ENDIF
 				cRealChar := cChar
 				nChar ++
-				
+
 				IF state:lFirstChar
 					IF cOldChar != ' ' .and. cOldChar != '\t'
 						state:lFirstChar := FALSE
 					END IF
 				END IF
-				
+
 				lBeforeLexerChange := FALSE
 				lMustLoop := FALSE
 				eWordStatus := WordStatus.Text
@@ -1373,7 +1373,7 @@ CLASS VoBuffer
 //						cChar := ' '
 					END IF
 				END CASE
-				
+
 				IF eLexer == LexerStep.None
 					IF cChar != ' ' .and. cChar != '\t'
 						lCanStartBracketString := "({+-=,?":IndexOf(cChar) != -1
@@ -1391,7 +1391,7 @@ CLASS VoBuffer
 						nBracketCount --
 					END IF
 				ENDIF
-				
+
 				IF .not. (_lWords .or. _lTokens .or. _lFinalize .or. _lAddTyped)
 					IF lMustLoop
 						LOOP
@@ -1399,17 +1399,17 @@ CLASS VoBuffer
 					IF state:lIgnore .or. lContinueNextLine
 						LOOP
 					ENDIF
-					
+
 					// Ignore code inside {..} , [..]
 					IF nBracketCount != 0
 						LOOP
 					END IF
-					
+
 					IF cChar == ';' .and. sWord:Length == 0
 						LOOP
 					END IF
 				END IF
-				
+
 				lIsSpaceChar := cChar == ' ' .or. cChar == '\t'
 				IF .not. lIsSpaceChar .and. nEntityStartLine == 0
 					nEntityStartLine := nLine
@@ -1451,13 +1451,13 @@ CLASS VoBuffer
 					eCharStatus := WordStatus.Text
 					eCharSubStatus := WordSubStatus.Text
 				ENDIF
-				
+
 				IF .not. (lIsBreakChar .or. lIsSpaceChar)
 					sWord:Append(cRealChar)
 					LOOP
 				ENDIF
 				// End of lexing
-				
+
 
 				// Parsing
 				IF sWord:Length == 0
@@ -1470,7 +1470,7 @@ CLASS VoBuffer
 						oStatementLine:nFirstWordCol := nChar - sWord:Length
 					END IF
 				END IF
-				
+
 				IF eWordSubStatus == WordSubStatus.LiteralSymbol .and. sWord:Length != 0
 					IF state:lFirstWord .and. SELF:oParsingOptions:oDirectives:ContainsKey(cUpperWord)
 						eWordStatus := WordStatus.Text
@@ -1563,8 +1563,10 @@ CLASS VoBuffer
 								FOR m := 1 UPTO cUpperWord:Length - 1
 									cNumChar := cUpperWord[m]
 									DO CASE
-									CASE cNumChar >= 48 .and. cNumChar <= 57
-									CASE lHex .and. cNumChar >= 65 .and. cNumChar <= 70
+                                    CASE cNumChar >= 48 .and. cNumChar <= 57
+                                        NOP
+                                    CASE lHex .and. cNumChar >= 65 .and. cNumChar <= 70
+                                        NOP
 									CASE m == 1 .and. (cNumChar == 'X' .or. cNumChar == 'B') .and. cUpperWord[0] == '0'
 										lHex := TRUE
 										eWordSubStatus := WordSubStatus.LiteralUInt
@@ -1639,7 +1641,7 @@ CLASS VoBuffer
 						END IF
 					ENDIF
 				ENDIF
-				
+
 				LOCAL lAllowEntityParse AS LOGIC
 				lAllowEntityParse := (_lEntities .or. _lRetrieveEntities .or. _lRetrieveLocals) .and. .not. state:lIgnore
 
@@ -1650,7 +1652,7 @@ CLASS VoBuffer
 					LOOP
 
 				CASE eWordStatus == WordStatus.Literal .or. eWordStatus == WordStatus.Comment .or. eWordSubStatus == WordSubStatus.TextDirective
-
+                    NOP
 				CASE (lIsSpaceChar .or. cChar == ';') .and. sWord:Length == 0
 					lEscapedWord := FALSE
 					LOOP
@@ -1831,14 +1833,14 @@ CLASS VoBuffer
 					CASE eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterClassClause .or. ;
 						eStep == ParseStep.AfterAs .or. eStep == ParseStep.AfterRef .or. ;
 						.not. state:lNameFound
-						
+
 						IF eStep == ParseStep.AfterInherit .or. eStep == ParseStep.AfterClassClause .or. ;
 							eStep == ParseStep.AfterAs .or. eStep == ParseStep.AfterRef
 							// Waiting for type that may be generic, array
 							lFindingType := TRUE
 							sFoundType:Append(sWord:ToString())
 							sWord:Length := 0
-							IF FALSE//lBeforeLexerChange
+                            IF FALSE//lBeforeLexerChange
 								LOOP
 							ELSE
 								DO WHILE nChar < nLineLen .and. (cChar == ' ' .or. cChar == '\t')
@@ -1883,7 +1885,7 @@ CLASS VoBuffer
 							END IF
 							cWord := sFoundType:ToString()
 							sFoundType:Length := 0
-							
+
 							lFindingType := FALSE
 
 						ELSE // eStep == ParseStep.AfterBeginNamespace .or. .not. state:lNameFound
@@ -1899,7 +1901,7 @@ CLASS VoBuffer
 							cWord := sFoundType:ToString()
 							sFoundType:Length := 0
 							lFindingName := FALSE
-	
+
 						END IF
 
 						IF state:lEntityIsClass .and. .not. state:lNameFound
@@ -1982,7 +1984,7 @@ CLASS VoBuffer
 								state:lIgnore := TRUE
 							END IF
 						END CASE
-					
+
 					END CASE
 					IF state:lInParams
 						IF cChar == ','
@@ -2025,7 +2027,7 @@ CLASS VoBuffer
 					END IF
 				CASE eStep == ParseStep.AfterEnd
 					state:lIgnore := TRUE
-				
+
 //				CASE .not. lIsSpaceChar .and. .not. (cChar == ',' .and. state:lField)
 				CASE lAllowEntityParse .and. ;  // 2nd .not. is for IF(logic) CASE(something) etc syntax (paren after IF/CASE etc)
 					.not. (.not. lEscapedWord .and. cRealChar == '(' .and. System.Array.IndexOf(<STRING>{"IF", "ELSEIF", "WHILE", "CASE", "FOR"} , cUpperWord) != -1) .and. ;
@@ -2103,7 +2105,7 @@ CLASS VoBuffer
 				sWord:Length := 0
 				lEscapedWord := FALSE
 				// End of parsing
-				
+
 			END DO
 
 			IF oLine != NULL
@@ -2114,9 +2116,9 @@ CLASS VoBuffer
 				oLine:LineCased := sLine:ToString()
 //				PyrgasIdeBase.Ide:Text := oLine:LineCased
 			END IF
-			
+
 			nLine ++
-			
+
 			IF _lLinesModified .and. nLine > nEndLine .and. nLine <= SELF:aLines:Count
 				oLine := SELF:aLines[nLine - 1]
 				IF (oLine:lInBlockComment .and. eLexer != LexerStep.BlockComment) .or. ;
@@ -2156,7 +2158,7 @@ CLASS VoBuffer
 										oLine:aFields[n]:cClassType := cClassType
 									NEXT
 								END IF
-								
+
 							CASE oLine:lEntity
 								lLineNumsVerified := oLine:VerifyEntitiesLineNum(nTestLine , FALSE)
 								IF oLine:oEntity:IsType
@@ -2188,9 +2190,9 @@ CLASS VoBuffer
 									ENDIF*/
 								END IF
 							END CASE
-							
+
 							oLine := oLine:oSubLine
-							
+
 						ENDDO
 
 						IF lMustExit
@@ -2203,7 +2205,7 @@ CLASS VoBuffer
 				END IF
 
 			END IF
-			
+
 		ENDDO
 
 		IF _lLinesModified .and. nLine > nEndLine .and. .not. lLineNumsVerified
@@ -2215,12 +2217,12 @@ CLASS VoBuffer
 				nLine ++
 			END DO
 		ENDIF
-		
+
 		IF _lWords
 			aRet:Insert(0 , WordObject{""})
 			aRet:Add(WordObject{""})
 		END IF
-		
+
 		IF _lLinesModified
 			IF lMoreModified
 				aRet := ArrayList{}
@@ -2228,7 +2230,7 @@ CLASS VoBuffer
 				aRet := NULL
 			END IF
 		END IF
-		
+
 	RETURN aRet
 
 	PROTECTED STATIC METHOD GetEntityType(cWord AS STRING) AS EntityType
@@ -2262,11 +2264,11 @@ CLASS VoBuffer
 			eType := EntityType._TextBlock
 		END CASE
 	RETURN eType
-	
+
 	STATIC PROTECT oVoParsingOptions AS ParsingOptions
 	STATIC ACCESS VoParsingOptions AS ParsingOptions
 	RETURN VoBuffer.oVoParsingOptions
-	
+
 	STATIC METHOD IsVOKeyword(cWord AS STRING, cKeyword AS STRING) AS LOGIC
 		IF cWord == cKeyword
 			RETURN TRUE
@@ -2278,7 +2280,7 @@ CLASS VoBuffer
 			END IF
 		END DO
 	RETURN FALSE
-	
+
 END CLASS
 
 END NAMESPACE

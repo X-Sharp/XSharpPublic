@@ -133,14 +133,11 @@
       <Button guid="guidProjectPackage" id="idFoxXporter" priority="0x0100" type="Button">
         <Icon guid="guidImages" id="bmpFoxPro" />
         <CommandFlag>IconAndText</CommandFlag>
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <CommandName>Export a &amp;FoxPro Project</CommandName>
-          <CanonicalName>Export a FoxPro Project</CanonicalName>
+          <CommandName>Export a Visual &amp;FoxPro Project</CommandName>
+          <CanonicalName>Export a Visual FoxPro Project</CanonicalName>
           <ButtonText>X# FoxPro XPorter </ButtonText>
-          <ToolTipText>Converts FoxPro sourcecode to XSharp</ToolTipText>
+          <ToolTipText>Converts Visual FoxPro sourcecode to XSharp</ToolTipText>
           <LocCanonicalName>.XSharp.FoxPro.XPorter</LocCanonicalName>
         </Strings>
       </Button>

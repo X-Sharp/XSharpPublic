@@ -774,6 +774,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             while (La(next) != 10 && La(next) != 13 && La(next) != EOF && !(La(1) == q && !esc))
                                 next++;
                         }
+                        else if (La(next) == '/' && La(next + 1) == '/')
+                        {
+                            while (La(next) != 10 && La(next) != 13 && La(next) != EOF && !(La(1) == q && !esc))
+                                next++;
+                        }
                         if (La(next) == 10 || La(next) == 13)
                         {
                             if (La(next) == 10 && La(next + 1) == 13)

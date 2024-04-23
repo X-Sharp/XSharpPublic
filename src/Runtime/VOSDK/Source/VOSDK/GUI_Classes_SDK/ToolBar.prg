@@ -956,7 +956,7 @@ ASSIGN ButtonSize(oNewButtonSize)
 	// Only allow the assign if the control has not yet been created
 	IF oNewButtonSize IS Dimension var oSize
 		IF hWnd = NULL_PTR .AND. ALen(SELF:aUpdates) > 0
-			SELF:__TryDeferAction(#ButtonSize, MakeLong(oSize:Width, oSize:Height), NULL_SYMBOL)
+			SELF:__TryDeferAction(#ButtonSize, MakeLong((WORD)oSize:Width, (WORD)oSize:Height), NULL_SYMBOL)
 		ELSE
 			RETURN oButtonSize := oSize
 		ENDIF

@@ -8,6 +8,13 @@ FUNCTION Start( ) AS VOID
 	cVar := cVar:Replace(e"\t","")
 	? cVar
 	xAssert(cVar == "abcdef")
+	cVar := "123 ;    // line continuation
+	456 ;              && more
+	789"
+	cVar := cVar:Replace(" ","")
+	cVar := cVar:Replace(e"\t","")
+	? cVar
+	xAssert(cVar == "123456789")
 RETURN
 
 

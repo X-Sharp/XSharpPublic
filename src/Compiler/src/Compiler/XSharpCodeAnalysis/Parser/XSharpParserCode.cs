@@ -57,6 +57,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     public partial class XSharpParser
     {
+        public List<PragmaOption> PragmaOptions;
         public CSharpParseOptions Options { get; set; }
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
@@ -64,7 +65,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsVO => Options.Dialect switch { XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
         public bool IsCoreVO => Options.Dialect switch { XSharpDialect.Core => true, XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
         public bool ModernSyntax => Options.ModernSyntax;
-        public bool HasMemVars => Options.SupportsMemvars;
+        public bool HasMemVars
+        {
+            get
+            {
+                return Options.HasOption(CompilerOption.MemVars, (XSharpParserRuleContext) this.Context, PragmaOptions);
+            }
+        }
         bool ExpectToken(int type)
         {
             int icurrent = 1;

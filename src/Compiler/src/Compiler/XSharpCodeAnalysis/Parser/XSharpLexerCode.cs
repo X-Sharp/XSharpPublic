@@ -763,6 +763,33 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         eos = true;
                         parseType(INCOMPLETE_STRING_CONST);
                         break;
+                    case ';':
+                        if (Dialect != XSharpDialect.FoxPro)
+                            goto default;
+                        int next = 2;
+                        while (La(next) == ' ' || La(next) == '\t')
+                            next++;
+                        if (La(next) == '&' && La(next + 1) == '&')
+                        {
+                            while (La(next) != 10 && La(next) != 13 && La(next) != EOF && !(La(1) == q && !esc))
+                                next++;
+                        }
+                        if (La(next) == 10 || La(next) == 13)
+                        {
+                            if (La(next) == 10 && La(next + 1) == 13)
+                                next += 2;
+                            else
+                                next++;
+                            while (La(1) != 10 && La(1) != 13)
+                                parseSkip();
+                            if (La(1) == 13)
+                                parseSkip();
+                            if (La(1) == 10)
+                                parseSkip();
+                        }
+                        else
+                            goto default;
+                        break;
                     default:
                         bool eat2 = false;
                         if (La(1) == q && !esc)

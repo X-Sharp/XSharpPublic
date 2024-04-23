@@ -63,7 +63,7 @@
       <DocumentationSource sourceFile="..\Artifacts\Documentation\XSharp.Harbour.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.19.0.2</HelpFileVersion>
+    <HelpFileVersion>2.20.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace XSharp.MacroCompiler
 {
     using Syntax;
+    using System.Collections;
+    using System.Diagnostics;
     using System.Globalization;
     using System.Threading;
     using static Syntax.TokenAttr;
@@ -126,6 +128,16 @@ namespace XSharp.MacroCompiler
         bool Eoi()
         {
             return _s.Index >= _Source.Length;
+        }
+
+        bool Eoi(int n)
+        {
+            return _s.Index + n-1 >= _Source.Length;
+        }
+
+        char Accept()
+        {
+            return _s.Index < _Source.Length ? _Source[_s.Index++] : (char)0;
         }
 
         void Consume()
@@ -461,6 +473,75 @@ namespace XSharp.MacroCompiler
         internal string GetText(Token t)
         {
             return _Source.Substring(t.Start, t.Length);
+        }
+
+        internal string ParseStringLiteral(int start, char eos, bool escaped, ref TokenType t)
+        {
+            StringBuilder value = new StringBuilder();
+            value.Append( _Source.Substring(start, _s.Index - start) );
+            while (!Eoi())
+            {
+                switch (La())
+                {
+                    case (char)10:
+                    case (char)13:
+                        t = TokenType.INCOMPLETE_STRING_CONST;
+                        Console.WriteLine("INCOMPLETE STRING: \"{0}\"", value.ToString());
+                        return value.ToString();
+                    case '"':
+                    case '\'':
+                        if (La() == eos)
+                        {
+                            value.Append(Accept());
+                            if (!escaped && La() == eos)
+                                Consume();
+                            else
+                            {
+                                Console.WriteLine("STRING: \"{0}\"", value.ToString());
+                                return value.ToString();
+                            }
+                        }
+                        else
+                            value.Append(Accept());
+                        break;
+                    case '\\':
+                        value.Append(Accept());
+                        if (escaped && !Eoi() && La() != (char)10 && La() != (char)13)
+                            value.Append(Accept());
+                        break;
+                    case ';':
+                        {
+                            if (_options.Dialect == XSharpDialect.FoxPro)
+                            {
+                                int next = 2;
+                                while (La(next) == ' ' || La(next) == '\t')
+                                    next++;
+                                if (La(next) == '&' && La(next + 1) == '&')
+                                {
+                                    while (!Eoi(next) && La(next) != 10 && La(next) != 13 && !(La(next) == eos))
+                                        next++;
+                                }
+                                if (La(next) == 10 || La(next) == 13)
+                                {
+                                    Consume(next);
+                                    Expect((char)13);
+                                    Expect((char)10);
+                                }
+                                else
+                                    value.Append(Accept());
+                            }
+                            else
+                                value.Append(Accept());
+                        }
+                        break;
+                    default:
+                        value.Append(Accept());
+                        break;
+                }
+            }
+            t = TokenType.INCOMPLETE_STRING_CONST;
+            Console.WriteLine("INCOMPLETE STRING: \"{0}\"", value.ToString());
+            return value.ToString();
         }
 
         internal Token NextToken()
@@ -888,30 +969,18 @@ namespace XSharp.MacroCompiler
                             if (!AllowSingleQuotedStrings)
                                 goto case TokenType.CHAR_CONST;
                             t = TokenType.STRING_CONST;
-                            do {
-                                while (!Reach('\'')) ;
-                                if (!Expect('\'')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            } while (Expect('\''));
-                            value = _Source.Substring(start, _s.Index - start);
+                            value = ParseStringLiteral(start, '\'', false, ref t);
                             break;
                         case TokenType.STRING_CONST:
-                            do {
-                                while (!Reach('"')) ;
-                                if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            } while (Expect('"'));
-                            value = _Source.Substring(start, _s.Index - start);
+                            value = ParseStringLiteral(start, '"', false, ref t);
                             break;
                         case TokenType.ESCAPED_STRING_CONST:
                             t = TokenType.ESCAPED_STRING_CONST;
-                            while (!ReachEsc('"')) ;
-                            if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            value = _Source.Substring(start, _s.Index - start);
+                            value = ParseStringLiteral(start, '"', true, ref t);
                             break;
                         case TokenType.INTERPOLATED_STRING_CONST:
                             t = TokenType.INTERPOLATED_STRING_CONST;
-                            while (!ReachEsc('"')) ;
-                            if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            value = _Source.Substring(start, _s.Index - start);
+                            value = ParseStringLiteral(start, '"', true, ref t);
                             break;
                     }
 

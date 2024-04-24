@@ -776,10 +776,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         if (La(next) == 10 || La(next) == 13)
                         {
-                            if (La(next) == 10 && La(next + 1) == 13)
-                                next += 2;
-                            else
-                                next++;
                             while (La(1) != 10 && La(1) != 13)
                                 parseSkip();
                             if (La(1) == 13)

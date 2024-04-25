@@ -369,6 +369,9 @@ FUNCTION FoxScriptTests AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         e"RETURN \"fox; && comment!",;
         e" string\""}), Args(), "fox string", typeof(STRING))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        e"RETURN \"fox; // comment!",;
+        e" string\""}), Args(), "fox string", typeof(STRING))
     RETURN
 
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID

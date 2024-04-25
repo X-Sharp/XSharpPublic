@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace XSharp.MacroCompiler
 {
     using Syntax;
-    using System.Collections;
-    using System.Diagnostics;
     using System.Globalization;
     using System.Threading;
     using static Syntax.TokenAttr;
@@ -22,7 +18,8 @@ namespace XSharp.MacroCompiler
             internal bool InDottedIdentifier;
             internal bool HasEos;
             internal bool InPp;
-            internal static LexerState Initial => new LexerState() {
+            internal static LexerState Initial => new LexerState()
+            {
                 LastToken = TokenType.NL,
                 Index = 0,
                 InDottedIdentifier = false,
@@ -62,7 +59,7 @@ namespace XSharp.MacroCompiler
         internal bool AllowFourLetterAbbreviations => _options.AllowFourLetterAbbreviations;
         internal bool AllowSingleQuotedStrings => _options.AllowSingleQuotedStrings;
         internal bool AllowOldStyleComments => _options.AllowOldStyleComments;
-        internal bool AllowPackedDotOperators =>_options.AllowPackedDotOperators;
+        internal bool AllowPackedDotOperators => _options.AllowPackedDotOperators;
         internal TokenSource TokenSource => _tokenSource;
 
         bool TryGetKeyword(string text, out TokenType token)
@@ -120,7 +117,7 @@ namespace XSharp.MacroCompiler
 
         char La(int n)
         {
-            return (_s.Index + n-1) < _Source.Length ? _Source[_s.Index + n-1] : (char)0;
+            return (_s.Index + n - 1) < _Source.Length ? _Source[_s.Index + n - 1] : (char)0;
         }
 
         bool InRange(char c, char first, char last) => c >= first && c <= last;
@@ -132,7 +129,7 @@ namespace XSharp.MacroCompiler
 
         bool Eoi(int n)
         {
-            return _s.Index + n-1 >= _Source.Length;
+            return _s.Index + n - 1 >= _Source.Length;
         }
 
         char Accept()
@@ -250,8 +247,8 @@ namespace XSharp.MacroCompiler
         bool AssertText(string s)
         {
             int i = 0;
-            for(i = 0; i < s.Length; i++)
-                if (char.ToUpper(La(i+1)) != s[i])
+            for (i = 0; i < s.Length; i++)
+                if (char.ToUpper(La(i + 1)) != s[i])
                     return false;
             return true;
         }
@@ -361,7 +358,7 @@ namespace XSharp.MacroCompiler
         bool ExpectIdChar()
         {
             var c = La();
-            if (IsIdentifierPartCharacter (c))
+            if (IsIdentifierPartCharacter(c))
             {
                 Consume();
                 return true;
@@ -373,9 +370,9 @@ namespace XSharp.MacroCompiler
         {
             if (char.ToLower(La()) == s[0])
             {
-                for(int i=1;i<=s.Length;i++)
+                for (int i = 1; i <= s.Length; i++)
                 {
-                    if (char.ToLower(La(i)) != s[i-1])
+                    if (char.ToLower(La(i)) != s[i - 1])
                         return false;
                 }
                 Consume(s.Length);
@@ -478,7 +475,7 @@ namespace XSharp.MacroCompiler
         internal string ParseStringLiteral(int start, char eos, bool escaped, ref TokenType t)
         {
             StringBuilder value = new StringBuilder();
-            value.Append( _Source.Substring(start, _s.Index - start) );
+            value.Append(_Source.Substring(start, _s.Index - start));
             while (!Eoi())
             {
                 switch (La())
@@ -514,12 +511,29 @@ namespace XSharp.MacroCompiler
                             if (_options.Dialect == XSharpDialect.FoxPro)
                             {
                                 int next = 2;
-                                while (La(next) == ' ' || La(next) == '\t')
-                                    next++;
-                                if (La(next) == '&' && La(next + 1) == '&')
+                                char c = La(next);
+                                while (c == ' ' || c == '\t')
                                 {
-                                    while (!Eoi(next) && La(next) != 10 && La(next) != 13 && !(La(next) == eos))
+                                    next++;
+                                    c = La(next);
+                                }
+                                if (c == '&' && La(next + 1) == '&')
+                                {
+                                    c = La(next);
+                                    while (!Eoi(next) && c != 10 && c != 13 && !(c == eos))
+                                    {
                                         next++;
+                                        c = La(next);
+                                    }
+                                }
+                                else if (c == '/' && La(next + 1) == '/')
+                                {
+                                    c = La(next);
+                                    while (!Eoi(next) && c != 10 && c != 13 && !(c == eos))
+                                    {
+                                        next++;
+                                        c = La(next);
+                                    }
                                 }
                                 if (La(next) == 10 || La(next) == 13)
                                 {
@@ -574,7 +588,7 @@ namespace XSharp.MacroCompiler
                     {
                         case TokenType.LBRKT:
                             if (_options.AllowBracketStrings)
-                            { 
+                            {
                                 if (_s.LastToken == TokenType.ID || _s.LastToken == TokenType.RPAREN || _s.LastToken == TokenType.RCURLY || _s.LastToken == TokenType.RBRKT || _s.InPp)
                                 {
                                     break;
@@ -594,7 +608,7 @@ namespace XSharp.MacroCompiler
                                 if (!Expect('}')) t = TokenType.INCOMPLETE_STRING_CONST;
                                 value = _Source.Substring(start, _s.Index - start);
                             }
-                            if (_options.Dialect == XSharpDialect.FoxPro )
+                            if (_options.Dialect == XSharpDialect.FoxPro)
                             {
                                 if (ExpectDelimited("{//}") ||
                                     ExpectDelimited("{--}") ||
@@ -665,7 +679,7 @@ namespace XSharp.MacroCompiler
                             {
                                 t = TokenType.ML_COMMENT;
                                 ch = Channel.Hidden;
-                                while (!Reach('*','/')) ;
+                                while (!Reach('*', '/')) ;
                                 Expect('*', '/');
                             }
                             break;
@@ -716,7 +730,7 @@ namespace XSharp.MacroCompiler
                             break;
                         case TokenType.SEMI:
                             while (ExpectAny(' ', '\t')) ;
-                            if (Expect('/','/'))
+                            if (Expect('/', '/'))
                             {
                                 t = TokenType.LINE_CONT;
                                 ch = Channel.Hidden;
@@ -733,7 +747,7 @@ namespace XSharp.MacroCompiler
                                 if (t == TokenType.SEMI) t = TokenType.LINE_CONT;
                                 ch = Channel.Hidden;
                             }
-                            if (t == TokenType.SEMI && _s.Index > start+1)
+                            if (t == TokenType.SEMI && _s.Index > start + 1)
                             {
                                 Rewind(start + 1);
                             }
@@ -859,7 +873,7 @@ namespace XSharp.MacroCompiler
                                     {
                                         t = tt;
                                         if (IsSoftKeyword(tt) || _s.InDottedIdentifier)
-                                        { 
+                                        {
                                             st = TokenType.ID;
                                             if (_s.LastToken == TokenType.COLON || _s.LastToken == TokenType.DOT)
                                                 t = TokenType.ID;
@@ -880,7 +894,7 @@ namespace XSharp.MacroCompiler
                             }
                             break;
                         case TokenType.INT_CONST:
-                            if (c == '0' && ExpectAny('X','x'))
+                            if (c == '0' && ExpectAny('X', 'x'))
                             {
                                 t = TokenType.HEX_CONST;
                                 while (ExpectRange('0', '9') || ExpectRange('A', 'F') || ExpectRange('a', 'f') || Expect('_')) ;
@@ -942,20 +956,20 @@ namespace XSharp.MacroCompiler
                                     ExpectAny('S', 's', 'D', 'd');
                                 }
                             }
-                            value = _Source.Substring(start, _s.Index - start).Replace("_","");
+                            value = _Source.Substring(start, _s.Index - start).Replace("_", "");
                             break;
                         case TokenType.DATE_CONST:
                             {
                                 string s = _Source.Substring(start, _s.Index - start);
                                 int z0 = s.IndexOf('.');
                                 if (z0 > 0 && s.Length - z0 > 1 && s.Length - z0 <= 3 && s.Length <= 7)
-                                if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= z0+3 && !s.Contains("_"))
-                                {
-                                    t = TokenType.DATE_CONST;
-                                    Expect('.');
-                                    ExpectRange('0', '9');
-                                    ExpectRange('0', '9');
-                                }
+                                    if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= z0 + 3 && !s.Contains("_"))
+                                    {
+                                        t = TokenType.DATE_CONST;
+                                        Expect('.');
+                                        ExpectRange('0', '9');
+                                        ExpectRange('0', '9');
+                                    }
                             }
                             value = _Source.Substring(start, _s.Index - start);
                             break;

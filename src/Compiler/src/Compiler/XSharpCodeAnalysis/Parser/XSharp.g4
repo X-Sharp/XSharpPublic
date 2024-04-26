@@ -1346,7 +1346,7 @@ keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOS
                    ;
                    // context sensitive keywords
                    // ENDCLASS, FREEZE, FINAL, INTRODUCE, SYNC, DEFERRED, INLINE
-
+                    
 
 
 xppclass           :  Attributes=attributes?                                // NEW Optional Attributes
@@ -1360,7 +1360,7 @@ xppclass           :  Attributes=attributes?                                // N
                        (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       Members+=xppclassMember*
-                      (ENDCLASS | END CLASS) eos
+                      ENDCLASS eos
                     ;
 
 xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL | SEALED | ABSTRACT) )+

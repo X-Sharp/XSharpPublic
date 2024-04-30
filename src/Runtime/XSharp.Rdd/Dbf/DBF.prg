@@ -2397,7 +2397,7 @@ PRIVATE METHOD _calculateRecCount()	AS LONG
 	IF SELF:IsOpen
         VAR fSize   := SELF:_oStream:Length
 		IF fSize != 0  // Just created file ?
-			reccount := (LONG) ( fSize - SELF:_HeaderLength ) / SELF:_RecordLength
+			reccount := (LONG) (( fSize - SELF:_HeaderLength ) / SELF:_RecordLength)
         ENDIF
 	ENDIF
 RETURN reccount

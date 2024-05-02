@@ -36,9 +36,6 @@ RecentReference = GAC:XSharp.Core,v4,2.6.0.0
 RecentReference = GAC:XSharp.RT,v4,2.6.0.0
 RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
 RecentReference = GAC:XSharp.VO,v4,2.6.0.0
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll
-RecentReference = Browse:E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll
 RecentReference = GAC:XSharp.XPP,v4,2.6.0.0
 
 [Application Groups]
@@ -53076,7 +53073,7 @@ IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
 IncludePath = 
-StdDefsFile = VulcanStdDefs.vh
+StdDefsFile = 
 AppToRun = 
 SignAssembly = 0
 KeyFile = 
@@ -128975,7 +128972,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R919 - IS NOT pattern
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C902 - Macro compiler problem passing more than 2 arguments by reference *************
 Application = C902 - Macro compiler problem passing more than 2 arguments by reference
 IDEVersion = 1.06
@@ -129094,7 +129091,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C902 - Macro compiler problem passing more than 2 arguments by reference
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C902b - Macro compiler problem passing more than 2 arguments by reference (test b) *************
 Application = C902b - Macro compiler problem passing more than 2 arguments by reference (test b)
 IDEVersion = 1.06
@@ -129214,7 +129211,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C902b - Macro compiler problem passing more than 2 arguments by reference (test b)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes *************
 Application = C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes
 IDEVersion = 1.06
@@ -129258,9 +129255,9 @@ CopyToBin = 0
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\src\CompilerTests\Runtime\XSharp.VO.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VO.dll,1,1
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes Resources]
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes Native Resources]
 [C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes License files]
@@ -129334,7 +129331,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C903 - Problem with the /vo9 (handle missing RETURN statements) option with ACCESS in PARTIAL classes
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C904 - Problems with memvar pragma option *************
 Application = C904 - Problems with memvar pragma option
 IDEVersion = 1.06
@@ -129574,7 +129571,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16 *************
 Application = R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16
 IDEVersion = 1.06
@@ -129694,9 +129691,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R905b *************
-Application = R905b
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R905b - Late Bound access to hidden members (with /xpp1+) *************
+Application = R905b - Late Bound access to hidden members (with /xpp1+)
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -129729,22 +129726,22 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R905b FileGroups]
-[R905b Files]
+[R905b - Late Bound access to hidden members (with /xpp1+) FileGroups]
+[R905b - Late Bound access to hidden members (with /xpp1+) Files]
 File = %AppPath%\Prg\R905b.prg
 FileGUID = 266D821E-40C9-469B-BF62-6222079F7E87
 FileType = Code
 CopyToBin = 0
-[R905b References]
+[R905b - Late Bound access to hidden members (with /xpp1+) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.XPP,1,0,2.6.0.0
-[R905b Resources]
-[R905b Native Resources]
-[R905b License files]
-[R905b General Options]
+[R905b - Late Bound access to hidden members (with /xpp1+) Resources]
+[R905b - Late Bound access to hidden members (with /xpp1+) Native Resources]
+[R905b - Late Bound access to hidden members (with /xpp1+) License files]
+[R905b - Late Bound access to hidden members (with /xpp1+) General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -129783,7 +129780,7 @@ NamedArgs=0
 InitLocals=0
 AllowOldStyleAssignments=0
 ResponseOnly=0
-[R905b Configurations]
+[R905b - Late Bound access to hidden members (with /xpp1+) Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -129812,7 +129809,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R905b
+ENDApplication = R905b - Late Bound access to hidden members (with /xpp1+)
 [EndApplications]
 
 [Configurations]

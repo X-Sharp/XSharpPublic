@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-04-29T14:20:02.542+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-04-30T16:15:40.432+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -70,6 +70,7 @@
       <li styleclass="Normal">Fixed problem with setting the &quot;enable named arguments&quot; project option (#1431)</li>
       <li styleclass="Normal">Fixed problem with the code generator for types in external assemblies not generating parameters for Indexed properties (#1442)</li>
       <li styleclass="Normal">Fixed problem with the VODBServer editor not saving access/assigns and other entities of the [DBSERVER] section in CAVOFED.TPL (#1452)</li>
+      <li styleclass="Normal">Fixed a problem in the VS2022 Debugger when different DLLs contained the same namespace with different case.</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">Bug fixes</para>

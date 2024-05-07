@@ -10297,7 +10297,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C121
 
-ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C122 *************
 Application = C122
 IDEVersion = 1.06

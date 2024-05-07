@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (targetType.IsIntegralType() && sourceType.IsIntegralType())
             {
                 // implicit conversions are allowed when /vo4 is active
-                return Compilation.Options.HasOption(CompilerOption.Vo4, syntax);
+                return Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, syntax);
             }
             if (sourceType.IsObjectType() && targetType.IsXNumericType())
             {

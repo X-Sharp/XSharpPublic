@@ -158,7 +158,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var dstType = destination.SpecialType;
             var syntax = sourceExpression.Syntax;
             // From and to CHAR
-            var vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, syntax);
+            var vo4 = Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, syntax);
             if (srcType == SpecialType.System_Char)
             {
                 if (dstType == SpecialType.System_UInt16)
@@ -454,7 +454,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             var syntax = sourceExpression.Syntax;
-            var vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, syntax);
+            var vo4 = Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, syntax);
             if (!forCast && !vo4)
             {
                 return Conversion.NoConversion;

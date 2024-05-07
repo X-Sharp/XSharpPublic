@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-04-29T13:10:25.036+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-01T14:38:47.331+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -25,6 +25,7 @@
       <li styleclass="Normal">Fixed problem with the /vo9 (handle missing RETURN statements) compiler option with ACCESSes in PARTIAL classes (#1450)</li>
       <li styleclass="Normal">Fixed problem with the Lexer recognizing line continuation characters inside a string in the FoxPro dialect (#1453)</li>
       <li styleclass="Normal">Fixed problem with the memvar pragma option (#1454)</li>
+      <li styleclass="Normal">Fixed some issues with the -xpp1 and -vo16 compiler options in the xBase++ dialect (#1457, #1458, #1243, #1335)</li>
     </list>
     <para styleclass="Heading3">New Features</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

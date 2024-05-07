@@ -221,7 +221,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (!srcType.Equals(dstType) && Compilation.Options.HasRuntime)
+            if (!srcType.Equals(dstType) && (Compilation.Options.HasRuntime || vo4))
             {
                 // These compiler options only applies to numeric types
                 Conversion result = Conversion.NoConversion;

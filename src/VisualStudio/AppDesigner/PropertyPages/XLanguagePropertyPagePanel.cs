@@ -99,7 +99,7 @@ namespace XSharp.Project
 
             chkModernSyntax.Text = LanguagePropertyPagePanel.ModernSyntaxCaption;
             chkModernSyntax.Tag = XSharpProjectFileConstants.ModernSyntax;
-            toolTip1.SetToolTip(chkAllowDot, LanguagePropertyPagePanel.ModernSyntaxDescription);
+            toolTip1.SetToolTip(chkModernSyntax, LanguagePropertyPagePanel.ModernSyntaxDescription);
 
             // hook up the form to both editors
             Color defaultBackground = SystemColors.ButtonFace;

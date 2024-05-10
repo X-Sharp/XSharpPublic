@@ -259,7 +259,21 @@ internal static class OOPHelpers
 
 
         return 0
-
+  /// <summary>
+    /// Convert a null value to the correct value for the type
+    /// </summary>
+    static method ConvertFromNull(type as System.Type) as object
+        if type == typeof(System.String)
+            return String.Empty
+        elseif type == typeof(XSharp.__Array)
+            return {}
+        endif
+        return null
+    /// <summary>
+    /// Count the number of parameters that do not have a default value
+    /// </summary>
+    /// <param name="pars"></param>
+    /// <returns></returns>
     static method CountNonDefaultParameters(pars as IList<ParameterInfo>) as long
         for var i := 0 upto pars:Count -1
             local oPar := pars[i] as ParameterInfo
@@ -832,8 +846,8 @@ internal static class OOPHelpers
                 if propInfo:GetIndexParameters():Length == 0
                     if visible
                         result := propInfo:GetValue(oObject, null)
-                        if result == null .and. propInfo:PropertyType == typeof(System.String)
-                            result := String.Empty
+                        if result == null
+                            result := ConvertFromNull(propInfo:PropertyType)
                         endif
                         return result
                     endif
@@ -844,8 +858,8 @@ internal static class OOPHelpers
             var fldInfo := OOPHelpers.FindField(t, cIVar, true, lSelf)
             if fldInfo != null_object
                 result := fldInfo:GetValue(oObject)
-                if result == null .and. fldInfo:FieldType == typeof(System.String)
-                    result := String.Empty
+                if result == null
+                    result := ConvertFromNull(fldInfo:FieldType)
                 endif
                 return result
             endif
@@ -872,7 +886,6 @@ internal static class OOPHelpers
 
         // This property is set in the constructor of Dynamic Classes
         // To allow the codeblock for the INIT method to access hidden/private fields
-
     internal static property EmulateSelf as logic auto
     static method IVarPut(oObject as object, cIVar as string, oValue as object, lSelf as logic)  as void
         local t as Type
@@ -1101,8 +1114,8 @@ internal static class OOPHelpers
                     else
                         oResult := mi:Invoke(oObject, oArgs)
                     endif
-                    if oResult == null .and. mi:ReturnType == typeof(string)
-                        oResult := String.Empty
+                    if oResult == null
+                        oResult := ConvertFromNull(mi:ReturnType)
                     endif
                     result := oResult
                 endif

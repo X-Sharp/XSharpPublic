@@ -1306,7 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iMatch = 0;
             int iCurrent = iSource;
             int iEnd;
-            for (var iChild = 0; iChild <= iLast; iChild++)
+            for (var iChild = 0; iChild <= iLast && iCurrent < tokens.Count; iChild++)
             {
                 var tokenFromUDC = mToken.Tokens[iChild];
                 lastToken = tokenFromUDC;
@@ -1584,7 +1584,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         int trimHiddenTokens(IList<XSharpToken> tokens, int start, int end)
         {
-            while (tokens[end].Channel == Channel.Hidden && start < end)
+            if (end > tokens.Count - 1)
+                end = tokens.Count - 1;
+            while (start < end && tokens[end].Channel == Channel.Hidden )
             {
                 end--;
             }

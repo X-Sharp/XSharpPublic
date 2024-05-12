@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8415</title>
+<keywords>
+<keyword>XS8415</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8415</para>
+  </header>
+  <para styleclass="Normal">Asynchronous foreach statement cannot operate on variables of type '{0}' because '{0}' does not contain a public instance or extension definition for '{1}'. Did you mean 'foreach' rather than 'await foreach'?</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

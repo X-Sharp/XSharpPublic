@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Known Issues</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Known Issues</para>
+    </header>
+    <para styleclass="Normal">Below is the complete (but short) list of things that are not supported yet or are known problems in the current build of X#.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">Some parser errors need improvements, compiler errors may be cryptic every now and then</li>
+      <li styleclass="List1">Sometimes you may see a &quot;Include file not found&quot; error, where the file DOES exist. This seems to be a side effect of the codepage that was used to save the include files. <br/>When you save the file as UTF8 (File Advanced Save Options in Visual Studio) then this problem almost always disappears.</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">New features in the Debugger, such as a window for Globals and RDD Workareas</li>
+    </list>
+    <para styleclass="Heading2">RDD System</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">Query Optimization (Rushmore) is not supported yet</li>
+    </list>
+    <para styleclass="List1"></para>
+    <para styleclass="List1"><text styleclass="Heading2">Runtime</text></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">Some runtime functions are not supported yet. </li>
+    </list>
+  </body>
+</topic>

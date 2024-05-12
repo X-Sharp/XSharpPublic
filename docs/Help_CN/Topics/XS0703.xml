@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0703</title>
+  <keywords>
+    <keyword>XS0703</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0703</para>
+    </header>
+    <para styleclass="Normal">Inconsistent accessibility: constraint type &apos;identifier&apos; is less accessible than &apos;identifier&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A constraint may not force the generic parameter to be less accessible than the generic class itself. In the following example, while the generic class C&lt;T&gt; is declared public, the constraint attempts to force T to implement an internal interface. Even if this were allowed, only clients with internal access would be able to create the parameter for the class, so in effect, the class could be used only by clients with internal access.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To get rid of this error, make sure the access level of the generic class is not less restrictive than any classes or interfaces that appear in the bounds.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0703:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0703.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

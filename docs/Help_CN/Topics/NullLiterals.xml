@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Null Literals</title>
+  <keywords>
+    <keyword>Literals</keyword>
+    <keyword>NULL</keyword>
+    <keyword>Null Literals</keyword>
+    <keyword>NULL_ARRAY</keyword>
+    <keyword>NULL_CODEBLOCK</keyword>
+    <keyword>NULL_DATE</keyword>
+    <keyword>NULL_OBJECT</keyword>
+    <keyword>NULL_PSZ</keyword>
+    <keyword>NULL_PTR</keyword>
+    <keyword>NULL_STRING</keyword>
+    <keyword>NULL_SYMBOL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Null Literals</para>
+    </header>
+    <para styleclass="Body Text">X# uses the following NULL literals. They indicate the absense of a value.</para>
+    <para styleclass="Body Text">Some of these literals require the runtime.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="11" colcount="3" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Value</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Requires Runtime</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">&quot;Multi purpose&quot; NULL. Can be used for OBJECT type and Pointer types.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">N</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_ARRAY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Null reference to the xBase ARRAY type</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_CODEBLOCK</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Null reference to the xBase CODEBLOCK type</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_DATE</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Empty date (0000-00-00)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_OBJECT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Null reference to an OBJECT value</para>
+        </td>
+        <td>
+          <para styleclass="Normal">N</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_PSZ</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Null PSZ value</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_PTR</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Null PTR value </para>
+        </td>
+        <td>
+          <para styleclass="Normal">N</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_STRING</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Null reference to a string. When the compiler option /vo2 is used then this will become the equivalent of String.Empty</para>
+        </td>
+        <td>
+          <para styleclass="Normal">N</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">NULL_SYMBOL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">NULL reference to the xBase SYMBOL type</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">.NULL.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This FoxPro literal null is translated to a NULL reference</para>
+        </td>
+        <td>
+          <para styleclass="Normal">N</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:57:57.404+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Highlight Keywords</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Highlight Keywords</para>
+    </header>
+    <para styleclass="Normal">The keyword matching feature will highlight keyword pairs in the editor as you can see in the image below.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Keyword Matching.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text">The TRY, CATCH and END TRY keywords are highlighted so you can see that they belong to each other</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">If the cursor is located on a RETURN statement then the matching FUNCTION or METHOD will be highlighted,</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="Keyword Matching-Return.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The color for the highlights can be set in the Tools/Options dialog under the Environment/Fonts and Colors node. The X# specific colors all start with the text &quot;X#&quot;</para>
+  </body>
+</topic>

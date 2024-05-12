@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SCATTER Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Fields<keyword>updating</keyword></keyword>
+    <keyword>SCATTER command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SCATTER Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Assign new values to the contents of one or more fields in the current record.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SCATTER [FIELDS &lt;idFieldList&gt; | FIELDS LIKE &lt;Skeleton&gt;<br/> &#160; | FIELDS EXCEPT &lt;Skeleton&gt;] [MEMO] [BLANK]<br/> &#160; | TO ArrayName | MEMVAR<br/> &#160; | NAME ObjectName [ADDITIVE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List">MEMO<tab /><text styleclass="Body Text">Specifies that the field list include one or more memo fields. </text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">BLANK<tab />Include the BLANK keyword to create a set of empty variables or to fill the array or object with empty values. Each variable is assigned the same name, data type, and size as its field. If a field list is included, a variable is created for each field in the field list.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;ArrayName&gt;<tab />Specifies an array to which the record contents are copied. Starting with the first field, SCATTER copies the contents of each field into each element of the array in sequential order.</para>
+    <para styleclass="List"><tab />SCATTER automatically creates a new array. The array elements have the same size and data types as the corresponding fields. </para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /></para>
+    <para styleclass="List">MEMVAR<tab />Scatters the data to a set of variables instead of an array. SCATTER creates one variable for each field in the table and fills each variable with data from the corresponding field in the current record, assigning to the variable the same name, size, and type as its field.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">NAME &lt;ObjectName&gt;<tab />Creates an object whose properties have the same names as fields in the table. To copy the value of each field in the table to each object property, do not include the BLANK keyword. To leave the properties empty, include the BLANK keyword</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ADDITIVE<tab />To update the property values of an existing and valid Visual FoxPro object specified by ObjectName. Using BLANK with ADDITIVE omits the values for existing properties that have matching field names.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_GATHER">GATHER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_ARRAY">COPY TO ARRAY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_APPEND_FROM_ARRAY">APPEND FROM ARRAY</link></para>
+  </body>
+</topic>

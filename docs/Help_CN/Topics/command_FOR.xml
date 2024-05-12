@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-10-22T13:01:42.777-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FOR Statement</title>
+  <keywords>
+    <keyword>Branching</keyword>
+    <keyword>Conditional execution</keyword>
+    <keyword>EXIT statement</keyword>
+    <keyword>FOR statement</keyword>
+    <keyword>LOOP statement</keyword>
+    <keyword>NEXT statement</keyword>
+    <keyword>Program control</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FOR Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Execute a block of statements a specified number of times.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">FOR [&lt;idCounter&gt; := &lt;nStart&gt; | VAR &lt;idCounter&gt; := &lt;nStart&gt; | LOCAL &lt;idCounter&gt; := &lt;nStart&gt; AS &lt;idType&gt; ] [TO | UPTO | DOWNTO] &lt;nEnd&gt; [STEP &lt;nDelta&gt;]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [EXIT]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [LOOP]<br/>NEXT</para>
+    <para styleclass="Heading2">Note</para>
+    <para styleclass="Normal">In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;idCounter&gt;<tab />The name of the loop control or counter variable. &#160;IF a LOCAL or VAR clause is included then the local is created for the duration of the loop. With the VAR clause the datatype is inferred from the usage. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">&lt;nStart&gt;<tab />The initial value assigned to &lt;idCounter&gt;. &#160;If the loop is counting up, &lt;nStart&gt; must be less than &lt;nEnd&gt;. &#160;If the loop is counting down, &lt;nStart&gt; must be greater than &lt;nEnd&gt;.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The TO clause can be used for counting up or down, depending on whether the STEP clause gives a positive or negative value for &lt;nDelta&gt;. &#160;Note, however, that your code will be more efficient if you avoid the TO clause and specify UPTO or DOWNTO instead.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">UPTO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The UPTO clause is used for counting up.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DOWNTO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The DOWNTO clause is used for counting down.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">STEP &lt;nDelta&gt;<tab />The amount &lt;idCounter&gt; is changed for each iteration of the loop. &#160;If used with the TO clause, &lt;nDelta&gt; can be either positive or negative. &#160;With UPTO and DOWNTO, &lt;nDelta&gt; should be positive. &#160;If the STEP clause is not specified, &lt;idCounter&gt; is incremented (or decremented in the case of DOWNTO) by one for each iteration of the loop.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">The control structure loops from the initial value of &lt;<text styleclass="Italic">idCounter</text>&gt; to the boundary specified by &lt;<text styleclass="Italic">nEnd</text>&gt;, moving through the range of values of the control variable for an increment specified by &lt;<text styleclass="Italic">nDelta</text>&gt;. &#160;All expressions in the FOR statement are reevaluated for each iteration of the loop. &#160;The &lt;<text styleclass="Italic">nStart</text>&gt; and &lt;<text styleclass="Italic">nEnd</text>&gt; values, therefore, can be changed as the control structure operates.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A FOR loop operates until &lt;<text styleclass="Italic">idCounter</text>&gt; is greater than or less than &lt;<text styleclass="Italic">nEnd</text>&gt; (depending on whether you are counting up or down) or an EXIT statement is encountered. &#160;Control then branches to the statement following the corresponding NEXT statement. &#160;If a LOOP statement is encountered, control branches back to the current FOR statement.</para>
+    <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Tip: &#160;</text>Although FOR loops are useful for traversing arrays (as demonstrated in the examples below), your code will be more efficient if there is a corresponding array function designed to do what you want.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example traverses an array in ascending order:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">nLenArray := ALen(aArray)<br/>FOR i := 1 UPTO nLenArray<br/><tab />&lt;Statements&gt;...<br/>NEXT</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To traverse an array in descending order:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">nLenArray := ALen(aArray)<br/>FOR i := nLenArray DOWNTO 1<br/><tab />&lt;Statements&gt;...<br/>NEXT</para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_AEval.htm" domain="XSharpRef.chm">AEval()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXIT">EXIT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOOP">LOOP</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

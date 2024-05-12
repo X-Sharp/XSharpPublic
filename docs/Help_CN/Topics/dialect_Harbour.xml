@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Harbour</title>
+  <keywords>
+    <keyword>&apos;@&apos;</keyword>
+    <keyword>4 letter abbreviations</keyword>
+    <keyword>Harbour</keyword>
+    <keyword>IIF</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Harbour</para>
+    </header>
+    <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;</para>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Harbour&quot; dialect.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows 4 letter abbreviations of some older keywords</li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The &apos;@&apos; operator is only used to pass variables by reference.</li>
+    </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows IIF() expressions with a missing element, for example IIF(someCondition,DoSomething(),). The compiler will insert a NIL for a missing entry.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Runtime</para>
+  </body>
+</topic>

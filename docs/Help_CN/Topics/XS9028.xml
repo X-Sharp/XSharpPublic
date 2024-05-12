@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS9028</title>
+  <keywords>
+    <keyword>XS9028</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9028</para>
+    </header>
+    <para styleclass="Normal">Unknown Literal Typename {0} found in VOTypeNameExpression</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In the VO and Vulcan language you can use type names a literal values, for example in an expression like:</para>
+    <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#000000;">UsualType</text><text style="font-weight:normal; font-style:normal; color:#000000;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">uExpr</text><text style="font-weight:normal; font-style:normal; color:#000000;">) == </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;..</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">ENDIF</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal">If you see error 9028 then you have a literal typename in an expression that is not properly handled by the compiler. If you see this error, then please submit a code example to <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;">bugreports@xsharp.eu</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

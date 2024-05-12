@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Core</title>
+  <keywords>
+    <keyword>Core</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Core</para>
+    </header>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Core&quot; dialect.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Does NOT allows 4 letter abbreviations of keywords</li>
+      <li styleclass="Normal">Allows the DOT (&apos;.&apos;) operator to call Instance methods</li>
+      <li styleclass="Normal">Single quotes are used for Character literals</li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">String Comparisons are mapped to the String.Compare() method in the .Net runtime</li>
+      <li styleclass="Normal">The String &quot;=&quot; operator is not supported</li>
+      <li styleclass="Normal">The String &quot;-&quot; operator is not supported</li>
+      <li styleclass="Normal">Anything that requires runtime support, such as the X# specific types (DATE, ARRAY, SYMBOL, FLOAT and USUAL) and dynamic memory variables is not supported</li>
+      <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
+    </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The &apos;=&apos; operator may be used for assigns but will generate a warning when used.</li>
+      <li styleclass="Normal">The compiler generated functions class is called </li>
+    </list>
+    <para styleclass="Normal"><tab />Functions <tab /><tab /><tab />for normal functions and globals</para>
+    <para styleclass="Normal"><tab />X$&lt;ModuleName&gt;$Functions for static functions and globals</para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Procedures cannot return values</li>
+      <li styleclass="Normal">Does not allow skipping arguments in method calls.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The Core dialect does not require a runtime. However you can still link to XSharp.Core and XSharp.RDD and call methods and functions in these assemblies.</li>
+    </list>
+  </body>
+</topic>

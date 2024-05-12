@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9097</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9097</para>
+    </header>
+    <para styleclass="Body Text">The base class &apos;{0}&apos; declares a {1} &apos;{2}&apos; that differs from this {1} &apos;{3}&apos; only in case.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">This error will be shown if you declare a method in a subclass that only differs in case from a method in the base class when the /cs (case sensitive compilation) flag is enabled.</para>
+    <para styleclass="Body Text">Without this compiler option the compiler will &quot;adjust&quot; the case of the method in the subclass.</para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

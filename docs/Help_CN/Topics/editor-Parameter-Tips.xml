@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:44:27.705+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Parameter Tips</title>
+  <keywords>
+    <keyword>Parameter Tips</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Parameter Tips</para>
+    </header>
+    <para styleclass="Normal">Parameter Info gives you information about the number, names, and types of parameters required by a method, attribute generic type parameter.</para>
+    <para styleclass="Normal">The parameter in bold indicates the next parameter that is required as you type the function. For overloaded functions, you can use the Up and Down arrow keys to view alternative parameter information for the function overloads.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When you annotate functions and parameters with XML Documentation comments, the comments will display as Parameter Info. For more information, see Supply XML code comments.</para>
+    <para styleclass="Normal">You can manually invoke Parameter Info by choosing Edit &gt; IntelliSense &gt; Parameter Info, by pressing Ctrl+Shift+Space, or by choosing the Parameter Info button on the editor toolbar.</para>
+  </body>
+</topic>

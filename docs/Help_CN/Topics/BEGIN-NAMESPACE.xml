@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-07T17:38:58.043+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN NAMESPACE</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN NAMESPACE</keyword>
+    <keyword>END</keyword>
+    <keyword>END NAMESPACE</keyword>
+    <keyword>NAMESPACE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN NAMESPACE</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">The BEGIN NAMESPACE and END NAMESPACE keyword pairs declare a scope and add a namespace prefix to all types declared inside this scope</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box"><tab />BEGIN NAMESPACE namespaceName &#160; <br/><tab /><tab />typeDeclarations &#160; <br/><tab /><tab />namespaceDeclarations<br/><tab />END NAMESPACE</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List">namespaceName<tab />The name of the namespace being declared. </para>
+    <para styleclass="List">typeDeclarations <tab />One or more type declarations (CLASS, STRUCTURE, etc.). </para>
+    <para styleclass="List">namespaceDeclarations <tab />Zero or more namespace declarations. </para>
+    <para styleclass="List"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Any types declared within a namespace scope have the namespace name prepended to the type name. For example, a class named &quot;MyClass&quot; that is declared within a namespace named &quot;MyNamespace&quot; will have a type name of &quot;MyNamespace.MyClass&quot;.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Types declared outside any namespace scope are declared in the &quot;global&quot; or &quot;unnamed&quot; namespace.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN NAMESPACE ... END NAMESPACE</text> blocks can be nested to any depth. Nested namespace names have the enclosing namespace name prepended to it, separated by a period.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The same namespace name may be declared multiple times in the same or different files. The <text style="font-weight:bold;">BEGIN NAMESPACE</text> and <text style="font-weight:bold;">END NAMESPACE</text> statements do not cause any code to be generated, they simply affect the name of any types declared within the namespace block.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">using </text>directives that appear within a namespace are only in effect within the enclosing namespace block, and any nested namespace blocks.</para>
+    <para styleclass="Heading2">Compatibility Note: </para>
+    <para styleclass="Body Text">Code migrated from Visual Objects to Vulcan.NET using the Transporter is not placed within any BEGIN NAMESPACE ... END NAMESPACE blocks, because Visual Objects has no concept of namespaces. Therefore, all classes in transported code are in the global or &quot;unnamed&quot; namespace and do not have a namespace name prepended to them. </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Heading1">Example</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> a</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> one &#160; &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// actual type name is &apos;a.one&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> b &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// the namespace name is &apos;a.b&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> two &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// actual type name is &apos;a.b.two&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160;...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> three &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// actual type name is &apos;three&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/></para>
+  </body>
+</topic>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Logic Ttype</title>
+  <keywords>
+    <keyword>LOGIC</keyword>
+    <keyword>XSharp.__WinBool</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Logic Ttype</para>
+    </header>
+    <para styleclass="Normal">For normal use the logic type is mapped to System.Boolean. </para>
+    <para styleclass="Normal">Inside VOSTRUCT and UNION the XSharp.__WinBool is used because this is a 4 byte value just like the Win32 api expects.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="LOGIC" inline="false"/></para>
+  </body>
+</topic>

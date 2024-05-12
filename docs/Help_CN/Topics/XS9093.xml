@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9093</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9093</para>
+    </header>
+    <para styleclass="Body Text">&apos;{0}&apos; has not been declared. Assuming this is a CURSOR.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">This warning will be shown when compiling in the FoxPro dialect for code in the following style</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Customer.LastName &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// XS9093 &apos;Customer&apos; has not been declared. Assuming this is a CURSOR.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">when the /undeclared compiler option is NOT enabled</text></para>
+  </body>
+</topic>

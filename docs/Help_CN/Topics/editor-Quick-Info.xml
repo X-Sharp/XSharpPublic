@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:44:29.747+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Quick Info</title>
+  <keywords>
+    <keyword>Quick Info</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Quick Info</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Quick Info displays the complete declaration for any identifier in your code. When you select a member from the List Members box, Quick Info also appears.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can manually invoke Quick Info by choosing Edit &gt; IntelliSense &gt; Quick Info, by pressing Ctrl+I, or by choosing the Quick Info button on the editor toolbar.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">If a function is overloaded, IntelliSense may not display information for all forms of the overload.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Quick Info.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Quick Info 2.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><image src="Quick Info 3.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+  </body>
+</topic>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:56:28.297+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Indentation</title>
+  <keywords>
+    <keyword>Indentation</keyword>
+    <keyword>Options</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Indentation</para>
+    </header>
+    <para styleclass="Normal">This page contains X# specific settings w.r.t. source indentation. This setting is used by the editor when you choose the option to indent &quot;Smart&quot; on the &quot;Tabs&quot; page.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Indentation.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">The listview on top shows the options that you can choose from. The edit control on the bottom shows the result of the setting.</para>
+  </body>
+</topic>

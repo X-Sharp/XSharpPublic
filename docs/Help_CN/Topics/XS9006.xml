@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9006</title>
+  <keywords>
+    <keyword>XS9006</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9006<tab />Illegal combination of commandline options:</para>
+    </header>
+    <para styleclass="Body Text">This error is produced for illegal combinations of commandline options. For example the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">fox2</link> command line option MUST be used in the FoxPro dialect and in combination with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">memvar</link> commandline option. When one of these two options is not specified you will see the error message:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">error XS9006: Illegal combination of commandline options: /fox2 must be combined with the FoxPro dialect and /memvars.</para>
+  </body>
+</topic>

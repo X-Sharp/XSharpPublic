@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0459</title>
+<keywords>
+<keyword>XS0459</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0459</para>
+  </header>
+  <para styleclass="Normal">Cannot take the address of a read-only local variable</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

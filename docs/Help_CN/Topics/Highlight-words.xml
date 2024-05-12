@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:58:02.789+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Highlight Identifiers</title>
+  <keywords>
+    <keyword>Highlight words</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Highlight Identifiers</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">When you select a specific word</text><text styleclass="Image Caption">, </text><text styleclass="Image Caption" style="font-style:normal;">it shows you all the places this word is used, this is case sensitive.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Highlight words.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The color for the highlights can be set in the Tools/Options dialog under the Environment/Fonts and Colors node. The X# specific colors all start with the text &quot;X#&quot;</para>
+  </body>
+</topic>

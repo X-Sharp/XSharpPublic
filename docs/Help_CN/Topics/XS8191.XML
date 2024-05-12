@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8191</title>
+<keywords>
+<keyword>XS8191</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8191</para>
+  </header>
+  <para styleclass="Normal">Provided documentation mode is unsupported or invalid: '{0}'.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

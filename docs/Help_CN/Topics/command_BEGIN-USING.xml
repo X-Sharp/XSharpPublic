@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN USING</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN USING</keyword>
+    <keyword>END</keyword>
+    <keyword>END USING</keyword>
+    <keyword>USING</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN USING</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Heading1"><text styleclass="Body Text">The </text><text styleclass="Body Text" style="font-weight:bold;">BEGIN USING</text><text styleclass="Body Text"> and </text><text styleclass="Body Text" style="font-weight:bold;">END USING</text><text styleclass="Body Text"> keyword declare a block of code that ensures the correct use of disposable objects.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">BEGIN USING <text style="font-style:italic;">declaration</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END USING</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">declaration<tab />Declaration of a variable and assignment that </para>
+    <para styleclass="List"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-style:italic; color:#000000;">statements</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text><tab />Code including one or more statements that may contain unsafe code.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Body Text">When the lifetime of an IDisposable object is limited to a single method, you should declare and instantiate it in the using statement. The using statement calls the <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose">Dispose</link> method on the object in the correct way, and (when you use it as shown earlier) it also causes the object itself to go out of scope as soon as <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose">Dispose</link> is called. Within the using block, the object is read-only and cannot be modified or reassigned.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Body Text"><text styleclass="Heading1">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oTest := Test{}</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">oTest:DoSomething()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">this is the equivalent of</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> oTest := Test{}</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; oTest:DoSomething()</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> oTest != NULL_OBJECT</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;((IDisposable)oTest):Dispose()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDIF</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TRY</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

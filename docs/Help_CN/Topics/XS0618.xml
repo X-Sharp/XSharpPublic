@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0618</title>
+  <keywords>
+    <keyword>XS0618</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS0618</para>
+    </header>
+    <para styleclass="Normal">&apos;member&apos; is obsolete: &apos;text&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A class member was marked with the Obsolete attribute, such that a warning will be issued when the class member is referenced. For more information, see Common Attributes.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0618:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0618.prg  <br/>// compile with: /W:2  <br/></para>
+  </body>
+</topic>

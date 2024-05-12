@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0310</title>
+  <keywords>
+    <keyword>XS0310</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0310</para>
+    </header>
+    <para styleclass="Normal">The type &apos;typename&apos; must be a non-abstract type with a public parameterless constructor in order to use it as parameter &apos;parameter&apos; in the generic type or method &apos;generic&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The generic type or method defines a new constraint in its where clause, so any type must have a public parameterless constructor in order to be used as a type argument for that generic type or method. To avoid this error, make sure that the type has the correct constructor, or modify the constraint clause of the generic type or method.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">The following sample generates XS0310:<br/><br/><br/>// XS0310.prg  <br/>  </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

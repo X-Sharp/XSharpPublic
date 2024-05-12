@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:44:21.330+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Highlighting Errors</title>
+  <keywords>
+    <keyword>Highlighting Errors</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Highlighting Errors</para>
+    </header>
+    <para styleclass="Normal">At this moments errors are not highlighted in the source code editor. This is planned for a future version of X#.</para>
+  </body>
+</topic>

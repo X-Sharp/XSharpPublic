@@ -588,12 +588,12 @@ INTERNAL CLASS FlexArea
         ENDIF
         RETURN blockNr
 
-    INTERNAL METHOD ReadBlockFromFile(nBlock as LONG, FileName as STRING) AS LONG
+    INTERNAL METHOD ReadBlockFromFile(nBlock as LONG, cFileName as STRING) AS LONG
         LOCAL bFile AS BYTE[]
-        IF XSharp.Core.Functions.File(FileName)
+        IF XSharp.Core.Functions.File(cFileName)
             TRY
-                FileName := FPathName()
-                bFile := System.IO.File.ReadAllBytes(FileName)
+                cFileName := FPathName()
+                bFile := System.IO.File.ReadAllBytes(cFileName)
                 VAR bData := BYTE[] { bFile:Length+8}
                 VAR token := FlexMemoToken{bData, _oStream}
                 IF bFile:Length > UInt16.MaxValue

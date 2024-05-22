@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ! SELF:IsHot
                     SELF:GoHot()
                 ENDIF
-                RETURN SELF:oFlexMemo:PutValueFile(nFldPos, FileName)
+                RETURN SELF:oFlexMemo:PutValueFile(nFldPos, fileName)
             ENDIF
             RETURN FALSE
 

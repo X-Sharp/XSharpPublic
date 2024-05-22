@@ -49,6 +49,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NOSHOW] PRIVATE CONST STR_NULL_PSZ := "NULL_PSZ" AS STRING
     [NOSHOW] PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
     [NOSHOW] PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL_OBJECT := "NULL_OBJECT" AS STRING
     [NOSHOW] PRIVATE CONST STR_USUAL := "USUAL" AS STRING
 
 #endregion
@@ -3414,7 +3415,17 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         IF SELF:IsNull
             strValue := STR_NULL
         ELSEIF SELF:IsNil
-            strValue := "("+STR_NIL+")"
+            IF SELF:IsArray
+                strValue := STR_NULL_ARRAY
+            ELSEIF SELF:IsString
+                strValue := STR_NULL_STRING
+            ELSEIF SELF:IsCodeblock
+                strValue := STR_NULL_CODEBLOCK
+            ELSEIF SELF:IsObject
+                strValue := STR_NULL_OBJECT
+            ELSE
+                strValue := "("+STR_NIL+")"
+            ENDIF
         ELSE
             strValue := SELF:Value:ToString() +" ( "
             IF SELF:IsByRef

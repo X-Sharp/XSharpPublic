@@ -262,13 +262,17 @@ internal static class OOPHelpers
   /// <summary>
     /// Convert a null value to the correct value for the type
     /// </summary>
-    static method ConvertFromNull(type as System.Type) as object
+    static method ConvertFromNull(type as System.Type) as usual
         if type == typeof(System.String)
-            return String.Empty
+            return __Usual{__UsualType.String, false}
         elseif type == typeof(XSharp.__Array)
-            return {}
+            return __Usual{__UsualType.Array, false}
+        elseif type == typeof(XSharp.Codeblock)
+            return __Usual{__UsualType.Codeblock, false}
+        elseif type:IsValueType
+            return NIL
         endif
-        return null
+        return NULL_OBJECT
     /// <summary>
     /// Count the number of parameters that do not have a default value
     /// </summary>
@@ -847,7 +851,7 @@ internal static class OOPHelpers
                     if visible
                         result := propInfo:GetValue(oObject, null)
                         if result == null
-                            result := ConvertFromNull(propInfo:PropertyType)
+                            return ConvertFromNull(propInfo:PropertyType)
                         endif
                         return result
                     endif
@@ -859,7 +863,7 @@ internal static class OOPHelpers
             if fldInfo != null_object
                 result := fldInfo:GetValue(oObject)
                 if result == null
-                    result := ConvertFromNull(fldInfo:FieldType)
+                    return ConvertFromNull(fldInfo:FieldType)
                 endif
                 return result
             endif
@@ -1115,9 +1119,10 @@ internal static class OOPHelpers
                         oResult := mi:Invoke(oObject, oArgs)
                     endif
                     if oResult == null
-                        oResult := ConvertFromNull(mi:ReturnType)
+                        result := ConvertFromNull(mi:ReturnType)
+                    else
+                        result := oResult
                     endif
-                    result := oResult
                 endif
                 if hasByRef
                     OOPHelpers.CopyByRefParameters( uArgs, oArgs, mi:GetParameters())

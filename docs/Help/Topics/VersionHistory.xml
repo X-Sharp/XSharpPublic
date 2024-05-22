@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-04-30T16:15:40.432+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-22T19:31:29.000+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -90,6 +90,8 @@
       <li styleclass="Normal">Added project support for the compiler options /namedargs, /initlocals, /modernsyntax and /allowoldstyleassignments</li>
       <li styleclass="Normal">Now pressing the SHIFT key on startup, resets the layout of the IDE to default positions (and does not save it on exit)</li>
       <li styleclass="Normal">Added menu command View-&gt;Save Current Layout</li>
+      <li styleclass="Normal">Fixed a problem with toggling case (CTR+U) of text selected in a column selection</li>
+      <li styleclass="Normal">Fixed several issues with incorrectly identifying a line with identifiers like PROC or FUNC as entity definitions</li>
     </list>
     <para styleclass="Heading2">Documentation</para>
     <para styleclass="Heading3">Bug fixes</para>

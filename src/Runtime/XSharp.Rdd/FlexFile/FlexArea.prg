@@ -34,8 +34,8 @@ INTERNAL CLASS FlexArea
     PRIVATE _oStream   AS FileStream
 #ifdef DELETEDBLOCKS
     PRIVATE _DeadIndexBlocks AS ULStack
-    internal LocIndex as LocationIndex
-    internal LenIndex as LengthIndex
+        internal LocIndex as LocationIndex
+        internal LenIndex as LengthIndex
 #endif
     PROTECT _lockScheme AS DbfLocking
     PROTECT _blockSize  AS WORD
@@ -88,11 +88,11 @@ INTERNAL CLASS FlexArea
         SELF:_flexHeader  := FlexHeader{oRdd}
         SELF:_lockCount   := 0
         SELF:ExportMode   := BLOB_EXPORT_APPEND
-        #ifdef DELETEDBLOCKS
+#ifdef DELETEDBLOCKS
         SELF:_DeadIndexBlocks := ULStack{}
         SELF:LenIndex     := LengthIndex{}
         SELF:LocIndex     := LocationIndex{}
-        #endif
+#endif
 
     INTERNAL METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
         SELF:_oRdd:_dbfError(ex, iSubCode, iGenCode,strFunction)
@@ -125,8 +125,8 @@ INTERNAL CLASS FlexArea
             SELF:_initContext()
 #ifdef DELETEDBLOCKS
             IF SELF:IsFlex
-                 SELF:LenIndex:Init(SELF)
-                 SELF:LocIndex:Init(SELF)
+                SELF:LenIndex:Init(SELF)
+                SELF:LocIndex:Init(SELF)
             ENDIF
 #endif
 
@@ -138,11 +138,11 @@ INTERNAL CLASS FlexArea
         IF SELF:IsOpen
 #ifdef DELETEDBLOCKS
             IF SELF:IsFlex
-                 SELF:LocIndex:Close()
-                 SELF:LenIndex:Close()
-             ENDIF
+                SELF:LocIndex:Close()
+                SELF:LenIndex:Close()
+            ENDIF
 #endif
-IF SELF:_lockCount > 0
+            IF SELF:_lockCount > 0
                 SELF:UnLockHeader(FALSE)
             ENDIF
             _oStream:Close()
@@ -156,11 +156,11 @@ IF SELF:_lockCount > 0
         // This is called when an operation on indexes detects a problem.
         IF SELF:LockHeader(TRUE)
 #ifdef DELETEDBLOCKS
-             SELF:LocIndex:KillIndex()
-             SELF:LenIndex:KillIndex()
-             SELF:DeadIndexBlocks:Clear()
+            SELF:LocIndex:KillIndex()
+            SELF:LenIndex:KillIndex()
+            SELF:DeadIndexBlocks:Clear()
 #endif
-             SELF:_flexHeader:IndexDefect := TRUE
+            SELF:_flexHeader:IndexDefect := TRUE
             SELF:_hotHeader := TRUE
             SELF:UnLockHeader(TRUE)
         ENDIF
@@ -183,7 +183,7 @@ IF SELF:_lockCount > 0
                         LocIndex:DiskCache:Clear()
                         LenIndex:DiskCache:Clear()
 #else
-			NOP
+                        NOP
 #endif
                     ENDIF
                 ELSE
@@ -510,27 +510,27 @@ IF SELF:_lockCount > 0
                 LOCAL liFoundLen as DWORD
                 // Try to find block of the right size in the free list
                 IF SELF:IsFlex
-                     lFoundDeletedBlock := SELF:LenIndex:SeekSoft(neededLen)
-                     liDataPos := SELF:LenIndex:CurrentPos
-                     liFoundLen := SELF:LenIndex:CurrentLen
-                 ELSE
+                    lFoundDeletedBlock := SELF:LenIndex:SeekSoft(neededLen)
+                    liDataPos := SELF:LenIndex:CurrentPos
+                    liFoundLen := SELF:LenIndex:CurrentLen
+                ELSE
 #endif
                     lFoundDeletedBlock := FALSE
 #ifdef DELETEDBLOCKS
                     liFoundLen := 0
                     liDataPos := 0
                 ENDIF
-                 IF lFoundDeletedBlock
-                     liExcessLen := liFoundLen - neededLen
-                     if liExcessLen > 0 .and. liExcessLen < FlexMemoToken.TokenLength +1
-                         // If excess space was allocated but it isn't enough for
-                         // the FPT token, search for another spot that has enough
-                         // excess space to contain the token.
-                         lFoundDeletedBlock := LenIndex:SeekSoft(neededLen + RoundToBlockSize(FlexMemoToken.TokenLength + 1))
-                         liDataPos := LenIndex:CurrentPos
-                         liFoundLen := LenIndex:CurrentLen
-                     endif
-                 ENDIF
+                IF lFoundDeletedBlock
+                    liExcessLen := liFoundLen - neededLen
+                    if liExcessLen > 0 .and. liExcessLen < FlexMemoToken.TokenLength +1
+                        // If excess space was allocated but it isn't enough for
+                        // the FPT token, search for another spot that has enough
+                        // excess space to contain the token.
+                        lFoundDeletedBlock := LenIndex:SeekSoft(neededLen + RoundToBlockSize(FlexMemoToken.TokenLength + 1))
+                        liDataPos := LenIndex:CurrentPos
+                        liFoundLen := LenIndex:CurrentLen
+                    endif
+                ENDIF
 #endif
                 IF ! lFoundDeletedBlock
                     nPos := _nextFree  * _blockSize
@@ -543,25 +543,25 @@ IF SELF:_lockCount > 0
                     blockNr := (LONG) (nPos / _blockSize )
 #ifdef DELETEDBLOCKS
                 ELSE
-                     blockNr := (LONG) (liDataPos / _blockSize )
-                     liExcessLen := liFoundLen - neededLen
-                     _oStream:SafeSetPos(liDataPos)
-                     if SELF:WriteBlock(bytes)
-                         SELF:WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)
-                     endif
-                     liDataPos := liDataPos + neededLen
+                    blockNr := (LONG) (liDataPos / _blockSize )
+                    liExcessLen := liFoundLen - neededLen
+                    _oStream:SafeSetPos(liDataPos)
+                    if SELF:WriteBlock(bytes)
+                        SELF:WriteBlockFiller(bytes:Length, LEFTOVER_DATASPACE_PAD)
+                    endif
+                    liDataPos := liDataPos + neededLen
                     // Now delete the block from the index
-                     LOCAL lKill := FALSE as LOGIC
-                     IF LocIndex:Seek(LenIndex:CurrentPos, LenIndex:CurrentLen)
-                         IF !( LenIndex:Delete() .and. LocIndex:Delete())
-                             lKill := TRUE
-                         ENDIF
-                     ELSE
+                    LOCAL lKill := FALSE as LOGIC
+                    IF LocIndex:Seek(LenIndex:CurrentPos, LenIndex:CurrentLen)
+                        IF !( LenIndex:Delete() .and. LocIndex:Delete())
+                            lKill := TRUE
+                        ENDIF
+                    ELSE
                         lKill := TRUE
                     ENDIF
-                     IF lKill
-                         SELF:KillIndexes()
-                     ENDIF
+                    IF lKill
+                        SELF:KillIndexes()
+                    ENDIF
 #endif
                 ENDIF
 #ifdef DELETEDBLOCKS
@@ -575,9 +575,9 @@ IF SELF:_lockCount > 0
                     IF token:Write(FlexMemoToken.TokenLength)
                         WriteFiller(token:Length, EXCESS_DATASPACE_FILLER)
                     ENDIF
-                     IF ! (LenIndex:Insert(liExcessLen, liDataPos) .and. LocIndex:Insert(liDataPos, liExcessLen))
-                         SELF:KillIndexes()
-                     ENDIF
+                    IF ! (LenIndex:Insert(liExcessLen, liDataPos) .and. LocIndex:Insert(liDataPos, liExcessLen))
+                        SELF:KillIndexes()
+                    ENDIF
                 endif
 #endif
                 SELF:UnLockHeader(TRUE)
@@ -700,14 +700,14 @@ IF SELF:_lockCount > 0
             SELF:_foxHeader:Clear()
             IF SELF:IsFlex
                 SELF:_flexHeader:Clear()
-//                 SELF:LenIndex:Clear()
-//                 SELF:LenIndex:Clear()
+                //                 SELF:LenIndex:Clear()
+                //                 SELF:LenIndex:Clear()
             ENDIF
             SELF:WriteHeader()
-//            IF SELF:IsFlex
-//                 SELF:LenIndex:Init(SELF)
-//                 SELF:LocIndex:Init(SELF)
-//            ENDIF
+            //            IF SELF:IsFlex
+            //                 SELF:LenIndex:Init(SELF)
+            //                 SELF:LocIndex:Init(SELF)
+            //            ENDIF
             RETURN TRUE
         ENDIF
         RETURN FALSE
@@ -1044,6 +1044,7 @@ IF SELF:_lockCount > 0
 
             CASE FlexArrayTypes.DateJ
                 element := BitConverter.ToInt32(bData, nOffset)
+                element := JulianToDateTime((LONG) element)
                 nOffset += 4
 
             CASE FlexArrayTypes.Double2
@@ -1116,7 +1117,7 @@ IF SELF:_lockCount > 0
             aValues[i] := element
         NEXT
         RETURN aValues
-
+   
     /// <summary>Encode a value into a FTP block</summary>
     /// <param name="oValue">The value to encode. Allowed are at this moment, String, Logic and byte[]</param>
     /// <returns>Byte array including the 8 byte header with the block length and type</returns>

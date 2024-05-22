@@ -1051,7 +1051,7 @@ INTERNAL CLASS FlexArea
                 element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
-            CASE FlexArrayTypes.UCHar1
+            CASE FlexArrayTypes.UChar1
                 element := (SByte) bData[ nOffset]
                 nOffset += 2
 
@@ -1088,10 +1088,10 @@ INTERNAL CLASS FlexArea
             CASE FlexArrayTypes.LDouble
                 element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
-            CASE FlexArrayTypes.UCHar2
+            CASE FlexArrayTypes.UChar2
                 element := (SByte) bData[ nOffset]
                 nOffset += 3
-            CASE FlexArrayTypes.CHar2
+            CASE FlexArrayTypes.Char2
                 element := (BYTE) bData[ nOffset]
                 nOffset += 3
             CASE FlexArrayTypes.Short2

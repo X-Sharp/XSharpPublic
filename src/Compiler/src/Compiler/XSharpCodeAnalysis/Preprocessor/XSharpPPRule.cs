@@ -2291,6 +2291,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
+                                if (tokens[start].Type == XSharpLexer.LBRKT &&
+                                                tokens[end].Type == XSharpLexer.RBRKT)
+                                {
+                                    start += 1;
+                                    end -= 1;
+                                }
                                 var nt = joinTokensToString(tokens, start, end);
                                 result.Add(nt);
                             }

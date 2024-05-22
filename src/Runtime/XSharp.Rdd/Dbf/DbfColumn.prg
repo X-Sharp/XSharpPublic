@@ -919,7 +919,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         INTERNAL METHOD _julianToDateTime(julian AS LONG) AS System.DateTime
-            var d := JulianToDateTime(julian)
+            var d := JulianToDate(julian)
             RETURN DateTime{d:Year, d:Month, d:Day}
         /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT

@@ -132,7 +132,7 @@ END STRUCTURE
 END NAMESPACE
 
 
-INTERNAL FUNCTION JulianToDateTime(julian AS LONG) AS DbDate
+INTERNAL FUNCTION JulianToDate(julian AS LONG) AS DbDate
     VAR jd := (REAL8) julian
     VAR z  := Math.Floor(jd + 0.5)
     VAR w  := Math.Floor( (z -1867216.25) / 36524.25)

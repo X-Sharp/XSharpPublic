@@ -944,7 +944,7 @@ INTERNAL CLASS FlexArea
         CASE FlexFieldType.LogicFalse
             RETURN FALSE
         CASE FlexFieldType.JDate
-            RETURN FALSE
+            return JulianToDate(BuffToLongFox(bData, 8))
         CASE FlexFieldType.SByte
             RETURN (SByte) bData[8]
         CASE FlexFieldType.Byte
@@ -1030,7 +1030,8 @@ INTERNAL CLASS FlexArea
                 element := BitConverter.ToDouble(bData, nOffset)
                 nOffset += 8
             CASE FlexArrayTypes.Date
-                element := BitConverter.ToInt32(bData, nOffset)
+            CASE FlexArrayTypes.DateJ
+                element := JulianToDate(BitConverter.ToInt32(bData, nOffset))
                 nOffset += 4
             CASE FlexArrayTypes.Logic
                 element := bData[nOffset] != 0
@@ -1041,11 +1042,6 @@ INTERNAL CLASS FlexArea
             CASE FlexArrayTypes.CodeBlock
                 element := NULL
                 SELF:_oRdd:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
-
-            CASE FlexArrayTypes.DateJ
-                element := BitConverter.ToInt32(bData, nOffset)
-                element := JulianToDateTime((LONG) element)
-                nOffset += 4
 
             CASE FlexArrayTypes.Double2
                 element := BitConverter.ToDouble(bData, nOffset)
@@ -1117,7 +1113,7 @@ INTERNAL CLASS FlexArea
             aValues[i] := element
         NEXT
         RETURN aValues
-   
+
     /// <summary>Encode a value into a FTP block</summary>
     /// <param name="oValue">The value to encode. Allowed are at this moment, String, Logic and byte[]</param>
     /// <returns>Byte array including the 8 byte header with the block length and type</returns>

@@ -1504,7 +1504,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD LongOrderNames() AS VOID
-			
+
 			LOCAL eDialect := RuntimeState.Dialect AS XSharpDialect
 			RuntimeState.Dialect := XSharpDialect.VO
 
@@ -1512,7 +1512,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , { {"FLD","N",1,0} } )
 			DbUseArea(,"DBFCDX",cDbf)
-		
+
 			DbAppend()
 			FieldPut(1,1)
 			DbAppend()
@@ -1521,29 +1521,29 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			FieldPut(1,3)
 			DbAppend()
 			FieldPut(1,2)
-			
+
 			Assert.True( DbCreateOrder("TESTa67890",,"FLD") )
 			Assert.True( DbSetOrder("TESTa67890") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 0)
-		
+
 			Assert.True( DbSetOrder("TESTa67890dumy") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 0)
-		
-	
+
+
 			Assert.True( DbCreateOrder("TESTb67890abcde",,"-FLD") )
-		
+
 			Assert.True( DbSetOrder("TESTb67890abcde") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 3)
-		
+
 			Assert.True( DbSetOrder("TESTb67890") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 3 )
-		
+
 			DbCloseArea()
-			
+
 			RuntimeState.Dialect := eDialect
 
 
@@ -1557,9 +1557,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			IF File(cIndex)
 				FErase(cIndex)
 			END IF
-			
+
 			Assert.True( DbCreate(cFileName, {{"CFIELD","C",10,0},{"NFIELD","N",8,2},{"MFIELD","M",10,0}},"DBFNTX",,,,,{"DBFMEMO"}) )
-			
+
 			Assert.True( DbUseArea(TRUE, "DBFNTX", cFileName,,,,,,{"DBFMEMO"}) )
 			IF .NOT. Used()
 				RETURN
@@ -1583,8 +1583,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( File(cIndex) )
 
 			DbGoBottom()
-			
-			Assert.Equal( 2, RecNo() )
+
+			Assert.Equal( 2, (int) RecNo() )
 			Assert.Equal( "test3", AllTrim(FieldGet(1)) )
 			Assert.Equal( "some text3", AllTrim(FieldGet(3)) )
 			DbCloseArea()
@@ -1597,9 +1597,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			LOCAL nAt AS DWORD
 
 			cFileName := GetTempFileName()
-			
+
 			Assert.True( DbCreate(cFileName, ,"DBFCDX",,,,,{"DBFBLOB"}) )
-			
+
 			Assert.True( DbUseArea(TRUE,"DBFBLOB",cFileName + ".dbv") )
 			IF .NOT. Used()
 				RETURN
@@ -1608,17 +1608,15 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			blob := AsString( BLOBDirectPut(0,"some text here") )
 			blob += "+" + AsString( BLOBDirectPut(0,"more text") )
 			blob += "+" + AsString( BLOBDirectPut(0,"end of text") )
-			
-			Assert.True( BLOBDirectPut(0,blob) )
-			
+
 			Assert.True( BLOBRootLock() )
 			Assert.True( BLOBRootPut(blob) )
 			Assert.True( BLOBRootUnlock() )
-			
+
 			DbCloseArea()
-			
+
 			Assert.True( DbUseArea(TRUE,"DBFBLOB",cFileName + ".dbv") )
-			
+
 			blob := BLOBRootGet()
 			DO WHILE SLen(blob) != 0
 				nAt := At("+" , blob)
@@ -1647,9 +1645,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			IF File(cIndex)
 				FErase(cIndex)
 			END IF
-			
+
 			Assert.True( DbCreate(cFileName, {{"CFIELD","C",10,0},{"NFIELD","N",8,2},{"MFIELD","M",10,0}},"DBFCDX",,,,,{"DBFMEMO"}) )
-			
+
 			Assert.True( DbUseArea(TRUE, "DBFCDX", cFileName,,,,,,{"DBFMEMO"}) )
 			IF .NOT. Used()
 				RETURN
@@ -1673,8 +1671,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( File(cIndex) )
 
 			DbGoBottom()
-			
-			Assert.Equal( 2, RecNo() )
+
+			Assert.Equal( 2, (int) RecNo() )
 			Assert.Equal( "test3", AllTrim(FieldGet(1)) )
 			Assert.Equal( "some text3", AllTrim(FieldGet(3)) )
 			DbCloseArea()

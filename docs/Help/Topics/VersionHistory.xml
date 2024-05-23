@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-23T14:56:31.286+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-23T18:21:51.271+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -27,6 +27,7 @@
       <li styleclass="Normal">Fixed problem with the memvar pragma option (#1454)</li>
       <li styleclass="Normal">Fixed a problem with the /xpp compiler option. (#1243, #1458)</li>
       <li styleclass="Normal">Fixed a problem with accessing Hidden class members in a method from the class where the member was defined, when the object involved was untyped.(#1335, #1457)</li>
+      <li styleclass="Normal">Fixed an internal compiler error with a line of code containing a single comma (#1462)</li>
       <li styleclass="Normal">Fixed a problem with the USE command when the filename was specified as a bracketed string (#1468)</li>
     </list>
     <para styleclass="Heading3">New Features</para>

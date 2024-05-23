@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:47:04.154+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-04-24T10:18:46.490+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FUNCTION Statement</title>
   <keywords>
     <keyword>Compiledeclaration</keyword>
@@ -69,9 +69,7 @@
     <para styleclass="Normal">You can call a function within an expression or as a program statement. &#160;If called as a program statement, the return value is ignored.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can also call a function as an aliased expression, as in:</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code Example">&lt;idAlias&gt;-&gt;&lt;idFunction&gt;([&lt;uArgList&gt;])</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">When you do this, the work area associated with &lt;<text styleclass="Italic">idAlias</text>&gt; is selected, the function is executed, and the original work area is reselected. &#160;You can specify an aliased expression as a program statement, as you would any other expression.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">A function can call itself recursively. &#160;This means you can refer to a function in its own &lt;<text styleclass="Italic">FunctionBody</text>&gt;.</para>

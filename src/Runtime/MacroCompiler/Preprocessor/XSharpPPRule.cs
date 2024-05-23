@@ -41,7 +41,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
-        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand || _type == PPUDCType.YCommand; 
+        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand || _type == PPUDCType.YCommand;
 
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
@@ -53,7 +53,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         _type = PPUDCType.Command;
                     else if (udc.Text.ToLower() == "#xcommand")
                         _type = PPUDCType.XCommand;
-                    else 
+                    else
                         _type = PPUDCType.YCommand;
                     break;
                 case XSharpLexer.PP_TRANSLATE:
@@ -1133,7 +1133,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 mode = StringComparison.Ordinal;    // case sensitive
             }
-            if (lhs?.Length <= 4 && !(type== PPUDCType.YCommand || type == PPUDCType.YTranslate))
+            if (lhs?.Length <= 4 && (type != PPUDCType.YCommand && type != PPUDCType.YTranslate))
             {
                 return string.Equals(lhs, rhs, mode);
             }
@@ -1308,7 +1308,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             int iMatch = 0;
             int iCurrent = iSource;
             int iEnd;
-            for (var iChild = 0; iChild <= iLast; iChild++)
+            for (var iChild = 0; iChild <= iLast && iCurrent < tokens.Count; iChild++)
             {
                 var tokenFromUDC = mToken.Tokens[iChild];
                 lastToken = tokenFromUDC;
@@ -1372,7 +1372,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             }
                             iCurrent++;
                         }
-                        iEnd = iCurrent-1;
+                        iEnd = iCurrent - 1;
                     }
                     else
                     {
@@ -1586,7 +1586,9 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         int trimHiddenTokens(IList<XSharpToken> tokens, int start, int end)
         {
-            while (tokens[end].Channel == Channel.Hidden && start < end)
+            if (end > tokens.Count - 1)
+                end = tokens.Count - 1;
+            while (start < end && tokens[end].Channel == Channel.Hidden )
             {
                 end--;
             }
@@ -1870,7 +1872,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         }
                         else
                         {
-                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo,0, false);
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo, 0, false);
                             result.AddRange(block);
                         }
                     }
@@ -2136,7 +2138,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 return false;
             }
-            end = current-1;
+            end = current - 1;
             bool expectName = true;
             XSharpToken last = tokens[current - 1];
             while (current < tokens.Count)

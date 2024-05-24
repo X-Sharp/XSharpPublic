@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-cs</title>
+  <keywords>
+    <keyword>-cs</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-cs</para>
+    </header>
+    <para styleclass="Normal">The -cs option directs the compiler to treat all identifiers and type names as case-sensitive.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-cs[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">+|-<tab />Specifying +, or just -cs, directs the compiler to treat all type names as case-sensitive. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">This option is for those users who prefer a case-sensitive language. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This option can also affect case sensitivity of preprocessor symbols, depending on the state of the -vo8 compiler option; if -vo8 is enabled, then -cs controls if also preprocessor symbols are treated as case-sensitive; if -vo8 is disabled, then preprocessor symbols are always case-sensitive and the state of -cs does not affect this behavior of the preprocessor. See the topic about <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">-vo8</link> for more information.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This option also does not affect keywords. Keywords in X# are always case-insensitive.</para>
+    <para styleclass="Heading3">Note</para>
+    <para styleclass="Normal">If you run the shared compiler you have to pass the -cs compiler option through the commandline and not through a response file.</para>
+    <para styleclass="Normal">And when you mix case sensitive and not case sensitive projects then there will be 2 shared compiler processes running, one in case sensitive mode and the other in case insensitive mode.</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the General section, modify the Case Sensitive Type Names property in the General. </li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    </list>
+  </body>
+</topic>

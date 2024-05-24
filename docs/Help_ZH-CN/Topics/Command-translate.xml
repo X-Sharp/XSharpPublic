@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>command-translate</title>
+  <keywords>
+    <keyword>=&gt;</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">command-translate</para>
+    </header>
+    <para styleclass="Heading2"> Arguments</para>
+    <para styleclass="Normal"><text styleclass="Code Example">&lt;matchPattern&gt;</text> is the pattern the input text should match.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Code Example">&lt;resultPattern&gt;</text> is the text produced if a portion of input text matches the &lt;matchPattern&gt;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The =&gt; symbol between &lt;matchPattern&gt; and &lt;resultPattern&gt; is, along with #command or #translate, a literal part of the syntax that must be specified in a #command or #translate directive. &#160;The symbol consists of an equal sign followed by a greater than symbol with no intervening spaces. &#160;Do not confuse the symbol with the &gt;= or the &lt;= comparison operators in the xBase language.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">Description</text></para>
+    <para styleclass="Normal">#command and #translate are translation directives that define commands and pseudofunctions. &#160;Each directive specifies a translation rule. &#160;The rule consists of two portions: &#160;a match pattern and a result pattern.</para>
+    <para styleclass="Normal">The match pattern matches a command specified in the program (.prg) file and saves portions of the command text (usually command arguments) for the result pattern to use. &#160;The result pattern then defines what will be written to the result text and how it will be written using the saved portions of the matching input text.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">#command and #translate are similar, but differ in the circumstance under which their match patterns match input text. &#160;A #command directive matches only if the input text is a complete statement, while #translate matches input text that is not a complete statement. &#160;#command defines a complete command and #translate defines clauses and pseudofunctions that may not form a complete statement. &#160;In general, use #command for most definitions and #translate for special cases.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">#command and #translate are similar to but more powerful than the #define directive. &#160;#define, generally, defines identifiers that control conditional compilation and manifest constants for commonly used constant values such as SDK codes. &#160;Refer to any of the header files in the INCLUDE directory for examples of manifest constants defined using #define.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">#command and #translate directives have the same scope as the #define directive. &#160;The definition is valid only for the current program (.prg) file unless defined in Std.ch or the header specified with the /U option on the compiler command line. &#160;If defined elsewhere, the definition is valid from the line where it is specified to the end of the program file. &#160;Unlike #define, a #translate or #command definition cannot be explicitly undefined. &#160;The #undef directive has no effect on a #command or #translate definition.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">As the preprocessor encounters each source line preprocessor, it scans for definitions in the following order of precedence: #define, #translate, and #command. &#160;When there is a match, the substitution is made to the result text and the entire line is reprocessed until there are no matches for any of the three types of definitions. &#160;#command and #translate rules are processed in stack-order (i.e., last in-first &#160;out, with the most recently specified rule processed first).</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In general, a command definition provides a way to specify an English language statement that is, in fact, a complicated expression or function call, thereby improving the readability of source code. &#160;You can use a command in place of an expression or function call to impose order of keywords, required arguments, combinations of arguments that must be specified together, and mutually exclusive &#160;arguments at compile time rather than at runtime. &#160;This can be important since procedures and user-defined functions can now be called with any number of arguments, forcing any argument checking to occur at runtime. &#160;With command definitions, the preprocessor handles some of this.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">Because directives are processed in stack order, when defining more than one rule for a command, place the most general case first, followed by the more specific ones. This ensures that the proper rule will match the command specified in the program (.prg) file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">Match Markers</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp_Match-Markers">See the topic about Match Markers for a detailed discussion</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">Result Markers</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">See the topic about Result Markers for a detailed discussion</link></para>
+    <para styleclass="Heading2"> Notes</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">Less than operator</text>: If you specify the less than operator (&lt;) in the &lt;resultPattern&gt; expression, you must precede it with the escape character (\).</li>
+      <li styleclass="Normal"><text style="font-weight:bold;">Multistatement lines</text>: You can specify more than one statement as a part of the result pattern by separating each statement with a semicolon. &#160;If you specify adjacent statements on two separate lines, the first statement must be followed by two semicolons.</li>
+    </list>
+  </body>
+</topic>

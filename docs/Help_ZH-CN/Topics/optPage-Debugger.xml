@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-05-19T14:23:56.140+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Debugger</title>
+  <keywords>
+    <keyword>breakpoint</keyword>
+    <keyword>breakpoint conditions</keyword>
+    <keyword>Debugger</keyword>
+    <keyword>debugger expression evaluator</keyword>
+    <keyword>Expression evaluator</keyword>
+    <keyword>intermediate window</keyword>
+    <keyword>late binding</keyword>
+    <keyword>watch window</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Debugger</para>
+    </header>
+    <para styleclass="Normal">The debugger inside Visual Studio is language agnostic. We have added support for our X# language, so you will see variables in the locals and autos windows with X# specific types and so you can enter expressions for breakpoint conditions, in the watch window and in the intermediate window in X# (case insensitive for example).</para>
+    <para styleclass="Normal">Behind the debugger expression evaluator (that&apos;s how this is called) is the complete X# compiler.</para>
+    <para styleclass="Normal">We have added an options page to Visual Studio from where you can control how the X# debugger Expression evaluator parses and compiles expressions.</para>
+    <para styleclass="Normal">Normally the debugger works with the settings from the main application. </para>
+    <para styleclass="Normal">However, when the startup application is not a X# application then the settings from this dialog are used.</para>
+    <para styleclass="Normal">The first 2 options work always.</para>
+    <para styleclass="Normal">When your application uses late binding and you see problems with late binding in the debugger, then you can disable late binding from this dialog.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Debugger.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

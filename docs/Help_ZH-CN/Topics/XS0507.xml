@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0507</title>
+  <keywords>
+    <keyword>XS0507</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0507</para>
+    </header>
+    <para styleclass="Normal">&apos;function1&apos; : cannot change access modifiers when overriding &apos;access&apos; inherited member &apos;function2&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An attempt was made to change the access specification in a method override.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0507.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0507.prg  <br/> </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">XS0507 can also occur if a class attempts to override a method marked as <text styleclass="Code Example">protected internal</text> defined in referenced metadata. In this situation, the overriding method should be marked as <text styleclass="Code Example">protected</text>.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0507_b.prg  <br/>// compile with: /target:library  <br/>  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0507.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0507_c.prg  <br/>// compile with: /reference:XS0507_b.dll  <br/>public class cly : clx  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

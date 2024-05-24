@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0545</title>
+  <keywords>
+    <keyword>XS0545</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0545</para>
+    </header>
+    <para styleclass="Normal">&apos;function&apos; : cannot override because &apos;property&apos; does not have an overridable get accessor</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A try was made to define an override for a property accessor when the base class has no such definition to override. You can resolve this error by:</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Adding a set accessor in the base class.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Removing the set accessor from the derived class.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Hiding the base class property by adding the new keyword to a property in a derived class.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Making the base class property virtual.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information, see Using Properties.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0545.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0545.prg  <br/>// compile with: /target:library  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

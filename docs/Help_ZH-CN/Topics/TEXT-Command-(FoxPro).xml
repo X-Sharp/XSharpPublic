@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT Command (FoxPro)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">TEXT Command (FoxPro)</para>
+    </header>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ADDITIVE</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXTMERGE</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOSHOW</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FLAGS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nValue] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRETEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> eExpression]]</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; TextLines</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TextLines <tab /><text styleclass="Normal">Specifies text to send to the current output device. TextLines can consist of text, memory variables, array elements, expressions, functions, or any combination of these.</text><br/><text styleclass="Normal">Note</text><br/><text styleclass="Normal">X# evaluates expressions, functions, memory variables, and array elements specified with TextLines only if you set SET TEXTMERGE to ON and enclose them with the delimiters specified by SET TEXTMERGE DELIMITERS. If SET TEXTMERGE is OFF, Visual FoxPro outputs expressions, functions, memory variables, and array elements as string literals along with their delimiters.</text><br/><br/><text styleclass="Normal">For example, X# evaluates and outputs the current date when you specify the DATE( ) function as TextLines only if SET TEXTMERGE is ON, and TextLines contains the function and the appropriate delimiters, such as &lt;&lt;DATE( )&gt;&gt;. If SET TEXTMERGE is OFF, X#outputs &lt;&lt;DATE( )&gt;&gt; as a string literal.</text><br/></para>
+    <para styleclass="List"><tab />If you place comments within TEXT...ENDTEXT or after the single backslash character (\) or double backslash characters (\\), <text styleclass="Normal">X#</text> outputs the comments. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">TO &lt;VariableName&gt;<tab />Specifies the memory variable name to use for passing the contents of the TEXT...ENDTEXT. This variable can already exist. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />If the variable has not yet been declared, X# automatically creates it as a private variable. The TO clause operates regardless of how SET TEXTMERGE is set. If SET TEXTMERGE is set to a file, and the TO statement is included, Visual FoxPro outputs both the file and variable. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ADDITIVE <tab /><text styleclass="Normal">Determines whether the contents of the TO variable are overwritten or added to existing contents. </text><br/><br/><text styleclass="Normal">If the contents of TO &#160;VarName is not a string, X# always overwrites the contents in VarName.</text></para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">TEXTMERGE <tab /><text styleclass="Normal">Enables evaluation of contents surrounded by delimiters without setting SET TEXTMERGE to ON.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">NOSHOW <tab /><text styleclass="Normal">Disables display of the text merge to the screen.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">FLAGS nValue<tab /><text styleclass="Normal">Specifies a numerical value that determines if output is suppressed to an output file, or if blank lines preceding any text are included in the output.</text></para>
+    <para styleclass="List"><table rowcount="1" colcount="1" style="width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:#ccffff;">
+      <tr style="vertical-align:top">
+        <td style="width:1051px;">
+          <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
+            <tr style="vertical-align:top">
+              <td style="width:130px;">
+                <para styleclass="Normal">Value (additive)</para>
+              </td>
+              <td style="width:899px;">
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td style="width:130px;">
+                <para styleclass="Normal">1</para>
+              </td>
+              <td style="width:899px;">
+                <para styleclass="Normal"> Suppresses output to the file specified with the _TEXT System Variable.</para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td style="width:130px;">
+                <para styleclass="Normal">2</para>
+              </td>
+              <td style="width:899px;">
+                <para styleclass="Normal"> When the NOSHOW clause is included, preserves blank lines preceding text that appears within TEXT...ENDTEXT. Setting nValue to 2 will separate current TEXT...ENDTEXT output from previous TEXT...ENDTEXT output with a line feed.</para>
+                <para styleclass="Normal"></para>
+                <para styleclass="Normal">Combining an nValue setting of 2 and PRETEXT of 4 will separate current TEXT…ENDTEXT output from previous TEXT…ENDTEXT output with a line feed while removing empty lines in the TEXT...ENDTEXT output. </para>
+              </td>
+            </tr>
+          </table></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">PRETEXT eExpression<tab />Specifies a character string to insert before each line of the text merge contents between TEXT...ENDTEXT or a numeric expression. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><tab />The following table describes behaviors of the PRETEXT clause depending on the expression specified by eExpression. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text style="font-weight:bold;">eExpression</text><tab /><text style="font-weight:bold;">PRETEXT behavior &#160;</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Character expression<tab /><text styleclass="Normal"> Insert the expression before each line of the text merge contents appearing between the TEXT...ENDTEXT statement. When using PRETEXT with TEXT...ENDTEXT, eExpression is limited to a maximum length of 255 characters.</text></para>
+    <para styleclass="List"><tab /><br/><text styleclass="Normal">eExpression overrides the contents of the _PRETEXT system variable. When eExpression contains an expression that needs to be evaluated, for example, a user-defined function (UDF), Visual FoxPro evaluates it only once when the TEXT command first appears.</text></para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="List">Numeric expression<tab /> Specify additive flag values to determine behavior for the text merge contents appearing between the TEXT...ENDTEXT statement. </para>
+    <para styleclass="List"><br/><text styleclass="Normal">For example, a value of 7 specifies that Visual FoxPro eliminate all white space including spaces, tabs, and carriage returns. A value falling outside of the range of 0-15 produces an error.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><tab /><text styleclass="Normal" style="font-weight:bold;">Note</text></para>
+    <para styleclass="List"><tab />Specifying a value of zero does not eliminate white space.</para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="List"><tab />When eExpression is a numeric expression, you can use the _PRETEXT system variable to insert additional text after Visual FoxPro eliminates white space.<br/>The following table lists numeric additive flags that you can use in eExpression to specify additional behavior. </para>
+    <para styleclass="List"><table rowcount="1" colcount="1" style="width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:#ccffff;">
+      <tr style="vertical-align:top">
+        <td style="width:1245px;">
+          <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
+            <tr style="vertical-align:top">
+              <td style="width:118px;">
+                <para styleclass="Normal">Value (Additive) </para>
+              </td>
+              <td style="width:1089px;">
+                <para styleclass="Normal"> Description &#160;</para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td style="width:118px;">
+                <para styleclass="Normal">1</para>
+              </td>
+              <td style="width:1089px;">
+                <para styleclass="Normal"> Eliminate spaces before each line.</para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td style="width:118px;">
+                <para styleclass="Normal">2</para>
+              </td>
+              <td style="width:1089px;">
+                <para styleclass="Normal"> Eliminate tabs before each line</para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td style="width:118px;">
+                <para styleclass="Normal">4</para>
+              </td>
+              <td style="width:1089px;">
+                <para styleclass="Normal"> Eliminate carriage returns, for example, blank lines, before each line.</para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td style="width:118px;">
+                <para styleclass="Normal">8</para>
+              </td>
+              <td style="width:1089px;">
+                <para styleclass="Normal"> Eliminate line feeds.</para>
+              </td>
+            </tr>
+          </table></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="List"><tab />Note &#160;<br/><text styleclass="Normal">Unlike the _PRETEXT system variable, the PRETEXT clause does not have global scope and applies only to the TEXT...ENDTEXT statement in which it appears. </text><br/><br/><text styleclass="Normal">Characters removed using the PRETEXT clause apply only to text within the TEXT...ENDTEXT statement and not to evaluated text merged from cExpression. In the following example, the spaces in the memory variable, myvar, are not removed when merged with the text in TEXT...ENDTEXT: </text></para>
+    <para styleclass="List"><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">myvar = &quot; &#160; AAA&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">TEXT </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> x NOSHOW </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ADDITIVE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> TEXTMERGE PRETEXT 7</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">Start Line</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&lt;&lt;myvar&gt;&gt;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;BBB</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; CCC</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">ENDTEXT </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">By default, TEXT ... ENDTEXT sends output to the terminal window. To suppress output to the terminal window, issue SET CONSOLE OFF. To send output to a printer or a text file, use SET PRINTER. To send output from TEXT ... ENDTEXT to a low-level file that you created or opened using FCREATE( ) or FOPEN( ), store the file handle returned by FCREATE( ) or FOPEN( ) to the _TEXT system variable, which you can use to direct output to the corresponding low-level file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The text merge process usually includes any white space that might appear before each line in a TEXT...ENDTEXT statement. However, the inclusion of white space might cause the text merge to fail, for example, when XML is used in a Web browser. You must remove such white space to avoid incorrectly formatted XML.</para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Normal">Nesting TEXT...ENDTEXT statements is not recommended, especially if using the PRETEXT clause because the nested statements can affect the format of the outer statements.</para>
+    <para styleclass="Heading1">Example 1 </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example demonstrates creating a low-level file called myNamesFile.txt and storing its file handle in the _TEXT system variable. The program exits if the myNamesFile.txt file cannot be created. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The code opens the customer table and outputs the names of the first ten contacts to CotactList.txt. </para>
+    <para styleclass="Normal">The code outputs the text and results of the functions to the text file. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__TextMerge-Example" inline="false"/><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Heading1">Example 2 </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example shows a custom procedure that uses TEXT...ENDTEXT to store an XML DataSet to a variable. In the example, all spaces, tabs, and carriage returns are eliminated.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myProcedure</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DO</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nValue = 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myVar </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOSHOW</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRETEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 7</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;DataSet xmlns=&quot;http://tempuri.org&quot;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;&lt;ALLTRIM(STRCONV(leRetVal.item(0).xml,9))&gt;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;/DataSet&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OTHERWISE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDCASE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDPROC</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal">FOPEN( ) Function</para>
+    <para styleclass="Normal">_PRETEXT System Variable</para>
+    <para styleclass="Normal">SET TEXTMERGE Command</para>
+    <para styleclass="Normal">SET TEXTMERGE DELIMITERS Command</para>
+    <para styleclass="Normal">_TEXT System Variable</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text directive</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext directive</link></para>
+  </body>
+</topic>

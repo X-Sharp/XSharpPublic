@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FoxPro</title>
+  <keywords>
+    <keyword>&amp;&amp;</keyword>
+    <keyword>&apos;@&apos;</keyword>
+    <keyword>\\</keyword>
+    <keyword>_ACCESS</keyword>
+    <keyword>_ASSIGN</keyword>
+    <keyword>4 letter abbreviations</keyword>
+    <keyword>DBFVFP</keyword>
+    <keyword>DEFINE CLASS</keyword>
+    <keyword>DIMENSION</keyword>
+    <keyword>ENDFOR</keyword>
+    <keyword>FOR EACH</keyword>
+    <keyword>FoxPro</keyword>
+    <keyword>LPARAMETERS</keyword>
+    <keyword>TEXT</keyword>
+    <keyword>THIS</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FoxPro</para>
+    </header>
+    <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;</para>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;FoxPro&quot; dialect.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows 4 letter abbreviations of some older keywords</li>
+    </list>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows &quot;&amp;&amp;&quot; as same line comment characters, just like &quot;//&quot;</li>
+    </list>
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows the DOT (&apos;.&apos;) operator to call Instance methods</li>
+    </list>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The &apos;@&apos; operator is only used to pass variables by reference.</li>
+    </list>
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows ENDFOR instead of NEXT and FOR EACH instead of FOREACH</li>
+    </list>
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The &apos;=&apos; operator will NOT generate a warning when used as assignment operator</li>
+    </list>
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Adds several keywords such as THIS (as alias for SELF)</li>
+      <li styleclass="Normal">Adds support for CursorName.FieldName syntax</li>
+      <li styleclass="Normal">Adds support for M.VariableName syntax</li>
+      <li styleclass="Normal">Adds the DIMENSION statement syntax</li>
+      <li styleclass="Normal">Adds the LPARAMETERS statement</li>
+      <li styleclass="Normal">Adds the TEXT .. ENDTEXT statement</li>
+      <li styleclass="Normal">Adds the \\ and \\\ statement</li>
+      <li styleclass="Normal">Adds the &quot;= &lt;Expression&gt;&quot; command</li>
+      <li styleclass="Normal">Adds the FoxPro specific DEFINE CLASS syntax to define classes, including the use of FUNCTION and PROCEDURE to define methods inside a class and the use of the _ACCESS and _ASSIGN suffixes on the names of these functions and procedures to declare access/assign methods</li>
+      <li styleclass="Normal">Procedures may return values and are therefore just like Functions</li>
+    </list>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows code before the first entity in a source file. This will be compiled into a function with the same name as the PRG file</li>
+      <li styleclass="Normal">Adds support for the DoDefault() pseudo function</li>
+      <li styleclass="Normal">When compiled with /fox1 then the compiler assumes that all classes inherit from the Custom class and will generate special code when declaring classes with the DEFINE CLASS syntax. </li>
+      <li styleclass="Normal">The NIL keyword in FoxPro has the property &apos;unitialized&apos; but a value of FALSE.</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The default RDD in the FoxPro dialect is DBFVFP</li>
+      <li styleclass="Normal">The MemoWrit() function adds an extra ^Z character to the end of file. MemoRead() removes this character when it finds it.</li>
+      <li styleclass="Normal">The DBF() function returns the full name of the file</li>
+      <li styleclass="Normal">The _MRelease() function does not clear the memory variables but completely releases them</li>
+      <li styleclass="Normal">New memory variables are always filled with a value of FALSE</li>
+      <li styleclass="Normal">When comparing an initialized USUAL value with an unitialized value then in the FoxPro dialect an error will be generated. <br/>The other dialects will simply return FALSE.</li>
+    </list>
+  </body>
+</topic>

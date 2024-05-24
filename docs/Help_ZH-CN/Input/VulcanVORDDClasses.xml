@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanVORDDClasses</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan.VO.DbFileSpec"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DbFileSpec</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.DbFileSpec.Copy(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.CopyTo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.Create(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.DBFAttr"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.DBFDateChanged"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.DBFName"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.DBFSGetInfo(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.DBFSize"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.DBFTime"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.DbStruct"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.Delete"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.Delim"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.FCount"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.Fields"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.FileName"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.Find"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.ForBlock"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.FullPath"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.HeaderSize"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.HidRDDs"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.IndexNames"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.IsAnsi"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.LastUpDate"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemAttr"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemBlockSize"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemDateChanged"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemFileExt"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemFileName"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemFullPath"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemName"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemSize"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.MemTime"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.Move(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.Orders"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.RDD_Name"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.RDD_Version"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.RDDs"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.RecCount"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.Recno"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.Records"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.RecSize"></member>
+    <member name="M:Vulcan.VO.DbFileSpec.Rename(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.Rest"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.RLockCount"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.SDF"></member>
+    <member name="P:Vulcan.VO.DbFileSpec.WhileBlock"></member>
+    <member name="T:Vulcan.VO.DBSelectionIndex"></member>
+    <member name="M:Vulcan.VO.DBSelectionIndex.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DBSelectionIndex</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.DBSelectionIndex.Eval"></member>
+    <member name="T:Vulcan.VO.DbServer"></member>
+    <member name="M:Vulcan.VO.DbServer.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DbServer</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.DbServer.Alias"></member>
+    <member name="P:Vulcan.VO.DbServer.AliasSym"></member>
+    <member name="M:Vulcan.VO.DbServer.Append(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.AppendDB(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.AppendDelimited(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.AppendSDF(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Average(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBDirectExport(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBDirectGet(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBDirectImport(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBDirectPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBExport(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBGet(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBImport(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBRootGet"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBRootLock"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBRootPut(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.BLOBRootUnlock"></member>
+    <member name="P:Vulcan.VO.DbServer.BoF"></member>
+    <member name="M:Vulcan.VO.DbServer.ClearFilter"></member>
+    <member name="M:Vulcan.VO.DbServer.ClearIndex(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.ClearLocate"></member>
+    <member name="M:Vulcan.VO.DbServer.ClearOrderScope"></member>
+    <member name="M:Vulcan.VO.DbServer.ClearRelation"></member>
+    <member name="M:Vulcan.VO.DbServer.ClearScope"></member>
+    <member name="M:Vulcan.VO.DbServer.Close"></member>
+    <member name="M:Vulcan.VO.DbServer.Commit"></member>
+    <member name="P:Vulcan.VO.DbServer.ConcurrencyControl"></member>
+    <member name="M:Vulcan.VO.DbServer.ConstructUniqueAlias(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Continue"></member>
+    <member name="M:Vulcan.VO.DbServer.CopyDB(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.CopyDelimited(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.CopySDF(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.CopyStructure(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Count(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.CreateIndex(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.CreateOrder(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.DataField(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.DBStruct"></member>
+    <member name="P:Vulcan.VO.DbServer.DbStructure"></member>
+    <member name="M:Vulcan.VO.DbServer.Delete(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.DeleteAll"></member>
+    <member name="P:Vulcan.VO.DbServer.Deleted"></member>
+    <member name="M:Vulcan.VO.DbServer.DeleteOrder(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.Driver"></member>
+    <member name="P:Vulcan.VO.DbServer.EoF"></member>
+    <member name="P:Vulcan.VO.DbServer.ErrInfo"></member>
+    <member name="M:Vulcan.VO.DbServer.Error(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.ErrorInfo"></member>
+    <member name="M:Vulcan.VO.DbServer.Eval(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.FCount"></member>
+    <member name="P:Vulcan.VO.DbServer.FieldDesc"></member>
+    <member name="M:Vulcan.VO.DbServer.FIELDGET(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldGetFormatted(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldHyperLabel(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldName(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldPos(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FIELDPUT(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldSpec(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldStatus(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldSym(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.FieldValidate(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.FileSpec"></member>
+    <member name="P:Vulcan.VO.DbServer.Filter"></member>
+    <member name="M:Vulcan.VO.DbServer.FLOCK"></member>
+    <member name="P:Vulcan.VO.DbServer.ForBlock"></member>
+    <member name="P:Vulcan.VO.DbServer.Found"></member>
+    <member name="M:Vulcan.VO.DbServer.GetArray(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.GetLocate"></member>
+    <member name="M:Vulcan.VO.DbServer.GetLookupTable(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.GoBottom"></member>
+    <member name="M:Vulcan.VO.DbServer.GoTo(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.GoTop"></member>
+    <member name="P:Vulcan.VO.DbServer.Header"></member>
+    <member name="P:Vulcan.VO.DbServer.IndexExt"></member>
+    <member name="M:Vulcan.VO.DbServer.INDEXKEY(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.IndexList"></member>
+    <member name="M:Vulcan.VO.DbServer.INDEXORD"></member>
+    <member name="M:Vulcan.VO.DbServer.Info(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Join(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.LastRec"></member>
+    <member name="M:Vulcan.VO.DbServer.Locate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.LockCurrentRecord"></member>
+    <member name="M:Vulcan.VO.DbServer.LockSelection"></member>
+    <member name="P:Vulcan.VO.DbServer.Lupdate"></member>
+    <member name="P:Vulcan.VO.DbServer.MemoExt"></member>
+    <member name="P:Vulcan.VO.DbServer.Name"></member>
+    <member name="M:Vulcan.VO.DbServer.NoIVarGet(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.NoIVarPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Notify(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.OleExt"></member>
+    <member name="P:Vulcan.VO.DbServer.OrderBottomScope"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderDescend(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderIsUnique(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderKeyAdd(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderKeyCount(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderKeyDel(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderKeyGoTo(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderKeyNo(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.OrderKeyVal"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderScope(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.OrderSkipUnique(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.OrderTopScope"></member>
+    <member name="M:Vulcan.VO.DbServer.Pack"></member>
+    <member name="P:Vulcan.VO.DbServer.PaintedStructure"></member>
+    <member name="M:Vulcan.VO.DbServer.RDDINFO(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.RddName"></member>
+    <member name="P:Vulcan.VO.DbServer.Rdds"></member>
+    <member name="P:Vulcan.VO.DbServer.ReadOnly"></member>
+    <member name="M:Vulcan.VO.DbServer.Recall(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.RecallAll"></member>
+    <member name="P:Vulcan.VO.DbServer.RecCount"></member>
+    <member name="P:Vulcan.VO.DbServer.RecNo"></member>
+    <member name="M:Vulcan.VO.DbServer.RecordInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.RecSize"></member>
+    <member name="M:Vulcan.VO.DbServer.Refresh"></member>
+    <member name="M:Vulcan.VO.DbServer.Reindex"></member>
+    <member name="M:Vulcan.VO.DbServer.Relation(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.RelationChildren"></member>
+    <member name="M:Vulcan.VO.DbServer.Replace(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.ResetNotification"></member>
+    <member name="P:Vulcan.VO.DbServer.Retries"></member>
+    <member name="M:Vulcan.VO.DbServer.RLOCK(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.RLockList"></member>
+    <member name="M:Vulcan.VO.DbServer.RLockVerify"></member>
+    <member name="P:Vulcan.VO.DbServer.Scope"></member>
+    <member name="M:Vulcan.VO.DbServer.Seek(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SELECT"></member>
+    <member name="P:Vulcan.VO.DbServer.SelectionWorkArea"></member>
+    <member name="M:Vulcan.VO.DbServer.SetDataField(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SetFilter(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SetIndex(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SetOrder(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SetOrderCondition(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SetRelation(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SetSelectiveRelation(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.Shared"></member>
+    <member name="M:Vulcan.VO.DbServer.Skip(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Sort(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.Status"></member>
+    <member name="M:Vulcan.VO.DbServer.Sum(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.SuspendNotification"></member>
+    <member name="P:Vulcan.VO.DbServer.TableExt"></member>
+    <member name="M:Vulcan.VO.DbServer.Total(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.UnLock(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DbServer.Update(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DbServer.Used"></member>
+    <member name="P:Vulcan.VO.DbServer.WhileBlock"></member>
+    <member name="P:Vulcan.VO.DbServer.WorkArea"></member>
+    <member name="M:Vulcan.VO.DbServer.Zap"></member>
+    <member name="T:Vulcan.VO.OrderSpec"></member>
+    <member name="M:Vulcan.VO.OrderSpec.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.OrderSpec</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.OrderSpec.Add"></member>
+    <member name="P:Vulcan.VO.OrderSpec.All"></member>
+    <member name="P:Vulcan.VO.OrderSpec.AutoOpen"></member>
+    <member name="P:Vulcan.VO.OrderSpec.AutoOrder"></member>
+    <member name="P:Vulcan.VO.OrderSpec.AutoShare"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Current"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Custom"></member>
+    <member name="P:Vulcan.VO.OrderSpec.DBF"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Descend"></member>
+    <member name="P:Vulcan.VO.OrderSpec.EvalBlock"></member>
+    <member name="P:Vulcan.VO.OrderSpec.FileName"></member>
+    <member name="P:Vulcan.VO.OrderSpec.ForBlock"></member>
+    <member name="P:Vulcan.VO.OrderSpec.ForCond"></member>
+    <member name="P:Vulcan.VO.OrderSpec.HPLock"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Interval"></member>
+    <member name="P:Vulcan.VO.OrderSpec.IsCond"></member>
+    <member name="P:Vulcan.VO.OrderSpec.KeyInfo"></member>
+    <member name="P:Vulcan.VO.OrderSpec.LockOffSet"></member>
+    <member name="P:Vulcan.VO.OrderSpec.NoOptimize"></member>
+    <member name="M:Vulcan.VO.OrderSpec.OrderAdd(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.OrderSpec.OrderBlock"></member>
+    <member name="M:Vulcan.VO.OrderSpec.OrderCreate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.OrderSpec.OrderDelete(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.OrderSpec.OrderExpr"></member>
+    <member name="P:Vulcan.VO.OrderSpec.OrderName"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Recno"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Records"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Rest"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Start"></member>
+    <member name="P:Vulcan.VO.OrderSpec.StrictRead"></member>
+    <member name="P:Vulcan.VO.OrderSpec.Unique"></member>
+    <member name="P:Vulcan.VO.OrderSpec.WhileBlock"></member>
+    <member name="T:VulcanVORDDClasses.Functions">
+      <summary>This is the compiler generated class in which all functions are implemented as static methods.<br />
+				You do not need to use the classname in your code. <br />The compiler will automatically add a USING STATIC for this class so you can call the methods with a function sytax in your code, just like you would do in Visual Objects</summary>
+    </member>
+    <member name="M:VulcanVORDDClasses.Functions.DBFDebug(System.String,System.String,System.String,System.String)"></member>
+    <member name="M:VulcanVORDDClasses.Functions.DbGetDefaultLockMode"></member>
+    <member name="M:VulcanVORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)"></member>
+    <member name="M:VulcanVORDDClasses.Functions.DbSetRestoreWorkarea(Vulcan.__Usual)"></member>
+  </members>
+</doc>

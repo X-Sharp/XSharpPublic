@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PROPERTY Statement</title>
+  <keywords>
+    <keyword>Access() Methods</keyword>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables<keyword>accessing</keyword><keyword>assigning values</keyword><keyword>non-exported</keyword><keyword>virtual variables</keyword></keyword>
+    <keyword>Methods<keyword>accessing instance variables</keyword></keyword>
+    <keyword>PROPERTY statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>Strong typing<keyword>defined</keyword></keyword>
+    <keyword>Virtual variables</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PROPERTY Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">PROPERTY</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [&lt;<text styleclass="Italic">idConvention</text>&gt;]<br/><tab />[</para>
+    <para styleclass="Normal"> &#160;<tab /> AUTO [Attributes] [Modifiers] GET | SET | INIT</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;Expression&gt; ] &#160;[ [Attributes] [Modifiers] SET &lt;Expression&gt;] &#160; [ [Attributes] [Modifiers] INIT &lt;Expression&gt;] &#160;</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;Body &gt; END GET]</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET =&gt; &lt;Expression&gt;]</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ [Attributes] [Modifiers] &#160;SET &lt;Body &gt; END SET] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] SET =&gt; &lt;Expression&gt;]</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ [Attributes] [Modifiers] &#160;INIT &lt;Body &gt; END INIT] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] INIT =&gt; &lt;Expression&gt;]</para>
+    <para styleclass="Normal"><tab /> &#160;END PROPERTY</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic" style="font-style:normal;">idName</text>&gt;<tab />A valid identifier name for the property that you are defining. &#160;Like other methods, properties are entities. Property names must be unique within a class, but can share the same name as other entities in your application.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpression" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">There are 3 types of property declarations:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Single line declaration without AUTO clause</li>
+      <li styleclass="Normal">Single line declaration with GET / SET / INIT accessors</li>
+      <li styleclass="Normal">Multi line declaration with GET accessor block and/or SET/INIT accessor bock. For multi line declarations the END PROPERTY is mandatory</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">INIT accessor declare that a property can only be changed in the constructor of a class. A property cannot have both a SET and an INIT accessor.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

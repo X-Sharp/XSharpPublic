@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1701</title>
+  <keywords>
+    <keyword>XS1701</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1701</para>
+    </header>
+    <para styleclass="Normal">Assuming assembly reference &quot;Assembly Name #1&quot; matches &quot;Assembly Name #2&quot;, you may need to supply runtime policy</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The two assemblies differ in release and/or version number. For unification to occur, you must specify directives in the application&apos;s .config file, and you must provide the correct strong name of an assembly, as demonstrated in the following example code.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following multifile sample references an assembly using two different external aliases. This first sample builds the older version of the code that creates assembly XS1701_d.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1701_a.prg  <br/>// compile with: /target:library /out:XS1701_d.dll /keyfile:mykey.snk  <br/> </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This is the code that creates the newer version of assembly XS1701_d. Note that it compiles into a different directory than the older version, necessary since the output files have the same names.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1701_b.prg  <br/>// compile with: /target:library /out:c:\\XS1701_d.dll /keyfile:mykey.snk  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample sets up the external aliases A1 and A2.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1701_c.prg  <br/>// compile with: /target:library /reference:A2=c:\\XS1701_d.dll /reference:A1=XS1701_d.dll  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This sample calls methods using two different aliases of A. The following sample generates C1701.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1701_d.prg  <br/>// compile with: /reference:c:\\XS1701_d.dll /reference:XS1701_c.dll  <br/>// XS1701 expected  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

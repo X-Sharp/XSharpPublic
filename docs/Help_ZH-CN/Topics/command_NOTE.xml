@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Comments</title>
+  <keywords>
+    <keyword>&amp;&amp; characters</keyword>
+    <keyword>* character</keyword>
+    <keyword>/* characters</keyword>
+    <keyword>// characters</keyword>
+    <keyword>Adding<keyword>comments</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Comments<keyword>adding</keyword></keyword>
+    <keyword>NOTE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Comments</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">X# has many comment formats. </para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">/* &#160;this is a multiline <br/> &#160; &#160;comment */<br/>// this is a single line comment<br/>&amp;&amp; this is a single line comment. It may appear after other statements on a line<br/>* this is also a comment. the * must be the first non whitespace character on the line</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">X# has many different comment formats</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">These examples show the various comment symbols:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// This is a comment</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/* This is a comment */</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">* This is a comment</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">&amp;&amp; This is a comment</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

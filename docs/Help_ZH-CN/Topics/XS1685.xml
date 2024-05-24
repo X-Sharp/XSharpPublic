@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS1685</title>
+  <keywords>
+    <keyword>XS1685</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS1685</para>
+    </header>
+    <para styleclass="Normal">The predefined type &apos;System.type name&apos; is defined in multiple assemblies in the global alias; using definition from &apos;File Name&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when a predefined system type such as System.int32 is found in two assemblies. One way this can happen is if you are referencing mscorlib from two different places, such as trying to run the.Net Framework versions 1.0 and 1.1 side-by-side.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The compiler will use the definition from only one of the assemblies. The compiler searches only global aliases, does not search libraries defined <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">/reference</link>. If you have specified <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostdlib">/nostdlib</link>, the compiler will search for Object, and in the future start all searches for predefined types in the file where it found Object.</para>
+  </body>
+</topic>

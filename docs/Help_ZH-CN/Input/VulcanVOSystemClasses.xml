@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanVOSystemClasses</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan.VO.DataField">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.DataField.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DataField</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.DataField.AsString"></member>
+    <member name="P:Vulcan.VO.DataField.FieldSpec"></member>
+    <member name="P:Vulcan.VO.DataField.HyperLabel"></member>
+    <member name="P:Vulcan.VO.DataField.Name"></member>
+    <member name="P:Vulcan.VO.DataField.NameSym"></member>
+    <member name="T:Vulcan.VO.DataServer">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.DataServer.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DataServer</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.DataServer.Append"></member>
+    <member name="M:Vulcan.VO.DataServer.AsString"></member>
+    <member name="P:Vulcan.VO.DataServer.BoF"></member>
+    <member name="P:Vulcan.VO.DataServer.Clients"></member>
+    <member name="M:Vulcan.VO.DataServer.Close"></member>
+    <member name="M:Vulcan.VO.DataServer.Commit"></member>
+    <member name="P:Vulcan.VO.DataServer.ConcurrencyControl"></member>
+    <member name="M:Vulcan.VO.DataServer.DataField(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DataServer.DBStruct"></member>
+    <member name="M:Vulcan.VO.DataServer.Delete"></member>
+    <member name="P:Vulcan.VO.DataServer.EoF"></member>
+    <member name="P:Vulcan.VO.DataServer.FCount"></member>
+    <member name="M:Vulcan.VO.DataServer.FIELDGET(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldGetFormatted(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldHyperLabel(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldName(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldPos(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FIELDPUT(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldSpec(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldStatus(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldSym(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FieldValidate(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.FLOCK"></member>
+    <member name="M:Vulcan.VO.DataServer.GoBottom"></member>
+    <member name="M:Vulcan.VO.DataServer.GoTo(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.GoTop"></member>
+    <member name="P:Vulcan.VO.DataServer.HLStatus"></member>
+    <member name="P:Vulcan.VO.DataServer.HyperLabel"></member>
+    <member name="P:Vulcan.VO.DataServer.Name"></member>
+    <member name="P:Vulcan.VO.DataServer.NameSym"></member>
+    <member name="M:Vulcan.VO.DataServer.NoIVarGet(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.NoIVarPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.Notify(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.PostInit"></member>
+    <member name="M:Vulcan.VO.DataServer.PreInit"></member>
+    <member name="P:Vulcan.VO.DataServer.RecCount"></member>
+    <member name="P:Vulcan.VO.DataServer.RecNo"></member>
+    <member name="M:Vulcan.VO.DataServer.RegisterClient(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.ResetNotification"></member>
+    <member name="M:Vulcan.VO.DataServer.RLOCK(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.RLockVerify"></member>
+    <member name="M:Vulcan.VO.DataServer.Rollback"></member>
+    <member name="M:Vulcan.VO.DataServer.Seek(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.SetDataField(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.Skip(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.DataServer.Status"></member>
+    <member name="M:Vulcan.VO.DataServer.SuspendNotification"></member>
+    <member name="M:Vulcan.VO.DataServer.UnLock"></member>
+    <member name="M:Vulcan.VO.DataServer.UnRegisterClient(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.DataServer.Update"></member>
+    <member name="T:Vulcan.VO.DateFS">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.DateFS.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DateFS</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.DbError">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.DbError.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.DbError</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.DbError.Throw"></member>
+    <member name="T:Vulcan.VO.FieldSpec">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.FieldSpec.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.FieldSpec</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.FieldSpec.AsString"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Decimals"></member>
+    <member name="P:Vulcan.VO.FieldSpec.HyperLabel"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Length"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Maximum"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Minimum"></member>
+    <member name="P:Vulcan.VO.FieldSpec.MinLength"></member>
+    <member name="P:Vulcan.VO.FieldSpec.MinLengthHL"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Nullable"></member>
+    <member name="M:Vulcan.VO.FieldSpec.PerformValidations(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Picture"></member>
+    <member name="P:Vulcan.VO.FieldSpec.RangeHL"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Required"></member>
+    <member name="P:Vulcan.VO.FieldSpec.RequiredHL"></member>
+    <member name="M:Vulcan.VO.FieldSpec.SetLength(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.FieldSpec.SetMinLength(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.FieldSpec.SetRange(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.FieldSpec.SetRequired(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.FieldSpec.SetType(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.FieldSpec.SetValidation(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Status"></member>
+    <member name="M:Vulcan.VO.FieldSpec.Transform(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FieldSpec.UsualType"></member>
+    <member name="M:Vulcan.VO.FieldSpec.Val(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.FieldSpec.Validate(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FieldSpec.Validation"></member>
+    <member name="P:Vulcan.VO.FieldSpec.ValidationHL"></member>
+    <member name="P:Vulcan.VO.FieldSpec.ValType"></member>
+    <member name="T:Vulcan.VO.FileSpec">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.FileSpec.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.FileSpec</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.FileSpec.AppendToPath(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FileSpec.Attributes"></member>
+    <member name="M:Vulcan.VO.FileSpec.Copy(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FileSpec.DateChanged"></member>
+    <member name="M:Vulcan.VO.FileSpec.Delete"></member>
+    <member name="P:Vulcan.VO.FileSpec.Drive"></member>
+    <member name="P:Vulcan.VO.FileSpec.ErrInfo"></member>
+    <member name="M:Vulcan.VO.FileSpec.Error(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FileSpec.Extension"></member>
+    <member name="P:Vulcan.VO.FileSpec.FileName"></member>
+    <member name="M:Vulcan.VO.FileSpec.Find"></member>
+    <member name="P:Vulcan.VO.FileSpec.FullPath"></member>
+    <member name="M:Vulcan.VO.FileSpec.Move(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FileSpec.Path"></member>
+    <member name="M:Vulcan.VO.FileSpec.PathUp"></member>
+    <member name="M:Vulcan.VO.FileSpec.Rename(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.FileSpec.Size"></member>
+    <member name="P:Vulcan.VO.FileSpec.TimeChanged"></member>
+    <member name="T:Vulcan.VO.FSError">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.FSError.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.FSError</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.HLError">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.HLError.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.HLError</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.HyperLabel">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.HyperLabel.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.HyperLabel</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.HyperLabel.AsString"></member>
+    <member name="P:Vulcan.VO.HyperLabel.Caption"></member>
+    <member name="P:Vulcan.VO.HyperLabel.Description"></member>
+    <member name="M:Vulcan.VO.HyperLabel.Error(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.HyperLabel.HelpContext"></member>
+    <member name="P:Vulcan.VO.HyperLabel.Name"></member>
+    <member name="P:Vulcan.VO.HyperLabel.NameSym"></member>
+    <member name="T:Vulcan.VO.IntegerFS">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.IntegerFS.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.IntegerFS</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.LogicFS">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.LogicFS.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.LogicFS</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.MoneyFS">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.MoneyFS.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.MoneyFS</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.NumberFS">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.NumberFS.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.NumberFS</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="T:Vulcan.VO.ObjCodeBlock">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.ObjCodeBlock.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.ObjCodeBlock</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.ObjCodeBlock.Eval(Vulcan.__Usual)"></member>
+    <member name="T:Vulcan.VO.StringFS">
+      <summary></summary>
+    </member>
+    <member name="M:Vulcan.VO.StringFS.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.StringFS</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+  </members>
+</doc>

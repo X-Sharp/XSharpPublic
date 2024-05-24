@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8711</title>
+<keywords>
+<keyword>XS8711</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8711</para>
+  </header>
+  <para styleclass="Normal">Type '{0}' cannot be embedded because it has a non-abstract member. Consider setting the 'Embed Interop Types' property to false.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

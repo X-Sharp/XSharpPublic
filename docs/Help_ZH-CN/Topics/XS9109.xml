@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-05-29T10:19:10.190+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9109</title>
+  <keywords>
+    <keyword>@</keyword>
+    <keyword>OUT</keyword>
+    <keyword>REF</keyword>
+    <keyword>XS9109</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">XS9109</para>
+    </header>
+    <para styleclass="Body Text">Argument &apos;arg&apos; may not be passed with the &apos;@&apos; prefix</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">You may not pass an argument with a @ prefix to a method or function that does not expect a REF or OUT parameter.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">This may happen in code like this</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> n </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">n := 123</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">test(@n)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? n</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> test(u </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? u</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">u := 345</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">If you really want to pass the address of the USUAL to the TEST function then you have to assign the address to a local variable first:</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> n </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> p </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">n := 123</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">p := @n &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// assign address to local of type ptr</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">test(p) &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// pass the pointer</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? n</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> test(u </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? u</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">u := 345</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+  </body>
+</topic>

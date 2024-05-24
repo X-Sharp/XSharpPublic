@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanVOSQLClasses</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan.VO.SQLCatalogQuery"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.#ctor(Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLCatalogQuery</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.SQLCatalogQuery.CursorName"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.Delete"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.Execute"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.FIELDPUT"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.GoTop"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.Prepare"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.Skip(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLCatalogQuery.Update"></member>
+    <member name="T:Vulcan.VO.SQLColumn"></member>
+    <member name="M:Vulcan.VO.SQLColumn.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLColumn.AliasName"></member>
+    <member name="F:Vulcan.VO.SQLColumn.ColName"></member>
+    <member name="F:Vulcan.VO.SQLColumn.DisplaySize"></member>
+    <member name="F:Vulcan.VO.SQLColumn.Index"></member>
+    <member name="F:Vulcan.VO.SQLColumn.Length"></member>
+    <member name="T:Vulcan.VO.SQLColumnAttributes"></member>
+    <member name="M:Vulcan.VO.SQLColumnAttributes.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLColumnAttributes</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLColumnAttributes.AutoIncrement"></member>
+    <member name="F:Vulcan.VO.SQLColumnAttributes.CaseSensitive"></member>
+    <member name="F:Vulcan.VO.SQLColumnAttributes.Money"></member>
+    <member name="F:Vulcan.VO.SQLColumnAttributes.Searchable"></member>
+    <member name="F:Vulcan.VO.SQLColumnAttributes.Unsigned"></member>
+    <member name="F:Vulcan.VO.SQLColumnAttributes.Updatable"></member>
+    <member name="T:Vulcan.VO.SQLConnection"></member>
+    <member name="M:Vulcan.VO.SQLConnection.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLConnection</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.SQLConnection.AccessMode"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ActiveStmts"></member>
+    <member name="M:Vulcan.VO.SQLConnection.BeginTransaction"></member>
+    <member name="M:Vulcan.VO.SQLConnection.Commit"></member>
+    <member name="M:Vulcan.VO.SQLConnection.Connect(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLConnection.Connected"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ConnectString"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ConnHandle"></member>
+    <member name="P:Vulcan.VO.SQLConnection.DataSource"></member>
+    <member name="M:Vulcan.VO.SQLConnection.Disconnect"></member>
+    <member name="M:Vulcan.VO.SQLConnection.DriverConnect(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLConnection.EndTransaction"></member>
+    <member name="P:Vulcan.VO.SQLConnection.EnvHandle"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ErrInfo"></member>
+    <member name="M:Vulcan.VO.SQLConnection.GetConnectOption(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLConnection.HyperLabel"></member>
+    <member name="P:Vulcan.VO.SQLConnection.IdentifierQuoteChar"></member>
+    <member name="M:Vulcan.VO.SQLConnection.Info(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLConnection.isFunction(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLConnection.IsolationOption"></member>
+    <member name="F:Vulcan.VO.SQLConnection.lSelect4Update"></member>
+    <member name="F:Vulcan.VO.SQLConnection.lUseSingleConnection"></member>
+    <member name="F:Vulcan.VO.SQLConnection.nActiveStmts"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ODBCCursors"></member>
+    <member name="P:Vulcan.VO.SQLConnection.Password"></member>
+    <member name="P:Vulcan.VO.SQLConnection.PositionOps"></member>
+    <member name="M:Vulcan.VO.SQLConnection.Reconnect"></member>
+    <member name="M:Vulcan.VO.SQLConnection.Rollback"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ScrollConcurrency"></member>
+    <member name="P:Vulcan.VO.SQLConnection.ScrollCsr"></member>
+    <member name="M:Vulcan.VO.SQLConnection.SetConnectOption(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLConnection.Status"></member>
+    <member name="P:Vulcan.VO.SQLConnection.UserID"></member>
+    <member name="T:Vulcan.VO.SQLData"></member>
+    <member name="M:Vulcan.VO.SQLData.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLData</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLData.Clear"></member>
+    <member name="M:Vulcan.VO.SQLData.Initialize(System.Void*,System.Void*,System.UInt32,System.Boolean,System.Boolean)"></member>
+    <member name="F:Vulcan.VO.SQLData.Length"></member>
+    <member name="F:Vulcan.VO.SQLData.LongValue"></member>
+    <member name="F:Vulcan.VO.SQLData.Null"></member>
+    <member name="F:Vulcan.VO.SQLData.ptrLength"></member>
+    <member name="F:Vulcan.VO.SQLData.ptrValue"></member>
+    <member name="F:Vulcan.VO.SQLData.ValueChanged"></member>
+    <member name="T:Vulcan.VO.SQLErrorInfo"></member>
+    <member name="M:Vulcan.VO.SQLErrorInfo.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLErrorInfo</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.ErrorFlag"></member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.ErrorList"></member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.ErrorMessage"></member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.ErrorMessageLen"></member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.NativeError"></member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.ReturnCode"></member>
+    <member name="M:Vulcan.VO.SQLErrorInfo.ShowErrorMsg"></member>
+    <member name="P:Vulcan.VO.SQLErrorInfo.SQLState"></member>
+    <member name="M:Vulcan.VO.SQLErrorInfo.Throw"></member>
+    <member name="T:Vulcan.VO.SQLListColumnPrivileges"></member>
+    <member name="M:Vulcan.VO.SQLListColumnPrivileges.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListColumnPrivileges</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLListColumnPrivileges.ColName"></member>
+    <member name="M:Vulcan.VO.SQLListColumnPrivileges.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListColumnPrivileges.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListColumnPrivileges.Qualifier"></member>
+    <member name="T:Vulcan.VO.SQLListColumns"></member>
+    <member name="M:Vulcan.VO.SQLListColumns.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListColumns</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLListColumns.ColName"></member>
+    <member name="M:Vulcan.VO.SQLListColumns.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListColumns.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListColumns.Qualifier"></member>
+    <member name="T:Vulcan.VO.SQLListForeignKeys"></member>
+    <member name="M:Vulcan.VO.SQLListForeignKeys.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListForeignKeys</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLListForeignKeys.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListForeignKeys.FOwner"></member>
+    <member name="F:Vulcan.VO.SQLListForeignKeys.FQualifier"></member>
+    <member name="F:Vulcan.VO.SQLListForeignKeys.FTableName"></member>
+    <member name="F:Vulcan.VO.SQLListForeignKeys.POwner"></member>
+    <member name="F:Vulcan.VO.SQLListForeignKeys.PQualifier"></member>
+    <member name="F:Vulcan.VO.SQLListForeignKeys.PTableName"></member>
+    <member name="T:Vulcan.VO.SQLListPrimaryKeys"></member>
+    <member name="M:Vulcan.VO.SQLListPrimaryKeys.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListPrimaryKeys</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLListPrimaryKeys.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListPrimaryKeys.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListPrimaryKeys.Qualifier"></member>
+    <member name="T:Vulcan.VO.SQLListProcedureColumns"></member>
+    <member name="M:Vulcan.VO.SQLListProcedureColumns.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListProcedureColumns</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLListProcedureColumns.ColName"></member>
+    <member name="M:Vulcan.VO.SQLListProcedureColumns.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListProcedureColumns.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListProcedureColumns.ProcName"></member>
+    <member name="F:Vulcan.VO.SQLListProcedureColumns.Qualifier"></member>
+    <member name="T:Vulcan.VO.SQLListProcedures"></member>
+    <member name="M:Vulcan.VO.SQLListProcedures.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListProcedures</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLListProcedures.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListProcedures.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListProcedures.ProcName"></member>
+    <member name="F:Vulcan.VO.SQLListProcedures.Qualifier"></member>
+    <member name="T:Vulcan.VO.SQLListSpecialColumns"></member>
+    <member name="M:Vulcan.VO.SQLListSpecialColumns.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListSpecialColumns</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLListSpecialColumns.ColType"></member>
+    <member name="M:Vulcan.VO.SQLListSpecialColumns.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListSpecialColumns.Nullable"></member>
+    <member name="F:Vulcan.VO.SQLListSpecialColumns.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListSpecialColumns.Qualifier"></member>
+    <member name="F:Vulcan.VO.SQLListSpecialColumns.Scope"></member>
+    <member name="T:Vulcan.VO.SQLListStatistics"></member>
+    <member name="M:Vulcan.VO.SQLListStatistics.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListStatistics</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLListStatistics.Accuracy"></member>
+    <member name="M:Vulcan.VO.SQLListStatistics.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListStatistics.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListStatistics.Qualifier"></member>
+    <member name="F:Vulcan.VO.SQLListStatistics.Unique"></member>
+    <member name="T:Vulcan.VO.SQLListTablePrivileges"></member>
+    <member name="M:Vulcan.VO.SQLListTablePrivileges.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListTablePrivileges</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLListTablePrivileges.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListTablePrivileges.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListTablePrivileges.Qualifier"></member>
+    <member name="T:Vulcan.VO.SQLListTables"></member>
+    <member name="M:Vulcan.VO.SQLListTables.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListTables</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLListTables.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListTables.Owner"></member>
+    <member name="F:Vulcan.VO.SQLListTables.Qualifier"></member>
+    <member name="F:Vulcan.VO.SQLListTables.TableType"></member>
+    <member name="T:Vulcan.VO.SQLListTypeInfo"></member>
+    <member name="M:Vulcan.VO.SQLListTypeInfo.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLListTypeInfo</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLListTypeInfo.Execute"></member>
+    <member name="F:Vulcan.VO.SQLListTypeInfo.SqlType"></member>
+    <member name="T:Vulcan.VO.SqlParameter"></member>
+    <member name="M:Vulcan.VO.SqlParameter.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SqlParameter</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SqlParameter.bind(Vulcan.VO.SQLStatement,System.UInt32)"></member>
+    <member name="F:Vulcan.VO.SqlParameter.CType"></member>
+    <member name="M:Vulcan.VO.SqlParameter.Destroy"></member>
+    <member name="F:Vulcan.VO.SqlParameter.InternalParam"></member>
+    <member name="F:Vulcan.VO.SqlParameter.IO"></member>
+    <member name="F:Vulcan.VO.SqlParameter.ODBCType"></member>
+    <member name="F:Vulcan.VO.SqlParameter.pBytes"></member>
+    <member name="F:Vulcan.VO.SqlParameter.pData"></member>
+    <member name="F:Vulcan.VO.SqlParameter.Precision"></member>
+    <member name="F:Vulcan.VO.SqlParameter.Scale"></member>
+    <member name="M:Vulcan.VO.SqlParameter.SetValue(Vulcan.__Usual,System.Int32)"></member>
+    <member name="F:Vulcan.VO.SqlParameter.UsualType"></member>
+    <member name="P:Vulcan.VO.SqlParameter.Value"></member>
+    <member name="T:Vulcan.VO.SQLSelect"></member>
+    <member name="M:Vulcan.VO.SQLSelect.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLSelect</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLSelect.AddDateVal(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.AddTimeString(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Append"></member>
+    <member name="P:Vulcan.VO.SQLSelect.AppendData"></member>
+    <member name="P:Vulcan.VO.SQLSelect.AppendFlag"></member>
+    <member name="M:Vulcan.VO.SQLSelect.AppendRow(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.BindColumn(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.BoF"></member>
+    <member name="P:Vulcan.VO.SQLSelect.BoundedColumns"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Close"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Column(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.ColumnAttributes(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Commit"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Connection"></member>
+    <member name="P:Vulcan.VO.SQLSelect.CursorName"></member>
+    <member name="P:Vulcan.VO.SQLSelect.CursorType"></member>
+    <member name="M:Vulcan.VO.SQLSelect.DataField(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.DBStruct"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Delete"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Deleted"></member>
+    <member name="M:Vulcan.VO.SQLSelect.DirectSkip(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.EoF"></member>
+    <member name="P:Vulcan.VO.SQLSelect.ErrInfo"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Error(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Execute(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.ExtendedFetch(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.FCount"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Fetch"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FIELDGET(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldGetFormatted(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldHyperLabel(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldName(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldPos(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FIELDPUT(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldSpec(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldStatus(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldSym(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FieldValidate(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FLOCK"></member>
+    <member name="P:Vulcan.VO.SQLSelect.FOUND"></member>
+    <member name="M:Vulcan.VO.SQLSelect.FreeStmt(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GetData(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GetdateVal(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GetLookupTable(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GetStatementOption(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GetTimeStamp(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GetTimeString(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GoBottom"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GoTo(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.GoTop"></member>
+    <member name="P:Vulcan.VO.SQLSelect.IndexColumns"></member>
+    <member name="P:Vulcan.VO.SQLSelect.LASTREC"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Modified"></member>
+    <member name="P:Vulcan.VO.SQLSelect.MoreResults"></member>
+    <member name="P:Vulcan.VO.SQLSelect.NativeSQL"></member>
+    <member name="M:Vulcan.VO.SQLSelect.NoIVarGet(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.NoIVarPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Notify(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.NullAsBlank"></member>
+    <member name="P:Vulcan.VO.SQLSelect.NumCols"></member>
+    <member name="P:Vulcan.VO.SQLSelect.NumParameters"></member>
+    <member name="M:Vulcan.VO.SQLSelect.NumResultCols"></member>
+    <member name="P:Vulcan.VO.SQLSelect.NumResultColumns"></member>
+    <member name="P:Vulcan.VO.SQLSelect.NumSuccessfulRows"></member>
+    <member name="M:Vulcan.VO.SQLSelect.PreExecute(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Prepare"></member>
+    <member name="P:Vulcan.VO.SQLSelect.PrepFlag"></member>
+    <member name="P:Vulcan.VO.SQLSelect.RecCount"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Recno"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Refresh"></member>
+    <member name="M:Vulcan.VO.SQLSelect.ReReadRow"></member>
+    <member name="M:Vulcan.VO.SQLSelect.ResetCursor(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.ResetNotification"></member>
+    <member name="M:Vulcan.VO.SQLSelect.RLOCK(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.RLockVerify"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Rollback"></member>
+    <member name="P:Vulcan.VO.SQLSelect.RowCount"></member>
+    <member name="P:Vulcan.VO.SQLSelect.ScrollConcurrency"></member>
+    <member name="P:Vulcan.VO.SQLSelect.ScrollUpdateType"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SetColumnAttributes(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SetDataField(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SetPos(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SetPrimaryKey(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SetStatementOption(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SetTimeStamp(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.SimulateCursor"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Skip(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLSelect.SQLColumns"></member>
+    <member name="P:Vulcan.VO.SQLSelect.SqlData"></member>
+    <member name="P:Vulcan.VO.SQLSelect.SQLString"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Statement"></member>
+    <member name="P:Vulcan.VO.SQLSelect.StatementHandle"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Status"></member>
+    <member name="M:Vulcan.VO.SQLSelect.SuspendNotification"></member>
+    <member name="P:Vulcan.VO.SQLSelect.TableName"></member>
+    <member name="P:Vulcan.VO.SQLSelect.TimeStampAsDate"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Unlock(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.Update(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLSelect.UpdateCursor"></member>
+    <member name="M:Vulcan.VO.SQLSelect.UpdateKey"></member>
+    <member name="M:Vulcan.VO.SQLSelect.UpdateVal"></member>
+    <member name="P:Vulcan.VO.SQLSelect.Used"></member>
+    <member name="T:Vulcan.VO.SQLStatement"></member>
+    <member name="M:Vulcan.VO.SQLStatement.#ctor(Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLStatement</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLStatement.Commit"></member>
+    <member name="P:Vulcan.VO.SQLStatement.Connection"></member>
+    <member name="P:Vulcan.VO.SQLStatement.CursorType"></member>
+    <member name="M:Vulcan.VO.SQLStatement.Destroy"></member>
+    <member name="P:Vulcan.VO.SQLStatement.ErrInfo"></member>
+    <member name="M:Vulcan.VO.SQLStatement.Execute(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLStatement.FreeStmt(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLStatement.GetStatementOption(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLStatement.HyperLabel"></member>
+    <member name="P:Vulcan.VO.SQLStatement.KeySet"></member>
+    <member name="M:Vulcan.VO.SQLStatement.MakeErrorInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLStatement.NativeSQL"></member>
+    <member name="P:Vulcan.VO.SQLStatement.NumParameters"></member>
+    <member name="P:Vulcan.VO.SQLStatement.NumSuccessfulRows"></member>
+    <member name="P:Vulcan.VO.SQLStatement.Params"></member>
+    <member name="M:Vulcan.VO.SQLStatement.Prepare"></member>
+    <member name="P:Vulcan.VO.SQLStatement.PrepFlag"></member>
+    <member name="P:Vulcan.VO.SQLStatement.RecCount"></member>
+    <member name="M:Vulcan.VO.SQLStatement.RollBack"></member>
+    <member name="P:Vulcan.VO.SQLStatement.RowSet"></member>
+    <member name="P:Vulcan.VO.SQLStatement.ScrollConcurrency"></member>
+    <member name="M:Vulcan.VO.SQLStatement.SetStatementOption(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLStatement.SimulateCursor"></member>
+    <member name="P:Vulcan.VO.SQLStatement.SQLString"></member>
+    <member name="P:Vulcan.VO.SQLStatement.StatementHandle"></member>
+    <member name="P:Vulcan.VO.SQLStatement.Status"></member>
+    <member name="T:Vulcan.VO.SQLTable"></member>
+    <member name="M:Vulcan.VO.SQLTable.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLTable</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.VO.SQLTable.ClearRelation(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLTable.Condition(Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLTable.Fields"></member>
+    <member name="M:Vulcan.VO.SQLTable.Notify(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLTable.OrderBy"></member>
+    <member name="P:Vulcan.VO.SQLTable.OrderByClause"></member>
+    <member name="P:Vulcan.VO.SQLTable.OrderSeek"></member>
+    <member name="M:Vulcan.VO.SQLTable.Relation(Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLTable.Seek(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLTable.SetRelation(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.VO.SQLTable.SetSelectiveRelation(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="P:Vulcan.VO.SQLTable.Suffix"></member>
+    <member name="P:Vulcan.VO.SQLTable.Table"></member>
+    <member name="M:Vulcan.VO.SQLTable.Where"></member>
+    <member name="P:Vulcan.VO.SQLTable.WhereClause"></member>
+    <member name="P:Vulcan.VO.SQLTable.WhereSeek"></member>
+    <member name="T:Vulcan.VO.SQLValue"></member>
+    <member name="M:Vulcan.VO.SQLValue.#ctor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VO.SQLValue</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.VO.SQLValue.Nullable"></member>
+    <member name="F:Vulcan.VO.SQLValue.ODBCType"></member>
+    <member name="F:Vulcan.VO.SQLValue.Scale"></member>
+    <member name="P:Vulcan.VO.SQLValue.UsualType"></member>
+    <member name="T:VulcanVOSQLClasses.Functions">
+      <summary>This is the compiler generated class in which all functions are implemented as static methods.<br />
+				You do not need to use the classname in your code. <br />The compiler will automatically add a USING STATIC for this class so you can call the methods with a function sytax in your code, just like you would do in Visual Objects</summary>
+    </member>
+    <member name="M:VulcanVOSQLClasses.Functions._SLen(System.String)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.DToCSQL(Vulcan.__VODate)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.InitGlobals"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.MakeTimeStamp(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC(System.Int32)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLConnectErrorMsg(Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLDropMyConnection(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLGetDataSources"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLGetMyConnection(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLOpenConnection"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLSetConnection(Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SqlSetStmtConcurrency(Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SqlSetStmtCursorType(Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SqlSetStmtSimulateCursor(Vulcan.__Usual)"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLThrowOutOfMemoryError"></member>
+    <member name="M:VulcanVOSQLClasses.Functions.SQLType2CType(System.Int16)"></member>
+  </members>
+</doc>

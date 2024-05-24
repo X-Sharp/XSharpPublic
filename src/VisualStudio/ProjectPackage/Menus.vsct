@@ -192,6 +192,17 @@
           <LocCanonicalName>.XSharp.Documentation</LocCanonicalName>
         </Strings>
       </Button>
+      <Button guid="guidProjectPackage" id="idHelpOffLineChinese" priority="0x0100" type="Button">
+        <Icon guid="guidImages" id="bmpXSharp" />
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <ButtonText>XSharp Documentation (Chinese)</ButtonText>
+          <ToolTipText>Opens XSharp Documentation (Chinese)</ToolTipText>
+          <CommandName>&amp;XSharp Documentation (Chinese)</CommandName>
+          <CanonicalName>XSharp Documentation (Chinese)</CanonicalName>
+          <LocCanonicalName>.XSharp.Documentation.Chinese</LocCanonicalName>
+        </Strings>
+      </Button>
 
       <!--The following entries go onto the ViewMenu in our ViewMenuGroup, when our Window Editor is open-->
       <Button guid="guidVOFormEditorCmdSet" id="cmdidShowGrid" priority="0x0400" type="Button">
@@ -390,6 +401,9 @@
     <CommandPlacement guid="guidProjectPackage" id="idHelpOffLine" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idHelpMenuGroup"/>
     </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idHelpOffLineChinese" priority="0x0100">
+      <Parent guid="guidProjectPackage" id="idHelpMenuGroup"/>
+    </CommandPlacement>
 
     <!--Form Editor commands, appear twice here-->
     <!--in Menu-->
@@ -459,6 +473,7 @@
       <IDSymbol name="idRebuildIntellisense" value="0x010D" />
       <IDSymbol name="idViewInDisassembler" value="0x010E" />
       <IDSymbol name="idEditProjectFile" value="0x010F" />
+      <IDSymbol name="idHelpOffLineChinese" value="0x0110" />      
       <IDSymbol name="idGenerateWinForm" value="0x0120" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />

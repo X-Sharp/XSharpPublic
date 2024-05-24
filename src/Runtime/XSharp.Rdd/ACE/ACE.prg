@@ -4097,6 +4097,11 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN ACE64.AdsGetTime(hTable, strFldName, strBuf, REF wLen )
         ENDIF
 
+    [Obsolete("The strLetter parameter must be passed as REF CHAR", TRUE)];
+    PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter AS STRING, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
+        local lChar := c'\0' as Char
+        RETURN AdsGetVersion(OUT pulMajor, OUT pulMinor, REF lChar, strDesc, REF pusDescLen )
+
     PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter REF CHAR, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD
         IF Is32Bits
             RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, REF strLetter, strDesc, REF pusDescLen )

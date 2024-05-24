@@ -11,7 +11,7 @@
     <Name>AdsTest</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>XPP</Dialect>
     <OutputName>AdsTest</OutputName>
     <Includepaths />
     <Nostandarddefs />

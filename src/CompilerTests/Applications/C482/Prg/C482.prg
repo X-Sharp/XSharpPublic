@@ -1,6 +1,6 @@
 // C482. Antlr: SLL parsing failed with failure: Exception of type 'LanguageService.SyntaxTree.InputMismatchException' was thrown.. Trying again in LL mode.
 
-#command @ <row>, <col> zSAY <xpr>                                       ;                                
+#command @ <row>, <col> zSAY <xpr>                                       ;
                         [PICTURE <pic>]                                 ;
                         [COLOR <color>]                                 ;
                                                                         ;
@@ -13,7 +13,7 @@
       => DevOut( <xpr> [, <color>] )
 
 
-*  @..GET
+//  @..GET
 #command @ <row>, <col> zGET <avar>                                      ;
                         [PICTURE <pic>]                                 ;
                         [VALID <valid>]                                 ;

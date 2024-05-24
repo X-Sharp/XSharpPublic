@@ -196,6 +196,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.UI_Test", "Tests
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "DataConverter", "C:\SqlRdd\Beta1\Example\DataConverter\DataConverter.xsproj", "{3409EF64-BB1A-47DB-AB1B-38623CF6A251}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MemoTest", "Tests\MemoTest\MemoTest.xsproj", "{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -517,6 +519,12 @@ Global
 		{3409EF64-BB1A-47DB-AB1B-38623CF6A251}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{3409EF64-BB1A-47DB-AB1B-38623CF6A251}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3409EF64-BB1A-47DB-AB1B-38623CF6A251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -578,6 +586,7 @@ Global
 		{7E2CBEF6-9945-42C4-A7DF-F9B8E2E68D44} = {CCFBFA5A-6595-4E5B-B85B-E1699CC0B3CE}
 		{B4F3862C-82BC-407F-8A84-5241F7321F9F} = {CCFBFA5A-6595-4E5B-B85B-E1699CC0B3CE}
 		{3409EF64-BB1A-47DB-AB1B-38623CF6A251} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
+		{68A869E2-DCAB-4FDF-A460-EDA80A7FCFCB} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

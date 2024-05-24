@@ -1504,7 +1504,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD LongOrderNames() AS VOID
-			
+
 			LOCAL eDialect := RuntimeState.Dialect AS XSharpDialect
 			RuntimeState.Dialect := XSharpDialect.VO
 
@@ -1512,7 +1512,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , { {"FLD","N",1,0} } )
 			DbUseArea(,"DBFCDX",cDbf)
-		
+
 			DbAppend()
 			FieldPut(1,1)
 			DbAppend()
@@ -1521,30 +1521,162 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			FieldPut(1,3)
 			DbAppend()
 			FieldPut(1,2)
-			
+
 			Assert.True( DbCreateOrder("TESTa67890",,"FLD") )
 			Assert.True( DbSetOrder("TESTa67890") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 0)
-		
+
 			Assert.True( DbSetOrder("TESTa67890dumy") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 0)
-		
-	
+
+
 			Assert.True( DbCreateOrder("TESTb67890abcde",,"-FLD") )
-		
+
 			Assert.True( DbSetOrder("TESTb67890abcde") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 3)
-		
+
 			Assert.True( DbSetOrder("TESTb67890") )
 			DbGoTop()
 			Assert.True( FieldGet(1) == 3 )
-		
+
 			DbCloseArea()
-			
+
 			RuntimeState.Dialect := eDialect
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBFMEMO_HiddenRdd_NTX() AS VOID
+			LOCAL cFileName AS STRING
+			LOCAL cIndex AS STRING
+
+			cFileName := GetTempFileName()
+			cIndex := cFileName + ".ntx"
+			IF File(cIndex)
+				FErase(cIndex)
+			END IF
+
+			Assert.True( DbCreate(cFileName, {{"CFIELD","C",10,0},{"NFIELD","N",8,2},{"MFIELD","M",10,0}},"DBFNTX",,,,,{"DBFMEMO"}) )
+
+			Assert.True( DbUseArea(TRUE, "DBFNTX", cFileName,,,,,,{"DBFMEMO"}) )
+			IF .NOT. Used()
+				RETURN
+			END IF
+
+			DbAppend()
+			FieldPut(1,"test1")
+			FieldPut(2,1)
+			FieldPut(3,"some text")
+			DbAppend()
+			FieldPut(1,"test3")
+			FieldPut(2,3)
+			FieldPut(3,"some text3")
+			DbAppend()
+			FieldPut(1,"test2")
+			FieldPut(2,2)
+			FieldPut(3,"some text2")
+			DbGoTop()
+
+			Assert.True( DbCreateIndex(cFileName, "NFIELD"))
+			Assert.True( File(cIndex) )
+
+			DbGoBottom()
+
+			Assert.Equal( 2, (int) RecNo() )
+			Assert.Equal( "test3", AllTrim(FieldGet(1)) )
+			Assert.Equal( "some text3", AllTrim(FieldGet(3)) )
+			DbCloseArea()
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBFBLOB_HiddenRdd_DBCreate() AS VOID
+			LOCAL cFileName AS STRING
+			LOCAL blob,block,cText := "" AS STRING
+			LOCAL nAt AS DWORD
+
+			cFileName := GetTempFileName()
+
+			Assert.True( DbCreate(cFileName, ,"DBFCDX",,,,,{"DBFBLOB"}) )
+
+			Assert.True( DbUseArea(TRUE,"DBFBLOB",cFileName + ".dbv") )
+			IF .NOT. Used()
+				RETURN
+			END IF
+
+			blob := AsString( BLOBDirectPut(0,"some text here") )
+			blob += "+" + AsString( BLOBDirectPut(0,"more text") )
+			blob += "+" + AsString( BLOBDirectPut(0,"end of text") )
+
+			Assert.True( BLOBRootLock() )
+			Assert.True( BLOBRootPut(blob) )
+			Assert.True( BLOBRootUnlock() )
+
+			DbCloseArea()
+
+			Assert.True( DbUseArea(TRUE,"DBFBLOB",cFileName + ".dbv") )
+
+			blob := BLOBRootGet()
+			DO WHILE SLen(blob) != 0
+				nAt := At("+" , blob)
+				? nAt
+				IF nAt == 0
+					block := blob
+					blob := ""
+				ELSE
+					block := Left(blob, nAt - 1)
+					blob := SubStr(blob, nAt + 1)
+				ENDIF
+				cText += AsString( BLOBDirectGet(Val(block)) ) + "|"
+			END DO
+			Assert.Equal( "some text here|more text|end of text|" , cText )
+
+			DbCloseArea()
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBFMEMO_HiddenRdd_CDX() AS VOID
+			LOCAL cFileName AS STRING
+			LOCAL cIndex AS STRING
+
+			cFileName := GetTempFileName()
+			cIndex := cFileName + ".cdx"
+			IF File(cIndex)
+				FErase(cIndex)
+			END IF
+
+			Assert.True( DbCreate(cFileName, {{"CFIELD","C",10,0},{"NFIELD","N",8,2},{"MFIELD","M",10,0}},"DBFCDX",,,,,{"DBFMEMO"}) )
+
+			Assert.True( DbUseArea(TRUE, "DBFCDX", cFileName,,,,,,{"DBFMEMO"}) )
+			IF .NOT. Used()
+				RETURN
+			END IF
+
+			DbAppend()
+			FieldPut(1,"test1")
+			FieldPut(2,1)
+			FieldPut(3,"some text")
+			DbAppend()
+			FieldPut(1,"test3")
+			FieldPut(2,3)
+			FieldPut(3,"some text3")
+			DbAppend()
+			FieldPut(1,"test2")
+			FieldPut(2,2)
+			FieldPut(3,"some text2")
+			DbGoTop()
+
+			Assert.True( DbCreateIndex(cFileName, "NFIELD"))
+			Assert.True( File(cIndex) )
+
+			DbGoBottom()
+
+			Assert.Equal( 2, (int) RecNo() )
+			Assert.Equal( "test3", AllTrim(FieldGet(1)) )
+			Assert.Equal( "some text3", AllTrim(FieldGet(3)) )
+			DbCloseArea()
+
 
 
 		STATIC INTERNAL METHOD GetTempFileName() AS STRING
@@ -1566,6 +1698,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
                 FErase(FPathName())
             ENDIF
             IF File(cFileName+".NTX")
+                FErase(FPathName())
+            ENDIF
+            IF File(cFileName+".DBV")
                 FErase(FPathName())
             ENDIF
 		    RETURN cFileName

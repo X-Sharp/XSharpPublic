@@ -17,6 +17,7 @@ USING System.Reflection
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     oVFPErrorMessage := __VfpStr
+    XSharp.RuntimeState.DialectChanged += DialectChanged
     InitFoxState()
 RETURN
 
@@ -30,7 +31,6 @@ INTERNAL FUNCTION InitFoxState() AS VOID
     XSharp.MemVar.Put := __FoxMemVarPut
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
-    XSharp.RuntimeState.DialectChanged += DialectChanged
 
     XSharp.__Array.FoxArrayHelpers.ADel         := XSharp.VFP.Functions.ADel
     XSharp.__Array.FoxArrayHelpers.ALen         := XSharp.VFP.Functions.FoxALen
@@ -42,7 +42,6 @@ INTERNAL FUNCTION ClearFoxState as VOID
     XSharp.MemVar.Initialize()
     XSharp.RuntimeState.AutoLock    := NULL
     XSharp.RuntimeState.AutoUnLock  := NULL
-
     XSharp.__Array.FoxArrayHelpers.Reset()
 
 
@@ -50,7 +49,9 @@ INTERNAL FUNCTION ClearFoxState as VOID
 RETURN
 
 
-
+/// <summary>
+/// This event handler is attached to the DialectChanged event of the RuntimeState, to initialize the FoxPro state
+/// </summary>
 INTERNAL FUNCTION DialectChanged(oldDialect as XSharpDialect, newDialect as XSharpDialect) AS VOID
 IF oldDialect != newDialect
     if newDialect == XSharpDialect.FoxPro
@@ -64,7 +65,7 @@ ENDIF
 // Automatically lock a record in the FoxPro dialect
 FUNCTION __FoxAutoLock() AS VOID
     LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-    IF oRdd:Shared
+    IF oRdd != null .and. oRdd:Shared
         VAR locked := oRdd:RecInfo(DBRI_LOCKED, NULL, NULL)
         IF locked IS LOGIC var lIsLocked .and. ! lIsLocked
             VAR lockInfo    := DbLockInfo{}
@@ -81,22 +82,27 @@ FUNCTION __FoxAutoLock() AS VOID
 // Automatically unlock a record in the FoxPro dialect
 FUNCTION __FoxAutoUnLock() AS VOID
     LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-    IF oRdd:Shared
+    IF oRdd != null .and. oRdd:Shared
         oRdd:UnLock(oRdd:RecNo)
     ENDIF
     RETURN
 
 
+/// <summary>
+/// This function replaces the normal MemVarPut to make sure that arrays are filled when they are assigned
+/// </summary>
 INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     VAR current :=  XSharp.MemVar.GetSafe(cName)
     IF XSharp.RuntimeState.CompilerOptionFox2
-        IF current IS __FoxArray .AND. ! uValue IS __FoxArray
+        IF current IS __FoxArray .AND. uValue IS NOT __FoxArray
             RETURN __FoxFillArray(current, uValue )
         ENDIF
     ENDIF
     RETURN XSharp.MemVar._Put(cName, uValue)
 
-
+/// <summary>
+/// This function gets called for assignments in FoxPro, so aFoo := 42 will will the complete array when aFoo is an array
+/// </summary>
 FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL
     IF uLHS IS __FoxArray VAR aFoxArray
         IF uValue IS __FoxArray
@@ -110,7 +116,9 @@ FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL
     ELSE
         RETURN uValue
     ENDIF
-
+/// <summary>
+/// Fill a FoxPro array
+/// </summary>
 FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     IF IsArray(uArray) .AND. ! IsArray(uValue)
         LOCAL oldArray := uArray AS ARRAY
@@ -121,7 +129,9 @@ FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     ENDIF
     RETURN uArray
 
-
+/// <summary>
+/// Resize a FoxPro array
+/// </summary>
 FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
     LOCAL result := NULL AS __FoxArray
     IF IsArray(uCurrent)
@@ -135,7 +145,9 @@ FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS _
     ENDIF
     RETURN result
 
-
+/// <summary>
+/// Access an element in a FoxPro array with 2 dimensions
+/// </summary>
 FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL, nIndex2 AS USUAL) AS USUAL
     IF uValue IS  __FoxArray VAR fa .and. IsNumeric(nIndex1) .and. IsNumeric(nIndex2) .and. fa:MultiDimensional
         RETURN fa[nIndex1, nIndex2]
@@ -149,8 +161,9 @@ FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL, nI
         THROW Error{__VfpStr(VFPErrors.VARIABLE_DOES_NOT_EXIST, cName)}
     ENDIF
 
-
-
+/// <summary>
+/// Access an element in a FoxPro array with 1 dimension
+/// </summary>
 FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL) AS USUAL
     IF uValue IS  __FoxArray VAR fa .and. IsNumeric(nIndex1)
         RETURN fa[nIndex1]
@@ -164,6 +177,10 @@ FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL) AS
         THROW Error{__VfpStr(VFPErrors.VARIABLE_DOES_NOT_EXIST, cName)}
     ENDIF
 
+/// <summary>
+/// Retrieve the With Stack for the FoxPro dialect (so you can call methods or properties outside of the scope of the WITH block)
+/// </summary>
+
 INTERNAL FUNCTION __GetFoxWithStack() AS Stack<OBJECT>
     LOCAL stack as Stack<OBJECT>
     stack := XSharp.RuntimeState.GetValue<Stack<Object>>(Set.WithStack)
@@ -173,11 +190,17 @@ INTERNAL FUNCTION __GetFoxWithStack() AS Stack<OBJECT>
     ENDIF
     return stack
 
+/// <summary>
+/// Push element to the FoxPro With stack
+/// </summary>
 FUNCTION __FoxPushWithBlock(oVar as OBJECT) AS VOID
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     stack:Push(oVar)
     RETURN
 
+/// <summary>
+/// Pop element from the FoxPro With stack
+/// </summary>
 FUNCTION __FoxPopWithBlock() AS OBJECT
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     if stack:Count > 0
@@ -188,7 +211,9 @@ FUNCTION __FoxPopWithBlock() AS OBJECT
     error:FuncSym := ProcName(1)
     error:SetStackTrace(ErrorStack(1))
     THROW error
-
+/// <summary>
+/// Retrieve an element from the FoxPro With stack
+/// </summary>
 FUNCTION __FoxGetWithExpression() AS OBJECT
     LOCAL stack := __GetFoxWithStack() AS Stack<OBJECT>
     IF stack:Count > 0
@@ -201,6 +226,9 @@ FUNCTION __FoxGetWithExpression() AS OBJECT
     THROW error
 
 
+/// <summary>
+/// Call a method or retrieve an indexed property from an object.
+/// </summary>
 function __IVarGetOrSend(oObj as usual, cName as string, nIndex as long) as usual
     var members := __CheckParams(oObj, cName)
     // this returns an array with at least one member (there may be more when the method is overloaded)
@@ -211,6 +239,9 @@ function __IVarGetOrSend(oObj as usual, cName as string, nIndex as long) as usua
     var aVar := IVarGet(oObj, cName)
     return aVar[nIndex]
 
+/// <summary>
+/// Call a method or retrieve an indexed property from an object.
+/// </summary>
 function __IVarGetOrSend(oObj as usual, cName as string, nIndex1 as long, nIndex2 as long) as usual
     var members := __CheckParams(oObj, cName)
     // this returns an array with at least one member (there may be more when the method is overloaded)
@@ -221,6 +252,12 @@ function __IVarGetOrSend(oObj as usual, cName as string, nIndex1 as long, nIndex
     var aVar := IVarGet(oObj, cName)
     return aVar[nIndex1, nIndex2]
 
+/// <summary>
+/// Return public members of a type with a specific name (case insensitive)
+/// </summary>
+/// <param name="oObj"></param>
+/// <param name="cName"></param>
+/// <returns></returns>
 static function __CheckParams(oObj as object, cName as string) as MemberInfo[]
  if oObj == null
         Throw ArgumentException{"Parameter should not be null", nameof(oObj)}

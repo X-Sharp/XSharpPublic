@@ -483,7 +483,7 @@ namespace XSharp.MacroCompiler
                     case (char)10:
                     case (char)13:
                         t = TokenType.INCOMPLETE_STRING_CONST;
-                        Console.WriteLine("INCOMPLETE STRING: \"{0}\"", value.ToString());
+                        //Console.WriteLine("INCOMPLETE STRING: \"{0}\"", value.ToString());
                         return value.ToString();
                     case '"':
                     case '\'':
@@ -494,7 +494,7 @@ namespace XSharp.MacroCompiler
                                 Consume();
                             else
                             {
-                                Console.WriteLine("STRING: \"{0}\"", value.ToString());
+                                //Console.WriteLine("STRING: \"{0}\"", value.ToString());
                                 return value.ToString();
                             }
                         }
@@ -554,7 +554,7 @@ namespace XSharp.MacroCompiler
                 }
             }
             t = TokenType.INCOMPLETE_STRING_CONST;
-            Console.WriteLine("INCOMPLETE STRING: \"{0}\"", value.ToString());
+            //Console.WriteLine("INCOMPLETE STRING: \"{0}\"", value.ToString());
             return value.ToString();
         }
 

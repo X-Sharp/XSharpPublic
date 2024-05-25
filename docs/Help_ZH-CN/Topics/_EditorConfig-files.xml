@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>.EditorConfig files</title>
+  <keywords>
+    <keyword>.editorconfig</keyword>
+    <keyword>align_do_case</keyword>
+    <keyword>align_method</keyword>
+    <keyword>charset</keyword>
+    <keyword>end_of_line</keyword>
+    <keyword>identifier_case</keyword>
+    <keyword>indent_size</keyword>
+    <keyword>indent_style</keyword>
+    <keyword>insert_final_newline</keyword>
+    <keyword>keyword_case</keyword>
+    <keyword>tab_width</keyword>
+    <keyword>trim_trailing_whitespace</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">.EditorConfig files</para>
+    </header>
+    <para styleclass="Normal">Since X# 2.8 we now support the use of .editorconfig files. These files can be used in your solution or project to control the source code editor settings for several options, such as:</para>
+    <para styleclass="Body Text">This allows you to synchronize the editor settings for a team and ignore individual differences between team members.</para>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">use tab or space</li>
+      <li styleclass="Normal">tab with</li>
+      <li styleclass="Normal">encoding for the source files</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">We are supporting the default tokens for .editorconfig as listed on <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://editorconfig.org/</link>:</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_style (tab or space)</li>
+      <li styleclass="Body Text">indent_size (number)</li>
+      <li styleclass="Body Text">tab_width (number)</li>
+      <li styleclass="Body Text">end_of_line (cr, lf or crlf)</li>
+      <li styleclass="Body Text">charset (latin1, utf-8, utf-8-bom, utf-16be or utf-16le)</li>
+      <li styleclass="Body Text">trim_trailing_whitespace (true or false)</li>
+      <li styleclass="Body Text">insert_final_newline (true or false)</li>
+    </list>
+    <para styleclass="Normal" style="line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"></para>
+    <para styleclass="Body Text">Additionally we have added a few X# specific options</para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">keyword_case (upper, lower, title or none)</li>
+      <li styleclass="Body Text">identifier_case (true or false)</li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_namespace (true or false)</li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_type_members (true or false)</li>
+      <li styleclass="Body Text">indent_type_fields (true or false)</li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_entity_content (true or false)</li>
+      <li styleclass="Body Text">indent_block_content (true or false)</li>
+      <li styleclass="Body Text">indent_case_label (true or false)</li>
+      <li styleclass="Body Text">indent_case_content (true or false)</li>
+      <li styleclass="Body Text">indent_continued_lines (true or false)</li>
+      <li styleclass="Body Text">indent_preprocessor (true or false)</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The settings inside the .editorconfig overrule the settings on Tools/Options for the X# editor.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

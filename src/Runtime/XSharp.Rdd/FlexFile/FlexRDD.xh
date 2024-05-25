@@ -35,8 +35,26 @@ BEGIN NAMESPACE XSharp.RDD
 
             SELF:oFlexMemo:ExportMode := BLOB_EXPORT_APPEND
 
-            /// <inheritdoc />
+        /// <inheritdoc />
         OVERRIDE PROPERTY Driver AS STRING GET nameof(RDDCLASS)
+
+      /// <inheritdoc />
+      OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
+            local lOk as LOGIC
+            lOk := SUPER:Create(openInfo)
+            IF lOk
+#ifdef RDD_MEMOCDX
+                  SELF:_Header:Version := XSharp.RDD.DBFVersion.FoxBaseDBase3NoMemo
+#endif
+#ifdef RDD_MEMO
+                  IF SELF:_Ansi
+                     SELF:_Header:Version := XSharp.RDD.DBFVersion.VO
+                  ELSE
+                     SELF:_Header:Version := XSharp.RDD.DBFVersion.FoxBaseDBase3NoMemo
+                  ENDIF
+#endif
+	    ENDIF
+            RETURN lOk
 
             /// <inheritdoc />
         OVERRIDE METHOD GetValue(nFldPos AS LONG) AS OBJECT

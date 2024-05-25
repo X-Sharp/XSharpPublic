@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0270</title>
+  <keywords>
+    <keyword>XS0270</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0270</para>
+    </header>
+    <para styleclass="Normal">Array size cannot be specified in a variable declaration (try initializing with a &apos;new&apos; expression)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs when a size is specified as part of an array declaration. To resolve, use the new Operator expression.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0270:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0270.prg  <br/>// compile with: /t:module  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

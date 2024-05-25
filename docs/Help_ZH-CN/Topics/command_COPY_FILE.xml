@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY FILE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY FILE command</keyword>
+    <keyword>Copying<keyword>files</keyword></keyword>
+    <keyword>Files<keyword>copying</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY FILE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Copy a file to a new file or to a device.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">COPY FILE &lt;xcSourceFile&gt; TO &lt;xcTargetFile&gt; | &lt;xcDevice&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the source file to copy, including an optional drive, directory, and extension.</para>
+    <para styleclass="List"><tab />If &lt;xcSourceFile&gt; does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in shared mode and, if successful, it proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target file, including an optional drive, directory, and extension.</para>
+    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. </para>
+    <para styleclass="List"><tab />See SetDefault() and SetPath() for file searching and creation rules. &#160;This command does not supply a default extension for either file name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;xcDevice&gt;<tab />The name of the target device specified without a trailing colon. &#160;When you specify one of the following device names: &#160;PRN, LPT1, LPT2, LPT3, COM1, or COM2, COPY FILE searches the Windows section of WIN.INI for a Device entry to use for the printing device. &#160;If there is no Device entry, it looks for a Devices entry and presents the user with a list box of devices from which to choose.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example copies a file to a new file, then tests for the existence of the new file:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">COPY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> FILE test.prg </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> real.prg</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? File(&quot;real.prg&quot;) &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: &#160;TRUE</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example prints the contents of a file by copying it to the default device:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">COPY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> FILE real.prg </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> PRN</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibCore" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO">COPY TO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_FCopy.htm" domain="XSharpRef.chm">FCopy()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">,</text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE">DELETE FILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME">RENAME</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN SEQUENCE</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN SEQUENCE</keyword>
+    <keyword>END</keyword>
+    <keyword>END SEQUENCE</keyword>
+    <keyword>FINALLY</keyword>
+    <keyword>RECOVER</keyword>
+    <keyword>SEQUENCE</keyword>
+    <keyword>USING</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN SEQUENCE</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Heading1"><text styleclass="Body Text">The </text><text styleclass="Body Text" style="font-weight:bold;">BEGIN SEQUENCE</text><text styleclass="Body Text"> keyword declares the beginning of an exception handling block.</text></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code Example">BEGIN SEQUENCE<br/> &#160; tryStatements<br/>[RECOVER [USING localVariable]<br/> &#160; recoveryStatements<br/>]<br/>[FINALLY<br/> &#160; finallyStatements<br/>]<br/>END [SEQUENCE]</para>
+    <para styleclass="Body Text">where:</para>
+    <para styleclass="List"><text style="font-style:italic;">tryStatements</text>&#32;<tab />One or more statements or expressions that may cause an exception to be thrown. </para>
+    <para styleclass="List"><text style="font-style:italic;">localVariable</text>&#32;<tab />A local variable that will receive the exception thrown by any code between the BEGIN SEQUENCE and RECOVER statements. This must be a variable typed as USUAL. </para>
+    <para styleclass="List"><text style="font-style:italic;">recoveryStatements</text><tab />One or more statements or expressions that will execute if an exception is thrown by any of the tryStatements. </para>
+    <para styleclass="List"><text style="font-style:italic;">finallyStatements</text>&#32;<tab />One or more statements or expressions that will always execute regardless of whether an exception is thrown or not. </para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE is a control structure used for exception and runtime error handling. It delimits a block of statements defining a discrete operation, including invoked procedures and functions.</para>
+    <para styleclass="Normal">When an exception is thrown anywhere anywhere in the block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. If a RECOVER statement is not specified, control branches to the statement following the FINALLY statement, terminating the sequence. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
+    <para styleclass="Normal">If control reaches a RECOVER statement without an exception being thrown, control branches to the statement following the FINALLY statement. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
+    <para styleclass="Normal">The RECOVER statement optionally receives an exception thrown by a statement in the tryStatements block. This is usually an error object, generated and returned by the current error handling block defined by ErrorBlock(). If an error object is returned, it can be sent messages to query information about the error. With this information, a runtime error can be handled within the context of the operation rather than in the current runtime error handler.</para>
+    <para styleclass="Normal">The FINALLY statement block is useful for cleaning up any resources allocated in the BEGIN SEQUENCE block. Control is always passed to the FINALLY block (if present) regardless of how the BEGIN SEQUENCE block exits.</para>
+    <para styleclass="Normal">You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement. From within the RECOVER and FINALLY statement blocks however, you can LOOP, EXIT, BREAK, or RETURN since the sequence is essentially completed at that point. Using LOOP from within the RECOVER statement block is useful for re-executing the sequence statement block.</para>
+    <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE control structures can be nested to any depth.</para>
+    <para styleclass="Normal">The CanBreak() function returns TRUE if execution is within any BEGIN SEQUENCE block.</para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x := 4, y := 0 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SEQUENCE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? x / y</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECOVER</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;oops&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in finally block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SEQUENCE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BREAK">BREAK</link><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_THROW">THROW</link><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TRY_CATCH">TRY-CATCH-FINALLY </link></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

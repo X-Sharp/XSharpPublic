@@ -27,8 +27,11 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
    STATIC PROPERTY DefExt AS STRING AUTO
 
    STATIC CONSTRUCTOR
-      DefExt := FPT_MEMOEXT
-
+      #ifdef RDD_FPT
+         DefExt := FPT_MEMOEXT
+      #else
+         DefExt := DBV_MEMOEXT
+      #endif
    CONSTRUCTOR (oRDD AS DBF)
       SUPER(oRDD)
 
@@ -55,10 +58,10 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
       RETURN _area:EncodeValue(oValue )
 #endregion
 
-
-   PRIVATE METHOD _GetMemoExtFromDbfExt(cDbfName AS STRING) AS STRING
 #ifdef RDD_FPT
-      SWITCH System.IO.Path.GetExtension(cDbfName:ToLower())
+   PRIVATE METHOD _GetMemoExtFromDbfExt(cDbfName AS STRING) AS STRING
+
+      SWITCH System.IO.Path.GetExtension(cDbfName):ToLower()
       CASE ".vcx"         // Control Library
          RETURN ".VCT"
       CASE ".scx"         // Screen
@@ -83,11 +86,7 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
          RETURN cExt
       ENDIF
       RETURN FPT_MEMOEXT
-#else
-      return DBV_MEMOEXT
-
 #endif
-
    INTERNAL METHOD GetRawValueWithHeader(nFldPos as INT) AS BYTE[]
       LOCAL blockNbr AS LONG
       LOCAL block := NULL AS BYTE[]
@@ -173,7 +172,11 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
    /// <inheritdoc />
    OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
       LOCAL isOk      AS LOGIC
-      SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
+      #ifdef RDD_FPT
+         SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
+      #else
+         SELF:Extension := DBV_MEMOEXT
+      #endif
       isOk := SUPER:CreateMemFile(info)
       IF isOk
          isOk := _area:Create(_oStream, _hFile, RuntimeState.MemoBlockSize)
@@ -186,7 +189,11 @@ INTERNAL CLASS MEMOCLASS INHERIT AbstractMemo IMPLEMENTS IMemo
    /// <inheritdoc />
    OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
       LOCAL isOk AS LOGIC
-      SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
+      #ifdef RDD_FPT
+         SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
+      #else
+         SELF:Extension := DBV_MEMOEXT
+      #endif
       isOk := SUPER:OpenMemFile(info)
       IF isOk
          isOk := _area:Open(_oStream, _hFile)

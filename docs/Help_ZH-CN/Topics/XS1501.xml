@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1501</title>
+  <keywords>
+    <keyword>XS1501</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1501</para>
+    </header>
+    <para styleclass="Normal">No overload for method &apos;method&apos; takes &apos;number&apos; arguments</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A call was made to a class method, but no definition of the method takes the specified number of arguments.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1501.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">//XS1501.PRG</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2022-12-02T19:15:35.803+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Acknowledgements</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Acknowledgements</para>
+    </header>
+    <para styleclass="Normal">We could not have done this project without (source code) contributions from others.<br/>Below is a list of the contributions that we used for our compiler and Visual Studio integration</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Description</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:30%;">
+          <para styleclass="Body Text">Roslyn</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The X# compiler is based on the open source project Roslyn, which contains the source to the Microsoft VB and C# compilers.<br/>Our project would have been impossible with this source.<br/>We are very grateful that Microsoft has moved this project to the open source. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://github.com/dotnet/roslyn" target="_blank">github.com/dotnet/roslyn</link>)<br/>The source code to Roslyn is published under the Apache License, version 2 </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Antlr</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The X# compiler uses Antlr 4 as parser generator to generate the front end of the compiler. We would like to thank Terence Parr and Sam Harwell for their excellent work.</para>
+          <para styleclass="Body Text">The source code to Antlr is published under the BSD License. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.antlr.org" target="_blank">www.antlr.org</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Wix (votive)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The project system for Wix (Votive). We have been inspired by some of the code in this system. We would like to thank Rob Mensching and the other authors of this project system. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://wixtoolset.org/" target="_blank">wixtoolset.org/</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Nemerle</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The project system for Nemerle. We have been inspired by some of the solutions in their project system. We would like to thank the authors of Nemerle for showing us how to solve certain problems. (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.nemerle.org" target="_blank">www.nemerle.org</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">F# project system</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The visual F# project system (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.fsharp.org" target="_blank">www.fsharp.org)</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Help and Manual</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Our documentation is written with the excellent tool &quot;Help and Manual&quot; from Alexander Halser (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.helpandmanual.com" target="_blank">www.helpandmanual.com</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Sandcastle Help File Builder</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The documentation for the runtime is generated with a special version of the Sandcastle Help File Builder product. (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/EWSoftware/SHFB" target="_blank">github.com/EWSoftware/SHFB</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Paul Piko</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">For his Hybrid classes that allow to mix VO GUI with Windows Forms</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">JB Evain</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">We are using his Mono.Cecil library inside our project system to collect type information for external types</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">The SQLite team</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">We are using their SQLite database inside our project system</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Karl-Heinz Rauscher (Germany)</para>
+          <para styleclass="Body Text">António Lopes (Portugal)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Have contributed functions for the FoxPro library.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

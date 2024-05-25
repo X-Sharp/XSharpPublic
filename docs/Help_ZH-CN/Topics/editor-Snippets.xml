@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:45:06.004+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Snippets</title>
+  <keywords>
+    <keyword>Snippets</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Snippets</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual Studio provides useful code snippets that you can use to quickly and easily generate commonly used code blocks. </text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To do this, place your cursor just above the final closing brace in the file, a pop-up dialog box appears with information about the code snippet.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">&#32;</text><image src="Snippets.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can fill in the yellow sections, press tab to switch between these sections.</text></para>
+    <para styleclass="Normal"><image src="Snippets 2.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can look at the available code snippets for X# by choosing Edit &gt; IntelliSense &gt; Insert Snippet or right-click &gt; Snippet &gt; Insert Snippet or pressing Ctrl+K, Ctrl+X.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">The list includes snippets for creating a class, a constructor, a for loop, an if or switch statement, and more.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

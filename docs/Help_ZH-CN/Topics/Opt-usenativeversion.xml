@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-usenativeversion</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">-usenativeversion</para>
+    </header>
+    <para styleclass="Normal">The -<text styleclass="Body Text">usenativeversion</text> compiler option tells the compiler to use the native Win32 version resource supplied in a Win32 resource file and to not generate a resource from the Assembly attributes</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-usenativeversion  </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">Managed resources are usually generated from code such as the code below:</para>
+    <para styleclass="Code with box">[assembly: AssemblyTitleAttribute( &quot;Mycompany Custom Controls&quot; )]<br/>[assembly: AssemblyDescriptionAttribute( &quot;This is a description of the assembly&quot; )]<br/>#ifdef __DEBUG__<br/>[assembly: AssemblyConfigurationAttribute( &quot;Debug&quot; )]<br/>#else<br/>[assembly: AssemblyConfigurationAttribute( &quot;Release&quot; )]<br/>#endif<br/>[assembly: AssemblyCompanyAttribute( &quot;MyCompanyName&quot; )]<br/>[assembly: AssemblyProductAttribute( &quot;MyProductName&quot; )]<br/>[assembly: AssemblyCopyrightAttribute( &quot;Copyright © 2020 MyCompanyName&quot; )]<br/>[assembly: AssemblyTrademarkAttribute( &quot;TM MyCompanyName&quot; )]<br/>[assembly: AssemblyCultureAttribute( &quot;en-US&quot; )]<br/>// Version information for an assembly consists of the following four values:<br/>[assembly: AssemblyVersionAttribute( &quot;2.3.1&quot; )]<br/>[assembly: AssemblyFileVersionAttribute( &quot;2.3.1&quot; )]<br/>[assembly: AssemblyInformationalVersionAttribute( &quot;2.3.1 Special Build for customer Contoso&quot; )]</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Normal">We use this kind of attributes to generate the version info in our runtime assemblies:</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="versioninfo.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Click here to see the property page</link></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+  </body>
+</topic>

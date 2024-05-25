@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-shared</title>
+  <keywords>
+    <keyword>/shared</keyword>
+    <keyword>pipename</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-shared</para>
+    </header>
+    <para styleclass="Normal">Used the shared compiler process (XSCompiler.exe) to compile the project. This process caches type information so repeated compilations will be faster</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">/shared[: pipeName]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List"><text styleclass="Code Example">pipeName</text><tab />This optional parameter specifies the pipename that the compiler uses to communicate between the foreground process (xsc.exe) and the background compiler (xscompiler.exe)</para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">This commandline option is useful to speed up compilation</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Build tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">Check or uncheck the &quot;Use Shared compiler&quot; option.</li>
+    </list>
+  </body>
+</topic>

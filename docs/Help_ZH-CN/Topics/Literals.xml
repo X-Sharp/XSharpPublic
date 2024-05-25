@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Literals</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Literals</para>
+    </header>
+    <para styleclass="Normal">The X# language knows the following literal types</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Keyword</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CharLiterals">Char Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DateLiterals">Date Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LogicLiterals">Logic Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Compiler-Macros">Macros</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="NullLiterals">NULL Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="NumericLiterals">Numeric Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="StringLiterals">String Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="SymbolLiterals">Symbol Literals</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

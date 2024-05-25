@@ -87,6 +87,7 @@
     <Compile Include="DbfDbt\DbtMemo.prg" />
     <Compile Include="DbfFpt\DbfFpt.prg" />
     <Compile Include="DbfMemo\DbfMemo.prg" />
+    <Compile Include="DbfMemo\DbfMemoCdx.prg" />
     <Compile Include="DbfMemo\DbvMemo.prg" />
     <Compile Include="DbfNtx\DbfNtx.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderIO.prg" />

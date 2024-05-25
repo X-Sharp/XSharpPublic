@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-vo10</title>
+  <keywords>
+    <keyword>-vo10</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-vo10<tab />Compatible IIF Behavior </para>
+    </header>
+    <para styleclass="Normal">The -vo10 option enables the IIF operator to behave in a manner compatible with Visual Objects</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-vo10[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -vo10, causes the IIF operator to behave as it does in Visual Objects. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">If the true and false expressions in an IIF operator are not the same, or one cannot be implicitly converted to the type of the other, the compiler will raise an error.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Objects allows this, and implicitly converts both expressions to USUAL, causing the IIF expression to also return USUAL. This is neither safe or efficient, but code originally written in Visual Objects may depend on this behavior, and if -vo10 is not used, errors may occur at runtime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">x := TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, 1, &quot;Sunday&quot;)</text><br/></para>
+    <para styleclass="Normal">When you use The -vo10 compiler option then the compiler will convert this to:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">)1, &#160;(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &quot;Sunday&quot;) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// for the VO and Vulcan dialect</text></para>
+    <para styleclass="Normal">or </para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( x, (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; color:#000000;">)1, &#160;(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OBJECT</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &quot;Sunday&quot;) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// for the Core dialect</text></para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+  </body>
+</topic>

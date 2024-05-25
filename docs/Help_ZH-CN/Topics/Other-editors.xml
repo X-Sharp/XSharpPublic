@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:42:21.136+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Other editors</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Other editors</para>
+    </header>
+    <para styleclass="Normal">We have added some custom editor to Visual Studio to allow you to edit resources that are migrated from Visual Objects.</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Form Editor</li>
+      <li styleclass="Normal">DbServer Editor</li>
+      <li styleclass="Normal">FieldSpec Editor</li>
+      <li styleclass="Normal">Menu Editor</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The Tools Options dialog contains some settings that are used by these custom editors:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Wed.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">There is a second page with some settings for the other editor and for some other relevant settings:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Other.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

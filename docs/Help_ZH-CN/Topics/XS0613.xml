@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0613</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0613</para>
+    </header>
+    <para styleclass="Body Text">Static class &apos;{0}&apos; cannot derive from type &apos;{1}&apos;. Static classes must derive from object.</para>
+    <para styleclass="Body Text">This error message appears when you inherit a static class from another class.</para>
+    <para styleclass="Body Text">To solve this you must either:</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">make the class non static</li>
+      <li styleclass="Body Text">remove the inheritance.</li>
+    </list>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STATIC</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MySubclass </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INHERIT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyClass &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Error XS0613</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><br/><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyClass</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

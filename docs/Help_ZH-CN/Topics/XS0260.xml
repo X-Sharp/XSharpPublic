@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0260</title>
+  <keywords>
+    <keyword>XS0260</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0260</para>
+    </header>
+    <para styleclass="Normal">Missing partial modifier on declaration of type &apos;type&apos;; another partial declaration of this type exists</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error indicates that you have declared multiple classes that have the same name. In addition, at least one but not all of the declarations contains the partial modifier. If you want to define a class in several parts, you must declare each part by using the keyword partial.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error also occurs if you declare a class and accidentally give it the same name as a partial class that&apos;s declared elsewhere in the same namespace.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0260:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0260.prg  <br/>// You must mark both parts of the definition of class C   <br/></para>
+  </body>
+</topic>

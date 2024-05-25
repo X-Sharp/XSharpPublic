@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-vo6</title>
+  <keywords>
+    <keyword>-vo6</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-vo6<tab /><tab />Implicit pointer conversions </para>
+    </header>
+    <para styleclass="Normal">The -vo6 option directs the compiler to resolve typed function pointers to PTR.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-vo6[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -vo6, directs the compiler to resolve pointers that would resolve to typed function pointers in Visual Objects to PTR. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">X# does not supported typed function pointers. Existing Visual Objects code that declares typed function pointers will not compile in X#, unless the type is changed to PTR or IntPtr.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If this option is enabled and a pointer type cannot be resolved, the compiler will attempt to locate a function with the same name as the pointer type (without &quot;PTR&quot;). If found, the compiler will resolve the type to PTR. This allows existing Visual Objects code to be compiled without modification, at least as far as the variable declaration is concerned.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The pointer type may be used as an argument to CCallNative(), PCallNative() or CallManaged(), depending on the type of function the pointer points to.</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo6 is used.</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text><br/></para>
+    <para styleclass="Body Text"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">Using </text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:bold; color:#000000;">/vo6</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;"> has the same effect as if the </text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:bold; color:#000000;">GLOBAL</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;"> declaration were rewritten as:</text></para>
+    <para styleclass="Code with box"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Using -vo6 has the same effect as if the GLOBAL declaration were rewritten as:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">GLOBAL pFoo AS PTR </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Note that PTR does not have the same semantics as typed function pointers in Visual Objects. However, typed function pointers are primarily used as arguments to CALL(), CCALL() and PCALL() in Visual Objects, which are not supported in X#. They have been replaced with CCallNative(), PCallNative() and CallManaged(), which accept IntPtr arguments. The same end result (invoking a function indirectly through a pointer) is therefore possible in X# without typed function pointers.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

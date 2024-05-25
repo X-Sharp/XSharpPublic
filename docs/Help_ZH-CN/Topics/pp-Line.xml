@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#line</title>
+  <keywords>
+    <keyword>#line</keyword>
+    <keyword>Preprocessor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">#line</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">#line sets the current line number for the compiler. It is usually inserted by the preprocessor after preprocessing an include file to synchronize the line numbers with the original source file.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code with box">#line &lt;number&gt; [FileName]</para>
+    <para styleclass="Heading1">Argumes</para>
+    <para styleclass="List">line number <tab />the new line number to use by the compiler. </para>
+    <para styleclass="List">FileName <tab />An optional new filename to use by the compiler </para>
+    <para styleclass="List"><br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

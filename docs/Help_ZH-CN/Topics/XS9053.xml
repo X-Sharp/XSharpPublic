@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9053</title>
+  <keywords>
+    <keyword>XS9053</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9053</para>
+    </header>
+    <para styleclass="Normal">No overload for method &apos;{0}&apos; found with {1} arguments and default values for one or more arguments</para>
+  </body>
+</topic>

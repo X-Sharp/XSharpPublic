@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-26T19:53:10.835+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__typeList</title>
   <body>
     <header>
       <para styleclass="Heading1">__typeList</para>
     </header>
-    <para styleclass="List"><tab />The valid values for &lt;idType&gt; and the initial values associated with each are listed in the table below:</para>
+    <para styleclass="List"><tab />下表列出了 &lt;idType&gt; 的有效值以及相关的初始值：</para>
     <para styleclass="List"></para>
-    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">Data Type<tab />Default/Initial Value<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">数据类型<tab />默认/初始化值<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">ARRAY<tab />NULL_ARRAY<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">CODEBLOCK<tab />NULL_CODEBLOCK<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">DATE<tab />NULL_DATE<tab /></para>

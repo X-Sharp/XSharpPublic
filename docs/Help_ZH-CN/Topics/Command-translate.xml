@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-26T19:50:52.419+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>command-translate</title>
   <keywords>
     <keyword>=&gt;</keyword>
@@ -9,40 +9,47 @@
     <header>
       <para styleclass="Heading1">command-translate</para>
     </header>
-    <para styleclass="Heading2"> Arguments</para>
-    <para styleclass="Normal"><text styleclass="Code Example">&lt;matchPattern&gt;</text> is the pattern the input text should match.</para>
+    <para styleclass="Heading2">参数</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Code Example">&lt;resultPattern&gt;</text> is the text produced if a portion of input text matches the &lt;matchPattern&gt;.</para>
+    <para styleclass="Normal"><text styleclass="Code Example">&lt;matchPattern&gt;</text> 是输入文本应匹配的模式。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The =&gt; symbol between &lt;matchPattern&gt; and &lt;resultPattern&gt; is, along with #command or #translate, a literal part of the syntax that must be specified in a #command or #translate directive. &#160;The symbol consists of an equal sign followed by a greater than symbol with no intervening spaces. &#160;Do not confuse the symbol with the &gt;= or the &lt;= comparison operators in the xBase language.</para>
+    <para styleclass="Normal"><text styleclass="Code Example">&lt;resultPattern&gt;</text> 是当输入文本的一部分匹配 `&lt;matchPattern&gt;` 时生成的文本。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading2">Description</text></para>
-    <para styleclass="Normal">#command and #translate are translation directives that define commands and pseudofunctions. &#160;Each directive specifies a translation rule. &#160;The rule consists of two portions: &#160;a match pattern and a result pattern.</para>
-    <para styleclass="Normal">The match pattern matches a command specified in the program (.prg) file and saves portions of the command text (usually command arguments) for the result pattern to use. &#160;The result pattern then defines what will be written to the result text and how it will be written using the saved portions of the matching input text.</para>
+    <para styleclass="Normal">在 &lt;matchPattern&gt; 和 &lt;resultPattern&gt; 之间的 “=&gt;” 符号，与 #command 或 #translate 一起，是语法的字面部分，必须在 #command 或 #translate 指令中指定。该符号由一个等号和一个大于号组成，中间没有空格。不要将该符号与 xBase 语言中的 &gt;= 或 &lt;= 比较运算符混淆。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">#command and #translate are similar, but differ in the circumstance under which their match patterns match input text. &#160;A #command directive matches only if the input text is a complete statement, while #translate matches input text that is not a complete statement. &#160;#command defines a complete command and #translate defines clauses and pseudofunctions that may not form a complete statement. &#160;In general, use #command for most definitions and #translate for special cases.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">#command and #translate are similar to but more powerful than the #define directive. &#160;#define, generally, defines identifiers that control conditional compilation and manifest constants for commonly used constant values such as SDK codes. &#160;Refer to any of the header files in the INCLUDE directory for examples of manifest constants defined using #define.</para>
+    <para styleclass="Normal"><text styleclass="Heading2">描述</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">#command and #translate directives have the same scope as the #define directive. &#160;The definition is valid only for the current program (.prg) file unless defined in Std.ch or the header specified with the /U option on the compiler command line. &#160;If defined elsewhere, the definition is valid from the line where it is specified to the end of the program file. &#160;Unlike #define, a #translate or #command definition cannot be explicitly undefined. &#160;The #undef directive has no effect on a #command or #translate definition.</para>
+    <para styleclass="Normal">#command 和 #translate 是定义命令和伪函数的翻译指令。每个指令指定一个翻译规则。该规则由两个部分组成：匹配模式和结果模式。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">As the preprocessor encounters each source line preprocessor, it scans for definitions in the following order of precedence: #define, #translate, and #command. &#160;When there is a match, the substitution is made to the result text and the entire line is reprocessed until there are no matches for any of the three types of definitions. &#160;#command and #translate rules are processed in stack-order (i.e., last in-first &#160;out, with the most recently specified rule processed first).</para>
+    <para styleclass="Normal">匹配模式匹配程序 (.prg) 文件中指定的命令，并保存命令文本的部分（通常是命令参数）供结果模式使用。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In general, a command definition provides a way to specify an English language statement that is, in fact, a complicated expression or function call, thereby improving the readability of source code. &#160;You can use a command in place of an expression or function call to impose order of keywords, required arguments, combinations of arguments that must be specified together, and mutually exclusive &#160;arguments at compile time rather than at runtime. &#160;This can be important since procedures and user-defined functions can now be called with any number of arguments, forcing any argument checking to occur at runtime. &#160;With command definitions, the preprocessor handles some of this.</para>
+    <para styleclass="Normal">结果模式然后定义将写入结果文本的内容以及如何使用保存的匹配输入文本的部分进行写入。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">Because directives are processed in stack order, when defining more than one rule for a command, place the most general case first, followed by the more specific ones. This ensures that the proper rule will match the command specified in the program (.prg) file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading2">Match Markers</text></para>
+    <para styleclass="Normal">#command 和 #translate 类似，但在其匹配模式匹配输入文本的情况下有所不同。#command 指令仅在输入文本是完整语句时匹配，而 #translate 匹配不是完整语句的输入文本。#command 定义完整命令，而 #translate 定义可能不构成完整语句的子句和伪函数。一般来说，大多数定义使用 #command，而特殊情况使用 #translate。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp_Match-Markers">See the topic about Match Markers for a detailed discussion</link></para>
+    <para styleclass="Normal">#command 和 #translate 类似于但比 #define 指令更强大。#define 通常定义控制条件编译的标识符和常用常量值（如 SDK 代码）的清单常量。请参阅 INCLUDE 目录中的任何头文件，以了解如何使用 #define 定义清单常量。 </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading2">Result Markers</text></para>
+    <para styleclass="Normal">#command 和 #translate 指令的作用范围与 #define 指令相同。定义仅对当前程序 (.prg) 文件有效，除非在 Std.ch 或编译器命令行上使用 /U 选项指定的头文件中定义。如果在其他地方定义，则定义从指定行开始到程序文件结束有效。与 #define 不同，#translate 或 #command 定义不能显式取消定义。#undef 指令对 #command 或 #translate 定义没有影响。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">See the topic about Result Markers for a detailed discussion</link></para>
-    <para styleclass="Heading2"> Notes</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Less than operator</text>: If you specify the less than operator (&lt;) in the &lt;resultPattern&gt; expression, you must precede it with the escape character (\).</li>
-      <li styleclass="Normal"><text style="font-weight:bold;">Multistatement lines</text>: You can specify more than one statement as a part of the result pattern by separating each statement with a semicolon. &#160;If you specify adjacent statements on two separate lines, the first statement must be followed by two semicolons.</li>
+    <para styleclass="Normal">当预处理器遇到每一行源代码时，它按以下优先顺序扫描定义：#define、#translate 和 #command。当有匹配时，替换会应用于结果文本，并且整行会重新处理，直到没有任何三种类型的定义匹配为止。#command 和 #translate 规则按堆栈顺序处理（即，后进先出，最最近指定的规则首先处理）。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">一般来说，命令定义提供了一种指定英语语句的方法，实际上是一个复杂的表达式或函数调用，从而提高了源代码的可读性。您可以使用命令代替表达式或函数调用，以在编译时而不是运行时强制关键字顺序、必需参数、必须一起指定的参数组合和互斥参数。这很重要，因为过程和用户定义函数现在可以使用任意数量的参数调用，强制任何参数检查在运行时进行。使用命令定义，预处理器处理其中的一部分。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">由于指令按堆栈顺序处理，因此在为命令定义多个规则时，请首先放置最通用的情况，然后是更具体的情况。这确保了适当的规则将匹配程序 (.prg) 文件中指定的命令。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">匹配标记</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp_Match-Markers">请参阅关于匹配标记的主题以获取详细信息</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">结果标记</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">请参阅关于结果标记的主题以获取详细信息</link></para>
+    <para styleclass="Heading2">注意</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">小于运算符：</text>如果在 `&lt;resultPattern&gt;` 表达式中使用小于运算符 (&lt;)，则必须在其前面加上转义字符 (\)。.</li>
+      <li styleclass="Normal"><text style="font-weight:bold;">多行语句：</text>您可以通过用分号分隔每个语句来指定结果模式的一部分的多个语句。如果在两行中指定相邻语句，则第一条语句后必须跟两个分号。</li>
     </list>
   </body>
 </topic>

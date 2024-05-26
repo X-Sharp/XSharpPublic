@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-26T20:11:40.746+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeExpressionBody</title>
   <body>
     <header>
       <para styleclass="Heading1">__IncludeExpressionBody</para>
     </header>
-    <para styleclass="List">=&gt; &lt;Expression&gt;<tab />Single expression that replaces the multiline body for the entity. CANNOT be compiled with a body</para>
+    <para styleclass="List">=&gt; &lt;Expression&gt;<tab />替代实体多行正文(body)的单一表达式。<text style="font-weight:bold;">不能</text>与正文(body)一起编译</para>
     <para styleclass="List"></para>
   </body>
 </topic>

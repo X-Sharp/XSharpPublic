@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-26T10:57:35.204+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeBody</title>
   <body>
     <header>
       <para styleclass="Heading1">__IncludeBody</para>
     </header>
-    <para styleclass="List">&lt;Body&gt;<tab />Program statements that form the code of this entity.<br/>The &lt;Body&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).<br/>CANNOT be combined with an Expression Body</para>
-    <para styleclass="List"></para>
+    <para styleclass="List">&lt;Body&gt;<tab />构成此实体代码的程序语句。</para>
+    <para styleclass="List"><tab />&lt;Body&gt; 可以包含一个或多个 RETURN 语句，以将控制权返回给调用例程，并作为函数的返回值。如果未指定 RETURN 语句，当函数定义结束时，控制权将返回给调用例程，并且函数将根据指定的返回值数据类型返回一个默认值（如果返回值没有强类型，则返回 NIL）。</para>
+    <para styleclass="List"><tab />不能与表达式体(&lt;Body&gt;)结合使用。</para>
   </body>
 </topic>

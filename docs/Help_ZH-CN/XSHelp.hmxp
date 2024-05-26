@@ -7,7 +7,7 @@
         <export-tasks>
           <export-task name="Publish as CHM" format="CHM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.chm</task-config-value>
+              <task-config-value name="outputfile">..\..\..\..\artifacts\Doc\XSharp.chm</task-config-value>
               <task-config-value name="skin">XSharp.hmskin</task-config-value>
               <task-config-value name="deletetemp">0</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
@@ -668,6 +668,11 @@
           <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
+      <config-group name="design">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
     </config-group>
     <config-group name="chm">
       <config-value name="defaultext">.html</config-value>
@@ -686,7 +691,7 @@
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
       <config-value name="skin">XSharp.hmskin</config-value>
-      <config-value name="outputfile">..\..\artifacts\Doc\XSharp.chm</config-value>
+      <config-value name="outputfile">..\..\..\..\artifacts\Doc\XSharp.chm</config-value>
       <config-value name="deletetemp">0</config-value>
       <config-value name="usesecondarywindows">0</config-value>
     </config-group>

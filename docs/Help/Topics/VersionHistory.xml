@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-23T18:21:51.271+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-27T13:03:19.289+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -74,6 +74,10 @@
       <li styleclass="Normal">Fixed problem with the VODBServer editor not saving access/assigns and other entities of the [DBSERVER] section in CAVOFED.TPL (#1452)</li>
       <li styleclass="Normal">Fixed a problem in the VS2022 Debugger when different DLLs contained the same namespace with different case.</li>
     </list>
+    <para styleclass="Heading3">New features</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">We have added a menu entry to the Help menu for the Chinese version of the documentation.</li>
+    </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -82,6 +86,10 @@
     <para styleclass="Heading3">New Features</para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">It is now possible to define special TEXTBLOCK entities in the VO code in any module with name &quot;VXP-TOP&quot; or &quot;{VOXP:TOP}&quot; and VOXporter will automatically insert the contents of the textblock in the beginning of the exported X# .prg file for the module. This is particularly helpful for specifying top level commands like #using statements (#1425)</li>
+    </list>
+    <para styleclass="Heading2">VFPXporter</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">This version of X# includes the VFP Exporter. This tool takes a Visual FoxPro project file and converts that into aVisual Studio solution</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -102,7 +110,8 @@
     </list>
     <para styleclass="Heading3">New Features</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">We have added several chapters about <link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">modifiers</link></li>
+      <li styleclass="Normal">We have added several chapters about <link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">modifiers</link>.</li>
+      <li styleclass="Normal">We have added a (partially) translated help file in (Simplified) Chinese</li>
     </list>
     <para styleclass="Heading1">Changes in 2.19.0.2</para>
     <para styleclass="Heading2">Compiler</para>

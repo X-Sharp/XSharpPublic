@@ -319,6 +319,9 @@
       <topicref type="topic" id="436076514139184" build="ALL" modified="2019-05-22T16:23:28.707Z" icon="0" href="XSharp_VFP">
         <caption translate="true">XSharp.VFP</caption>
       </topicref>
+      <topicref type="topic" id="454395707133652" build="ALL" modified="2024-05-27T12:55:28.332Z" icon="0" href="XSharp_VFP_UI">
+        <caption translate="true">XSharp.VFP.UI</caption>
+      </topicref>
       <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
         <caption translate="true">XSharp.Macrocompiler</caption>
       </topicref>

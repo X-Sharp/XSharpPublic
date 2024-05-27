@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-23T18:21:51.271+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-27T22:26:54.131+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -72,6 +72,7 @@
       <li styleclass="Normal">Fixed problem with setting the &quot;enable named arguments&quot; project option (#1431)</li>
       <li styleclass="Normal">Fixed problem with the code generator for types in external assemblies not generating parameters for Indexed properties (#1442)</li>
       <li styleclass="Normal">Fixed problem with the VODBServer editor not saving access/assigns and other entities of the [DBSERVER] section in CAVOFED.TPL (#1452)</li>
+      <li styleclass="Normal">Fixed problem with loading supplemental files provided in the cavowed.inf file for the VO Window Editor with absolute or relative paths (#1470)</li>
       <li styleclass="Normal">Fixed a problem in the VS2022 Debugger when different DLLs contained the same namespace with different case.</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>

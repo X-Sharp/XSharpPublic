@@ -138,12 +138,12 @@
       <caption translate="true">__SeeAlsoExitLoop</caption>
     </topicref>
   </topicref>
-  <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
-    <caption translate="true">X# Documentation</caption>
-    <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-30T22:08:40.876Z" icon="0" href="Introduction">
-      <caption translate="true">Getting Started with X#</caption>
-      <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
-        <caption translate="true">Dialects</caption>
+  <topicref type="topic" id="423886812341331" build="ALL" modified="2024-05-25T17:49:22.898Z" icon="0" href="XSharp">
+    <caption translate="true">X# 文档</caption>
+    <topicref type="topic" id="423889533736020" build="ALL" modified="2024-05-25T17:49:55.804Z" icon="0" href="Introduction">
+      <caption translate="true">X# 入门</caption>
+      <topicref type="topic" id="425165252463386" build="ALL" modified="2024-05-26T17:49:21.269Z" icon="0" href="Dialects">
+        <caption translate="true">方言</caption>
         <topicref type="topic" id="437985041510088" build="ALL" modified="2019-12-13T11:25:48.582Z" icon="0" href="dialect_Core">
           <caption translate="true">Core</caption>
         </topicref>
@@ -275,8 +275,8 @@
         <caption translate="true">Acknowledgements</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
-      <caption translate="true">Version History</caption>
+    <topicref type="topic" id="423888143662582" build="ALL" modified="2024-05-26T17:51:05.985Z" icon="0" href="VersionHistory">
+      <caption translate="true">版本历史</caption>
     </topicref>
     <topicref type="topic" id="428984094992566" build="ALL" modified="2017-06-12T12:42:21.816Z" icon="0" href="MigratingappsfromVOtoX">
       <caption translate="true">Migrating apps from VO to X#</caption>
@@ -700,8 +700,8 @@
       <topicref type="topic" id="443027840779407" build="ALL" modified="2023-07-07T22:44:05.379Z" icon="0" href="Runtime-Scripting">
         <caption translate="true">Runtime Scripting</caption>
       </topicref>
-      <topicref type="topic" id="451070096852790" build="ALL" modified="2023-06-29T22:19:17.583Z" icon="0" href="Calling-conventions">
-        <caption translate="true">Calling conventions</caption>
+      <topicref type="topic" id="451070096852790" build="ALL" modified="2024-05-26T17:00:13.961Z" icon="0" href="Calling-conventions">
+        <caption translate="true">调用约定</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423889629409879" build="ALL" modified="2017-01-09T09:14:07.526Z" icon="0" href="Chapter-2">

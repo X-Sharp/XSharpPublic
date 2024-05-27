@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-26T11:04:35.527+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeFuncProcModifiers</title>
   <body>
     <header>
       <para styleclass="Heading1">__IncludeFuncProcModifiers</para>
     </header>
-    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, STATIC, INTERNAL, EXPORT and UNSAFE. </para>
+    <para styleclass="List">Modifiers<tab />一个可选的修饰符列表，用于指定实体的可见性或范围，例如：PUBLIC, STATIC, INTERNAL, EXPORT 和 UNSAFE. </para>
   </body>
 </topic>

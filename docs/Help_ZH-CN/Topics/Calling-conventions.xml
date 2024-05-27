@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-19T12:07:00.280+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Calling conventions</title>
+<topic template="Default" modified="2024-05-26T17:00:31.317+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>调用约定</title>
   <body>
     <header>
-      <para styleclass="Heading1">Calling conventions</para>
+      <para styleclass="Heading1">调用约定</para>
     </header>
     <para styleclass="Body Text">Calling conventions are something from the unmanaged world. They describe how parameters should be passed when you call a function or method and they also describe who is responsible for adjusting the stack when the called function / method returns.</para>
     <para styleclass="Body Text">Different compilers have different default strategies for passing parameters to functions.</para>

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-25T18:39:05.252+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__FoxProOnly</title>
   <body>
-    <para styleclass="List1" style="background-color:#ffffaa; border:none;"><text style="font-size:9pt; font-weight:bold; background-color:#ffffaa;">Note</text><tab /><text style="font-size:9pt; background-color:#ffffaa;">This command is only available in the FOXPRO dialect</text></para>
+    <para styleclass="List1" style="background-color:#ffffaa; border:none;"><text style="font-size:9pt; font-weight:bold; background-color:#ffffaa;">注意</text><tab /><text style="font-size:9pt; background-color:#ffffaa;">此命令仅用于 FOXPRO 方言。</text></para>
   </body>
 </topic>

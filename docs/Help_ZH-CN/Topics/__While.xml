@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-26T20:00:14.875+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__While</title>
   <body>
     <header>
       <para styleclass="Heading1">__While</para>
     </header>
-    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</para>
+    <para styleclass="List">WHILE &lt;lCondition&gt;<tab />范围内每条可见记录都必须满足的条件，从当前记录开始。 一旦 while 条件失败，进程就会终止。 如果没有指定 &lt;Scope&gt;，while 条件会将默认范围改为文件中的其他可见记录。</para>
     <para styleclass="List"></para>
   </body>
 </topic>

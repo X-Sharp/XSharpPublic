@@ -2137,9 +2137,12 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN u:ToString()
         CASE __UsualType.Binary
             RETURN u:_binaryValue:ToString()
-        OTHERWISE
-            THROW ConversionError(STRING, TYPEOF(STRING), u)
+        CASE __UsualType.Object
+            IF u:_refData == NULL
+                RETURN String.Empty
+            END IF
         END SWITCH
+        THROW ConversionError(STRING, TYPEOF(STRING), u)
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains an numeric value then this value is considered to be an index in the symbol table.</remarks>
     [NODEBUG];

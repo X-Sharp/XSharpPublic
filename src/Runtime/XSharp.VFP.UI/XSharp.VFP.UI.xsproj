@@ -230,12 +230,12 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>copy $(Targetpath) $(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName) /y</PostBuildEvent>
+    <PostBuildEvent>copy $(Targetpath) "$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>copy $(Targetpath) $(SolutionDir)VFPXPorterLib\Data\Templates\Tools\$(TargetFileName) /y</PostBuildEvent>
+    <PostBuildEvent>copy $(Targetpath) "$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

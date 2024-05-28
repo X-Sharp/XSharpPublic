@@ -9,7 +9,7 @@
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.chm</task-config-value>
               <task-config-value name="skin">XSharp.hmskin</task-config-value>
-              <task-config-value name="deletetemp">0</task-config-value>
+              <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
@@ -685,7 +685,7 @@
       <config-value name="htmlpopup">3</config-value>
       <config-value name="skin">XSharp.hmskin</config-value>
       <config-value name="outputfile">..\..\artifacts\Doc\XSharp.chm</config-value>
-      <config-value name="deletetemp">0</config-value>
+      <config-value name="deletetemp">1</config-value>
       <config-value name="usesecondarywindows">0</config-value>
     </config-group>
     <config-group name="mshc">

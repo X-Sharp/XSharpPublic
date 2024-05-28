@@ -118,9 +118,9 @@ END METHOD
 
 
 // This is a fake property, just here to ease Code Generation
-#pragma warnings(108, disable) // warning XS0114: 'XSharp.VFP.UI.EditBox.BindingDefinition' hides inherited member
+
 PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
-#pragma warnings(108, default)
+
 // We cannot "capture" the color settings : It would ease the VFP Code port, but it would break the WinForms designer
 /*
 //		NEW PROPERTY BackColor AS INT

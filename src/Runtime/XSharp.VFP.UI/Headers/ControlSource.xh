@@ -3,7 +3,7 @@
 // Creation Date : 9/23/2022 6:11:50 PM
 // Created for   :
 // WorkStation   : FABXPS
-#pragma warnings(114, disable) // warning XS0114: 'XSharp.VFP.UI.EditBox.BindingDefinition' hides inherited member
+
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(false)];
@@ -17,4 +17,3 @@ METHOD SetBinding( sender AS System.Windows.Forms.Control, bindingInfo AS STRING
 	ENDIF
 	SELF:BindingDefinition:Add( sender, bindingInfo )
 
-#pragma warnings(114, default)

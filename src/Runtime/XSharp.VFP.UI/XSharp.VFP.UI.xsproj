@@ -36,7 +36,7 @@
     <NoStandardDefs>False</NoStandardDefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <DisabledWarnings />
+    <DisabledWarnings>108,114</DisabledWarnings>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <WarningsAsErrors />
@@ -44,7 +44,7 @@
     <DocumentationFile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <DisabledWarnings />
+    <DisabledWarnings>108,114</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningsAsErrors />

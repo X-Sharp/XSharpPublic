@@ -32,8 +32,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
 		PROPERTY Style AS INT AUTO
 
-			// TODO : Sorry not supported by now, but we may write the OnPaint code to support it ??
-		[Obsolete("Not Supported currently")];
 		PROPERTY Rotation AS INT AUTO
 
 		CONSTRUCTOR(  ) STRICT
@@ -49,7 +47,16 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		PROPERTY DisabledBackColor AS LONG AUTO
 		PROPERTY DisabledForeColor AS LONG AUTO
-		PROPERTY WordWrap AS LOGIC AUTO
+        PROPERTY WordWrap AS LOGIC AUTO
+        PROTECTED OVERRIDE METHOD OnPaint( e AS PaintEventArgs ) AS VOID STRICT
+            IF SELF:Rotation != 0
+                var b := SolidBrush{ SELF:ForeColor }
+                e:Graphics:TranslateTransform(self:Width, self:Height/2)
+                e:Graphics:RotateTransform( SELF:Rotation )
+                e:Graphics:DrawString(SELF:Text, SELF:Font, b, PointF{0,0})
+            endif
+            SUPER:OnPaint( e )
+
 
 	END CLASS
 

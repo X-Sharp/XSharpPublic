@@ -17,6 +17,7 @@ namespace XSharp.LanguageService
     {
         internal static string HelpPath = "";
         internal static string GeneralHelp = "";
+        internal static string CNHelp = "";
         internal static string RefHelp = "";
         internal static string GetXsPath()
         {
@@ -32,9 +33,10 @@ namespace XSharp.LanguageService
         }
         static HelpViewer()
         {
-            HelpPath = Path.Combine(GetXsPath(),"Help");
+            HelpPath = Path.Combine(GetXsPath(), "Help");
             RefHelp = Path.Combine(HelpPath, "XSharpRef.chm");
             GeneralHelp = Path.Combine(HelpPath, "XSharp.chm");
+            CNHelp = Path.Combine(HelpPath, "XSharp_ZH-CN.chm");
         }
 
         internal static bool IsAssemblyXSharp(XAssembly asm)
@@ -189,10 +191,18 @@ namespace XSharp.LanguageService
             {
                 sig = "visual-studio-integration.html";
             }
+            var help = GeneralHelp;
+            EnvDTE.DTE dte = (EnvDTE.DTE)Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
+            var locale = dte.LocaleID;
+            var culture = System.Globalization.CultureInfo.GetCultureInfo(locale);
+            if (culture.TwoLetterISOLanguageName == "zh")
+            {
+                help = CNHelp;
+            }
             if (showTopic)
-                Help.ShowHelp(null, GeneralHelp, HelpNavigator.Topic, sig);
+                Help.ShowHelp(null, help, HelpNavigator.Topic, sig);
             else
-                Help.ShowHelp(null, GeneralHelp, HelpNavigator.TableOfContents);
+                Help.ShowHelp(null, help, HelpNavigator.TableOfContents);
         }
     }
 }

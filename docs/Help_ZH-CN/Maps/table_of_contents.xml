@@ -319,6 +319,9 @@
       <topicref type="topic" id="436076514139184" build="ALL" modified="2019-05-22T16:23:28.707Z" icon="0" href="XSharp_VFP">
         <caption translate="true">XSharp.VFP</caption>
       </topicref>
+      <topicref type="topic" id="454395707133652" build="ALL" modified="2024-05-27T12:55:28.332Z" icon="0" href="XSharp_VFP_UI">
+        <caption translate="true">XSharp.VFP.UI</caption>
+      </topicref>
       <topicref type="topic" id="432585566321085" build="ALL" modified="2018-06-07T17:54:28.515Z" icon="0" href="XSharp_Macrocompiler">
         <caption translate="true">XSharp.Macrocompiler</caption>
       </topicref>
@@ -7018,6 +7021,24 @@
       <topicref type="topic" id="450654500859464" build="ALL" modified="2023-05-19T12:35:15.417Z" icon="0" href="XS9118">
         <caption translate="true">XS9118</caption>
       </topicref>
+      <topicref type="topic" id="1009119" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9119">
+        <caption translate="true">XS9119</caption>
+      </topicref>
+      <topicref type="topic" id="1009120" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9120">
+        <caption translate="true">XS9120</caption>
+      </topicref>
+      <topicref type="topic" id="1009121" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9121">
+        <caption translate="true">XS9121</caption>
+      </topicref>
+      <topicref type="topic" id="1009122" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9122">
+        <caption translate="true">XS9122</caption>
+      </topicref>
+      <topicref type="topic" id="1009123" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9123">
+        <caption translate="true">XS9123</caption>
+      </topicref>
+      <topicref type="topic" id="1009214" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9214">
+        <caption translate="true">XS9214</caption>
+      </topicref>
       <topicref type="topic" id="1009200" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9200">
         <caption translate="true">XS9200</caption>
       </topicref>
@@ -7074,6 +7095,9 @@
       </topicref>
       <topicref type="topic" id="1009235" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9235">
         <caption translate="true">XS9235</caption>
+      </topicref>
+      <topicref type="topic" id="1009236" build="ALL" modified="2017-01-09T16:17:58.854Z" icon="0" href="XS9236">
+        <caption translate="true">XS9236</caption>
       </topicref>
       <topicref type="topic" id="43660654455136" build="ALL" modified="2019-07-15T13:53:51.479Z" icon="0" href="XS9999">
         <caption translate="true">XS9999</caption>

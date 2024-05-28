@@ -1,12 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:43:16.595+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-27T09:51:17.662+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Text Editor Options</title>
+  <keywords>
+    <keyword>EditorSettings.json</keyword>
+    <keyword>settings</keyword>
+    <keyword>Tools/Options</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Text Editor Options</para>
     </header>
     <para styleclass="Normal">The various settings for the Visual Studio editors can be controlled from the Tools/Options menu.</para>
+    <para styleclass="Normal">The values for the settings are stored in the file XSharp\EditorSettings.json in your roaming profile folder. </para>
+    <para styleclass="Normal">If you have more that one installation of Visual Studio then the settings will be shared between these installations.</para>
     <para styleclass="Normal">When you open that menu point you will see a window like this:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>

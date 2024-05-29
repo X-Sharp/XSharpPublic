@@ -170,7 +170,7 @@
       <config-value name="autohelpstart">0</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">.\;.\Images\</config-value>
+      <config-value name="searchpath">.\;..\HelpImages\</config-value>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make0include">CHM</config-value>
       <config-value name="make0status">*</config-value>

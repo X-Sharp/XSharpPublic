@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <BinariesDir>$(SolutionDir)..\Artifacts\</BinariesDir>
+    <BinariesDir>$([System.IO.Path]::GetFullPath('$(Solutiondir)..\Artifacts\'))</BinariesDir>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <BaseOutputPath>$(BinariesDir)</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>

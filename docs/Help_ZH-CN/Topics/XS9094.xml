@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9094</title>
+  <keywords>
+    <keyword>XS9094</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9094</para>
+    </header>
+    <para styleclass="Normal">Type &apos;{0}&apos; does not have a member &apos;{1}&apos;. This gets resolved to a late bound call to its method &apos;{2}&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This warning indicates that you are calling a property or method on a type object but that type does not have the property.</para>
+    <para styleclass="Normal">The compiler has detected however that the type has a NoIvarGet(), NoIVarPut() or NoMethod() method and will call this method in stead.</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oServer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DbServer</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">oServer := DbServer{&quot;C:\Test\Customer.dbf&quot;}</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? oServer:LastName &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// warning XS9094 Type &apos;DbServer&apos; does not have a member &apos;LastName&apos;. This gets resolved to a late bound call to its method &apos;NoIVarGet&apos;.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">oServer:FirstName &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// warning XS9094 Type &apos;DbServer&apos; does not have a member &apos;FirstName&apos;. This gets resolved to a late bound call to its method &apos;NoIVarPut&apos;.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">oServer:</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">Close</text><text style="font-weight:normal; font-style:normal; color:#000000;">()</text></para>
+  </body>
+</topic>

@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using System;
 using System.Runtime.InteropServices;
-using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.Project

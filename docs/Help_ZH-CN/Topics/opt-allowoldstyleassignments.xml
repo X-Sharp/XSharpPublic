@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T13:22:11.188+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-allowoldstyleassignments</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">-allowoldstyleassignments</para>
+    </header>
+    <para styleclass="Normal">The -allowoldstyleassignments compiler option allows you to control if the single Equals (&quot;=&quot;) operator should be allowed to assign values.</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The default for the FoxPro dialect is /allowdot+</li>
+      <li styleclass="Normal">The default for the other dialects is /allowdot-</li>
+    </list>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-<text styleclass="Normal">allowoldstyleassignments</text>[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

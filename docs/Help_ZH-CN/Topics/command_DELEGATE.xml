@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELEGATE Statement</title>
+  <keywords>
+    <keyword>DELEGATE</keyword>
+    <keyword>reference type</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DELEGATE Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a delegate to &#160;the compiler.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">DELEGATE</text> &lt;<text styleclass="Italic">idDelegate</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Typeparameters]</para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic">idDelegate</text>&gt;<tab />A valid identifier name for the delegate. &#160;Delegate names must be unique within a namespace.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeTypeParameterConstraints" inline="false"/></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Body Text">A delegate is a reference type that encapsulates a function or method. Delegates are similar to function pointers in native code languages such as Visual Objects, C and C++, but unlike function pointers, delegates are object-oriented, secure and type-safe.</para>
+    <para styleclass="Body Text">The <text style="font-weight:bold;">DELEGATE</text> statement declares a special type of class which is partially implemented by the compiler, and partially implemented by the CLR. All delegates inherit from System.MulticastDelegate.</para>
+    <para styleclass="Body Text">Every delegate has a signature, which is a combination of its parameter and return value types.</para>
+    <para styleclass="Heading3">Instantiation</para>
+    <para styleclass="Heading3"><text styleclass="Body Text">You can explicitly call the delegate constructor like:</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := MyDelegate{ </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NULL</text><text style="font-weight:normal; font-style:normal; color:#000000;">, @SomeClass.Test() }</text></para>
+    <para styleclass="Normal">for static methods :</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := MyDelegate{ </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;">, @SomeClass.Test() }</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">for instance methods, it is also possible to write:</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := SomeClass.Test</text></para>
+    <para styleclass="Normal">for static methods:</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;">:Test</text></para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DELEGATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyDelegate( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

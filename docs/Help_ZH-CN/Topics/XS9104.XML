@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" modified="2023-05-29T10:20:05.101+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Error XS9104</title>
+  <keywords>
+    <keyword>clipper</keyword>
+    <keyword>clipper calling convention</keyword>
+    <keyword>Expression Body</keyword>
+    <keyword>XS9104</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9104</para>
+    </header>
+    <para styleclass="Normal">An Expression Body is not supported for methods / functions with clipper calling convention</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">This is not allowed</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Test(1,2)</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Test(a,b) =&gt; a + b </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// error here</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This is allowed however</para>
+    <para styleclass="Code Example"><br/><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Test(1,2)</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Test(a </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">usual</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">,b </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">usual</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) =&gt; a + b </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// this is Ok</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

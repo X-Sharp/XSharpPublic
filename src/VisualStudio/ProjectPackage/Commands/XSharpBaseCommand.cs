@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System;
-using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 using XSharp.Settings;
 namespace Community.VisualStudio.Toolkit
@@ -43,24 +42,24 @@ namespace XSharp.Project
             }
             return System.IO.Path.Combine(InstallPath, subpath);
         }
-        internal async static System.Threading.Tasks.Task StartProcessAsync(string process, string parameters = "")
+        internal static async Task StartProcessAsync(string process, string parameters = "")
         {
-            if (System.IO.File.Exists(process))
+            if (!System.IO.File.Exists(process))
+            {
+                await VS.MessageBox.ShowErrorAsync("Can't show process", "Cannot find file \"" + process + "\"");
+            }
+            else
             {
                 var info = new ProcessStartInfo();
                 info.FileName = process;
-                if (! string.IsNullOrEmpty(parameters))
+                if (!string.IsNullOrEmpty(parameters))
                 {
                     if (parameters.IndexOf(' ') > -1)
-                        parameters = "\""+parameters+"\"";
+                        parameters = "\"" + parameters + "\"";
                     info.Arguments = parameters;
                 }
                 info.WorkingDirectory = System.IO.Path.GetDirectoryName(process);
                 Process.Start(info);
-            }
-            else
-            {
-                await VS.MessageBox.ShowErrorAsync("Can't show process", "Cannot find file \"" + process + "\"");
             }
         }
     }

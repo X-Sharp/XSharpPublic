@@ -484,24 +484,24 @@ CLASS FieldSpec
                     DbError{ SELF, symMethod, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
                 END SWITCH
             ELSE
-                wType := uType
-                IF wType = STRING
+                SELF:wType := uType
+                IF SELF:wType = STRING
                     SELF:cType := "C"
-                ELSEIF wType = LOGIC
+                ELSEIF SELF:wType = LOGIC
                     SELF:cType := "L"
                 ELSEIF wType = DATE
                     SELF:cType := "D"
-                elseif wType=int   .or.; // also Long
-                       wType=float .or.;
-                       wType=byte  .or.;
-                       wType=shortint .or.;
-                       wtype=word  .or.;
-                       wType=dword .or.;
-                       wType=real4 .or.;
-                       wtype=real8
+                elseif SELF:wType=int   .or.; // also Long
+                       SELF:wType=float .or.;
+                       SELF:wType=byte  .or.;
+                       SELF:wType=shortint .or.;
+                       SELF:wType=word  .or.;
+                       SELF:wType=dword .or.;
+                       SELF:wType=real4 .or.;
+                       SELF:wType=real8
                     SELF:lNumeric := TRUE
                     SELF:cType := "N"
-                ELSEIF (wType == TYPE_MULTIMEDIA)
+                ELSEIF (SELF:wType == TYPE_MULTIMEDIA)
                     SELF:cType := "X"
                 ELSE
                     SELF:wType := 0

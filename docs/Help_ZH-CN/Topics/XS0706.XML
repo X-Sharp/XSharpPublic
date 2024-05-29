@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0706</title>
+<keywords>
+<keyword>XS0706</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0706</para>
+  </header>
+  <para styleclass="Normal">Invalid constraint type. A type used as a constraint must be an interface, a non-sealed class or a type parameter.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

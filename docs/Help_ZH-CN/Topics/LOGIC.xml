@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>LOGIC</title>
+  <keywords>
+    <keyword>LOGIC</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">LOGIC</para>
+    </header>
+    <para styleclass="Normal">The LOGIC keyword represents the .Net Boolean type. This type can have either of two values: true, or false.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you have members of type LOGIC in VOSTRUCT or UNION types then these will not be represented with .Net Boolean types because the size of these Boolean is 1 byte but in the Windows API LOGIC values are represented with 4 bytes. Therefore the compiler will replace these with a special type __WinBool which has 4 bytes and has implicit converters between Logic and __WinBool.</para>
+  </body>
+</topic>

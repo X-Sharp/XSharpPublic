@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-07T17:46:38.296+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STACKALLOC</title>
+  <keywords>
+    <keyword>STACKALLOC</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">STACKALLOC Modifier</para>
+    </header>
+    <para styleclass="Normal">The STACKALLOC keyword allows you allocate a block of memory on the stack of the current function / method</para>
+    <para styleclass="Normal">The syntax to use STACKALLOC is</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">VAR x := StackAlloc &lt;dword&gt;{1,2,3,4,5,6,7,8,9,10}<br/>VAR y := StackAlloc int[]{10}</para>
+    <para styleclass="Body Text">or more generic</para>
+    <para styleclass="Code with box">VAR x := StackAlloc &lt;typed Literal array&gt;<br/>VAR y := StackAlloc &lt;typed array&gt;</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The compiler will generate variables of &#160;the type &quot;Typed PTR&quot;. So in the first example x will be of type DWORD PTR and y will be of type INT PTR.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">You can also declare the variables with a normal LOCAL keyword. In that case the type must be &lt;Type&gt; PTR</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code with box">LOCAL x := StackAlloc &lt;dword&gt;{1,2,3,4,5,6,7,8,9,10} AS DWORD PTR<br/>LOCAL y := StackAlloc INT[]{10} AS INT PTR</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">You can also use STACKALLOC for an expression that is not a variable declaration. In that case the compiler will resolve the STACKALLOC expression to an allocation of an object of type System.Span&lt;T&gt;. This type is not available in the .Net Framework, but only in .Net 5 and later.</para>
+  </body>
+</topic>

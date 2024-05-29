@@ -27,7 +27,7 @@ INTERNAL ENUM FlexArrayTypes
     MEMBER DateJ    := 14     // 4 bytes
     MEMBER Double2  := 15       // len, dec, 8 byte double
     MEMBER Cyclic   := 16       // Cyclic array, stored how ?
-    MEMBER UCHar1   := 17       // byte, dec
+    MEMBER UChar1   := 17       // byte, dec
     MEMBER Char1    := 18       // char, dec
     MEMBER Short1   := 19       // 2, followed by len
     MEMBER UShort1  := 20       // 2, followed by len
@@ -38,8 +38,8 @@ INTERNAL ENUM FlexArrayTypes
     MEMBER True     := 25
     MEMBER False    := 26
     MEMBER LDouble  := 27
-    MEMBER UCHar2   := 28       // byte[1], len, dec
-    MEMBER CHar2    := 29       // byte[1], len, dec
+    MEMBER UChar2   := 28       // byte[1], len, dec
+    MEMBER Char2    := 29       // byte[1], len, dec
     MEMBER Short2   := 30       // short[2], len, dec
     MEMBER UShort2  := 31       // ushort[2], len, dec
     MEMBER Long2    := 32       // long[4], len, dec

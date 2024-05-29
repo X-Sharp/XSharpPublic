@@ -253,7 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
-        protected readonly XSharpParser _parser;
+        protected readonly ITokenFactory _tokenFactory;
         protected readonly CSharpParseOptions _options;
 
         protected string _fileName;
@@ -345,18 +345,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _pool = pool;
             _syntaxFactory = syntaxFactory;
-            _parser = parser;
+            _tokenFactory = parser?.TokenFactory;
             _options = options;
             _isScript = options.Kind == SourceCodeKind.Script;
             GlobalClassName = GetGlobalClassName(_options.TargetDLL);
             GlobalEntities = CreateEntities();
             _fileName = fileName;
             _entryPoint = !_isScript ? "Start" : null;
-            PragmaOptions = new List<PragmaOption>();
-            PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();
+            PragmaOptions = new();
+            PragmaWarnings = new();
         }
 
-        public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, CSharpParseOptions options)
+        public static SyntaxTree DefaultXSharpSyntaxTree(CSharpParseOptions options)
         {
             // trees is NOT used here, but it IS used in the VOTreeTransForm
             var t = new XSharpTreeTransformationCore(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
@@ -5618,9 +5618,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // No need to set the MustBeVoid flag. _DLL PROCEDURE  has no statement list
             //context.Data.MustBeVoid = context.T.Type == XP.PROCEDURE;
-            if (context.Modifiers != null)
+            if (context.Modifiers != null && _tokenFactory != null)
             {
-                context.Modifiers._Tokens.Add(_parser.TokenFactory.Create(XP.EXTERN, ""));
+                context.Modifiers._Tokens.Add(_tokenFactory.Create(XP.EXTERN, ""));
             }
         }
 

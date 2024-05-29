@@ -30,26 +30,28 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool SuppressVo4;
         public bool MacroScript { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
-        //public bool VOAllowMissingReturns { get; private set; }  // Handled in the parser
+        public bool VOAllowMissingReturns { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
-        //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
+        public bool VOClipperCallingConvention { get; private set; }
         //public bool VOClipperConstructors { get; private set; }// Handled in the parser
-        //public bool VOClipperIntegerDivisions { get; private set; }// Handled in the parser
+        public bool VOClipperIntegerDivisions { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
-        //public bool VOFloatConstants { get; private set; }// Handled in the parser
-        //public bool VoInitAxitMethods { get; private set; }// Handled in the parser
+        public bool VOFloatConstants { get; private set; }
+        public bool VoInitAxitMethods { get; private set; }
         //public bool VOPreprocessorBehaviour { get; private set; }// Handled in the parser
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
-        //public bool VOUntypedAllowed { get; private set; }// Handled in the parser
+        public bool VOUntypedAllowed { get; private set; }
+        public bool VoBeginSequence { get; private set; }
 
         //public bool XPPInheritFromAbstract { get; private set; } // Handled in the parser
         //public bool FoxInheritUnknown { get; private set; } // Handled in the parser
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
-        //bool InitLocals { get; set; }
+        public bool InitLocals { get; set; }
         public bool LateBinding { get; private set; }
+        public bool EnforceOverride { get; private set; }
         public bool EnforceSelf { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
@@ -69,35 +71,36 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 ArrayZero = opt.ArrayZero;
                 AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
-                //VoInitAxitMethods = opt.Vo1;              // Handled in the parser
+                VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
                 VirtualInstanceMethods = opt.Vo3;
                 VOSignedUnsignedConversion = opt.Vo4;
-                //VOClipperCallingConvention = opt.Vo5;     // Handled in the parser
+                VOClipperCallingConvention = opt.Vo5;     // Handled in the parser
                 VOResolveTypedFunctionPointersToPtr = opt.Vo6;
                 VOImplicitCastsAndConversions = opt.Vo7;
                 //VOPreprocessorBehaviour = opt.Vo8;        // Handled in the parser
-                //VOAllowMissingReturns = opt.Vo9;          // Handled in the parser
+                VOAllowMissingReturns = opt.Vo9;
                 VOCompatibleIIF = opt.Vo10;
                 VOArithmeticConversions = opt.Vo11;
-                //VOClipperIntegerDivisions = opt.Vo12;     // Handled in the parser
+                VOClipperIntegerDivisions = opt.Vo12;
                 VOStringComparisons = opt.Vo13;
-                //VOFloatConstants = opt.Vo14;              // Handled in the parser
-                //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
+                VOFloatConstants = opt.Vo14;
+                VOUntypedAllowed = opt.Vo15;
                 //VOClipperConstructors = opt.Vo16;         // Handled in the parser
+                VoBeginSequence = opt.Vo17;
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
-                //EnforceVirtual = opt.EnforceVirtual;      // Handled in the parser
                 FoxArraySupport = opt.Fox2;
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
                 EnforceSelf = opt.EnforceSelf;
+                EnforceOverride = opt.EnforceOverride;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 MemVars = opt.MemVars;
                 TargetDLL = opt.TargetDLL;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
-                //InitLocals = opt.InitLocals;
+                InitLocals = opt.InitLocals;
                 AllowUnsafe = opt.AllowUnsafe;
                 UseNativeVersion = opt.UseNativeVersion;
 
@@ -133,17 +136,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Overflow:
                     return CheckOption(option, CheckOverflow, syntax);
 
-
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
 
                 case CompilerOption.EnforceSelf:
                     return CheckOption(option, EnforceSelf, syntax);
 
+                case CompilerOption.EnforceOverride:
+                    return CheckOption(option, EnforceOverride, syntax);
+
                 case CompilerOption.UndeclaredMemVars:
                     return CheckOption(option, UndeclaredMemVars, syntax);
 
-                case CompilerOption.Vo2: // NullStrings:    // vo2
+                case CompilerOption.Vo1: // VoInitAxitMethods:
+                    return CheckOption(option, VoInitAxitMethods, syntax);
+
+                case CompilerOption.Vo2: // NullStrings:    
                     return CheckOption(option, VONullStrings, syntax);
 
                 case CompilerOption.Vo3: // VirtualInstanceMethods:
@@ -152,11 +160,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo4: // vo4
                     return !SuppressVo4 && CheckOption(option, VOSignedUnsignedConversion, syntax);
 
+                case CompilerOption.Vo5: //  ClipperCallingConvention:
+                    return !SuppressVo4 && CheckOption(option, VOClipperCallingConvention, syntax);
+
                 case CompilerOption.Vo6: //  ResolveTypedFunctionPointersToPtr: // vo6
                     return CheckOption(option, VOResolveTypedFunctionPointersToPtr, syntax);
 
                 case CompilerOption.Vo7: //  ImplicitCastsAndConversions: // vo7
                     return CheckOption(option, VOImplicitCastsAndConversions, syntax);
+
+                case CompilerOption.Vo9: //  AllowMissingReturns:   
+                    return CheckOption(option, VOAllowMissingReturns, syntax);
 
                 case CompilerOption.Vo10: // CompatibleIIF:  // vo10
                     return CheckOption(option, VOCompatibleIIF, syntax);
@@ -164,21 +178,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo11: // ArithmeticConversions: // vo11
                     return CheckOption(option, VOArithmeticConversions, syntax);
 
+                case CompilerOption.Vo12: // ClipperIntegerDivisions:
+                    return CheckOption(option, VOClipperIntegerDivisions, syntax);
+
                 case CompilerOption.Vo13: //  StringComparisons: // vo13
                     return CheckOption(option, VOStringComparisons, syntax);
+
+                case CompilerOption.Vo14: // FloatConstants:
+                    return CheckOption(option, VOFloatConstants, syntax);
+
+                case CompilerOption.Vo15: // UntypedAllowed: 
+                    return CheckOption(option, VOUntypedAllowed, syntax);
+
+                case CompilerOption.Vo17: // VoBeginSequence: 
+                    return CheckOption(option, VoBeginSequence, syntax);
 
                 case CompilerOption.Fox2: // Fox Array Support
                     return CheckOption(option, FoxArraySupport, syntax);
 
+
                 // other options are not handled or only handled during parsing
-                case CompilerOption.Vo1: // InitAxitConstructorDestructor:
-                case CompilerOption.Vo5: //  ClipperCallingConvention:
-                case CompilerOption.Vo9: //  AllowMissingReturns:   
-                case CompilerOption.Vo12: // ClipperIntegerDivisions:   
-                case CompilerOption.Vo14: // FloatConstants: 
-                case CompilerOption.Vo15: // UntypedAllowed: 
+                case CompilerOption.Vo8: //  Compatible Preprocessor
                 case CompilerOption.Vo16: // DefaultClipperContructors: 
-                case CompilerOption.EnforceOverride:
                     return false;
 
             }
@@ -238,9 +259,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             LateBinding = opt.LateBinding;
             TargetDLL = opt.TargetDLL;
             RuntimeAssemblies = opt.RuntimeAssemblies;
-            //EnforceVirtual = opt.EnforceVirtual;  // Handled in the parser
             EnforceSelf = opt.EnforceSelf;
-            //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
+            EnforceOverride = opt.EnforceOverride;
+            VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   
             VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion; // vo4
@@ -248,19 +269,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOResolveTypedFunctionPointersToPtr = opt.VOResolveTypedFunctionPointersToPtr; // vo6
             VOImplicitCastsAndConversions = opt.VOImplicitCastsAndConversions; // vo7
             //VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8 // Handled in the parser
-            //VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9 // Handled in the parser
+            VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9 // Handled in the parser
             VOCompatibleIIF = opt.VOCompatibleIIF; // vo10    
             VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
-            //VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12    // Handled in the parser
+            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12    
             VOStringComparisons = opt.VOStringComparisons; // vo13
-            //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
-            //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
+            VOFloatConstants = opt.VOFloatConstants; // vo14  
+            VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
+
             FoxArraySupport = opt.FoxArraySupport;
             ConsoleOutput = opt.ConsoleOutput;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             MemVars = opt.MemVars;
-            //InitLocals = opt.InitLocals;
+            InitLocals = opt.InitLocals;
             AllowUnsafe = opt.AllowUnsafe;
             UseNativeVersion = opt.UseNativeVersion;
             NoWin32Manifest = opt.NoWin32Manifest;

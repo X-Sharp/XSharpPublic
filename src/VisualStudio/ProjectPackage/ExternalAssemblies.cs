@@ -36,4 +36,6 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog")]
 
+[assembly: ProvideCodeBase(AssemblyName = "Microsoft.VisualStudio.Threading")]
+
 

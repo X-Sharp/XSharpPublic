@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" modified="2023-05-29T10:18:20.898+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Error XS9114</title>
+  <keywords>
+    <keyword>static member</keyword>
+    <keyword>XS9114</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9114</para>
+    </header>
+    <para styleclass="Normal">Can&apos;t access the static member &apos;{0}&apos; with the {1} operator &apos;{2}&apos;.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

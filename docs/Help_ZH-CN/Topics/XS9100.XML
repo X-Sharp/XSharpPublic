@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS9100</title>
+<keywords>
+<keyword>XS9100</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS9100</para>
+  </header>
+  <para styleclass="Normal">
+      Using the _Chr() or Chr() functions in a DEFINE is only allowed for literal values between 0 and 127. 
+      The character values between 128 and 255 are code page dependent and cannot be determined at compile time.
+      You may want to use a GLOBAL variable as a work around.
+    </para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

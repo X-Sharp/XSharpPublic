@@ -13,7 +13,7 @@
        /// Clean up any resources being used.
        /// </summary>
        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-       PROTECTED METHOD Dispose( disposing AS LOGIC ) AS VOID STRICT
+       OVERRIDE PROTECTED METHOD Dispose( disposing AS LOGIC ) AS VOID STRICT
           IF disposing .AND. components != null
              components:Dispose()
           ENDIF

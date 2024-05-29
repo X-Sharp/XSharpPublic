@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T19:08:29.693+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__isType</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__isType</para>
+    </header>
+    <para styleclass="List">IS &lt;idType&gt;<tab />指定 VOSTRUCT 或 UNION 数据类型，其中结构所需的内存将在堆栈中分配（&lt;idStructure&gt; 是唯一允许使用 IS 关键字的 &lt;idType&gt;）。有关数据结构内存分配的更多信息，请参阅本指南中的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link> 。</para>
+  </body>
+</topic>

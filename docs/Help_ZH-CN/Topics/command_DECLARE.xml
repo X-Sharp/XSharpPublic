@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DECLARE / DIMENSION Statement</title>
+  <keywords>
+    <keyword>Declaration statements</keyword>
+    <keyword>DECLARE</keyword>
+    <keyword>DECLARE statement</keyword>
+    <keyword>DIMENSION</keyword>
+    <keyword>Runtime declaration</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DECLARE/DIMENSION Statement</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Create and initialize private &#160;variables of the FoxPro array type<br/>Note: &#160;and Declare are synonyms</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">DIMENSION &lt;arrayName&gt; <text style="font-weight:bold;">(</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">)</text> [, &lt;arrayName&gt; ( &lt;nRows&gt; [, &lt;nColumns&gt;] ) ] &#160; &#160; // FoxPro dialect only<br/>DIMENSION &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> [, &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> ] &#160; &#160; // FoxPro dialect only<br/>DECLARE &#160; &lt;arrayName&gt; <text style="font-weight:bold;">(</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">)</text> [, &lt;arrayName&gt; ( &lt;nRows&gt; [, &lt;nColumns&gt;] ) ] &#160; &#160; // FoxPro dialect only<br/>DECLARE &#160; &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> [, &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> ] &#160; &#160; // FoxPro dialect only</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">arrayName&gt;<tab />Variable name of array . The array will have the dimensions as declared with &lt;nRows&gt; and &lt;nColumns&gt;. The array may be declared with parentheses as delimiters but also with square brackets. <br/>&lt;nColumns&gt; is optional<br/>We recommend the use of square brackets.</para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

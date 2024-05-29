@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0433</title>
+  <keywords>
+    <keyword>XS0433</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0433</para>
+    </header>
+    <para styleclass="Normal">The type TypeName1 exists in both TypeName2 and TypeName3</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Two different assemblies referenced in your application contain the same namespace and type, which produces ambiguity.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To resolve this error, use the alias feature of the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">/reference </link>(X# Compiler Options) compiler option or do not reference one of your assemblies.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code creates the DLL with the first copy of the ambiguous type.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0433_1.prg  <br/>// compile with: /target:library  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This code creates the DLL with the second copy of the ambiguous type.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0433_2.prg  <br/>// compile with: /target:library  <br/> </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0433.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0433_3.prg  <br/>// compile with: /reference:XS0433_1.dll /reference:XS0433_2.dll  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example shows how you can use the alias feature of the /reference compiler option to resolve this XS0433 error.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0433_4.prg  <br/>// compile with: /reference:XS0433_1.dll /reference:TypeBindConflicts=XS0433_2.dll  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

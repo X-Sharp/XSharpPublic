@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-06-26T12:46:25.010+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Globals Window</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Globals Window</para>
+    </header>
+    <para styleclass="Normal">On the Globals window you can see a global variables in your app and the referenced class libraries that are loaded from your app.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="debugger-Globals.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">When your app does not include the X# runtime then a message will be shown that the runtime has not been loaded:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="debugger-Globals-NoRuntime.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

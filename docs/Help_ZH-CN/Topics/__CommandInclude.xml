@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T10:28:24.144+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__CommandInclude</title>
+  <body>
+    <para styleclass="List1" style="background-color:#ffffaa; border:none;"><text style="font-size:9pt; font-weight:bold; background-color:#ffffaa;">Note</text><tab /><text style="font-size:9pt; background-color:#ffffaa;">该命令在头文件中定义，将由 X# 预处理器预处理为函数调用。如果禁用标准头文件 (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs" style="font-size:9pt;">-nostddefs</link><text style="font-size:9pt; background-color:#ffffaa;">)，该命令将不可用。如果告诉编译器使用不同的标准头文件（</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs" style="font-size:9pt; background-color:#ffffaa;">-stddef</link><text style="font-size:9pt; background-color:#ffffaa;"> ），则此命令也可能不可用。</text></para>
+  </body>
+</topic>

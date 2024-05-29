@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XML Documentation Comments</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XML Documentation Comments</para>
+    </header>
+    <para styleclass="Normal">In X#, you can create documentation for your code by including XML elements in special comment fields (indicated by triple slashes) in the source code directly before the code block to which the comments refer, for example.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/// &lt;summary&gt;</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/// &#160;This class performs an important function.</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/// &lt;/summary&gt;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyClass </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">.</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">.</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text></para>
+    <para styleclass="Normal">When you compile with the -doc option, the compiler will search for all XML tags in the source code and create an XML documentation file. To create the final documentation based on the compiler-generated file, you can create a custom tool or use a tool such Sandcastle.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To refer to XML elements (for example, your function processes specific XML elements that you want to describe in an XML documentation comment), you can use the standard quoting mechanism (&lt; and &gt;). To refer to generic identifiers in code reference (cref) elements, you can use either the escape characters (for example, cref=&quot;List&lt;T&gt;&quot;) or braces (cref=&quot;List{T}&quot;). As a special case, the compiler parses the braces as angle brackets to make the documentation comment less cumbersome to author when referring to generic identifiers.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Since we use the same documentation engine that C# does <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments" target="_blank">we refer to the C# documentation </link>for the documentation tags that are allowed:</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

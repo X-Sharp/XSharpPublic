@@ -454,9 +454,10 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
 // - Admin
 // - NoRequery
 // - NoData
-// - ConnString     
+// - ConnString
 
-FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
+/// <include file="VFPRUntimeDocs.xml" path="Runtimefunctions/dbuseareafox/*" />
+FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ; 
     lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
 IF ! IsNil(uArea)

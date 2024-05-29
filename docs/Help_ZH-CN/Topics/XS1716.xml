@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1716</title>
+  <keywords>
+    <keyword>XS1716</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1716</para>
+    </header>
+    <para styleclass="Normal">Do not use &apos;System.Runtime.CompilerServices.FixedBuffer&apos; attribute. Use the &apos;fixed&apos; field modifier instead.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error arises in an unsafe code section that contains a fixed-size array declaration similar to a field declaration. Do not use this attribute. Instead, use the keyword fixed.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS1716.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1716.prg  <br/>// compile with: /unsafe  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

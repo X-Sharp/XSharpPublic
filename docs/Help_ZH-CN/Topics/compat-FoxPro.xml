@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Differences with FoxPro</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Differences with FoxPro</para>
+    </header>
+    <para styleclass="Heading3">Compiler</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Operation</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Difference</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Bracketed strings</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The preprocessor in FoxPro translates #defines inside bracketed strings. X# does not touch the contents of bracketed strings in the preprocessor</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading3">Runtime functions</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Function</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Difference</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

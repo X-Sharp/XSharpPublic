@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (Compilation.Options.HasOption(CompilerOption.Vo11, expression.Syntax)
+            if (Compilation.Options.HasOption(CompilerOption.VOArithmeticConversions, expression.Syntax)
                 && expression.Type.IsXNumericType() && targetType.IsXNumericType())
             {
                 // call Convert.To..() to round the result
@@ -360,7 +360,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-            var vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, expression.Syntax);
+            var vo4 = Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, expression.Syntax);
             var sourceType = expression.Type;
             var rhsType = expression.Type;
             if (rhsType is { } && !Equals(targetType, rhsType) &&

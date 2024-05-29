@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T17:51:00.661Z" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 入门</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">X# 入门</para>
+    </header>
+    <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory">版本历史</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">已知问题</link></para>
+  </body>
+</topic>

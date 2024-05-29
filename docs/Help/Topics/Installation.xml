@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-28T09:58:32.557+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Installation</title>
   <keywords>
     <keyword>component</keyword>
@@ -127,13 +127,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
-          <para styleclass="Normal">NetCore20</para>
+          <para styleclass="Normal">NetCore31</para>
         </td>
         <td style="width:143px;">
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (<text style="font-weight:bold;">FOX only</text>)</para>
+          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 3.1 (<text style="font-weight:bold;">FOX only</text>)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -188,7 +188,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside VS 2015 and/or VS 2017. <br/>It also contains cmd files created at install time to help generating native images for the X# compiler.<br/>The cmd files containing the number 2015 are used for integration into VS 2015. The cmd files with the number 1-6 are used to install into different versions of VS 2017 and VS 2019.</para>
+          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside Visual Studio.<br/>It also contains cmd files created at install time to help generating native images for the X# compiler.<br/>The cmd files with the number 1-6 are used to install into different versions of Visual Studio.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -259,43 +259,38 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
-          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2015</text><br/><text styleclass="Normal">Assuming you have installed VS 2015 in the default location:</text></para>
-          <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio 14.0</para>
-          <para styleclass="Normal">then X# will be in the subfolders</para>
-          <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
-          </list>
-          <para styleclass="Normal">and the MSBuild integration will be in the folder</para>
-          <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal">c:\Program Files (x86)\MSBuild\XSharp</li>
-          </list>
-        </td>
-        <td style="width:143px;">
-          <para styleclass="Normal">main\vs2015</para>
-        </td>
-        <td style="width:666px;">
-          <para styleclass="Normal">Note:<tab />There can only be one &quot;edition&quot; of VS 2015 on your machine.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:562px;">
-          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2017 and/or 2019</text><br/><text styleclass="Normal">Assuming you have installed VS 2017 in the default location:</text></para>
+          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2017 and/or 2019</text><br/><text styleclass="Normal">Assuming you have installed (one of) these in the default location:</text></para>
           <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\<text style="font-weight:bold;">&lt;number&gt;</text>\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text></para>
-          <para styleclass="Normal">then X# will be in the subfolders</para>
-          <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <para styleclass="Normal">then X# will be in the subfolder</para>
+          <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
-          </list>
-          <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal">MSBuild\XSharp</li>
           </list>
         </td>
         <td style="width:143px;">
           <para styleclass="Normal">main\vs1 .. <br/>main\vs6</para>
         </td>
         <td style="width:666px;">
-          <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>is 2017 or 2019.</li>
-            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. Since X# 2.4 the installer will show all instance that are detected.</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. The installer will show all instances that are detected.</li>
+          </list>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:562px;">
+          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2022</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">Assuming you have installed VS 2022 in the default location:</text><br/><text styleclass="Normal">c:\Program Files\Microsoft Visual Studio\2022\</text><text styleclass="Normal" style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text></para>
+          <para styleclass="Normal">then X# will be in the subfolder</para>
+          <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
+          </list>
+        </td>
+        <td style="width:143px;">
+          <para styleclass="Normal">main\vs1 .. <br/>main\vs6</para>
+        </td>
+        <td style="width:666px;">
+          <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. The installer will show all instances that are detected.</li>
           </list>
         </td>
       </tr>
@@ -303,7 +298,7 @@
         <td style="width:562px;">
           <para styleclass="Body Text"><text styleclass="Heading3">Registry</text></para>
           <para styleclass="Normal">The installer will also write some changes to the registry:</para>
-          <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">HKLM\Software\XSharp</li>
             <li styleclass="Normal">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</li>
             <li styleclass="Normal">HKCR\.ppo</li>

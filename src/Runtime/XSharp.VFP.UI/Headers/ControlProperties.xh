@@ -100,7 +100,7 @@ PROPERTY ZOrderSet AS INT
 END PROPERTY
 PRIVATE PROPERTY _ZOrderSet AS INT AUTO
 
-PROTECTED VIRTUAL METHOD InitLayout() AS VOID
+PROTECTED OVERRIDE METHOD InitLayout() AS VOID
     SUPER:InitLayout()
     // Set the ZOrder
     SELF:Parent:Controls:SetChildIndex(SELF,ZOrderSet)

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9073</title>
+  <keywords>
+    <keyword>Undeclared variable</keyword>
+    <keyword>XS9073</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9073</para>
+    </header>
+    <para styleclass="Normal">Variable &apos;{0}&apos; has not been declared. Assuming this is a FIELD or a MEMVAR.</para>
+    <para styleclass="Normal">This error message may occur if you are compiling with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link> commandline option.</para>
+    <para styleclass="Normal">For example in the following code</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Compile in VO dialect with -memvar and -undeclared and use the X# runtime</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Name</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Name := &quot;Bill&quot;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Test()</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><br/><br/><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Test()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Name &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// &lt;-- Warning XS9073 here</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> TRUE</text></para>
+  </body>
+</topic>

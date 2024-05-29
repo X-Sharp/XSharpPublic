@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Runtimefunctions>
-    <addbs>
+  <dbuseareafox>
+    <summary>
+      Open a database file.
+    </summary>
+
+    <param name="uArea">
+      Specifies the area in which the file must be opened. This represents the value in the IN Clause of the USE command.
+    </param>
+    <param name="cDataFile">
+      The name of the database file to open, including an optional drive, directory, and extension.<br/>
+      If the database file has a corresponding memo file, it is also opened.<br/>
+      The default extension for database and memo files is determined by the RDD.<br/>
+      If the database file or its corresponding memo file does not exist, a runtime error is raised.  See SetDefault() and SetPath() for file searching and creation rules.
+    </param>
+    <param name="cAlias">
+      An identifier name to associate with the work area when <paramref name="cDataFile" /> is opened.<br/>
+      If not specified, the alias defaults to the database file name.  Duplicate alias names are not allowed within a single application.
+    </param>
+    <param name="lShared">
+      TRUE attempts to open <paramref name="cDataFile" /> for shared use.  FALSE attempts to open <paramref name="xcDataFile" /> for exclusive (non-shared) use, denying all other processes access until the database file is closed.If <paramref name="lShared" /> is omitted, the current SetExclusive() setting determines whether shared access is allowed.  However, it is highly recommended that you specify the open mode as part of the USE command rather than relying on SetExclusive() to determine it for you.
+    </param>
+    <param name="lReadOnly">
+      TRUE attempts to open <paramref name="cDataFile" /> with a read-only attribute, prohibiting updates to the work area.  FALSE attempts to open <paramref name="cDataFile" /> with a read-write attribute, allowing updates.<br/>
+      If <paramref name="lReadOnly" /> is omitted, the default value is FALSE.<br/>
+      If <paramref name="cDataFile" /> cannot be accessed using the indicated attribute, a runtime error is raised.
+    </param>
+    <param name="lOnline">
+      This represents the ONlINE clause of the USE command.
+    </param>
+    <param name="lAdmin">
+      This represents the ADMIN clause of the USE command.
+    </param>
+    <param name="lAgain">
+      This represents the AGAIN clause of the USE command.
+    </param>
+    <param name="lNoData">
+      This represents the NODATA clause of the USE command.
+    </param>
+    <param name="lNoRequery">
+      This represents the NOREQUERY clause of the USE command.
+    </param>
+    <param name="nDataSession">
+      This represents the SESSION clause of the USE command.
+    </param>
+    <param name="uConnection">
+      This represents the CONNSTRING clause of the USE command.
+    </param>
+    <returns>
+      TRUE if successful; otherwise, FALSE.
+    </returns>
+    <remarks>
+      DBUseAreaFox() is a functional equivalent of the FoxPro USE command.<br/>
+      For more information, refer to the USE command.
+    </remarks>
+    <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DbUseArea</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbCloseArea'>DBCloseArea</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbStruct'>DBStruct</seealso>
+    <seealso cref='O:XSharp.Core.Functions.NetErr'>NetErr</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RddSetDefault'>RDDSetDefault</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Select'>Select</seealso>
+    <seealsocmd>USE</seealsocmd>
+    <seealso cref='O:XSharp.RT.Functions.VoDbUseArea'>VODBUseArea</seealso>
+  </dbuseareafox>
+
+  <addbs>
         <summary>Adds a backslash (if needed) to a path expression.</summary>
         <param name="cPath">Specifies the path name to which to add the backslash.</param>
         <returns>Character</returns>

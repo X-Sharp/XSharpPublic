@@ -1,6 +1,5 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using System;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.Project

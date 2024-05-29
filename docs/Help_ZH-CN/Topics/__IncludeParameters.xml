@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T11:18:40.095+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeParameters</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__IncludeParameters</para>
+    </header>
+    <para styleclass="List">&lt;idParam&gt;<tab />参数变量。 以这种方式指定的变量会自动声明为局部变量。 这些变量也称为形式参数，用于接收调用实体时传递的参数。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS | REF | OUT | IN &lt;idType&gt;<tab />指定参数变量的数据类型（称为强类型）。 AS 表示参数必须通过值传递，REF 表示参数必须通过带 @ 操作符的引用传递。OUT 是一种特殊的 REF 参数，不必在调用前赋值，必须在实体内部赋值。IN 参数作为 READONLY 引用传递。</para>
+    <para styleclass="List"><tab />列表中的最后一个参数也可以声明为 PARAMS &lt;idType&gt;[] ，这将告诉编译器函数/方法可以接收零个或多个可选参数。</para>
+    <para styleclass="List"><tab />使用 CLIPPER 调用约定的函数或方法将被编译为一个带有单个参数的函数，该参数被声明为 Args PARAMS USUAL[] 。</para>
+  </body>
+</topic>

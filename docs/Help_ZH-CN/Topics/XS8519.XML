@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8519</title>
+<keywords>
+<keyword>XS8519</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8519</para>
+  </header>
+  <para styleclass="Normal">The given expression never matches the provided pattern.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

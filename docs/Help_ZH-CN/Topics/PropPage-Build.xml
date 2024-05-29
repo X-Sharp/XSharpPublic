@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Build</title>
+  <keywords>
+    <keyword>Code Signing KeyFile</keyword>
+    <keyword>-d</keyword>
+    <keyword>Defines</keyword>
+    <keyword>Defines for the preprocessor</keyword>
+    <keyword>Delayed sign only</keyword>
+    <keyword>-delaysign</keyword>
+    <keyword>Extra Command Line Options</keyword>
+    <keyword>Generate preprocessor output</keyword>
+    <keyword>Generate XML doc comments file</keyword>
+    <keyword>Intermediate Output Path</keyword>
+    <keyword>-keyfile</keyword>
+    <keyword>-nowarn</keyword>
+    <keyword>Optimize</keyword>
+    <keyword>Output Path</keyword>
+    <keyword>Platform Target</keyword>
+    <keyword>-ppo</keyword>
+    <keyword>Prefer 32 Bit</keyword>
+    <keyword>Preprocessor</keyword>
+    <keyword>Preprocessor output</keyword>
+    <keyword>Register for COM interop</keyword>
+    <keyword>Shared Compiler</keyword>
+    <keyword>-sign</keyword>
+    <keyword>Sign the output assembly</keyword>
+    <keyword>Suppress Specific Warnings</keyword>
+    <keyword>Use Shared Compiler</keyword>
+    <keyword>-warn</keyword>
+    <keyword>-warnaserror</keyword>
+    <keyword>Warning Level</keyword>
+    <keyword>Warnings As Errors</keyword>
+    <keyword>XML doc comments file name</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Build</para>
+    </header>
+    <para styleclass="Body Text">The Build properties page contains <text style="font-weight:bold; font-style:italic;">Configuration Specific </text>properties. So you can have different properties here for a Debug and a Release configuration. Please read the <link displaytype="text" defaultstyle="true" type="topiclink" href="Build-Configurations">Build Configuration</link> topic for more information about build configurations</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Item</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Description</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Command item</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Platform Target</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-platform">-platform</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Prefer 32 Bit</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Prefer 32 bit when AnyCpu platform is selected.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-platform">-platform</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Intermediate Output Path</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Intermediate Output Path &#160;(macros are allowed).</para>
+        </td>
+        <td>
+          <para styleclass="Normal">used by Visual Studio/MsBuild</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Output Path</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Output Path (macros are allowed).</para>
+        </td>
+        <td>
+          <para styleclass="Normal">used by Visual Studio/MsBuild</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Code Signing KeyFile</para>
+        </td>
+        <td>
+          <para styleclass="Normal"> Choose a code signing key file.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Delayed sign only</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Delayed signing.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-delaysign">-delaysign</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Sign the output assembly</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Sign the assembly</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Extra Command Line Options</para>
+        </td>
+        <td>
+          <para styleclass="Normal">User-Defined Command Line options.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">you can specify additional commandline options here</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Optimize</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Should compiler optimize output?</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-optimize">-optimize</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Register for COM interop</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Register the output assembly for COM Interop (requires administrator rights</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This will run a tool after the build process to register the assembly for COM interop. </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Use Shared Compiler</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-shared</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Defines for the preprocessor</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Defines for the preprocessor.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-define">-define</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Generate preprocessor output</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Save the output from the preprocessor to .ppo files.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">-ppo</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Suppress Specific Warnings</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Specify a list of warnings to suppress.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Warning Level</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Set the warning level to a value between 0 and 4.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">-warn</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Warnings As Errors</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Treat warnings as errors.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Generate XML doc comments file</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Generate XML doc comments file.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">-doc</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XML doc comments file name</para>
+        </td>
+        <td>
+          <para styleclass="Normal">XML doc comments file name.</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">-doc</link></para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

@@ -61,14 +61,17 @@ abstract class XSharp.XPP.Abstract
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             return ClassHelpers.CallIVarGet(self, cName)
         ENDIF
-        RETURN NIL
+        var oError := Error.VOError( EG_NOVARMETHOD, __FUNCTION__, nameof(cName), 2, <object>{self, cName} )
+        oError:Description := oError:Message+" '"+cName+"'"
+        throw oError
 
     VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         if ClassHelpers.IsInstanceofRuntimeClass(self)
             ClassHelpers.CallIVarPut(self, cName, uValue)
         ENDIF
-        RETURN
-
+       var oError := Error.VOError( EG_NOVARMETHOD, __FUNCTION__, nameof(cName), 2, <object>{self, cName} )
+       oError:Description := oError:Message+" '"+cName+"'"
+       throw oError
         /// <summary>Handles assign operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to assign.</param>
         /// <param name="uValue">The value of an assignment. </param>

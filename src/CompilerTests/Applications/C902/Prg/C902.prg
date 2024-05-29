@@ -18,23 +18,39 @@ FUNCTION Start() AS VOID STRICT
 	cCmd := "o:Test2(ref p1,ref p2)"
 	Eval(&("{||"+cCmd+"}")) // OK
 
+	? p1,p2,p3,p4
+	xAssert(p1 == "OK")
+	xAssert(p2 == ConDate(2024,1,1))
+
+	p1 := "";p2 := NULL_DATE
 	cCmd := "o:Test4(ref p1,ref p2,ref p3,ref p4)"
 	Eval(&("{||"+cCmd+"}")) // Exception
 
 	? p1,p2,p3,p4
+	xAssert(p1 == "OK")
+	xAssert(p2 == ConDate(2024,1,1))
+	xAssert(p3 == 1)
+	xAssert(p4 == 2)
+
 RETURN
 
 CLASS TestClass
 	METHOD Test2(a REF STRING,b REF DATE) AS LOGIC
 		a := "OK"
-		b	:= Today()
+		b := ConDate(2024,1,1)
 	RETURN TRUE
 	METHOD Test4(a REF STRING,b REF DATE, c REF INT, d REF INT) AS LOGIC
 		a := "OK"
-		b	:= Today()
+		b := ConDate(2024,1,1)
 		c := 1
 		d := 2
 	RETURN TRUE
 
 END CLASS
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
 

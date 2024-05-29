@@ -1,21 +1,16 @@
-﻿using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Project;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using System.Collections.Generic;
 using System;
 using System.Linq;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
-using XSharp.CodeDom;
 using System.IO;
-using System.Text;
-using System.CodeDom;
-using System.Xml.Serialization;
-using System.CodeDom.Compiler;
-using static System.Net.Mime.MediaTypeNames;
-using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.Shell.Interop;
-using XSharp.Settings;
 namespace XSharp.Project
 {
     [Command(PackageIds.idGenerateWinForm)]

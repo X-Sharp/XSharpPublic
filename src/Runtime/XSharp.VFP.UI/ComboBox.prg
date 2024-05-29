@@ -15,7 +15,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-    /// The VFPComboBox class.
+    /// The VFP compatible ComboBox class.
     /// </summary>
 	PARTIAL CLASS ComboBox INHERIT System.Windows.Forms.ComboBox
 

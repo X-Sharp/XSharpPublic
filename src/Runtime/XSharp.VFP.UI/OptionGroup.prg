@@ -9,7 +9,9 @@ USING System.ComponentModel
 USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
-
+/// <summary>
+/// The VFP compatible OptionGroup class.
+/// </summary>
 	PUBLIC PARTIAL CLASS OptionGroup ;
 			INHERIT System.Windows.Forms.UserControl
 

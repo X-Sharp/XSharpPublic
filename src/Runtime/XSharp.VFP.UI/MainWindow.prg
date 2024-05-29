@@ -13,7 +13,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPMainWindow class.
+	/// The VFP compatible MainWindow class.
 	/// Used to emulate the Visual FoxPro window object through _Screen
 	/// </summary>
 	CLASS MainWindow INHERIT Form

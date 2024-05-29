@@ -16,7 +16,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPCheckbox class.
+	/// The VFP compatible Checkbox class.
 	/// </summary>
 	PARTIAL CLASS CheckBox INHERIT System.Windows.Forms.CheckBox
 

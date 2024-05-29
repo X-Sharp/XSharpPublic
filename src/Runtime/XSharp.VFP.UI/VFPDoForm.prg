@@ -13,7 +13,7 @@ USING System.IO
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPDoForm class.
+	/// The VFP compatible __VFPDoForm class.
 	/// This class is used to "emulate" the DO FORM command
 	/// </summary>
 	STATIC CLASS __VFPDoForm

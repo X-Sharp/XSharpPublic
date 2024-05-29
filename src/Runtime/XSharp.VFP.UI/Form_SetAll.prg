@@ -11,9 +11,6 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.VFP.UI
 
-	/// <summary>
-	/// The VFPForm class : Support for SetAll Method.
-	/// </summary>
 	PARTIAL CLASS Form
 
 		// Holds the convertion table between VFP and X#

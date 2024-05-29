@@ -9,7 +9,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPTextBox class.
+	/// The VFP compatible Label class.
 	/// </summary>
 	PARTIAL CLASS Label INHERIT System.Windows.Forms.Label
 

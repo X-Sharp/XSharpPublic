@@ -8,7 +8,7 @@ USING System.Text
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPApplication class.
+	/// The VFP compatible Application class.
 	/// </summary>
 	CLASS Application
 

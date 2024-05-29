@@ -34,6 +34,7 @@
     <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
     <CS>False</CS>
     <NoStandardDefs>False</NoStandardDefs>
+    <OutPutCopy>$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)</OutPutCopy>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings>108,114</DisabledWarnings>
@@ -164,6 +165,7 @@
     <Compile Include="OptionButton.prg" />
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
+    <Compile Include="_OtherClasses.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Headers" />
@@ -230,12 +232,13 @@
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>copy $(Targetpath) "$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)" /y</PostBuildEvent>
+    <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
-    <PostBuildEvent>copy $(Targetpath) "$(SolutionDir)Tools\VFPXPorter\Source\VFPXPorterLib\Data\Templates\Tools\$(TargetFileName)" /y</PostBuildEvent>
+    <PostBuildEvent>copy $(Targetpath) "$(OutPutCopy)" /y</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

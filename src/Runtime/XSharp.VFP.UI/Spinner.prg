@@ -15,7 +15,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE  XSharp.VFP.UI
 
 	/// <summary>
-    /// The Spinner class.
+    /// The VFP compatible Spinner class.
     /// </summary>
 	PARTIAL CLASS Spinner INHERIT System.Windows.Forms.NumericUpDown
 		// Common properties that all VFP Objects support

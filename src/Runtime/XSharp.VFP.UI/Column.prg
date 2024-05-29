@@ -14,7 +14,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPGridColumn class.
+	/// The VFP compatible Column class.
 	/// </summary>
 	PARTIAL CLASS Column INHERIT System.Windows.Forms.DataGridViewTextBoxColumn IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 

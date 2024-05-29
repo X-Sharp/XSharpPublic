@@ -8,7 +8,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPEditBox class.
+	/// The VFP compatible EditBox class.
 	/// </summary>
 	PARTIAL CLASS EditBox INHERIT TextBox
 
@@ -32,9 +32,6 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SELF:Multiline := TRUE
             SELF:ScrollBars := ScrollBars.Both
             SELF:Size := Size{100,75}
-
-
-#include ".\Headers\ControlSource.xh"
 
 	END CLASS
 

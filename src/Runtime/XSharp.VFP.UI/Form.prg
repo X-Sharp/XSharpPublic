@@ -8,7 +8,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPForm class.
+	/// The VFP compatible Form class.
 	/// </summary>
 	PARTIAL CLASS Form INHERIT System.Windows.Forms.Form IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 

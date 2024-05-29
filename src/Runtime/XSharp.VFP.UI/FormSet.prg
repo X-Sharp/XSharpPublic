@@ -9,7 +9,7 @@ USING System.Text
 BEGIN NAMESPACE XSharp.VFP.UI
 
 /// <summary>
-/// The VFPFormSet class.
+/// The VFP compatible FormSet class.
 /// </summary>
 PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
@@ -22,7 +22,7 @@ PARTIAL CLASS FormSet IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOw
 
 
     PRIVATE _forms AS List<Form>
-    
+
     /// <summary>
     /// access individual forms in a form set.
     /// </summary>

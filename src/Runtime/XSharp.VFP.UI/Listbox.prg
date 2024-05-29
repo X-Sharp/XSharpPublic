@@ -16,7 +16,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPListbox class.
+	/// The VFP compatible Listbox class.
 	/// </summary>
 	PARTIAL CLASS ListBox INHERIT System.Windows.Forms.ListBox
 		// Common properties that all VFP Objects support

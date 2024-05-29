@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	// TODO Check IDynamicProperties -> XSharp.RT
 
 	/// <summary>
-	/// The VFPContainer class.
+	/// The VFP compatible Container class.
 	/// </summary>
 	PARTIAL CLASS Container INHERIT System.Windows.Forms.UserControl
 

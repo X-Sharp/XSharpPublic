@@ -6,7 +6,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The Cursor class.
+	/// The VFP compatible Cursor class.
 	/// </summary>
 	PARTIAL CLASS DbCursor //IMPLEMENTS XSharp.IDbNotify
 

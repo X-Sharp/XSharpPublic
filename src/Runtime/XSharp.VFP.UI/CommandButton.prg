@@ -8,7 +8,7 @@ USING System.Drawing
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPCommandButton class.
+	/// The VFP compatible CommandButton class.
 	/// </summary>
 	PARTIAL CLASS CommandButton INHERIT System.Windows.Forms.Button
 		PRIVATE _vfpStyle AS INT

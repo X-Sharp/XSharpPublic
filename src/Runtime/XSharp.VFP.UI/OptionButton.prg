@@ -10,7 +10,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPTextBox class.
+	/// The VFP compatible OptionButton class.
 	/// </summary>
 	PARTIAL CLASS OptionButton INHERIT System.Windows.Forms.RadioButton
 		// Common properties that all VFP Objects support

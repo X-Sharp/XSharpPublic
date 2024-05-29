@@ -8,7 +8,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPTextBox class.
+	/// The VFP compatible TextBox class.
 	/// </summary>
 	PARTIAL CLASS TextBox INHERIT System.Windows.Forms.TextBox
 

@@ -13,7 +13,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPTimer class.
+	/// The VFP compatible Timer class.
 	/// </summary>
 	PARTIAL CLASS Timer INHERIT System.Windows.Forms.Timer
 		PROTECTED firstSet AS LOGIC

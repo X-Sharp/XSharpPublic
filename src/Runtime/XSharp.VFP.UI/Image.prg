@@ -16,7 +16,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPImage class.
+	/// The VFP compatible Image class.
 	/// </summary>
 	PARTIAL CLASS Image INHERIT System.Windows.Forms.PictureBox
 

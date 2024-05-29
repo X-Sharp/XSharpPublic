@@ -13,7 +13,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPColumnHeader class.
+	/// The VFP compatible Header class.
 	/// </summary>
 	CLASS Header INHERIT System.Windows.Forms.DataGridViewColumnHeaderCell
 

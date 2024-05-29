@@ -16,7 +16,7 @@ USING XSharp.RT
 BEGIN NAMESPACE XSharp.VFP.UI
 
     /// <summary>
-    /// The VFPGrid class.
+    /// The VFP compatible Grid class.
     /// </summary>
     CLASS Grid INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 

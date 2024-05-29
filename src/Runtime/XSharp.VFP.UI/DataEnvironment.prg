@@ -6,10 +6,10 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The DataEnvironment class.
+	/// The VFP compatible DataEnvironment class.
 	/// </summary>
 	PARTIAL CLASS DataEnvironment
-	
+
 		PROPERTY AutoCloseTables AS LOGIC AUTO
 		PROPERTY AutoOpenTables AS LOGIC AUTO
 
@@ -20,9 +20,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY Visible AS LOGIC AUTO
 		// Todo
 		PROPERTY TabStop AS LOGIC AUTO
-		
+
 		PROPERTY Cursors AS List<DbCursor> AUTO
-		
+
 		PROPERTY SELF[ cursorName AS STRING ] AS DbCursor
 			GET
 				FOREACH cursor AS DbCursor IN Cursors
@@ -33,8 +33,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				RETURN NULL
 			END GET
 		END PROPERTY
-		
-		CONSTRUCTOR( ) 
+
+		CONSTRUCTOR( )
 			SELF:Cursors := List<DbCursor>{}
 			SELF:AutoCloseTables := TRUE
 			SELF:AutoOpenTables := TRUE

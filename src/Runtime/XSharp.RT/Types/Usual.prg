@@ -188,7 +188,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NODEBUG];
     PUBLIC CONSTRUCTOR(o AS OBJECT)
         IF o == NULL_OBJECT
-            SELF(__UsualType.Object)
+            SELF(__UsualType.Object, FALSE)
         ELSE
             SELF := _NIL
             VAR vartype := o:GetType()
@@ -2137,10 +2137,6 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN u:ToString()
         CASE __UsualType.Binary
             RETURN u:_binaryValue:ToString()
-        CASE __UsualType.Object
-            IF u:_refData == NULL
-                RETURN String.Empty
-            END IF
         END SWITCH
         THROW ConversionError(STRING, TYPEOF(STRING), u)
     /// <include file="RTComments.xml" path="Comments/Operator/*" />

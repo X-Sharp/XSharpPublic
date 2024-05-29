@@ -1,8 +1,9 @@
 ﻿// _OtherClasses.prg
-// Created by    : robert
-// Creation Date : 5/29/2024 1:07:52 PM
-// Created for   :
-// WorkStation   : LEDA
+
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System
@@ -15,6 +16,29 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	/// The VFP compatible CursorAdapter class.
 	/// </summary>
 PARTIAL CLASS CursorAdapter
+END CLASS
+
+/// <summary>
+/// The VFP compatible Line class.
+/// </summary>
+PARTIAL CLASS Line
+END CLASS
+/// <summary>
+/// The VFP compatible ProjectHook class.
+/// </summary>
+PARTIAL CLASS ProjectHook
+END CLASS
+
+/// <summary>
+/// The VFP compatible Session class.
+/// </summary>
+PARTIAL CLASS Session
+END CLASS
+
+/// <summary>
+/// The VFP compatible ReportListener class.
+/// </summary>
+PARTIAL CLASS ReportListener
 END CLASS
 /// <summary>
 /// The VFP compatible OLEBoundControl class.

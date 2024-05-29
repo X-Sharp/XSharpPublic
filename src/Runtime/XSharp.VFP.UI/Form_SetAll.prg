@@ -1,8 +1,8 @@
-﻿// VFPForm_SetAll.prg
-// Created by    : fabri
-// Creation Date : 10/13/2022 8:17:02 AM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// Form_SetAll.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System

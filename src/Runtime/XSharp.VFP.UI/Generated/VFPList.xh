@@ -1,4 +1,8 @@
-﻿
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 #include "VFPControl.xh"
 #ifndef VFP_LIST_XH
 #define VFP_LIST_XH
@@ -24,7 +28,7 @@ PROPERTY ItemForeColor AS LONG AUTO
 METHOD ItemIDToIndex(nItemId as LONG) AS LONG
 	RETURN -1
 PROPERTY ItemTips AS LOGIC AUTO
-PROPERTY LIST AS USUAL AUTO
+PROPERTY List AS ARRAY AUTO
 PROPERTY ListCount AS LONG AUTO
 PROPERTY ListIndex AS LONG AUTO
 // Todo: ListItem property

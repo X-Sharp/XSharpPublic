@@ -1,8 +1,8 @@
-﻿// VFPMainWindow.prg
-// Created by    : fabri
-// Creation Date : 9/10/2022 5:48:22 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// MainWindow.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System

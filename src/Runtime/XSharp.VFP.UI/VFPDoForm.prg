@@ -1,8 +1,8 @@
 ﻿// VFPDoForm.prg
-// Created by    : fabri
-// Creation Date : 6/7/2022 10:09:44 PM
-// Created for   :
-// WorkStation   : FABXPS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System

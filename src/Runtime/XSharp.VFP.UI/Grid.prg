@@ -1,8 +1,8 @@
-﻿// VFPGrid.prg
-// Created by    : fabri
-// Creation Date : 5/4/2022 7:57:45 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// Grid.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System

@@ -1,4 +1,8 @@
-﻿#ifndef VFP_OBJECT_XH
+﻿// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+#ifndef VFP_OBJECT_XH
 #define VFP_OBJECT_XH
 // Common properties that all VFP Objects support.
 // Some are only necessary in a design environment like VFP

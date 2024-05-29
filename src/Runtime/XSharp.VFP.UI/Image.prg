@@ -1,8 +1,8 @@
-﻿// VFPImage.prg
-// Created by    : fabri
-// Creation Date : 9/20/2022 8:42:45 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// Image.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System

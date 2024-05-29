@@ -1,9 +1,8 @@
 ﻿// AEventsDefinition.prg
-// Created by    : fabri
-// Creation Date : 11/20/2023 11:44:07 AM
-// Created for   :
-// WorkStation   : FABXPS
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 USING System
 USING System.Collections.Generic

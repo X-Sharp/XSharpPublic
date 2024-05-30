@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T12:57:16.186+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Redistributing X#</title>
+<topic template="Default" modified="2024-05-30T22:46:46.038+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>分发部署 X# 应用</title>
   <body>
     <header>
-      <para styleclass="Heading1">Redistributing X#</para>
+      <para styleclass="Heading1">分发部署 X# 应用</para>
     </header>
     <para styleclass="Normal">You are allowed to distribute the following XSharp DLLs with your projects:</para>
     <para styleclass="Normal">You are also allowed to distribute the PDB files that come with these DLLs. </para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-30T22:09:07.553+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Core</title>
   <keywords>
     <keyword>Core</keyword>
@@ -9,34 +9,60 @@
     <header>
       <para styleclass="Heading1">Core</para>
     </header>
-    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Core&quot; dialect.</para>
-    <para styleclass="Heading2">Compiler</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Does NOT allows 4 letter abbreviations of keywords</li>
-      <li styleclass="Normal">Allows the DOT (&apos;.&apos;) operator to call Instance methods</li>
-      <li styleclass="Normal">Single quotes are used for Character literals</li>
-    </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">String Comparisons are mapped to the String.Compare() method in the .Net runtime</li>
-      <li styleclass="Normal">The String &quot;=&quot; operator is not supported</li>
-      <li styleclass="Normal">The String &quot;-&quot; operator is not supported</li>
-      <li styleclass="Normal">Anything that requires runtime support, such as the X# specific types (DATE, ARRAY, SYMBOL, FLOAT and USUAL) and dynamic memory variables is not supported</li>
-      <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
-    </list>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The &apos;=&apos; operator may be used for assigns but will generate a warning when used.</li>
-      <li styleclass="Normal">The compiler generated functions class is called </li>
-    </list>
-    <para styleclass="Normal"><tab />Functions <tab /><tab /><tab />for normal functions and globals</para>
-    <para styleclass="Normal"><tab />X$&lt;ModuleName&gt;$Functions for static functions and globals</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Procedures cannot return values</li>
-      <li styleclass="Normal">Does not allow skipping arguments in method calls.</li>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在使用 &quot;Core &quot;方言编译时，编译器和运行时会有以下 &quot;特殊 &quot;行为。</para>
+    <para styleclass="Heading2">编译器</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">不允许</text>用 4 个字母缩写关键字。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Runtime</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The Core dialect does not require a runtime. However you can still link to XSharp.Core and XSharp.RDD and call methods and functions in these assemblies.</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">允许使用 DOT (&apos;.&apos;) 操作符调用实例方法。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">单引号用于字符字面量。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">字符串比较被映射到 .Net 运行时中的 String.Compare() 方法。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不支持字符串 &quot;=&quot; 操作符。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不支持字符串 &quot;-&quot; 操作符。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不支持任何需要运行时支持的操作，例如 X# 特定类型（DATE、ARRAY、SYMBOL、FLOAT 和 USUAL）和动态内存变量。</li>
+      <li styleclass="Normal"></li>
+      <li styleclass="Normal">支持使用&quot;@&quot;来获取变量的地址。如果使用编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link>，这也可以用于 REF 变量。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">&apos;=&apos; 操作符可用于赋值，但使用时会产生警告。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">编译器生成的函数类称为 </li>
+    </list>
+    <para styleclass="Normal"><tab />Functions <tab /><tab /><tab /><tab />用于正常函数和全局</para>
+    <para styleclass="Normal"><tab />X$&lt;ModuleName&gt;$Functions<tab />用于静态函数和全局</para>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">程序不能有返回值</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不允许在方法调用中跳过参数。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">运行时(Runtime)</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Core 方言不需要运行时。不过，你仍然可以链接到 XSharp.Core 和 XSharp.RDD，并调用这些程序集中的方法和函数。</li>
     </list>
   </body>
 </topic>

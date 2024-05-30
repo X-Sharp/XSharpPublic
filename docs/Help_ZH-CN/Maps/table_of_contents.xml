@@ -147,8 +147,8 @@
         <topicref type="topic" id="437985041510088" build="ALL" modified="2019-12-13T11:25:48.582Z" icon="0" href="dialect_Core">
           <caption translate="true">Core</caption>
         </topicref>
-        <topicref type="topic" id="437986969295327" build="ALL" modified="2019-12-13T11:25:55.241Z" icon="0" href="dialect_All-Non-Core-dialects">
-          <caption translate="true">All Non Core dialects</caption>
+        <topicref type="topic" id="437986969295327" build="ALL" modified="2024-05-30T22:09:38.041Z" icon="0" href="dialect_All-Non-Core-dialects">
+          <caption translate="true">所有非 Core 方言</caption>
         </topicref>
         <topicref type="topic" id="437986513610030" build="ALL" modified="2019-12-13T11:26:00.455Z" icon="0" href="dialect_VO">
           <caption translate="true">Visual Objects</caption>
@@ -166,17 +166,17 @@
           <caption translate="true">Harbour</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="425235102214402" build="ALL" modified="2016-06-02T17:06:00.116Z" icon="0" href="Bring-Your-Own-Runtime-BYOR">
-        <caption translate="true">Bring Your Own Runtime (BYOR)</caption>
+      <topicref type="topic" id="425235102214402" build="ALL" modified="2024-05-30T22:42:39.068Z" icon="0" href="Bring-Your-Own-Runtime-BYOR">
+        <caption translate="true">自备运行时 (BYOR)</caption>
       </topicref>
-      <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
-        <caption translate="true">Known Issues</caption>
+      <topicref type="topic" id="423890249842237" build="ALL" modified="2024-05-30T22:42:56.381Z" icon="0" href="Known-Issues">
+        <caption translate="true">已知问题</caption>
       </topicref>
-      <topicref type="topic" id="432589452071368" build="ALL" modified="2018-06-07T18:01:46.553Z" icon="0" href="Installation">
-        <caption translate="true">Installation</caption>
+      <topicref type="topic" id="432589452071368" build="ALL" modified="2024-05-30T22:46:10.831Z" icon="0" href="Installation">
+        <caption translate="true">安装</caption>
       </topicref>
-      <topicref type="topic" id="444174437272376" build="ALL" modified="2021-08-09T14:16:08.764Z" icon="0" href="Redistributing-X">
-        <caption translate="true">Redistributing X#</caption>
+      <topicref type="topic" id="444174437272376" build="ALL" modified="2024-05-30T22:46:34.656Z" icon="0" href="Redistributing-X">
+        <caption translate="true">分发部署 X# 应用</caption>
       </topicref>
       <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
         <caption translate="true">New language features </caption>

@@ -1,4 +1,9 @@
-﻿// VFPCommandButton.prg
+﻿// CommandButton.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -8,7 +13,7 @@ USING System.Drawing
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPCommandButton class.
+	/// The VFP compatible CommandButton class.
 	/// </summary>
 	PARTIAL CLASS CommandButton INHERIT System.Windows.Forms.Button
 		PRIVATE _vfpStyle AS INT

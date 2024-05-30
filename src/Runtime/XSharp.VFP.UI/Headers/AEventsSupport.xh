@@ -1,4 +1,9 @@
-﻿// AEventsSupport.xh
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+// AEventsSupport.xh
 // AEVENTS & AMOUSEOBJ
 
 // HACK : It should be PROTECTED
@@ -37,8 +42,8 @@ METHOD AMOUSEOBJ( arrayName AS USUAL, uMode := 0 AS USUAL ) AS INT
         ENDIF
     ENDIF
     RETURN 0
-    
-    
+
+
 METHOD BINDEVENT( oEventSource AS USUAL, cEvent AS USUAL, oEventHandler AS USUAL, cDelegate AS USUAL, nFlags := 0 AS USUAL ) AS INT
     IF IsNumeric( oEventSource )
         RETURN BindEvent2( oEventSource, cEvent, oEventHandler, cDelegate, nFlags )

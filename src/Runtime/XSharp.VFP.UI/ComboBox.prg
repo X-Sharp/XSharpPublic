@@ -1,8 +1,9 @@
-﻿// VFPComboBox.prg
-// Created by    : fabri
-// Creation Date : 9/20/2022 10:38:55 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// ComboBox.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 USING System
 USING System.Collections.Generic
@@ -15,7 +16,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-    /// The VFPComboBox class.
+    /// The VFP compatible ComboBox class.
     /// </summary>
 	PARTIAL CLASS ComboBox INHERIT System.Windows.Forms.ComboBox
 

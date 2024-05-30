@@ -1,4 +1,8 @@
 ﻿// VFPOverride.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 USING System
 USING System.Collections.Generic
@@ -11,7 +15,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 /// At code generation it captures the Owner and the Late-bound method to be called.
 /// When the Call() is called, a late-bound called is done, using Send()
 /// </summary>
-CLASS	 VFPOverride
+CLASS VFPOverride
     PRIVATE _owner AS OBJECT
     PRIVATE _sendTo AS STRING
 

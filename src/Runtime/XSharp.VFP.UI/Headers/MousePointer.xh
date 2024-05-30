@@ -1,8 +1,9 @@
 ﻿// MousePointer.xh
-// Created by    : fabri
-// Creation Date : 10/11/2022 11:33:28 PM
-// Created for   : 
-// WorkStation   : FABXPS
+
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 PRIVATE _VFPMousePointer := 0 AS INT
 	[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Get/Set the shape of the mouse cursor")];
@@ -47,8 +48,8 @@ PROPERTY MousePointer AS INT
 			SELF:Cursor := Cursors.Hand
 		CASE 16
 			SELF:Cursor := Cursors.Arrow
-			
+
 		END SWITCH
 	END SET
-	
+
 END PROPERTY

@@ -1,4 +1,9 @@
-﻿BEGIN NAMESPACE XSharp.VFP.UI
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+BEGIN NAMESPACE XSharp.VFP.UI
 
     PUBLIC PARTIAL CLASS CommandGroup
 
@@ -42,7 +47,7 @@
             SELF:AutoScaleDimensions := System.Drawing.SizeF{8, 16}
             SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
 				SUPER:Controls:Add(SELF:gBox)
-            SELF:Name := "VFPCommandGroup"
+            SELF:Name := "CommandGroup"
             SELF:Size := System.Drawing.Size{94, 66}
             SELF:ResumeLayout(false)
 

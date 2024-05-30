@@ -1,8 +1,9 @@
 ﻿// VFPDummy.prg
-// Created by    : fabri
-// Creation Date : 1/5/2022 2:18:10 PM
-// Created for   : 
-// WorkStation   : FABXPS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 
 USING System

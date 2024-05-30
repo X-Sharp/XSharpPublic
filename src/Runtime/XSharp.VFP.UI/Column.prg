@@ -1,8 +1,9 @@
-﻿// VFPGridColumn.prg
-// Created by    : fabri
-// Creation Date : 5/4/2022 9:52:42 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// Column.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 
 USING System
@@ -14,7 +15,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPGridColumn class.
+	/// The VFP compatible Column class.
 	/// </summary>
 	PARTIAL CLASS Column INHERIT System.Windows.Forms.DataGridViewTextBoxColumn IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 

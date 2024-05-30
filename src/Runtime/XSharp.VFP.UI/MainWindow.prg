@@ -1,8 +1,8 @@
-﻿// VFPMainWindow.prg
-// Created by    : fabri
-// Creation Date : 9/10/2022 5:48:22 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// MainWindow.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System
@@ -13,7 +13,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPMainWindow class.
+	/// The VFP compatible MainWindow class.
 	/// Used to emulate the Visual FoxPro window object through _Screen
 	/// </summary>
 	CLASS MainWindow INHERIT Form

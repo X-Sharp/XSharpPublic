@@ -1,8 +1,9 @@
-// VFPCheckbox.prg
-// Created by    : fabri
-// Creation Date : 9/20/2022 10:40:00 PM
-// Created for   :
-// WorkStation   : FABXPS
+// Checkbox.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 
 USING System
@@ -16,7 +17,7 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPCheckbox class.
+	/// The VFP compatible Checkbox class.
 	/// </summary>
 	PARTIAL CLASS CheckBox INHERIT System.Windows.Forms.CheckBox
 

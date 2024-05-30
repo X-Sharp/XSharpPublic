@@ -5,7 +5,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "VFPControl.xh"
 #include "VFPContainer.xh"
 
-		PROPERTY BORDERCOLOR AS LONG AUTO
+		PROPERTY BorderColor AS LONG AUTO
 		METHOD SetFocus() AS VOID STRICT
 			SELF:Focus()
 

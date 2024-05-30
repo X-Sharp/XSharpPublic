@@ -1,4 +1,9 @@
-﻿// VFPTextBox.prg
+﻿// TextBox.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -8,7 +13,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPTextBox class.
+	/// The VFP compatible TextBox class.
 	/// </summary>
 	PARTIAL CLASS TextBox INHERIT System.Windows.Forms.TextBox
 

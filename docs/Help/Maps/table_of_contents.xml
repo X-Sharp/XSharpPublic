@@ -685,7 +685,7 @@
       <topicref type="topic" id="423888819569735" modified="2020-04-21T14:53:34.324Z" icon="0" href="Strings">
         <caption translate="true">Strings</caption>
       </topicref>
-      <topicref type="topic" id="42388775368697" modified="2024-01-08T09:01:42.195Z" icon="0" href="Types">
+      <topicref type="topic" id="42388775368697" build="ALL" modified="2024-05-29T18:17:39.308Z" icon="0" href="Types">
         <caption translate="true">Types</caption>
       </topicref>
       <topicref type="topic" id="452683246054714" build="ALL" modified="2023-12-08T23:45:53.022Z" icon="0" href="Tuples">
@@ -697,7 +697,7 @@
       <topicref type="topic" id="423891384096573" build="ALL" modified="2020-04-21T14:57:08.391Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
       </topicref>
-      <topicref type="topic" id="437324895106794" modified="2024-01-08T09:01:52.392Z" icon="0" href="Strong-Typing">
+      <topicref type="topic" id="437324895106794" build="ALL" modified="2024-05-29T18:18:01.784Z" icon="0" href="Strong-Typing">
         <caption translate="true">Strong Typing</caption>
       </topicref>
       <topicref type="topic" id="443027840779407" build="ALL" modified="2023-07-07T22:44:05.379Z" icon="0" href="Runtime-Scripting">

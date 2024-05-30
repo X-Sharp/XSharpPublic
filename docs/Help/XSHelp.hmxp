@@ -170,7 +170,7 @@
       <config-value name="autohelpstart">0</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">.\;.\Images\</config-value>
+      <config-value name="searchpath">.\;..\HelpImages\</config-value>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make0include">CHM</config-value>
       <config-value name="make0status">*</config-value>
@@ -732,7 +732,7 @@
       <config-value name="publisher">XSharp BV</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.20.0.0)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.20.0.3)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers>
@@ -807,8 +807,6 @@
       <file-mod href="__localSpec.xml"/>
       <file-mod href="__NotInCoreVulcan.xml"/>
       <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
-      <file-mod href="Types.xml"/>
-      <file-mod href="Strong-Typing.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

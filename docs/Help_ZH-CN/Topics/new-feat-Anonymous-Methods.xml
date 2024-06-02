@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Anonymous Methods</title>
+<topic template="Default" modified="2024-06-02T21:39:47.259+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>匿名方法</title>
   <body>
     <header>
-      <para styleclass="Heading1">Anonymous Methods</para>
+      <para styleclass="Heading1">匿名方法</para>
     </header>
     <para styleclass="Normal"><snippet src="Ex-Anonymous-Methods" inline="false"/></para>
   </body>

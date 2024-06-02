@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:46:18.707+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-02T19:44:54.241+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>安装</title>
   <keywords>
     <keyword>component</keyword>
@@ -11,18 +11,19 @@
     <header>
       <para styleclass="Heading1">安装</para>
     </header>
-    <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">安装 XSharp 后，你会在计算机上发现以下文件夹。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="26" colcount="3">
       <tr style="vertical-align:top">
         <td style="width:562px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">目录</text></para>
         </td>
         <td style="width:143px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Setup component</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">组件</text></para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Contents</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">含义</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -33,7 +34,7 @@
           <para styleclass="Normal">Main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Main installation folder</para>
+          <para styleclass="Normal">主安装文件夹</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -44,7 +45,8 @@
           <para styleclass="Normal">Main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The runtime assemblies that are selectable in the Add Reference dialog inside Visual Studio. <br/>Please note that this is a subset of the folders in the Redist Folder. For deploying your apps please use the files in the Redist folder. In a future version this folder may contain so called reference assemblies (assemblies with only meta data and no code).</para>
+          <para styleclass="Normal">可在 Visual Studio 内部的 &quot;添加引用 &quot;对话框中选择的运行时程序集。</para>
+          <para styleclass="Normal">请注意，这是 Redist 文件夹中文件夹的子集。在部署应用程序时，请使用 Redist 文件夹中的文件。在未来版本中，该文件夹可能包含所谓的参考程序集（只有元数据而无代码的程序集）。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -55,7 +57,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The command line compiler, the Script interpreter and Vulcan XPorter</para>
+          <para styleclass="Normal">命令行编译器、脚本解释器和 Vulcan XPorter</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -66,19 +68,19 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (<text style="font-weight:bold;">FOX only</text>)</para>
+          <para styleclass="Normal">运行时 DLL 和 SDK DLL 的调试版本(<text style="font-weight:bold;">仅限 FOX 订阅</text>)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:562px; height:86px;">
+        <td style="width:562px; height:45px;">
           <para styleclass="Normal">Extension</para>
         </td>
-        <td style="width:143px; height:86px;">
+        <td style="width:143px; height:45px;">
           <para styleclass="Normal">main</para>
         </td>
-        <td style="width:666px; height:86px;">
-          <para styleclass="Normal">The components that must be installed inside Visual Studio for the X# project system and Language support. </para>
-          <para styleclass="Normal">If you want to reinstall the project systems you should run the deployvs&lt;num&gt;.cmd &#160;files in the Uninst folder. These files were created at install time and match your specific configuration of Visual Studio versions.</para>
+        <td style="width:666px; height:45px;">
+          <para styleclass="Normal">X# 项目系统和语言支持必须安装在 Visual Studio 内部的组件。</para>
+          <para styleclass="Normal">如果要重新安装项目系统，应运行 Uninst 文件夹中的 deployvs&lt;num&gt;.cmd 文件。这些文件是在安装时创建的，与 Visual Studio 版本的特定配置相匹配。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -89,7 +91,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The PDF, CHM help files and the Visual Studio help</para>
+          <para styleclass="Normal">PDF 和 CHM 帮助文件以及 Visual Studio 帮助</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -100,7 +102,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Some images</para>
+          <para styleclass="Normal">一些图片</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -111,7 +113,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">XSharpDefs.xh and other header files needed by X#</para>
+          <para styleclass="Normal">X# 所需的 XSharpDefs.xh 和其他头文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -122,7 +124,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The MsBuild integration for XsProj files</para>
+          <para styleclass="Normal">XsProj 文件的 MsBuild 集成</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -133,7 +135,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (<text style="font-weight:bold;">FOX only</text>)</para>
+          <para styleclass="Normal">适用于 .Net Core 2.0 的 X# 编译器和脚本引擎版本(<text style="font-weight:bold;">仅限 FOX 订阅</text>)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -144,7 +146,8 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">VSIX files to install the project system and debugger inside Visual Studio. <br/>Only use these when the X# support team tells you to do so.</para>
+          <para styleclass="Normal">VSIX 文件用于在 Visual Studio 中安装项目系统和调试器。</para>
+          <para styleclass="Normal">只有在 X# 支持团队告知您可以使用时，才能使用这些文件。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -155,7 +158,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Files that you may want to include with your application compiled with X#.</para>
+          <para styleclass="Normal">您可能希望在使用 X# 编译的应用程序中包含的文件。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -166,7 +169,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Contains the templates for the VO Compatible editors for Windows, Servers and Menus</para>
+          <para styleclass="Normal">包含用于 Windows、服务器和菜单的 VO 兼容编辑器模板</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -177,7 +180,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Tools that are used during installation,</para>
+          <para styleclass="Normal">安装过程中使用的工具</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -188,7 +191,9 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The uninstaller and some cmd files generated during installation to register your X# Extension inside VS 2015 and/or VS 2017. <br/>It also contains cmd files created at install time to help generating native images for the X# compiler.<br/>The cmd files containing the number 2015 are used for integration into VS 2015. The cmd files with the number 1-6 are used to install into different versions of VS 2017 and VS 2019.</para>
+          <para styleclass="Normal">安装过程中生成的卸载程序和一些 cmd 文件，用于在 VS 2015 和/或 VS 2017 中注册 X# 扩展。</para>
+          <para styleclass="Normal">它还包含安装时生成的 cmd 文件，以帮助为 X# 编译器生成本地映像。</para>
+          <para styleclass="Normal">包含数字 2015 的 cmd 文件用于集成到 VS 2015 中。数字 1-6 的 cmd 文件用于安装到不同版本的 VS 2017 和 VS 2019 中</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -199,7 +204,7 @@
           <para styleclass="Normal">main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The VOXPorter</para>
+          <para styleclass="Normal">VOXPorter</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -210,7 +215,7 @@
           <para styleclass="Normal">xIde</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The XIDE installer</para>
+          <para styleclass="Normal">XIDE 安装程序</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -221,7 +226,7 @@
           <para styleclass="Normal">main\gac</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">X# runtime files will be installed in the GAC when this component is selected</para>
+          <para styleclass="Normal">选择该组件时，X# 运行时文件将安装在 GAC 中</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -232,7 +237,7 @@
           <para styleclass="Normal">main\ngen</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The X# compiler files will be precompiled when the option &quot;Optimize performance by generating native images&quot; is selected</para>
+          <para styleclass="Normal">选择 &quot;通过生成本地图像优化性能 &quot;选项时，X# 编译器文件将被预编译</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -243,7 +248,7 @@
           <para styleclass="Normal">main\examples</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">The X# examples will be installed in the common documents folder when this option is selected</para>
+          <para styleclass="Normal">选择此选项时，X# 示例将安装在常用文档文件夹中</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -254,18 +259,17 @@
           <para styleclass="Normal">main\vs..</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">X# will be integrated into Visual Studio when this is selected</para>
+          <para styleclass="Normal">选择此项后，X# 将集成到 Visual Studio 中</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
-          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2015</text><br/><text styleclass="Normal">Assuming you have installed VS 2015 in the default location:</text></para>
-          <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio 14.0</para>
-          <para styleclass="Normal">then X# will be in the subfolders</para>
+          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2015</text><br/><text styleclass="Normal">假设您已将 VS 2015 安装在默认位置：c:\Program Files (x86)\Microsoft Visual Studio 14.0</text></para>
+          <para styleclass="Normal">X# 將会在以下子文件夹中</para>
           <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
           </list>
-          <para styleclass="Normal">and the MSBuild integration will be in the folder</para>
+          <para styleclass="Normal">MSBuild 整合將在以下文件夾中</para>
           <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">c:\Program Files (x86)\MSBuild\XSharp</li>
           </list>
@@ -274,14 +278,14 @@
           <para styleclass="Normal">main\vs2015</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">Note:<tab />There can only be one &quot;edition&quot; of VS 2015 on your machine.</para>
+          <para styleclass="Normal">注意：您的计算机上只能有一个 VS 2015 &quot;版本&quot;.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
-          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2017 and/or 2019</text><br/><text styleclass="Normal">Assuming you have installed VS 2017 in the default location:</text></para>
+          <para styleclass="Body Text"><text styleclass="Heading3">Visual Studio 2017 和/或 2019</text><br/><text styleclass="Normal">假设您已将 VS 2017 安装在默认位置：</text></para>
           <para styleclass="Normal">c:\Program Files (x86)\Microsoft Visual Studio\<text style="font-weight:bold;">&lt;number&gt;</text>\<text style="font-weight:bold; font-style:italic;">&lt;Version&gt;</text></para>
-          <para styleclass="Normal">then X# will be in the subfolders</para>
+          <para styleclass="Normal">那么 X# 将位于以下子文件夹中</para>
           <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">Common7\IDE\Extensions\XSharp</li>
           </list>
@@ -294,15 +298,16 @@
         </td>
         <td style="width:666px;">
           <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>is 2017 or 2019.</li>
-            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>can be one of Professinal, Community, Enterprise or Buildtools. <br/>There can be more that one edition of VS2017/VS2019 on your machine. Since X# 2.4 the installer will show all instance that are detected.</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;number&gt; </text>为 2017 或 2019。</li>
+            <li styleclass="Normal"><text style="font-weight:bold;">&lt;Version&gt; </text>可以是专业版、社区版、企业版或 Buildtools 版之一。</li>
           </list>
+          <para styleclass="Normal"> &#160; &#160;您的计算机上可能有多个 VS2017/VS2019 版本。自 X# 2.4 起，安装程序将显示检测到的所有实例。.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
           <para styleclass="Body Text"><text styleclass="Heading3">Registry</text></para>
-          <para styleclass="Normal">The installer will also write some changes to the registry:</para>
+          <para styleclass="Normal">安装程序还会在注册表中写入一些更改：</para>
           <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">HKLM\Software\XSharp</li>
             <li styleclass="Normal">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</li>
@@ -327,8 +332,8 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:562px;">
-          <para styleclass="Body Text"><text styleclass="Heading3">Environment variables</text></para>
-          <para styleclass="Body Text"><text styleclass="Normal">The installer creates / modifies the following environment variables</text></para>
+          <para styleclass="Body Text"><text styleclass="Heading3">环境变量</text></para>
+          <para styleclass="Body Text"><text styleclass="Normal">安装程序会创建/修改以下环境变量</text></para>
           <para styleclass="Body Text"><text styleclass="Normal">XSHARPPATH</text></para>
           <para styleclass="Body Text"><text styleclass="Normal">XSHARPMSBUILDDIR</text></para>
         </td>
@@ -339,7 +344,6 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">See the topic <link displaytype="text" defaultstyle="true" type="topiclink" href="Building-XSharp-apps-with-Visu">Building XSharp apps with Visual Studio and/or MsBuild</link> for a description how the various registry settings and folders are involved with the build process with MsBuild and Visual Studio.</para>
+    <para styleclass="Normal">请参阅主题 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="Building-XSharp-apps-with-Visu">使用 Visual Studio 和/或 MsBuild 构建 XSharp 应用程序</link>，了解各种注册表设置和文件夹如何与 MsBuild 和 Visual Studio 的构建过程相关联。</para>
   </body>
 </topic>

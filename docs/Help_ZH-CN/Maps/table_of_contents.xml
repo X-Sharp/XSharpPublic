@@ -178,13 +178,13 @@
       <topicref type="topic" id="444174437272376" build="ALL" modified="2024-05-30T22:46:34.656Z" icon="0" href="Redistributing-X">
         <caption translate="true">分发部署 X# 应用</caption>
       </topicref>
-      <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
-        <caption translate="true">New language features </caption>
-        <topicref type="topic" id="423997726350447" build="ALL" modified="2019-01-24T16:49:26.499Z" icon="0" href="new-feat-Anonymous-Methods">
-          <caption translate="true">Anonymous Methods</caption>
+      <topicref type="topic" id="423886741980303" build="ALL" modified="2024-06-02T19:54:08.800Z" icon="0" href="New-features">
+        <caption translate="true">新的语言特性</caption>
+        <topicref type="topic" id="423997726350447" build="ALL" modified="2024-06-02T21:39:22.186Z" icon="0" href="new-feat-Anonymous-Methods">
+          <caption translate="true">匿名方法</caption>
         </topicref>
-        <topicref type="topic" id="425338296933191" build="ALL" modified="2019-01-24T16:49:31.748Z" icon="0" href="new-feat-Anonymous-Classes">
-          <caption translate="true">Anonymous Types</caption>
+        <topicref type="topic" id="425338296933191" build="ALL" modified="2024-06-02T21:45:44.981Z" icon="0" href="new-feat-Anonymous-Classes">
+          <caption translate="true">匿名类型</caption>
         </topicref>
         <topicref type="topic" id="427816560780984" build="ALL" modified="2019-01-24T16:49:36.770Z" icon="0" href="new-feat-ASTYPE">
           <caption translate="true">ASTYPE</caption>
@@ -7133,14 +7133,14 @@
   </navref>
   <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
     <caption translate="true">X# Examples</caption>
-    <topicref type="topic" id="42424518616889" build="ALL" modified="2023-12-19T13:54:51.276Z" icon="0" href="Ex-Anonymous-Methods">
-      <caption translate="true">Anonymous Method Expressions</caption>
+    <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
+      <caption translate="true">匿名方法</caption>
     </topicref>
     <topicref type="topic" id="426887977972070" build="ALL" modified="2023-12-19T13:54:40.651Z" icon="0" href="Ex-Anonymous-Types">
       <caption translate="true">Anonymous Types</caption>
     </topicref>
-    <topicref type="topic" id="424267695938100" build="ALL" modified="2023-12-19T13:54:46.068Z" icon="0" href="Ex-ASYNC">
-      <caption translate="true">ASYNC Example</caption>
+    <topicref type="topic" id="424267695938100" build="ALL" modified="2024-06-02T22:06:38.738Z" icon="0" href="Ex-ASYNC">
+      <caption translate="true">ASYNC 示例</caption>
     </topicref>
     <topicref type="topic" id="424945667794068" build="ALL" modified="2023-12-19T13:54:58.454Z" icon="0" href="Ex-BEGIN-UNSAFE">
       <caption translate="true">BEGIN UNSAFE Example</caption>
@@ -7148,17 +7148,17 @@
     <topicref type="topic" id="42492634929077" build="ALL" modified="2023-12-19T13:55:01.883Z" icon="0" href="Ex-BEGIN-USING">
       <caption translate="true">BEGIN USING Example</caption>
     </topicref>
-    <topicref type="topic" id="424265406124180" build="ALL" modified="2023-12-19T13:55:05.753Z" icon="0" href="Ex-CHECKED">
-      <caption translate="true">CHECKED Example</caption>
+    <topicref type="topic" id="424265406124180" build="ALL" modified="2024-06-02T22:08:27.672Z" icon="0" href="Ex-CHECKED">
+      <caption translate="true">CHECKED 示例</caption>
     </topicref>
-    <topicref type="topic" id="425847391702785" build="ALL" modified="2023-12-19T13:55:09.069Z" icon="0" href="Ex-EVENT">
-      <caption translate="true">EVENT Example</caption>
+    <topicref type="topic" id="425847391702785" build="ALL" modified="2024-06-02T22:08:40.378Z" icon="0" href="Ex-EVENT">
+      <caption translate="true">EVENT 示例</caption>
     </topicref>
     <topicref type="topic" id="424265813808443" build="ALL" modified="2023-12-19T13:55:12.963Z" icon="0" href="Ex-Expression">
       <caption translate="true">Expression Examples</caption>
     </topicref>
-    <topicref type="topic" id="426394412434484" build="ALL" modified="2023-12-19T13:55:16.971Z" icon="0" href="Ex-FIXED">
-      <caption translate="true">FIXED Example</caption>
+    <topicref type="topic" id="426394412434484" build="ALL" modified="2024-06-02T22:11:12.878Z" icon="0" href="Ex-FIXED">
+      <caption translate="true">FIXED 示例</caption>
     </topicref>
     <topicref type="topic" id="424249105268691" build="ALL" modified="2023-12-19T13:55:20.792Z" icon="0" href="Ex-GENERICs">
       <caption translate="true">GENERICs Example</caption>

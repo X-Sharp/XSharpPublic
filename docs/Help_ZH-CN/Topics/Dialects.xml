@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-26T17:49:12.147+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-30T22:02:08.508+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>方言</title>
   <body>
     <header>
@@ -35,9 +35,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:normal;">关键词的</text></para>
-          <para styleclass="Normal"><text style="font-weight:bold;">4 个字母的缩写</text></para>
-          <para styleclass="Normal"><text style="font-weight:normal;">(FUNC、WHIL 等). </text></para>
+          <para styleclass="Normal"><text style="font-weight:normal;">关键词的</text><text style="font-weight:bold;">4 个字母的缩写</text><text style="font-weight:normal;">(FUNC、WHIL 等). </text></para>
         </td>
         <td>
           <para styleclass="Normal">-</para>
@@ -106,7 +104,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">ALIAS</text> (-&gt;) operator</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">ALIAS</text> (-&gt;) 操作符</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -129,7 +127,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">AND, NOT, OR, XOR </text>as alternatives for .AND., .NOT. etc</para>
+          <para styleclass="Normal">使用<text style="font-weight:bold;"> AND, NOT, OR, XOR</text> 替代 .AND., .NOT. 等</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -152,7 +150,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">ARRAY</text> type, Including Array literals &amp; NULL_ARRAY, including missing elements</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">ARRAY</text> 类型，包括 Array 子面量和 NULL_ARRAY，包括缺失元素(的 Array)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -175,7 +173,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">BREAK</text> statement</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">BREAK</text> 语句</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -221,7 +219,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">CLIPPER</text> calling convention (requires USUAL support)</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">CLIPPER</text> 调用约定(需要 USUAL 支持)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -244,7 +242,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">CODEBLOCK</text> type</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">CODEBLOCK</text> 类型</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -267,7 +265,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">DATE</text> type, including NULL_DATE</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">DATE</text> 类型，包括 NULL_DATE</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -290,7 +288,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">DATE and DateTime literals</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">DATE 和 DateTime 字面量</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">Yes</para>
@@ -313,7 +311,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">DEFINE </text><text style="font-weight:normal;">statement with optional type clause</text></para>
+          <para styleclass="Normal">包含可选类型子句的<text style="font-weight:bold;"> DEFINE </text><text style="font-weight:normal;">语句</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">Yes</para>
@@ -336,7 +334,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">FIELD</text> statement, and recognition of Field names in stead of locals or instance variables</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">FIELD</text> 语句，并识别为字段名而不是局部变量或者变量实例</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -359,7 +357,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text> type, including Float literals &amp; the <text style="font-weight:bold;">/vo14</text> compiler option</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text> 类型，包括 Float 字面量和 &#160;<text style="font-weight:bold;">/vo14</text> 编译器选项</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -382,7 +380,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">FOR .. ENDFOR </text>as alternative for <text style="font-weight:bold;">FOR .. NEXT</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">FOR .. ENDFOR </text>替代 <text style="font-weight:bold;">FOR .. NEXT</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -405,7 +403,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">FOR EACH </text>as alternative for <text style="font-weight:bold;">FOREACH</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">FOR EACH </text>替代 <text style="font-weight:bold;">FOREACH</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -428,7 +426,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">GLOBAL</text><text style="font-weight:normal;"> statement</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">GLOBAL</text><text style="font-weight:normal;"> 语句</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">Yes</para>
@@ -451,7 +449,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() expression and the <text style="font-weight:bold;">/vo10</text> compiler option</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() 表达式和 <text style="font-weight:bold;">/vo10</text> 编译器选项</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">Yes<text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
@@ -474,7 +472,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Late binding</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">后期绑定</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -497,7 +495,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">LPARAMETERS </text>statement</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">LPARAMETERS </text>语句</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -520,7 +518,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">MACRO </text>compiler</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">MACRO </text>编译器</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">- <text style="font-weight:bold;">13</text></para>
@@ -543,7 +541,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR, PUBLIC, PRIVATE, PARAMETERS</text> statement , including undeclared variables <text style="font-size:7pt; font-weight:bold; vertical-align:super;">14</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR, PUBLIC, PRIVATE, PARAMETERS</text> 语句，包括未声明变量 <text style="font-size:7pt; font-weight:bold; vertical-align:super;">14</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -566,7 +564,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">PSZ</text> Type, including NULL_PSZ and (pseudo) PSZ conversion functions (String2Psz(), Cast2Psz()</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">PSZ</text> 类型，包括 NULL_PSZ 和(伪) PSZ 转换函数 (String2Psz(), Cast2Psz()</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -589,7 +587,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">PSZ Indexer</text>&#32;</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">PSZ 索引</text>&#32;</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">n/a</para>
@@ -635,7 +633,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">SYMBOL</text> type, including Symbol literals &amp; NULL_SYMBOL</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">SYMBOL</text> 类型，包括 Symbol 字面量和 NULL_SYMBOL</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -658,7 +656,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Statements </text>before the first entity in a source file</para>
+          <para styleclass="Normal">源文件中第一个实体之前的<text style="font-weight:bold;"> Statements</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -681,7 +679,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">USUAL</text> type, including NIL literal (1,2)</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">USUAL</text> 类型，包括 NIL 字面量 (1,2)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -704,7 +702,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">TEXT Command</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">TEXT 命令</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -727,7 +725,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Special features</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">特殊功能</text></para>
         </td>
         <td style="width:71px;">
         </td>
@@ -747,30 +745,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">VOSTRUCT </text><text style="font-weight:normal;">and </text><text style="font-weight:bold;">AS/IS </text><text style="font-weight:normal;">syntax (10)</text></para>
-        </td>
-        <td style="width:71px;">
-          <para styleclass="Normal">-</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Yes</para>
-        </td>
-        <td>
-          <para styleclass="Normal">-</para>
-        </td>
-        <td>
-          <para styleclass="Normal">-</para>
-        </td>
-        <td>
-          <para styleclass="Normal">-</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">UNION </text><text style="font-weight:normal;">and </text><text style="font-weight:bold;">AS/IS </text><text style="font-weight:normal;">syntax (10)</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">VOSTRUCT </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS </text><text style="font-weight:normal;">语法 (10)</text></para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -793,7 +768,30 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal">Untyped Literal Arrays</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">UNION </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS 语法</text><text style="font-weight:normal;"> (10)</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">未定义类型的字面量数组(Untyped Literal Arrays)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -816,7 +814,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal">Missing types allowed</para>
+          <para styleclass="Normal">允许不定义类型(Missing types allowed)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -839,7 +837,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal">Missing arguments in function/method calls MyFunc(1,,2)</para>
+          <para styleclass="Normal">函数/方法调用中允许缺少参数 MyFunc(1,,2)</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -862,7 +860,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">Pseudo functions</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">伪函数</text></para>
         </td>
         <td style="width:71px;">
         </td>
@@ -1020,7 +1018,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Other information</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">其他信息</text></para>
         </td>
         <td style="width:71px;">
         </td>
@@ -1051,21 +1049,68 @@
     </table></para>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Requires VulcanRT.DLL or XSharp.VO.DLL</li>
-      <li styleclass="Normal">Requires VulcanRTFuncs.DLL or XSharp.VO.DLL</li>
-      <li styleclass="Normal">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</li>
-      <li styleclass="Normal">Only supported inside functions and methods with Clipper Calling convention</li>
-      <li styleclass="Normal">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>
-      <li styleclass="Normal">This gets translated to <br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</li>
-      <li styleclass="Normal">In the core dialect each of the expressions is cast to OBJECT. In the other dialects the expression is cast to USUAL.</li>
-      <li styleclass="Normal">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:<br/>{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>Typed literal arrays are prefixed with &lt;Type&gt; like this:<br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>This becomes a literal string array</li>
-      <li styleclass="Normal">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</li>
-      <li styleclass="Normal">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </li>
-      <li styleclass="Normal">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</li>
-      <li styleclass="Normal">The true and false expressions for an IIF() are optional in Harbour and Xbase++</li>
-      <li styleclass="Normal">The macro compiler is not supported. However when you use the RDD system in the Core dialect then the index expression will still use the macro compiler and a reference to the XSharp.RT.DLL is needed for the support of the macro compiler.</li>
-      <li styleclass="Normal">This requires the XSharp runtime.</li>
-      <li styleclass="Normal">In FoxPro NIL is not allowed and redefined to FALSE.</li>
+      <li styleclass="Normal">需要 VulcanRT.DLL 或 XSharp.VO.DLL</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">需要 VulcanRTFuncs.DLL 或 XSharp.VO.DLL</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">缺少定义的类型会被翻译为 USUAL。使用新的 /vo15 编译器选项，您可以告诉编译器不允许缺少类型定义。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">仅支持在函数和方法中使用 Clipper 调用约定</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Vulcan 运行时没有 SLen() 函数。编译器会将其转换为访问字符串的 Length 属性。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">这将被转换为：</li>
+    </list>
+    <para styleclass="Normal"><br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 Core 方言中，每个表达式都被转换为 OBJECT。在其他方言中，表达式被转换为 USUAL。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 VO/Vulcan 方言中，无类型的字面量数组被转换为 VO 数组类型：</li>
+    </list>
+    <para styleclass="Normal" style="margin-left:39px;"><br/> {&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</para>
+    <para styleclass="Normal" style="margin-left:39px;"><br/>类型字面量数组的前缀是 &lt;Type&gt;，如下所示：</para>
+    <para styleclass="Normal" style="margin-left:39px;"><br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</para>
+    <para styleclass="Normal" style="margin-left:39px;"><br/>这就变成了字面量字符串数组</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"> /vo2 编译器选项会将 NULL_STRING 编译为空字符串。否则编译为 NULL。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">VOSTRUCT 和 UNION 可以用标准的 .NET 结构代替。对于 Union，您需要在结构体上使用 [StructLayout(LayoutKind.Explicit)] 属性，并在每个字段上使用 [FieldOffSet()] 属性来明确定义字段的位置。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">仅适用于与 VO 兼容的关键字，不适用于 Vulcan 或 XSharp 中引入的关键字。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 Harbour 和 Xbase++ 中，IIF() 的 true 和 false 表达式是可选的。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不支持宏编译器。然而，当你在 Core 方言中使用 RDD 系统时，索引表达式仍将使用宏编译器，并且需要引用 XSharp.RT.DLL 以支持宏编译器。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">这需要 XSharp 运行时。</li>
+    </list>
+    <para styleclass="Normal">.</para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 FoxPro 中不允许使用 NIL，并将其重新定义为 FALSE。</li>
     </list>
   </body>
 </topic>

@@ -1,23 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T12:57:16.186+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Redistributing X#</title>
+<topic template="Default" modified="2024-06-02T19:53:06.622+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>分发部署 X# 应用</title>
   <body>
     <header>
-      <para styleclass="Heading1">Redistributing X#</para>
+      <para styleclass="Heading1">分发部署 X# 应用</para>
     </header>
-    <para styleclass="Normal">You are allowed to distribute the following XSharp DLLs with your projects:</para>
-    <para styleclass="Normal">You are also allowed to distribute the PDB files that come with these DLLs. </para>
-    <para styleclass="Normal">These PDB files may help in locating the line numbers where an error occurs.</para>
-    <para styleclass="Normal">These files can be found in the &lt;Program Files&gt;\XSharp\Redist folder on your machine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您可以在您的项目中发布下列 XSharp DLL：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您还可以发布这些 DLL 附带的 PDB 文件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些 PDB 文件可以帮助查找发生错误的行号。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些文件可以在你机器上的 &lt;Program Files&gt;\XSharp\Redist 文件夹中找到。</para>
     <para styleclass="Heading2">XSharp.Runtime</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="14" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">文件名</para>
         </td>
         <td>
-          <para styleclass="Normal">Needed for</para>
+          <para styleclass="Normal" style="text-align:center;">用于</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -25,7 +29,7 @@
           <para styleclass="Normal">XSharp.CodeAnalysis.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">Full macro compiler &amp; Scripting</para>
+          <para styleclass="Normal">完整的宏编译器和脚本</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -33,7 +37,7 @@
           <para styleclass="Normal">XSharp.Core.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">All dialects</para>
+          <para styleclass="Normal">所有方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -41,7 +45,7 @@
           <para styleclass="Normal">XSharp.Data.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">All dialects</para>
+          <para styleclass="Normal">所有方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -49,7 +53,7 @@
           <para styleclass="Normal">XSharp.MacroCompiler.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">Macro compiler</para>
+          <para styleclass="Normal">宏编译器</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -57,7 +61,7 @@
           <para styleclass="Normal">XSharp.MacroCompiler.Full.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">Full Macro compiler</para>
+          <para styleclass="Normal">完整的宏编译器</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -65,7 +69,7 @@
           <para styleclass="Normal">XSharp.RT.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">All dialects</para>
+          <para styleclass="Normal">所有方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -73,7 +77,7 @@
           <para styleclass="Normal">XSharp.RT.Debugger.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">All dialects</para>
+          <para styleclass="Normal">所有方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -81,7 +85,7 @@
           <para styleclass="Normal">XSharp.RDD.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">All dialects</para>
+          <para styleclass="Normal">所有方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -89,7 +93,7 @@
           <para styleclass="Normal">XSharp.Scripting.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">Full Macro compiler &amp; Scripting</para>
+          <para styleclass="Normal">完整的宏编译器和脚本</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -97,7 +101,7 @@
           <para styleclass="Normal">XSharp.VFP.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">FoxPro dialect</para>
+          <para styleclass="Normal">FoxPro 方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -105,7 +109,7 @@
           <para styleclass="Normal">XSharp.VFP.UI.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">FoxPro dialect</para>
+          <para styleclass="Normal">FoxPro 方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -113,7 +117,7 @@
           <para styleclass="Normal">XSharp.VO.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">VO and Vulcan dialect</para>
+          <para styleclass="Normal">VO 和 Vulcan 方言</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -121,15 +125,15 @@
           <para styleclass="Normal">XSharp.XPP.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">Xbase++ Dialect</para>
+          <para styleclass="Normal">Xbase++ 方言</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">VO Compatible SDK</para>
+    <para styleclass="Heading2">VO 兼容 SDK</para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="8" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -168,11 +172,11 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Strongly Typed version of the VO SDK</para>
+    <para styleclass="Heading2">强类型版本的 VO SDK</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -202,12 +206,12 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following files are needed by VOGUIClasses.dll when you use the DataBrowser or Splitwindow </para>
+    <para styleclass="Normal">使用 DataBrowser 或 Splitwindow 时，VOGUIClasses.dll 需要以下文件</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="13" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -261,7 +265,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">The following file is needed for image support in VOGUIClasses.DLL</para>
+          <para styleclass="Normal">VOGUIClasses.DLL 中的图像支持需要以下文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -270,11 +274,11 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">XSharp Scripting</para>
+    <para styleclass="Heading2">XSharp 脚本</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -294,12 +298,12 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These scripting files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder</para>
-    <para styleclass="Heading2">Support files</para>
+    <para styleclass="Normal">这些脚本文件都可以在 &lt;Program Files&gt;\XSharp\Bin 文件夹中找到</para>
+    <para styleclass="Heading2">支持文件</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="1">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -319,8 +323,6 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These support files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些支持文件都可以在 &lt;Program Files&gt;\XSharp\Bin 文件夹中找到</para>
   </body>
 </topic>

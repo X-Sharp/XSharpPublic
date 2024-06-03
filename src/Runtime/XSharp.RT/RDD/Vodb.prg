@@ -17,6 +17,9 @@ PRIVATE STATIC METHOD DecodeResult(oValue as OBJECT) AS USUAL
     IF oValue == DBNull.Value
         RETURN NIL
     ENDIF
+    IF oValue is OBJECT[] VAR objArray
+        oValue := Array{objArray}
+    ENDIF
     RETURN oValue
 
 /// <inheritdoc cref='CoreDb.BlobInfo'/>

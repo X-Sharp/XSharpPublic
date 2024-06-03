@@ -9,6 +9,7 @@ USING XSharp.RDD.Support
 USING System.IO
 USING System.Collections.Generic
 USING System.Diagnostics
+USING System.Linq
 USING STATIC XSharp.Conversions
 
 BEGIN NAMESPACE XSharp.RDD
@@ -55,8 +56,10 @@ CLASS DBFVFP INHERIT DBFCDX
 
     OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
         LOCAL isOk AS LOGIC
+        var aFieldCopy := SELF:_Fields // Save the fields, because the parent Create() will remove the flags
         isOk := SUPER:Create(openInfo)
         IF isOk
+            SELF:_Fields := aFieldCopy
             SELF:_SetFoxHeader()
         ENDIF
         // read fields again so the field flags are correct, since these depend on the FoxPro version in the header

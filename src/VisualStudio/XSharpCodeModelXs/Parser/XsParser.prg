@@ -253,18 +253,24 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         ENDIF
                         VAR lastEntity := _EntityList:LastOrDefault()
                         IF lastEntity != NULL
-                            if tokenBefore.Channel != XSharpLexer.DefaultTokenChannel
-                                var index := _tokens:IndexOf(tokenBefore)
-                                repeat
-                                    tokenBefore := (XSharpToken) _tokens[index]
-                                    index -= 1
-                                until index == 0 .or. tokenBefore.Channel == Lexer.DefaultTokenChannel
-                            endif
                             if lastEntity:Kind:IsLocal()
+                                // if the last entity is a local entity then take its parent
                                 lastEntity := lastEntity:Parent astype XSourceEntity
                             endif
-                            lastEntity:Range       := lastEntity:Range:WithEnd(tokenBefore)
-                            lastEntity:Interval    := lastEntity:Interval:WithEnd(tokenBefore)
+                            IF lastEntity != NULL .and. !entity:Kind:IsLocal()
+                                if tokenBefore.Channel != XSharpLexer.DefaultTokenChannel
+                                    var index := _tokens:IndexOf(tokenBefore)
+                                    repeat
+                                        tokenBefore := (XSharpToken) _tokens[index]
+                                        index -= 1
+                                    until index == 0 .or. tokenBefore.Channel == Lexer.DefaultTokenChannel
+                                endif
+                                if lastEntity:Kind:IsLocal()
+                                    lastEntity := lastEntity:Parent astype XSourceEntity
+                                endif
+                                lastEntity:Range       := lastEntity:Range:WithEnd(tokenBefore)
+                                lastEntity:Interval    := lastEntity:Interval:WithEnd(tokenBefore)
+                            ENDIF
                         ENDIF
                         _EntityList:Add(entity)
                         VAR isMember := entity IS XSourceMemberSymbol
@@ -2907,6 +2913,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 IF ! SELF:ParseXBaseDeclarationStatement()
                     SELF:ReadLine()
                 ENDIF
+            ELSE
+                // duplicate the code for the OTHERWISE clause
+                SELF:ParseForInlineLocals()
+                SELF:ReadLine( )
             ENDIF
         CASE XSharpLexer.ID
             // STATIC ID

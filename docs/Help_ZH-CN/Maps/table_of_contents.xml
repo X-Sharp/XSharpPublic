@@ -337,22 +337,22 @@
       <topicref type="topic" id="428724207686309" build="ALL" modified="2024-06-04T11:40:19.272Z" icon="0" href="Who-is-the-X-team">
         <caption translate="true">X# 团队成员</caption>
       </topicref>
-      <topicref type="topic" id="432593740906377" build="ALL" modified="2018-06-08T11:21:25.514Z" icon="0" href="XBase-Types">
-        <caption translate="true">XBase Types</caption>
-        <topicref type="topic" id="4324375231264" build="ALL" modified="2018-06-08T11:59:24.252Z" icon="0" href="Array-Of-Type">
-          <caption translate="true">Array Of Type</caption>
+      <topicref type="topic" id="432593740906377" build="ALL" modified="2024-06-04T22:58:24.318Z" icon="0" href="XBase-Types">
+        <caption translate="true">XBase 类型</caption>
+        <topicref type="topic" id="4324375231264" build="ALL" modified="2024-06-04T23:00:40.478Z" icon="0" href="Array-Of-Type">
+          <caption translate="true">Array Of 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595826581620" build="ALL" modified="2018-06-08T11:59:13.016Z" icon="0" href="Array-Type">
-          <caption translate="true">Array Type</caption>
+        <topicref type="topic" id="432595826581620" build="ALL" modified="2024-06-04T23:10:27.010Z" icon="0" href="Array-Type">
+          <caption translate="true">Array 类型</caption>
         </topicref>
         <topicref type="topic" id="432593702345260" build="ALL" modified="2018-06-08T12:00:16.997Z" icon="0" href="CodeBlock2">
           <caption translate="true">CodeBlock</caption>
         </topicref>
-        <topicref type="topic" id="43260467791936" build="ALL" modified="2018-06-08T11:46:48.259Z" icon="0" href="Date-Type">
-          <caption translate="true">Date Type</caption>
+        <topicref type="topic" id="43260467791936" build="ALL" modified="2024-06-04T23:27:46.767Z" icon="0" href="Date-Type">
+          <caption translate="true">Date 类型</caption>
         </topicref>
-        <topicref type="topic" id="440854862632190" build="ALL" modified="2020-09-11T10:17:49.724Z" icon="0" href="Binary_Type">
-          <caption translate="true">Binary Type</caption>
+        <topicref type="topic" id="440854862632190" build="ALL" modified="2024-06-04T23:29:51.350Z" icon="0" href="Binary_Type">
+          <caption translate="true">Binary 类型</caption>
         </topicref>
         <topicref type="topic" id="440854860545107" build="ALL" modified="2020-09-11T10:18:11.635Z" icon="0" href="Currency-Type">
           <caption translate="true">Currency Type</caption>
@@ -7131,8 +7131,8 @@
   <navref href="XSharpRef.chm::\XSharpRef.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
     <caption translate="true">XSharpRef.chm::\XSharpRef.hhc</caption>
   </navref>
-  <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
-    <caption translate="true">X# Examples</caption>
+  <topicref type="topic" id="424249573402452" build="ALL" modified="2024-06-04T22:56:16.783Z" icon="0" href="X-Examples">
+    <caption translate="true">X# 示例</caption>
     <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
       <caption translate="true">匿名方法</caption>
     </topicref>

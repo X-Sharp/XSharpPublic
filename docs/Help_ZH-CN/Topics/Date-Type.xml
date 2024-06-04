@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Date Type</title>
+<topic template="Default" modified="2024-06-04T23:28:03.332+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Date 类型</title>
   <keywords>
     <keyword>DATE</keyword>
     <keyword>XSharp.__Date</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Date Type</para>
+      <para styleclass="Heading1">Date 类型</para>
     </header>
-    <para styleclass="Normal">This structure holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic. There are implicit converters between Date and DateTime.<br/>The internal type name for this type is XSharp.__Date</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该结构以 32 位保存年、月、日。日期计算使用 System.DateTime 计算逻辑。Date 和 DateTime 之间有隐式转换器。</para>
+    <para styleclass="Normal"><br/>该类型的内部类型名称为 XSharp.__Date 。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="DATE" inline="false"/></para>
   </body>

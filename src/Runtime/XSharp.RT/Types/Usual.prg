@@ -304,11 +304,6 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 CASE srp as System.Reflection.Pointer
                     SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                     SELF:_valueData:p		:= IntPtr{System.Reflection.Pointer.Unbox(o)}
-                CASE objarray as OBJECT[]
-                    local a1 as ARRAY
-                    a1 := Array{objarray}
-                    SELF:_flags				:= UsualFlags{__UsualType.Array}
-                    SELF:_refData           := a1
 
                 OTHERWISE
                     IF vartype == TYPEOF(__Usual)

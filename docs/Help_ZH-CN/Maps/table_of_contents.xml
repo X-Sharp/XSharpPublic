@@ -147,8 +147,8 @@
         <topicref type="topic" id="437985041510088" build="ALL" modified="2019-12-13T11:25:48.582Z" icon="0" href="dialect_Core">
           <caption translate="true">Core</caption>
         </topicref>
-        <topicref type="topic" id="437986969295327" build="ALL" modified="2019-12-13T11:25:55.241Z" icon="0" href="dialect_All-Non-Core-dialects">
-          <caption translate="true">All Non Core dialects</caption>
+        <topicref type="topic" id="437986969295327" build="ALL" modified="2024-05-30T22:09:38.041Z" icon="0" href="dialect_All-Non-Core-dialects">
+          <caption translate="true">所有非 Core 方言</caption>
         </topicref>
         <topicref type="topic" id="437986513610030" build="ALL" modified="2019-12-13T11:26:00.455Z" icon="0" href="dialect_VO">
           <caption translate="true">Visual Objects</caption>
@@ -166,25 +166,25 @@
           <caption translate="true">Harbour</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="425235102214402" build="ALL" modified="2016-06-02T17:06:00.116Z" icon="0" href="Bring-Your-Own-Runtime-BYOR">
-        <caption translate="true">Bring Your Own Runtime (BYOR)</caption>
+      <topicref type="topic" id="425235102214402" build="ALL" modified="2024-05-30T22:42:39.068Z" icon="0" href="Bring-Your-Own-Runtime-BYOR">
+        <caption translate="true">自备运行时 (BYOR)</caption>
       </topicref>
-      <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
-        <caption translate="true">Known Issues</caption>
+      <topicref type="topic" id="423890249842237" build="ALL" modified="2024-05-30T22:42:56.381Z" icon="0" href="Known-Issues">
+        <caption translate="true">已知问题</caption>
       </topicref>
-      <topicref type="topic" id="432589452071368" build="ALL" modified="2018-06-07T18:01:46.553Z" icon="0" href="Installation">
-        <caption translate="true">Installation</caption>
+      <topicref type="topic" id="432589452071368" build="ALL" modified="2024-05-30T22:46:10.831Z" icon="0" href="Installation">
+        <caption translate="true">安装</caption>
       </topicref>
-      <topicref type="topic" id="444174437272376" build="ALL" modified="2021-08-09T14:16:08.764Z" icon="0" href="Redistributing-X">
-        <caption translate="true">Redistributing X#</caption>
+      <topicref type="topic" id="444174437272376" build="ALL" modified="2024-05-30T22:46:34.656Z" icon="0" href="Redistributing-X">
+        <caption translate="true">分发部署 X# 应用</caption>
       </topicref>
-      <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
-        <caption translate="true">New language features </caption>
-        <topicref type="topic" id="423997726350447" build="ALL" modified="2019-01-24T16:49:26.499Z" icon="0" href="new-feat-Anonymous-Methods">
-          <caption translate="true">Anonymous Methods</caption>
+      <topicref type="topic" id="423886741980303" build="ALL" modified="2024-06-02T19:54:08.800Z" icon="0" href="New-features">
+        <caption translate="true">新的语言特性</caption>
+        <topicref type="topic" id="423997726350447" build="ALL" modified="2024-06-02T21:39:22.186Z" icon="0" href="new-feat-Anonymous-Methods">
+          <caption translate="true">匿名方法</caption>
         </topicref>
-        <topicref type="topic" id="425338296933191" build="ALL" modified="2019-01-24T16:49:31.748Z" icon="0" href="new-feat-Anonymous-Classes">
-          <caption translate="true">Anonymous Types</caption>
+        <topicref type="topic" id="425338296933191" build="ALL" modified="2024-06-02T21:45:44.981Z" icon="0" href="new-feat-Anonymous-Classes">
+          <caption translate="true">匿名类型</caption>
         </topicref>
         <topicref type="topic" id="427816560780984" build="ALL" modified="2019-01-24T16:49:36.770Z" icon="0" href="new-feat-ASTYPE">
           <caption translate="true">ASTYPE</caption>
@@ -207,38 +207,38 @@
         <topicref type="topic" id="423998818673834" build="ALL" modified="2019-01-24T16:50:23.679Z" icon="0" href="new-feat-BEGIN-USING">
           <caption translate="true">BEGIN USING</caption>
         </topicref>
-        <topicref type="topic" id="426887200470279" build="ALL" modified="2019-01-24T16:50:17.926Z" icon="0" href="new-feat-Collection-Initializers">
-          <caption translate="true">Collection Initializers</caption>
+        <topicref type="topic" id="426887200470279" build="ALL" modified="2024-06-03T00:55:17.608Z" icon="0" href="new-feat-Collection-Initializers">
+          <caption translate="true">集合初始化</caption>
         </topicref>
-        <topicref type="topic" id="423997959494963" build="ALL" modified="2019-01-24T16:51:04.265Z" icon="0" href="new-feat-Conditional-Access-Expression">
-          <caption translate="true">Conditional Access Expression</caption>
+        <topicref type="topic" id="423997959494963" build="ALL" modified="2024-06-03T01:00:52.013Z" icon="0" href="new-feat-Conditional-Access-Expression">
+          <caption translate="true">条件访问表达式</caption>
         </topicref>
-        <topicref type="topic" id="423999550018776" build="ALL" modified="2019-01-24T16:51:10.634Z" icon="0" href="new-feat-Creating-Generic-Classes">
-          <caption translate="true">Creating Generic Classes</caption>
+        <topicref type="topic" id="423999550018776" build="ALL" modified="2024-06-03T01:01:18.048Z" icon="0" href="new-feat-Creating-Generic-Classes">
+          <caption translate="true">创建泛型类</caption>
         </topicref>
-        <topicref type="topic" id="423996909584445" build="ALL" modified="2019-01-24T16:51:14.782Z" icon="0" href="new-feat-DEFAULT-Expressions">
-          <caption translate="true">DEFAULT Expressions</caption>
+        <topicref type="topic" id="423996909584445" build="ALL" modified="2024-06-03T01:01:40.318Z" icon="0" href="new-feat-DEFAULT-Expressions">
+          <caption translate="true">DEFAULT 表达式</caption>
         </topicref>
-        <topicref type="topic" id="425845216712740" build="ALL" modified="2019-01-24T16:51:18.995Z" icon="0" href="new-feat-EVENT-(Add-and-Remove)">
-          <caption translate="true">EVENT (Add and Remove)</caption>
+        <topicref type="topic" id="425845216712740" build="ALL" modified="2024-06-03T01:02:12.987Z" icon="0" href="new-feat-EVENT-(Add-and-Remove)">
+          <caption translate="true">EVENT(Add 和 Remove))</caption>
         </topicref>
-        <topicref type="topic" id="424000368292699" build="ALL" modified="2019-01-24T16:51:23.044Z" icon="0" href="new-feat-Expression-IS-Type">
-          <caption translate="true">Expression IS Type</caption>
+        <topicref type="topic" id="424000368292699" build="ALL" modified="2024-06-03T01:05:07.552Z" icon="0" href="new-feat-Expression-IS-Type">
+          <caption translate="true">表达式 IS Type</caption>
         </topicref>
-        <topicref type="topic" id="426888066632269" build="ALL" modified="2019-01-24T16:51:26.885Z" icon="0" href="new-feat-Initializers">
-          <caption translate="true">Initializers</caption>
+        <topicref type="topic" id="426888066632269" build="ALL" modified="2024-06-03T01:05:28.645Z" icon="0" href="new-feat-Initializers">
+          <caption translate="true">初始化</caption>
         </topicref>
-        <topicref type="topic" id="426356253849712" build="ALL" modified="2019-01-24T16:51:30.766Z" icon="0" href="new-feat-Interpolated-Strings">
-          <caption translate="true">Interpolated Strings</caption>
+        <topicref type="topic" id="426356253849712" build="ALL" modified="2024-06-03T01:10:44.457Z" icon="0" href="new-feat-Interpolated-Strings">
+          <caption translate="true">插值字符串</caption>
         </topicref>
-        <topicref type="topic" id="424000721218508" build="ALL" modified="2019-01-24T16:51:38.324Z" icon="0" href="new-feat-LINQ">
-          <caption translate="true">LINQ Query Expressions</caption>
+        <topicref type="topic" id="424000721218508" build="ALL" modified="2024-06-03T14:08:57.510Z" icon="0" href="new-feat-LINQ">
+          <caption translate="true">LINQ Query 表达式</caption>
         </topicref>
         <topicref type="topic" id="424477017488013" build="ALL" modified="2019-01-24T16:51:42.583Z" icon="0" href="new-feat-NOP">
           <caption translate="true">NOP</caption>
         </topicref>
-        <topicref type="topic" id="426887424244545" build="ALL" modified="2019-01-24T16:51:46.899Z" icon="0" href="new-feat-Object-Initializers">
-          <caption translate="true">Object Initializers</caption>
+        <topicref type="topic" id="426887424244545" build="ALL" modified="2024-06-03T14:10:20.255Z" icon="0" href="new-feat-Object-Initializers">
+          <caption translate="true">对象初始化</caption>
         </topicref>
         <topicref type="topic" id="424000091554061" modified="2019-01-27T16:09:19.314Z" icon="0" href="new-feat-PROCEDURE-inside-CLASS">
           <caption translate="true">PROCEDURE inside CLASS</caption>
@@ -252,17 +252,17 @@
         <topicref type="topic" id="423999741385489" build="ALL" modified="2019-01-24T16:49:54.154Z" icon="0" href="new-feat-VAR">
           <caption translate="true">VAR</caption>
         </topicref>
-        <topicref type="topic" id="434413139318325" build="ALL" modified="2023-05-09T23:23:27.872Z" icon="0" href="new-feat-XBase-class-declarations">
-          <caption translate="true">Xbase++ class declarations</caption>
+        <topicref type="topic" id="434413139318325" build="ALL" modified="2024-06-03T14:14:07.712Z" icon="0" href="new-feat-XBase-class-declarations">
+          <caption translate="true">Xbase++ class 声明</caption>
         </topicref>
         <topicref type="topic" id="424000672684667" build="ALL" modified="2019-01-24T16:50:10.529Z" icon="0" href="new-feat-YIELD">
           <caption translate="true">YIELD </caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="428711073823775" build="ALL" modified="2017-05-17T10:08:58.415Z" icon="0" href="Licenses">
-        <caption translate="true">Licensing</caption>
-        <topicref type="topic" id="428707220706899" build="ALL" modified="2017-05-15T21:48:57.359Z" icon="0" href="XSharp-Open-Software-License">
-          <caption translate="true">XSharp Open Software License</caption>
+      <topicref type="topic" id="428711073823775" build="ALL" modified="2024-06-03T14:19:10.405Z" icon="0" href="Licenses">
+        <caption translate="true">许可证</caption>
+        <topicref type="topic" id="428707220706899" build="ALL" modified="2024-06-03T14:19:36.923Z" icon="0" href="XSharp-Open-Software-License">
+          <caption translate="true">XSharp 开源软件许可协议</caption>
         </topicref>
         <topicref type="topic" id="428711141122145" build="ALL" modified="2017-05-15T21:45:52.116Z" icon="0" href="Apache-2">
           <caption translate="true">Apache 2</caption>
@@ -271,15 +271,15 @@
           <caption translate="true">BSD</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="428708026773084" build="ALL" modified="2020-02-25T17:03:05.673Z" icon="0" href="Acknowledgements">
-        <caption translate="true">Acknowledgements</caption>
+      <topicref type="topic" id="428708026773084" build="ALL" modified="2024-06-03T14:19:55.486Z" icon="0" href="Acknowledgements">
+        <caption translate="true">鸣谢</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423888143662582" build="ALL" modified="2024-05-26T17:51:05.985Z" icon="0" href="VersionHistory">
       <caption translate="true">版本历史</caption>
     </topicref>
-    <topicref type="topic" id="428984094992566" build="ALL" modified="2017-06-12T12:42:21.816Z" icon="0" href="MigratingappsfromVOtoX">
-      <caption translate="true">Migrating apps from VO to X#</caption>
+    <topicref type="topic" id="428984094992566" build="ALL" modified="2024-06-04T08:08:25.825Z" icon="0" href="MigratingappsfromVOtoX">
+      <caption translate="true">将应用程序从 VO 迁移到 X#</caption>
       <topicref type="topic" id="428986318132862" build="ALL" modified="2017-06-22T14:10:39.314Z" icon="0" href="Example-1-The-VO-Explorer-Examp">
         <caption translate="true">Example 1: The VO Explorer Example</caption>
       </topicref>
@@ -296,8 +296,8 @@
         <caption translate="true">Example 5: OCX - The Email Client Example </caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="432585631903751" build="ALL" modified="2018-06-07T11:14:11.511Z" icon="0" href="The-X-Runtime">
-      <caption translate="true">The X# Runtime</caption>
+    <topicref type="topic" id="432585631903751" build="ALL" modified="2024-06-04T08:11:26.637Z" icon="0" href="The-X-Runtime">
+      <caption translate="true">X# 运行时(Runtime)</caption>
       <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
         <caption translate="true">XSharp.Core</caption>
       </topicref>
@@ -331,11 +331,11 @@
       <topicref type="topic" id="432587430200533" build="ALL" modified="2018-06-07T17:54:16.764Z" icon="0" href="XSharp_RDD">
         <caption translate="true">XSharp.RDD</caption>
       </topicref>
-      <topicref type="topic" id="437104126658128" build="ALL" modified="2019-09-02T13:28:49.905Z" icon="0" href="RuntimeInstallationintheGAC">
-        <caption translate="true">Installation in the GAC</caption>
+      <topicref type="topic" id="437104126658128" build="ALL" modified="2024-06-04T11:37:27.628Z" icon="0" href="RuntimeInstallationintheGAC">
+        <caption translate="true">运行时安装在 GAC</caption>
       </topicref>
-      <topicref type="topic" id="428724207686309" build="ALL" modified="2017-05-17T10:00:44.864Z" icon="0" href="Who-is-the-X-team">
-        <caption translate="true">Who is who in the X# team</caption>
+      <topicref type="topic" id="428724207686309" build="ALL" modified="2024-06-04T11:40:19.272Z" icon="0" href="Who-is-the-X-team">
+        <caption translate="true">X# 团队成员</caption>
       </topicref>
       <topicref type="topic" id="432593740906377" build="ALL" modified="2018-06-08T11:21:25.514Z" icon="0" href="XBase-Types">
         <caption translate="true">XBase Types</caption>
@@ -7133,62 +7133,62 @@
   </navref>
   <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
     <caption translate="true">X# Examples</caption>
-    <topicref type="topic" id="42424518616889" build="ALL" modified="2023-12-19T13:54:51.276Z" icon="0" href="Ex-Anonymous-Methods">
-      <caption translate="true">Anonymous Method Expressions</caption>
+    <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
+      <caption translate="true">匿名方法</caption>
     </topicref>
     <topicref type="topic" id="426887977972070" build="ALL" modified="2023-12-19T13:54:40.651Z" icon="0" href="Ex-Anonymous-Types">
       <caption translate="true">Anonymous Types</caption>
     </topicref>
-    <topicref type="topic" id="424267695938100" build="ALL" modified="2023-12-19T13:54:46.068Z" icon="0" href="Ex-ASYNC">
-      <caption translate="true">ASYNC Example</caption>
+    <topicref type="topic" id="424267695938100" build="ALL" modified="2024-06-02T22:06:38.738Z" icon="0" href="Ex-ASYNC">
+      <caption translate="true">ASYNC 示例</caption>
     </topicref>
-    <topicref type="topic" id="424945667794068" build="ALL" modified="2023-12-19T13:54:58.454Z" icon="0" href="Ex-BEGIN-UNSAFE">
-      <caption translate="true">BEGIN UNSAFE Example</caption>
+    <topicref type="topic" id="424945667794068" build="ALL" modified="2024-06-03T00:50:46.178Z" icon="0" href="Ex-BEGIN-UNSAFE">
+      <caption translate="true">BEGIN UNSAFE 示例</caption>
     </topicref>
-    <topicref type="topic" id="42492634929077" build="ALL" modified="2023-12-19T13:55:01.883Z" icon="0" href="Ex-BEGIN-USING">
-      <caption translate="true">BEGIN USING Example</caption>
+    <topicref type="topic" id="42492634929077" build="ALL" modified="2024-06-03T00:51:06.635Z" icon="0" href="Ex-BEGIN-USING">
+      <caption translate="true">BEGIN USING 示例</caption>
     </topicref>
-    <topicref type="topic" id="424265406124180" build="ALL" modified="2023-12-19T13:55:05.753Z" icon="0" href="Ex-CHECKED">
-      <caption translate="true">CHECKED Example</caption>
+    <topicref type="topic" id="424265406124180" build="ALL" modified="2024-06-02T22:08:27.672Z" icon="0" href="Ex-CHECKED">
+      <caption translate="true">CHECKED 示例</caption>
     </topicref>
-    <topicref type="topic" id="425847391702785" build="ALL" modified="2023-12-19T13:55:09.069Z" icon="0" href="Ex-EVENT">
-      <caption translate="true">EVENT Example</caption>
+    <topicref type="topic" id="425847391702785" build="ALL" modified="2024-06-02T22:08:40.378Z" icon="0" href="Ex-EVENT">
+      <caption translate="true">EVENT 示例</caption>
     </topicref>
-    <topicref type="topic" id="424265813808443" build="ALL" modified="2023-12-19T13:55:12.963Z" icon="0" href="Ex-Expression">
-      <caption translate="true">Expression Examples</caption>
+    <topicref type="topic" id="424265813808443" build="ALL" modified="2024-06-03T20:38:54.153Z" icon="0" href="Ex-Expression">
+      <caption translate="true">Expression 示例</caption>
     </topicref>
-    <topicref type="topic" id="426394412434484" build="ALL" modified="2023-12-19T13:55:16.971Z" icon="0" href="Ex-FIXED">
-      <caption translate="true">FIXED Example</caption>
+    <topicref type="topic" id="426394412434484" build="ALL" modified="2024-06-02T22:11:12.878Z" icon="0" href="Ex-FIXED">
+      <caption translate="true">FIXED 示例</caption>
     </topicref>
-    <topicref type="topic" id="424249105268691" build="ALL" modified="2023-12-19T13:55:20.792Z" icon="0" href="Ex-GENERICs">
-      <caption translate="true">GENERICs Example</caption>
+    <topicref type="topic" id="424249105268691" build="ALL" modified="2024-06-03T20:43:03.372Z" icon="0" href="Ex-GENERICs">
+      <caption translate="true">泛型类示例</caption>
     </topicref>
     <topicref type="topic" id="429079409602691" build="ALL" modified="2023-12-19T13:55:24.857Z" icon="0" href="Ex-Lamda-Expressions">
       <caption translate="true">Lamda Expressions</caption>
     </topicref>
-    <topicref type="topic" id="424249979841329" build="ALL" modified="2023-12-19T13:55:29.085Z" icon="0" href="Ex-LINQ">
-      <caption translate="true">LINQ Example</caption>
+    <topicref type="topic" id="424249979841329" build="ALL" modified="2024-06-03T20:53:40.436Z" icon="0" href="Ex-LINQ">
+      <caption translate="true">LINQ 示例</caption>
     </topicref>
-    <topicref type="topic" id="424476434780340" build="ALL" modified="2023-12-19T13:55:33.368Z" icon="0" href="Ex-NOP">
-      <caption translate="true">NOP Example</caption>
+    <topicref type="topic" id="424476434780340" build="ALL" modified="2024-06-03T21:01:34.805Z" icon="0" href="Ex-NOP">
+      <caption translate="true">NOP 示例</caption>
     </topicref>
-    <topicref type="topic" id="424266614671750" build="ALL" modified="2023-12-19T13:55:36.696Z" icon="0" href="Ex-SWITCH">
-      <caption translate="true">SWITCH Example</caption>
+    <topicref type="topic" id="424266614671750" build="ALL" modified="2024-06-03T21:04:19.572Z" icon="0" href="Ex-SWITCH">
+      <caption translate="true">SWITCH 示例</caption>
     </topicref>
     <topicref type="topic" id="429077405209086" build="ALL" modified="2023-12-19T13:55:39.717Z" icon="0" href="Ex-Typed-Enums">
       <caption translate="true">Typed Enums</caption>
     </topicref>
-    <topicref type="topic" id="424267820342591" build="ALL" modified="2023-12-19T13:55:43.087Z" icon="0" href="Ex-USING">
-      <caption translate="true">USING Example</caption>
+    <topicref type="topic" id="424267820342591" build="ALL" modified="2024-06-03T21:09:05.293Z" icon="0" href="Ex-USING">
+      <caption translate="true">USING 示例</caption>
     </topicref>
-    <topicref type="topic" id="424268534582981" build="ALL" modified="2023-12-19T13:55:46.982Z" icon="0" href="Ex-VAR">
-      <caption translate="true">VAR Example</caption>
+    <topicref type="topic" id="424268534582981" build="ALL" modified="2024-06-03T21:13:29.414Z" icon="0" href="Ex-VAR">
+      <caption translate="true">VAR 示例</caption>
     </topicref>
     <topicref type="topic" id="424248854286636" build="ALL" modified="2023-12-19T13:55:51.051Z" icon="0" href="Ex-Vulcan-Runtime-Types-BYOR">
       <caption translate="true">Vulcan Runtime (BYOR)</caption>
     </topicref>
-    <topicref type="topic" id="424247612718920" build="ALL" modified="2023-12-19T13:55:54.486Z" icon="0" href="Ex-YIELD-">
-      <caption translate="true">YIELD Example</caption>
+    <topicref type="topic" id="424247612718920" build="ALL" modified="2024-06-03T21:17:25.531Z" icon="0" href="Ex-YIELD-">
+      <caption translate="true">YIELD 示例</caption>
     </topicref>
   </topicref>
 </map>

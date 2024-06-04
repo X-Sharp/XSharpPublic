@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-03T14:09:40.422+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>NOP</title>
   <keywords>
     <keyword>NOP</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">NOP</para>
     </header>
-    <para styleclass="Normal">The NOP keyword allows you to define a line of code that does nothing but satisfies the compiler, so it will not complain about missing code.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">NOP 关键字允许您定义一行代码，该行代码什么也不做，但能满足编译器的要求，因此编译器不会抱怨代码丢失。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="Ex-NOP" inline="false"/></para>
   </body>

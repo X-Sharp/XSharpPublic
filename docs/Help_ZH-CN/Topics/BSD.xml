@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-04T07:54:39.924+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BSD</title>
   <body>
     <header>
       <para styleclass="Heading1">BSD</para>
     </header>
-    <para styleclass="Body Text">The Antlr source that we have used in our product is published under the BSD license. The full text of this license is:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">我们在产品中使用的 Antlr 源代码是根据 BSD 许可证发布的。该许可证的全文如下：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="T_Entry">[The &quot;BSD license&quot;]</text></para>
     <para styleclass="Normal"><text styleclass="T_Entry">Copyright (c) 2015 Terence Parr, Sam Harwell</text></para>

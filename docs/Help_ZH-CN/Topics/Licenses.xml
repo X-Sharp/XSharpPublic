@@ -1,71 +1,79 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Licensing</title>
+<topic template="Default" modified="2024-06-04T07:48:44.064+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>许可证</title>
   <body>
     <header>
-      <para styleclass="Heading1">Licensing</para>
+      <para styleclass="Heading1">许可证</para>
     </header>
-    <para styleclass="Body Text">XSharp is FREE Software. Of course that does not mean that you can do with it whatever you want. We have set a couple of rules that determine what you can and cannot do with our software, so our software is released under a license.</para>
-    <para styleclass="Body Text">In an ideal world we would have published all of our source code and binaries under a very open license agreement, such as the Apache License, just like how the Roslyn code is published.<br/>However the reality is that there are people on this world that would like to take our source code and binaries and release this with minimal changes under their own name.<br/>To prevent that from happening we have been forced to set some limitations to how you can use our product.<br/>For any &quot;normal&quot; developer that uses XSharp to develop applications for end users this should present no problems.</para>
-    <para styleclass="Body Text">The simplified version of the limitations means that :</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">You can only redistribute the &apos;runtime&apos; components that are listed in the documentation. You can not redistribute our compiler. However when needed, you can ask your customer to download our compiler from this website</li>
-      <li styleclass="Body Text">You (when you are a FOX subscriber) have access to the compiler source code and may change and rebuild the compiler for internal use inside your company. However you are not allowed to publish or redistribute the (changed) compiler to your customers</li>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">XSharp 是一款免费软件。当然，这并不意味着你可以为所欲为。我们制定了一些规则来决定你能用我们的软件做什么，不能做什么，因此我们的软件是根据许可证发布的。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在一个理想的世界里，我们会以非常开放的许可协议（如 Apache 许可）发布所有源代码和二进制文件，就像发布 Roslyn 代码一样。</para>
+    <para styleclass="Body Text"><br/>但现实情况是，有些人希望获取我们的源代码和二进制文件，然后以自己的名义发布，只做极少的修改。</para>
+    <para styleclass="Body Text"><br/>为了防止这种情况发生，我们不得不对您如何使用我们的产品设置一些限制。</para>
+    <para styleclass="Body Text"><br/>对于任何使用 XSharp 为最终用户开发应用程序的 &quot;普通 &quot;开发人员来说，这应该不会有什么问题。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">简化的限制意味着可以在XSharp中使用：</para>
+    <para styleclass="Body Text"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">您只能重新发布文档中列出的 &quot;运行时 &quot;组件。您不能再分发我们的编译器。但在需要时，您可以要求客户从本网站下载我们的编译器。</li>
+      <li styleclass="Body Text">您（如果您是 FOX 订户）可以访问编译器源代码，并可以更改和重建编译器，供公司内部使用。但您不得向您的客户发布或再分发（更改后的）编译器。</li>
     </list>
-    <para styleclass="Body Text"><br/>We are convinced that you will find our license agreements fair and easy to work with.<br/>If you have any questions about the licenses, please contact us at <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:info@xsharp.eu">info@xsharp.eu</link></para>
+    <para styleclass="Body Text"><br/>我们相信，您会发现我们的许可协议既公平又易于操作。</para>
+    <para styleclass="Body Text"><br/>如果您对许可证有任何疑问，请通过 <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:info@xsharp.eu">info@xsharp.eu</link> 联系我们。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="5" colcount="2">
       <tr style="vertical-align:top">
-        <td style="vertical-align:middle; width:40%;">
-          <para styleclass="Body Text"><text style="font-weight:bold;">Component &amp; Name</text></para>
+        <td style="vertical-align:middle; width:32%;">
+          <para styleclass="Body Text" style="text-align:center;"><text style="font-weight:bold;">组件和名称</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"><text style="font-weight:bold;">Short summary of the license</text></para>
+          <para styleclass="Body Text" style="text-align:center;"><text style="font-weight:bold;">许可证描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">The compiler binaries and runtime binaries<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp-Open-Software-License">XSharp Open Software License Agreement 1.0</link></para>
+        <td style="width:32%;">
+          <para styleclass="Body Text">编译器二进制文件和运行时二进制文件<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp-Open-Software-License">XSharp Open Software License Agreement 1.0</link></para>
         </td>
         <td>
-          <para styleclass="Body Text">This can be downloaded for free from our website. All you have to do is to create an account on this website.</para>
-          <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Body Text">You can download the components from our website</li>
-            <li styleclass="Body Text">You can use the components for free both for commercial and personal use</li>
-            <li styleclass="Body Text">You can only deploy the runtime components to your customers</li>
-            <li styleclass="Body Text">OEM Licensing of the compiler binaries is only allowed when you have a separate agreement with XSharp BV</li>
+          <para styleclass="Body Text">您可以从我们的网站免费下载。您只需在本网站创建一个账户。</para>
+          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Body Text">您可以从我们的网站下载组件</li>
+            <li styleclass="Body Text">您可以免费将组件用于商业和个人用途</li>
+            <li styleclass="Body Text">你只能将运行时组件部署给你的客户</li>
+            <li styleclass="Body Text">只有在与 XSharp BV 签订了单独协议的情况下，才能获得编译器二进制文件的 OEM 许可。</li>
           </list>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">The source code to the runtime, visual studio integration and tools<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Apache-2">Apache License version 2.0</link></para>
+        <td style="width:32%;">
+          <para styleclass="Body Text">运行时的源代码、visual studio 集成和工具<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Apache-2">Apache License version 2.0</link></para>
         </td>
         <td>
-          <para styleclass="Body Text">Everybody can access this public source code in our public repository on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic" target="_blank">GitHub</link></para>
-          <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Body Text">You can download the source from our GitHub project</li>
-            <li styleclass="Body Text">You can make adjustments to the source code both for internal use and also to redistribute the changed runtime binaries to your customers</li>
-            <li styleclass="Body Text">If you have a contribution that you want to see included in a future version of XSharp you can send us a pull request on GitHub</li>
-            <li styleclass="Body Text">XSharp BV decides which changes will be included in the main branch and which not.</li>
+          <para styleclass="Body Text">每个人都可以在我们的公共源代码库中访问这些公共源代码，公共源代码库位于 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic" target="_blank">GitHub</link></para>
+          <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Body Text">您可以从我们的 GitHub 项目下载源代码</li>
+            <li styleclass="Body Text">你可以对源代码进行调整，既可以用于内部使用，也可以将修改后的运行时二进制文件重新发布给你的客户。</li>
+            <li styleclass="Body Text">如果你想在XSharp的未来版本中加入自己的贡献，可以在GitHub上向我们发送拉取请求。</li>
+            <li styleclass="Body Text">XSharp BV会决定哪些变更会被包含在主分支中，哪些不会。</li>
           </list>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">The Roslyn part of the Compiler Source code<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Apache-2">Apache License version 2.0</link></para>
+        <td style="width:32%;">
+          <para styleclass="Body Text">编译器源代码的 Roslyn 部分<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Apache-2">Apache License version 2.0</link></para>
         </td>
         <td>
-          <para styleclass="Body Text">This license applies to the Roslyn code that we have used and that you can also find on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/dotnet/roslyn" target="_blank">GitHub</link></para>
+          <para styleclass="Body Text">本许可证适用于我们使用的 Roslyn 代码，您也可以在以下网站上找到该代码 &#160;<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/dotnet/roslyn" target="_blank">GitHub</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">The Antlr part of the Compiler Source code<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="BSD">Antlr BSD License</link></para>
+        <td style="width:32%;">
+          <para styleclass="Body Text">编译器源代码的 Antlr 部分<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="BSD">Antlr BSD License</link></para>
         </td>
         <td>
-          <para styleclass="Body Text">This license applies to the Antlr 4 source code that we have used and that you can find on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/antlr/antlr4" target="_blank">GitHub</link></para>
+          <para styleclass="Body Text">本许可证适用于我们使用的 Antlr 4 源代码，您可以在以下网站上找到该代码 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/antlr/antlr4" target="_blank">GitHub</link></para>
         </td>
       </tr>
     </table></para>

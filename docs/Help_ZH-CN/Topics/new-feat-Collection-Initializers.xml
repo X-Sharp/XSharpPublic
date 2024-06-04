@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Collection Initializers</title>
+<topic template="Default" modified="2024-06-03T00:57:09.017+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>集合初始化</title>
   <body>
     <header>
-      <para styleclass="Heading1">Collection Initializers</para>
+      <para styleclass="Heading1">集合初始化</para>
     </header>
-    <para styleclass="Normal">Collection initializers allow you to fill a collection with a list of values.</para>
-    <para styleclass="Normal">In the background the compiler will generate code that calls the Add method of the collection.</para>
-    <para styleclass="Normal">The example below creates a list of Integers, Strings and Persons. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过集合初始化程序，可以为集合填充值列表。</para>
+    <para styleclass="Normal">编译器会在后台生成调用集合 Add 方法的代码。</para>
+    <para styleclass="Normal">下面的示例创建了一个包含整数、字符串和(人)类实例的列表。 </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="new-feat-Initializers" inline="false"/></para>
   </body>

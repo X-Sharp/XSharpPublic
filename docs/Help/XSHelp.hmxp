@@ -207,7 +207,7 @@
       <config-value name="insertseealsostyle">4</config-value>
       <config-value name="linkcolor">16711680</config-value>
       <config-value name="ignoreblank">1</config-value>
-      <config-value name="outputfile">..\Binaries\Help\XSharp.pdf</config-value>
+      <config-value name="outputfile">..\..\artifacts\Doc\XSharp.pdf</config-value>
       <config-value name="template">Standard_manual_A4.mnl</config-value>
       <config-value name="highlighthotspots">0</config-value>
       <config-value name="exportcomments">0</config-value>

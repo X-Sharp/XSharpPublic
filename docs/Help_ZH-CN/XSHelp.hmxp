@@ -9,7 +9,7 @@
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\Artifacts\Doc\XSharp_ZH-CN.chm</task-config-value>
               <task-config-value name="skin">XSharp.hmskin</task-config-value>
-              <task-config-value name="deletetemp">0</task-config-value>
+              <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
@@ -687,7 +687,7 @@
       <config-value name="htmlpopup">3</config-value>
       <config-value name="skin">XSharp.hmskin</config-value>
       <config-value name="outputfile">..\..\Artifacts\Doc\XSharp_ZH-CN.chm</config-value>
-      <config-value name="deletetemp">0</config-value>
+      <config-value name="deletetemp">1</config-value>
       <config-value name="usesecondarywindows">0</config-value>
     </config-group>
     <config-group name="mshc">
@@ -734,7 +734,7 @@
       <config-value name="publisher">XSharp BV</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.20.0.0)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.20.0.3)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers>
@@ -809,8 +809,6 @@
       <file-mod href="__localSpec.xml"/>
       <file-mod href="__NotInCoreVulcan.xml"/>
       <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
-      <file-mod href="Types.xml"/>
-      <file-mod href="Strong-Typing.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

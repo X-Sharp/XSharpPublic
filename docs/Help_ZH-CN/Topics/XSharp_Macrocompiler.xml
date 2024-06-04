@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-04T11:28:00.408+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.Macrocompiler</title>
   <keywords>
     <keyword>XSharp.Macrocompiler</keyword>
@@ -9,23 +9,25 @@
     <header>
       <para styleclass="Heading1">XSharp.Macrocompiler</para>
     </header>
-    <para styleclass="Normal">This DLL is the X# &quot;fast&quot; macro compiler. The Macro compiler is written in C# and has a hardcoded dependency on XSharp.Core.</para>
-    <para styleclass="Normal"><br/>Please note that there is no link between XSharp.RT.DLL and XSharp.Macrocompiler.DLL. When you compile a macro then the runtime will try to locate the macro compiler with the method listed below. <br/>You can override this mechanism by calling SetMacroCompiler() with the type of the class that implements the macro compiler. This type should implement the XSharp.IMacroCompiler interface. If you want to use the standard macro compiler then you need to add a reference to XSharp.MacroCompiler.dll and add the following code to the startup code of your application:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该 DLL 是 X# 的 &quot;快速 &quot;宏编译器。宏编译器使用 C# 编写，与 XSharp.Core 有硬编码依赖关系。</para>
+    <para styleclass="Normal"><br/>请注意，XSharp.RT.DLL 和 XSharp.Macrocompiler.DLL 之间没有链接。当你编译宏时，运行时将尝试使用下面列出的方法来定位宏编译器。 <br/>你可以使用实现宏编译器的类的类型调用 SetMacroCompiler() 来覆盖这一机制。该类应实现 XSharp.IMacroCompiler 接口。如果你想使用标准宏编译器，则需要添加对 XSharp.MacroCompiler.dll 的引用，并在应用程序的启动代码中添加以下代码：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you don&apos;t do this then the runtime will try to locate the macro compiler in the following locations:</para>
-    <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The directory where the XSharp.RT.DLL is loaded from</li>
-      <li styleclass="Body Text">The directories in the path. If you use this then make sure that the assemblies listed below are in the same folder as XSharp.MacroCompiler.DLL</li>
-      <li styleclass="Body Text">The Global Assembly Cache (GAC). If you use this mechanism then make sure that the assemblies listed below are also in the <text styleclass="Normal">GAC.</text></li>
+    <para styleclass="Normal">如果不这样做，运行时将尝试在以下位置定位宏编译器：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">加载 XSharp.RT.DLL 的目录</li>
+      <li styleclass="Body Text">路径中的目录。如果使用此方法，请确保下列程序集与 XSharp.MacroCompiler.DLL 位于同一文件夹中</li>
+      <li styleclass="Body Text"><text styleclass="Normal">全局程序集缓存（GAC）。如果使用此机制，请确保下面列出的程序集也在 GAC 中。</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This assembly depends on:</para>
-    <list id="76" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Normal">此程序集依赖于</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">XSharp.Core.DLL</li>
     </list>
-    <para styleclass="Heading3">Note<tab /></para>
-    <para styleclass="Normal">The XSharp installer adds the Macro compiler and the assemblies it depends on to the GAC so you will be able to run your apps without adding the macro compiler to the references list of your application. Please make sure you include the macro compiler in your installer when deploying your applications.</para>
+    <para styleclass="Heading3">注意<tab /></para>
+    <para styleclass="Normal">XSharp 安装程序会将宏编译器及其依赖的程序集添加到 GAC 中，因此您无需将宏编译器添加到应用程序的引用列表中就能运行应用程序。在部署应用程序时，请确保在安装程序中包含宏编译器。</para>
   </body>
 </topic>

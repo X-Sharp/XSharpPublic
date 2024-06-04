@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-04T11:07:38.199+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.Data</title>
   <body>
     <header>
       <para styleclass="Heading1">XSharp.Data</para>
     </header>
-    <para styleclass="Normal">This DLL contains support code for .Net SQL based data access and for SQL based cursors (VFP)</para>
-    <para styleclass="Normal">The DLL also has data aware classes and functions that return DataTables or DataSources based on workareas/cursors</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该动态链接库包含对基于 .Net SQL 的数据访问和基于 SQL 的游标（VFP）的支持代码。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该动态链接库还包含数据感知类和函数，可根据工作区/游标返回数据表或数据源。</para>
   </body>
 </topic>

@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Project Properties</title>
+<topic template="Default" modified="2024-06-05T23:03:21.761+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>项目属性</title>
   <body>
     <header>
-      <para styleclass="Heading1">Project Properties</para>
+      <para styleclass="Heading1">项目属性</para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">There are several ways that you can set project properties in Visual Studio:</para>
-    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal">There is a &lt;Myprojectname&gt; Properties menu option in the Project Menu</li>
       <li styleclass="Normal">There is a context menu option &quot;Properties&quot; on the project icons in the Solution Explorer</li>
       <li styleclass="Normal">By choosing the context menu option &quot;Open&quot; on the Properties folder below the Project Icon in the Solution Explorer.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">All these options do the same and open the project properties dialog. This dialog has several pages.</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application</link></li>
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Language</link></li>
       <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Dialect</link></li>

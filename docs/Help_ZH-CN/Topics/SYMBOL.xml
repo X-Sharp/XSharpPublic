@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-05T16:14:52.296+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SYMBOL</title>
   <keywords>
     <keyword>SYMBOL</keyword>
@@ -9,23 +9,29 @@
     <header>
       <para styleclass="Heading1">SYMBOL</para>
     </header>
-    <para styleclass="Normal">The SYMBOL type is a 32-bit integer that represents an index into an array of strings.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Since a SYMBOL represents a string, there is a built-in implicit conversion from SYMBOL to STRING, and from STRING to SYMBOL.</para>
+    <para styleclass="Normal">SYMBOL 类型是一个32位整数，表示字符串数组中的索引。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Since the underlying value of a SYMBOL is an integer, there is a built-in explicit conversion from SYMBOL to DWORD and from DWORD to SYMBOL. A cast is necessary in order to perform explicit conversions.</para>
+    <para styleclass="Normal">由于 SYMBOL 表示一个字符串，因此从 SYMBOL 到 STRING，以及从 STRING 到 SYMBOL 都有内置的隐式转换。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Unlike with Visual Objects, the number of symbols is not limited by available memory or symbols that are declared in another library. <br/></para>
-    <para styleclass="Normal">Literal symbols consist of the &apos;#&apos; character followed by one or more alphanumeric character. The first character must be a letter or an underscore.</para>
+    <para styleclass="Normal">由于 SYMBOL 的基础值是整数，因此从 SYMBOL 到 DWORD，以及从 DWORD 到 SYMBOL 都有内置的显式转换。在执行显式转换时需要进行强制转换。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Some examples of literal symbols are shown below:</para>
+    <para styleclass="Normal">与 Visual Objects 不同，符号的数量不受可用内存或在另一个库中声明的符号的限制。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">文字符号由 &apos;#&apos; 字符后跟一个或多个字母数字字符组成。第一个字符必须是字母或下划线。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下是一些文字符号的示例：</para>
     <para styleclass="Normal">#XSharp<br/>#XSHARP</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that although literal symbols can be specified with lower or upper case letters, the strings they represent are converted to uppercase at compile time, for compatibility with Visual Objects. It is not possible to specify a literal symbol that contains lower case letters, the StringToAtom() function must be used.</para>
+    <para styleclass="Normal">请注意，虽然文字符号可以用小写或大写字母指定，但它们表示的字符串在编译时会转换为大写，以与 Visual Objects 兼容。无法指定包含小写字母的文字符号，必须使用 StringToAtom() 函数。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The compiler-defined constant NULL_SYMBOL can be used to express a null symbol, i.e. a symbol that has no associated string value.</para>
-    <para styleclass="Heading3">Implementation</para>
-    <para styleclass="Normal">The SYMBOL type is implemented in the structure XSharp.__Symbol</para>
-    <para styleclass="Normal">The Usual type of SYMBOL &#160;is 10.</para>
+    <para styleclass="Normal">编译器定义的常量 NULL_SYMBOL 可用于表示空符号，即没有关联字符串值的符号。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SYMBOL 类型在 XSharp.__Symbol 结构中实现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SYMBOL 的 UsualType 值是 10。</para>
   </body>
 </topic>

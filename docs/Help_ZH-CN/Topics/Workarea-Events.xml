@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Workarea Events</title>
+<topic template="Default" modified="2024-06-05T16:30:47.429+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Workarea 事件</title>
   <body>
     <header>
-      <para styleclass="Heading1">Workarea Events</para>
+      <para styleclass="Heading1">Workarea 事件</para>
     </header>
     <para styleclass="Normal">In build 2.08 we have added the option to register an event handler that receives workarea events. This can be used to monitor access to workareas and for example write this information to a log file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">There are 2 ways to install this event handler:</para>
-    <list id="116" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text styleclass="Normal">You create a function/ method that implements </text>the <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_DbNotifyEventHandler.htm" domain="XSharpRef.chm">DbNotifyEventHandler</link> delegate.<br/><br/><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">PUBLIC</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">DELEGATE</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> XSharp.DbNotifyEventHandler(osender </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">AS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> XSharp.RDD.IRDD, e </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">AS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;"> XSharp.DBNotifyEventArgs) </text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">AS</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#0000ff;">VOID</text><br/></li>
       <li styleclass="Body Text">You create a class that implements the <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_IDbNotify.htm" domain="XSharpRef.chm">IDbnotify</link> interface, which only has a method named Notify() with the same prototype as the delegate from 1)</li>
     </list>
     <para styleclass="Heading1">Important</para>
-    <list id="117" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Your event handler should do as little as possible if you don&apos;t want to slow down the whole RDD system.</li>
       <li styleclass="Normal">Do not manipulate any workareas from within your event handler to avoid recursion.</li>
       <li styleclass="Normal">Unregister your event handler as soon as possible.</li>

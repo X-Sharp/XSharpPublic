@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T13:17:41.364+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Language</title>
+<topic template="Default" modified="2024-06-05T23:04:30.831+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Language(语言)</title>
   <keywords>
     <keyword>Additional Include paths</keyword>
     <keyword>Allow Late Binding</keyword>
@@ -46,7 +46,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Language</para>
+      <para styleclass="Heading1">Language(语言)</para>
     </header>
     <para styleclass="Body Text">The Language page contains some settings that control X# Language specific options. These settings apply to all dialects.</para>
     <para styleclass="Body Text"></para>

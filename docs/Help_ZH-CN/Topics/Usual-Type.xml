@@ -1,25 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Usual Type</title>
+<topic template="Default" modified="2024-06-05T16:20:41.677+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Usual 类型</title>
   <keywords>
     <keyword>USUAL</keyword>
     <keyword>XSharp.__Usual</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Usual Type</para>
+      <para styleclass="Heading1">Usual 类型</para>
     </header>
-    <para styleclass="Normal">The USUAL type in X# is implemented as a .Net structure. It contains a type flag and a value. The value can be one of the following types:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 中的 USUAL 类型是作为 .Net 结构实现的。它包含一个类型标志和一个值。值可以是以下类型之一：</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal">NIL, Long, Date, Float, Array, Object, String, Logic, Codeblock, Symbol, Ptr, Int64, DateTime, Decimal, DateTime</para>
-    <para styleclass="Normal">The internal type name for this type is XSharp.__Usual<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该类型的内部类型名称是 XSharp.__Usual<br/></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="17" colcount="2" style="width:auto; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">类型</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Usual Type Number</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Usual 类型值</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -152,15 +155,18 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that some Usual Type numbers are not included in this table. There are defines in the compiler for these numbers, but <text style="font-weight:bold;">they are never stored</text> inside a USUAL.<br/>So you can write UsualType(uValue) == REAL8 but that will NEVER be true.</para>
-    <para styleclass="Normal"><br/>You can assign values of these other types to a USUAL but the values will be converted to a type listed in the first table. For example if you assign a DWORD to a USUAL then the runtime will look at the value of the DWORD and if it is smaller or equal to MAX_LONG then it will store the value as a LONG. Otherwise it will store it as a FLOAT. Please note that although we support the Int64 type the DWORD conversion does not use this to be compatible with VO. Also if you assign a PSZ to a USUAL then it will be stored as a STRING. So the runtime will automatically call Psz2String() to get the string representation.<br/></para>
+    <para styleclass="Normal">请注意，本表中不包括某些常用类型值。编译器中有这些数字的定义，但它们从不存储在 USUAL 中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">因此，您可以写 UsualType(uValue) == REAL8，但这永远不会成真。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><br/>您可以将其他类型的值赋值给 USUAL，但这些值将被转换为第一个表中列出的类型。例如，如果将 DWORD 赋值给 USUAL，运行时将查看 DWORD 的值，如果小于或等于 MAX_LONG，则将其存储为 LONG。否则就会将其存储为 FLOAT。请注意，尽管我们支持 Int64 类型，但为了与 VO 兼容，DWORD 转换并不使用 Int64 类型。此外，如果将 PSZ 赋值给 USUAL，那么它将被存储为 STRING。因此，运行时将自动调用 Psz2String() 来获取字符串表示法。<br/></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">名称</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Usual Type Number</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Usual 类型值</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">

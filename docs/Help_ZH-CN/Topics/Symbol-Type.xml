@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Symbol Type</title>
+<topic template="Default" modified="2024-06-05T16:17:47.545+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Symbol 类型</title>
   <keywords>
     <keyword>SYMBOL</keyword>
     <keyword>XSharp.__Symbol</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Symbol Type</para>
+      <para styleclass="Heading1">Symbol 类型</para>
     </header>
-    <para styleclass="Normal">This structure holds just a number. This number is a reference to a string table that contains the actual string representation of the symbol.</para>
-    <para styleclass="Normal">The internal type name for this type is XSharp.__Symbol</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该结构只保存一个数字。这个数字是对一个字符串表的引用，该字符串表包含符号的实际字符串表示。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该类型的内部类型名称是 XSharp.__Symbol</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="SYMBOL" inline="false"/></para>
   </body>

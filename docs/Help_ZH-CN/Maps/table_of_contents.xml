@@ -354,27 +354,27 @@
         <topicref type="topic" id="440854862632190" build="ALL" modified="2024-06-04T23:29:51.350Z" icon="0" href="Binary_Type">
           <caption translate="true">Binary 类型</caption>
         </topicref>
-        <topicref type="topic" id="440854860545107" build="ALL" modified="2020-09-11T10:18:11.635Z" icon="0" href="Currency-Type">
-          <caption translate="true">Currency Type</caption>
+        <topicref type="topic" id="440854860545107" build="ALL" modified="2024-06-05T16:01:38.453Z" icon="0" href="Currency-Type">
+          <caption translate="true">Currency 类型</caption>
         </topicref>
-        <topicref type="topic" id="43260881319952" build="ALL" modified="2018-06-08T11:47:01.043Z" icon="0" href="Float-Type">
-          <caption translate="true">Float Type</caption>
+        <topicref type="topic" id="43260881319952" build="ALL" modified="2024-06-05T16:01:48.592Z" icon="0" href="Float-Type">
+          <caption translate="true">Float 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595534205569" build="ALL" modified="2018-06-08T12:01:44.263Z" icon="0" href="Logic-Ttype">
-          <caption translate="true">Logic Ttype</caption>
+        <topicref type="topic" id="432595534205569" build="ALL" modified="2024-06-05T16:04:54.250Z" icon="0" href="Logic-Ttype">
+          <caption translate="true">Logic 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595483084228" build="ALL" modified="2018-06-08T11:59:00.829Z" icon="0" href="PSZ-Type">
-          <caption translate="true">PSZ Type</caption>
+        <topicref type="topic" id="432595483084228" build="ALL" modified="2024-06-05T16:11:32.606Z" icon="0" href="PSZ-Type">
+          <caption translate="true">PSZ 类型</caption>
         </topicref>
-        <topicref type="topic" id="432592958115729" build="ALL" modified="2018-06-08T11:47:08.561Z" icon="0" href="Symbol-Type">
-          <caption translate="true">Symbol Type</caption>
+        <topicref type="topic" id="432592958115729" build="ALL" modified="2024-06-05T16:17:43.875Z" icon="0" href="Symbol-Type">
+          <caption translate="true">Symbol 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595738250661" build="ALL" modified="2018-06-08T11:45:01.543Z" icon="0" href="Usual-Type">
-          <caption translate="true">Usual Type</caption>
+        <topicref type="topic" id="432595738250661" build="ALL" modified="2024-06-05T16:17:33.315Z" icon="0" href="Usual-Type">
+          <caption translate="true">Usual 类型</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="43751617983780" build="ALL" modified="2019-10-13T14:23:20.303Z" icon="0" href="Workarea-Events">
-        <caption translate="true">Workarea Events</caption>
+      <topicref type="topic" id="43751617983780" build="ALL" modified="2024-06-05T16:28:54.650Z" icon="0" href="Workarea-Events">
+        <caption translate="true">Workarea 事件</caption>
       </topicref>
       <topicref type="topic" id="439026050242369" build="ALL" modified="2020-03-12T09:38:57.852Z" icon="0" href="Dialect-(in)compatibilities">
         <caption translate="true">Dialect (in)compatibilities</caption>

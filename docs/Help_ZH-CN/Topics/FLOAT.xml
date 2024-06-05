@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-05T16:04:38.887+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FLOAT</title>
   <keywords>
     <keyword>FLOAT</keyword>
@@ -9,9 +9,13 @@
     <header>
       <para styleclass="Heading1">FLOAT</para>
     </header>
-    <para styleclass="Normal">The FLOAT type is a type that stores a 64-bit floating point value, along with formatting information. The precision and range of a FLOAT are the same as that from a <link displaytype="text" defaultstyle="true" type="topiclink" href="REAL8">REAL8</link>, since the value of the float is stored in a REAL8.</para>
-    <para styleclass="Heading3">Implementation</para>
-    <para styleclass="Normal">The FLOAT type is implemented in the structure &#160;XSharp.__Float</para>
-    <para styleclass="Normal">The Usual type of FLOAT &#160;is 3.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FLOAT 类型是一种存储 64 位浮点数值以及格式化信息的类型。FLOAT 的精度和范围与 <link displaytype="text" defaultstyle="true" type="topiclink" href="REAL8">REAL8</link> 相同，因为浮点数值存储在 REAL8 中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FLOAT 类型在 XSharp.__Float 结构中实现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FLOAT 的 UsualType 是 3。</para>
   </body>
 </topic>

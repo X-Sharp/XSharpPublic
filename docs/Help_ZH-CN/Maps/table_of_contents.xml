@@ -337,47 +337,47 @@
       <topicref type="topic" id="428724207686309" build="ALL" modified="2024-06-04T11:40:19.272Z" icon="0" href="Who-is-the-X-team">
         <caption translate="true">X# 团队成员</caption>
       </topicref>
-      <topicref type="topic" id="432593740906377" build="ALL" modified="2018-06-08T11:21:25.514Z" icon="0" href="XBase-Types">
-        <caption translate="true">XBase Types</caption>
-        <topicref type="topic" id="4324375231264" build="ALL" modified="2018-06-08T11:59:24.252Z" icon="0" href="Array-Of-Type">
-          <caption translate="true">Array Of Type</caption>
+      <topicref type="topic" id="432593740906377" build="ALL" modified="2024-06-04T22:58:24.318Z" icon="0" href="XBase-Types">
+        <caption translate="true">XBase 类型</caption>
+        <topicref type="topic" id="4324375231264" build="ALL" modified="2024-06-04T23:00:40.478Z" icon="0" href="Array-Of-Type">
+          <caption translate="true">Array Of 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595826581620" build="ALL" modified="2018-06-08T11:59:13.016Z" icon="0" href="Array-Type">
-          <caption translate="true">Array Type</caption>
+        <topicref type="topic" id="432595826581620" build="ALL" modified="2024-06-04T23:10:27.010Z" icon="0" href="Array-Type">
+          <caption translate="true">Array 类型</caption>
         </topicref>
         <topicref type="topic" id="432593702345260" build="ALL" modified="2018-06-08T12:00:16.997Z" icon="0" href="CodeBlock2">
           <caption translate="true">CodeBlock</caption>
         </topicref>
-        <topicref type="topic" id="43260467791936" build="ALL" modified="2018-06-08T11:46:48.259Z" icon="0" href="Date-Type">
-          <caption translate="true">Date Type</caption>
+        <topicref type="topic" id="43260467791936" build="ALL" modified="2024-06-04T23:27:46.767Z" icon="0" href="Date-Type">
+          <caption translate="true">Date 类型</caption>
         </topicref>
-        <topicref type="topic" id="440854862632190" build="ALL" modified="2020-09-11T10:17:49.724Z" icon="0" href="Binary_Type">
-          <caption translate="true">Binary Type</caption>
+        <topicref type="topic" id="440854862632190" build="ALL" modified="2024-06-04T23:29:51.350Z" icon="0" href="Binary_Type">
+          <caption translate="true">Binary 类型</caption>
         </topicref>
-        <topicref type="topic" id="440854860545107" build="ALL" modified="2020-09-11T10:18:11.635Z" icon="0" href="Currency-Type">
-          <caption translate="true">Currency Type</caption>
+        <topicref type="topic" id="440854860545107" build="ALL" modified="2024-06-05T16:01:38.453Z" icon="0" href="Currency-Type">
+          <caption translate="true">Currency 类型</caption>
         </topicref>
-        <topicref type="topic" id="43260881319952" build="ALL" modified="2018-06-08T11:47:01.043Z" icon="0" href="Float-Type">
-          <caption translate="true">Float Type</caption>
+        <topicref type="topic" id="43260881319952" build="ALL" modified="2024-06-05T16:01:48.592Z" icon="0" href="Float-Type">
+          <caption translate="true">Float 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595534205569" build="ALL" modified="2018-06-08T12:01:44.263Z" icon="0" href="Logic-Ttype">
-          <caption translate="true">Logic Ttype</caption>
+        <topicref type="topic" id="432595534205569" build="ALL" modified="2024-06-05T16:04:54.250Z" icon="0" href="Logic-Ttype">
+          <caption translate="true">Logic 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595483084228" build="ALL" modified="2018-06-08T11:59:00.829Z" icon="0" href="PSZ-Type">
-          <caption translate="true">PSZ Type</caption>
+        <topicref type="topic" id="432595483084228" build="ALL" modified="2024-06-05T16:11:32.606Z" icon="0" href="PSZ-Type">
+          <caption translate="true">PSZ 类型</caption>
         </topicref>
-        <topicref type="topic" id="432592958115729" build="ALL" modified="2018-06-08T11:47:08.561Z" icon="0" href="Symbol-Type">
-          <caption translate="true">Symbol Type</caption>
+        <topicref type="topic" id="432592958115729" build="ALL" modified="2024-06-05T16:17:43.875Z" icon="0" href="Symbol-Type">
+          <caption translate="true">Symbol 类型</caption>
         </topicref>
-        <topicref type="topic" id="432595738250661" build="ALL" modified="2018-06-08T11:45:01.543Z" icon="0" href="Usual-Type">
-          <caption translate="true">Usual Type</caption>
+        <topicref type="topic" id="432595738250661" build="ALL" modified="2024-06-05T16:17:33.315Z" icon="0" href="Usual-Type">
+          <caption translate="true">Usual 类型</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="43751617983780" build="ALL" modified="2019-10-13T14:23:20.303Z" icon="0" href="Workarea-Events">
-        <caption translate="true">Workarea Events</caption>
+      <topicref type="topic" id="43751617983780" build="ALL" modified="2024-06-05T16:28:54.650Z" icon="0" href="Workarea-Events">
+        <caption translate="true">Workarea 事件</caption>
       </topicref>
-      <topicref type="topic" id="439026050242369" build="ALL" modified="2020-03-12T09:38:57.852Z" icon="0" href="Dialect-(in)compatibilities">
-        <caption translate="true">Dialect (in)compatibilities</caption>
+      <topicref type="topic" id="439026050242369" build="ALL" modified="2024-06-05T22:33:34.446Z" icon="0" href="Dialect-(in)compatibilities">
+        <caption translate="true">方言的(不)兼容性</caption>
         <topicref type="topic" id="439025467054172" build="ALL" modified="2020-03-12T10:14:13.832Z" icon="0" href="compat-VO">
           <caption translate="true">VO</caption>
         </topicref>
@@ -394,60 +394,60 @@
           <caption translate="true">Harbour</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="444177324057011" build="ALL" modified="2021-08-09T14:42:25.203Z" icon="0" href="Subsystems-of-the-X-Runtime">
-        <caption translate="true">Subsystems of the X# Runtime</caption>
+      <topicref type="topic" id="444177324057011" build="ALL" modified="2024-06-05T22:49:22.308Z" icon="0" href="Subsystems-of-the-X-Runtime">
+        <caption translate="true">X# 运行时的子系统</caption>
       </topicref>
-      <topicref type="topic" id="444174639685775" build="ALL" modified="2021-08-09T14:41:33.872Z" icon="0" href="Combining-X-Runtime-and-Vulcan">
-        <caption translate="true">Combining X# Runtime and Vulcan Runtime</caption>
+      <topicref type="topic" id="444174639685775" build="ALL" modified="2024-06-05T22:54:21.789Z" icon="0" href="Combining-X-Runtime-and-Vulcan">
+        <caption translate="true">结合 X# 运行时和 Vulcan 运行时</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="428725168955982" build="ALL" modified="2017-05-17T09:41:40.642Z" icon="0" href="X-Scripting">
-      <caption translate="true">X# Scripting</caption>
+    <topicref type="topic" id="428725168955982" build="ALL" modified="2024-06-05T22:54:55.933Z" icon="0" href="X-Scripting">
+      <caption translate="true">X# 脚本</caption>
     </topicref>
-    <topicref type="topic" id="423890627480191" modified="2019-10-11T16:38:23.952Z" icon="0" href="X-Walkthroughs">
-      <caption translate="true">X# Walkthroughs</caption>
+    <topicref type="topic" id="423890627480191" modified="2024-06-05T22:56:39.332Z" icon="0" href="X-Walkthroughs">
+      <caption translate="true">X# 演练</caption>
     </topicref>
-    <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
-      <caption translate="true">Using X# in Visual Studio</caption>
-      <topicref type="topic" id="423888586335039" build="ALL" modified="2020-07-10T11:19:04.975Z" icon="0" href="Project-System">
-        <caption translate="true">Project System</caption>
-        <topicref type="topic" id="440226752769796" build="ALL" modified="2020-07-10T16:49:04.511Z" icon="0" href="Solution">
-          <caption translate="true">Solution</caption>
+    <topicref type="topic" id="423890127319554" build="ALL" modified="2024-06-05T22:57:22.667Z" icon="0" href="Visual-Studio-Integration">
+      <caption translate="true">在 Visual Studio 中使用 X#</caption>
+      <topicref type="topic" id="423888586335039" build="ALL" modified="2024-06-05T23:02:11.819Z" icon="0" href="Project-System">
+        <caption translate="true">项目系统</caption>
+        <topicref type="topic" id="440226752769796" build="ALL" modified="2024-06-05T23:02:22.137Z" icon="0" href="Solution">
+          <caption translate="true">解决方案</caption>
         </topicref>
-        <topicref type="topic" id="440226868564114" build="ALL" modified="2020-07-10T17:04:13.271Z" icon="0" href="Build-Configurations">
-          <caption translate="true">Build Configurations</caption>
+        <topicref type="topic" id="440226868564114" build="ALL" modified="2024-06-05T23:02:35.972Z" icon="0" href="Build-Configurations">
+          <caption translate="true">生成配置</caption>
         </topicref>
-        <topicref type="topic" id="440222915594132" build="ALL" modified="2020-07-10T11:19:04.981Z" icon="0" href="Projects">
-          <caption translate="true">Projects</caption>
-          <topicref type="topic" id="423889199749481" build="ALL" modified="2020-07-10T11:19:10.302Z" icon="0" href="Project-Properties">
-            <caption translate="true">Project Properties</caption>
-            <topicref type="topic" id="440224767523358" build="ALL" modified="2022-05-09T11:43:48.167Z" icon="0" href="PropPage-Application">
-              <caption translate="true">Application</caption>
+        <topicref type="topic" id="440222915594132" build="ALL" modified="2024-06-05T23:02:44.973Z" icon="0" href="Projects">
+          <caption translate="true">项目</caption>
+          <topicref type="topic" id="423889199749481" build="ALL" modified="2024-06-05T23:03:18.139Z" icon="0" href="Project-Properties">
+            <caption translate="true">项目属性</caption>
+            <topicref type="topic" id="440224767523358" build="ALL" modified="2024-06-05T23:04:10.241Z" icon="0" href="PropPage-Application">
+              <caption translate="true">Application(应用程序)</caption>
             </topicref>
-            <topicref type="topic" id="440224293000248" build="ALL" modified="2020-07-14T12:39:25.632Z" icon="0" href="PropPage-Language">
-              <caption translate="true">Language</caption>
+            <topicref type="topic" id="440224293000248" build="ALL" modified="2024-06-05T23:04:28.762Z" icon="0" href="PropPage-Language">
+              <caption translate="true">Language(语言)</caption>
             </topicref>
-            <topicref type="topic" id="440223989792678" build="ALL" modified="2020-07-14T12:39:32.505Z" icon="0" href="PropPage-Dialect">
-              <caption translate="true">Dialect</caption>
+            <topicref type="topic" id="440223989792678" build="ALL" modified="2024-06-05T23:04:47.560Z" icon="0" href="PropPage-Dialect">
+              <caption translate="true">Dialect(方言)</caption>
             </topicref>
-            <topicref type="topic" id="440262582345626" build="ALL" modified="2020-07-14T12:39:42.027Z" icon="0" href="PropPage-Build">
-              <caption translate="true">Build</caption>
+            <topicref type="topic" id="440262582345626" build="ALL" modified="2024-06-05T23:05:11.894Z" icon="0" href="PropPage-Build">
+              <caption translate="true">Build(生成)</caption>
             </topicref>
-            <topicref type="topic" id="441402700297" build="ALL" modified="2020-07-14T12:39:51.087Z" icon="0" href="PropPage-BuildEvents">
-              <caption translate="true">Build Events</caption>
+            <topicref type="topic" id="441402700297" build="ALL" modified="2024-06-05T23:05:46.841Z" icon="0" href="PropPage-BuildEvents">
+              <caption translate="true">Build Events(生成事件)</caption>
             </topicref>
-            <topicref type="topic" id="440263311416545" build="ALL" modified="2020-07-14T12:39:56.759Z" icon="0" href="PropPage-Debug">
-              <caption translate="true">Debug</caption>
+            <topicref type="topic" id="440263311416545" build="ALL" modified="2024-06-05T23:06:00.515Z" icon="0" href="PropPage-Debug">
+              <caption translate="true">Debug(调试)</caption>
             </topicref>
-            <topicref type="topic" id="440265768732156" build="ALL" modified="2020-07-14T12:40:07.087Z" icon="0" href="PropPage-Resources">
-              <caption translate="true">Resources</caption>
+            <topicref type="topic" id="440265768732156" build="ALL" modified="2024-06-05T23:06:19.633Z" icon="0" href="PropPage-Resources">
+              <caption translate="true">资源</caption>
             </topicref>
-            <topicref type="topic" id="440262921654853" build="ALL" modified="2020-07-14T12:40:20.313Z" icon="0" href="PropPage-Settings">
-              <caption translate="true">Settings</caption>
+            <topicref type="topic" id="440262921654853" build="ALL" modified="2024-06-05T23:06:26.883Z" icon="0" href="PropPage-Settings">
+              <caption translate="true">设置</caption>
             </topicref>
           </topicref>
-          <topicref type="topic" id="440224103266362" build="ALL" modified="2020-07-10T11:15:21.095Z" icon="0" href="References">
-            <caption translate="true">References</caption>
+          <topicref type="topic" id="440224103266362" build="ALL" modified="2024-06-05T23:03:42.897Z" icon="0" href="References">
+            <caption translate="true">引用</caption>
             <topicref type="topic" id="440224903790668" build="ALL" modified="2020-08-03T15:58:13.520Z" icon="0" href="project_references_Assembly">
               <caption translate="true">.Net</caption>
             </topicref>
@@ -459,8 +459,8 @@
             </topicref>
           </topicref>
         </topicref>
-        <topicref type="topic" id="440223873621196" build="ALL" modified="2020-07-10T11:19:04.986Z" icon="0" href="Project-Items">
-          <caption translate="true">Project Items</caption>
+        <topicref type="topic" id="440223873621196" build="ALL" modified="2024-06-05T23:03:08.030Z" icon="0" href="Project-Items">
+          <caption translate="true">项目中的项</caption>
           <topicref type="topic" id="42386764973040" build="ALL" modified="2020-07-10T11:19:22.111Z" icon="0" href="Source-code-Items">
             <caption translate="true">Source code Items</caption>
           </topicref>
@@ -7131,8 +7131,8 @@
   <navref href="XSharpRef.chm::\XSharpRef.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
     <caption translate="true">XSharpRef.chm::\XSharpRef.hhc</caption>
   </navref>
-  <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
-    <caption translate="true">X# Examples</caption>
+  <topicref type="topic" id="424249573402452" build="ALL" modified="2024-06-04T22:56:16.783Z" icon="0" href="X-Examples">
+    <caption translate="true">X# 示例</caption>
     <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
       <caption translate="true">匿名方法</caption>
     </topicref>

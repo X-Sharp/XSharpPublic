@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Projects</title>
+<topic template="Default" modified="2024-06-05T23:02:57.108+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>项目</title>
   <keywords>
     <keyword>ItemGroup</keyword>
     <keyword>PropertyGroup</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Projects</para>
+      <para styleclass="Heading1">项目</para>
     </header>
     <para styleclass="Normal">Project properties in Visual Studio are stored in the project files. The file names for X# projects end with the .xsproj extension.</para>
     <para styleclass="Normal">Project files are a special kind of XML files. </para>

@@ -1,47 +1,54 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Subsystems of the X# Runtime</title>
+<topic template="Default" modified="2024-06-05T22:53:29.834+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 运行时的子系统</title>
   <body>
     <header>
-      <para styleclass="Heading1">Subsystems of the X# Runtime</para>
+      <para styleclass="Heading1">X# 运行时的子系统</para>
     </header>
-    <para styleclass="Heading2">Description of Various Subsystems</para>
+    <para styleclass="Heading2">各子系统的说明</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
-        <td style="width:143px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Subsystem</text></para>
+        <td style="width:99px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">子系统</text></para>
         </td>
-        <td style="width:797px;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Remarks</text></para>
+        <td style="width:1036px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">备注</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
-        <td style="width:143px;">
-          <para styleclass="Body Text">Low Level File IO</para>
+        <td style="width:99px;">
+          <para styleclass="Body Text">底层文件 IO</para>
         </td>
-        <td style="width:797px;">
-          <para styleclass="Normal">These functions are implemented in XSharp.Core. <br/>There is an important difference between the implementation in XSharp.Core when compared to VO.<br/>In VO the file handles returned from functions such as FCreate() and FOpen() are OS file handles. That means that you can also pass them directly to Win32 API Functions. In the X# Runtime that is no longer possible. <br/>We use .Net FileStream objects for the File IO. The File handler returned (which is of the IntPtr type) is a unique key into a table where we are storing these File IO objects. The keys are generated from random numbering. You can&apos;t and shouldn&apos;t rely on the values of these keys. </para>
+        <td style="width:1036px;">
+          <para styleclass="Normal">这些函数是在 XSharp.Core 中实现的。</para>
+          <para styleclass="Normal">与 VO 相比，XSharp.Core 的实现有一个重要区别。</para>
+          <para styleclass="Normal">在 VO 中，从 FCreate() 和 FOpen() 等函数返回的文件句柄是操作系统文件句柄。这意味着你也可以直接将它们传递给 Win32 API 函数。在 X# 运行时中，这已不再可能。</para>
+          <para styleclass="Normal">我们使用 .Net FileStream 对象进行文件 IO。返回的文件处理程序（IntPtr 类型）是我们存储这些文件 IO 对象的表中的唯一密钥。密钥由随机数生成。您不能也不应该依赖这些键的值。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:143px;">
-          <para styleclass="Body Text">Static Memory IO</para>
+        <td style="width:99px;">
+          <para styleclass="Body Text">静态内存 IO</para>
         </td>
-        <td style="width:797px;">
-          <para styleclass="Body Text">The static memory subsystem allocates memory using the Marshal.AllocHGlobal functionality. Each memory block has 2 guard blocks that contain information about the group number, size and a magic number. We have also implemented memory groups.<br/>Unlike in VO you cannot release all blocks in a group by simply closing the Memory Group. <br/>If you want to enumerate allocated blocks you should first call MemTrace(TRUE) to enable block tracing.<br/>Then create a function with the following prototype</para>
-          <para styleclass="Body Text"><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">FUNCTION MyMemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</text></para>
-          <para styleclass="Body Text">Then call MemWalk and pass your function as parameter. The runtime will call your function and will pass in all memory blocks that have been allocated and not released yet.</para>
+        <td style="width:1036px;">
+          <para styleclass="Body Text">静态内存子系统使用 Marshal.AllocHGlobal 功能分配内存。每个内存块都有 2 个保护块，其中包含有关组编号、大小和魔法编号的信息。我们还实现了内存组。</para>
+          <para styleclass="Body Text">与 VO 不同，您不能通过简单地关闭内存组来释放组中的所有块。</para>
+          <para styleclass="Body Text">如果您想枚举已分配的块，应首先调用 MemTrace(TRUE) 启用块跟踪。</para>
+          <para styleclass="Body Text">然后创建一个具有以下原型的函数</para>
           <para styleclass="Body Text"></para>
+          <para styleclass="Body Text">FUNCTION MyMemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</para>
+          <para styleclass="Body Text">然后调用 MemWalk 并将函数作为参数传递。运行时将调用你的函数，并传入所有已分配但尚未释放的内存块。 </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:143px;">
-          <para styleclass="Body Text">Late Binding Support</para>
+        <td style="width:99px;">
+          <para styleclass="Body Text">后期绑定支持</para>
         </td>
-        <td style="width:797px;">
-          <para styleclass="Body Text">The Runtime fully supports late binding. The late binding support still needs some optimizations.<br/>We recommend to only use this when necessary. New code should either use the DYNAMIC type or try to use early bound code as much as possible.</para>
+        <td style="width:1036px;">
+          <para styleclass="Body Text">运行时完全支持延迟绑定。后期绑定支持仍需要一些优化。</para>
+          <para styleclass="Body Text">我们建议仅在必要时使用。新代码应使用动态类型或尽量使用早期绑定代码。</para>
         </td>
       </tr>
     </table></para>

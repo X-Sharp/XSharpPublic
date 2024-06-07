@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Build</title>
+<topic template="Default" modified="2024-06-05T23:05:14.419+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Build(生成)</title>
   <keywords>
     <keyword>Code Signing KeyFile</keyword>
     <keyword>-d</keyword>
@@ -36,11 +36,11 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Build</para>
+      <para styleclass="Heading1">Build(生成)</para>
     </header>
     <para styleclass="Body Text">The Build properties page contains <text style="font-weight:bold; font-style:italic;">Configuration Specific </text>properties. So you can have different properties here for a Debug and a Release configuration. Please read the <link displaytype="text" defaultstyle="true" type="topiclink" href="Build-Configurations">Build Configuration</link> topic for more information about build configurations</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
       <tr style="vertical-align:top">

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Dialect</title>
+<topic template="Default" modified="2024-06-05T23:04:55.047+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Dialect(方言)</title>
   <keywords>
     <keyword>-fox1</keyword>
     <keyword>-fox2</keyword>
@@ -25,11 +25,11 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Dialect</para>
+      <para styleclass="Heading1">Dialect(方言)</para>
     </header>
     <para styleclass="Body Text">The Dialect page contains some additional language settings. Some of these settings apply to all dialects. Others only apply to the given dialect and will only be enabled when the appropriate dialect is chosen.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="3">
       <tr style="vertical-align:top">

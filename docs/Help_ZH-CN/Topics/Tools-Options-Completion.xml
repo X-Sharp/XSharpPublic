@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:56:54.233+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Settings Completion</title>
+<topic template="Default" modified="2024-06-08T17:21:12.872+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Settings Completion(设置代码完成)</title>
   <keywords>
     <keyword>Options</keyword>
     <keyword>Settings Completion</keyword>
@@ -9,9 +9,10 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Settings Completion</para>
+      <para styleclass="Heading1">Settings Completion(设置代码完成)</para>
     </header>
-    <para styleclass="Normal">This page contains X# specific settings related to code completion.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含与代码自动补全相关的 X# 特定设置。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options-Completion.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
   </body>

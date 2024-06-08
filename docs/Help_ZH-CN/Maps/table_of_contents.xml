@@ -481,88 +481,88 @@
           </topicref>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423888873133831" build="ALL" modified="2020-07-10T11:19:04.992Z" icon="0" href="Source-Code-Editor">
-        <caption translate="true">Source Code Editor</caption>
-        <topicref type="topic" id="449715537468985" build="ALL" modified="2023-02-14T14:19:12.283Z" icon="0" href="Text-Editor-Options">
-          <caption translate="true">Text Editor Options</caption>
-          <topicref type="topic" id="449716646372771" build="ALL" modified="2023-02-14T14:54:52.561Z" icon="0" href="Tools-Options-General">
-            <caption translate="true">General Options</caption>
+      <topicref type="topic" id="423888873133831" build="ALL" modified="2024-06-08T17:03:08.423Z" icon="0" href="Source-Code-Editor">
+        <caption translate="true">源代码编辑器</caption>
+        <topicref type="topic" id="449715537468985" build="ALL" modified="2024-06-08T17:03:31.159Z" icon="0" href="Text-Editor-Options">
+          <caption translate="true">文本编辑器选项</caption>
+          <topicref type="topic" id="449716646372771" build="ALL" modified="2024-06-08T17:12:39.701Z" icon="0" href="Tools-Options-General">
+            <caption translate="true">常规</caption>
           </topicref>
-          <topicref type="topic" id="449714133225778" build="ALL" modified="2023-02-14T14:54:42.663Z" icon="0" href="Tools-Options-ScrollBars">
-            <caption translate="true">Scroll Bars</caption>
+          <topicref type="topic" id="449714133225778" build="ALL" modified="2024-06-08T17:13:45.150Z" icon="0" href="Tools-Options-ScrollBars">
+            <caption translate="true">滚动条</caption>
           </topicref>
-          <topicref type="topic" id="449715059641745" build="ALL" modified="2023-02-14T14:54:37.430Z" icon="0" href="Tools-Options-Tabs">
-            <caption translate="true">Tabs</caption>
+          <topicref type="topic" id="449715059641745" build="ALL" modified="2024-06-08T17:14:56.932Z" icon="0" href="Tools-Options-Tabs">
+            <caption translate="true">制表符</caption>
           </topicref>
-          <topicref type="topic" id="449717387840789" build="ALL" modified="2023-02-14T14:56:45.708Z" icon="0" href="Tools-Options-Formatting">
-            <caption translate="true">Formatting</caption>
+          <topicref type="topic" id="449717387840789" build="ALL" modified="2024-06-08T17:16:04.131Z" icon="0" href="Tools-Options-Formatting">
+            <caption translate="true">Formatting(格式化)</caption>
           </topicref>
-          <topicref type="topic" id="44971563483802" build="ALL" modified="2023-02-14T14:56:33.633Z" icon="0" href="Tools-Options-Generator">
-            <caption translate="true">Generator</caption>
+          <topicref type="topic" id="44971563483802" build="ALL" modified="2024-06-08T17:16:55.665Z" icon="0" href="Tools-Options-Generator">
+            <caption translate="true">Generator(生成器)</caption>
           </topicref>
-          <topicref type="topic" id="449717263042614" build="ALL" modified="2023-02-14T14:56:29.881Z" icon="0" href="Tools-Options-Indentation">
-            <caption translate="true">Indentation</caption>
+          <topicref type="topic" id="449717263042614" build="ALL" modified="2024-06-08T17:18:03.433Z" icon="0" href="Tools-Options-Indentation">
+            <caption translate="true">Indentation(缩进)</caption>
           </topicref>
-          <topicref type="topic" id="449716955410252" build="ALL" modified="2023-02-14T14:56:25.738Z" icon="0" href="Tools-Options-Intellisense">
-            <caption translate="true">Intellisense</caption>
+          <topicref type="topic" id="449716955410252" build="ALL" modified="2024-06-08T17:19:13.363Z" icon="0" href="Tools-Options-Intellisense">
+            <caption translate="true">Intellisense(智能感知)</caption>
           </topicref>
-          <topicref type="topic" id="449714536981035" build="ALL" modified="2023-02-14T14:56:20.793Z" icon="0" href="Tools-Options-Options">
-            <caption translate="true">Options</caption>
+          <topicref type="topic" id="449714536981035" build="ALL" modified="2024-06-08T17:19:54.959Z" icon="0" href="Tools-Options-Options">
+            <caption translate="true">Options(选项)</caption>
           </topicref>
-          <topicref type="topic" id="449717882864970" build="ALL" modified="2023-02-14T14:56:56.131Z" icon="0" href="Tools-Options-Completion">
-            <caption translate="true">Settings Completion</caption>
+          <topicref type="topic" id="449717882864970" build="ALL" modified="2024-06-08T17:20:52.842Z" icon="0" href="Tools-Options-Completion">
+            <caption translate="true">Settings Completion(设置代码完成)</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423887361540682" build="ALL" modified="2020-08-03T16:03:11.426Z" icon="0" href="editor-Keyword-Coloring">
-          <caption translate="true">Keyword Coloring</caption>
+        <topicref type="topic" id="423887361540682" build="ALL" modified="2024-06-08T17:22:07.866Z" icon="0" href="editor-Keyword-Coloring">
+          <caption translate="true">Keyword Coloring(关键字颜色)</caption>
         </topicref>
-        <topicref type="topic" id="423896290118079" build="ALL" modified="2020-08-03T16:03:14.887Z" icon="0" href="editor-Highlighting-Errors">
-          <caption translate="true">Highlighting Errors</caption>
+        <topicref type="topic" id="423896290118079" build="ALL" modified="2024-06-08T17:26:59.240Z" icon="0" href="editor-Highlighting-Errors">
+          <caption translate="true">Highlighting Errors(高亮错误)</caption>
         </topicref>
-        <topicref type="topic" id="423889358133456" build="ALL" modified="2020-08-03T16:03:17.748Z" icon="0" href="editor-Regions">
-          <caption translate="true">Regions</caption>
+        <topicref type="topic" id="423889358133456" build="ALL" modified="2024-06-08T17:28:47.453Z" icon="0" href="editor-Regions">
+          <caption translate="true">Regions(区域)</caption>
         </topicref>
-        <topicref type="topic" id="423889781598128" build="ALL" modified="2020-08-03T16:03:20.595Z" icon="0" href="editor-Blocks">
-          <caption translate="true">Blocks</caption>
+        <topicref type="topic" id="423889781598128" build="ALL" modified="2024-06-08T17:30:22.768Z" icon="0" href="editor-Blocks">
+          <caption translate="true">Blocks(块)</caption>
         </topicref>
-        <topicref type="topic" id="423888278218038" build="ALL" modified="2020-08-03T16:03:23.318Z" icon="0" href="editor-Parameter-Tips">
-          <caption translate="true">Parameter Tips</caption>
+        <topicref type="topic" id="423888278218038" build="ALL" modified="2024-06-08T17:32:05.877Z" icon="0" href="editor-Parameter-Tips">
+          <caption translate="true">Parameter Tips(参数提示)</caption>
         </topicref>
-        <topicref type="topic" id="423887688675988" build="ALL" modified="2020-08-03T16:03:26.146Z" icon="0" href="editor-Quick-Info">
-          <caption translate="true">Quick Info</caption>
+        <topicref type="topic" id="423887688675988" build="ALL" modified="2024-06-08T17:33:50.734Z" icon="0" href="editor-Quick-Info">
+          <caption translate="true">Quick Info(快速信息)</caption>
         </topicref>
-        <topicref type="topic" id="423888640134134" build="ALL" modified="2020-08-03T16:03:28.954Z" icon="0" href="editor-Code-Completion">
-          <caption translate="true">Code Completion</caption>
+        <topicref type="topic" id="423888640134134" build="ALL" modified="2024-06-08T17:35:15.359Z" icon="0" href="editor-Code-Completion">
+          <caption translate="true">Code Completion(代码补全)</caption>
         </topicref>
         <topicref type="topic" id="440464358723166" build="ALL" modified="2020-08-03T11:38:47.498Z" icon="0" href="Editor-combo-boxes">
           <caption translate="true">Editor combo boxes</caption>
         </topicref>
-        <topicref type="topic" id="440465504347477" build="ALL" modified="2020-08-03T16:03:35.988Z" icon="0" href="editor-Goto-definition">
-          <caption translate="true">Goto definition</caption>
+        <topicref type="topic" id="440465504347477" build="ALL" modified="2024-06-08T17:36:56.037Z" icon="0" href="editor-Goto-definition">
+          <caption translate="true">Goto definition(转到定义)</caption>
         </topicref>
-        <topicref type="topic" id="440462957354821" build="ALL" modified="2020-08-03T16:03:38.619Z" icon="0" href="editor-Peek-definition">
-          <caption translate="true">Peek definition</caption>
+        <topicref type="topic" id="440462957354821" build="ALL" modified="2024-06-08T17:38:07.158Z" icon="0" href="editor-Peek-definition">
+          <caption translate="true">Peek definition(快速预览)</caption>
         </topicref>
-        <topicref type="topic" id="440466471447477" build="ALL" modified="2020-08-03T16:03:41.310Z" icon="0" href="editor-Inactive-conditional-regions">
-          <caption translate="true">Inactive conditional regions</caption>
+        <topicref type="topic" id="440466471447477" build="ALL" modified="2024-06-08T17:40:10.355Z" icon="0" href="editor-Inactive-conditional-regions">
+          <caption translate="true">Inactive conditional regions(非活动条件区域)</caption>
         </topicref>
-        <topicref type="topic" id="440464174402296" build="ALL" modified="2020-08-03T16:03:44.029Z" icon="0" href="editor-Brace-matching">
-          <caption translate="true">Brace matching</caption>
+        <topicref type="topic" id="440464174402296" build="ALL" modified="2024-06-08T17:41:24.780Z" icon="0" href="editor-Brace-matching">
+          <caption translate="true">Brace matching(大括号匹配)</caption>
         </topicref>
-        <topicref type="topic" id="440684277166773" build="ALL" modified="2023-02-14T14:58:02.118Z" icon="0" href="Highlight-words">
-          <caption translate="true">Highlight Identifiers</caption>
+        <topicref type="topic" id="440684277166773" build="ALL" modified="2024-06-08T17:43:01.165Z" icon="0" href="Highlight-words">
+          <caption translate="true">Highlight Identifiers(高亮标识符)</caption>
         </topicref>
-        <topicref type="topic" id="449717492574977" build="ALL" modified="2023-02-14T14:57:55.895Z" icon="0" href="Keyword-Matching">
-          <caption translate="true">Highlight Keywords</caption>
+        <topicref type="topic" id="449717492574977" build="ALL" modified="2024-06-08T17:44:14.761Z" icon="0" href="Keyword-Matching">
+          <caption translate="true">Highlight Keywords(高亮关键字)</caption>
         </topicref>
-        <topicref type="topic" id="440466962334231" build="ALL" modified="2023-02-14T14:53:48.034Z" icon="0" href="editor-Formatting-code">
-          <caption translate="true">Indenting code</caption>
+        <topicref type="topic" id="440466962334231" build="ALL" modified="2024-06-08T17:45:37.871Z" icon="0" href="editor-Formatting-code">
+          <caption translate="true">Indenting code(缩进代码)</caption>
         </topicref>
-        <topicref type="topic" id="440465326848206" build="ALL" modified="2020-08-03T16:03:51.685Z" icon="0" href="editor-Snippets">
-          <caption translate="true">Snippets</caption>
+        <topicref type="topic" id="440465326848206" build="ALL" modified="2024-06-08T17:48:16.484Z" icon="0" href="editor-Snippets">
+          <caption translate="true">Snippets(片段)</caption>
         </topicref>
-        <topicref type="topic" id="443027287321532" build="ALL" modified="2021-04-16T14:33:30.631Z" icon="0" href="_EditorConfig-files">
-          <caption translate="true">.EditorConfig files</caption>
+        <topicref type="topic" id="443027287321532" build="ALL" modified="2024-06-08T17:50:31.447Z" icon="0" href="_EditorConfig-files">
+          <caption translate="true">.EditorConfig 文件</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="449715737811801" build="ALL" modified="2023-04-24T14:39:56.399Z" icon="0" href="optPage-Debugger">

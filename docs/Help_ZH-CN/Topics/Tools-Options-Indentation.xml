@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:56:28.297+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Indentation</title>
+<topic template="Default" modified="2024-06-08T17:18:49.934+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Indentation(缩进)</title>
   <keywords>
     <keyword>Indentation</keyword>
     <keyword>Options</keyword>
@@ -9,13 +9,14 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Indentation</para>
+      <para styleclass="Heading1">Indentation(缩进)</para>
     </header>
-    <para styleclass="Normal">This page contains X# specific settings w.r.t. source indentation. This setting is used by the editor when you choose the option to indent &quot;Smart&quot; on the &quot;Tabs&quot; page.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含与源代码缩进有关的 X# 特定设置。在 &quot;制表符 &quot;页面选择 &quot;智能 &quot;缩进选项时，编辑器会使用该设置。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options-Indentation.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">The listview on top shows the options that you can choose from. The edit control on the bottom shows the result of the setting.</para>
+    <para styleclass="Body Text">顶部的列表视图显示可供选择的选项。底部的编辑控件显示设置结果。</para>
   </body>
 </topic>

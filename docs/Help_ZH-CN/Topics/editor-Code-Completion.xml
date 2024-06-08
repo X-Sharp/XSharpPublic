@@ -1,18 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:44:35.538+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Code Completion</title>
+<topic template="Default" modified="2024-06-08T17:36:06.211+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Code Completion(代码补全)</title>
   <keywords>
     <keyword>Code Completion</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Code Completion</para>
+      <para styleclass="Heading1">Code Completion(代码补全)</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">IntelliSense is an invaluable resource when you&apos;re coding. It can show you information about available members of a type, or parameter details for different overloads of a method. You can also use IntelliSense to complete a word after you type enough characters to disambiguate it. </text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">While typing bits of code, you see IntelliSense show you Quick Info about the query symbol.</text></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To insert the rest of the word query by using IntelliSense&apos;s word completion functionality, press Tab.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">智能提示（IntelliSense）是编码时的宝贵资源。它可以向你显示一个类型的可用成员信息，或一个方法的不同重载的参数详情。在输入足够多的字符以消除歧义后，您还可以使用 IntelliSense 来补全单词。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">在键入代码时，你会看到 IntelliSense 向你显示有关查询符号的快速信息。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">要使用 IntelliSense 的单词补全功能插入单词查询的其余部分，请按 Tab 键。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Code completion.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>

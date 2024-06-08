@@ -1,17 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:44:25.677+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Blocks</title>
+<topic template="Default" modified="2024-06-08T17:31:50.330+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Blocks(块)</title>
   <keywords>
     <keyword>Blocks</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Blocks</para>
+      <para styleclass="Heading1">Blocks(块)</para>
     </header>
-    <para styleclass="Normal">Visual Studio makes it straightforward to select, cut, copy, and paste sections of your code. Rectangular blocks of code can be highlighted and selected by using Alt + Drag on the code block. The formatting within this block selection is retained when pasting the block.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Block selections can also be edited to modify text on multiple lines at once. A zero-width block selection can be used to place the caret in front of many lines at once, and allows typing identical text on multiple lines:</para>
+    <para styleclass="Normal">Visual Studio 可以直接选择、剪切、复制和粘贴代码块。在代码块上使用 Alt + 拖动可以突出显示和选择矩形代码块。在粘贴代码块时，该代码块选区中的格式将被保留。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">还可以对代码块选区进行编辑，以同时修改多行文本。零宽度的块选区可用于同时在多行前放置刻度线，并允许在多行上键入相同的文本：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Code blocks.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
   </body>

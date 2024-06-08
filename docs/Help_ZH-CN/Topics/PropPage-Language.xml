@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T23:04:30.831+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-06T23:20:32.131+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Language(语言)</title>
   <keywords>
     <keyword>Additional Include paths</keyword>
@@ -48,219 +48,238 @@
     <header>
       <para styleclass="Heading1">Language(语言)</para>
     </header>
-    <para styleclass="Body Text">The Language page contains some settings that control X# Language specific options. These settings apply to all dialects.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">语言页面包含一些控制 X# 语言特定选项的设置。这些设置适用于所有方言。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Image Caption"><image src="ProjectPropertiesLanguage.png" scale="100.00%" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Item</para>
+        <td style="width:263px;">
+          <para styleclass="Normal" style="text-align:center;">项目</para>
         </td>
-        <td>
-          <para styleclass="Normal">Description</para>
+        <td style="width:780px;">
+          <para styleclass="Normal" style="text-align:center;">描述</para>
         </td>
-        <td>
-          <para styleclass="Normal">Command item</para>
+        <td style="width:180px;">
+          <para styleclass="Normal" style="text-align:center;">命令行选项</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Allow Late Binding</para>
+          <para styleclass="Normal">(允许后期绑定)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Allow property access and method calls on expressions of type OBJECT and USUAL.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">允许对 OBJECT 和 USUAL 类型的表达式进行属性访问和方法调用。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">/lb</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Allow Named Arguments</para>
+          <para styleclass="Normal">(允许命名参数)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Allow named arguments (Default = TRUE for the Core dialect and FALSE for the other dialects). Changing the dialect may also automatically change this setting.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">允许命名参数(Core 方言默认为 &quot;FALSE&quot;，其他方言默认为 &quot;TRUE&quot;)。更改方言也会自动更改此设置。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">/namedargs</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Allow Unsafe Code</para>
+          <para styleclass="Normal">(允许不安全代码)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Allow Unsafe code inside this assembly.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">允许在该程序集内使用不安全代码。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Case Sensitive</para>
+          <para styleclass="Normal">(大小写敏感)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Enable/Disable case sensitivity.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">启用/禁用大小写敏感。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">/cs</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Initialize Local variables</para>
+          <para styleclass="Normal">(初始化局部变量)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the &apos;Initialize strings&apos; setting from the Dialect page.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">自动初始化局部变量，无需初始化表达式。请注意，对于字符串类型的局部变量，初始值取决于方言页面中的 &quot;Initialize strings &quot;(初始化字符串)设置。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-initlocals">/initlocals</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Overflow Exceptions</para>
+          <para styleclass="Normal">(溢出异常)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Check for Overflow and Underflow for numeric expressions, like the CHECKED keyword.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">检查数字表达式的溢出，如 CHECKED 关键字。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">/ovf</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Use Zero Based Arrays</para>
+          <para styleclass="Normal">(使用基于 0 的数组)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Use Zero Based Arrays.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">使用基于零的数组</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">/az</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Enforce SELF</para>
+          <para styleclass="Normal">(强制 SELF)</para>
         </td>
-        <td>
-          <para styleclass="Normal">When checked then all references to methods and fields/properties inside a class should be prefixed with SELF (or SUPER)</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">选中后，类内对方法和字段/属性的所有引用都应以 SELF(或 SUPER)作为前缀。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">/enforceself</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Allow DOT for instance members</para>
+          <para styleclass="Normal">(允许成员实例使用 DOT&lt;.&gt;)</para>
         </td>
-        <td>
-          <para styleclass="Normal">When checked then you can also use the DOT (.) operator to access instance fields, properties and methods. Otherwise the COLON (:) operator is needed</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">选中后，您还可以使用 DOT (<text style="font-weight:bold;">.</text>) 操作符访问实例字段、属性和方法。否则需要使用 COLON (<text style="font-weight:bold;">:</text>) 操作符</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">/allowdot</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Enforce VIRTUAL/OVERRIDE</para>
+          <para styleclass="Normal">(强制 VIRTUAL/OVERRIDE)</para>
         </td>
-        <td>
-          <para styleclass="Normal">When checked then you MUST prefix methods with VIRTUAL and/or OVERRIDE when overriding methods in a parent class or when defining a new method that can be overridden</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">如果选中，则在覆盖父类中的方法或定义可被覆盖的新方法时，必须在方法前加上 VIRTUAL 和/或 OVERRIDE 字样</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceoverride">/enforceoverride</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Allow Old Style assignments</para>
+          <para styleclass="Normal">(允许旧式赋值)</para>
         </td>
-        <td>
-          <para styleclass="Normal">When checked then allow the use of the single equals operator (=) for assignments. Otherwise the Colon Equals (:=) operator is mandatory</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">如果选中，则允许在赋值中使用单个等号运算符 (<text style="font-weight:bold;">=</text>)。否则，必须使用冒号等号运算符(<text style="font-weight:bold;">:=</text>)。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal">/allowoldstyleassignments</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Enable Memvar support</para>
+          <para styleclass="Normal">(启用内存变量支持)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE &amp; PARAMETERS). </para>
-          <para styleclass="Normal">Please note that this is NOT supported for the Core and Vulcan dialects</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">启用对内存变量（MEMVAR、PUBLIC、PRIVATE 和 PARAMETERS）的支持。</para>
+          <para styleclass="Normal">请注意，Core 和 Vulcan 方言不支持此功能。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Enable Undeclared variables support</para>
+          <para styleclass="Normal">(启用未声明变量支持)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Enable support for undeclared variables (these are resolved to MEMVARs).</para>
-          <para styleclass="Normal">Please note that this requires /memvar to be enabled as well.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">启用对未声明变量的支持(这些变量被解析为 MEMVAR)。</para>
+          <para styleclass="Normal">请注意，这需要同时启用 /memvar。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Enable Implicit Namespace lookup</para>
+          <para styleclass="Normal">(启用隐式命名空间查询)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">启用对具有隐式命名空间属性的程序集中定义的类的隐式查找。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ins">/ins</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Prefix classes with default Namespace</para>
+          <para styleclass="Normal">(使用默认命名空间为类加前缀)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">为所有没有命名空间前缀且不在 begin 命名空间中的类添加前缀 ...end namespace 块替换为程序集的命名空间。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">/ns:&lt;Namespace&gt;</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Additional Include paths</para>
+          <para styleclass="Normal">(附加包含路径)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable).</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">预处理器的附加包含路径(它也会查看通过 include 环境变量设置的文件夹)。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">/i</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Alternate standard header file</para>
+          <para styleclass="Normal">(替代标准头文件)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Name of an alternative standard header file (alternative for XSharpDefs.xh).</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">替代标准头文件的名称(XSharpDefs.xh 的替代文件)。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs">/stddefs</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:263px;">
           <para styleclass="Normal">Suppress standard header file</para>
+          <para styleclass="Normal">(禁止标准头文件)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Suppress inclusion of the standard header file (XSharpDefs.xh) in every file.</para>
+        <td style="width:780px;">
+          <para styleclass="Normal">禁止在每个文件中包含标准头文件(XSharpDefs.xh)。</para>
         </td>
-        <td>
+        <td style="width:180px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">/nostddef</link></para>
         </td>
       </tr>

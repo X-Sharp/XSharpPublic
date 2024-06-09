@@ -565,34 +565,34 @@
           <caption translate="true">.EditorConfig 文件</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="449715737811801" build="ALL" modified="2023-04-24T14:39:56.399Z" icon="0" href="optPage-Debugger">
-        <caption translate="true">Debugger</caption>
-        <topicref type="topic" id="451032662439310" build="ALL" modified="2023-06-26T11:37:46.236Z" icon="0" href="debugger-Toolbar-and-Menu">
-          <caption translate="true">Toolbar and Menu</caption>
+      <topicref type="topic" id="449715737811801" build="ALL" modified="2024-06-09T21:52:32.616Z" icon="0" href="optPage-Debugger">
+        <caption translate="true">调试器</caption>
+        <topicref type="topic" id="451032662439310" build="ALL" modified="2024-06-09T21:56:51.993Z" icon="0" href="debugger-Toolbar-and-Menu">
+          <caption translate="true">工具栏和菜单</caption>
         </topicref>
-        <topicref type="topic" id="451033753149909" build="ALL" modified="2023-06-26T11:37:49.694Z" icon="0" href="debugger-Globals-Window">
-          <caption translate="true">Globals Window</caption>
+        <topicref type="topic" id="451033753149909" build="ALL" modified="2024-06-09T22:02:10.018Z" icon="0" href="debugger-Globals-Window">
+          <caption translate="true">Globals Window(全局窗口)</caption>
         </topicref>
-        <topicref type="topic" id="451035877700857" build="ALL" modified="2023-06-26T11:37:54.934Z" icon="0" href="debugger-Publics-and-Privates-Window">
-          <caption translate="true">Publics and Privates Window</caption>
+        <topicref type="topic" id="451035877700857" build="ALL" modified="2024-06-09T22:02:37.465Z" icon="0" href="debugger-Publics-and-Privates-Window">
+          <caption translate="true">Publics and Privates Window(公共和私有窗口)</caption>
         </topicref>
-        <topicref type="topic" id="451033249695295" build="ALL" modified="2023-06-26T11:37:58.890Z" icon="0" href="debugger-Workareas-window">
-          <caption translate="true">Workareas window</caption>
+        <topicref type="topic" id="451033249695295" build="ALL" modified="2024-06-09T22:03:00.718Z" icon="0" href="debugger-Workareas-window">
+          <caption translate="true">Workareas window(工作区窗口)</caption>
         </topicref>
-        <topicref type="topic" id="451032769460953" build="ALL" modified="2023-06-26T11:37:33.089Z" icon="0" href="debugger-Settings-Window">
-          <caption translate="true">Settings Window</caption>
+        <topicref type="topic" id="451032769460953" build="ALL" modified="2024-06-09T22:03:16.600Z" icon="0" href="debugger-Settings-Window">
+          <caption translate="true">Settings Window(设置窗口)</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="449718002903399" build="ALL" modified="2023-02-14T14:37:15.672Z" icon="0" href="Other-editors">
-        <caption translate="true">Other editors</caption>
+      <topicref type="topic" id="449718002903399" build="ALL" modified="2024-06-09T22:08:15.480Z" icon="0" href="Other-editors">
+        <caption translate="true">其他编辑器</caption>
       </topicref>
-      <topicref type="topic" id="423890888167298" build="ALL" modified="2017-04-20T14:46:46.911Z" icon="0" href="Templates">
-        <caption translate="true">Templates</caption>
-        <topicref type="topic" id="423886836758749" build="ALL" modified="2016-01-19T21:24:54.559Z" icon="0" href="Project-Templates">
-          <caption translate="true">Project Templates</caption>
+      <topicref type="topic" id="423890888167298" build="ALL" modified="2024-06-09T22:10:35.018Z" icon="0" href="Templates">
+        <caption translate="true">模板</caption>
+        <topicref type="topic" id="423886836758749" build="ALL" modified="2024-06-09T22:11:35.048Z" icon="0" href="Project-Templates">
+          <caption translate="true">项目模板</caption>
         </topicref>
-        <topicref type="topic" id="423888912108340" build="ALL" modified="2016-01-19T21:24:54.613Z" icon="0" href="Item-Templates">
-          <caption translate="true">Item Templates</caption>
+        <topicref type="topic" id="423888912108340" build="ALL" modified="2024-06-09T22:11:46.339Z" icon="0" href="Item-Templates">
+          <caption translate="true">项目项模板</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="451268217126267" build="ALL" modified="2023-07-19T21:05:52.301Z" icon="0" href="VOXporter">

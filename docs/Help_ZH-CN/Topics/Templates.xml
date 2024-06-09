@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T09:51:58.209+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Templates</title>
+<topic template="Default" modified="2024-06-09T22:12:25.787+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>模板</title>
   <keywords>
     <keyword>templates</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Templates</para>
+      <para styleclass="Heading1">模板</para>
     </header>
-    <para styleclass="Normal">The Visual Studio integrations comes with a couple of predefined templates.</para>
-    <para styleclass="Normal">There are templates for:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Studio 集成带有几个预定义模板。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些模板用于：</para>
+    <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Project-Templates">Projects</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Item-Templates">Items</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Project-Templates">Projects(项目)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Item-Templates">Items(项目项)</link></li>
     </list>
   </body>
 </topic>

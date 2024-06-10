@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>xBase Specific Types</title>
+<topic template="Default" modified="2024-06-10T20:25:03.689+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>xBase 特定类型</title>
   <keywords>
     <keyword>SYMBOL</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">xBase Specific Types</para>
+      <para styleclass="Heading1">xBase 特定类型</para>
     </header>
     <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">类型</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">

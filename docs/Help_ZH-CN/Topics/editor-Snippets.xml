@@ -1,21 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:45:06.004+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Snippets</title>
+<topic template="Default" modified="2024-06-08T17:49:42.090+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Snippets(片段)</title>
   <keywords>
     <keyword>Snippets</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Snippets</para>
+      <para styleclass="Heading1">Snippets(片段)</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual Studio provides useful code snippets that you can use to quickly and easily generate commonly used code blocks. </text></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To do this, place your cursor just above the final closing brace in the file, a pop-up dialog box appears with information about the code snippet.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual Studio 提供了有用的代码片段，可用于快速、轻松地生成常用代码块。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">为此，请将光标放在文件中最后一个收尾括号的上方，弹出的对话框会显示代码片段的相关信息。</text></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">&#32;</text><image src="Snippets.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can fill in the yellow sections, press tab to switch between these sections.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">您可以填写黄色部分，按制表符在这些部分之间切换。</text></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Snippets 2.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can look at the available code snippets for X# by choosing Edit &gt; IntelliSense &gt; Insert Snippet or right-click &gt; Snippet &gt; Insert Snippet or pressing Ctrl+K, Ctrl+X.</text></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">The list includes snippets for creating a class, a constructor, a for loop, an if or switch statement, and more.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">您可以选择 &quot;编辑&quot;（Edit）&gt;&quot;智能提示&quot;（IntelliSense）&gt;&quot;插入片段&quot;（Insert Snippet），或右键单击 &quot;片段&quot;（&gt; Snippet）&gt;&quot;插入片段&quot;（Insert Snippet），或按 Ctrl+K、Ctrl+X 查看 X# 的可用代码片段。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">该列表包括用于创建类、构造函数、for 循环、if 或 switch 语句等的片段。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Symbol Literals</title>
+<topic template="Default" modified="2024-06-10T21:31:56.542+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Symbol 字面量</title>
   <keywords>
     <keyword>Literals</keyword>
     <keyword>SYMBOL</keyword>
@@ -9,12 +9,14 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Symbol Literals</para>
+      <para styleclass="Heading1">Symbol 字面量</para>
     </header>
-    <para styleclass="Normal">Symbol literals consist of the &apos;#&apos; character followed by one of more alphanumeric characters</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">Symbol 字面量由 “#”字符和一个或多个字母数字字符组成。</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#XSharp</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#AnExample</text></para>
-    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Even though the examples above are written in mixed case, the compiler will treat them as all uppercase.</text></para>
-    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Symbol literals are compiled only once by the X# compiler for performance reasons. </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Each .Net assembly created by the X# compiler will have a special, compiler generated, class that contains all the literal symbols found in that assembly. </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">These literals are initialized at startup and stored in the symbol table in the runtime. </text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">尽管上面的示例是以大小写混合形式编写的，但编译器会将其视为全大写。</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">出于性能考虑，X# 编译器只对符号(Symbol)字面量进行一次编译。</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">X# 编译器创建的每个 .Net 程序集都有一个特殊的、由编译器生成的类，其中包含该程序集中的所有文字符号。</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">这些文字符号在启动时初始化，并存储在运行时的符号表中。</text></para>
   </body>
 </topic>

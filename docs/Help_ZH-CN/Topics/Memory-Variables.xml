@@ -1,24 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-19T12:06:36.304+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Memory Variables</title>
+<topic template="Default" modified="2024-06-10T11:17:24.620+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>内存变量</title>
   <body>
     <header>
-      <para styleclass="Heading1">Memory Variables</para>
+      <para styleclass="Heading1">内存变量</para>
     </header>
-    <para styleclass="Body Text">X# provides support for dynamically scoped variables that are created and maintained completely at runtime. <br/>The term dynamically scoped refers to the fact that the scope of these variables is not limited by the entity in which the variable is created. </para>
-    <para styleclass="Body Text"><br/><text style="font-weight:bold; font-style:italic;">Warning</text>! Dynamically scoped variables are NOT supported in the Core and Vulcan dialects. In other dialects they are supported only if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar </link> compiler option is enabled. </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">X# 提供了对动态作用域变量的支持，这些变量在运行时被完全创建和维护。<br/>所谓动态作用域，是指这些变量的作用域不受创建变量的实体的限制。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">警告！</text> Core 和 Vulcan 方言不支持动态作用域变量。在其他方言中，只有启用了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> 编译器选项，才支持动态范围变量。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="3" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Body Text"><text style="font-weight:bold;">Variable Type</text></para>
+          <para styleclass="Body Text" style="text-align:center;"><text style="font-weight:bold;">变量类型</text></para>
         </td>
         <td>
-          <para styleclass="Body Text"><text style="font-weight:bold;">Lifetime</text></para>
+          <para styleclass="Body Text" style="text-align:center;"><text style="font-weight:bold;">生存期</text></para>
         </td>
         <td>
-          <para styleclass="Body Text"><text style="font-weight:bold;">Visibility</text></para>
+          <para styleclass="Body Text" style="text-align:center;"><text style="font-weight:bold;">可见性</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -26,10 +28,10 @@
           <para styleclass="Body Text">PRIVATE</para>
         </td>
         <td>
-          <para styleclass="Body Text">Until creator returns or until released</para>
+          <para styleclass="Body Text">直到创建过程的 Return 语句或者至释放前</para>
         </td>
         <td>
-          <para styleclass="Body Text">Creator and called routines</para>
+          <para styleclass="Body Text">所创建的过程和被调用的例程</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -37,86 +39,98 @@
           <para styleclass="Body Text">PUBLIC</para>
         </td>
         <td>
-          <para styleclass="Body Text">Application or until released</para>
+          <para styleclass="Body Text">应用程序或至释放前</para>
         </td>
         <td>
-          <para styleclass="Body Text">Application</para>
+          <para styleclass="Body Text">应用程序</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Body Text">The data type of a dynamically scoped variable changes according to the contents of the variable. For this reason they are often described as dynamic or polymorphic.</para>
-    <para styleclass="Body Text">Dynamically scoped variables are provided mainly for Clipper/Xbase compatibility; however, they are very useful in certain circumstances. For instance, they let you develop rapid prototypes and have certain inheritance properties that you may find hard to resist.</para>
-    <para styleclass="Body Text">You must be aware, however, that using them comes at a cost. Consider these points:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">动态作用域变量的数据类型会随着变量内容的变化而变化。因此，它们通常被称为动态或多态变量。</para>
+    <para styleclass="Body Text">提供动态作用域变量主要是为了与 Clipper/Xbase 兼容；不过，它们在某些情况下也非常有用。例如，它们可以让你快速开发原型，并具有某些你可能难以抗拒的继承属性。</para>
+    <para styleclass="Body Text">不过，您必须意识到，使用它们是有代价的。请考虑以下几点：</para>
+    <para styleclass="Body Text"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Because they are not resolved at compile time, these variables require overhead in the form of runtime code, making your application larger and slower than necessary.</li>
-      <li styleclass="Body Text">No compile time checking for type compatibility is possible with these variables.</li>
-      <li styleclass="Body Text">Using the inheritance properties of these variables defies one of the basic tenets of modular programming and may lead to maintenance and debugging problems down the line. Furthermore, this practice will make the transition to lexically scoped and typed variables more difficult.</li>
+      <li styleclass="Body Text">由于这些变量不是在编译时解决的，因此需要以运行时代码的形式开销，从而使你的应用程序变得比所需的更大更慢。</li>
+      <li styleclass="Body Text">编译时无法检查这些变量的类型兼容性。</li>
+      <li styleclass="Body Text">使用这些变量的继承属性违背了模块化编程的基本原则之一，可能会导致维护和调试问题。此外，这种做法还会增加向词法作用域和类型变量过渡的难度。</li>
     </list>
-    <para styleclass="Body Text">This section explores dynamically scoped variables fully, but X# has several options for variable declarations that you will want to explore before choosing to use this variable class. The next two sections in this chapter introduce you to Lexically Scoped Variables and Strongly Typed Variables, which you may find useful.</para>
-    <para styleclass="Body Text"><text style="font-style:italic;">Important! For the sake of illustration, some of the examples in this section use unorthodox programming practices. Using the inheritance properties of public and private variables instead of passing arguments and returning values is not recommended.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">本节将全面探讨动态作用域变量，但在选择使用该变量类之前，X# 还提供了几种变量声明选项。本章接下来的两节将向你介绍词法作用域变量和强类型变量，你可能会发现它们很有用。</para>
+    <para styleclass="Body Text"><text style="font-style:italic;">重要提示 为了便于说明，本节中的一些示例使用了非正统的编程方法。不建议使用公共变量和私有变量的继承属性，而不是传递参数和返回值。</text></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Private</para>
-    <para styleclass="Body Text">Private is one of the two types of dynamically scoped variables, and there are several ways to create a private variable: </para>
+    <para styleclass="Body Text">Private 是动态作用域变量的两种类型之一，有几种创建私有变量的方法：</para>
+    <para styleclass="Body Text"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Body Text">List the variable name as part of a PRIVATE statement. If you do not make an assignment at this time, the variable takes on the NIL value and data type; otherwise, it takes on the data type of its assigned value. You can assign a new value (with a new datatype) to a variable at any time:</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> X := 10, y</text><br/><text styleclass="Body Text">This creates x as a numeric variable and y as an untyped variable with the value NIL. You can later change the values and their types by assigning other values to them:</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;X := &quot;X# Is great&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; Y := Today()</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">在 PRIVATE 语句中列出变量名。如果此时不进行赋值，变量将使用 NIL 值和数据类型；否则，变量将使用其赋值的数据类型。您可以随时为变量分配新值(新数据类型)：</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> X := 10, y</text><br/><text styleclass="Body Text">这样就将 x 创建为一个数值变量，将 y 创建为一个值为 NIL 的无类型变量。稍后，您可以通过为变量赋值来更改值及其类型：</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;X := &quot;X# Is great&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; Y := Today()</text></li>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">List the variable name as part of a PARAMETERS statement within a FUNCTION, PROCEDURE or METHOD definition. The variable takes on the data type of its associated argument when the routine is called, or NIL if the argument is omitted. You can assign a new value (and a new data type) to the variable at any time. </li>
+      <li styleclass="Body Text">在函数、过程或方法定义的参数语句中列出变量名。当例程被调用时，变量的数据类型与相关参数相同，如果省略参数，则变量的数据类型为 NIL。您可以随时为变量分配新值(和新数据类型)。</li>
+      <li styleclass="Body Text">为一个不存在的变量名赋值(例如，x := 10)。在为变量赋值之前，变量的数据类型与所赋值相同(只有在使用了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> 命令行选项后，这个方法才有效)。</li>
     </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">私有变量具有以下属性：</para>
+    <para styleclass="Body Text"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Assign a value to a non-existent variable name (for example, x := 10). The variable takes on the data type of its assigned value until you assign a new value to it. (x is numeric, but the assignment x := &quot;Ms. Jones&quot; changes it to a string.) This will only work if you have used the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link> &#160;as well as the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar </link> commandline options.</li>
+      <li styleclass="Body Text">你可以在创建例程和创建者调用的任何例程中访问它们。换句话说，被调用的例程会自动继承私有变量，而无需将它们作为参数传递。</li>
+      <li styleclass="Body Text">你可以通过在被调用的例程中明确地创建一个私有变量(使用 PRIVATE 或 PARAMETERS)或声明一个同名的局部变量(使用 LOCAL)来隐藏它们。</li>
+      <li styleclass="Body Text">当创建者返回到它的调用例程时，它们会自动从内存中释放，或者你也可以使用 RELEASE、CLEAR ALL 或 CLEAR MEMORY 来显式地释放它们。</li>
     </list>
-    <para styleclass="Body Text">Private variables have these properties: </para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">You can access them within the creating routine and any routines called by the creator. In other words, private variables are automatically inherited by called routines without having to pass them as arguments. </li>
-      <li styleclass="Body Text">You can hide them from a called routine by explicitly creating a private (using PRIVATE or PARAMETERS) or declaring a local (using LOCAL) variable with the same name in the called routine. </li>
-      <li styleclass="Body Text">They are automatically released from memory when the creator returns to its calling routine, or you can release them explicitly using RELEASE, CLEAR ALL, or CLEAR MEMORY. </li>
-    </list>
-    <para styleclass="Body Text">In this example, the function Volume() expects three arguments, or parameters, to be passed. When the function is called, it creates three private variables, nLength, nWidth, and nHeight to accept the arguments. Because they are created with the PARAMETERS statement, any higher-level variables (either public or private) created with these names are temporarily hidden, preventing their values from being overwritten in memory: </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在本例中，函数 Volume() 需要传递三个参数。调用函数时，它会创建三个私有变量 nLength、nWidth 和 nHeight 来接受参数。由于这些变量是使用 PARAMETERS 语句创建的，因此使用这些名称创建的任何高级变量（无论是公有变量还是私有变量）都会被暂时隐藏，以防止它们的值在内存中被覆盖：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Volume() </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength, nWidth, nHeight </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength * nWidth * nHeight </text></para>
-    <para styleclass="Body Text">In the next example, a modified version of Volume() creates a private variable (assuming no other variable name nVolume is visible) to store its return value. If the variable nVolume exists prior to calling Volume() and is visible to Volume() (for example, nVolume may be public or private to the routine that called Volume()), its value is overwritten in memory and will remain changed when the function returns to its calling routine: </para>
+    <para styleclass="Body Text">在下一个示例中，Volume() 的修改版创建了一个私有变量(假设没有其他名为 nVolume 的变量可见)来存储其返回值。如果变量 nVolume 在调用 Volume() 之前就已存在，并且对 Volume() 可见(例如，对于调用 Volume() 的例程来说，nVolume 可能是公共变量或私有变量)，那么它的值将在内存中被覆盖，并在函数返回调用例程时保持不变：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Volume() </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength, nWidth, nHeight </text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">nVolume := nLength * nWidth * nHeight </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume </text></para>
-    <para styleclass="Body Text">In this version, Volume() specifies the nVolume variable as PRIVATE. Doing this temporarily hides any higher-level variable (either public or private) with the same name, preventing its value from being overwritten in memory: </para>
+    <para styleclass="Body Text">在此版本中，Volume( ) 将 nVolume 变量指定为 PRIVATE。这样做可以暂时隐藏任何同名的上层变量(无论是公共变量还是私有变量)，防止其值在内存中被覆盖：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Volume() </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength, nWidth, nHeight </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume := nLength * nWidth * nHeight </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume </text></para>
     <para styleclass="Heading1">Public</para>
-    <para styleclass="Body Text">The second category of undeclared variable is public. Public variables have application-wide lifetime and visibility, and you can define them in only one way: </para>
+    <para styleclass="Body Text">第二类未声明变量是 Public。公有变量在整个应用程序中都有生命周期和可见性，你只能用一种方式定义它们：</para>
+    <para styleclass="Body Text"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">在 PUBLIC 语句中列出变量名。如果此时不赋值，变量的值将是 FALSE（或数组元素的 NIL）；否则，变量的数据类型将是其赋值的数据类型。您可以随时为变量赋新值（和新的数据类型）。</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">公有变量具有以下属性:</para>
+    <para styleclass="Body Text"></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">List the variable name as part of a PUBLIC statement. If you do not make an assignment at this time, the variable takes on a value of FALSE (or NIL for array elements); otherwise, it takes on the data type of its assigned value. You can assign a new value (and a new data type) to the variable at any time. </li>
+      <li styleclass="Body Text">一旦创建，你就可以在应用程序的任何地方访问它们。换句话说，公有变量会被应用程序中的所有例程自动继承，而无需将它们作为参数传递或作为返回值发布。</li>
+      <li styleclass="Body Text">你可以通过明确地创建一个私有变量(使用 PRIVATE 或 PARAMETERS)或声明一个同名的局部变量(使用 LOCAL)来隐藏公有变量。</li>
+      <li styleclass="Body Text">除非使用 RELEASE、CLEAR ALL 或 CLEAR MEMORY 明确地释放它们，否则它们不会从内存中释放。</li>
     </list>
-    <para styleclass="Body Text">Public variables have these properties: </para>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Once they are created, you can access them anywhere in the application. In other words, public variables are automatically inherited by all routines in the application without having to pass them as arguments or post them as return values. </li>
-      <li styleclass="Body Text">You can hide them from a routine by explicitly creating a private (using PRIVATE or PARAMETERS) or declaring a local (using LOCAL) variable with the same name. </li>
-      <li styleclass="Body Text">They are not released from memory until you explicitly release them using RELEASE, CLEAR ALL, or CLEAR MEMORY. </li>
-    </list>
-    <para styleclass="Body Text">In this example, the function Volume() is defined without arguments. Instead, the calling routine, Compute(), creates three public variables, nLength, nWidth, and nHeight that are automatically visible to Volume(): </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在本例中，函数 Volume() 的定义不带参数。相反，调用例程 Compute() 创建了三个公有变量 nLength、nWidth 和 nHeight，它们对 Volume() 自动可见：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Compute()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength := 5, nWidth := 2, nHeight := 4</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Volume() </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: 40</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Volume()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength * nWidth * nHeight</text></para>
-    <para styleclass="Body Text">In the next example, a modified version of Volume() creates a public variable to store the computed volume, getting around having to return a value to the calling routine. Since nVolume is public, it is not released from memory when Volume() returns: </para>
+    <para styleclass="Body Text">在下一个示例中，Volume() 的修改版创建了一个公有变量来存储计算出的体积，从而避免了向调用例程返回数值的麻烦。由于 nVolume 是公有变量，当 Volume() 返回时，它不会从内存中释放：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Compute() </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength := 5, nWidth := 2, nHeight := 4 </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Volume() </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? nVolume </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: 40 , this will only compile with -undeclared</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Volume() </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">nVolume := nLength * nWidth * nHeight </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
-    <para styleclass="Body Text">A better solution for the use of the nVolume variable from last example that will not require the -undeclared commandline option is:</para>
+    <para styleclass="Body Text">使用上一个示例中的 nVolume 变量，不需要使用 -undeclared 命令行选项，一个更好的解决方案是</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Compute() </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength := 5, nWidth := 2, nHeight := 4 </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// tell the compiler that nVolume is a Public or private</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Volume() </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? nVolume </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: 40 </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
-    <para styleclass="Body Text">or</para>
+    <para styleclass="Body Text">或</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Compute() </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength := 5, nWidth := 2, nHeight := 4 </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Volume() </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? _MEMVAR-&gt;nVolume </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: 40 </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/></para>
-    <para styleclass="Body Text">Please note that this kind of programming is NOT recommended. </para>
-    <para styleclass="Heading1">Variable References</para>
-    <para styleclass="Body Text">Once a public or private variable is created as demonstrated in the previous two sections, you obtain its value by referring to its name. You might display the value of a variable using a built-in command or function:</para>
+    <para styleclass="Body Text">请注意，不建议使用此类程序。</para>
+    <para styleclass="Heading1">变量引用</para>
+    <para styleclass="Body Text">一旦按照前两节的演示创建了公有或私有变量，就可以通过引用变量名来获取其值。您可以使用内置命令或函数显示变量的值：</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? nVolume</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">QOut(nVolume)</text></para>
-    <para styleclass="Body Text">or use its value as part of an expression:</para>
+    <para styleclass="Body Text">或使用其值作为表达式的一部分：</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Str(nVolume, 10, 2) + &quot; cubic feet&quot;</text></para>
-    <para styleclass="Body Text">For dynamically scoped variables, you can use the _MEMVAR alias to qualify a variable reference. In some cases, you may have to do this in order to help the compiler resolve what might otherwise be an ambiguous reference (for example, if you have a field variable with the same name as a memory variable and want to use the memory variable in an expression).</para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">Note</text>: MEMVAR is an abbreviation for memory variable, a term that is synonymous with dynamically scoped variable. <br/>Assuming that the database file Measures has fields named nLength, nWidth, and</para>
-    <para styleclass="Body Text">nHeight, this example calls Volume() using the field variable values:</para>
+    <para styleclass="Body Text">对于动态作用域变量，可以使用 _MEMVAR 别名来限定变量引用。在某些情况下，你可能必须这样做，以帮助编译器解决可能会产生歧义的引用（例如，如果你有一个与内存变量同名的字段变量，并希望在表达式中使用内存变量）。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">注意：</text>MEMVAR 是内存变量的缩写，与动态作用域变量同义。</para>
+    <para styleclass="Body Text"><br/>假设数据库文件 Measures 有名为 nLength、nWidth 和 nHeight 字段，本示例将使用字段变量值调用 Volume()：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Calculate()</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> nLength := 5, nWidth := 2, nHeight := 3</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> measures</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Volume(nLength, nWidth, nHeight)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">...</text></para>
-    <para styleclass="Body Text">To force the function to use the private variables instead of the field variables,</para>
-    <para styleclass="Body Text">you could use the _MEMVAR-&gt; (or, more simply, M-&gt;) alias to qualify the</para>
-    <para styleclass="Body Text">variable names:</para>
+    <para styleclass="Body Text">要强制函数使用私有变量而不是字段变量，可以使用 _MEMVAR-&gt;(或更简单的 M-&gt;)别名来限定 变量名：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Calculate()</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> nLength := 5, nWidth := 2, nHeight := 3</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> measures</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Volume(_MEMVAR-&gt;nLength, _MEMVAR-&gt;nWidth, _MEMVAR-&gt;nHeight)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">...</text></para>
-    <para styleclass="Body Text">Of course, it is better to avoid ambiguous situations like the one described above by taking care to have unique field and variable names, but the point is that the compiler has certain default rules for handling ambiguous references. If you do not want to be at the mercy of those defaults, it is best to qualify variable names in all cases. </para>
-    <para styleclass="Heading1">MEMVAR Declarations </para>
-    <para styleclass="Body Text">Although you may hear them referred to as such, the statements mentioned so far in the discussion of dynamically scoped variables are not declarations. The term declaration refers to a statement whose purpose is to inform the compiler of something—PRIVATE, PARAMETERS, and PUBLIC are statements that generate memory variables at runtime. </para>
-    <para styleclass="Body Text">In fact you never have to declare a dynamically scoped variable to the compiler, which is the reason for their inefficiency. Because they are not created using compile-time declaration statements, the compiler has to generate runtime code for handling such issues as type translation, memory management, and resolving ambiguous references to variable names since it is possible for several variables with the same name to be visible at one time. </para>
-    <para styleclass="Body Text">You can, however, declare dynamically scoped variables with the MEMVAR statement and they will be created as PRIVATE variables:</para>
+    <para styleclass="Body Text">当然，最好还是注意使用唯一的字段名和变量名，以避免出现类似上述的含糊不清的情况，但问题是编译器在处理含糊不清的引用时有一定的默认规则。如果不想受这些默认规则的摆布，最好在任何情况下都限定变量名。</para>
+    <para styleclass="Heading1">MEMVAR 声明 </para>
+    <para styleclass="Body Text">虽然你可能会听到这样的说法，但在讨论动态作用域变量时提到的这些语句并不是声明。声明一词指的是旨在告知编译器某些内容的语句PRIVATE、PARAMETERS 和 PUBLIC 是在运行时生成内存变量的语句。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">事实上，你从来不需要向编译器声明动态作用域变量，这就是它们效率低下的原因。因为它们不是通过编译时声明语句创建的，所以编译器必须生成运行时代码来处理类型转换、内存管理和解决变量名的模糊引用等问题，因为同一时间有可能出现多个同名变量。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">不过，你可以使用 MEMVAR 语句声明动态作用域变量，它们将被创建为 PRIVATE 变量：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Calculate()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength, nWidth, nHeight</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">nLength := 5</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">nWidth := 2</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">nHeight := 3</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">USE measures</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Volume(nLength, nWidth, nHeight)</text></para>
-    <para styleclass="Body Text">In this case, the MEMVAR statement causes memory variables to take precedence over field variables with the same names, causing Volume() to be called with the private variables.</para>
-    <para styleclass="Body Text">Using MEMVAR to declare dynamically scoped variable names to the compiler may make your programs slightly more efficient (especially if you have lots of ambiguous references); however, it will not eliminate the runtime overhead of these variables. </para>
+    <para styleclass="Body Text">在这种情况下，MEMVAR 语句会使内存变量优先于同名的字段变量，从而导致 Volume() 被调用为私有变量。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">使用 MEMVAR 向编译器声明动态作用域变量名，可能会使程序效率略有提高(尤其是在有大量模糊引用的情况下)；但这并不能消除这些变量的运行时开销。</para>
   </body>
 </topic>

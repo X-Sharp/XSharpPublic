@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T23:02:57.108+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-06T16:07:38.127+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>项目</title>
   <keywords>
     <keyword>ItemGroup</keyword>
@@ -10,20 +10,30 @@
     <header>
       <para styleclass="Heading1">项目</para>
     </header>
-    <para styleclass="Normal">Project properties in Visual Studio are stored in the project files. The file names for X# projects end with the .xsproj extension.</para>
-    <para styleclass="Normal">Project files are a special kind of XML files. </para>
-    <para styleclass="Normal">These XML files contains various groups of information.</para>
-    <para styleclass="Normal">Properties at the project level are stored in &lt;PropertyGroup&gt; nodes.</para>
-    <para styleclass="Normal">Some of these properties are &quot;Global&quot; and some of these properties have a condition through which they are only active when a certain &quot;configuration&quot; is selected, such as &quot;Debug&quot; or &quot;Release&quot;.</para>
-    <para styleclass="Normal">Properties as the dialect and the output filename are global.</para>
-    <para styleclass="Normal">Properties such as the optimization, PDB generation and output folders are configuration specific.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The project files also contain the list of references to external assemblies, other projects and COM components and the list of files.</para>
-    <para styleclass="Normal">The build system inside Visual Studio uses the contents of the project files and construct a commandline that is passed to the X# compiler to produce the output for the project.</para>
-    <para styleclass="Normal">We have developed a set of dialogs that allows you to set the various properties for a project. The following chapters will show you these dialogs and will discuss the various options that you can set on each page.</para>
-    <para styleclass="NotesBox" style="border-color:#000000; border-style:single; border-width:1px; padding:0px;"><br/>Tip<br/><br/>Since the project file is a XML file you can also directly edit the project file if you want and for example add &lt;Import&gt; lines to import common properties from &quot;include&quot; files. <br/>We use that internally for our assemblies, so common properties are declared at one location. <br/>If you do that then you must be careful when using the project property dialogs inside Visual Studio. <br/>These dialogs will not understand that some values were read from an imported file and will change the values in the xsproj file, even when they were imported from an external file.<br/>Also the order of the various property groups is important:<br/>The PropertyGroups with the Pre and PostBuild events are expected to be at the end of the XML file.<br/></para>
+    <para styleclass="Normal">Visual Studio 中的项目属性存储在项目文件中。X# 项目的文件名以 .xsproj 扩展名结尾。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The lists of external references and lists of items inside a project are stored in &lt;ItemGroup&gt; nodes.</para>
+    <para styleclass="Normal">项目文件是一种特殊的 XML 文件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些 XML 文件包含各种信息组。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">项目级别的属性存储在 &lt;PropertyGroup&gt; 节点中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">其中有些属性是 &quot;全局 &quot;属性，有些属性则有一个条件，只有在选择了特定 &quot;配置&quot;(如 &quot;Debug &quot;或 &quot;Release&quot;)时才会激活。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">方言和输出文件名等属性是全局属性。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">优化、PDB 生成和输出文件夹等属性是特定配置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">项目文件还包含外部程序集、其他项目和 COM 组件的引用列表以及文件列表。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Studio 内部的生成系统会使用项目文件的内容，并构建一条命令行，将其传递给 X# 编译器，以生成项目的输出结果。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们开发了一组对话框，允许你设置项目的各种属性。以下章节将向您展示这些对话框，并讨论您可以在每个页面上设置的各种选项。</para>
+    <para styleclass="NotesBox" style="border-color:#000000; border-style:single; border-width:1px; padding:0px;"><br/>提示<br/><br/>由于项目文件是一个 XML 文件，因此如果需要，你也可以直接编辑项目文件，例如添加 &lt;Import&gt; 行，从 &quot;include &quot;文件中导入常用属性。<br/>我们内部对程序集使用这种方法，因此常用属性都在一个位置声明。<br/>如果这样做，那么在使用 Visual Studio 内部的项目属性对话框时就必须小心。<br/>这些对话框无法理解某些值是从导入文件中读取的，因此会更改 xsproj 文件中的值，即使这些值是从外部文件中导入的。<br/>此外，各种属性组的顺序也很重要：<br/>带有预构建和后构建事件的 PropertyGroups 应位于 XML 文件的末尾。<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">外部引用列表和项目内部的项目列表存储在 &lt;ItemGroup&gt; 节点中。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

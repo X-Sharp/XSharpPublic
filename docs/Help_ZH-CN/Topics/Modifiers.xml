@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-19T12:01:33.799+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Modifiers</title>
+<topic template="Default" modified="2024-06-10T11:20:33.911+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>修饰符</title>
   <keywords>
     <keyword>ABSTRACT</keyword>
     <keyword>DEFERRED</keyword>
@@ -27,15 +27,17 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Modifiers</para>
+      <para styleclass="Heading1">修饰符</para>
     </header>
-    <para styleclass="Normal">Modifiers are language keywords that are used to modify the visibility of a program element (function, global, class, property etc), or the way they operate within a type hierarchy.</para>
-    <para styleclass="Normal">There are several groups of modifiers that will be discussed in these subtopics.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">修饰符是一种语言关键字，用于修改程序元素（函数、全局、类、属性等）的可见性或在类型层次结构中的运行方式。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些子课题将讨论几组修饰符。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Visibility">Visibility Modifiers</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Visibility">可见性修饰符</link></para>
         </td>
         <td>
           <para styleclass="Normal">PUBLIC, EXPORT, PROTECT, PROTECTED, PRIVATE, HIDDEN, INTERNAL</para>
@@ -43,7 +45,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_ClassHierarchy">Class Hierarchy Modifiers</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_ClassHierarchy">类层次结构修饰符</link></para>
         </td>
         <td>
           <para styleclass="Normal">VIRTUAL, OVERRIDE, ABSTRACT, SEALED</para>
@@ -51,7 +53,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Static">STATIC modifier</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Static">静态修饰符</link></para>
         </td>
         <td>
           <para styleclass="Normal">STATIC</para>
@@ -67,7 +69,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Others">Other Modifiers</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers_Others">其他修饰符</link></para>
         </td>
         <td>
           <para styleclass="Normal">PARTIAL, EXTERN, UNSAFE</para>

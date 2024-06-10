@@ -1,30 +1,34 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-06-26T12:52:21.337+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Toolbar and Menu</title>
+<topic template="Default" modified="2024-06-09T22:01:38.809+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>工具栏和菜单</title>
   <body>
     <header>
-      <para styleclass="Heading1">Toolbar and Menu</para>
+      <para styleclass="Heading1">工具栏和菜单</para>
     </header>
-    <para styleclass="Normal">When the Visual Studio integration for XSharp is installed then you will have see new menu entry when debugging. This menu entry can be found in the Debug menu and is called &quot;XSharp&quot;.</para>
-    <para styleclass="Normal">From that menu you can open 4 different windows with XSharp specific information.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">安装 Visual Studio 集成 XSharp 后，调试时将会看到新的菜单项。该菜单项位于调试菜单中，名为 &quot;XSharp&quot;。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过该菜单，你可以打开 4 个不同的窗口，其中包含 XSharp 的特定信息。</para>
+    <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Globals-Window">Globals</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Publics-and-Privates-Window">Publics and Privates</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Workareas-window">Workareas</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Settings-Window">Settings</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Globals-Window">Globals(全局)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Publics-and-Privates-Window">Publics and Privates(公共和私有)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Workareas-window">Workareas(工作区)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Settings-Window">Settings(设置)</link></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These windows are shown as pane windows in the lower half of the debugger.</para>
-    <para styleclass="Normal">The location of these windows are (initially) associated with existing Visual Studio windows in the following way</para>
+    <para styleclass="Normal">这些窗口在调试器的下半部分显示为窗格窗口。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些窗口的位置（最初）与现有的 Visual Studio 窗口关联，关联方式如下</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
       <thead style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Window</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">窗口</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Associated with</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">关联</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -32,7 +36,7 @@
           <para styleclass="Normal">Globals</para>
         </td>
         <td>
-          <para styleclass="Normal">Watch window</para>
+          <para styleclass="Normal">监视窗口</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -40,7 +44,7 @@
           <para styleclass="Normal">Publics and Privates</para>
         </td>
         <td>
-          <para styleclass="Normal">Output window</para>
+          <para styleclass="Normal">输出窗口</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -48,7 +52,7 @@
           <para styleclass="Normal">Workareas</para>
         </td>
         <td>
-          <para styleclass="Normal">Autos window</para>
+          <para styleclass="Normal">自动窗口</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -56,15 +60,15 @@
           <para styleclass="Normal">Settings</para>
         </td>
         <td>
-          <para styleclass="Normal">Callstack window</para>
+          <para styleclass="Normal">调用堆栈窗口</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you move these windows to another location then Visual Studio will remember that new location</para>
+    <para styleclass="Normal">如果您将这些窗口移动到其他位置，Visual Studio 会记住新的位置。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">There is also an X# Debugger toolbar with buttons for these windows</para>
+    <para styleclass="Normal">还有一个 X# 调试器工具栏，上面有用于这些窗口的按钮。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="DebuggerToolbar.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
   </body>

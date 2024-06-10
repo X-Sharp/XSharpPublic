@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T11:44:57.355+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 团队成员</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">X# 团队成员</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">X# 项目的创始人于 2015 年夏天启动了 X# 项目。</para>
+    <para styleclass="Body Text">他们在 xBase 语言方面拥有丰富的经验。他们都曾在 Visual Objects 和/或 Vulcan.NET 开发团队工作过，其中一些人还为 Visual Objects 和/或 Vulcan.NET 创建了第三方附加组件，或为 VO 和 Vulcan 开发人员创建了工具。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">他们按字母顺序排列：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4">
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">姓名</text></para>
+        </td>
+        <td style="width:140px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">国家</text></para>
+        </td>
+        <td style="width:187px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Email</text></para>
+        </td>
+        <td style="width:678px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">团队中的职责</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Body Text">Fabrice Foray</para>
+        </td>
+        <td style="width:140px;">
+          <para styleclass="Body Text">法国</para>
+        </td>
+        <td style="width:187px;">
+          <para styleclass="Body Text">fabrice@xsharp.eu</para>
+        </td>
+        <td style="width:678px;">
+          <para styleclass="Body Text">Visual Studio 集成、示例、教程</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Body Text">Nikos Kokkalis</para>
+        </td>
+        <td style="width:140px;">
+          <para styleclass="Body Text">希腊</para>
+        </td>
+        <td style="width:187px;">
+          <para styleclass="Body Text">nikos@xsharp.eu</para>
+        </td>
+        <td style="width:678px;">
+          <para styleclass="Body Text">(宏)编译器</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Body Text">Chris Pyrgas</para>
+        </td>
+        <td style="width:140px;">
+          <para styleclass="Body Text">希腊</para>
+        </td>
+        <td style="width:187px;">
+          <para styleclass="Body Text">chris@xsharp.eu</para>
+        </td>
+        <td style="width:678px;">
+          <para styleclass="Body Text">支持、工具、示例、教程、运行时</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Body Text">Robert van der Hulst</para>
+        </td>
+        <td style="width:140px;">
+          <para styleclass="Body Text">荷兰</para>
+        </td>
+        <td style="width:187px;">
+          <para styleclass="Body Text">robert@xsharp.eu</para>
+        </td>
+        <td style="width:678px;">
+          <para styleclass="Body Text">管理、编译器、运行时、Visual Studio 集成、文档</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">如果您有兴趣参与 X# 的开发，请联系我们并告知您的专业领域。我们有很多事情可以做！</para>
+  </body>
+</topic>

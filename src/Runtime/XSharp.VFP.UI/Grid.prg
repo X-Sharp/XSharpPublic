@@ -1,8 +1,8 @@
-﻿// VFPGrid.prg
-// Created by    : fabri
-// Creation Date : 5/4/2022 7:57:45 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// Grid.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System
@@ -16,7 +16,7 @@ USING XSharp.RT
 BEGIN NAMESPACE XSharp.VFP.UI
 
     /// <summary>
-    /// The VFPGrid class.
+    /// The VFP compatible Grid class.
     /// </summary>
     CLASS Grid INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
@@ -49,6 +49,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
             //
             SELF:SelectionChanged += System.EventHandler{ SELF, @VFPSelectionChanged() }
             SELF:CurrentCellChanged += System.EventHandler{ SELF, @VFPCurrentCellChanged() }
+            SELF:Size := System.Drawing.Size{320, 200}
+
             RETURN
 
         PUBLIC METHOD Column( i AS INT ) AS Column
@@ -307,7 +309,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROPERTY RowColChange AS LONG GET SELF:_rowColChange
 
-        METHOD Refresh() AS VOID
+        OVERRIDE METHOD Refresh() AS VOID
             LOCAL ds AS BindingSource
             //
             TRY
@@ -373,7 +375,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
         PROPERTY AllowHeaderSizing AS LOGIC AUTO
         PROPERTY AllowRowSizing AS LOGIC AUTO
-        PROPERTY ReadOnly AS LOGIC AUTO
+        //OVERRIDE PROPERTY ReadOnly AS LOGIC AUTO
         PROPERTY HighlightStyle AS LONG AUTO
         PROPERTY AllowAutoColumnFit AS LONG AUTO
         PROPERTY Themes AS LOGIC AUTO

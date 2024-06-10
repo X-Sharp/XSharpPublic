@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-08-24T15:49:21.021+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#translate</title>
+  <keywords>
+    <keyword>#translate</keyword>
+    <keyword>#xtranslate</keyword>
+    <keyword>#ytranslate</keyword>
+    <keyword>Preprocessor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">#translate, #xtranslate and #ytranslate</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specify a user-defined translation directive</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#translate &#160; &#160;&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt; </text>// can be abbreviated to 4 characters<br/><text style="font-weight:normal; font-style:normal; color:#000000;">#xtranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt; </text>// cannot be abbreviated to 4 characters<br/><text style="font-weight:normal; font-style:normal; color:#000000;">#ytranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt; </text>// cannot be abbreviated to 4 characters and must match case </para>
+    <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
+  </body>
+</topic>

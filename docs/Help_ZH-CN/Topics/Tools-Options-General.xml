@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:13:21.936+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>常规</title>
+  <keywords>
+    <keyword>General Options</keyword>
+    <keyword>Options</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">常规</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含 X# 语言的通用编辑器设置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在不同版本的 Visual Studio 中，该页面可能会有所变化。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Generic.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

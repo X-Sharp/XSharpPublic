@@ -2627,10 +2627,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
             XSharp.RuntimeState.AutoLock    := AutoLock
             XSharp.RuntimeState.AutoUnLock  := AutoUnLock
 
-            DELETE IN (cDbf)
+            // FoxPro uses __DbDelete() this calls AutoLock
+            Assert.True(__DbDelete())
             XSharp.RuntimeState.AutoLock    := NULL
             XSharp.RuntimeState.AutoUnLock  := NULL
-            DELETE IN (cDbf)
+            Assert.True(__DbDelete())
+
 
             DbGoTop()
 			Assert.Equal(2, (INT) OrdKeyCount())
@@ -5871,7 +5873,7 @@ RETURN
             Assert.True( Bof() )
             Assert.True( Eof() )
             Assert.False( Deleted() )
-            
+
             DbSkip()
 
             Assert.False( Bof() )
@@ -5879,7 +5881,7 @@ RETURN
             Assert.False( Deleted() )
 
 			DbCloseArea()
-			
+
 			SetDeleted(lDeleted)
 
 
@@ -5913,13 +5915,47 @@ RETURN
 			Assert.True( DbSetOrder(2) )
 			Assert.Equal("ORD2", (STRING)OrdSetFocus() )
 			Assert.Equal("ORD2", (STRING)OrdSetFocus() )
-            
+
 			OrdScope(TOPSCOPE,"A")
 			Assert.Equal("A", (STRING) OrdScope(TOPSCOPE) )
 			Assert.Equal("A", (STRING) OrdScope(TOPSCOPE) )
 
 			DbCloseArea()
-			
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetIndex_eof() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1448
+			LOCAL cDbf,cIndex AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			cIndex := cDbf + "_index.cdx"
+            IF File(cIndex)
+			    FErase ( FPathName() )
+            ENDIF
+
+			DbfTests.CreateDatabase(cDbf, {{"NFIELD","N",5,0}} , {2,1,3} , TRUE)
+			Assert.True( DbCreateIndex(cIndex,"NFIELD") )
+			DbCloseArea()
+
+			DbUseArea( TRUE,,cDbf,,FALSE)
+
+			Assert.Equal(1u, RecNo() )
+			Assert.False(Eof() )
+
+			Assert.True( DbSetIndex(cIndex) )
+
+			Assert.Equal(2u, RecNo() )
+			Assert.False(Eof() )
+
+			DbGoTop()
+
+			Assert.Equal(2u, RecNo() )
+			Assert.False(Eof() )
+
+			DbCloseArea()
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

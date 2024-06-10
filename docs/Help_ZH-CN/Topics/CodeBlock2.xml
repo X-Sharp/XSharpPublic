@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T23:14:32.505+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CodeBlock</title>
+  <keywords>
+    <keyword>CODEBLOCK</keyword>
+    <keyword>XSharp._CodeBlock</keyword>
+    <keyword>XSharp.CodeBlock</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CodeBlock</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这是编译时代码块的父类。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">还有一个子类 _CodeBlock 是宏编译(运行时)代码块的父类。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">内部类型名称为 XSharp.CodeBlock 和 XSharp._CodeBlock</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="CODEBLOCK" inline="false"/></para>
+  </body>
+</topic>

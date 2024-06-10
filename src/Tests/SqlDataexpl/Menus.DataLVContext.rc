@@ -1,0 +1,11 @@
+DataLVContext MENU
+Begin
+	POPUP "&DataListView"
+	BEGIN
+		MENUITEM "&New Order", 21243
+		MENUITEM "&Edit Order", 21244
+		MENUITEM SEPARATOR
+		MENUITEM "&Delete Order", 21246
+	END
+End
+ 

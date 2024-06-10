@@ -100,12 +100,13 @@ partial class SQLRDD inherit DBFVFP
                 endif
             endif
             // Now create the index on the server
-            self:_obuilder:CreateIndex(oTag)
+            self:_builder:CreateIndex(oTag)
 
             oBag:Tags:Add(oTag)
             oBag:Save()
             CurrentOrder := oTag
-            self:_hasData := false
+            self:_CloseCursor()
+            self:Connection:MetadataProvider:CreateIndex(SELF:_cTable, orderInfo)
             return TRUE
         else
             // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
@@ -121,10 +122,7 @@ partial class SQLRDD inherit DBFVFP
     override method OrderListRebuild() as logic
         local result as logic
         if self:_tableMode == TableMode.Table
-            // todo: Rebuild Orders in tablemode, query mode uses DBFVFP driver for indices
-            result := false
-            // todo: Create Order in tablemode, query mode uses DBFVFP driver for indices
-            SELF:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,"SQLRDD:OrderListRebuild", "Not yet implemented")
+            result := true
         else
             // The _creatingIndex flag is used to make sure that string fields are returned untrimmed
             SELF:_creatingIndex := TRUE
@@ -144,7 +142,7 @@ partial class SQLRDD inherit DBFVFP
             result := false
             if order != null
                 // Now delete the index from the server
-                result := self:_obuilder:DropIndex(order)
+                result := self:_builder:DropIndex(order)
             endif
 
         else
@@ -159,9 +157,13 @@ partial class SQLRDD inherit DBFVFP
     override method OrderListFocus(orderInfo as DbOrderInfo) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
-            self:_hasData := false
+            self:_CloseCursor()
+            var currentRecord := SELF:RecNo
             SELF:CurrentOrder := self:FindOrder(orderInfo)
             result := CurrentOrder != null
+            if result .and. SELF:_recnoColumNo > -1
+                self:GoTo(currentRecord)
+            endif
         else
             result := super:OrderListFocus(orderInfo)
         endif
@@ -365,7 +367,7 @@ partial class SQLRDD inherit DBFVFP
         case DBOI_SCOPEBOTTOMCLEAR
             if workOrder != null
                 workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
-                self:_hasData := false
+                self:_CloseCursor()
             endif
             info:Result := null
         case DBOI_SCOPETOP
@@ -383,10 +385,30 @@ partial class SQLRDD inherit DBFVFP
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                 endif
                 info:Result := oldValue
-                self:_hasData := false
+                self:_CloseCursor()
             else
                 info:Result := DBNull.Value
             endif
+        case DBOI_NUMBER
+            if workOrder != null
+                var i := 0
+                foreach var tag in oBag:Tags
+                    i++
+                    if tag == workOrder
+                        info:Result := i
+                        exit
+                    endif
+                next
+            else
+                info:Result := 0
+            endif
+        case DBOI_KEYCOUNT
+            self:_ForceOpen()
+            info:Result := self:RowCount
+        case DBOI_POSITION
+        case DBOI_RECNO
+            // our position is the row number in the local cursor
+            info:Result := self:RowNumber
         otherwise
             super:OrderInfo(nOrdinal, info)
         end switch

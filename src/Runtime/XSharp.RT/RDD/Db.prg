@@ -282,7 +282,7 @@ FUNCTION DbClearIndex(uOrder, cIndexFile) AS LOGIC CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreate/*" />
-FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lOpen, acRDDs ) AS LOGIC CLIPPER
+FUNCTION DbCreate ( cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lOpen, acRDDs ) AS LOGIC CLIPPER
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC
 
@@ -314,11 +314,15 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
         lOpen := .F.
     ENDIF
 
-    LOCAL oDriver := cDriver AS OBJECT
+    local oDriver as object
     IF cDriver:IsNil
-        oDriver := RuntimeState.DefaultRDD
+        cDriver         := RuntimeState.DefaultRDD
     ENDIF
+    oDriver := cDriver
+
     IF oDriver IS STRING
+        var aRdds       := VoDb.RddList(cDriver, acRDDs)
+        oDriver         := ATail(aRdds)
         lRetCode := VoDbCreate(cTargetFile, aStruct, (STRING) oDriver, lNew, cAlias, cDelim, lKeep, lOpen)
     ELSEIF oDriver IS System.Type
         lRetCode := VoDbCreate(cTargetFile, aStruct, (Type) oDriver, lNew, cAlias, cDelim, lKeep, lOpen )

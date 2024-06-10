@@ -24,7 +24,10 @@
 // Same for ENDCLASS and ENDFOR
 // In the Xbase++ header file this is mapped to END, but we prefer to match it to END SEQUENCE
 #xcommand ENDSEQUENCE  [<*any*>]  => END SEQUENCE
-#xcommand ENDCLASS [<*any*>]      => END CLASS
+// Do not map this to END CLASS
+// Otherwise simple classes may be picked up by the normal class rule.
+// ENDCLASS is then the only distinguishing factor
+#xcommand ENDCLASS <*any*>        => ENDCLASS
 #xcommand ENDFOR [<*any*>]        => NEXT
 
 

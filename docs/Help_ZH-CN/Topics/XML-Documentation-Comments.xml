@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T18:09:07.908+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XML 文档注释</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XML 文档注释</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在 X# 中，您可以将 XML 元素包含在源代码中的特殊注释字段（用三斜线表示）中，直接放在注释指向的代码块之前，为代码创建文档。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/// &lt;summary&gt;</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/// &#160;该类具有一项重要功能。</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/// &lt;/summary&gt;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> MyClass </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">.</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">.</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text></para>
+    <para styleclass="Normal">使用 -doc 选项编译时，编译器会搜索源代码中的所有 XML 标记，并创建一个 XML 文档文件。要根据编译器生成的文件创建最终文档，可以创建自定义工具或使用 Sandcastle 等工具。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">要引用 XML 元素（例如，您想在 XML 文档注释中描述的函数处理特定 XML 元素），您可以使用标准引号机制（&lt; 和 &gt;）。要引用代码引用 (cref) 元素中的通用标识符，可以使用转义字符（例如，cref=“List&lt;T&gt;”）或大括号（cref=“List{T}”）。作为一种特殊情况，编译器会将大括号解析为角括号，以便在引用通用标识符时减少文档注释的编写麻烦。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">由于我们使用与 C# 相同的文档引擎，因此允许使用的文档标记 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments" target="_blank">可参考 C# 文档</link> 。</para>
+  </body>
+</topic>

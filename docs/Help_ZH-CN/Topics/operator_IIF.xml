@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IIF Operator</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">IIF Operator</para>
+    </header>
+    <para styleclass="Body Text">The IIF operator returns one of two values, depending on an expression that returns a value of type LOGIC. The IIF operator is of the form:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table rowcount="1" colcount="1" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle; width:624px; border:none;">
+          <para styleclass="Code with box"><text style="font-weight:bold; font-style:normal; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; color:#000000;">( </text><text style="font-weight:normal; font-style:italic; color:#000000;">conditionExpression</text><text style="font-weight:normal; font-style:normal; color:#000000;">, </text><text style="font-weight:normal; font-style:italic; color:#000000;">trueExpression</text><text style="font-weight:normal; font-style:normal; color:#000000;">, </text><text style="font-weight:normal; font-style:italic; color:#000000;">falseExpression</text><text style="font-weight:normal; font-style:normal; color:#000000;"> )</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text style="font-style:italic;">conditionExpression</text> may be any expression that returns a value of type LOGIC, or a type that can be implicitly converted to LOGIC.</para>
+    <para styleclass="Body Text">If <text style="font-style:italic;">conditionExpression</text> evaluates to TRUE, <text style="font-style:italic;">trueExpression</text> is evaluated and is the result. If <text style="font-style:italic;">conditionExpression</text> evaluates to FALSE, <text style="font-style:italic;">falseExpression</text> is evaluated and is the result. <br/>Only one of the two expressions is ever evaluated.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The return type of the IIF operator is determined by the following rules:</para>
+    <para styleclass="Body Text">Given:</para>
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">tT is the type of trueExpression</li>
+      <li styleclass="Body Text">tF is the type of falseExpression</li>
+      <li styleclass="Body Text">tR is the return type of the IIF expression</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <list id="13" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">If tT and tF are the same type, tR is that type. </li>
+      <li styleclass="Body Text">If tT and/or tF is USUAL, then tT or tF is converted to USUAL if necessary, and tR is USUAL. </li>
+      <li styleclass="Body Text">If tT can be implicitly converted to tF, tR is tF. </li>
+      <li styleclass="Body Text">If tF can be implicitly converted to tT, tR is tT. </li>
+      <li styleclass="Body Text">If tT can be implicitly converted to tF and tF can be implicitly converted to tT, then tR is ambiguous and a compiler error is raised. </li>
+      <li styleclass="Body Text">If tT cannot be implicitly converted to tF and tF cannot be implicitly converted to tT, then tR is indeterminate and a compiler error s raised. <br/><text style="font-weight:bold;">Note </text>that if tT and tF are VOID, tR is VOID and the IIF operator cannot be used as an operand in another expression, or as a function or method parameter. <br/>In this case, the IIF operator is essentially the same as an IF...ELSE...ENDIF construct and can only be used in stand-alone expression statements.<br/></li>
+    </list>
+    <para styleclass="Body Text">In cases 5 and 6, it may be possible to resolve the error by specifying an explicit cast on trueExpression or falseExpression.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">This behavior is different than in some other XBase dialects In these dialects the return is usually determined by the following rules</para>
+    <list id="14" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">If tT and tF are the same type, tR is that type. </li>
+      <li styleclass="Body Text">Otherwise tT and tR are implicitly converted to USUAL and tR is USUAL. </li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">You can use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">/vo10</link> compiler option to enable this behavior in X#, but this is only recommended for code originally written in other environments, such as Visual Objects.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2">Note</para>
+    <para styleclass="Normal">For compatibility with Visual Objects and several other dialects the IF() operator is also supported</para>
+  </body>
+</topic>

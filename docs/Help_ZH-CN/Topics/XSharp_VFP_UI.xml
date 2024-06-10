@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T08:35:01.607+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.VFP.UI</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.VFP.UI</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该 DLL 包含使用 VFP Exporter 将 FoxPro 转换为 X# 应用程序所使用的窗体和控件。</para>
+  </body>
+</topic>

@@ -57,6 +57,14 @@ ABSTRACT CLASS SqlMetadataProviderAbstract IMPLEMENTS ISqlMetadataProvider
     INTERNAL CONST DEFAULT_TAGS:= "" AS STRING
     INTERNAL CONST DEFAULT_UNIQUE:= FALSE AS LOGIC
     INTERNAL CONST DEFAULT_UPDATABLECOLUMNS:= "*" AS STRING
+    /// <inheritdoc />
+    /// <remarks>The abstract implementation does nothing.</remarks>
+    VIRTUAL METHOD CreateTable(cTable AS STRING, info as DbOpenInfo) AS VOID
+        RETURN
+    /// <inheritdoc />
+    /// <remarks>The abstract implementation does nothing.</remarks>
+    VIRTUAL METHOD CreateIndex(cTable as String, orderInfo as DbOrderCreateInfo) AS VOID
+        RETURN
 
 
 END CLASS

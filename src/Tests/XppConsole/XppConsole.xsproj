@@ -33,6 +33,7 @@
     <Vo13>True</Vo13>
     <Vo1>True</Vo1>
     <Vo3>True</Vo3>
+    <Xpp1>True</Xpp1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

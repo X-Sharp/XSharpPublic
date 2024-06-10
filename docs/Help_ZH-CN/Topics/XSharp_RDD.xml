@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T11:36:44.001+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.RDD</title>
+  <keywords>
+    <keyword>XSharp.RDD</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.RDD</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该 DLL 包含 X# 附带的各种 RDD：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">DBFNTX (including DBT memos)</li>
+      <li styleclass="Normal">DBFCDX (Including FPT memos)</li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">DBFVFP = DBFCDX 并支持其他 Visual FoxPro 数据类型。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您还可以使用不具备所有功能的 &quot;有限&quot; RDD：</para>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">CAVODBF 或 DBF: 只是 DBF 文件</li>
+      <li styleclass="Normal">DBFDBT: 带有 DBT 备注的 DBF 文件，不支持索引</li>
+      <li styleclass="Normal">DBFFPT: &#160;带有 FPT 备注的 DBF 文件，不支持索引</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Advantage RDD(需要外部Advantage DLL，如 ACE32、ACE64、adsloc32.dll、adsloc64.dll 等)</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">ADSADT</li>
+      <li styleclass="Normal">AXDBFCDX</li>
+      <li styleclass="Normal">AXDBFNTX</li>
+      <li styleclass="Normal">AXDBFVFP</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Advantage.ADSADT</li>
+      <li styleclass="Normal">Advantage.AXSQLCDX</li>
+      <li styleclass="Normal">Advantage.AXSQLNTX</li>
+      <li styleclass="Normal">Advantage.AXSQLVFP</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">在即将发布的版本中，我们将添加对以下功能的支持：</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">DBFMEMO = DBF + NTX + DBV</li>
+      <li styleclass="Normal">DBFBLOB = DBF without associated DBF file</li>
+      <li styleclass="Normal">DELIM</li>
+      <li styleclass="Normal">SDF</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><br/>如果有足够的兴趣，也许会有：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-style:italic;">DBFNSX = DBF + SMT + NSX</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

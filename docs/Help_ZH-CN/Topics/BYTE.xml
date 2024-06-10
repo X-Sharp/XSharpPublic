@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T19:50:37.724+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BYTE</title>
+  <keywords>
+    <keyword>BYTE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BYTE</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">保存 8 位（1 字节）无符号整数，值的范围为 0 到 255。</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T09:46:39.820+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__asType</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__asType</para>
+    </header>
+    <para styleclass="List">AS &lt;idType&gt;<tab />指定数据类型。如果省略，编译器依据编译选项来决定数据类型，或者是 USUAL，或者是由编译器自行决定。</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

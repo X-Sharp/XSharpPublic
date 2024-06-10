@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:21:35.021+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SHORT</title>
+  <keywords>
+    <keyword>SHORT</keyword>
+    <keyword>SHORTINT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SHORT</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SHORT 关键字表示一个整数类型，用于存储带符号的 16 位值，取值范围从 -32768 到 32767。.</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

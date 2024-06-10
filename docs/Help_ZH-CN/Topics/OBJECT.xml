@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:16:31.199+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>OBJECT</title>
+  <keywords>
+    <keyword>OBJECT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">OBJECT</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">OBJECT 关键字是 .Net 中所有对象自动继承的通用类型。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 不需要类声明从 Object 继承，因为继承是隐式的。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">由于 .NET Framework 中的所有类都派生自 Object，因此 Object 类中定义的每个方法都可在系统中的所有对象中使用。派生类可以重写其中一些方法，包括：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Equals - 支持对象之间的比较</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Finalize - 在对象自动回收之前执行清理操作</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">GetHashCode - 生成与对象值对应的数字，以支持哈希表的使用</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">ToString - 生成描述类实例的可读文本字符串</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

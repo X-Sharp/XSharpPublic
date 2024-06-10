@@ -254,7 +254,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
              Assert.True (u1 == u2)
 
             RETURN
-            */
+            
 
         [Trait("Category", "Serialize")];
         [Fact];

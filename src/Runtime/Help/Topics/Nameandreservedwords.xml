@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-22T13:21:01.008+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-03-12T17:42:05.449+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Names and reserved words</title>
   <keywords>
     <keyword translate="true">COLUMN</keyword>
@@ -19,5 +19,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">In a SQL environment a large number of words are treated as reserved words, and may not be used as column names, table names or index names. </text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The SQL RDD tries to solve this by surrounding the column names and table names with the characters that the server. Each DbProviderFactory provides a CommandBuilder class that has a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RDD_SqlRDD_Providers_SqlDbProvider_QuoteIdentifier.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">QuoteIdentifier</link><text styleclass="Normal" translate="true">() method. We have exposed that method in the SqlDbProvider class. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Also some providers are case sensitive. We have added a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RDD_SqlRDD_Providers_ISqlDbProvider_CaseSync.htm" domain="SqlRDDClasses.chm" styleclass="Normal" translate="true">CaseSync()</link><text styleclass="Normal" translate="true"> method to the provider that you can use to synchronize the case of the identifiers</text></para>
   </body>
 </topic>

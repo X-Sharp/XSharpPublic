@@ -168,6 +168,7 @@ internal class Cache
         //
         var iEntry := self:LRUBlock()
         self:Flush(iEntry)
+
         if self:m_area:DeadIndexBlocks:Count > 0
             ulFilePos := self:m_area:DeadIndexBlocks:PopSmallest()
         else

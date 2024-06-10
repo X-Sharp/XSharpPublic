@@ -1,4 +1,10 @@
-﻿USING System
+﻿// CommandGroup.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+USING System
 USING System.Collections.Generic
 USING System.ComponentModel
 USING System.Data
@@ -9,17 +15,19 @@ USING System.ComponentModel
 USING System.Windows.Forms
 
 BEGIN NAMESPACE XSharp.VFP.UI
-
+	/// <summary>
+	/// The VFP compatible CommandGroup class.
+	/// </summary>
 	PUBLIC PARTIAL CLASS CommandGroup ;
 	INHERIT System.Windows.Forms.UserControl IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
-        
+
 		PRIVATE buttons AS List<CommandButton>
-            
+
 		PUBLIC PROPERTY ButtonCount AS INT
 			GET
 				return SELF:buttons:Count
 			END GET
-            
+
 			SET
 				SELF:buttons:Clear()
 				FOR VAR i := 1 TO Value
@@ -39,20 +47,20 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				//
 				SELF:Size := System.Drawing.Size{91, (value)*(21+6)+2}
 			END SET
-            
-		END PROPERTY
-        
 
-		CONSTRUCTOR(  ) 
+		END PROPERTY
+
+
+		CONSTRUCTOR(  )
 			InitializeComponent()
 			//
 			SELF:buttons := List<CommandButton>{}
 			RETURN
-        
+
 		PUBLIC METHOD Button( i AS INT ) AS CommandButton
 			RETURN SELF:buttons[ i ]
 
 #include ".\Headers\ControlSource.xh"
 
-	END CLASS 
+	END CLASS
 END NAMESPACE

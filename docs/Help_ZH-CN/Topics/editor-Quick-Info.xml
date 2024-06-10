@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:34:42.730+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Quick Info(快速信息)</title>
+  <keywords>
+    <keyword>Quick Info</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Quick Info(快速信息)</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">快速信息会显示代码中任何标识符的完整声明。从 &quot;成员列表 &quot;框中选择成员时，也会显示快速信息。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">您可以通过选择 &quot;编辑&quot;&gt;&quot;IntelliSense&quot;&gt;&quot;快速信息&quot;、按 Ctrl+I 或选择编辑器工具栏上的 &quot;快速信息 &quot;按钮手动调用快速信息。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">如果函数被重载，IntelliSense 可能不会显示重载的所有形式的信息。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Quick Info.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Quick Info 2.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><image src="Quick Info 3.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+  </body>
+</topic>

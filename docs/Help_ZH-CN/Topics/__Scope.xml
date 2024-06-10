@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T19:17:47.689+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__Scope</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__Scope</para>
+    </header>
+    <para styleclass="List" style="tabstops:286px left,382px left ;">&lt;Scope&gt;<tab />当前数据库文件中要处理的部分。 默认为所有可见记录。范围可以是以下一个或多个子句：<br/>[NEXT &lt;NEXT&gt;]<tab />可选择指定从源文件第一条记录开始处理的记录数。这将从源文件的第一条记录开始。<br/><text styleclass="Body Text">[RECORD &lt;rec&gt;]</text><tab /><text styleclass="Body Text">可选的记录 ID 如果指定，处理将从源文件中的该数据记录开始。 </text><br/>[&lt;rest:REST&gt;]<tab /><text styleclass="Body Text">选项 REST 可指定是否从当前记录到最后一条记录按顺序搜索。如果指定了条件，则选项 ALL 为默认值。</text><br/>[ALL]<tab /><tab /><text styleclass="Body Text">选项 ALL 指定导入源文件中的所有记录。这是默认设置。</text></para>
+  </body>
+</topic>

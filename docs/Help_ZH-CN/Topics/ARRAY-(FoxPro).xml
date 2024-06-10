@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:35:42.672+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ARRAY (FoxPro)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">ARRAY (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 中的 FoxPro 方言有自己的 Array 类型。这种类型不是用 AS 关键字声明的，而是根据上下文推导出数组类型。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下代码行都生成兼容 FoxPro 的数组：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ARRAY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aTest(1,2) &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// LOCAL ARRAY</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ARRAY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aPublicArray[10] &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// PUBLIC ARRAY</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DIMENSION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> AnotherArray(3,4) &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// DIMENSION 也支持方括号</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DECLARE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ThirdArray[10] &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// DECLARE 使用方括号，但也支持使用括号</text></para>
+    <para styleclass="Normal">FoxPro 兼容数组的元素都是 USUAL 类型的。<br/>FoxPro 数组不能使用 AAdd() 动态调整大小。要调整它们的大小，需要使用 DIMENSION 语句和新的维度。</para>
+    <para styleclass="Normal">在内部，FoxPro 数组是单维数组。但也可以将它们重新定义为二维数组。<br/>因此，这个示例中的第三个数组也可以被视为包含 12 个元素的单维数组。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">建议使用尖括号来访问 FoxPro 数组的元素。这样不会产生歧义，编译器可以在编译时解析。</para>
+    <para styleclass="Normal">如果想要使用括号来访问 FoxPro 数组元素，需要启用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox</link> &#160;编译选项。此编译选项还会启用将单个值分配给 FoxPro 数组的所有元素的行为。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在内部，FoxPro 数组是作为从通用 XBase 数组类型派生的类实现的。</para>
+    <para styleclass="Normal">因此，X# 运行时中接受数组作为参数的所有函数也将接受 FoxPro 数组。<br/>当函数的 FoxPro 实现与 Xbase 实现之间存在不同行为时，这将在运行时处理。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal">ARRAY 类型在类 XSharp.__FoxArray 中实现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">ARRAY 的 Usualtype 值为 5</para>
+  </body>
+</topic>

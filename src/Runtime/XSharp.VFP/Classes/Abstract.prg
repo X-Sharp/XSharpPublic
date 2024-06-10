@@ -16,7 +16,7 @@ using System.Text
 abstract class XSharp.VFP.Abstract inherit XSharp.VFP.Empty
     property Name       as string auto
     property BaseClass  as string auto
-    property @@Class    as string  auto := "Class"
+    property @@Class    as string auto := ClassName(SELF)
     property ClassLibrary as string auto
     property Comment    as string auto
     property Parent     as object auto

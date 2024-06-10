@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-09T22:04:25.917+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Globals Window(全局窗口)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Globals Window(全局窗口)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在 &quot;全局 &quot;窗口中，您可以看到应用程序中的全局变量以及从应用程序加载的引用类库。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="debugger-Globals.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">如果应用程序不包含 X# 运行时，则会显示一条运行时未加载的消息：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><image src="debugger-Globals-NoRuntime.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

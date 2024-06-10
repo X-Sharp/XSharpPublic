@@ -1,7 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
-using System.Collections.Generic;
 using System;
 using System.Linq;
 using XSharpModel;
@@ -10,11 +9,8 @@ using XSharp.CodeDom;
 using System.IO;
 using System.Text;
 using System.CodeDom;
-using System.Xml.Serialization;
 using System.CodeDom.Compiler;
-using static System.Net.Mime.MediaTypeNames;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.Settings;
 namespace XSharp.Project
 {

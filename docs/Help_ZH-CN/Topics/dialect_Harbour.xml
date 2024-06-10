@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-30T22:41:29.630+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Harbour</title>
+  <keywords>
+    <keyword>&apos;@&apos;</keyword>
+    <keyword>4 letter abbreviations</keyword>
+    <keyword>Harbour</keyword>
+    <keyword>IIF</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Harbour</para>
+    </header>
+    <para styleclass="Normal">这种方言具有“<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">所有非 Core 方言</link>”的特征。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器和运行时在编译“Harbour”方言时具有以下“特殊”行为。</para>
+    <para styleclass="Heading2">编译器</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows 4 letter abbreviations of some older keywords</li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The &apos;@&apos; operator is only used to pass variables by reference.</li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows IIF() expressions with a missing element, for example IIF(someCondition,DoSomething(),). The compiler will insert a NIL for a missing entry.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">运行时(Runtime)</para>
+  </body>
+</topic>

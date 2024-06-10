@@ -249,6 +249,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             parser = new XSharpParser(_preprocessorTokenStream) { Options = _options };
+            var pragmas = new List<PragmaBase>();
+            var pragmaoptions = new List<PragmaOption>();
+            if (pp != null && pp.Pragmas?.Count > 0)
+            {
+                pragmas = pp.Pragmas;
+                foreach (var pragma in pragmas)
+                {
+                    if (pragma is PragmaOption po)
+                    {
+                        pragmaoptions.Add(po);
+                    }
+                }
+            }
+            parser.PragmaOptions = pragmaoptions;
 
             tree = new XSharpParserRuleContext();
             if (_options.ParseLevel != ParseLevel.Lex)
@@ -326,19 +340,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 System.IO.File.WriteAllText(file, strTree);
             }
             var walker = new ParseTreeWalker();
-            List<PragmaBase> pragmas = new List<PragmaBase>();
-            List<PragmaOption> pragmaoptions = new List<PragmaOption>();
-            if (pp != null && pp.Pragmas?.Count > 0)
-            {
-                pragmas = pp.Pragmas;
-                foreach (var pragma in pragmas)
-                {
-                    if (pragma is PragmaOption po)
-                    {
-                        pragmaoptions.Add(po);
-                    }
-                }
-            }
             if (_options.ParseLevel == ParseLevel.Complete)
             {
                 // check for parser errors, such as missing tokens

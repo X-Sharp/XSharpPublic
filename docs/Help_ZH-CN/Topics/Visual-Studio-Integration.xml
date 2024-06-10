@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T23:01:39.707+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>在 Visual Studio 中使用 X#</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">在 Visual Studio 中使用 X#</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">XSharp 有两种开发环境可供选择：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Chris Pyrgas 调整了他现有的集成开发环境用以支持 XSharp( XIDE，并以 XSharp 编译)。</li>
+      <li styleclass="Normal"><text style="font-weight:normal;">我们为 Visual Studio 2015 及更高版本提供 Visual Studio 集成。如果您没有Visual Studio，可以从网上下载Visual Studio社区版(免费！)：</text></li>
+    </list>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="weblink" href="https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx" target="_blank" style="font-weight:normal;">https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx</link></para>
+    <para styleclass="Normal"><text style="font-weight:normal;">Visual Studio 集成工作也在进行中。该版本支持以下功能：</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:normal;">编辑</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">编译</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">调试</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">源代码控制</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">Windows Forms 编辑器</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">WPF编辑器</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">资源编辑器</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">设置编辑器</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text style="font-weight:normal;">已知问题：</text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:normal;">有些 intellisense 特性尚不支持。</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">尚未提供 VO 二进制编辑器</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">尚未支持 .Net Core、.Net Standard、可移植类库和共享项目</text></li>
+    </list>
+  </body>
+</topic>

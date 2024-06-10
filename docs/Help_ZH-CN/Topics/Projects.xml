@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-06T16:07:38.127+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>项目</title>
+  <keywords>
+    <keyword>ItemGroup</keyword>
+    <keyword>PropertyGroup</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">项目</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Studio 中的项目属性存储在项目文件中。X# 项目的文件名以 .xsproj 扩展名结尾。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">项目文件是一种特殊的 XML 文件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这些 XML 文件包含各种信息组。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">项目级别的属性存储在 &lt;PropertyGroup&gt; 节点中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">其中有些属性是 &quot;全局 &quot;属性，有些属性则有一个条件，只有在选择了特定 &quot;配置&quot;(如 &quot;Debug &quot;或 &quot;Release&quot;)时才会激活。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">方言和输出文件名等属性是全局属性。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">优化、PDB 生成和输出文件夹等属性是特定配置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">项目文件还包含外部程序集、其他项目和 COM 组件的引用列表以及文件列表。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Studio 内部的生成系统会使用项目文件的内容，并构建一条命令行，将其传递给 X# 编译器，以生成项目的输出结果。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们开发了一组对话框，允许你设置项目的各种属性。以下章节将向您展示这些对话框，并讨论您可以在每个页面上设置的各种选项。</para>
+    <para styleclass="NotesBox" style="border-color:#000000; border-style:single; border-width:1px; padding:0px;"><br/>提示<br/><br/>由于项目文件是一个 XML 文件，因此如果需要，你也可以直接编辑项目文件，例如添加 &lt;Import&gt; 行，从 &quot;include &quot;文件中导入常用属性。<br/>我们内部对程序集使用这种方法，因此常用属性都在一个位置声明。<br/>如果这样做，那么在使用 Visual Studio 内部的项目属性对话框时就必须小心。<br/>这些对话框无法理解某些值是从导入文件中读取的，因此会更改 xsproj 文件中的值，即使这些值是从外部文件中导入的。<br/>此外，各种属性组的顺序也很重要：<br/>带有预构建和后构建事件的 PropertyGroups 应位于 XML 文件的末尾。<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">外部引用列表和项目内部的项目列表存储在 &lt;ItemGroup&gt; 节点中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

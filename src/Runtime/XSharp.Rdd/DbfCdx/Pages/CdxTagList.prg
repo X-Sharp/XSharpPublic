@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 found := TRUE
             ELSE
                 FOREACH VAR tag IN _tags
-                    IF String.Compare(tag:OrderName, oTag:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                    IF String.Compare(tag:OrderName, oTag:OrderName, TRUE) == 0
                         _tags:Remove(tag)
                         found := TRUE
                         EXIT

@@ -236,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
                 }
             }
-            var vo11 = _compilation.Options.HasOption(CompilerOption.Vo11, rewrittenOperand.Syntax);
+            var vo11 = _compilation.Options.HasOption(CompilerOption.VOArithmeticConversions, rewrittenOperand.Syntax);
             // should we work differently with explicit cast 
             if (vo11) //  && ! explicitcastincode)
             {

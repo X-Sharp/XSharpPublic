@@ -172,7 +172,7 @@ namespace XSharp.MacroCompiler
             else if (c is ExprList el)
                 el.Exprs.Add(e);
             else
-                c = new ExprList(new Expr[] { c, e });
+                c = new ExprList(new List<Expr> { c, e });
         }
     }
 }

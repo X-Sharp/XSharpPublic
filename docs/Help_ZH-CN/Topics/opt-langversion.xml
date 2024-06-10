@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-langversion</title>
+  <keywords>
+    <keyword>-langversion</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-langversion</para>
+    </header>
+    <para styleclass="Normal">this compiler option is ignored. When compared to the C# compiler, X# always compiles in the languageversion Latest.</para>
+  </body>
+</topic>

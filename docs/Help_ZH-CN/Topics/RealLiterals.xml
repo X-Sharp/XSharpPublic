@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T21:29:55.302+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Floating point 字面量</title>
+  <keywords>
+    <keyword>Currency</keyword>
+    <keyword>Currency Literal</keyword>
+    <keyword>Floating point Literals</keyword>
+    <keyword>Literals</keyword>
+    <keyword>Numeric Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Floating point 字面量</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">单精度或双精度字面量可用于在代码中存储数值。</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">123.456</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">123.0</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">0.123</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">.123</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">123.456e+7</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">123.456e-7</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">$123.45</text></para>
+    <para styleclass="Normal">Real 字面量可以有以下后缀之一：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;">后缀</para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;">描述</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">S 或 s</para>
+        </td>
+        <td>
+          <para styleclass="Normal">单精度 (REAL4)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">D 或 d</para>
+        </td>
+        <td>
+          <para styleclass="Normal">双精度 (REAL8)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">M 或 m</para>
+        </td>
+        <td>
+          <para styleclass="Normal">十进制</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">不带后缀的浮点(Floating point)字面量以 REAL8 格式存储，除非指定了<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14">/vo14</link> 编译器选项，在这种情况下，浮点字面量以 FLOAT 格式存储。.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;">前缀</para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;">描述</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">$</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CURRENCY">Currency</link> 字面量</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:47:51.790+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Indenting code(缩进代码)</title>
+  <keywords>
+    <keyword>Formatting code</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Indenting code(缩进代码)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio 会自动格式化你的代码，这样你就能更清楚地看到代码的全貌，以及哪些部分在做什么。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">只有将</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Tools-Options-Tabs" styleclass="Image Caption" style="font-style:normal;">Tabs page</link><text styleclass="Image Caption" style="font-style:normal;">页面上的 &#160;Indenting(缩进)选项设置为 &quot;Smart（智能） &quot;时，才会出现这种情况。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">格式化规则在</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Tools-Options-Indentation" styleclass="Image Caption" style="font-style:normal;">Indentation(缩进)页面</link><text styleclass="Image Caption" style="font-style:normal;">中定义。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Formatting code.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

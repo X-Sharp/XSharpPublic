@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:07:53.629+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>简单(固有)类型</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">简单(固有)类型</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们所说的简单数据类型是指主要不用于保存其他数据的数据类型，如对象、结构、数组等，这些我们稍后会看到。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">大多数数据类型在所有 .Net 语言中都是相同的。这有助于在一个应用程序中轻松使用以不同 .Net 语言编写的程序集，这也是简单数据类型的主要特点之一。下表按类别对数据类型进行了分组：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="4">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">类型</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">分类</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">.Net 名称</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">按位计算的大小</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="BYTE">BYTE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">无符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Byte</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CHAR">CHAR</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">(Unicode UTF-16)字符</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Char</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DWORD">DWORD</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">无符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">UInt32</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DECIMAL">DECIMAL</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">数值</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Decimal</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">96</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DYNAMIC">DYNAMIC</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">多用途</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Dynamic</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">引用 (32 或 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INT">INT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">带符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int32</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INT64">INT64</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">带符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int64</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LOGIC">LOGIC</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">逻辑型</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Boolean</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">8 </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INT">LONGINT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">带符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int32</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="OBJECT">OBJECT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">多用途</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Object</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">引用 (32 或 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PTR2">PTR</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">多用途</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Intptr</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">引用 (32 或 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="REAL4">REAL4</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">浮点数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Single</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="REAL8">REAL8</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">浮点数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Double</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="SBYTE">SBYTE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">带符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">SByte</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="SHORT">SHORT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">带符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int16</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="STRING">STRING</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">字符串</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">String</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">引用 (32 或 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="UINT64">UINT64</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">无符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Uint64</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VOID">VOID</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">不是一个类型</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Void</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="WORD">WORD</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">无符号整数</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">UInt16</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

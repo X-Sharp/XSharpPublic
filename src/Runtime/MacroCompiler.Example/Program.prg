@@ -75,6 +75,7 @@ BEGIN NAMESPACE MacroCompilerTest
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())
         ScriptTests()
+        FoxScriptTests()
         TestPreProcessor(CreateScriptCompiler())
         VoTests(mc)
         FoxTests(fmc)

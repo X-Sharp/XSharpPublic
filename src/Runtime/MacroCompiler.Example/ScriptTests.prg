@@ -361,6 +361,19 @@ FUNCTION ScriptTests AS VOID
 
     RETURN
 
+FUNCTION FoxScriptTests AS VOID
+    var sc := CreateFoxScriptCompiler()
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        e"RETURN \"fox;",;
+        e" string\""}), Args(), "fox string", typeof(STRING))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        e"RETURN \"fox; && comment!",;
+        e" string\""}), Args(), "fox string", typeof(STRING))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        e"RETURN \"fox; // comment!",;
+        e" string\""}), Args(), "fox string", typeof(STRING))
+    RETURN
+
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     TestMacro(sc, String.Join(e"\n",<STRING>{;
     "#include ""XSharpDefs.xh"" ",;
@@ -385,7 +398,6 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     DbCreateIndex("test1","UPPER(Test1)")
     DbCreateIndex("test2","UPPER(Test2)")
     DbCloseArea()
-
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
     "#include ""XSharpDefs.xh"" ",;

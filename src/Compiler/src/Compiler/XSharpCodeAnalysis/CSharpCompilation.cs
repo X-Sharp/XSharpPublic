@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         Options.MainTypeName = XSharpSpecialNames.FunctionsClass;
                     }
-                    def = InternalSyntax.XSharpTreeTransformationCore.DefaultXSharpSyntaxTree(trees, parseOptions);
+                    def = InternalSyntax.XSharpTreeTransformationCore.DefaultXSharpSyntaxTree(parseOptions);
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

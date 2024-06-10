@@ -103,7 +103,7 @@ internal class SqlDbOrder inherit SqlDbObject
             return ""
         endif
         var seekInfo       := DbSeekInfo{}
-        if self:BottomScope == self:TopScope
+        if SELF:BottomScope != NULL .and. SELF:TopScope != NULL .and. self:BottomScope:ToString() == self:TopScope:ToString()
             // single scope
             seekInfo:Value     := self:TopScope
             seekInfo:SoftSeek  := false

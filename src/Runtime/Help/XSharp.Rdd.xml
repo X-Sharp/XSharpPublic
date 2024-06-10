@@ -1,0 +1,1402 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>XSharp.Rdd</name>
+  </assembly>
+  <members>
+    <member name="T:XSharp.RDD.CodePageExtensions"></member>
+    <member name="M:XSharp.RDD.CodePageExtensions.IsAnsi(XSharp.RDD.DbfHeaderCodepage)"></member>
+    <member name="M:XSharp.RDD.CodePageExtensions.IsSixEncrypted(XSharp.RDD.DBFVersion)"></member>
+    <member name="M:XSharp.RDD.CodePageExtensions.IsVfp(XSharp.RDD.DBFVersion)"></member>
+    <member name="M:XSharp.RDD.CodePageExtensions.ToCodePage(XSharp.RDD.DbfHeaderCodepage)"></member>
+    <member name="M:XSharp.RDD.CodePageExtensions.ToHeaderCodePage(XSharp.RDD.OsCodepage)"></member>
+    <member name="M:XSharp.RDD.CodePageExtensions.UsesFlags(XSharp.RDD.DBFVersion)"></member>
+    <member name="T:XSharp.RDD.DBF">
+      <summary>DBF RDD. Usually not used 'stand alone'</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DBF</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF._getMemoBlockNumber(System.Int32)"></member>
+    <member name="M:XSharp.RDD.DBF.AddField(XSharp.RDD.Support.RddFieldInfo)">
+      <summary>Add a column.</summary>
+      <param name="info">RddFieldInfo object.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Append(System.Boolean)">
+      <summary>Append a blank row and position the cursor to the new row.</summary>
+      <param name="lReleaseLock">A flag that is TRUE if you want to clear all pending row locks before appending the new row and FALSE if you want to add the new row to the end of the current lock list.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.AppendLock(XSharp.RDD.Enums.DbLockMode)">
+      <summary>Add a newly appended row to the list of locked rows.</summary>
+      <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.BlobInfo(System.UInt32,System.UInt32)">
+      <summary>Retrieve information about a memo column.</summary>
+      <param name="nOrdinal">Specifies the type of information.</param>
+    </member>
+    <member name="P:XSharp.RDD.DBF.BoF">
+      <summary>Is the table at the logical beginning-of-file.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ChildEnd(XSharp.RDD.Support.DbRelInfo)">
+      <summary>Report the initialization of a relation.</summary>
+      <param name="info">An object containing information about the relation</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ChildStart(XSharp.RDD.Support.DbRelInfo)">
+      <summary>Report the initialization of a relation.</summary>
+      <param name="info">An object containing information about the relation</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ChildSync(XSharp.RDD.Support.DbRelInfo)">
+      <summary>Post a pending relational movement, indicating that the specified child work area has been affected by a parental movement.</summary>
+      <param name="info">An object containing information about the relation</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ClearFilter">
+      <summary>Clear the active filter condition.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ClearRel">
+      <summary>Clear relations.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ClearScope">
+      <summary>Clear the active locate condition.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Close">
+      <summary>Close a table.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.CloseMemFile">
+      <summary>Close the memo file</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Compile(System.String)">
+      <summary>Compile an expression.</summary>
+      <param name="sBlock">The expression to compile.</param>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Continue">
+      <summary>Goto the next record based on the corrent locate condition.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Create(XSharp.RDD.Support.DbOpenInfo)"></member>
+    <member name="M:XSharp.RDD.DBF.CreateMemFile(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Create the memo file</summary>
+      <param name="info">object describing the file to create.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.DbEval(XSharp.RDD.Support.DbEvalInfo)">
+      <summary>Evaluate a code block for each row.</summary>
+      <param name="info">object containing the information about which rows to visit.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Delete">
+      <summary>Mark the row at the current cursor position for deletion.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.DBF.Deleted">
+      <summary>Is the current row deleted?</summary>
+    </member>
+    <member name="P:XSharp.RDD.DBF.Driver">
+      <summary>Driver (RDD) name of the object.</summary>
+    </member>
+    <member name="P:XSharp.RDD.DBF.EoF">
+      <summary>Is the table at the logical end-of-file.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.EvalBlock(XSharp.ICodeblock)">
+      <summary>Evaluate a code block.</summary>
+      <param name="sBlock">The code block to evaluate.</param>
+    </member>
+    <member name="M:XSharp.RDD.DBF.EvalFilter(XSharp.ICodeblock)"></member>
+    <member name="P:XSharp.RDD.DBF.FieldCount">
+      <summary>The # of fields in the current Workarea.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.FieldIndex(System.String)">
+      <summary>Return the ONE based field index for a field name.</summary>
+      <param name="fieldName">The name of the field in the database file structure. When the name is not found it will also check for a field alias with this name.</param>
+      <returns>The ONE based position of the field in the database file structure.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.FieldInfo(System.Int32,System.Int32,System.Object)">
+      <summary>Retrieve and optionally change information about a column.</summary>
+      <param name="nFldPos">The ONE based position of the field in the database file structure.</param>
+      <param name="nOrdinal">Specifies the type of information.</param>
+      <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+      <returns>The current value for the property indicated with &lt;nOrdinal&gt;</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.FieldName(System.Int32)">
+      <summary>Retrieve a column name based on its ONE based column number.</summary>
+      <param name="nFldPos">The ONE based position of the column whose name you want to obtain.</param>
+      <returns>The name of the column.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Flush">
+      <summary>Flush the changes to the table, its indexes and memo file.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.ForceRel">
+      <summary>Force all pending relational seeks to be performed.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.DBF.Found"></member>
+    <member name="M:XSharp.RDD.DBF.GetRec">
+      <summary>Retrieve the RDD's record buffer as array of bytes.</summary>
+      <returns>Record buffer of the RDD. This is the original buffer, so changing this buffer may cause corruption !</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GetScope">
+      <summary>Retrieve the active locate condition.</summary>
+      <returns>The current scope information for the RDD.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GetValue(System.Int32)">
+      <summary>Get a value for the specified column.</summary>
+      <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
+      <returns>The value of the specified field.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GetValueFile(System.Int32,System.String)">
+      <summary>Get the value for a column and write (export) it to an external file.</summary>
+      <param name="nFldPos">ONE based position for which the value should be retrieved.</param>
+      <param name="fileName">Name of the file that needs to be written to.</param>
+      <returns>TRUE when the operation succeeded. Otherwise FALSE to indicate a failure.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GetValueLength(System.Int32)">
+      <summary>Get the length of the for the specified column.</summary>
+      <param name="nFldPos">ONE based position for which the length should be retrieved.</param>
+      <returns>The length of the value of the specified field.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GoBottom">
+      <summary>Position the cursor to the last logical row.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GoCold">
+      <summary>Write the contents of a work area's memory to the data store (usually a disk).</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GoHot">
+      <summary>Mark a data buffer as hot, indicating that it needs to be written to the data store.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GoTo(System.Int32)">
+      <summary>Position the cursor to a specific, physical row.</summary>
+      <param name="nRec">The ONE based row number of the new cursor position.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GoToId(System.Object)">
+      <summary>Position the cursor to a specific, physical identity.</summary>
+      <param name="oRec">The ONE based row ID of the new cursor position.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.GoTop">
+      <summary>Position the cursor to the first logical row.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.HeaderLock(XSharp.RDD.Enums.DbLockMode)">
+      <summary>Lock or unlock the header of a database file.</summary>
+      <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Info(System.Int32,System.Object)">
+      <summary>Retrieve and optionally change information about a work area.</summary>
+      <param name="nOrdinal">Specifies the type of information.</param>
+      <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    </member>
+    <member name="P:XSharp.RDD.DBF.IsHot">
+      <summary>Is the current row </summary>
+    </member>
+    <member name="P:XSharp.RDD.DBF.IsNewRecord">
+      <summary>Is the current row a new record (the result of Append())</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Lock(XSharp.RDD.Support.DbLockInfo@)">
+      <summary>Perform a lock.</summary>
+      <param name="uiMode">An object specifying the kind of lock to acquire.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Open(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Open a table.</summary>
+      <param name="info">object describing the file to open.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OpenMemFile(XSharp.RDD.Support.DbOpenInfo)">
+      <summary>Open the memo file </summary>
+      <param name="info">object describing the file to open.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderCondition(XSharp.RDD.Support.DbOrderCondInfo)">
+      <summary>Set the condition for the next Index Creation</summary>
+      <param name="info">An object containing information for the order condition.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderCreate(XSharp.RDD.Support.DbOrderCreateInfo)">
+      <summary>Create a new index or tag.</summary>
+      <param name="info">An object containing information for order creation.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderDestroy(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Delete an index or tag.</summary>
+      <param name="info">An object containing information about the order to remove.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderInfo(System.UInt32,XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Retrieve information about an index.</summary>
+      <param name="info">An object containing information about the order to retrieve the info for.</param>
+      <param name="nOrdinal">Specifies the type of information to retrieve.</param>
+      <returns>The requested value for the specified index.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderListAdd(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
+      <param name="info">An object containing information about the orderlist (file)  to add.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderListDelete(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
+      <param name="info" />
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderListFocus(XSharp.RDD.Support.DbOrderInfo)">
+      <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
+      <param name="info">An object containing information about the order to select.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.OrderListRebuild">
+      <summary>Rebuild all indexes for the current Workarea.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Pack">
+      <summary>Physically remove rows marked for deletion.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.PutRec(System.Byte[])">
+      <summary>Replace the row at the current cursor position with the contents of a byte array.</summary>
+      <param name="aRec">The buffer containing the information that you want to write.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.PutValue(System.Int32,System.Object)">
+      <summary>Write a value for a specified column</summary>
+      <param name="nFldPos">ONE based position for which the value should be written.</param>
+      <param name="oValue">New value that needs to written to the table this column.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.PutValueFile(System.Int32,System.String)">
+      <summary>Read (Import) a value from an external file and write it to the specified column.</summary>
+      <param name="nFldPos">ONE based position for which the value should be written.</param>
+      <param name="fileName">Name of the file that needs to be read from.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Recall">
+      <summary>Remove the deletion marker from the row at the current cursor position.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.DBF.RecCount">
+      <summary>The number of rows.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.RecInfo(System.Int32,System.Object,System.Object)">
+      <summary>Retrieve and optionally change information about a row.</summary>
+      <param name="nOrdinal">Specifies the type of information.</param>
+      <param name="oRecid">If specified (not null), then this parameter is used to specify for which object to retrieve the info.</param>
+      <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    </member>
+    <member name="P:XSharp.RDD.DBF.RecNo">
+      <summary>The physical row identifier at the current cursor position.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Refresh">
+      <summary>Discard all changes to the current record and reread the buffer from disk. When the current buffer is in Append mode then the server will move to the bottom of the file.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.RelArea(System.UInt32)">
+      <summary>Retrieve the logical number of a related work area.</summary>
+      <param name="nRelNum">The ONE based relation number for which to obtain the logical number.</param>
+      <returns>The area number of the relation.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.RelEval(XSharp.RDD.Support.DbRelInfo)">
+      <summary>Evaluate a code block against the relation in a work area.</summary>
+      <param name="info">An object containing information about the relation</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.RelText(System.UInt32)">
+      <summary>Retrieve the key expression of a relation.</summary>
+      <param name="nRelNum">The ONE based relation number for which to obtain the key expression. </param>
+      <returns>The key expression of the relation.</returns>
+    </member>
+    <member name="F:XSharp.RDD.DBF.RLHitCount"></member>
+    <member name="F:XSharp.RDD.DBF.RLMissCount"></member>
+    <member name="M:XSharp.RDD.DBF.Seek(XSharp.RDD.Support.DbSeekInfo)">
+      <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
+      <param name="info">An object containing containing the necessary seek information.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SetFieldExtent(System.Int32)">
+      <summary>Set the Number of Fields the AddField Method will add.</summary>
+      <param name="fieldCount">Number of fields that will be added.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SetFilter(XSharp.RDD.Support.DbFilterInfo)">
+      <summary>Set the filter condition.</summary>
+      <param name="info">object containing the filter information.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SetRel(XSharp.RDD.Support.DbRelInfo)">
+      <summary>Set a relation.</summary>
+      <param name="info">An object containing information about the relation</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SetScope(XSharp.RDD.Support.DbScopeInfo)">
+      <summary>Set the locate condition.</summary>
+      <param name="info">object containing the scope information.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Skip(System.Int32)">
+      <summary>Position the cursor relative to its current position.</summary>
+      <param name="nToSkip">The number of rows to skip.
+            If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SkipFilter(System.Int32)">
+      <summary>Position the cursor, respecting scope and filter conditions.</summary>
+      <param name="nToSkip">The number of rows to skip.  If this argument is positive,
+            the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SkipRaw(System.Int32)">
+      <summary>Position the cursor regardless of scope and filter conditions.</summary>
+      <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SkipScope(System.Int32)">
+      <summary>Position the cursor relative to its current position within the current scope.</summary>
+      <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Sort(XSharp.RDD.Support.DbSortInfo)">
+      <summary>Physically reorder a table.</summary>
+      <param name="info">An object containing information about now to sort the table.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.SyncChildren">
+      <summary>Force relational movement in child work areas to synchronize them with the parent work area.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Trans(XSharp.RDD.Support.DbTransInfo)">
+      <summary>Copy one or more rows from one work area to another.</summary>
+      <param name="info">An object containing information about the transfer of data.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.TransRec(XSharp.RDD.Support.DbTransInfo)">
+      <summary>Copy a single row from one work area to another.</summary>
+      <param name="info">An object containing information about the transfer of data.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.UnLock(System.Object)">
+      <summary>Release locks.</summary>
+      <param name="oRecId">The row number to unlock.  This argument is provided for drivers that support multiple row locks.  By convention, a value of zero indicates that all rows should be unlocked.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBF.Zap">
+      <summary>Physically remove all rows from a table.</summary>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="T:XSharp.RDD.DbfAutoIncrementColumn">
+      <summary>Class for reading / writing AutoIncrement Columns. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfAutoIncrementColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfAutoIncrementColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfAutoIncrementColumn.NewRecord(System.Byte[])">
+      <summary>Update the buffer after appending. For example for AutoIncrement or TimeStamp columns.</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfAutoIncrementColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfAutoIncrementColumn.Read">
+      <summary>Read the next autoincrement number from the dbf header </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfAutoIncrementColumn.Write">
+      <summary>Write the next autoincrement number to the dbf header </summary>
+    </member>
+    <member name="T:XSharp.RDD.DBFCDX">
+      <summary>DBFCDX RDD. For DBF/FPT/CDX.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFCDX.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DBFCDX</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFCDX.__Goto(System.Int32)"></member>
+    <member name="M:XSharp.RDD.DBFCDX._CloseAllIndexes(XSharp.RDD.Support.DbOrderInfo,System.Boolean)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Close"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Create(XSharp.RDD.Support.DbOpenInfo)"></member>
+    <member name="P:XSharp.RDD.DBFCDX.Driver"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Flush"></member>
+    <member name="M:XSharp.RDD.DBFCDX.ForceRel"></member>
+    <member name="M:XSharp.RDD.DBFCDX.GetValue(System.Int32)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.GoBottom"></member>
+    <member name="M:XSharp.RDD.DBFCDX.GoCold"></member>
+    <member name="M:XSharp.RDD.DBFCDX.GoHot"></member>
+    <member name="M:XSharp.RDD.DBFCDX.GoTo(System.Int32)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.GoTop"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Info(System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Open(XSharp.RDD.Support.DbOpenInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderCondition(XSharp.RDD.Support.DbOrderCondInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderCreate(XSharp.RDD.Support.DbOrderCreateInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderDestroy(XSharp.RDD.Support.DbOrderInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderInfo(System.UInt32,XSharp.RDD.Support.DbOrderInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderListAdd(XSharp.RDD.Support.DbOrderInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderListDelete(XSharp.RDD.Support.DbOrderInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderListFocus(XSharp.RDD.Support.DbOrderInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.OrderListRebuild"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Pack"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Seek(XSharp.RDD.Support.DbSeekInfo)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.SkipRaw(System.Int32)"></member>
+    <member name="M:XSharp.RDD.DBFCDX.Zap"></member>
+    <member name="T:XSharp.RDD.DbfCharacterColumn">
+      <summary>Class for reading / writing String Columns</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCharacterColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfCharacterColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCharacterColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCharacterColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfCharacterColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCharacterColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfCharacterColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfColumn">
+      <summary>Class for DBF Column reading / writing </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.Create(XSharp.RDD.DbfField@,XSharp.RDD.DBF,System.Int32)">
+      <summary>Create a DbfColumn class, based on the definition in the DBF. Used when opening a file. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.Create(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>Create a DbfColumn class, used when creating files.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.HandleNullValue(System.Byte[])">
+      <summary>Handle NULL values.</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.NewRecord(System.Byte[])">
+      <summary>Update the buffer after appending. For example for AutoIncrement or TimeStamp columns.</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="T:XSharp.RDD.DbfCurrencyColumn">
+      <summary>Class for reading / writing Currency Columns. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCurrencyColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfCurrencyColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCurrencyColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCurrencyColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfCurrencyColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfCurrencyColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfCurrencyColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfDateColumn">
+      <summary>Class for reading / writing Date Columns</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfDateColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="T:XSharp.RDD.DbfDateTimeColumn">
+      <summary>Class for reading / writing DateTime Columns. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateTimeColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfDateTimeColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateTimeColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateTimeColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateTimeColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateTimeColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfDateTimeColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfDoubleColumn">
+      <summary>Class for reading / writing Double Columns. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDoubleColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfDoubleColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDoubleColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDoubleColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfDoubleColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfDoubleColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfDoubleColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfField">
+      <summary>DBF Field.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfField.#ctor(System.Text.Encoding)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfField</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfField.ClearFlags"></member>
+    <member name="P:XSharp.RDD.DbfField.Counter"></member>
+    <member name="P:XSharp.RDD.DbfField.Dec"></member>
+    <member name="P:XSharp.RDD.DbfField.Flags"></member>
+    <member name="P:XSharp.RDD.DbfField.HasTag"></member>
+    <member name="P:XSharp.RDD.DbfField.IncStep"></member>
+    <member name="P:XSharp.RDD.DbfField.Len"></member>
+    <member name="P:XSharp.RDD.DbfField.Name"></member>
+    <member name="P:XSharp.RDD.DbfField.Offset"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved1"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved2"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved3"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved4"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved5"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved6"></member>
+    <member name="P:XSharp.RDD.DbfField.Reserved7"></member>
+    <member name="P:XSharp.RDD.DbfField.Type"></member>
+    <member name="T:XSharp.RDD.DBFFPT">
+      <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFFPT.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DBFFPT</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:XSharp.RDD.DBFFPT.Driver">
+      <summary>Driver (RDD) name of the object.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFFPT.FieldInfo(System.Int32,System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFFPT.GetValue(System.Int32)">
+      <summary>Get a value for the specified column.</summary>
+      <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
+      <returns>The value of the specified field.</returns>
+    </member>
+    <member name="M:XSharp.RDD.DBFFPT.Info(System.Int32,System.Object)">
+      <summary>Retrieve and optionally change information about a work area.</summary>
+      <param name="nOrdinal">Specifies the type of information.</param>
+      <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    </member>
+    <member name="M:XSharp.RDD.DBFFPT.PutValue(System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFFPT.PutValueFile(System.Int32,System.String)">
+      <summary>Read (Import) a value from an external file and write it to the specified column.</summary>
+      <param name="nFldPos">ONE based position for which the value should be written.</param>
+      <param name="fileName">Name of the file that needs to be read from.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.DBFFPT.ReturnRawData"></member>
+    <member name="T:XSharp.RDD.DbfHeader">
+      <summary>DBF Header.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfHeader.#ctor(XSharp.RDD.DBF)">
+      <summary>DBF Version</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.CodePage">
+      <summary>Code Page</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Day">
+      <summary>Day of last update</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.DbaseLan">
+      <summary>dBASE IV LAN value.</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Encrypted">
+      <summary>dBASE IV encryption flag.</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.FieldCount"></member>
+    <member name="P:XSharp.RDD.DbfHeader.HeaderLen">
+      <summary>Number of bytes in the header. (Least significant byte first.)</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.IsAnsi">
+      <summary>Is the codepage an Ansi codepage</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.LastUpdate">
+      <summary>Date of last update.</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Month">
+      <summary>Month of last update</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.MultiUser">
+      <summary>dBASE IV Multi User value.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfHeader.Read"></member>
+    <member name="P:XSharp.RDD.DbfHeader.RecCount">
+      <summary>Number of records in the table. (Least significant byte first.)</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.RecordLen">
+      <summary>Length of one data record, including deleted flag</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Reserved1">
+      <summary>Reserved flag at position 12</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Reserved2">
+      <summary>Reserved flag at position 24</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Reserved3">
+      <summary>Reserved flag at position 30</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.TableFlags">
+      <summary>Table Flags</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Transaction">
+      <summary>Flag indicating incomplete dBASE IV transaction.</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfHeader.Version"></member>
+    <member name="M:XSharp.RDD.DbfHeader.Write"></member>
+    <member name="P:XSharp.RDD.DbfHeader.Year">
+      <summary>Year of last update
+            YY is added to a base of 1900 decimal to determine the actual year.
+            Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfHeaderCodepage">
+      <summary>DBF Header Codepage numbers.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfIntegerColumn">
+      <summary>Class for reading / writing Integer Columns. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfIntegerColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfIntegerColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfIntegerColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfIntegerColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfIntegerColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfIntegerColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfIntegerColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfLocking">
+      <summary>This structure holds the various settings for locking models</summary>
+    </member>
+    <member name="F:XSharp.RDD.DbfLocking.Direction">
+      <summary>Direction of locking, used to calculate file lock offsets and record lock offsets</summary>
+    </member>
+    <member name="P:XSharp.RDD.DbfLocking.FileLockOffSet">
+      <summary>File Lock offsets </summary>
+    </member>
+    <member name="F:XSharp.RDD.DbfLocking.FileSize">
+      <summary>Length for File locks </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfLocking.Initialize(XSharp.RDD.DbfLockingModel)">
+      <summary>Set various numbers based on a locking model.</summary>
+    </member>
+    <member name="F:XSharp.RDD.DbfLocking.Offset">
+      <summary>Offset of the Locking </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfLocking.RecnoOffSet(System.Int32,System.Int32,System.Int32)">
+      <summary>Calculate the record offset based </summary>
+    </member>
+    <member name="F:XSharp.RDD.DbfLocking.RecordSize">
+      <summary>Length for Record locks </summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfLockingModel">
+      <summary>DBF Locking model.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfLogicColumn">
+      <summary>Class for reading / writing Logic Columns</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfLogicColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfLogicColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfLogicColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfLogicColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfLogicColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="T:XSharp.RDD.DbfMemoColumn">
+      <summary>Class for reading / writing Memo Columns. This class returns and writes the block numbers.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfMemoColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfMemoColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfMemoColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfMemoColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfMemoColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfMemoColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfMemoColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfNullColumn">
+      <summary>Class for reading / writing the Special Column for NULL values. </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNullColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfNullColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNullColumn.GetBit(System.Int32)">
+      <summary>Read a bit from the specified position</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNullColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfNullColumn.InitValue(System.Byte[])">
+      <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNullColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfNullColumn.SetBit(System.Int32,System.Boolean)">
+      <summary>Set a bit at the specified position</summary>
+    </member>
+    <member name="T:XSharp.RDD.DbfNumericColumn">
+      <summary>Class for reading / writing Numeric Columns</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNumericColumn.#ctor(XSharp.RDD.Support.RddFieldInfo,XSharp.RDD.DBF)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DbfNumericColumn</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNumericColumn.EmptyValue">
+      <summary>Get the default "empty" value, as you would get at EOF</summary>
+    </member>
+    <member name="M:XSharp.RDD.DbfNumericColumn.GetValue(System.Byte[])">
+      <summary>Get the value from the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfNumericColumn.PutValue(System.Object,System.Byte[])">
+      <summary>Write the value to the buffer</summary>
+      <param name="buffer">Record buffer for the current record</param>
+      <param name="oValue">Value to write.</param>
+    </member>
+    <member name="M:XSharp.RDD.DbfNumericColumn.Validate">
+      <summary>Validate combinations of type, length and decimals.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DBFTableFlags">
+      <summary>DBF Table flags.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DBFVersion">
+      <summary>DBF File Versions.</summary>
+    </member>
+    <member name="T:XSharp.RDD.DBFVFP">
+      <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFVFP.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>XSharp.RDD.DBFVFP</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:XSharp.RDD.DBFVFP.AddField(XSharp.RDD.Support.RddFieldInfo)">
+      <summary>Add a column.</summary>
+      <param name="info">RddFieldInfo object.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="M:XSharp.RDD.DBFVFP.Close"></member>
+    <member name="M:XSharp.RDD.DBFVFP.Create(XSharp.RDD.Support.DbOpenInfo)"></member>
+    <member name="M:XSharp.RDD.DBFVFP.CreateFields(XSharp.RDD.Support.RddFieldInfo[])">
+      <summary>Add columns defined in an array.</summary>
+      <param name="aFields">Array of RddFieldInfo objects.</param>
+      <returns>
+        <span>
+            TRUE when the operation succeeded or FALSE when the operation failed. <br />
+            Some RDD operations do not really return FALSE but throw an exception to indicate failure.<br />
+            These exceptions are caught in the higher level code and registered in
+            the <see cref="P:XSharp.RuntimeState.LastRddError">LastRddError property in the runtime state.</see>.
+        </span>
+      </returns>
+    </member>
+    <member name="P:XSharp.RDD.DBFVFP.Driver"></member>
+    <member name="P:XSharp.RDD.DBFVFP.FieldCount"></member>
+    <member name="M:XSharp.RDD.DBFVFP.FieldInfo(System.Int32,System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFVFP.Info(System.Int32,System.Object)"></member>
+    <member name="M:XSharp.RDD.DBFVFP.Open(XSharp.RDD.Support.DbOpenInfo)"></member>
+    <member name="T:XSharp.RDD.ERDD">
+      <summary>Common RDD Error numbers</summary>
+    </member>
+    <member name="T:XSharp.RDD.LockTimer"></member>
+    <member name="M:XSharp.RDD.LockTimer.Start"></member>
+    <member name="P:XSharp.RDD.LockTimer.Started"></member>
+    <member name="M:XSharp.RDD.LockTimer.TimeOut(System.String,System.Int64,System.Int64)"></member>
+    <member name="T:XSharp.RDD.OsCodepage">
+      <summary>OS Codepages as used in DBF files.</summary>
+    </member>
+  </members>
+</doc>

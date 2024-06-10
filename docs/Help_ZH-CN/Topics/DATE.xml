@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T23:29:29.057+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DATE</title>
+  <keywords>
+    <keyword>DATE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DATE</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">DATE 类型是一种存储日期值的整数类型。</para>
+    <para styleclass="Normal"><br/>日期在内部存储在 3 个字段中（日、月和年），共占用内存 32 位。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal">DATE 类型在 XSharp.__Date 结构中实现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">DATE 的 UsualType 值是 2。</para>
+  </body>
+</topic>

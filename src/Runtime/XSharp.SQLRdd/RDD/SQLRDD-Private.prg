@@ -10,11 +10,12 @@ using System.Collections.Generic
 using System.Data
 using System.Text
 using System.Diagnostics
+using System.Linq
 using System.Reflection
 using System.Data.Common
 using XSharp.RDD.SqlRDD.Providers
 
-
+#undef TRACERDD
 begin namespace XSharp.RDD.SqlRDD
 
 // Private methods and fields
@@ -23,15 +24,12 @@ partial class SQLRDD inherit DBFVFP
     private _table          as DataTable
     private _phantomRow     as DataRow
     private _creatingIndex  as logic
-    private _identityKey    as long
-    private _identityColumn as DataColumn
-    private _deletedColumn  as long
     private _tableMode      as TableMode
     private _hasData        as logic
-    private _realOpen       as logic
+    private _getStructureOnly as logic
     private _connection     as SqlDbConnection
     private _oTd            as SqlDbTableInfo
-    private _obuilder       as SqlDbTableCommandBuilder
+    private _builder        as SqlDbTableCommandBuilder
     private _command        as SqlDbCommand
     private _trimValues     as logic
     private _creating       as logic
@@ -41,9 +39,21 @@ partial class SQLRDD inherit DBFVFP
     private _keyColumns     as List<RddFieldInfo>
     private _updatedRows    as List<DataRow>
     private _orderBagList   as List<SqlDbOrderBag>
-    private _recnoColumn    as long
+    /// <summary>
+    /// 0 based Column Number for the column that has the deleted flag
+    /// </summary>
+    private _deletedColumnNo  as long
+    private _deletedColumnIsLogic as LOGIC
+    /// <summary>
+    /// 0 based Column Number for the column that has the record number
+    /// </summary>
+    private _recnoColumNo   as long
     private _recordKeyCache as Dictionary<long, long>
-    private _relativeRecNo as logic
+
+    private _numHiddenColumns as long
+    private _serverReccount as LONG
+    private _baseRecno as logic
+    private _allRowsRead as logic
 
 #region Properties
     internal property Connection     as SqlDbConnection get _connection
@@ -60,14 +70,13 @@ partial class SQLRDD inherit DBFVFP
             // The SqlStatement:CreateFile() method whichs gets called from SqlExec()
             // has the logic that creates the DBF from the Column properties
             //
-            if value == null
+            if value == null .and. _table != null
                 _table:Rows:Clear()
                 return
             endif
             _table := value
-            self:_RecNo := 1
-            self:_RecCount   := _table:Rows:Count
-            self:_phantomRow := _table:NewRow()
+            self:_RecCount   	:= _table:Rows:Count
+            self:_phantomRow 	:= _table:NewRow()
             var prop := _table:GetType():GetProperty("EnforceConstraints", BindingFlags.Instance+BindingFlags.NonPublic)
             if prop != null
                 prop:SetValue(_table, false)
@@ -83,8 +92,8 @@ partial class SQLRDD inherit DBFVFP
                 endif
                 self:_phantomRow[index] := blank
                 dbColumn:Caption     := oColumn:Caption
-                if oColumn:AutoIncrement
-                    _identityColumn := oColumn
+                if oColumn:AutoIncrement .or. oColumn:ColumnName == SELF:_oTd:RecnoColumn
+                    _recnoColumNo := oColumn:Ordinal
                     oColumn:ReadOnly := false
                 endif
                 if !oColumn:AllowDBNull
@@ -92,14 +101,18 @@ partial class SQLRDD inherit DBFVFP
                 endif
                 dbColumn:Flags := DBFFieldFlags.None
             next
-            if self:_recnoColumn > 0
+            if self:_recnoColumNo > -1
                 _recordKeyCache := Dictionary<long, long>{_RecCount}
                 // save the record numbers
                 var rowNum := 0
                 foreach row as DataRow in _table:Rows
-                    var recno  := (LONG) row[self:_recnoColumn-1]
+                    var obj     := row[self:_recnoColumNo]
+                    var recno  := Convert.ToInt32(obj)
                     _recordKeyCache[recno] := rowNum
                     rowNum++
+                    #ifdef TRACERDD
+                    System.Diagnostics.Debug.WriteLine("Datatable Row {0}, Record {1}", rowNum, recno )
+                    #endif
                 next
             else
                 _recordKeyCache := null
@@ -112,7 +125,13 @@ partial class SQLRDD inherit DBFVFP
             _oStream:SafeWriteByte(26)
             _oStream:SafeSetLength(lOffset+1)
             // now set the file size and reccount in the header
-            self:GoTop()
+            var old := self:_baseRecno
+            self:_baseRecno  := true
+            super:GoTo(1)
+            self:_baseRecno  := old
+            SELF:_CheckEofBof()
+            var serverRowCount := _builder:GetRecCount()
+            self:_allRowsRead  := serverRowCount == _RecCount
         end set
     end property
 
@@ -120,20 +139,20 @@ partial class SQLRDD inherit DBFVFP
 
    constructor()
         super()
-        _identityKey    := -1
-        _creatingIndex   := false
-        _tableMode       := TableMode.Query
-        _ReadOnly        := true
-        _connection      := null
-        _obuilder        := null
-        _deletedColumn   := -1
-        _recnoColumn     := -1
+        _creatingIndex    := false
+        _tableMode        := TableMode.Query
+        _ReadOnly         := true
+        _connection       := null
+        _builder          := null
+        _deletedColumnNo  := -1
+        _recnoColumNo     := -1
         self:_trimValues := true // trim String Valuess
         self:DeleteOnClose := TRUE
         _updatedRows     := List<DataRow>{}
         _keyColumns      := List<RddFieldInfo>{}
         _updatableColumns:= List<RddFieldInfo>{}
         _orderBagList    := List<SqlDbOrderBag>{}
+        self:_baseRecno  := false
         return
     end constructor
 
@@ -181,13 +200,13 @@ partial class SQLRDD inherit DBFVFP
 
     private method _GetTableInfo(cTable as string) as logic
         // First check to see if there is a tableDef for this table in the connection
-        self:_obuilder  := SqlDbTableCommandBuilder{cTable, self}
+        self:_builder   := SqlDbTableCommandBuilder{cTable, self}
         self:_cTable    := cTable
-        var info        := _obuilder:FetchInfo(self)
+        var info        := _builder:FetchInfo(self)
         self:_oTd       := info
         self:_trimValues:= info:TrimTrailingSpaces
         if XSharp.RuntimeState.AutoOpen
-            _obuilder:SetProductionIndex()
+            _builder:SetProductionIndex()
         endif
         return true
     end method
@@ -232,13 +251,13 @@ partial class SQLRDD inherit DBFVFP
         sb:Clear()
         sb:Append(Provider:DropTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, Provider.QuoteIdentifier(_cTable))
-        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        _command:CommandText := sb:ToString()
         _command.ExecuteScalar()
         sb:Clear()
         sb:Append(Provider:CreateTableStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, Provider.QuoteIdentifier(_cTable))
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, columns)
-        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+        _command.CommandText := sb:ToString()
         _command.ExecuteScalar()
         return true
     end method
@@ -247,7 +266,7 @@ partial class SQLRDD inherit DBFVFP
     private method _GetEmptyValues() as logic
         var values := List<object>{}
         foreach col as DataColumn in self:DataTable:Columns
-            if col:AutoIncrement
+            if col:AutoIncrement .or. col:ColumnName == SELF:_oTd:RecnoColumn
                 values.Add(DBNull.Value)
                 loop
             endif
@@ -270,7 +289,9 @@ partial class SQLRDD inherit DBFVFP
             case TypeCode.Boolean
                 values.Add(false)
             case TypeCode.DateTime
-                values.Add(DateTime.MinValue)
+            case TypeCode.Object
+            case TypeCode.DBNull
+            case TypeCode.Empty
             otherwise
                 values.Add(DBNull.Value)
             end switch
@@ -295,7 +316,7 @@ partial class SQLRDD inherit DBFVFP
         local iCounter := 1 as long
         _command:ClearParameters()
         foreach c as DataColumn in DataTable:Columns
-            if c:AutoIncrement
+            if c:AutoIncrement .or. c:ColumnName == SELF:_oTd:RecnoColumn
                 loop
             endif
             if sbColumns:Length > 0
@@ -308,27 +329,40 @@ partial class SQLRDD inherit DBFVFP
             _command:AddParameter(name, row[c])
             ++iCounter
         next
-        _command:BindParameters()
         var sb := StringBuilder{}
         sb:Append(Provider:InsertStatement)
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
         sb:Replace(SqlDbProvider.ColumnsMacro, sbColumns:ToString())
         sb:Replace(SqlDbProvider.ValuesMacro, sbValues:ToString())
         var hasGetIdentity := false
-        if self:_identityColumn != null .and. !String.IsNullOrEmpty(Provider:GetIdentity)
-            sb:Append("; ")
-            sb:Append(Provider:GetIdentity)
+        if self:_recnoColumNo != -1
             hasGetIdentity := true
         endif
-        _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
-        var res := _command:ExecuteScalar()
-        if hasGetIdentity
-            row[_identityColumn] := res
-        endif
+        try
+            _command:Connection:BeginTrans()
+            _command:BindParameters()
+            local lInsertWithGetIdentity := false as LOGIC
+            if hasGetIdentity .and. ! String.IsNullOrEmpty(Provider:GetIdentity)
+                sb:Append("; ")
+                sb:Append(Provider:GetIdentity)
+                lInsertWithGetIdentity := TRUE
+            endif
+            _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+            if lInsertWithGetIdentity
+                var result := _command:ExecuteScalar()
+                row[_recnoColumNo] := result
+            elseif hasGetIdentity
+                _command:ExecuteScalar()
+                row[_recnoColumNo] := _builder:GetMaxRecno()
+            endif
+            _command:Connection:CommitTrans()
+        catch
+            _command:Connection:RollBackTrans()
+        end try
         return true
     end method
 
-    private method _GetWhereClause(row as DataRow) as string
+    private method _GetWhereClause(row as DataRow, originalData := TRUE as logic) as string
         var sbWhere    := StringBuilder{}
         local iCounter := 1 as long
         foreach var c in self:_keyColumns
@@ -337,7 +371,12 @@ partial class SQLRDD inherit DBFVFP
                 sbWhere:Append(SqlDbProvider.AndClause)
             endif
             sbWhere:Append(Provider:QuoteIdentifier(c:ColumnName))
-            var colValue := row[c:ColumnName,DataRowVersion.Original]
+            local colValue as object
+            if originalData
+                colValue := row[c:ColumnName,DataRowVersion.Original]
+            else
+                colValue := row[c:ColumnName]
+            endif
             if colValue == DBNull.Value
                 sbWhere:Append(" is null")
             else
@@ -350,25 +389,27 @@ partial class SQLRDD inherit DBFVFP
         return sbWhere:ToString()
     end method
 
-    private method _ExecuteUpdateStatement(row as DataRow) as logic
+    private method _ExecuteUpdateStatement(row as DataRow, originalData as LOGIC) as logic
         var sbColumns  := StringBuilder{}
         local iCounter := 1 as long
         _command:ClearParameters()
         foreach c as DataColumn in DataTable:Columns
-            if c:AutoIncrement
+            if c:AutoIncrement .or. c:ColumnName == SELF:_oTd:RecnoColumn
                 loop
             endif
 
-            if !self:_oTd:UpdateAllColumns
-                // only update columns that are changed
-                local isEqual := true as Logic
-                if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
-                    isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
-                else
-                    isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
-                endif
-                if isEqual
-                    loop
+            if originalData
+                if !self:_oTd:UpdateAllColumns
+                    // only update columns that are changed
+                    local isEqual := true as Logic
+                    if row[c, DataRowVersion.Original] != DBNull.Value .and. row[c, DataRowVersion.Current] != DBNull.Value
+                        isEqual := row[c, DataRowVersion.Original].ToString().Trim().Equals(row[c, DataRowVersion.Current].ToString().Trim())
+                    else
+                        isEqual := row[c, DataRowVersion.Original].Equals(row[c, DataRowVersion.Current])
+                    endif
+                    if isEqual
+                        loop
+                    endif
                 endif
             endif
             var name    := i"@p{iCounter}"
@@ -381,7 +422,7 @@ partial class SQLRDD inherit DBFVFP
             _command:AddParameter(name, row[c])
             ++iCounter
         next
-        var strWhere := _GetWhereClause(row)
+        var strWhere := _GetWhereClause(row, originalData)
         _command:BindParameters()
         var sb := StringBuilder{}
         sb:Append(Provider:UpdateStatement)
@@ -402,7 +443,7 @@ partial class SQLRDD inherit DBFVFP
         return true
     end method
 
-    private method _HandleNullDate(oValue as object) as object
+    private method _HandleNullDate(oValue as object, oCol as DataColumn) as object
         if oValue is DateTime var dt .and. dt == DateTime.MinValue
             return DBNull.Value
         elseif oValue is IDate var d
@@ -411,13 +452,15 @@ partial class SQLRDD inherit DBFVFP
             else
                 return DateTime{d:Year, d:Month, d:Day}
             endif
+        elseif oValue is null .and. oCol:DataType == typeof(DateTime)
+            return DBNull.Value
         endif
         return oValue
     end method
 
-    private method _ExecuteDeleteStatement(row as DataRow) as logic
+    private method _ExecuteDeleteStatement(row as DataRow, originalData as LOGIC) as logic
         _command:ClearParameters()
-        var strWhere := _GetWhereClause(row)
+        var strWhere := _GetWhereClause(row, originalData)
         _command:BindParameters()
         var sb := StringBuilder{}
         sb:Append(Provider:DeleteStatement)
@@ -454,8 +497,9 @@ partial class SQLRDD inherit DBFVFP
         try
             _command:CommandText := self:_BuildSqlStatement(sWhereClause)
             _command:ClearParameters()
-            self:_hasData    := true
-            self:DataTable   := _command:GetDataTable(self:Alias)
+            self:_hasData        := true
+            self:DataTable       := _command:GetDataTable(self:Alias)
+            self:_GetRecCount()
         catch as Exception
             return false
         end try
@@ -465,11 +509,11 @@ partial class SQLRDD inherit DBFVFP
 
     private method _BuildSqlStatement(sWhereClause as string) as string
         local query as string
-        if ! self:_realOpen
+        if self:_getStructureOnly
             query := self:_oTd:EmptySelectStatement
         else
             if self:_tableMode == TableMode.Table
-                query := _obuilder:BuildSqlStatement(sWhereClause)
+                query := _builder:BuildSqlStatement(sWhereClause)
             else
                 query := self:_oTd:SelectStatement
             endif
@@ -478,6 +522,71 @@ partial class SQLRDD inherit DBFVFP
     end method
 
 
+    PRIVATE METHOD _CheckEofBof() AS VOID
+        VAR nRecs := SELF:RowCount
+        IF nRecs == 0
+            SELF:_SetEOF(TRUE)
+            SELF:_SetBOF(TRUE)
+        ELSEIF SELF:RowNumber > nRecs
+            SELF:_SetEOF(TRUE)
+        ENDIF
+    END METHOD
+
+    INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
+        IF lNewValue != SELF:_EoF
+            SELF:_EoF := lNewValue
+        ENDIF
+    INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
+        IF lNewValue != SELF:_BoF
+            SELF:_BoF := lNewValue
+        ENDIF
+
+   PRIVATE METHOD _adjustCreateFields(aFields AS RddFieldInfo[]) AS RddFieldInfo[]
+        local fields := aFields:ToList() as List<RddFieldInfo>
+        if ! String.IsNullOrEmpty(SELF:Connection:RecnoColumn)
+            var found := false
+            foreach var field in fields
+                if String.Compare(field:ColumnName, SELF:Connection:RecnoColumn, true) == 0
+                    found := true
+                endif
+            next
+            if ! found
+                var fld := RddFieldInfo{SELF:Connection:RecnoColumn,"I:+",4,0}
+                fld:Flags |= DBFFieldFlags.System
+                fields:Add( fld )
+                SELF:_RecordLength += 4
+            endif
+        endif
+        if ! String.IsNullOrEmpty(SELF:Connection:DeletedColumn)
+            var found := false
+            foreach var field in fields
+                if String.Compare(field:ColumnName, SELF:Connection:DeletedColumn, true) == 0
+                    found := true
+                endif
+            next
+            if ! found
+                var fld  := RddFieldInfo{SELF:Connection:DeletedColumn,"L",1,0}
+                fld:Flags |= DBFFieldFlags.System
+                fields:Add( fld )
+                SELF:_RecordLength += 1
+            endif
+        endif
+        return fields:ToArray()
+    end method
+
+    private method _CloseCursor() as void
+        self:_hasData       := FALSE
+        self:_table         := null
+        self:_recordKeyCache := null
+        return
+
+    private method _GetRecCount() as void
+        if self:_oTd:MaxRecnoAsRecCount .and. self:_recnoColumNo != -1
+            self:_serverReccount := self:_builder:GetMaxRecno()
+        else
+            self:_serverReccount := self:_builder:GetRecCount()
+        endif
+    end method
 end class
 
 end namespace // XSharp.RDD.SqlRDD

@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:27:11.026+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>USUAL</title>
+  <keywords>
+    <keyword>USUAL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">USUAL</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">USUAL 类型是一种可以包含任何数据类型的数据类型。它内部包含一个类型标志和一个值。这种类型可以存储任何值。</para>
+    <para styleclass="Normal">编译器对这种类型进行特殊处理。当您将 USUAL 类型的值分配给另一种类型时，编译器不会警告您，但会自动生成必要的转换操作。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">USUAL 主要用于与无类型代码兼容。不建议在新代码中使用它，因为编译器无法对一个或多个操作数为 USUAL 的表达式执行任何类型检查。任何数据类型错误只能在运行时发现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">作为 USUAL 声明的局部变量、参数和字段也比强类型变量产生更多的运行时开销。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">可以将字面值 NIL 分配给任何类型为 USUAL 的存储位置。NIL 值表示没有任何其他数据类型或值，并在概念上等同于将 NULL 存储到引用类型中。NIL 是未初始化的本地 USUAL 变量的默认值。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">当“:”运算符的左操作数为 USUAL 时，编译器将生成对指定为右操作数的方法、字段或属性的后期绑定调用。如果运行时 USUAL 中包含的值没有这样的成员，成员类型不正确或不可访问，或者名称评估为方法且参数数量或其类型不正确，则此调用可能失败。必须启用 /lb 编译器选项才能将 USUAL 用作“:”运算符的左操作数，否则将引发编译时错误。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">数值运算和混合类型的 USUAL 变量</para>
+    <para styleclass="Normal">当您在数值操作中组合两个常规变量时，结果的类型取决于操作数的类型。<br/>主导原则是我们尽量不丢失小数部分。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通用规则如下：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">当左侧为小数时，结果也是左侧类型的小数</li>
+      <li styleclass="Normal">当左侧不是小数且右侧为小数时，结果为右侧类型</li>
+      <li styleclass="Normal">当两侧都是整数时，结果取两者中较大的类型。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="7">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="tabstops:96px right ;"><text style="font-weight:bold;">LHS</text><tab /></para>
+        </td>
+        <td style="width:5%;">
+          <para styleclass="Normal" style="tabstops:96px right ;"><text style="font-weight:bold;">\ RHS</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">LONG</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">INT64</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">CURRENCY</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">DECIMAL</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">LONG</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">LONG</para>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">INT64</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">CURRENCY</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">DECIMAL</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal">USUAL 类型在 XSharp.__Usual 结构中实现。</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

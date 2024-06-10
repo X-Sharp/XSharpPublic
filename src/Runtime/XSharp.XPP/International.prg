@@ -14,8 +14,14 @@ USING System.Reflection
 /// <seealso cref='SetCollationTable' />
 FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     LOCAL nOld := @@Set(Set.Collation) AS LONG
-    IF PCount() > 0 .AND. IsNumeric(nCollation)
-        SetCollationTable(nCollation)
+    IF PCount() > 0 
+        IF IsNumeric(nCollation)
+            SetCollationTable(nCollation)
+        ELSEIF IsString(nCollation)
+            XSharp.Core.Functions.SetCollation((STRING) nCollation)
+        ELSEIF IsSymbol(nCollation)
+            XSharp.Core.Functions.SetCollation((SYMBOL) nCollation)
+        endif
     ENDIF
     RETURN nOld
 

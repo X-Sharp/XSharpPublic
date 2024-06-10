@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:54:20.966+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>.EditorConfig 文件</title>
+  <keywords>
+    <keyword>.editorconfig</keyword>
+    <keyword>align_do_case</keyword>
+    <keyword>align_method</keyword>
+    <keyword>charset</keyword>
+    <keyword>end_of_line</keyword>
+    <keyword>identifier_case</keyword>
+    <keyword>indent_size</keyword>
+    <keyword>indent_style</keyword>
+    <keyword>insert_final_newline</keyword>
+    <keyword>keyword_case</keyword>
+    <keyword>tab_width</keyword>
+    <keyword>trim_trailing_whitespace</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">.EditorConfig 文件</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">自 X# 2.8 起，我们开始支持使用 .editorconfig 文件。这些文件可在解决方案或项目中用于控制源代码编辑器设置的多个选项，例如：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">这样就可以同步团队的编辑器设置，忽略团队成员之间的个体差异。</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">用制表符或空格</li>
+      <li styleclass="Normal">制表符</li>
+      <li styleclass="Normal">为源文件编码</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们支持 <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://editorconfig.org/</link> 上列出的 .editorconfig 的默认令牌：</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_style (制表符或空格)</li>
+      <li styleclass="Body Text">indent_size (数字)</li>
+      <li styleclass="Body Text">tab_width (数字)</li>
+      <li styleclass="Body Text">end_of_line (cr, lf or crlf)</li>
+      <li styleclass="Body Text">charset (latin1, utf-8, utf-8-bom, utf-16be or utf-16le)</li>
+      <li styleclass="Body Text">trim_trailing_whitespace (true or false)</li>
+      <li styleclass="Body Text">insert_final_newline (true or false)</li>
+    </list>
+    <para styleclass="Normal" style="line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">此外，我们还添加了一些 X# 专用选项</para>
+    <para styleclass="Body Text"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">keyword_case (upper, lower, title or none)</li>
+      <li styleclass="Body Text">identifier_case (true or false)</li>
+    </list>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_namespace (true or false)</li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_type_members (true or false)</li>
+      <li styleclass="Body Text">indent_type_fields (true or false)</li>
+    </list>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_entity_content (true or false)</li>
+      <li styleclass="Body Text">indent_block_content (true or false)</li>
+      <li styleclass="Body Text">indent_case_label (true or false)</li>
+      <li styleclass="Body Text">indent_case_content (true or false)</li>
+      <li styleclass="Body Text">indent_continued_lines (true or false)</li>
+      <li styleclass="Body Text">indent_preprocessor (true or false)</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">.editorconfig 中的设置将取代 X# 编辑器在 &quot;工具/选项 &quot;中的设置。</para>
+  </body>
+</topic>

@@ -17,9 +17,10 @@ USING System.Windows.Forms
 BEGIN NAMESPACE XSharp.VFP.UI_Test
 	
 	PUBLIC PARTIAL CLASS MainWindow	;
-		INHERIT System.Windows.Forms.Form
+		INHERIT XSharp.VFP.UI.MainWindow
 		
-		public constructor() strict
+        public constructor() strict
+            SUPER()                
 			InitializeComponent()
 			return
 		end constructor

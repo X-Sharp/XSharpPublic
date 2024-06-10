@@ -29,7 +29,7 @@ class SqlDbTableInfo inherit SqlDbObject
     /// </summary>
     property SelectStatement    as string auto
 
-    /// <summary>
+ /// <summary>
     /// Select statement with a where condition that returns no records
     /// </summary>
     property EmptySelectStatement as string auto
@@ -99,6 +99,19 @@ class SqlDbTableInfo inherit SqlDbObject
     /// <value></value>
     property CompareMemo              as logic auto
 
+    /// <summary>
+    /// Specifies whether the maximum value in the Recno column should be used as the RecCount property.
+    /// This defaults to FALSE which means that the RecCount property returns the number of records in the table
+    /// </summary>
+    property MaxRecnoAsRecCount       as logic auto
+
+    internal property HasRecnoColumn        as LOGIC GET !String.IsNullOrEmpty(SELF:RecnoColumn)
+    internal property HasDeletedColumn      as LOGIC GET !String.IsNullOrEmpty(SELF:DeletedColumn)
+    internal property HasServerFilter       as LOGIC GET !String.IsNullOrEmpty(SELF:ServerFilter)
+    internal property HasKeyColumns         as LOGIC GET !String.IsNullOrEmpty(SELF:KeyColumns) .and. SELF:KeyColumns != "*"
+    internal property HasUpdatableColumns   as LOGIC GET !String.IsNullOrEmpty(SELF:UpdatableColumns) .and. SELF:UpdatableColumns != "*"
+
+
 
     protected _connection as SqlDbConnection
 
@@ -116,10 +129,11 @@ class SqlDbTableInfo inherit SqlDbObject
         self:AllowUpdates       := oConn:AllowUpdates
         self:LongFieldNames     := oConn:LongFieldNames
         self:TrimTrailingSpaces := oConn:TrimTrailingSpaces
+        self:MaxRecnoAsRecCount := oConn:MaxRecnoAsRecCount
         self:ServerFilter    := ""
         self:ColumnList      := "*"
-        self:Indexes := List<SqlDbIndexInfo>{}
-        self:Columns := List<SqlDbColumnDef>{}
+        self:Indexes         := List<SqlDbIndexInfo>{}
+        self:Columns         := List<SqlDbColumnDef>{}
 
 
         return
@@ -192,12 +206,7 @@ class SqlDbTagInfo inherit SqlDbObject
         super(name)
         self:Index := oIndex
         return
-
-
-
 end class
-
-
 
 end namespace // XSharp.RDD.SqlRDD
 

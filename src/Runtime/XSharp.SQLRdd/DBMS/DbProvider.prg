@@ -42,7 +42,8 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         RegisterProvider("ADS",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
         RegisterProvider("ADVANTAGE",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderAdvantage))
         RegisterProvider("ORACLE",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderOracle ))
-        RegisterProvider("POSTGRESQL",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgresSql ))
+        RegisterProvider("POSTGRESQL",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderPostgreSQL ))
+        RegisterProvider("SQLITE",typeof(XSharp.RDD.SqlRDD.Providers.SqlDbProviderSQLite ))
         SetDefaultProvider("ODBC")
     end constructor
 
@@ -54,6 +55,10 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// <param name="ClassName">Dotnet type of the class that implements the provider</param>
     /// <returns>TRUE when succesfully registered</returns>
     static method RegisterProvider(Name as string, ClassName as System.Type) as logic
+        if _ProviderClasses:ContainsKey(Name)
+            _ProviderClasses:TryRemove(Name, out var _)
+            return _ProviderClasses:TryAdd(Name, ClassName)
+        endif
         return _ProviderClasses:TryAdd(Name, ClassName)
     end method
 
@@ -209,8 +214,8 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
 #region Methods and Properties from the factory
 
     /// <inheritdoc/>
-    method QuoteIdentifier(cId as string) as string
-        return _cmdBuilder:QuoteIdentifier(cId)
+    virtual method QuoteIdentifier(cId as string) as string
+        return _cmdBuilder:QuoteIdentifier(self:CaseSync(cId))
     end method
     /// <inheritdoc/>
     virtual method CreateCommand() as DbCommand
@@ -303,11 +308,24 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
     /// The default implementation returns an empty string
     /// </remarks>
     virtual property GetIdentity            as string => ""
+
     /// <inheritdoc/>
     /// <remarks>
     /// The default implementation returns an empty string
     /// </remarks>
     virtual property GetRowCount            as string => ""
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The default implementation returns the value "true"
+    /// </remarks>
+    virtual property TrueLiteral            as string => "true"
+    /// <inheritdoc />
+    /// <remarks>
+    /// The default implementation returns the value "false"
+    /// </remarks>
+    virtual property FalseLiteral            as string => "false"
+
 
 #endregion
 
@@ -394,6 +412,11 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return sResult
     end method
 
+    /// <inheritdoc />
+    /// <remarks>The default implementation returns the identifier in lowercase</remarks>
+    virtual method CaseSync(cIdentifier as string) as string
+        return cIdentifier:ToLower()
+    end method
 end class
 
 

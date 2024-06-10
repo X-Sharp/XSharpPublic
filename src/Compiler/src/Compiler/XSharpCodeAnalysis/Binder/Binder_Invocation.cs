@@ -210,7 +210,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Sometimes the /vo4 rules cause an ERR_AmbigCall
             // When there was no other error then we try again
             // See https://github.com/X-Sharp/XSharpPublic/issues/1211
-            if (diagnostics.HasAnyErrors() && Compilation.Options.HasOption(CompilerOption.Vo4, node))
+            if (diagnostics.HasAnyErrors() && Compilation.Options.HasOption(CompilerOption.VOSignedUnsignedConversion, node))
             {
                 var hasAmbigCall = diagnostics.AsEnumerable().Where(e => e.Code == (int)ErrorCode.ERR_AmbigCall).Any();
                 if (hasAmbigCall)

@@ -30,6 +30,9 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
     override property GetIdentity            as string => "select @@IDENTITY"
     /// <inheritdoc />
     override property GetRowCount            as string => "select @@ROWCOUNT"
+
+    override property TrueLiteral            as string => "1"
+    override property FalseLiteral            as string => "0"
     private static lockObj := object{} as object
 
     constructor() strict

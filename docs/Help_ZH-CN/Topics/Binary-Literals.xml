@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T21:33:50.773+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Binary 字面量</title>
+  <keywords>
+    <keyword>BINARY</keyword>
+    <keyword>Binary Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Binary 字面量</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Binary 文字的写法是 0h12345678abcdef</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">0h 后面的值是一串十六进制数。每一对十六进制数（nibble）代表一个字节。必须有偶数个 “nibbles”。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">编译器会将这些字面量编译成一个 byte[] 数组，并将其存储到一个 <link displaytype="text" defaultstyle="true" type="topiclink" href="BINARY">BINARY</link> 类型的变量中。</para>
+  </body>
+</topic>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:42:29.539+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Brace matching(大括号匹配)</title>
+  <keywords>
+    <keyword>Brace matching</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Brace matching(大括号匹配)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">使用 Visual Studio 时，如果光标位于括号旁边，屏幕上会高亮显示相应的开头或结尾括号。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Brace matching.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">可以工具/选项对话框中的环境/字体和颜色节点下设置括号匹配的颜色。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">X# 专用颜色均以 &quot;X#&quot;开头。</para>
+  </body>
+</topic>

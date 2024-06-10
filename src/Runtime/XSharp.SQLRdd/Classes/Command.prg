@@ -36,6 +36,8 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
 
 #endregion
 
+    private withEvents  as LOGIC
+
 #region static properties and methods
     private static Commands         as List<SqlDbCommand>
     static constructor
@@ -61,15 +63,22 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// </summary>
     /// <param name="cName">Command name</param>
     /// <param name="oConn">Connection object</param>
-    constructor(cName as string, oConn as SqlDbConnection)
+    constructor(cName as string, oConn as SqlDbConnection, withEvents := TRUE as LOGIC)
         super(cName)
         self:Connection := oConn
+        self:withEvents := withEvents
         oConn:RegisterCommand(SELF)
         self:DbCommand := oConn:Provider:CreateCommand()
         self:DbCommand:Connection := oConn:DbConnection
         Commands.Add(self)
         return
     end constructor
+
+    private method CallBack(cTable as STRING) as VOID
+        if withEvents
+            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
+        endif
+        RETURN
 
     /// <summary>
     /// Close a SqlDbCommand object
@@ -113,9 +122,12 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <param name="cTable">The name of the DataTable</param>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method GetDataTable(cTable as string) as DataTable
+    method GetDataTable(cTable := "" as string) as DataTable
         try
             local oDataTable as DataTable
+            if String.IsNullOrEmpty(cTable)
+                cTable := SELF:Name
+            endif
             using var reader := SELF:ExecuteReader(cTable)
             if reader == null
                 return null
@@ -136,9 +148,12 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <returns>Return value of the command</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method ExecuteScalar(cTable := __FUNCTION__ as string) as object
+    method ExecuteScalar(cTable := "" as string) as object
         try
-            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
+            if String.IsNullOrEmpty(cTable)
+                cTable := SELF:Name
+            endif
+            SELF:CallBack(cTable)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
@@ -159,9 +174,12 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <returns>An Ado.Net DbDataReader object</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method ExecuteReader(cTable := __FUNCTION__ as string) as DbDataReader
+    method ExecuteReader(cTable := "" as string) as DbDataReader
         try
-            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
+            if String.IsNullOrEmpty(cTable)
+                cTable := SELF:Name
+            endif
+            SELF:CallBack(cTable)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif
@@ -182,10 +200,12 @@ class SqlDbCommand inherit SqlDbHandleObject implements IDisposable
     /// <returns>TRUE when executed successfully</returns>
     /// <remarks> <note type='tip'>When an error occurs then the error is registered in the LastException property of the Connection</note></remarks>
     /// <seealso cref="SqlDbConnection.LastException"/>
-    method ExecuteNonQuery(cTable := __FUNCTION__ as string) as LOGIC
+    method ExecuteNonQuery(cTable := "" as string) as LOGIC
         try
-            self:CommandText := SELF:Connection:RaiseStringEvent(self, SqlRDDEventReason.CommandText, cTable, self:CommandText)
-
+            if String.IsNullOrEmpty(cTable)
+                cTable := SELF:Name
+            endif
+            SELF:CallBack(cTable)
             if self:Connection:DbTransaction != null
                 self:DbTransaction := self:Connection:DbTransaction
             endif

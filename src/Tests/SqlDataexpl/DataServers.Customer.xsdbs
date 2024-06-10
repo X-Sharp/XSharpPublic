@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <DBServer Name="Customer">
+    <classname>Customer</classname>
+    <hlcaption>Customer</hlcaption>
+    <hldescription>
+    </hldescription>
+    <hlhelpcontext>Customer</hlhelpcontext>
+    <rdd>DBFNTX</rdd>
+    <filename>%CavoSamplesRootDir%\GSTUTOR\Customer.dbf</filename>
+    <noaccass>No</noaccass>
+    <superclass>DBSERVER</superclass>
+    <order>1</order>
+    <Fields>
+      <Field Name="CUSTNUM">
+        <fldname>CUSTNUM</fldname>
+        <included>1</included>
+        <pos>1</pos>
+        <FieldSpec>Customer_CUSTNUM</FieldSpec>
+      </Field>
+      <Field Name="FIRSTNAME">
+        <fldname>FIRSTNAME</fldname>
+        <included>1</included>
+        <pos>2</pos>
+        <FieldSpec>Customer_FIRSTNAME</FieldSpec>
+      </Field>
+      <Field Name="LASTNAME">
+        <fldname>LASTNAME</fldname>
+        <included>1</included>
+        <pos>3</pos>
+        <FieldSpec>Customer_LASTNAME</FieldSpec>
+      </Field>
+      <Field Name="ADDRESS">
+        <fldname>ADDRESS</fldname>
+        <included>1</included>
+        <pos>4</pos>
+        <FieldSpec>Customer_ADDRESS</FieldSpec>
+      </Field>
+      <Field Name="CITY">
+        <fldname>CITY</fldname>
+        <included>1</included>
+        <pos>5</pos>
+        <FieldSpec>Customer_CITY</FieldSpec>
+      </Field>
+      <Field Name="STATE">
+        <fldname>STATE</fldname>
+        <included>1</included>
+        <pos>6</pos>
+        <FieldSpec>Customer_STATE</FieldSpec>
+      </Field>
+      <Field Name="ZIP">
+        <fldname>ZIP</fldname>
+        <included>1</included>
+        <pos>7</pos>
+        <FieldSpec>Customer_ZIP</FieldSpec>
+      </Field>
+      <Field Name="PHONE">
+        <fldname>PHONE</fldname>
+        <included>1</included>
+        <pos>8</pos>
+        <FieldSpec>Customer_PHONE</FieldSpec>
+      </Field>
+      <Field Name="FAX">
+        <fldname>FAX</fldname>
+        <included>1</included>
+        <pos>9</pos>
+        <FieldSpec>Customer_FAX</FieldSpec>
+      </Field>
+    </Fields>
+    <Indexes>
+      <Index Name="Customer_Custname">
+        <name>Customer_Custname</name>
+        <filename>%CavoSamplesRootDir%\GSTUTOR\Custname.ntx</filename>
+        <Orders>
+          <Order Name="Custname">
+            <tag>Custname</tag>
+            <Duplicate>Yes</Duplicate>
+            <Ascending>Yes</Ascending>
+            <KeyExp>lastname + firstname</KeyExp>
+            <ForExp>
+            </ForExp>
+          </Order>
+        </Orders>
+      </Index>
+    </Indexes>
+  </DBServer>
+</Designers>

@@ -105,80 +105,7 @@ constructor( oHLName as HyperLabel, uType:= nil as usual, uLength := 0 as dword,
 	// uLength          ( required for some data types, not for LOGIC for example )
 	// uDecimals        ( optional ) defaults to 0
 	oHyperLabel := oHLName
-
-
-    if uType  is string var strType
-        self:lNullable := strType:IndexOf(":0") > 0
-		cType := Upper(Left(strType,1))
-        switch cType
-        case "C"
-            wType := __UsualType.String
-        CASE "M"
-		case "G"
-		case "P"
-            wType := __UsualType.String
-            cType := "M"
-            uLength := 10
-            uDecimals := 0
-		CASE "N"
-		case "B"
-		case "8"
-        case "F"
-			wType := __UsualType.Float
-			lNumeric:=TRUE
-			cType := "N"
-		CASE "L"
-			wType := __UsualType.Logic
-		CASE "D"
-			wType := __UsualType.Date
-		CASE "O"
-			wType := __UsualType.Object
-		CASE "X"
-			wType := TYPE_MULTIMEDIA
-		CASE "Y"
-			wType := __UsualType.Currency
-		CASE "I"
-			wType := __UsualType.Long
-		CASE "T"
-			wType := __UsualType.DateTime
-		otherwise
-			cType := ""
-			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
-		END SWITCH
-	ELSEIF IsNumeric(uType)
-		wType := uType
-        SWITCH wType
-        CASE __UsualType.String
-			cType := "C"
-		CASE __UsualType.Logic
-			cType := "L"
-		CASE __UsualType.Date
-			cType := "D"
-        CASE __UsualType.Long
-		CASE __UsualType.Float
-		CASE __UsualType.Byte
-		CASE __UsualType.ShortInt
-		case __UsualType.Word
-		CASE __UsualType.DWord
-		CASE __UsualType.Real4
-		CASE __UsualType.Real8
-			cType := "N"
-            lNumeric := TRUE
-		CASE __UsualType.Currency
-			cType := "Y"
-            lNumeric := TRUE
-        CASE __UsualType.DateTime
-            cType := "T"
-		CASE TYPE_MULTIMEDIA
-			cType := "X"
-		OTHERWISE
-			wType := 0
-			DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
-		END SWITCH
-    ELSE
-       DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
-    ENDIF
-
+    SELF:_SetType(uType, #Init)
 
 	SELF:wLength := uLength
 	SELF:wDecimals := uDecimals
@@ -194,7 +121,7 @@ ACCESS Length AS DWORD
 
 
 /// <include file="System.xml" path="doc/FieldSpec.Maximum/*" />
-access Maximum   as usual 
+access Maximum   as usual
 	RETURN SELF:uMax
 
 
@@ -442,69 +369,86 @@ METHOD SetRequired( lReq := TRUE AS LOGIC, oHL := NULL AS HyperLabel) AS VOID
 	RETURN
 
 
+    method _SetType(uType as USUAL, symMethod as SYMBOL) as void
+        IF !IsNil(uType)
+            if  uType  is string var strType
+                self:lNullable := strType:IndexOf(":0") > 0
+                SELF:cType := Left(Upper(strType),1)
+                SWITCH SELF:cType
+                CASE "C"            // Char
+                CASE "M"            // Memo
+                CASE "V"            // VarChar
+                    SELF:wType := STRING
+                CASE "N"            // Numeric
+                CASE "F"            // Float
+                CASE "B"            // Double
+                CASE "I"            // Integer
+                CASE "Y"            // Currency
+                    SELF:wType := FLOAT
+                    SELF:lNumeric:=TRUE
+                    SELF:cType := "N"
+                case "L"
+                    wType := LOGIC
+                CASE "D"                // Date
+                CASE "T"                // DateTime
+                    SELF:wType := DATE
+
+
+                CASE "O"                // Object
+                    SELF:wType := object
+                    SELF:cType := "O"
+                CASE "G"                // General
+                CASE "P"                // Picture
+                CASE "Q"                // VarBinary
+                    SELF:wType := object
+                    SELF:cType := "M"
+
+                CASE "X"
+                    wType := TYPE_MULTIMEDIA
+
+                case "0"
+                    SELF:cType := ""
+                OTHERWISE
+                    SELF:cType := ""
+                    DbError{ SELF, symMethod, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
+                END SWITCH
+            ELSE
+                SELF:wType := uType
+                IF SELF:wType = STRING
+                    SELF:cType := "C"
+                ELSEIF SELF:wType = LOGIC
+                    SELF:cType := "L"
+                ELSEIF wType = DATE
+                    SELF:cType := "D"
+                elseif SELF:wType=int   .or.; // also Long
+                       SELF:wType=float .or.;
+                       SELF:wType=byte  .or.;
+                       SELF:wType=shortint .or.;
+                       SELF:wType=word  .or.;
+                       SELF:wType=dword .or.;
+                       SELF:wType=real4 .or.;
+                       SELF:wType=real8
+                    SELF:lNumeric := TRUE
+                    SELF:cType := "N"
+                ELSEIF (SELF:wType == TYPE_MULTIMEDIA)
+                    SELF:cType := "X"
+                ELSE
+                    SELF:wType := 0
+                    DbError{ SELF, symMethod, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
+                ENDIF
+            ENDIF
+        ENDIF
+        RETURN
+
+
 /// <include file="System.xml" path="doc/FieldSpec.SetType/*" />
 METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 	// The storage type is normally set as an instantiation parameter and is not changed later.
 	// This method does allow the storage type to be changed and, more usefully,
 	// the HyperLabel diagnostic for the storage type check
 	// Both parameters are optional, if one is not provided the corresponding value is not changed
-	IF !IsNil(uType)
-		IF IsString( uType )
-			cType := Upper(uType)
-			IF cType == "C" .OR. cType == "M"
-				wType := STRING
-			ELSEIF cType == "N" .OR. cType == "F"
-				wType := FLOAT
-				lNumeric:=TRUE
-				cType := "N"
-			ELSEIF cType == "L"
-				wType := LOGIC
-			ELSEIF cType == "D"
-				wType := DATE
+        SELF:_SetType(uType, #SetType)
 
-
-				// SABR01 12/28/95
-				// O is an OLE object
-			ELSEIF cType == "O"
-				wType := OBJECT
-
-
-				// Ansgar 7/9/97 added Bitmap
-			ELSEIF cType == "B"
-				wType := TYPE_MULTIMEDIA
-
-
-			ELSE
-				cType := ""
-				DbError{ SELF, #SetType, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
-			ENDIF
-		ELSE
-			wType := uType
-			IF wType = STRING
-				cType := "C"
-			ELSEIF wType = LOGIC
-				cType := "L"
-			ELSEIF wType = DATE
-				cType := "D"
-			ELSEIF lNumeric:=   wType=INT   .OR.; // also Long
-				wType=FLOAT .OR.;
-				wType=BYTE  .OR.;
-				wType=SHORTINT .OR.;
-				wType=WORD  .OR.;
-				wType=DWORD .OR.;
-				wType=REAL4 .OR.;
-				wType=REAL8
-				cType := "N"
-			ELSEIF (wType == TYPE_MULTIMEDIA)
-				cType := "B"
-
-
-			ELSE
-				wType := 0
-				DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
-			ENDIF
-		ENDIF
-	ENDIF
 	if oHL != null_object
 		SELF:oHLType := oHL
 	ENDIF

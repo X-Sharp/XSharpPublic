@@ -87,6 +87,7 @@
     <Compile Include="DbfDbt\DbtMemo.prg" />
     <Compile Include="DbfFpt\DbfFpt.prg" />
     <Compile Include="DbfMemo\DbfMemo.prg" />
+    <Compile Include="DbfMemo\DbfMemoCdx.prg" />
     <Compile Include="DbfMemo\DbvMemo.prg" />
     <Compile Include="DbfNtx\DbfNtx.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderIO.prg" />
@@ -114,17 +115,9 @@
     <Compile Include="Enums.prg" />
     <Compile Include="DbfFpt\FptHeaders.prg" />
     <Compile Include="DbfFpt\FptMemo.prg" />
-    <Compile Include="FlexFile\Cache.prg" />
     <Compile Include="FlexFile\FlexArea.prg" />
     <Compile Include="FlexFile\FlexStructures.prg" />
     <Compile Include="FlexFile\FlexEnums.prg" />
-    <Compile Include="FlexFile\IndexStack.prg" />
-    <Compile Include="FlexFile\Index.prg" />
-    <Compile Include="FlexFile\IndexKey.prg" />
-    <Compile Include="FlexFile\IndexNode.prg" />
-    <Compile Include="FlexFile\LengthIndex.prg" />
-    <Compile Include="FlexFile\LocationIndex.prg" />
-    <Compile Include="FlexFile\ULStack.prg" />
     <Compile Include="Other\TextRDD.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />

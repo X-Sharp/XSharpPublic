@@ -263,10 +263,10 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                     SELF:_CheckError(result, EG_CORRUPTION)
                 ENDIF
                 LOCAL dwCount AS DWORD
-                IF wOptLevel != ACE.ADS_OPTIMIZED_FULL
-                    SELF:_CheckError(ACE.AdsGetKeyCount(hIndex, ACE.ADS_RESPECTFILTERS, OUT dwCount), EG_CORRUPTION)
-                ELSE
+                IF wOptLevel == ACE.ADS_OPTIMIZED_FULL
                     SELF:_CheckError(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_RESPECTFILTERS, OUT dwCount), EG_CORRUPTION)
+                ELSE
+                    SELF:_CheckError(ACE.AdsGetKeyCount(hIndex, ACE.ADS_RESPECTFILTERS, OUT dwCount), EG_CORRUPTION)
                 ENDIF
                 info:Result := dwCount
             ENDIF
@@ -376,10 +376,20 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result  := 0
             ELSE
-                IF AX_SetExactKeyPos()
-                    SELF:_CheckError(ACE.AdsGetKeyNum(hIndex, 1, OUT dwKeyNo), EG_CORRUPTION)
-                    info:Result  := dwKeyNo
-                ELSE
+                var exact  := AX_SetExactKeyPos()
+                IF exact
+                    var res := ACE.AdsGetKeyNum(hIndex, ACE.ADS_RESPECTFILTERS, OUT dwKeyNo)
+                    if res == 0
+                        info:Result  := dwKeyNo
+                    elseif res == ACE.AE_NOT_FOUND
+                        // when there is a filter then GetKeyNum may fail with 5041.
+                        // the ADS VO RDD returns NIL then
+                        info:Result := null
+                    else
+                        SELF:_CheckError(res, EG_CORRUPTION)
+                    endif
+                endif
+                if ! exact
                     LOCAL dwCount AS DWORD
                     LOCAL r8Pos AS REAL8
                     SELF:_CheckError(ACE.AdsGetRecordCount(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT dwCount), EG_CORRUPTION)

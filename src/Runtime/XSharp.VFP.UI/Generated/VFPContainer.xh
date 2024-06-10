@@ -10,19 +10,15 @@
 
 
 // METHOD AddObject(cName, cClass , cOLEClass , aInit1, aInit2 ) AS USUAL CLIPPER
-METHOD AddObject( _args ) AS USUAL CLIPPER
+METHOD AddObject( cName, cClass , cOLEClass , aInit1, aInit2  ) AS USUAL CLIPPER
     LOCAL oObject AS USUAL
-    LOCAL cName AS STRING
-    LOCAL cClass AS STRING
     //
     VAR parms := _ARGS()
     VAR success := TRUE
-    IF parms:Length >= 2
+    IF PCount() >= 2
         // At least a Object-Name and a Class-Name
-        IF IsString( parms[1] ) .AND. IsString( parms[2] )
+        IF IsString( cName ) .AND. IsString( cClass )
             // Don't forget to check the Parameters for Init()
-            cName := parms[1]
-            cClass := parms[2]
             // First, search for the type in XSharp.VFP.UI
             cClass := "XSharp.VFP.UI." + cClass
             TRY

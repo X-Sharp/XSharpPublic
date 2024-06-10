@@ -1,8 +1,8 @@
-﻿// VFPListbox.prg
-// Created by    : fabri
-// Creation Date : 9/20/2022 10:43:19 PM
-// Created for   :
-// WorkStation   : FABXPS
+﻿// Listbox.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 
 USING System
@@ -16,14 +16,16 @@ USING System.ComponentModel
 BEGIN NAMESPACE XSharp.VFP.UI
 
 	/// <summary>
-	/// The VFPListbox class.
+	/// The VFP compatible Listbox class.
 	/// </summary>
 	PARTIAL CLASS ListBox INHERIT System.Windows.Forms.ListBox
 		// Common properties that all VFP Objects support
 #include "Headers/VFPObject.xh"
 
 		CONSTRUCTOR(  ) STRICT
-			SUPER()
+            SUPER()
+            SELF:Size := Size{100,170}
+
 			RETURN
 
 #include ".\Headers\ControlProperties.xh"

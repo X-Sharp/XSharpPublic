@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T20:43:39.451+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__localSpec</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__localSpec</para>
+    </header>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVar&gt;<tab />要声明的局部变量的有效标识符名称。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />分配给变量的初始值。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />当使用 LOCAL 时，这可以是任何有效的表达式。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />当使用 STATIC LOCAL 时， 该值可以是下列数据类型的字面表示，也可以是只涉及运算符、字面表示和 DEFINE 常量的简单表达式；但不允许使用更复杂的表达式（包括类实例化）。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />注意：虽然 &lt;uValue&gt; 可以是字面数组，但必须是一维数组。 不允许使用多维字面数组。 例如，{1, 2, 3} 是允许的，但 {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}} 则不允许。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />注意：虽然 Chr() 函数不能在 &lt;uValue&gt; 中使用，但 _Chr() 操作符可以。 &#160;_Chr() 在其他方面的功能与 Chr() 完全相同。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果未指定 &lt;uValue&gt;，变量的初始值取决于所声明的数据类型（例如，如果不使用强类型，则为 NIL；如果使用 AS INT，则为 0，等等）。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />要声明的有维数的数组。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;ArraySpec&gt;<tab />要声明的动态数组。<br/>在这两种情况下，&lt;ArraySpec&gt; 都是以下其中之一：</para>
+    <para styleclass="List"><br/>&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]<br/>&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</para>
+    <para styleclass="List"><br/>除了第一个维度外，所有维度都是可选的。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;idArray&gt; &#160; &#160; &#160; &#160; &#160;要声明的数组的有效标识符名称。对于动态数组，数组元素初始化为 NIL。对于定维数组，元素的初始值取决于数据类型，如上文对 `&lt;uValue&gt;` 的解释。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; &#160; &#160;定义数组特定维度中的元素数量。维度由你指定的 &lt;nElements&gt; 参数的数量决定。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; &#160; &#160;可以是一个字面数字表示，或者是仅涉及运算符、字面量和 DEFINE 常量的简单数字表达式；然而，不允许使用更复杂的表达式（例如函数调用）。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS &lt;idType&gt;<tab />指定一种结构体数据类型，在这种数据类型中，结构体所需的内存将在堆栈中分配（&lt;idStructure&gt; 是唯一允许使用 IS 关键字的 &lt;idType&gt; 类型）。有关数据结构体内存分配的更多信息，请参阅本指南中的 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link>&#32;。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS ARRAY<tab />对于动态数组声明，指定整个数组的数据类型。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;arrayName&gt;<tab />数组的变量名。数组的大小与 &lt;nRows&gt; 和 &lt;nColumns&gt; 所声明的一样。数组可以使用括号作为分隔符，也可以使用方括号。</para>
+    <para styleclass="List"><tab />我们建议使用方括号。</para>
+  </body>
+</topic>

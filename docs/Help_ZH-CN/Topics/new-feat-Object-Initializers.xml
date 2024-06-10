@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-03T14:11:55.616+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>对象初始化</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">对象初始化</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过对象初始化程序，可以在一行代码中实例化一个对象并为其属性赋值。</para>
+    <para styleclass="Normal"><br/>下面的示例使用对象初始化程序设置了 Person 对象的 FirstName 和 LastName 属性。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="new-feat-Initializers" inline="false"/></para>
+  </body>
+</topic>

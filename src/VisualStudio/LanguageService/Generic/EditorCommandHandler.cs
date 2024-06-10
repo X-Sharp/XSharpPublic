@@ -35,7 +35,10 @@ namespace XSharp.LanguageService
                 var token = tokens[0].Text;
                 HelpViewer.ShowHelp(TextView, nCmdID, token);
             }
-            HelpViewer.ShowHelp(TextView, nCmdID, result.First());
+            if (result.Count > 0)
+                HelpViewer.ShowHelp(TextView, nCmdID, result.First());
+            else
+                HelpViewer.ShowHelp(TextView, nCmdID, "");
         }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)

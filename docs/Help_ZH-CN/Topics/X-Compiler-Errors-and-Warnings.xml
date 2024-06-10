@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# Compiler Errors and Warnings</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">X# Compiler Errors and Warnings</para>
+    </header>
+    <para styleclass="Normal">The complete list of X# Compiler errors and warnings is not included in this &quot;book like&quot; documentation but can be found in the CHM, Visual Studio Help and/or Webhelp</para>
+    <para styleclass="Normal">The compiler warnings with numbers &lt; 9000 are &quot;standard&quot; Roslyn (C#) compiler errors.</para>
+    <para styleclass="Normal">The compiler warnings with numbers &gt; 9000 are specific X# compiler errors.</para>
+  </body>
+</topic>

@@ -35,6 +35,7 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
             _connection:RecnoColumn         := SELF:GetString(DefaultSection, SqlRDDEventReason.RecnoColumn,    _connection:RecnoColumn )
             _connection:TrimTrailingSpaces  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
             _connection:UpdateAllColumns    := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
+            _connection:MaxRecnoAsRecCount  := SELF:GetLogic(DefaultSection,  SqlRDDEventReason.MaxRecnoAsRecCount, _connection:MaxRecnoAsRecCount)
             hasDefaults := true
         endif
         RETURN
@@ -57,6 +58,7 @@ CLASS SqlMetadataProviderCallBack Inherit SqlMetadataProviderAbstract
         oTable:TrimTrailingSpaces:= SELF:GetLogic(cTable, SqlRDDEventReason.TrimTrailingSpaces, _connection:TrimTrailingSpaces)
         oTable:CompareMemo       := SELF:GetLogic(cTable, SqlRDDEventReason.CompareMemo,     _connection:CompareMemo)
         oTable:UpdateAllColumns  := SELF:GetLogic(DefaultSection, SqlRDDEventReason.UpdateAllColumns, _connection:UpdateAllColumns)
+        oTable:MaxRecnoAsRecCount:= SELF:GetLogic(cTable, SqlRDDEventReason.MaxRecnoAsRecCount,   _connection:MaxRecnoAsRecCount)
 
         // these fields have no defaults
         oTable:ServerFilter         := SELF:GetString(cTable, SqlRDDEventReason.ServerFilter,       DEFAULT_SERVERFILTER)

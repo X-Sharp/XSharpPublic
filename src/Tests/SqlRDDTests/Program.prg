@@ -3,7 +3,6 @@ using XSharp.RDD.SqlRDD.Providers
 using System.Data
 using System.Data.Common
 using MySql.Data.MySqlClient
-using Advantage.Data
 using System.Collections.Generic
 
 global options := "TrimTrailingSpaces=False;UseNulls=False;" as STRING
@@ -15,7 +14,7 @@ global showEvents := true as logic
 
 function Start as void
     //TestProviders()
-    //TestSqlServer()
+    //estSqlServer()
     //TestODBC()
     //TestOLEDB()
     //     TestRDDODBC()
@@ -30,13 +29,14 @@ function Start as void
     //     TestParametersODBC()
     //     TestParametersSQL()
     //     TestParametersOLEDB()
-    TestTable()
+    //TestTable()
     //TestCreateIndex()
     //TestServerFilter()
     //TestTableRecno()
     //TestTransaction()
     //testCreate()
     //FillGsTutor()
+    TestGsTutor()
     wait
     return
 
@@ -469,6 +469,37 @@ function TestOLEDB as void
     DumpConnection(conn)
     SqlDbCloseConnection(handle)
 
+function DumpMetadataCollection(cName as STRING, table as DataTable) as void
+    ? "Collection", cName, "Rows", table:Rows:Count
+    ?
+    if table:Rows:Count > 0
+        var colNo:=0
+        foreach col as DataColumn in table:Columns
+            if colNo > 0
+                ?? " "
+            endif
+            ?? col:ColumnName
+            if ++colNo > 10
+                exit
+            endif
+
+        next
+        ?
+        foreach row as DataRow in table:Rows
+            colNo:=0
+            foreach col as DataColumn in table:Columns
+                if colNo > 0
+                    ?? " "
+                endif
+                ?? row[col]
+                if ++colNo > 10
+                    exit
+                endif
+            next
+            ?
+        next
+    endif
+
 Function DumpConnection(conn as SqlDbConnection) as void
     var secs := Seconds()
     if conn != NULL
@@ -477,11 +508,13 @@ Function DumpConnection(conn as SqlDbConnection) as void
         ? "ConnStr ",conn:DbConnection:ConnectionString
         ? "State   ",conn:DbConnection:State:ToString()
         ? "IsOpen  ", conn:IsOpen
-        //         var coll := conn:GetMetaDataCollections()
-        //         ? "Collections: ", coll:Count
-        //         foreach var name in coll
-        //             ? Name
-        //         next
+        var coll := conn:GetMetaDataCollections()
+        ? "Collections: ", coll:Count
+        foreach var name in coll
+            var table := conn:GetMetaDataCollection(Name)
+            DumpMetadataCollection(Name, table)
+            Console.ReadLine()
+        next
         var tables := conn:GetTables("TABLE")
         ? "# of Tables : ", tables:Count
         foreach var Name in tables
@@ -501,7 +534,6 @@ function DumpStructure(oTd as SqlDbTableInfo) as VOID
     ?
 
 FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
-    local strValue as string
     // Tags default
     switch e:Reason
     case SqlRDDEventReason.Condition
@@ -538,8 +570,6 @@ FUNCTION EventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs)
 function TestProviders as void
     local oProv as ISqlDbProvider
     local oProvider := MySqlClientFactory.Instance AS DbProviderFactory
-    ? oProvider:CreateConnection():GetType():FullName
-    oProvider := Advantage.Data.Provider.AdsFactory.Instance
     ? oProvider:CreateConnection():GetType():FullName
     local aTest := {"Advantage","ODBC","OLEDB","SQLSERVER","MySql","ORACLE"}
     foreach strProv as STRING in aTest
@@ -655,6 +685,7 @@ function TestTableRecno as Void
     DbCloseArea()
     RETURN
 function TestTransaction()
+    /*
     // Tell the RDD to use the SQLServer SqlDbProvider class
     // store the handle as hConn1
     SqlDbSetProvider("SQLSERVER")
@@ -686,6 +717,7 @@ function TestTransaction()
     ? oConn1:ExecuteScalar("Select count(*) from Customers where ContactName = 'Jones'")
     wait
     SqlDbCloseConnection(hConn1)
+    */
     return true
 
     FUNCTION MyEventHandler(oSender AS Object, e AS XSharp.RDD.SqlRDD.SqlRddEventArgs) AS OBJECT
@@ -740,5 +772,24 @@ function TestTransaction()
             ? e:Message
         END TRY
         RETURN
+FUNCTION TestGsTutor() AS VOID
+    local aOrders as array
+    aOrders := {}
+    TRY
+        SqlDbSetProvider("SQLSERVER")
+        RddSetDefault("SQLRDD")
+        SqlDbOpenConnection("Server=(local);Initial catalog=GsTutor;Trusted_Connection=True;", EventHandler)
+        var conn  := SqldbGetConnection("DEFAULT")
+        conn:MetadataProvider := SqlMetaDataProviderDatabase{conn}
+        DbUseArea(,,"customer")
+        ShowArray(DbStruct())
+        DbCloseArea()
+        DbUseArea(,,"orders")
+        ShowArray(DbStruct())
+        DbCloseArea()
 
+    CATCH e as Exception
+        ? e:Message
+    END TRY
+    RETURN
 

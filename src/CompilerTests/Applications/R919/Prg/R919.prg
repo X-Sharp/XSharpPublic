@@ -1,25 +1,24 @@
 
 FUNCTION Start( ) AS VOID
-	local e as object
+	LOCAL e AS OBJECT
 	e := Exception{}
 	? "Exception"
-    xAssert(e is Exception)
-	xAssert(!e is not Exception)
-	xAssert(e is not null)
-	xAssert(!e is null)
+    xAssert(e IS Exception)
+	xAssert(!e IS not Exception)
+	xAssert(e IS not NULL)
+	xAssert(!e IS NULL)
 	e := "123"
 	? "String"
-	xAssert(!e is Exception)
-	xAssert(e is not Exception)
-	xAssert(e is not null)
-	xAssert(!e is null)
-	e := null
+	xAssert(!e IS Exception)
+	xAssert(e IS not Exception)
+	xAssert(e IS not NULL)
+	xAssert(!e IS NULL)
+	e := NULL
 	? "NULL_OBJECT"
-	xAssert(!e is Exception)
-	xAssert(e is not Exception)
-	xAssert(e is null)
-	xAssert(!e is not null)
-	Console.ReadLine()
+	xAssert(!e IS Exception)
+	xAssert(e IS not Exception)
+	xAssert(e IS NULL)
+	xAssert(!e IS not NULL)
 
 RETURN
 

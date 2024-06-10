@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:57:55.569+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Char 字面量</title>
+  <keywords>
+    <keyword>CHAR</keyword>
+    <keyword>Char Literals</keyword>
+    <keyword>Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Char 字面量</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">根据所选方言的不同，Char 字面量有不同的符号。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在许多方言中，单引号是字符串分隔符，因此 Char 字面量需要 “c ”前缀。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">只有在 Core 和 Vulcan 方言中，字符字面量总是保留单引号</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">字面量</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO, XPP, FoxPro &amp; Harbour</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Vulcan &amp; Core</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">c</text>&apos;&lt;char&gt;&apos; 或 <text style="font-weight:bold;">c</text>&quot;&lt;char&gt;&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Char 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Char 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&apos;&lt;char&gt;&apos;</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">String 字面量</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Char 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="Escape-codes" inline="false"/></para>
+  </body>
+</topic>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T16:52:50.631+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__ByRef</title>
+  <body>
+    <para styleclass="List1" style="background-color:#ffffaa; border:none;"><text style="font-size:9pt; background-color:#ffffaa;">注意</text><tab /><text style="font-size:9pt; background-color:#ffffaa;">在当前版本的 &#160;X# &#160;中，不支持通过引用将变量传递给无类型的函数/方法（即所谓的 CLIPPER 调用约定）。【译者注：&quot;CLIPPER 调用约定”是指一种特定的函数调用方式，源自 Clipper 编程语言。在这种调用约定中，函数参数可以通过引用传递，这意味着函数可以直接修改传入参数的值，而不仅仅是使用它们的副本。】</text></para>
+  </body>
+</topic>

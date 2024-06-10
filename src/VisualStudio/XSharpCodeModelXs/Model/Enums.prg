@@ -171,13 +171,13 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Static            := 1 << 9
       MEMBER @@Unsafe            := 1 << 10
       MEMBER @@Virtual           := 1 << 11
-      MEMBER @@Override          := 1 << 11  // alias for Virtual
-      MEMBER @@External          := 1 << 12
-      MEMBER @@Const             := 1 << 13
-      MEMBER @@InitOnly          := 1 << 14
-      MEMBER @@Instance          := 1 << 15
-      MEMBER @@Volatile          := 1 << 16
-      MEMBER @@Async             := 1 << 17
+      MEMBER @@Override          := 1 << 12  // alias for Virtual
+      MEMBER @@External          := 1 << 13
+      MEMBER @@Const             := 1 << 14
+      MEMBER @@InitOnly          := 1 << 15
+      MEMBER @@Instance          := 1 << 16
+      MEMBER @@Volatile          := 1 << 17
+      MEMBER @@Async             := 1 << 18
       //XPP Modifiers below
       MEMBER @@Deferred          := 1 << 20            // Mapped to ABSTRACT
       MEMBER @@Final             := 1 << 21            // Mapped to SEALED

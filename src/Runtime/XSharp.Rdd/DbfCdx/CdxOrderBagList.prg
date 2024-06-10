@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR cBag := oBag:FullPath
             VAR cDbf := SELF:_oRdd:FullPath
             info:BagName := oBag:FullPath
-            VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDbf), Path.GetFileNameWithoutExtension(cBag),StringComparison.OrdinalIgnoreCase) == 0
+            VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDbf), Path.GetFileNameWithoutExtension(cBag),TRUE) == 0
             oBag:Structural := lStructural
             _bags:Add(oBag)
             RETURN oBag
@@ -280,6 +280,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             IF orderinfo:Order IS STRING VAR name
+                // VO truncates the length, so does Xbase++ and Clipper
+                // FoxPro does not and refuses to set the order when the name is too long
+                if name:Length > CdxOrderBag.MAX_TAGNAME_LEN .and. XSharp.RuntimeState.Dialect != XSharpDialect.FoxPro
+                    name := name:Substring(0,CdxOrderBag.MAX_TAGNAME_LEN)
+                endif
                 RETURN SELF:FindOrderByName(orderinfo:BagName, name, OUT tag)
             ELSEIF orderinfo:Order IS LONG VAR number
                 IF number > 0

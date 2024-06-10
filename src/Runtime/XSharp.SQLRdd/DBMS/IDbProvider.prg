@@ -74,11 +74,20 @@ interface ISqlDbProvider
     /// Syntax for the statement to retrieve the identity value of the last inserted row
     /// </summary>
     property GetIdentity            as string get
+
     /// <summary>
     /// Syntax for the statement to retrieve the number of rows updated by the last statement
     /// </summary>
     property GetRowCount            as string get
 
+    /// <summary>
+    /// Literal value for the True value
+    /// </summary>
+    property TrueLiteral            as string get
+    /// <summary>
+    /// Literal value for the False value
+    /// </summary>
+    property FalseLiteral           as string get
 
     /// <summary>
     /// Return a list of function translations for this provider
@@ -149,6 +158,11 @@ interface ISqlDbProvider
     /// <param name="sFunction">Function. Parameters are replaced with %1%, %2% etc.</param>
     /// <returns>The translation of the function.</returns>
     method GetFunction(sFunction as string) as string
+
+    /// <summary>Synchronize the case of an identifier with the case of the database</summary>
+    /// <param name="cIdentifier">String to Synchronize</param>
+    /// <returns>String with the correct case</returns>
+    method CaseSync(cIdentifier as STRING) as STRING
 
 
 end interface

@@ -133,14 +133,11 @@
       <Button guid="guidProjectPackage" id="idFoxXporter" priority="0x0100" type="Button">
         <Icon guid="guidImages" id="bmpFoxPro" />
         <CommandFlag>IconAndText</CommandFlag>
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <CommandName>Export a &amp;FoxPro Project</CommandName>
-          <CanonicalName>Export a FoxPro Project</CanonicalName>
+          <CommandName>Export a Visual &amp;FoxPro Project</CommandName>
+          <CanonicalName>Export a Visual FoxPro Project</CanonicalName>
           <ButtonText>X# FoxPro XPorter </ButtonText>
-          <ToolTipText>Converts FoxPro sourcecode to XSharp</ToolTipText>
+          <ToolTipText>Converts Visual FoxPro sourcecode to XSharp</ToolTipText>
           <LocCanonicalName>.XSharp.FoxPro.XPorter</LocCanonicalName>
         </Strings>
       </Button>
@@ -193,6 +190,17 @@
           <CommandName>&amp;XSharp Documentation</CommandName>
           <CanonicalName>XSharp Documentation</CanonicalName>
           <LocCanonicalName>.XSharp.Documentation</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidProjectPackage" id="idHelpOffLineChinese" priority="0x0100" type="Button">
+        <Icon guid="guidImages" id="bmpXSharp" />
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <ButtonText>XSharp Documentation (Chinese)</ButtonText>
+          <ToolTipText>Opens XSharp Documentation (Chinese)</ToolTipText>
+          <CommandName>&amp;XSharp Documentation (Chinese)</CommandName>
+          <CanonicalName>XSharp Documentation (Chinese)</CanonicalName>
+          <LocCanonicalName>.XSharp.Documentation.Chinese</LocCanonicalName>
         </Strings>
       </Button>
 
@@ -393,6 +401,9 @@
     <CommandPlacement guid="guidProjectPackage" id="idHelpOffLine" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idHelpMenuGroup"/>
     </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idHelpOffLineChinese" priority="0x0100">
+      <Parent guid="guidProjectPackage" id="idHelpMenuGroup"/>
+    </CommandPlacement>
 
     <!--Form Editor commands, appear twice here-->
     <!--in Menu-->
@@ -462,6 +473,7 @@
       <IDSymbol name="idRebuildIntellisense" value="0x010D" />
       <IDSymbol name="idViewInDisassembler" value="0x010E" />
       <IDSymbol name="idEditProjectFile" value="0x010F" />
+      <IDSymbol name="idHelpOffLineChinese" value="0x0110" />      
       <IDSymbol name="idGenerateWinForm" value="0x0120" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />

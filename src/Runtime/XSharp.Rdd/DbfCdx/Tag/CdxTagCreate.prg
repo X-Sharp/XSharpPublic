@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // now verify if the order already exists in the bag and when so, then delete it from the orderbag
             FOREACH VAR tag IN SELF:OrderBag:Tags
-                IF String.Compare(tag:OrderName, SELF:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                IF String.Compare(tag:OrderName, SELF:OrderName, TRUE) == 0
                     SELF:OrderBag:Destroy(tag)
                     EXIT
                 ENDIF

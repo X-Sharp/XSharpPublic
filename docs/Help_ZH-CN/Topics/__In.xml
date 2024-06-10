@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T17:09:18.534+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__In</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__In</para>
+    </header>
+    <para styleclass="List">IN | ALIAS <text styleclass="Normal">&lt;workarea&gt;</text><tab />指定执行操作的工作区。</para>
+  </body>
+</topic>

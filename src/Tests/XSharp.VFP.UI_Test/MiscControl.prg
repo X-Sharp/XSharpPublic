@@ -12,7 +12,7 @@ USING XSharp.VFP.UI
 BEGIN NAMESPACE XSharp.VFP.UI_Test
 
     PUBLIC PARTIAL CLASS MiscControl	;
-		INHERIT Form
+		INHERIT System.Windows.Forms.Form
 
         PUBLIC CONSTRUCTOR()   STRICT//Form1
             USE Customer

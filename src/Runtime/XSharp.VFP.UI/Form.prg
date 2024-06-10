@@ -1,4 +1,9 @@
-﻿// VFPForm.prg
+﻿// Form.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 USING System
 USING System.Collections.Generic
@@ -8,7 +13,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPForm class.
+	/// The VFP compatible Form class.
 	/// </summary>
 	PARTIAL CLASS Form INHERIT System.Windows.Forms.Form IMPLEMENTS IDynamicProperties, IDynamicProperties2, IVFPOwner
 
@@ -156,7 +161,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 #include ".\Headers\FormOverride.xh"
 			//
-		METHOD Refresh() AS VOID
+		OVERRIDE METHOD Refresh() AS VOID
 			// Refresh the BindingSource of the Current Workarea/Cursor
 			// Should we refresh all attached Cursors ??
 			IF SELF:DataEnvironment != NULL .AND. SELF:DataEnvironment:DataSource != NULL
@@ -178,10 +183,11 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROTECTED _validQueryUnload AS LOGIC
 		INTERNAL _handledKeypress AS LOGIC
 
-		METHOD Release() AS VOID
+		METHOD Release() AS USUAL CLIPPER
 			//
 			SELF:_validQueryUnload := TRUE
-			SELF:Close()
+            SELF:Close()
+            RETURN NIL
 
 #endregion
 
@@ -189,7 +195,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR(  ) STRICT
 			SUPER()
 			// Default Values
-			SELF:BindControls := TRUE
+            SELF:BindControls := TRUE
+            SELF:Size := System.Drawing.Size{375, 250}
 
 
 		PRIVATE _VFPLoad AS VFPOverride

@@ -23,15 +23,21 @@ begin namespace XSharp.RDD.SqlRDD.Providers
 /// This class depends on the DLL MySql.Data.dll
 /// </remarks>
 
-class SqlDbProviderPostgresSql inherit SqlDbProvider
+class SqlDbProviderPostgreSQL inherit SqlDbProvider
     /// <inheritdoc />
     override property DllName                as string => "Npgsql.dll"
     /// <inheritdoc />
     override property TypeName               as string => "Npgsql.NpgsqlFactory"
     /// <inheritdoc />
-    override property GetIdentity            as string => "select LAST_INSERT_ID()"
+    override property GetIdentity            as string => ""
+
     /// <inheritdoc />
-    override property GetRowCount            as string => "select FOUND_ROWS( )"
+    override property GetRowCount            as string => ""
+    /// <inheritdoc />
+    override property TrueLiteral            as string => "1"
+    /// <inheritdoc />
+    override property FalseLiteral            as string => "0"
+
     /// <inheritdoc />
     override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
     private static lockObj := object{} as object
@@ -41,6 +47,8 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
     end constructor
 
     private static aFuncs := null as Dictionary<string, string>
+
+    /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
         if aFuncs == null
             begin lock lockObj
@@ -68,12 +76,13 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
         endif
         return aFuncs
 
-    override method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
+        /// <inheritdoc />
+        override method GetSqlColumnInfo(oInfo as RddFieldInfo, oConn as SqlDbConnection) as string
         local sResult as string
         switch oInfo:FieldType
         case DbFieldType.Character
         case DbFieldType.VarChar
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} nvarchar ({oInfo.Length}) default ''"
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} varchar ({oInfo.Length}) default ''"
             if oConn:UseNulls
                 if oInfo:Flags:HasFlag(DBFFieldFlags.Nullable)
                     sResult += NullClause
@@ -82,7 +91,7 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
                 endif
             endif
         case DbFieldType.Logic
-            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int default 0"
+            sResult := i"{QuoteIdentifier(oInfo.ColumnName)} bool "
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
@@ -102,5 +111,8 @@ class SqlDbProviderPostgresSql inherit SqlDbProvider
             sResult := super:GetSqlColumnInfo(oInfo, oConn)
         end switch
         return sResult
+
+
+end method
 end class
 end namespace // XSharp.RDD.SqlRDD.SupportClasses

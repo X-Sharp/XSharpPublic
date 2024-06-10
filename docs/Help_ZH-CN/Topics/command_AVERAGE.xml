@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>AVERAGE Command</title>
+  <keywords>
+    <keyword>AVERAGE command</keyword>
+    <keyword>Calculating<keyword>averages</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Records<keyword>calculating averages</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">AVERAGE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Calculate the average of one or more numeric expressions to variables for a range of records in the current database file.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">AVERAGE &lt;nValueList&gt; TO &lt;idVarList&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><text styleclass="Normal">&lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A list of the numeric values to average for each record processed.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">TO &lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A list of receiving variable or field names which will contain the average results. &#160;Variables that either do not exist or are not visible are created as private variables. &#160;&lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt; must contain the same number of elements as &lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">Zero (0) values are counted in the AVERAGE unless explicitly ruled out with a FOR condition.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example averages a single numeric field using a condition to select a subset of records from the database file:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">USE sales NEW<br/>AVERAGE Amount TO nAvgAmount FOR Branch = &quot;100&quot;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The next example finds the average date for a range of dates:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">AVERAGE (SaleDate - CToD(&quot;00/00/00&quot;)) ;</para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example">TO nAvgDays FOR !Empty(SaleDate)</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example">dAvgDate := CToD(&quot;00/00/00&quot;) + nAvgDays</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DBEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

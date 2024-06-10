@@ -18,14 +18,15 @@ begin namespace XSharp.RDD.SqlRDD
 /// The SqlDbTableCommandBuilder class.
 /// </summary>
 internal class SqlDbTableCommandBuilder
-    protected _cTable as string
-    protected _oTable as SqlDbTableInfo
-    protected _oRdd  as SQLRDD
-    protected _connection as SqlDbConnection
-    property Connection as SqlDbConnection  get _connection
-    property Provider   as ISqlDbProvider   get Connection:Provider
-    Property MetadataProvider as ISqlMetadataProvider get Connection:MetadataProvider
-    property OrderBagList as List<SqlDbOrderBag> get _oRdd:OrderBagList
+    protected _cTable           as string
+    protected _oTable           as SqlDbTableInfo
+    protected _oRdd             as SQLRDD
+    protected _connection       as SqlDbConnection
+    property Connection         as SqlDbConnection  get _connection
+    property Provider           as ISqlDbProvider   get Connection:Provider
+    Property MetadataProvider   as ISqlMetadataProvider get Connection:MetadataProvider
+    property OrderBagList       as List<SqlDbOrderBag> get _oRdd:OrderBagList
+
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
         self:_oRdd        := oRdd
@@ -43,7 +44,7 @@ internal class SqlDbTableCommandBuilder
         var oTd := Connection:GetStructureForTable(oTable:RealName, oTable,oTable:ColumnList)
         self:_oTable := oTable
         oTable:CopyFromTd(oTd)
-        self:AdjustSelects()
+         self:AdjustSelects()
         self:OpenIndex(cTable)  // open production index
         return oTable
 
@@ -73,7 +74,6 @@ internal class SqlDbTableCommandBuilder
             endif
         endif
 
-
     method DropIndex(oTag as SqlDbOrder) as logic
         var sb      := StringBuilder{Provider:DropIndexStatement}
         sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(SELF:_oTable:RealName))
@@ -81,6 +81,7 @@ internal class SqlDbTableCommandBuilder
         var stmt := sb:ToString()
         var result := _connection:ExecuteNonQuery(stmt, _cTable)
         return result
+
     method CreateIndex(oTag as SqlDbOrder) as logic
         SELF:DropIndex(oTag)
         var sb      := StringBuilder{Provider:CreateIndexStatement}
@@ -91,8 +92,6 @@ internal class SqlDbTableCommandBuilder
         var stmt := sb:ToString()
         var result := _connection:ExecuteNonQuery(stmt, _cTable)
         return result
-
-
 
     method SetProductionIndex() as logic
         _oRdd:CurrentOrder := null
@@ -125,6 +124,7 @@ internal class SqlDbTableCommandBuilder
             strResult += "( " + whereClause + " )"
         next
         return strResult
+
     method BuildSqlStatement(sWhereClause as string) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
@@ -140,7 +140,7 @@ internal class SqlDbTableCommandBuilder
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif
-        if ! String.IsNullOrEmpty(_oTable:ServerFilter)
+        if SELF:_oTable:HasServerFilter
             whereClauses:Add(_oTable:ServerFilter)
         endif
         sWhereClause := self:CombineWhereClauses(whereClauses)
@@ -149,12 +149,23 @@ internal class SqlDbTableCommandBuilder
             sb:Append(SqlDbProvider.WhereClause)
             sb:Append(sWhereClause)
         endif
+        local cOrderby := "" AS string
         if CurrentOrder != null
             sb:Append(Provider.OrderByClause)
-            var cOrderby := Functions.List2String(CurrentOrder:OrderList)
+            cOrderby := Functions.List2String(CurrentOrder:OrderList)
+            if SELF:_oTable:HasRecnoColumn
+                if ! String.IsNullOrEmpty(cOrderby)
+                    cOrderby := cOrderby + ", " + Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                else
+                    cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+                endif
+            endif
             cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
-            sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
+        elseif SELF:_oTable:HasRecnoColumn
+            cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
         endif
+        cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
+        sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
         var selectStmt := sb:ToString()
         sb:Clear()
         sb:Append(Provider:SelectTopStatement)
@@ -162,21 +173,46 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, self:ColumnList())
         sb:Replace(SqlDbProvider.TableNameMacro, selectStmt)
         return sb:ToString()
+
     method ColumnList() as string
         var sb := StringBuilder{}
         var List  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
+        var newColumns     := List<SqlDbColumnDef>{}
+        var specialColumns := List<SqlDbColumnDef>{}
         var First := true
+        var changedOrder := false
         foreach var c in _oTable:Columns
-            if First
-                First := false
+            if _oTable:HasRecnoColumn .and. String.Compare(_oTable:RecnoColumn, c:ColumnInfo:ColumnName, true) == 0
+                specialColumns:Add(c)
+                changedOrder := true
+            elseif _oTable:HasDeletedColumn .and. String.Compare(_oTable:DeletedColumn, c:ColumnInfo:ColumnName, true) == 0
+                specialColumns:Add(c)
+                changedOrder := true
             else
-                sb:Append(", ")
+                if First
+                    First := false
+                else
+                    sb:Append(", ")
+                endif
+                sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
+                List:Add(c:ColumnInfo:ColumnName, c)
+                newColumns:Add(c)
             endif
-            sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
-
-            List:Add(c:ColumnInfo:ColumnName, c)
         next
-        if !String.IsNullOrEmpty(_oTable:RecnoColumn)
+        foreach var c in specialColumns
+            sb:Append(", ")
+            sb:Append(Provider.QuoteIdentifier(c:ColumnInfo:ColumnName))
+            List:Add(c:ColumnInfo:ColumnName, c)
+            newColumns:Add(c)
+        next
+        if changedOrder
+            _oTable:Columns:Clear()
+            foreach var c in newColumns
+                _oTable:Columns:Add(c)
+            next
+        endif
+
+        if SELF:_oTable:HasRecnoColumn
             if !List:ContainsKey(_oTable:RecnoColumn)
                 sb:Append(", ")
                 sb:Append(Provider.QuoteIdentifier(_oTable:RecnoColumn))
@@ -187,7 +223,7 @@ internal class SqlDbTableCommandBuilder
             endif
 
         endif
-        if !String.IsNullOrEmpty(_oTable:DeletedColumn)
+        if SELF:_oTable:HasDeletedColumn
             if !List:ContainsKey(_oTable:DeletedColumn)
                 sb:Append(", ")
                 sb:Append(Provider.QuoteIdentifier(_oTable:DeletedColumn))
@@ -209,10 +245,57 @@ internal class SqlDbTableCommandBuilder
         _oTable:SelectStatement := sb:ToString()
         sb:Append(SqlDbProvider.WhereClause)
         sb:Append("1=0")
-        _oTable:EmptySelectStatement :=sb:ToString()
+         _oTable:EmptySelectStatement :=sb:ToString()
         return
 
 
+    method GetRecCount() AS LONG
+        var sb := StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append("count(*)")
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteScalar(stmt, _cTable)
+        return Convert.ToInt32(result)
+
+    method GetMaxRecno() as LONG
+        if ! _oTable:HasRecnoColumn
+            return 0
+        endif
+        var sb := StringBuilder{}
+        sb:Append(SqlDbProvider.SelectClause)
+        sb:Append("max(" +Provider.QuoteIdentifier(_oTable:RecnoColumn) +" )")
+        sb:Append(SqlDbProvider.FromClause)
+        sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
+        var stmt := sb:ToString()
+        var result := _connection:ExecuteScalar(stmt, _cTable)
+        if result == DBNull.Value
+            return 0
+        endif
+        return Convert.ToInt32(result)
+
+    method GetNextKey() as LONG
+        local maxVal := 0 as long
+        if _oTable:HasRecnoColumn
+            maxVal := self:GetMaxRecno()
+        else
+            maxVal := Self:GetRecCount()
+        endif
+        return maxVal + 1
+
+    method ZapStatement() as STRING
+        var sb := StringBuilder{}
+        sb:Append(Provider:DeleteAllRowsStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        return sb.ToString()
+
+    method PackStatement() as STRING
+        var sb := StringBuilder{}
+        sb:Append(Provider:DeleteStatement)
+        sb:Replace(SqlDbProvider.TableNameMacro, Provider:QuoteIdentifier(self:_cTable))
+        sb:Replace(SqlDbProvider.WhereMacro, _oTable:DeletedColumn + " = "+Provider:TrueLiteral)
+        return sb.ToString()
 
 end class
 end namespace // XSharp.SQLRdd.SupportClasses

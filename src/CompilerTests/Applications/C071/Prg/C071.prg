@@ -1,5 +1,5 @@
 // 71. compiler crash
 CLASS Foo
-*** comments here ***
+// comments here ***
 END CLASS
 

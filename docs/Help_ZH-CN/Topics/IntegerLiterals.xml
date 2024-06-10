@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T21:24:33.000+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Integer 字面量</title>
+  <keywords>
+    <keyword>Integer Literals</keyword>
+    <keyword>Literals</keyword>
+    <keyword>Numeric Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Integer 字面量</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">INT 的字面量值可以十进制、十六进制或二进制表示：</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">12345</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">0x1234ABCD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">0b010010101</text></para>
+    <para styleclass="Normal">整数字面量可以使用以下后缀之一：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;">后缀</para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;">描述</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">L 或 l</para>
+        </td>
+        <td>
+          <para styleclass="Normal">有符号 32 位整数 </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">U 或 u</para>
+        </td>
+        <td>
+          <para styleclass="Normal">无符号整数 </para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

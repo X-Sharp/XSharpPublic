@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+  <PropertyGroup>
+    <ProjectGuid>{544d5f4f-1ca0-4cf0-a62a-7b4d6ba97aea}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Dataexpl</RootNamespace>
+    <AssemblyName>Dataexpl</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <Name>SqlRddDataexpl</Name>
+    <Dialect>VO</Dialect>
+    <LB>true</LB>
+    <OutputName>Dataexpl</OutputName>
+    <Prefer32Bit>True</Prefer32Bit>
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <OVF>true</OVF>
+    <Unsafe>true</Unsafe>
+    <INS>true</INS>
+    <NS>false</NS>
+    <VO1>true</VO1>
+    <VO2>true</VO2>
+    <VO3>true</VO3>
+    <VO4>true</VO4>
+    <VO5>true</VO5>
+    <VO6>true</VO6>
+    <VO7>true</VO7>
+    <VO8>true</VO8>
+    <VO9>true</VO9>
+    <VO10>true</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>true</VO13>
+    <VO14>false</VO14>
+    <VO15>true</VO15>
+    <VO16>true</VO16>
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <NoStandardDefs>false</NoStandardDefs>
+    <EnforceSelf>True</EnforceSelf>
+    <StartupObject />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DisabledWarnings>9032%3b9043%3b165%3b649%3b9025%3b9026%3b9076%3b9020%3b9021%3b219</DisabledWarnings>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>TRACE</DefineConstants>
+    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+  </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Data</Name>
+      <AssemblyName>System.Data.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Start.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Help About.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Help About.HelpAbout.rc">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Help About.POWVOBMP.rc">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="Help About.HELPABOUT.xsfrm">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="DataTreeView.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Menus.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Help About.prg.rc">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Help About.rc">
+      <DependentUpon>Help About.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Icons.rc">
+      <DependentUpon>Icons.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.DataExplorerMenu_Accelerator.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.EditMenu_Accelerator.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.DataExplorerMenu.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.DataLVContext.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.EditMenu.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.prg.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Menus.VS_VERSION_INFO.rc">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="Menus.DataExplorerMenu.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Menus.EditMenu.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Menus.DataLVContext.xsmnu">
+      <DependentUpon>Menus.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="!Readme!.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataExplorer.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataServers.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <VOBinary Include="DataServers.FieldSpecs.xsfs">
+      <DependentUpon>DataServers.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="DataServers.Customer.xsdbs">
+      <DependentUpon>DataServers.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="DataServers.Orders.xsdbs">
+      <DependentUpon>DataServers.prg</DependentUpon>
+    </VOBinary>
+    <Compile Include="Icons.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Icons.ICONDB.rc">
+      <DependentUpon>Icons.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Icons.ICONDBSELECT.rc">
+      <DependentUpon>Icons.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Icons.ICONRECORD.rc">
+      <DependentUpon>Icons.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Icons.ICONRECORDSELECT.rc">
+      <DependentUpon>Icons.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="Icons.RBNTOOLBAR.rc">
+      <DependentUpon>Icons.prg</DependentUpon>
+    </NativeResource>
+    <None Include="CATO3SPL.DLL">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="gstutor.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
+    <None Include="Properties\cavowed.tpl" />
+    <None Include="Properties\cavoded.tpl" />
+    <None Include="Properties\cavofed.tpl" />
+    <None Include="Resources\POWVO.BMP" />
+    <None Include="Resources\CARDS.ICO" />
+    <None Include="Resources\CARDSSELECT.ICO" />
+    <None Include="Resources\RECORD01.ICO" />
+    <None Include="Resources\RECORD02.ICO" />
+    <None Include="Resources\DATAEXPL.BMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\GUI_Classes_SDK\VOGUIClasses.xsproj">
+      <Name>VOGUIClasses</Name>
+      <Project>{0bce49e2-3597-4e32-aa3c-c465130c05c8}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
+      <Name>VORDDClasses</Name>
+      <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\System_Classes_SDK\VOSystemClasses.xsproj">
+      <Name>VOSystemClasses</Name>
+      <Project>{ac2aebff-69ff-405d-b7d9-6e5cb1db914c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\VOSDK\Source\VOSDK\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
+      <Name>VOWin32APILibrary</Name>
+      <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Data\XSharp.Data.xsproj">
+      <Name>XSharp.Data</Name>
+      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.SQLRdd\XSharp.SQLRDD.xsproj">
+      <Name>XSharp.SQLRDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9373}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.118</Version>
+    </PackageReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+</Project>

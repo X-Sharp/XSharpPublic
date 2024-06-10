@@ -6,7 +6,7 @@
     <!-- Location of output and intermediate -->
     <!-- Note: All directories in this list end with a back slash -->
     <VSTarget Condition=" '$(VSTarget)' == '' ">Common</VSTarget>
-    <ArtifactsDir>$(Solutiondir)..\Artifacts\</ArtifactsDir>
+    <ArtifactsDir>$([System.IO.Path]::GetFullPath('$(Solutiondir)..\Artifacts\'))</ArtifactsDir>
     <VsExternalDir>$(ArtifactsDir)Shared\Debug\</VsExternalDir>
     <BinariesDir>$(ArtifactsDir)$(VSTarget)\</BinariesDir>
     <RTBinariesDir>$(ArtifactsDir)</RTBinariesDir>

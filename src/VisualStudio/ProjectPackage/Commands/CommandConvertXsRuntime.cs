@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using System;
 using XSharpModel;
-using System.Collections;
 using Task = System.Threading.Tasks.Task;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Project;

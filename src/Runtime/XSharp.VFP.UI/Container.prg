@@ -1,4 +1,9 @@
-﻿// VFPContainer.prg
+﻿// Container.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -13,7 +18,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 	// TODO Check IDynamicProperties -> XSharp.RT
 
 	/// <summary>
-	/// The VFPContainer class.
+	/// The VFP compatible Container class.
 	/// </summary>
 	PARTIAL CLASS Container INHERIT System.Windows.Forms.UserControl
 
@@ -22,7 +27,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
          #include ".\XSharp\VFPProperties.xh"
 		 #include ".\Headers\ControlProperties.xh"
 
-		 #include ".\Headers\Tooltips.xh" 
+		 #include ".\Headers\Tooltips.xh"
 
 			// This is a fake property, just here to ease Code Generation
 			//PROPERTY AutoScaleMode AS System.Windows.Forms.AutoScaleMode AUTO
@@ -30,12 +35,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR( ) STRICT
 			SUPER()
 			SELF:SetStyle( ControlStyles.SupportsTransparentBackColor, true)
-			SELF:BackColor := Color.Transparent
+            SELF:BackColor := Color.Transparent
+            SELF:Size := Size{75,75}
 			RETURN
 
-            
-        PROPERTY BorderColor AS System.Drawing.Color AUTO        
-            
+
+        PROPERTY BorderColor AS System.Drawing.Color AUTO
+
 		PRIVATE _backStyle := 1 AS INT
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];
 		PROPERTY BackStyle AS INT

@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="HelpAbout">
+    <Window Name="HelpAbout">
+      <SavedOnce>Yes</SavedOnce>
+      <Name>HelpAbout</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>About Simple DataExplorer</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>453</Width>
+      <Height>139</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3234332800</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"About Simple DataExplorer"</HyperLabel>
+        <HyperLabel>"HelpAbout"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="AboutText">
+      <Name>AboutText</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>
+      </Caption>
+      <Order>1</Order>
+      <Left>195</Left>
+      <Top>10</Top>
+      <Width>245</Width>
+      <Height>93</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741952</Styles>
+      <ExStyles>131072</ExStyles>
+      <ExProperties>
+        <HyperLabel>"AboutText"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="PushButton1">
+      <Name>PushButton1</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>OK</Caption>
+      <Order>2</Order>
+      <Left>362</Left>
+      <Top>110</Top>
+      <Width>80</Width>
+      <Height>24</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807361</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"OK"</HyperLabel>
+        <HyperLabel>"PushButton1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="FixedBitmap1">
+      <Name>FixedBitmap1</Name>
+      <Class>CONTROL:FIXEDBITMAP</Class>
+      <Caption>POWVOBMP</Caption>
+      <Order>3</Order>
+      <Left>6</Left>
+      <Top>10</Top>
+      <Width>180</Width>
+      <Height>90</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741838</Styles>
+      <ExStyles>131072</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"POWVOBMP"</HyperLabel>
+        <HyperLabel>"FixedBitmap1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="IconDB">
+      <Name>IconDB</Name>
+      <Class>CONTROL:FIXEDICON</Class>
+      <Caption>IconDB</Caption>
+      <Order>4</Order>
+      <Left>400</Left>
+      <Top>15</Top>
+      <Width>32</Width>
+      <Height>32</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>Yes</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1082130435</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"IconDB"</HyperLabel>
+        <HyperLabel>"IconDB"</HyperLabel>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

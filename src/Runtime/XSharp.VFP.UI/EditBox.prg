@@ -1,4 +1,9 @@
-﻿// VFPEditBox.prg
+﻿// EditBox.prg
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -8,7 +13,7 @@ USING System.ComponentModel
 
 BEGIN NAMESPACE XSharp.VFP.UI
 	/// <summary>
-	/// The VFPEditBox class.
+	/// The VFP compatible EditBox class.
 	/// </summary>
 	PARTIAL CLASS EditBox INHERIT TextBox
 
@@ -30,9 +35,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		CONSTRUCTOR( )
 			SUPER()
 			SELF:Multiline := TRUE
-			SELF:ScrollBars := ScrollBars.Both
-
-#include ".\Headers\ControlSource.xh"
+            SELF:ScrollBars := ScrollBars.Both
+            SELF:Size := Size{100,75}
 
 	END CLASS
 

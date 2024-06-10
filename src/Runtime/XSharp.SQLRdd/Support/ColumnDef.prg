@@ -14,7 +14,8 @@ begin namespace XSharp.RDD.SqlRDD
     /// This enum is used to indicate the flags of a column in a table.
     /// </summary>
     [Flags];
-    internal enum SqlDbColumnFlags
+    enum SqlDbColumnFlags
+        member None    := 0
         member Recno   := 1
         member Deleted := 2
     end enum

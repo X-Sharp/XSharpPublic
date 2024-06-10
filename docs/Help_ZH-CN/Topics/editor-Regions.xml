@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:30:00.951+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Regions(区域))()</title>
+  <keywords>
+    <keyword>Regions</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Regions(区域)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">要使代码视图更加整洁，请选择构造函数第一行空白处带有减号的灰色小方框，或者将光标放在构造函数代码的任意位置，然后按 Ctrl+M、Ctrl+M。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">代码块就会折叠为第一行，后面跟着一个省略号。要再次展开代码块，请单击现在带有加号的灰色方框，或再次按下 Ctrl+M、Ctrl+M。这项功能称为 &quot;大纲&quot;，在折叠长方法或整个类时特别有用。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Regions 1.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Regions 2.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

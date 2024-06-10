@@ -1,4 +1,8 @@
-﻿#ifndef VFP_OBJECT_XH
+﻿// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
+#ifndef VFP_OBJECT_XH
 #define VFP_OBJECT_XH
 // Common properties that all VFP Objects support.
 // Some are only necessary in a design environment like VFP
@@ -7,29 +11,29 @@ PROPERTY Class AS STRING AUTO
 PROPERTY ClassLibrary AS STRING AUTO
 PROPERTY Comment AS STRING AUTO
 
-	[Obsolete];
+[Obsolete];
 METHOD ReadExpression(cPropertyName AS STRING) AS STRING
-	RETURN ""
+   RETURN ""
 
-	[Obsolete];
+[Obsolete];
 METHOD WriteExpression(cPropertyName as string, cExpression AS STRING) AS STRING
-	RETURN ""
-	[Obsolete];
+   RETURN ""
+[Obsolete];
 METHOD WriteMethod(cMethodName AS STRING, cMethodText AS STRING ,lCreateMethod AS LOGIC, nVisibility AS LONG, cDescription AS STRING) AS VOID
-	RETURN
+   RETURN
 
-	[Obsolete];
+[Obsolete];
 METHOD ReadMethod(cMethod as STRING) AS STRING
-	RETURN ""
+   RETURN ""
 
-	[Obsolete];
+[Obsolete];
 METHOD ResetToDefault(cPropertyName AS STRING) AS VOID
-	RETURN
+   RETURN
 
 
-	[Obsolete];
+[Obsolete];
 METHOD SaveAsClass(ClassLibName AS STRING, ClassName AS STRING, Description AS STRING) AS LOGIC
-	RETURN FALSE
+   RETURN FALSE
 
 #endif
 

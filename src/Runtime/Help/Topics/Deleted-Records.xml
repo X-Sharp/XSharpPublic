@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-03-12T17:35:42.029+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Deleted Records</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Deleted Records</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Another area where the DBF world distinguishes itself from the SQL world is the way how records can be deleted and recalled.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In the SQL RDD we try to emulate the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">deleted flag. </text><text styleclass="Normal" translate="true">That can be done in 2 ways</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">By creating a special column in the table that holds the deleted flag. This should contain a numeric value or a logic (bit) value. You can define that by setting the value for DeletedColumn in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MetaData" styleclass="Normal" translate="true">metadata provider</link><text styleclass="Normal" translate="true">. For logical columns TRUE means deleted and Null/FALSE means not deleted. For numeric columns Null/0 means NOT deleted. All other numeric values indicate that the record is deleted.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">If you do not define a deleted column, then we will physically delete the row from the SQL table as soon as the Delete() operation is committed.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The advantage of 1) is that you can later also restore deleted records.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

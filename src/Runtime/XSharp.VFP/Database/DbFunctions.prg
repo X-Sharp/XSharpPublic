@@ -454,8 +454,9 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
 // - Admin
 // - NoRequery
 // - NoData
-// - ConnString     
+// - ConnString
 
+/// <include file="VFPRUntimeDocs.xml" path="Runtimefunctions/dbuseareafox/*" />
 FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
@@ -493,3 +494,38 @@ if IsNil(cAlias)
 
 ENDIF
 RETURN DbUseArea(FALSE, cDriver, cDataFile, cAlias, lShared, lReadOnly)
+
+
+FUNCTION DbSeekFox(uExpr, uOrder, cBagName, lDescend) AS LOGIC CLIPPER
+    local currentOrder := NIL AS USUAL
+    local bagName      := "" AS STRING
+    local changeOrder  := FALSE AS LOGIC
+    if ! IsNil(uOrder) .or. ! IsNil(cBagName)
+        currentOrder := OrdName()
+        bagName      := OrdBagName()
+        OrdSetFocus(uOrder, cBagName)
+        changeOrder := TRUE
+    endif
+    local result := DbSeek(uExpr,,lDescend) AS LOGIC
+    if changeOrder
+        OrdSetFocus(currentOrder, bagName)
+    endif
+    RETURN result
+
+
+FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
+    local acStruct as ARRAY
+    IF IsArray(aFields)
+        acStruct := aFields
+    ELSE
+        acStruct := NULL_ARRAY
+    ENDIF
+    var result := DbCreate(cTargetFile, VoDb.FieldList(DbStruct(), acStruct, NULL_ARRAY) )
+    IF IsLogic(lCdx) .and. lCdx
+        // Create index later
+    ENDIF
+    return result
+
+
+FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC
+    return DbCopyXStruct(cTargetFile)

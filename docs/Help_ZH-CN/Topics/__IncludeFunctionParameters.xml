@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T20:47:00.434+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeFunctionParameters</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__IncludeFunctionParameters</para>
+    </header>
+    <para styleclass="List"></para>
+    <para styleclass="List">TypeParameters<tab />这适用于具有泛型类型参数的方法。这类似于 `&lt;T&gt;`，用于具有一个名为 T 的类型参数的方法。通常，参数列表中的一个参数也是类型 T。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TypeParameterConstraints<tab />在这里，您可以为类型参数指定约束，例如 WHERE T IS SomeName 或 WHERE T IS New。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__callingconvention" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">EXPORT LOCAL<tab />X# 允许使用该子句，但会被忽略。</para>
+  </body>
+</topic>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0311</title>
+  <keywords>
+    <keyword>XS0311</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0311</para>
+    </header>
+    <para styleclass="Normal">The type &apos;type1&apos; cannot be used as type parameter &apos;T&apos; in the generic type or method &apos;&lt;name&gt;&apos;. There is no implicit reference conversion from &apos;type1&apos; to &apos;type2&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When a constraint is applied to a generic type parameter, an implicit identity or reference conversion must exist from the concrete argument to the type of the constraint.</para>
+    <para styleclass="Heading3">To correct this error</para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Change the argument you are using to create the class.</li>
+      <li styleclass="Normal" style="margin-left:13px;">If you own the class, you can remove the constraint or else do something to enable an implicit reference or identity conversion. For example, you can make the second type inherit from the first.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0311.prg  <br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If this error occurs when trying to use a value-type argument, notice that an implicit numeric conversion, for example from short to int, does not satisfy a generic type parameter.</para>
+  </body>
+</topic>

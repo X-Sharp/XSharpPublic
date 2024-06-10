@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:06:13.873+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>LOGIC</title>
+  <keywords>
+    <keyword>LOGIC</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">LOGIC</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">关键字 LOGIC 表示 .Net 的布尔类型。该类型可以有两个值：true 或 false。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果在 VOSTRUCT 或 UNION 类型中有 LOGIC 类型的成员，则这些成员不会被表示为 .Net 的布尔类型，因为这些布尔类型占用 1 字节，但在 Windows API 中，LOGIC 值用 4 字节表示。因此，编译器将这些替换为特殊类型 __WinBool，它占用 4 字节，并且在 Logic 和 __WinBool 之间有隐式转换器。</para>
+  </body>
+</topic>

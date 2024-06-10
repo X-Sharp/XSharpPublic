@@ -10,7 +10,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <CheckNewtonsoftJsonVersion>false</CheckNewtonsoftJsonVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Ngen>true</Ngen>
+    <Ngen>false</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -24,9 +24,9 @@
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}</ProjectGuid>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
-    <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -127,6 +127,7 @@
     <Compile Include="Commands\CommandViewGlobals.cs" />
     <Compile Include="Commands\CommandUDCTester.cs" />
     <Compile Include="Commands\CommandFoxXPorter.cs" />
+    <Compile Include="Commands\CommandXsHelpChinese.cs" />
     <Compile Include="Commands\CommandXsWebsite.cs" />
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
@@ -198,6 +199,10 @@
     </Content>
     <Content Include="$(Outdir)\x64\SQLite.Interop.dll">
       <Link>x64\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(Outdir)**\e_sqlite3.dll">
+      <Link>%(RecursiveDir)\%(Filename)%(Extension)</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
@@ -768,7 +773,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Data.Sqlite">
       <Version>8.0.1</Version>
-      <IncludeAssets>all</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools">
+      <Version>17.8.2365</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" GeneratePathProperty="true">
       <Version>2.1.6</Version>
@@ -822,7 +833,7 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   -->
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <ItemGroup>
       <OurFiles Include="$(PkgSQLitePCLRaw_lib_e_sqlite3)\runtimes\win-*\**\*.*" />
     </ItemGroup>

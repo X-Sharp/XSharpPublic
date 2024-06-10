@@ -17,6 +17,9 @@ PRIVATE STATIC METHOD DecodeResult(oValue as OBJECT) AS USUAL
     IF oValue == DBNull.Value
         RETURN NIL
     ENDIF
+    IF oValue is OBJECT[] VAR objArray
+        oValue := Array{objArray}
+    ENDIF
     RETURN oValue
 
 /// <inheritdoc cref='CoreDb.BlobInfo'/>
@@ -330,6 +333,12 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             FOR i := 1 TO n
                 AAdd(aRdds, aHidden[i])
             NEXT
+	    // the combination DBFMEMO and DBFCDX gets translated in X# to DBFMEMOCDX
+            IF ATail(aRdds) == "DBFMEMO"
+                IF AScan(aRdds, "DBFCDX") > 0
+                    AAdd(aRdds, "DBFMEMOCDX")
+                ENDIF
+            ENDIF
         ENDIF
         RETURN aRdds
 

@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:55:12.064+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>字符转义</title>
+  <keywords>
+    <keyword>\&apos;</keyword>
+    <keyword>\&quot;</keyword>
+    <keyword>\\</keyword>
+    <keyword>\0</keyword>
+    <keyword>\a</keyword>
+    <keyword>\b</keyword>
+    <keyword>\f</keyword>
+    <keyword>\n</keyword>
+    <keyword>\r</keyword>
+    <keyword>\t</keyword>
+    <keyword>\u</keyword>
+    <keyword>\v</keyword>
+    <keyword>\x</keyword>
+    <keyword>Escape codes</keyword>
+    <keyword>Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">字符转义</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">表中标有星号 (*) 的 &lt;char&gt; 字面量可能包含特殊转义码</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="15" colcount="2" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">字符</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">不以反斜杠开头的字符</para>
+        </td>
+        <td>
+          <para styleclass="Normal">正常字符</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\\</para>
+        </td>
+        <td>
+          <para styleclass="Normal">反斜杠</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">双引号</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\&apos; </para>
+        </td>
+        <td>
+          <para styleclass="Normal">单引号</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">0 字符</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\a</para>
+        </td>
+        <td>
+          <para styleclass="Normal">警告</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\b</para>
+        </td>
+        <td>
+          <para styleclass="Normal">退格键(Backspace)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\f </para>
+        </td>
+        <td>
+          <para styleclass="Normal">分页</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\n</para>
+        </td>
+        <td>
+          <para styleclass="Normal">换行</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\r </para>
+        </td>
+        <td>
+          <para styleclass="Normal">新行</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\t </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Tab</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\v </para>
+        </td>
+        <td>
+          <para styleclass="Normal">纵向 tab</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\x HEXDIGIT(1-4) </para>
+        </td>
+        <td>
+          <para styleclass="Normal">字符的十六进制数。1-4 个十六进制数字</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\u HEXGDIGIT (4 or 8)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">字符的 Unicode 编码。4 或 8 个十六进制数字</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

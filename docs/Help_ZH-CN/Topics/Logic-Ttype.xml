@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:07:23.663+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Logic 类型</title>
+  <keywords>
+    <keyword>LOGIC</keyword>
+    <keyword>XSharp.__WinBool</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Logic 类型</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">正常使用时，Logic 类型会映射为 System.Boolean。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在 VOSTRUCT 和 UNION 中使用 XSharp.__WinBool，因为这是一个 4 字节的值，就像 Win32 api 所期望的那样。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="LOGIC" inline="false"/></para>
+  </body>
+</topic>

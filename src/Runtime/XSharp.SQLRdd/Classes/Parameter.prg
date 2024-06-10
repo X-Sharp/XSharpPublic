@@ -16,10 +16,26 @@ begin namespace XSharp.RDD.SqlRDD
 /// The SqlDbParameter class.
 /// </summary>
 class SqlDbParameter inherit SqlDbObject
+    private oValue as object
     /// <summary>Ordinal position of the parameter</summary>
     property Ordinal        as long auto
     /// <summary>Value of the parameter</summary>
-    property Value          as object auto
+    property Value          as object
+        get
+            if DbParameter != null
+                return DbParameter.Value
+            else
+                return oValue
+            endif
+        end get
+        set
+            if DbParameter != null
+                DbParameter.Value := value
+            else
+                oValue := value
+            endif
+        end set
+    end property
     /// <summary>Direction (Input, Output, InputOutput) </summary>
     property Direction      as ParameterDirection auto
     /// <summary>DbParameter object generated to pass the value to the Ado.Net dataprovider</summary>

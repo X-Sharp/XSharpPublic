@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-27T17:41:53.250+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-03-14T12:43:32.659+01:00" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Version History</title>
   <keywords>
     <keyword translate="true">BeforeConnect</keyword>
@@ -9,8 +9,45 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Version History</text></para>
     </header>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.0 - February 2024</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.1 - March 2024</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Second beta. Changes are:</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We Implemented Pack() and Zap()</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Several changes in the providers</text></li>
+      <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">All providers must implement CaseSync()</text></li>
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">MySql: GetRowCount and SelectTopStatement</text></li>
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">PostgreSQL: changed the class name. GetIdentity and GetRowCount are not returning an empty string</text></li>
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">SQLite: new (also included as example)</text></li>
+      </list>
+    </list>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem with case sensitivity for identifiers</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Implemented several OrderInfo calls for current OrderNumber, OrderCount, OrderKeyNo, OrderKeyCount etc</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">IMetadataProvider now has 2 new methods (CreateTable and CreateIndex) that are called when a table is created or an index is created.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The implementation of these methods by the Database Metadataprovider is this:</text></li>
+      <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">Creating a table with DbCreate() will now also add the table to the xs_tableinfo table</text></li>
+        <li styleclass="Normal"><text styleclass="Normal" translate="true">Creating an order with the Database Metadata provider now also adds the index and tag to the xs_infoinfo table and the index name to the xs_tableinfo table</text></li>
+      </list>
+    </list>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The Ini metadata provider does NOT implement CreateTable and CreateIndex. Please let us know if you would like to add that too.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">If you have declared a default RecnoColumn and/or a default DeletedColumn, then these columns will be automatically added when you create a table with DbCreate() </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Special columns, such as the RecnoColumn and DeletedColumn are not included in the array that is returned from DbStruct().</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">When you open a connection we will now add 2 special tables to the database (when they do not exist) in which we store license information and the current connected users. For now there is no limitation here, but in the release version of the SqlRDD we will use this information to restrict the # of concurrent users based on the license.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Generated OrderBy clauses will now include the recnocolumn (when relevant). This makes sure that duplicate keys are ordered in record number order, just like what RDD indexes do.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The record number and/or deleted columns will be moved to the end of the column list</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">If you do not specify KeyColumns for your table, but the table has a RecnoColumn, then we will use that column to generate update and/or delete statements.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The where condition for 2 equal top and bottom scopes is now compressed to a single comparison</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem with writing Null values to DateTime columns</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem when DbCopy() was copying deleted rows to the SQL table. </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Some Ado.Net providers are returning System.Decimal values for columns without decimals. These are now converted to Integer values.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The SqlDbConnection class now reads several properties from the Ado.Net datasource and stores these in the DataSourceProperties collection</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Version 1.0.0.0 - February 2024</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">First Beta</text></li>
     </list>
   </body>

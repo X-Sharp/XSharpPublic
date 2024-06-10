@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:45:13.193+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Highlight Keywords(高亮关键字)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Highlight Keywords(高亮关键字)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">关键词匹配功能会在编辑器中突出显示关键词对，如下图所示。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Keyword Matching.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text">TRY、CATCH 和 END TRY 关键字会高亮显示，以便查看它们是否相互关联。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">如果光标位于 RETURN 语句上，则与之匹配的 FUNCTION 或 METHOD 将突出显示。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="Keyword Matching-Return.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">高亮部分的颜色可以在环境/字体和颜色节点下的工具/选项对话框中设置。X# 专用颜色均以 &quot;X#&quot;开头。</para>
+  </body>
+</topic>

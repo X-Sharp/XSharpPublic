@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:13:56.863+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>INT64</title>
+  <keywords>
+    <keyword>INT64</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">INT64</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">INT64 关键字表示一种整数类型，用于存储带符号的 64 位值，取值范围从负 9,223,372,036,854,775,808 到正 9,223,372,036,854,775,807。</para>
+  </body>
+</topic>

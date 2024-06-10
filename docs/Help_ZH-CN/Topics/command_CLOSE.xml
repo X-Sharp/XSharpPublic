@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLOSE Command</title>
+  <keywords>
+    <keyword>CLOSE ALL command</keyword>
+    <keyword>CLOSE ALTERNATE command</keyword>
+    <keyword>CLOSE command</keyword>
+    <keyword>CLOSE DATABASES command</keyword>
+    <keyword>CLOSE FORMAT command</keyword>
+    <keyword>CLOSE INDEXES command</keyword>
+    <keyword>Closing<keyword>files</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Files<keyword>closing</keyword></keyword>
+    <keyword>Index/order</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLOSE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Normal">Close specified file type.</para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Code with box">CLOSE [&lt;xcAlias&gt; | ALL | ALTERNATE | DATABASES | INDEXES]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;xcAlias&gt;<tab />The alias identifier for the work area where all files are closed.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALL<tab />Closes database and index files in all work areas, releasing all active filters, relations, and format definitions.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALTERNATE<tab />Closes the currently open alternate file.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DATABASES<tab />Closes all database, memo, and associated index files in all work areas, and releases all active filters and relations. &#160;It does not, however, have any effect on the active format.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INDEXES<tab />Closes all index files and clears the order list in the current work area.</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">CLOSE with no option closes the current database and associated files. &#160;A number of other operations close files as a side effect, but it is always a good idea to explicitly close files when you are finished using them.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCloseArea.htm" domain="XSharpRef.chm">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FClose.htm" domain="XSharpRef.chm">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

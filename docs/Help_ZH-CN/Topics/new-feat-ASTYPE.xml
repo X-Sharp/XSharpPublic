@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-02T22:03:47.101+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ASTYPE</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">ASTYPE</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们添加了一个新关键字，允许您将一个值用 Astype 转换为一个类型，就像 C# 的 &quot;as &quot;关键字一样：</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Test (oVar </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ParentClass)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oChild := oVar </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">ASTYPE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ChildClass</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (oChild != NULL_OBJECT)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;DoSomething()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#3366ff;">ENDIF</text></para>
+  </body>
+</topic>

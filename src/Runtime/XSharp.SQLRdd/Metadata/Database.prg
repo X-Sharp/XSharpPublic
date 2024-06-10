@@ -24,16 +24,21 @@ BEGIN NAMESPACE XSharp.RDD.SqlRDD.Providers
 /// - xs_defaults
 /// </remarks>
 CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
-    internal class MetaFieldInfo
-        internal property FieldInfo as RddFieldInfo AUTO
-        internal property Value  as object AUTO
-        constructor(oField as RddFieldInfo, oValue as object)
-            FieldInfo := oField
-            Value := oValue
-        end constructor
-    end class
+internal class MetaFieldInfo
+    internal property FieldInfo as RddFieldInfo AUTO
+    internal property Value  as object AUTO
+    constructor(oField as RddFieldInfo, oValue as object)
+        FieldInfo := oField
+        Value := oValue
+    end constructor
+end class
 
     private hasDefaults as logic
+    private tableDict       as string
+    private tableColumn     as string
+    private indexDict       as string
+    private indexColumn       as string
+
 
     /// <summary>
     /// Create a new instance of the DatabaseMetadataProvider class.
@@ -42,38 +47,48 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
 
     CONSTRUCTOR(conn as SqlDbConnection)
         SUPER(conn)
+        tableDict   := SELF:Connection:Provider:QuoteIdentifier(TableDictionary)
+        tableColumn := SELF:Connection:Provider:QuoteIdentifier(nameof(TableName))
+        indexDict   := SELF:Connection:Provider:QuoteIdentifier(IndexDictionary)
+        indexColumn := SELF:Connection:Provider:QuoteIdentifier(nameof(IndexName))
         RETURN
 
+    private _tablecols as List<MetaFieldInfo>
     PRIVATE METHOD TableFields() as List<MetaFieldInfo>
-        var cols := List<MetaFieldInfo>{}
-        cols:Add(MetaFieldInfo{RddFieldInfo{TableName,"C", 50,0},""})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RealName),"C", 255,0},""})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0},_connection:LongFieldNames})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0},_connection:AllowUpdates})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdateAllColumns),"L", 1,0},_connection:UpdateAllColumns})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0},_connection:MaxRecords})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0},_connection:RecnoColumn})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ServerFilter),"C", 255,0},DEFAULT_SERVERFILTER})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Indexes),"C", 250,0},DEFAULT_INDEXES})
-        RETURN cols
+        if _tablecols == null
+            _tablecols := List<MetaFieldInfo>{}
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{TableName,"C", 50,0},""})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RealName),"C", 255,0},""})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.LongFieldNames),"L", 1,0},_connection:LongFieldNames})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.AllowUpdates),"L", 1,0},_connection:AllowUpdates})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdateAllColumns),"L", 1,0},_connection:UpdateAllColumns})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecords),"N", 10,0},_connection:MaxRecords})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.RecnoColumn),"C", 50,0},_connection:RecnoColumn})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0},_connection:MaxRecnoAsRecCount})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ServerFilter),"C", 255,0},DEFAULT_SERVERFILTER})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Indexes),"C", 250,0},DEFAULT_INDEXES})
+        endif
+        RETURN _tablecols
     END METHOD
-
+    private _indexcols as List<MetaFieldInfo>
     PRIVATE METHOD IndexFields() AS List<MetaFieldInfo>
-        var cols := List<MetaFieldInfo>{}
-        cols:Add(MetaFieldInfo{RddFieldInfo{TableName         ,"C", 50,0},""})
-        cols:Add(MetaFieldInfo{RddFieldInfo{IndexName         ,"C", 50,0},""})
-        cols:Add(MetaFieldInfo{RddFieldInfo{Ordinal           ,"N", 10,0},0})
-        cols:Add(MetaFieldInfo{RddFieldInfo{TagName           ,"C", 50,0},""})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0},DEFAULT_EXPRESSION})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0},DEFAULT_CONDITION})
-        cols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0},DEFAULT_UNIQUE})
-        RETURN cols
+        if _indexcols == null
+            _indexcols := List<MetaFieldInfo>{}
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{TableName         ,"C", 50,0},""})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{IndexName         ,"C", 50,0},""})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{Ordinal           ,"N", 10,0},0})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{TagName           ,"C", 50,0},""})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Expression)   ,"C", 250,0},DEFAULT_EXPRESSION})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Condition)    ,"C", 250,0},DEFAULT_CONDITION})
+            _indexcols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.Unique)       ,"L", 1,0},DEFAULT_UNIQUE})
+        endif
+        RETURN _indexcols
     END METHOD
 
     PRIVATE METHOD CreateDefaultColumnValues(cols as List<MetaFieldInfo>, TableName as string) as string
@@ -113,14 +128,15 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         return sb:ToString()
     end method
 
-    PRIVATE METHOD CreateDictionary() as VOID
+    PRIVATE METHOD CreateTableDict() AS VOID
         var sb  := StringBuilder{}
         var prov := Connection:Provider
-
         sb:Clear()
         sb:Append(prov:DropTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
-        Connection:ExecuteNonQuery(sb:ToString(), "Metadata")
+        sb:Replace(SqlDbProvider.TableNameMacro, tableDict)
+        using var cmd := SqlDbCommand{"Metadata", Connection, false}
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery()
         sb:Clear()
         // build fields list
         var cols := TableFields()
@@ -138,33 +154,64 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         var colNames := CreateColumnNames(cols)
         sb:Clear()
         sb:Append(prov:CreateTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
+        sb:Replace(SqlDbProvider.TableNameMacro, tableDict)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
-        Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery()
         // create default values
         sb:Clear()
         sb:Append(prov:InsertStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
+        sb:Replace(SqlDbProvider.TableNameMacro, tableDict)
         sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
         sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
-        Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery()
+        RETURN
 
-        var tables := Connection:GetTables()
+    PRIVATE METHOD DoesTableExistInDictionary(cTable as string) as LOGIC
+        cTable      := Connection:Provider:CaseSync(cTable)
+        using var cmd := SqlDbCommand{"Metadata", Connection, false}
+        cmd:CommandText := i"SELECT COUNT(*) FROM {tableDict} WHERE {tableColumn} = @p1"
+        cmd:AddParameter("@p1", cTable)
+        var count := cmd:ExecuteScalar(cmd:Name)
+        return Convert.ToInt64(count) > 0
+
+    PRIVATE METHOD AddTableToDictionary(cTable AS String)  AS LOGIC
+        local result := FALSE AS LOGIC
+        TRY
+            var sb          := StringBuilder{}
+            var prov        := Connection:Provider
+            var cols        := TableFields()
+            var colNames    := CreateColumnNames(cols)
+            var fieldValues := CreateDefaultColumnValues(cols, cTable)
+            using var cmd := SqlDbCommand{"Metadata", Connection, false}
+            sb:Append(prov:InsertStatement)
+            sb:Replace(SqlDbProvider.TableNameMacro, tableDict)
+            sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
+            sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
+            cmd:CommandText := sb:ToString()
+            cmd:ExecuteNonQuery(cmd:Name)
+            result := TRUE
+        catch e as Exception
+            self:Connection:LastException := e
+        end try
+        return result
+
+    PRIVATE METHOD FillExistingTables() as VOID
+        var tables  := Connection:GetTables()
         foreach var table in tables
             if table  != TableDictionary .and. table != IndexDictionary
-                sb:Clear()
-                sb:Append(prov:InsertStatement)
-                colNames := CreateColumnNames(cols)
-                fieldValues := CreateDefaultColumnValues(cols, table)
-                sb:Replace(SqlDbProvider.TableNameMacro, TableDictionary)
-                sb:Replace(SqlDbProvider.ColumnsMacro, colNames)
-                sb:Replace(SqlDbProvider.ValuesMacro, fieldValues)
-                Connection:ExecuteNonQuery(sb:ToString(),"Metadata")
+                if !DoesTableExistInDictionary(table)
+                    AddTableToDictionary(table)
+                endif
             endif
         next
-        cols := IndexFields()
-        sb:Clear()
-        first := TRUE
+
+    PRIVATE METHOD CreateIndexDict() as VOID
+        var sb  := StringBuilder{}
+        var prov := Connection:Provider
+        var cols := IndexFields()
+        var first := TRUE
         foreach var col in cols
             if first
                 first := FALSE
@@ -173,17 +220,26 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
             endif
             sb:Append(prov:GetSqlColumnInfo(col:FieldInfo, SELF:Connection))
         next
-        fieldList := sb:ToString()
+        var fieldList := sb:ToString()
         sb:Clear()
         sb:Append(prov:CreateTableStatement)
-        sb:Replace(SqlDbProvider.TableNameMacro, IndexDictionary)
+        sb:Replace(SqlDbProvider.TableNameMacro, indexDict)
         sb:Replace(SqlDbProvider.FieldDefinitionListMacro, fieldList)
-        Connection:ExecuteNonQuery(sb:ToString(), "Metadata")
+        using var cmd := SqlDbCommand{"Metadata", Connection, false}
+        cmd:CommandText := sb:ToString()
+        cmd:ExecuteNonQuery()
+
+
+    PRIVATE METHOD CreateDictionary() as VOID
+        SELF:CreateTableDict()
+        SELF:FillExistingTables()
+        SELF:CreateIndexDict()
         RETURN
     end method
 
     PRIVATE METHOD ReadDefaults() AS VOID
         if ! hasDefaults
+            using var cmd := SqlDbCommand{"ReadDefaults", Connection, false}
             // Check if the table dictionary exists
             IF !Connection:DoesTableExist(TableDictionary)
                 SELF:CreateDictionary()
@@ -191,17 +247,34 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
                 SELF:CreateDictionary()
             ELSE
                 // Check if the table dictionary has at least one record
-                var sql1 := i"SELECT COUNT(*) FROM {TableDictionary}"
-                var count := Connection:ExecuteScalar(sql1, "Metadata")
+
+                cmd:CommandText := i"SELECT COUNT(*) FROM {tableDict}"
+                var count := cmd:ExecuteScalar()
                 if Convert.ToInt64(count) == 0
                     SELF:CreateDictionary()
                 endif
+                cmd:CommandText := i"Select maxrecnoasreccount from {tableDict}"
+                local ok := false as logic
+
+                ok := cmd:ExecuteNonQuery(tableDict)
+                if ! ok
+                    var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.MaxRecnoAsRecCount),"L", 1,0}
+                    var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
+                    cmd:CommandText := i"alter table {tableDict} add "+colInfo
+                    ok := cmd:ExecuteNonQuery(tableDict)
+                    if ok
+                        colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
+                        cmd:CommandText := i"update {tableDict} set "+colInfo+" = "+Connection:Provider:FalseLiteral
+                        ok := cmd:ExecuteNonQuery(tableDict)
+                    endif
+                endif
             ENDIF
             // Read the defaults from the database
-            var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{DefaultSection}'"
-            local rdr := Connection:ExecuteReader(sql, "Metadata") as DbDataReader
+            cmd:AddParameter("@p1",DefaultSection)
+            cmd:CommandText := i"SELECT * FROM {tableDict} WHERE {nameof(TableName)} = @p1"
+            local rdr := cmd:ExecuteReader("Metadata") as DbDataReader
             if rdr != null
-                if rdr:Read()
+                if rdr:Read() .and. rdr.HasRows
                     _connection:LongFieldNames      := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.LongFieldNames),_connection:LongFieldNames )
                     _connection:AllowUpdates        := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.AllowUpdates),_connection:AllowUpdates)
                     _connection:MaxRecords          := SELF:_GetNumber(rdr, nameof(SqlRDDEventReason.MaxRecords), _connection:MaxRecords)
@@ -210,6 +283,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
                     _connection:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
                     _connection:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
                     _connection:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns), _connection:UpdateAllColumns)
+                    _connection:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount), _connection:MaxRecnoAsRecCount)
                 endif
                 rdr:Close()
             endif
@@ -272,9 +346,16 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         if SELF:FindInCache(cTable, out oTable)
             return oTable
         endif
-        oTable := SqlDbTableInfo{cTable, Connection}
-        var sql := i"SELECT * FROM [{TableDictionary}] WHERE {nameof(TableName)} = '{cTable}'"
-        local rdr := SELF:Connection:ExecuteReader(sql, "Metadata") as DbDataReader
+        if !SELF:DoesTableExistInDictionary(cTable)
+            SELF:AddTableToDictionary(cTable)
+        endif
+        oTable   := SqlDbTableInfo{cTable, Connection}
+        var tbl  := SELF:Connection:Provider:CaseSync(cTable)
+        var sql  := i"SELECT * FROM {tableDict} WHERE {nameof(TableName)} = @p1"
+        using var cmd := SqlDbCommand{"ReadDefaults", Connection, false}
+        cmd:CommandText := sql
+        cmd:AddParameter("@p1",tbl)
+        local rdr := cmd:ExecuteReader() as DbDataReader
         if rdr != null
             if rdr:Read()
                 oTable:RealName            := SELF:_GetString(rdr, nameof(SqlRDDEventReason.RealName),cTable)
@@ -285,6 +366,7 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
                 oTable:DeletedColumn       := SELF:_GetString(rdr, nameof(SqlRDDEventReason.DeletedColumn),_connection:DeletedColumn)
                 oTable:TrimTrailingSpaces  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.TrimTrailingSpaces),_connection:TrimTrailingSpaces)
                 oTable:CompareMemo         := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.CompareMemo),_connection:CompareMemo)
+                oTable:MaxRecnoAsRecCount  := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.MaxRecnoAsRecCount),_connection:MaxRecnoAsRecCount)
                 oTable:UpdateAllColumns    := SELF:_GetLogic (rdr, nameof(SqlRDDEventReason.UpdateAllColumns),_connection:UpdateAllColumns)
                 oTable:UpdatableColumns    := SELF:_GetString(rdr, nameof(SqlRDDEventReason.UpdatableColumns),DEFAULT_UPDATABLECOLUMNS)
                 oTable:KeyColumns          := SELF:_GetString(rdr, nameof(SqlRDDEventReason.KeyColumns),DEFAULT_KEYCOLUMNS)
@@ -310,10 +392,15 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
     /// <inheritdoc />
     OVERRIDE METHOD GetIndexInfo(oTable as SqlDbTableInfo, cIndexName as STRING) AS SqlDbIndexInfo
         // Indexes are stored in a section TableName_IndexName
-        var sql := i"SELECT * FROM [{IndexDictionary}] WHERE {nameof(TableName)} = '{oTable.Name}' "+ ;
-            i"and [{nameof(IndexName)}] = '{cIndexName}' Order by [Ordinal]"
+        var tbl   := SELF:Connection:Provider:CaseSync(oTable.Name)
+        var ind   := SELF:Connection:Provider:CaseSync(cIndexName)
+        var ord   := SELF:Connection:Provider:CaseSync(nameof(Ordinal))
 
-        local rdr := Connection:ExecuteReader(sql, "Metadata") as DbDataReader
+        using var cmd := SqlDbCommand{"Metadata", Connection, false}
+        cmd:CommandText := i"SELECT * FROM {indexDict} WHERE {tableColumn} = @p1 and {indexColumn} = @p2 Order by {ord}"
+        cmd:AddParameter("@p1",tbl)
+        cmd:AddParameter("@p2",ind)
+        var rdr := cmd:ExecuteReader()
         var oIndex  := SqlDbIndexInfo{oTable, cIndexName}
         if rdr != null
             while rdr:Read()
@@ -327,6 +414,133 @@ CLASS SqlMetadataProviderDatabase INHERIT SqlMetadataProviderAbstract
         endif
         return oIndex
     end method
+
+    /// <inheritdoc />
+    OVERRIDE METHOD CreateTable(cTable AS STRING, info as DbOpenInfo) AS VOID
+        SELF:ReadDefaults()
+        if !SELF:DoesTableExistInDictionary(cTable)
+            SELF:AddTableToDictionary(cTable)
+        endif
+        RETURN
+    /// <inheritdoc />
+    /// <remarks>The abstract implementation does nothing.</remarks>
+    OVERRIDE METHOD CreateIndex(cTable as String, orderInfo as DbOrderCreateInfo) AS VOID
+        SELF:ReadDefaults()
+        if !SELF:DoesTableExistInDictionary(cTable)
+            SELF:AddTableToDictionary(cTable)
+        endif
+        // check to see if the tag exists in the dictionary
+        cTable      := Connection:Provider:CaseSync(cTable)
+        var cIndex  := Connection:Provider:CaseSync(orderInfo:BagName)
+        if String.IsNullOrEmpty(cIndex)
+            cIndex := cTable
+        else
+            cIndex := System.IO.Path.GetFileNameWithoutExtension(cIndex)
+        endif
+        LOCAL cTag  := cIndex as string
+        if orderInfo:Order is string var strOrder
+            cTag := strOrder
+        endif
+        var cWhere   := i" {tableColumn} = @p1 AND {indexColumn} = @p2"
+
+        using var cmd := SqlDbCommand{"CreateIndex", Connection, false}
+        var sql     := i"SELECT COUNT(*) FROM {indexDict} WHERE "+ cWhere + i" AND {nameof(TagName)} = @p3"
+        cmd:CommandText := sql
+        cmd:ClearParameters()
+        cmd:CommandText := sql
+        cmd:AddParameter("@p1",cTable)
+        cmd:AddParameter("@p2",cIndex)
+        cmd:AddParameter("@p3",cTag)
+
+        var count := cmd:ExecuteScalar(cTable)
+        var sb := StringBuilder{}
+        if Convert.ToInt64(count)  == 0
+            // fetch all the rows for the index to determine the ordinal
+            var ord     := Connection:Provider:QuoteIdentifier(nameof(Ordinal))
+            var cSelect := i"Select {ord} from " + indexDict + " where " + cWhere
+            cmd:CommandText := cSelect
+            cmd:ClearParameters()
+            cmd:AddParameter("@p1",cTable)
+            cmd:AddParameter("@p2",cIndex)
+
+            var tbl     := cmd:GetDataTable(cTable)
+            var nOrdinal := 0
+            foreach row as DataRow in tbl:Rows
+                nOrdinal := Math.Max(nOrdinal, (Int32) row:Item[0])
+            next
+            nOrdinal++
+            // create insert command
+            var cols := IndexFields()
+            var first := TRUE
+            var sbValues   := StringBuilder{}
+            local iCounter := 1 as long
+            sb:Append(i"INSERT INTO {indexDict} (")
+            foreach var col in cols
+                if first
+                    first := FALSE
+                else
+                    sb:Append(", ")
+                    sbValues:Append(", ")
+                endif
+                sb:Append(Connection:Provider:QuoteIdentifier(col:FieldInfo:Name))
+                var name := i"@p{iCounter}"
+                iCounter++
+                sbValues:Append(name)
+            next
+            sb:Append(") VALUES (")
+            sb:Append(sbValues:ToString())
+            sb:Append(")")
+            cmd:CommandText := sb:ToString()
+            cmd:ClearParameters()
+            cmd:AddParameter("@p1", cTable)
+            cmd:AddParameter("@p2", cIndex)
+            cmd:AddParameter("@p3", nOrdinal)
+            cmd:AddParameter("@p4", cTag)
+            cmd:AddParameter("@p5", orderInfo:Expression)
+            if orderInfo:OrdCondInfo != null
+                cmd:AddParameter("@p6", orderInfo:OrdCondInfo:ForExpression)
+            else
+                cmd:AddParameter("@p6", "")
+            endif
+            cmd:AddParameter("@p7", orderInfo:Unique)
+            cmd:ExecuteNonQuery()
+        endif
+        // Now check to see if the indexes field in the tableinfo table already contains the index
+        sb:Clear()
+
+        var indexesColumn := Connection:Provider:QuoteIdentifier(nameof(SqlRDDEventReason.Indexes))
+        sb:Append(i"select {indexesColumn} from {tableDict} where {tableColumn} = @p1")
+        cmd:ClearParameters()
+        cmd:CommandText := sb:ToString()
+        cmd:AddParameter("@p1",cTable)
+
+        var result := cmd:ExecuteScalar(cTable)
+        var update := false
+        var newValue := cIndex
+        if result is string var strResult
+            if !strResult:Contains(cIndex)
+                // Add the index to the tableinfo table
+                if !String.IsNullOrEmpty(strResult)
+                    newValue := strResult + "," +cIndex
+                endif
+                update := true
+            else
+                update := false
+            endif
+        else
+            update := true
+        endif
+        if update
+            cmd:CommandText := i"update {tableDict} set {indexesColumn} = @p1 where {tableColumn} = @p2"
+            cmd:ClearParameters()
+            cmd:AddParameter("@p1",newValue)
+            cmd:AddParameter("@p2",cTable)
+            cmd:ExecuteNonQuery(cTable)
+
+        endif
+
+        RETURN
+
 
 #region constants
     INTERNAL CONST TableDictionary   := "xs_tableinfo" as string

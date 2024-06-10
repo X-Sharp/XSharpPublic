@@ -30,9 +30,9 @@ class SqlDbProviderMySql inherit SqlDbProvider
     /// <inheritdoc />
     override property GetIdentity            as string => "select LAST_INSERT_ID()"
     /// <inheritdoc />
-    override property GetRowCount            as string => "select FOUND_ROWS( )"
+    override property GetRowCount            as string => "select ROW_COUNT( )"
     /// <inheritdoc />
-    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" top "+TopCountMacro
+    override property SelectTopStatement     as string => "select "+ColumnsMacro+" from "+TableNameMacro+" limit "+TopCountMacro
     private static lockObj := object{} as object
     constructor()
         super("MySql")
@@ -81,7 +81,7 @@ class SqlDbProviderMySql inherit SqlDbProvider
         case DbFieldType.Integer
             sResult := i"{QuoteIdentifier(oInfo.ColumnName)} int "
             if oInfo:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
-                sResult += " AUTO_INCREMENT "
+                sResult += " PRIMARY KEY AUTO_INCREMENT "
             else
                 sResult += "default 0"
             endif

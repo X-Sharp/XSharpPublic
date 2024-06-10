@@ -316,7 +316,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF (SELF:_Orders:Count > 0)
                 FOR i := 0 TO SELF:_Orders:Count-1
                     ntxIndex := SELF:_Orders[i]
-                    IF (String.Equals(ntxIndex:OrderName, orderName, StringComparison.OrdinalIgnoreCase))
+                    IF (String.Compare(ntxIndex:OrderName, orderName, TRUE) == 0)
                         RETURN i + 1
                     ENDIF
                 NEXT

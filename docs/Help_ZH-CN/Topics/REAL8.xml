@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-10T20:20:16.645+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>REAL8</title>
   <keywords>
     <keyword>REAL8</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">REAL8</para>
     </header>
-    <para styleclass="Normal">The REAL8 keyword denotes an double precision 64-bit number with values ranging from negative 1.79769313486232e308 to positive 1.79769313486232e308, as well as positive or negative zero, PositiveInfinity, NegativeInfinity, and not a number ( NaN). It is intended to represent values that are extremely large (such as distances between planets or galaxies) or extremely small (the molecular mass of a substance in kilograms) and that often are imprecise (such as the distance from earth to another solar system), The Double type complies with the IEC 60559:1989 (IEEE 754) standard for binary floating-point arithmetic.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">REAL8 关键字表示双精度 64 位数字，取值范围从负 1.79769313486232e308 到正 1.79769313486232e308，还包括正零、负零、正无穷大、负无穷大和非数字（NaN）。它旨在表示极大值（如行星或星系之间的距离）或极小值（物质的分子质量以千克为单位），通常是不精确的（如地球到另一个太阳系的距离）。Double 类型符合 IEC 60559:1989（IEEE 754）标准的二进制浮点运算。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

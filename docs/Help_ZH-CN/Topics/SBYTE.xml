@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-10T20:20:51.969+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SBYTE</title>
   <body>
     <header>
       <para styleclass="Heading1">SBYTE</para>
     </header>
-    <para styleclass="Normal">The SBYTE keyword denotes an integral type that stores signed 8-bit values with values ranging from negative 128 to positive 127.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SBYTE 关键字表示一种整数类型，用于存储范围从负128到正127的有符号8位值。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

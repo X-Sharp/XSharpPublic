@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Null Literals</title>
+<topic template="Default" modified="2024-06-10T21:20:01.234+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Null 字面量</title>
   <keywords>
     <keyword>Literals</keyword>
     <keyword>NULL</keyword>
@@ -17,128 +17,130 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Null Literals</para>
+      <para styleclass="Heading1">Null 字面量</para>
     </header>
-    <para styleclass="Body Text">X# uses the following NULL literals. They indicate the absense of a value.</para>
-    <para styleclass="Body Text">Some of these literals require the runtime.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">X# 使用以下 NULL 字面量。它们表示没有值。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">其中一些字面量需要运行时支持。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="11" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Value</text></para>
+        <td style="width:186px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">值</text></para>
+        </td>
+        <td style="width:561px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Requires Runtime</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">需要运行时</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL</para>
         </td>
-        <td>
-          <para styleclass="Normal">&quot;Multi purpose&quot; NULL. Can be used for OBJECT type and Pointer types.</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">“多用途” NULL。可用于 OBJECT 类型和指针类型。</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_ARRAY</para>
         </td>
-        <td>
-          <para styleclass="Normal">Null reference to the xBase ARRAY type</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">xBase ARRAY 类型的 NULL 引用</para>
         </td>
         <td>
           <para styleclass="Normal">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_CODEBLOCK</para>
         </td>
-        <td>
-          <para styleclass="Normal">Null reference to the xBase CODEBLOCK type</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">xBase CODEBLOCK 类型的 NULL 引用</para>
         </td>
         <td>
           <para styleclass="Normal">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_DATE</para>
         </td>
-        <td>
-          <para styleclass="Normal">Empty date (0000-00-00)</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">空数据(0000-00-00)</para>
         </td>
         <td>
           <para styleclass="Normal">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_OBJECT</para>
         </td>
-        <td>
-          <para styleclass="Normal">Null reference to an OBJECT value</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">对 OBJECT 值的 NULL 引用</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_PSZ</para>
         </td>
-        <td>
-          <para styleclass="Normal">Null PSZ value</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">Null PSZ 值</para>
         </td>
         <td>
           <para styleclass="Normal">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_PTR</para>
         </td>
-        <td>
-          <para styleclass="Normal">Null PTR value </para>
+        <td style="width:561px;">
+          <para styleclass="Normal">Null PTR 值</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_STRING</para>
         </td>
-        <td>
-          <para styleclass="Normal">Null reference to a string. When the compiler option /vo2 is used then this will become the equivalent of String.Empty</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">字符串的 NULL 引用。当使用编译器选项 /vo2 时，这将等同于 String.Empty</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">NULL_SYMBOL</para>
         </td>
-        <td>
-          <para styleclass="Normal">NULL reference to the xBase SYMBOL type</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">xBase SYMBOL 类型的 NULL 引用</para>
         </td>
         <td>
           <para styleclass="Normal">Y</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:186px;">
           <para styleclass="Body Text">.NULL.</para>
         </td>
-        <td>
-          <para styleclass="Normal">This FoxPro literal null is translated to a NULL reference</para>
+        <td style="width:561px;">
+          <para styleclass="Normal">该 FoxPro 字面量 null 被转换为 NULL 引用</para>
         </td>
         <td>
           <para styleclass="Normal">N</para>

@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-10T20:09:11.830+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DECIMAL</title>
   <body>
     <header>
       <para styleclass="Heading1">DECIMAL</para>
     </header>
-    <para styleclass="Normal">The DECIMAL keyword describes the .Net System.Decimal type.<br/>The Decimal value type represents decimal numbers ranging from positive 79,228,162,514,264,337,593,543,950,335 to negative 79,228,162,514,264,337,593,543,950,335. The Decimal value type is appropriate for financial calculations that require large numbers of significant integral and fractional digits and no round-off errors. The Decimal type does not eliminate the need for rounding. Rather, it minimizes errors due to rounding. For example, the following code produces a result of 0.9999999999999999999999999999 instead of 1.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">DECIMAL 关键字描述了 .Net System.Decimal 类型。</para>
+    <para styleclass="Normal"><br/>Decimal 值类型表示从正 79,228,162,514,264,337,593,543,950,335 到负 79,228,162,514,264,337,593,543,950,335 范围内的十进制数。Decimal 值类型适用于需要大量有效整数和小数位以及不需要舍入误差的金融计算。Decimal 类型并不消除舍入的需要，而是最小化由于舍入而产生的错误。例如，以下代码的结果为 0.9999999999999999999999999999 而不是 1。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">&#32;</para>
   </body>

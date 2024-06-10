@@ -1,64 +1,65 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Language Reference</title>
+<topic template="Default" modified="2024-06-10T18:53:07.978+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 语言参考</title>
   <body>
     <header>
-      <para styleclass="Heading1">X# Language Reference</para>
+      <para styleclass="Heading1">X# 语言参考</para>
     </header>
-    <para styleclass="Normal">This section is a reference to the X# language</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">X# Language elements</para>
+    <para styleclass="Normal">本部分是 X# 语言的参考。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following table shows reference topics that provide tables of keywords, symbols and literals used as tokens in X#.</para>
+    <para styleclass="Heading2">X# 语言元素</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下表列出了参考主题所提供的 X# 中用作标记的关键字、符号和字面量。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Title</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">标题</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle; width:30%;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Keywords">Keywords </link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Keywords">关键字 </link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Contains links to information about all X# language keywords.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Expressions">Expression</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">A list of possible expressions</para>
+          <para styleclass="Normal">包含所有 X# 语言关键字信息的链接。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operators">Symbol and Operators </link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Expressions">表达式</link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Contains a table of symbols and operators that are used in the X# language.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals (X#)</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Describes the syntax for literal values in X# and how to specify type information for X# literals.</para>
+          <para styleclass="Normal">可能的表达式清单</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Commands-by-Category">Commands and Statements</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operators">符号和运算符 </link></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">A List of commands and statements</para>
+          <para styleclass="Normal">包含 X# 语言中使用的符号和运算符。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">字面量 (X#)</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">介绍 X# 字面值的语法以及如何为 X# 字面值指定类型信息。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Commands-by-Category">命令和语句</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">命令和语句列表</para>
         </td>
       </tr>
     </table></para>

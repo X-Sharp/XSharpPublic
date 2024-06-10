@@ -1,488 +1,489 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Item Templates</title>
+<topic template="Default" modified="2024-06-09T22:36:10.953+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>项目项模板</title>
   <keywords>
     <keyword>item templates</keyword>
     <keyword>templates</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Item Templates</para>
+      <para styleclass="Heading1">项目项模板</para>
     </header>
-    <para styleclass="Normal">The X# Visual Studio integration comes with the following item templates:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# Visual Studio 集成包含以下项目项模板：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="36" colcount="4">
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Template</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">模板</text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        <td style="width:523px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Required Framework</text><br/><text style="font-weight:bold;">version</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-        </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: Code</text></para>
-        </td>
-        <td>
-        </td>
-        <td>
+        <td style="width:199px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">需要的 Framework 版本</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Class.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别：Code</text></para>
+        </td>
+        <td style="width:523px;">
+        </td>
+        <td style="width:199px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Class.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="width:277px;">
           <para styleclass="Normal">Class</para>
         </td>
-        <td>
-          <para styleclass="Normal">An empty class definition</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">空的类定义</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Code.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Code.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">CodeFile</para>
         </td>
-        <td>
-          <para styleclass="Normal">An empty Code File</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">空的代码文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Include.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Include.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Header</para>
         </td>
-        <td>
-          <para styleclass="Normal">An empty Header File</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">空的头文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="TextFile.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="TextFile.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">TextFile</para>
         </td>
-        <td>
-          <para styleclass="Normal">An empty text file</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">空的文本文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: Forms</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别： Forms</text></para>
         </td>
-        <td>
+        <td style="width:523px;">
         </td>
-        <td>
+        <td style="width:199px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Form.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Form.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Windows Forms Form</para>
         </td>
-        <td>
-          <para styleclass="Normal">A Windows form with separate designer.prg</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">带有独立 designer.prg 的 Windows 表单</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Form.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Form.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Windows Forms Simple Form</para>
         </td>
-        <td>
-          <para styleclass="Normal">A simple Windows Forms Form without designer.prg</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">不带 designer.prg 的简单 Windows 窗体表单</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="UserControl.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="UserControl.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Windows Forms User Control</para>
         </td>
-        <td>
-          <para styleclass="Normal">Windows Forms User Control</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Windows 窗体用户控件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: Internal</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别：Internal</text></para>
         </td>
-        <td>
+        <td style="width:523px;">
         </td>
-        <td>
+        <td style="width:199px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">AppConfigInternal</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">A hidden app.config</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">AppManifestInternal</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">A hidden app.manifest</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">AssemblyInfoInternal</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">A hidden assemblyinfo prg</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Managed Resource Internal</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">A hidden resource file</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Settings Internal</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">A hidden settings file</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: Resources</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别：Resources</text></para>
         </td>
-        <td>
+        <td style="width:523px;">
         </td>
-        <td>
+        <td style="width:199px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Rc.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Rc.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Native Resource File (.rc)</para>
         </td>
-        <td>
-          <para styleclass="Normal">A file in which native resources can be defined</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">可以定义本地资源的文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Bitmap.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Bitmap.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Bitmap</para>
         </td>
-        <td>
-          <para styleclass="Normal">A Bitmap file</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Bitmap 文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Cursor.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Cursor.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Cursor</para>
         </td>
-        <td>
-          <para styleclass="Normal">A Cursor file</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Cursor 文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Icon.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Icon.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Icon</para>
         </td>
-        <td>
-          <para styleclass="Normal">An Icon file</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Icon 文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="Resource.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="Resource.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">Managed resource file (.resx)</para>
         </td>
-        <td>
-          <para styleclass="Normal">A file to store managed resources</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">用于存储管理资源的文件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: VO</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别：VO</text></para>
         </td>
-        <td>
+        <td style="width:523px;">
         </td>
-        <td>
+        <td style="width:199px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">VODBServer</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">An empty DBServer</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">VOFieldSpec</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">An empty FieldSpec container file</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">VOMenu</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">An empty VO Menu</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">VOWindow</para>
         </td>
-        <td>
+        <td style="width:523px;">
           <para styleclass="Normal">An empty VO Window</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: WCF</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别：WCF</text></para>
         </td>
-        <td>
+        <td style="width:523px;">
         </td>
-        <td>
+        <td style="width:199px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WCF.png" scale="36.00%" width="63" height="63" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WCF.png" scale="36.00%" width="63" height="63" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WCF Service</para>
         </td>
-        <td>
-          <para styleclass="Normal">A WCF Service</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">WCF 服务</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:87px;">
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Category: WPF</text></para>
+        <td style="width:277px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类别：WPF</text></para>
         </td>
-        <td>
+        <td style="width:523px;">
         </td>
-        <td>
+        <td style="width:199px;">
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WPFFlowDocument.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WPFFlowDocument.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WPF Flow Document</para>
         </td>
-        <td>
-          <para styleclass="Normal">Dynamically formatted XAML document</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">动态格式化的 XAML 文档</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WPFPage.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WPFPage.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WPF Page</para>
         </td>
-        <td>
-          <para styleclass="Normal">Windows Presentation Foundation page</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Windows Presentation Foundation 页面</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WPFPageFunction.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WPFPageFunction.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WPF Page Function</para>
         </td>
-        <td>
-          <para styleclass="Normal">Windows Presentation Foundation page function</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Windows Presentation Foundation 页面功能</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WPFResourceDictionary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WPFResourceDictionary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WPF Resource Dictionary</para>
         </td>
-        <td>
-          <para styleclass="Normal">XAML Resource Dictionary</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">XAML 资源字典</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WPFUserControl.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WPFUserControl.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WPF UserControl</para>
         </td>
-        <td>
-          <para styleclass="Normal">Windows Presentation Foundation user control</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Windows Presentation Foundation 用户控件</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><image src="WPFWindow.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+        <td style="width:87px;">
+          <para styleclass="Normal"><image src="WPFWindow.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
-        <td>
+        <td style="width:277px;">
           <para styleclass="Normal">WPF Window</para>
         </td>
-        <td>
-          <para styleclass="Normal">Windows Presentation Foundation window</para>
+        <td style="width:523px;">
+          <para styleclass="Normal">Windows Presentation Foundation 窗口</para>
         </td>
-        <td>
+        <td style="width:199px;">
           <para styleclass="Normal">3.0</para>
         </td>
       </tr>

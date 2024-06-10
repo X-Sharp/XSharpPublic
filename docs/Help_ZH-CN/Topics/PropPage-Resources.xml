@@ -1,28 +1,30 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Resources</title>
+<topic template="Default" modified="2024-06-08T10:49:28.030+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>资源</title>
   <keywords>
     <keyword>Custom tool</keyword>
     <keyword>resource editor</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Resources</para>
+      <para styleclass="Heading1">资源</para>
     </header>
-    <para styleclass="Normal">The Resources Property page allows you to open up a resources editor for project wide resources. These resources can be files, strings, images etc.</para>
-    <para styleclass="Normal">The Resource editor is the normal Visual Studio resource editor. </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesResources.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal">通过资源页面，您可以为项目范围内的资源打开一个资源编辑器。这些资源可以是文件、字符串、图像等。</para>
+    <para styleclass="Normal">资源编辑器是普通的 Visual Studio 资源编辑器。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">This resource editor will generate a Resources.Resx file in the Properties folder of the project.</para>
-    <para styleclass="Body Text">The &quot;Access Modifier&quot; combobox at the top of the screen allows you to control the code generation for these resources:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">With (Custom) then no code will be generated</li>
-      <li styleclass="Body Text">With &quot;Internal&quot; then X# code will be generated with internal visibility</li>
-      <li styleclass="Body Text">With &quot;Public&quot; then X# code will be generated with public visibility</li>
+    <para styleclass="Normal"><image src="ProjectPropertiesResources.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">该资源编辑器将在项目的 &quot;属性 &quot;文件夹中生成一个 Resources.Resx 文件。</para>
+    <para styleclass="Body Text">通过屏幕顶部的 &quot;访问修改器 &quot;组合框，可以控制这些资源的代码生成：</para>
+    <para styleclass="Body Text"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">如果使用(自定义)，则不会生成代码</li>
+      <li styleclass="Body Text">如果使用 &quot;内部&quot;，则将生成具有内部可见性的 X# 代码</li>
+      <li styleclass="Body Text">如果使用 &quot;公共&quot;，则将生成具有公共可见性的 X# 代码</li>
     </list>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The value of the Access Modifier also sets the &quot;Custom tool&quot; in the properties dialog for the Resources.Resx file.</para>
+    <para styleclass="Body Text">访问修饰符的值还会在 Resources.Resx 文件的属性对话框中设置 &quot;自定义工具&quot;。</para>
   </body>
 </topic>

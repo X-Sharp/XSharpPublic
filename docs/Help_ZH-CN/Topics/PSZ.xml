@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-05T16:11:11.763+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PSZ</title>
   <keywords>
     <keyword>PSZ</keyword>
@@ -9,9 +9,14 @@
     <header>
       <para styleclass="Heading1">PSZ</para>
     </header>
-    <para styleclass="Normal">The PSZ type is a pointer type that points to a null terminated sequence of zero or more bytes, typically representing a printable character string. This type is for backward compatibility only. Don&apos;t use this type in new code unless you have to.</para>
-    <para styleclass="Heading3">Implementation</para>
-    <para styleclass="Normal">The PSZ type is implemented in the class XSharp.__Psz</para>
-    <para styleclass="Normal">The Usual type of PSZ &#160;is 17.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">PSZ 类型是一种指针类型，指向一个由 0 个或多个字节组成的空端序列，通常代表一个可打印字符串。该类型仅用于向后兼容。除非必要，否则不要在新代码中使用这种类型。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">PSZ 类型在 XSharp.__Psz 类中实现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">PSZ 的 UsualType 值是 17。</para>
   </body>
 </topic>

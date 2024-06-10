@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Dialect</title>
+<topic template="Default" modified="2024-06-08T10:21:30.728+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Dialect(方言)</title>
   <keywords>
     <keyword>-fox1</keyword>
     <keyword>-fox2</keyword>
@@ -25,243 +25,265 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Dialect</para>
+      <para styleclass="Heading1">Dialect(方言)</para>
     </header>
-    <para styleclass="Body Text">The Dialect page contains some additional language settings. Some of these settings apply to all dialects. Others only apply to the given dialect and will only be enabled when the appropriate dialect is chosen.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text">方言页面包含一些额外的语言设置。其中一些设置适用于所有方言。其他设置只适用于给定的方言，只有在选择了相应方言时才会启用。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="3">
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Item</para>
+        <td style="width:401px;">
+          <para styleclass="Normal" style="text-align:center;">项目</para>
         </td>
-        <td>
-          <para styleclass="Normal">Description</para>
+        <td style="width:701px;">
+          <para styleclass="Normal" style="text-align:center;">描述</para>
         </td>
-        <td>
-          <para styleclass="Normal">Command item</para>
+        <td style="width:131px;">
+          <para styleclass="Normal" style="text-align:center;">命令行选项</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="height:15px;">
+        <td style="width:401px; height:15px;">
           <para styleclass="Normal">All instance methods virtual</para>
+          <para styleclass="Normal">(虚拟所有实例化方法)</para>
         </td>
-        <td style="height:15px;">
-          <para styleclass="Normal">Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior).</para>
+        <td style="width:701px; height:15px;">
+          <para styleclass="Normal">默认情况下在所有方法中添加虚拟修饰符(这是 Visual Objects 的正常行为)。</para>
         </td>
-        <td style="height:15px;">
+        <td style="width:131px; height:15px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">-vo3</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Allow Init() and Axit() as aliases for Constructor/Destructor</para>
+          <para styleclass="Normal">(允许将 Init() 和 Axit() 作为 Constructor/Destructor 的别名)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Allow Init() and Axit() as aliases for Constructor/Destructor.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">允许将 Init() 和 Axit() 作为 Constructor/Destructor 的别名。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1">-vo1</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Compatible IIF Behavior</para>
+          <para styleclass="Normal">(兼容 IIF 行为)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Compatible IIF Behavior, allow different types of return values in TRUE and FALSE expression.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">兼容 IIF 行为，允许在 TRUE 和 FALSE 表达式中使用不同类型的返回值。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">-vo10</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Compatible preprocessor</para>
+          <para styleclass="Normal">(兼容预处理器)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">使预处理器对大小写不敏感，并控制 #ifdef 如何检查 #defines。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">-vo8</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Handle problems with incorrect or missing return statements</para>
+          <para styleclass="Normal">(处理不正确或缺少 return 语句的问题)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Allow missing return statements or allow return statements with incorrect return values.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">允许缺少 Return 语句，或允许 Return 语句带有不正确的返回值。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9">-vo9</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Implicit numeric conversions</para>
+          <para styleclass="Normal">(隐式数值转换)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Implicit numeric integer conversions</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">隐式数值整数转换。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4">-vo4</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Initialize strings</para>
+          <para styleclass="Normal">(初始化字符串)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Initialize strings to empty string (String.Empty). </para>
-          <para styleclass="Normal">Please note that in .NET a NULL_STRING is not the same as a string with length 0. When enabled this will initialize local string variables regardless of the setting of &apos;initialize locals&apos; setting from the Language page.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">将字符串初始化为空字符串(String.Empty)。</para>
+          <para styleclass="Normal">请注意，在 .NET 中，NULL_STRING 与长度为 0 的字符串不同。 启用后，无论 Language 页面中的 &quot;Initialize Local variables&quot;(初始化局部变量 )设置如何，都将初始化本地字符串变量。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Clipper Compatible intiger divisions</para>
+          <para styleclass="Normal">(Clipper 兼容整数除法)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Compatible integer divisions, integer divisions may return a float.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">与整数除法兼容，整数除法可返回浮点数。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo12">-vo12</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Compatible numeric conversions</para>
+          <para styleclass="Normal">(兼容数值转换)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Compatible arithmetic conversions.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">兼容算术转换。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">-vo11</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Compatible string comparisons</para>
+          <para styleclass="Normal">(兼容字符串比较)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Compatible string comparisons, respects SetExact and collation table.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">兼容的字符串比较，遵循 Set Exact 和排序规则表。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo13">-vo13</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Generate Clipper constructors</para>
+          <para styleclass="Normal">(生成 Clipper 构造函数)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">为没有构造函数的类自动创建 clipper 调用约定构造函数，其中父类具有 Clipper 调用约定构造函数。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">-vo16</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Implicit casts and conversions</para>
+          <para styleclass="Normal">(隐式强制转换和转换)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Compatible implicit casts and Conversions.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">兼容隐式强制转换和转换。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Implicit Clipper calling convention</para>
+          <para styleclass="Normal">(隐式 Clipper 调用约定)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Methods without parameters and calling convention are compiled as Clipper calling convention. </para>
-          <para styleclass="Normal">Please note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">没有参数和调用约定的方法被编译为 Clipper 调用约定。</para>
+          <para styleclass="Normal">请注意，如果没有此开关，所有没有参数的方法都将被视为 STRICT。具有非类型化参数的方法始终被视为 CLIPPER 调用约定。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo5">-vo5</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Implicit pointer conversions</para>
+          <para styleclass="Normal">(隐式指针转换)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Implicit conversions between typed function PTR and PTR.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">类型化函数 PTR 和 PTR 之间的隐式转换。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo6">-vo6</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Treat missing types as USUAL</para>
+          <para styleclass="Normal">(缺失类型常规处理为 USUAL)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">局部变量、实例变量和参数的缺失类型子句被视为 USUAL（VO 和 Vulcan 方言）。VO 方言的默认值 = TRUE，其他方言的默认值 = FALSE。强烈建议将其设置为 FALSE，因为这将帮助您查找代码中的问题和非最佳代码。如果必须使用 USUAL 类型，我们建议将变量和参数显式声明为 USUAL。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">-vo15</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Use FLOAT literals</para>
+          <para styleclass="Normal">(使用 FLOAT 字面量)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Store floating point literals as FLOAT and not as System.Double (REAL8).</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">将浮点字面量存储为 FLOAT，而不是 System.Double (REAL8)。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14">-vo14</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Compatible BEGIN SEQUENCE .. END</para>
+          <para styleclass="Normal">(兼容 BEGIN SEQUENCE .. END)</para>
         </td>
-        <td>
-          <para styleclass="Normal">Generate code to fully implement the VO compatible BEGIN SEQUENCE .. END SEQUENCE. The compiler generates calls to the runtime functions _SequenceError and _SequenceRecover that you may override in your own code.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">生成代码以完全实现与 VO 兼容的 BEGIN SEQUENCE ... END SEQUENCE。编译器会生成对运行时函数 _SequenceError 和 _SequenceRecover 的调用，您可以在自己的代码中覆盖这些函数。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal">-vo17</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Inherit from Custom class</para>
+          <para styleclass="Normal">(继承自 Custom 类)</para>
         </td>
-        <td>
-          <para styleclass="Normal">All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">所有类都假定继承自 Custom 类。这也会影响编译器处理属性的方式。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">-fox1</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Compatible Array Handling</para>
+          <para styleclass="Normal">(兼容数组处理)</para>
         </td>
-        <td>
-          <para styleclass="Body Text">FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). <br/>WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)</para>
+        <td style="width:701px;">
+          <para styleclass="Body Text">兼容 FoxPro 的数组处理（允许使用括号数组和为数组赋值以填充所有元素）。</para>
+          <para styleclass="Body Text">警告 允许使用括号数组可能会减慢程序的执行速度 !(/fox2)</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:401px;">
           <para styleclass="Normal">Inherit from Abstract class</para>
+          <para styleclass="Normal">(继承自 Abstract 类)</para>
         </td>
-        <td>
-          <para styleclass="Normal">All classes without parent class inherit from the XPP Abstract class.</para>
+        <td style="width:701px;">
+          <para styleclass="Normal">所有没有父类的类都继承自 XPP Abstract 类。</para>
         </td>
-        <td>
+        <td style="width:131px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-xpp1">-xpp1</link></para>
         </td>
       </tr>

@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-27T13:13:27.672+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Other editors</title>
+<topic template="Default" modified="2024-06-09T22:10:12.286+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>其他编辑器</title>
   <body>
     <header>
-      <para styleclass="Heading1">Other editors</para>
+      <para styleclass="Heading1">其他编辑器</para>
     </header>
-    <para styleclass="Normal">We have added some custom editor to Visual Studio to allow you to edit resources that are migrated from Visual Objects.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们在 Visual Studio 中添加了一些自定义编辑器，允许您编辑从 Visual Objects 迁移过来的资源。</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Form Editor</li>
       <li styleclass="Normal">DbServer Editor</li>
@@ -14,15 +15,15 @@
       <li styleclass="Normal">Menu Editor</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The Tools Options dialog contains some settings that are used by these custom editors:</para>
+    <para styleclass="Normal">具选项对话框包含这些自定义编辑器使用的一些设置：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options-Wed.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">There is a second page with some settings for the other editor and for some other relevant settings:</para>
+    <para styleclass="Normal">第二页包含其他编辑器的一些设置和其他相关设置：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options-Other.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The values for the settings are stored in the file XSharp\ProjectSystemSettings.json &#160;in your roaming profile folder. </para>
+    <para styleclass="Normal">设置值存储在漫游配置文件文件夹中的 XSharp\ProjectSystemSettings.json 文件中。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

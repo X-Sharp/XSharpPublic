@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:45:46.320+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>User defined Types</title>
+<topic template="Default" modified="2024-06-10T20:39:33.591+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>自定义类型</title>
   <keywords>
     <keyword>CLASS</keyword>
     <keyword>CLASS (FoxPro syntax)</keyword>
@@ -15,90 +15,92 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">User defined Types</para>
+      <para styleclass="Heading1">自定义类型</para>
     </header>
-    <para styleclass="Normal">The X# language allows you to define your own types (in fact the XBase Specific types have all been defined that way).</para>
-    <para styleclass="Normal">The language has the following keywords that define User defined Types.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 语言允许你定义自己的类型（事实上，XBase 专用类型都是这样定义的）。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该语言的以下关键字定义了用户定义的类型。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">
-        <td style="vertical-align:top;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+        <td style="vertical-align:top; width:249px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">类型</text></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">描述</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a class, using a generic syntax that is available in all dialect.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">使用通用语法定义一个类，该语法适用于所有方言。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Fox">CLASS (FoxPro syntax)</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a class, using the FoxPro specific syntax.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">使用 FoxPro 特定语法定义一个类。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Xpp">CLASS (Xbase++ syntax)</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a class, using the Xbase++ specific syntax.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">使用 Xbase++ 特定语法定义一个类。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELEGATE">DELEGATE</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a delegate, a description of a method or a function.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">定义委托、方法或函数的描述。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ENUM">ENUM</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines an enum, a list of possible options.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">定义一个枚举，即可能的选项列表。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INTERFACE">INTERFACE</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines an interface.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">定义接口。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE">STRUCTURE</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a structure, a value type</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">定义一个结构、一个值类型</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNION">UNION</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a Union, a special kind of structure. Only available in the VO and Vulcan dialects.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">定义 Union，一种特殊的结构。仅适用于 VO 和 Vulcan 方言。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:249px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link></para>
         </td>
-        <td style="vertical-align:top;">
-          <para styleclass="Normal">Defines a VOStruct, a special kind of structure. Only available in the VO and Vulcan dialects.</para>
+        <td style="vertical-align:top; width:882px;">
+          <para styleclass="Normal">定义 VOStruct，这是一种特殊的结构。仅适用于 VO 和 Vulcan 方言。</para>
         </td>
       </tr>
     </table></para>

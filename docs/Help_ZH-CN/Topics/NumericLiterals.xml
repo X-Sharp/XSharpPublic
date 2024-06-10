@@ -1,36 +1,37 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Numeric Literals</title>
+<topic template="Default" modified="2024-06-10T21:21:41.932+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Numeric 字面量</title>
   <keywords>
     <keyword>Literals</keyword>
     <keyword>Numeric Literals</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Numeric Literals</para>
+      <para styleclass="Heading1">Numeric 字面量</para>
     </header>
-    <para styleclass="Normal">The X# language knows the following numeric literal types</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 语言可以使用以下数字字面量类型：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Keyword</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">关键字</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="IntegerLiterals">Integer Literals</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="IntegerLiterals">Integer 字面量</link></para>
         </td>
         <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="RealLiterals">Real Liteals</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="RealLiterals">Real 字面量</link></para>
         </td>
         <td style="vertical-align:middle;">
         </td>

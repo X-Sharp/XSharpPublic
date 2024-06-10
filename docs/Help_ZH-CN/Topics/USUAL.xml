@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-05T16:27:11.026+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USUAL</title>
   <keywords>
     <keyword>USUAL</keyword>
@@ -9,25 +9,27 @@
     <header>
       <para styleclass="Heading1">USUAL</para>
     </header>
-    <para styleclass="Normal">The USUAL type is datatype that can contain any data type. It consists internally of a type flag and a value. This type can store any value.</para>
-    <para styleclass="Normal">The compiler treats this type in a special way. The compiler will not warn you when you assign a value of type USUAL to another type, but will automatically generate the necessary conversion operation/ </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">USUAL is provided primarily for compatibility with untyped code. It is not recommended for use in new code because the compiler cannot perform any type checking on expressions where one or more operands are USUAL. Any data type errors will only be discovered at runtime.</para>
+    <para styleclass="Normal">USUAL 类型是一种可以包含任何数据类型的数据类型。它内部包含一个类型标志和一个值。这种类型可以存储任何值。</para>
+    <para styleclass="Normal">编译器对这种类型进行特殊处理。当您将 USUAL 类型的值分配给另一种类型时，编译器不会警告您，但会自动生成必要的转换操作。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Locals, parameters and fields declared as USUAL also incur considerably more runtime overhead than strongly typed variables.</para>
+    <para styleclass="Normal">USUAL 主要用于与无类型代码兼容。不建议在新代码中使用它，因为编译器无法对一个或多个操作数为 USUAL 的表达式执行任何类型检查。任何数据类型错误只能在运行时发现。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The literal value NIL may be assigned into any storage location typed as USUAL. The value NIL indicates the absence of any other data type or value, and is conceptually equivalent to storing NULL into a reference type. NIL is the default value for a local USUAL variable that has not been initialized.</para>
+    <para styleclass="Normal">作为 USUAL 声明的局部变量、参数和字段也比强类型变量产生更多的运行时开销。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When the left operand of the &apos;:&apos; operator is a USUAL, the compiler will generate a late bound call to the method, field or property specified as the right operand. This call may fail if the value contained in the USUAL at runtime does not have such a member, the member type is incorrect or inaccessible, or if the name evaluates to a method and the number of parameters or their types is incorrect. The /lb compiler option must be enabled in order to use a USUAL as the left operand of the &apos;:&apos; operator, otherwise a compile-time error will be raised.</para>
+    <para styleclass="Normal">可以将字面值 NIL 分配给任何类型为 USUAL 的存储位置。NIL 值表示没有任何其他数据类型或值，并在概念上等同于将 NULL 存储到引用类型中。NIL 是未初始化的本地 USUAL 变量的默认值。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">Numeric operations and USUAL variables of mixed types.</para>
-    <para styleclass="Normal">When you combine 2 USUAL variables in a numeric operation then the type of the result is derived from the types of operands.<br/>The leading principle has been that we try not to loose decimals.</para>
+    <para styleclass="Normal">当“:”运算符的左操作数为 USUAL 时，编译器将生成对指定为右操作数的方法、字段或属性的后期绑定调用。如果运行时 USUAL 中包含的值没有这样的成员，成员类型不正确或不可访问，或者名称评估为方法且参数数量或其类型不正确，则此调用可能失败。必须启用 /lb 编译器选项才能将 USUAL 用作“:”运算符的左操作数，否则将引发编译时错误。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The generic rule is:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">When the Left Hand Side is fractional then the result is also fractional of the type of the LHS</li>
-      <li styleclass="Normal">When the LHS is NOT fractional and the Right Hand Side (RHS) is fractional then the result is the type of the RHS</li>
-      <li styleclass="Normal">When both sides are integral then the result has the type of the largest of the two.</li>
+    <para styleclass="Heading3">数值运算和混合类型的 USUAL 变量</para>
+    <para styleclass="Normal">当您在数值操作中组合两个常规变量时，结果的类型取决于操作数的类型。<br/>主导原则是我们尽量不丢失小数部分。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通用规则如下：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">当左侧为小数时，结果也是左侧类型的小数</li>
+      <li styleclass="Normal">当左侧不是小数且右侧为小数时，结果为右侧类型</li>
+      <li styleclass="Normal">当两侧都是整数时，结果取两者中较大的类型。</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
@@ -167,8 +169,8 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">Implementation</para>
-    <para styleclass="Normal">The USUAL type is implemented in the structure &#160;XSharp.__Usual</para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal">USUAL 类型在 XSharp.__Usual 结构中实现。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

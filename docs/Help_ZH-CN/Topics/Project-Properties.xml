@@ -1,31 +1,33 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Project Properties</title>
+<topic template="Default" modified="2024-06-06T16:16:52.563+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>项目属性</title>
   <body>
     <header>
-      <para styleclass="Heading1">Project Properties</para>
+      <para styleclass="Heading1">项目属性</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">There are several ways that you can set project properties in Visual Studio:</para>
-    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">There is a &lt;Myprojectname&gt; Properties menu option in the Project Menu</li>
-      <li styleclass="Normal">There is a context menu option &quot;Properties&quot; on the project icons in the Solution Explorer</li>
-      <li styleclass="Normal">By choosing the context menu option &quot;Open&quot; on the Properties folder below the Project Icon in the Solution Explorer.</li>
+    <para styleclass="Normal">在 Visual Studio 中，有几种方法可以设置项目属性：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">项目菜单中有一个 &lt;Myprojectname&gt; 属性菜单选项</li>
+      <li styleclass="Normal">在 &quot;解决方案资源管理器&quot; 中的项目图标上有一个上下文菜单选项 &quot;属性“</li>
+      <li styleclass="Normal">在 &quot;解决方案资源管理器 &quot;中项目图标下方的 &quot;属性 &quot;文件夹上选择上下文菜单选项 &quot;打开&quot;。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">All these options do the same and open the project properties dialog. This dialog has several pages.</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Language</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Dialect</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Build</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-BuildEvents">Build Events</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Debug">Debug</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Resources">Resources</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Settings">Settings</link></li>
+    <para styleclass="Normal">所有这些选项的作用相同，都是打开项目属性对话框。该对话框有多个页面。</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application(应用程序)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Language(语言)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Dialect(方言)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Build(生成)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-BuildEvents">Build Events(生成事件)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Debug">Debug(调试)</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Resources">资源</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Settings">设置</link></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A description of each of these pages will follow in the next chapters.</para>
+    <para styleclass="Normal">接下来的章节将逐一介绍这些页面。</para>
   </body>
 </topic>

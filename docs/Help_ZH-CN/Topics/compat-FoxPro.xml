@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-05T22:48:46.934+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Differences with FoxPro</title>
   <body>
     <header>
-      <para styleclass="Heading1">Differences with FoxPro</para>
+      <para styleclass="Heading1">与 FoxPro 的不同</para>
     </header>
-    <para styleclass="Heading3">Compiler</para>
+    <para styleclass="Heading3">编译器</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Operation</para>
+        <td style="width:194px;">
+          <para styleclass="Normal" style="text-align:center;">操作</para>
         </td>
-        <td>
-          <para styleclass="Normal">Difference</para>
+        <td style="width:948px;">
+          <para styleclass="Normal" style="text-align:center;">不同</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Bracketed strings</para>
+        <td style="width:194px;">
+          <para styleclass="Normal">括号内的字符串</para>
         </td>
-        <td>
-          <para styleclass="Normal">The preprocessor in FoxPro translates #defines inside bracketed strings. X# does not touch the contents of bracketed strings in the preprocessor</para>
+        <td style="width:948px;">
+          <para styleclass="Normal">FoxPro 中的预处理器会翻译括号字符串内的 #defines。在预处理器中，X# 不会触及带括号字符串的内容</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading3">Runtime functions</para>
+    <para styleclass="Heading3">运行时函数</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Function</para>
+        <td style="width:194px;">
+          <para styleclass="Normal" style="text-align:center;">函数</para>
         </td>
-        <td>
-          <para styleclass="Normal">Difference</para>
+        <td style="width:948px;">
+          <para styleclass="Normal" style="text-align:center;">不同</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:194px;">
         </td>
-        <td>
+        <td style="width:948px;">
         </td>
       </tr>
     </table></para>

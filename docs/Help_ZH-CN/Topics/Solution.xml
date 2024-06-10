@@ -1,76 +1,78 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Solution</title>
+<topic template="Default" modified="2024-06-05T23:22:35.527+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>解决方案</title>
   <body>
     <header>
-      <para styleclass="Heading1">Solution</para>
+      <para styleclass="Heading1">解决方案</para>
     </header>
-    <para styleclass="Normal">Visual Studio organizes your source code in Solutions and one or more projects.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A solution is a container for one or more related projects, along with build information, Visual Studio window settings, and any miscellaneous files that aren&apos;t associated with a particular project. </para>
-    <para styleclass="Normal">A solution is described by a text file (extension .sln) with its own unique format; it&apos;s not intended to be edited by hand.</para>
-    <para styleclass="Body Text">Visual Studio uses two file types (.sln and .suo) to store settings for solutions:</para>
+    <para styleclass="Normal">Visual Studio 将源代码组织在解决方案和一个或多个项目中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">解决方案是一个或多个相关项目的容器，其中包括构建信息、Visual Studio 窗口设置以及与特定项目无关的任何其他文件。</para>
+    <para styleclass="Normal">一个解决方案由一个文本文件(扩展名为 .sln)来描述，它有自己独特的格式，不能手工编辑。</para>
+    <para styleclass="Body Text">Visual Studio 使用两种文件类型(.sln 和 .suo)来存储解决方案的设置：</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="3" colcount="3">
       <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Extension</para>
+        <td style="vertical-align:middle; width:155px;">
+          <para styleclass="Body Text" style="text-align:center;">扩展名</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Name</para>
+        <td style="vertical-align:middle; width:231px;">
+          <para styleclass="Body Text" style="text-align:center;">名称</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Description</para>
+        <td style="vertical-align:middle; width:746px;">
+          <para styleclass="Body Text" style="text-align:center;">描述</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:155px;">
           <para styleclass="Body Text">.sln</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Visual Studio Solution</para>
+        <td style="vertical-align:middle; width:231px;">
+          <para styleclass="Body Text">Visual Studio 解决方案</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Organizes projects, project items, and solution items in the solution.</para>
+        <td style="vertical-align:middle; width:746px;">
+          <para styleclass="Body Text">在解决方案中组织项目、项目项和解决方案项。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:155px;">
           <para styleclass="Body Text">.suo</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Solution User Options</para>
+        <td style="vertical-align:middle; width:231px;">
+          <para styleclass="Body Text">解决方案用户选项</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Stores user-level settings and customizations, such as breakpoints.</para>
+        <td style="vertical-align:middle; width:746px;">
+          <para styleclass="Body Text">存储用户级设置和自定义设置，如断点。</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Different projects in Visual Studio may target different development languages. </para>
+    <para styleclass="Normal">Visual Studio 中的不同项目可能针对不同的开发语言。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">It is very well possible to use C# and X# projects next to each other in the same solutions.</para>
-    <para styleclass="Normal">And you can set dependency relations between projects for different development languages without problems.</para>
-    <para styleclass="Normal">Visual Studio will automatically determine the order in which projects must be build.</para>
+    <para styleclass="Normal">在同一解决方案中，C# 和 X# 项目完全可以同时使用。</para>
+    <para styleclass="Normal">你还可以在不同开发语言的项目之间设置依赖关系，而不会出现问题。</para>
+    <para styleclass="Normal">Visual Studio 会自动确定项目的构建顺序。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you want you can control this order by opening the Solution Properties dialog (right click on the Solution node in the Solution Explorer and choose &quot;Properties&quot;).</para>
-    <para styleclass="Normal">The image below shows the Solution Properties dialog for the X# runtime solution.</para>
-    <para styleclass="Normal">On this dialog you can also set which project needs to be the &quot;startup project&quot; when you start debugging inside Visual Studio. </para>
-    <para styleclass="Normal">As you can see you can also start multiple projects at the same time.</para>
-    <para styleclass="Normal">The &quot;Action&quot; combo offers you the choice to Start a program or to start Debugging a program when you start the debugger inside Visual Studio.</para>
+    <para styleclass="Normal">如果需要，可以打开 &quot;解决方案属性 &quot;对话框(右键单击 &quot;解决方案资源管理器 &quot;中的 &quot;解决方案 &quot;节点并选择 &quot;属性&quot;)来控制顺序。</para>
+    <para styleclass="Normal">下图显示了 X# 运行时解决方案的 &quot;解决方案属性 &quot;对话框。</para>
+    <para styleclass="Normal">在此对话框中，您还可以设置在 Visual Studio 中开始调试时，哪个项目需要作为 &quot;启动项目&quot;。</para>
+    <para styleclass="Normal">如您所见，您还可以同时启动多个项目。</para>
+    <para styleclass="Normal">在 Visual Studio 中启动调试器时，&quot;操作&quot;(Action)组合可让您选择启动程序或开始调试程序。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="SolutionProperties.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><image src="SolutionProperties.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">On the &quot;Project Dependencies&quot; tab page you can set the dependencies between projects</para>
+    <para styleclass="Body Text">在 &quot;项目依赖项 &quot;(Project Dependencies)选项页面，您可以设置项目之间的依赖关系</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="SolutionDependencies.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><image src="SolutionDependencies.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">On this dialog you can see that 2 projects are already marked with a check box: these are projects that are added in the references list of the XSharp.VO project.</para>
-    <para styleclass="Body Text">Other projects have a gray checkbox, which means that they depend on XSharp.VO, so you cannot make XSharp.VO dependent on them (that would introduce a circular relation). Other projects ave w hite checkbox. You could add these to the &quot;Depends on:&quot; list for XSharp.VO if you want, which would mean that Visual Studio would always build them before XSharp.VO is built. </para>
+    <para styleclass="Body Text">在该对话框中，你可以看到 2 个项目已经标记了复选框：这些项目已添加到 XSharp.VO 项目的引用列表中。</para>
+    <para styleclass="Body Text">其他项目的复选框为灰色，这意味着它们依赖于 XSharp.VO，因此不能让 XSharp.VO 依赖于它们（这将引入循环关系）。其他项目有白色复选框。如果你愿意，可以将这些项目添加到 XSharp.VO 的 &quot;依赖于：&quot;列表中，这意味着 Visual Studio 将始终在 XSharp.VO 被构建之前构建它们。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">From this dialog you can also open the &quot;Configuration Manager&quot; with which you can maintain the various Configurations (Normally Debug and Release, but you can to that it you want and the various &quot;Platforms&quot;. Normally there is only one Platform called &quot;AnyCpu&quot;. But if your project contains C++ code you may have a x86 and a x64 platform as well. This configuration manager is also available in the Visual Studio Build menu.</para>
-    <para styleclass="Body Text">See the next chapter for more information about build configurations.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">您还可以从该对话框打开 &quot;配置管理器&quot;（Configuration Manager），通过它可以维护各种配置（通常是调试和发布配置，但您也可以根据需要更改）和各种 &quot;平台&quot;。通常只有一个名为 &quot;AnyCpu &quot;的平台。但如果你的项目包含 C++ 代码，你也可能有一个 x86 和一个 x64 平台。该配置管理器也可在 Visual Studio &quot;生成&quot;（Build） 菜单中调用。</para>
+    <para styleclass="Body Text">有关生成配置的更多信息，请参阅下一章。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
   </body>

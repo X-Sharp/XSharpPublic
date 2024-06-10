@@ -1,34 +1,35 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:44:18.761+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Keyword Coloring</title>
+<topic template="Default" modified="2024-06-08T17:26:20.657+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Keyword Coloring(关键字颜色)</title>
   <keywords>
     <keyword>Keyword Coloring</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Keyword Coloring</para>
+      <para styleclass="Heading1">Keyword Coloring(关键字颜色)</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio gives keywords and other parts of the syntax colors based on their purpose, the following items are supported by X#:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Visual studio 会根据关键字和语法的其他部分的用途赋予其颜色，X# 支持以下项目：</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Keywords</para>
-    <para styleclass="Normal">Identifiers</para>
-    <para styleclass="Normal">Comment &#160;s &#160;(single line, multi line etc)</para>
-    <para styleclass="Normal">Operators &#160; (+. -, := etc)</para>
-    <para styleclass="Normal">String s &#160; &#160;(also for Char constants)</para>
-    <para styleclass="Normal">Numbers &#160; &#160; (also for date and datetime literals)</para>
-    <para styleclass="Normal">Literals<tab /> &#160; (NIL, Symbols, _AND, _OR, _NOT, _XOR)</para>
-    <para styleclass="Normal">Preprocessor keywords</para>
-    <para styleclass="Normal">* contents of Text .. EndText</para>
-    <para styleclass="Normal">Inactive/Hidden code inside #IFDEF</para>
-    <para styleclass="Normal">* Highlighted Word</para>
+    <para styleclass="Normal">关键词</para>
+    <para styleclass="Normal">标识符</para>
+    <para styleclass="Normal">注释(单行、多行等)</para>
+    <para styleclass="Normal">操作符(+. -, := etc)</para>
+    <para styleclass="Normal">字符串(也用于字符常数)</para>
+    <para styleclass="Normal">数字(也用于日期和日期时间字面量形式)</para>
+    <para styleclass="Normal">字面量(NIL、符号、_AND、_OR、_NOT、_XOR)</para>
+    <para styleclass="Normal">预处理器关键字</para>
+    <para styleclass="Normal">* Text .. EndText 的文本内容</para>
+    <para styleclass="Normal">#IFDEF 内的非活动/隐藏代码</para>
+    <para styleclass="Normal">* 高亮显示的单词</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">* These are special XSharp colors. The other colors take the default Visual Studio editor colors for that category</para>
+    <para styleclass="Normal">* 这些是特殊的 XSharp 颜色。其他颜色采用 Visual Studio 编辑器的默认颜色。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can change the options for this by going to Tools &gt; Options &gt; </para>
-    <para styleclass="Normal">Note that your settings will reset if you switch your color scheme in Visual Studio. </para>
+    <para styleclass="Normal">您可以通过 &quot;工具&quot;&gt;&quot;选项&quot;&gt;&quot;设置 &quot;来更改相关选项。</para>
+    <para styleclass="Normal">请注意，如果在 Visual Studio 中切换配色方案，您的设置将被重置。</para>
   </body>
 </topic>

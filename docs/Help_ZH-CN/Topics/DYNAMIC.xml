@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-10T20:12:23.233+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DYNAMIC</title>
   <keywords>
     <keyword>DYNAMIC</keyword>
@@ -9,10 +9,12 @@
     <header>
       <para styleclass="Heading1">DYNAMIC</para>
     </header>
-    <para styleclass="Normal">The dynamic type enables the operations in which it occurs to bypass compile-time type checking. Instead, these operations are resolved at run time. The dynamic type simplifies access to COM APIs such as the Office Automation APIs, and also to dynamic APIs such as IronPython libraries, and to the HTML Document Object Model (DOM).</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Type dynamic behaves like type object in most circumstances. However, operations that contain expressions of type dynamic are not resolved or type checked by the compiler. The compiler packages together information about the operation, and that information is later used to evaluate the operation at run time. As part of the process, variables of type dynamic are compiled into variables of type object. Therefore, type dynamic exists only at compile time, not at run time.<br/></para>
-    <para styleclass="Normal">Please not that to use the DYNAMIC type in your app you have to include the Microsoft.CSharp DLL at this moment, and the property names and method names are case sensitive at this moment.</para>
+    <para styleclass="Normal">DYNAMIC 类型允许其出现的操作绕过编译时类型检查，而是在运行时解析这些操作。DYNAMIC 类型简化了对 COM API（如 Office Automation API）、动态 API（如 IronPython 库）和 HTML 文档对象模型（DOM）的访问。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">DYNAMIC 类型在大多数情况下的行为类似于对象类型。但是，包含 DYNAMIC 类型表达式的操作不会被编译器解析或类型检查。编译器会打包有关操作的信息，稍后在运行时使用该信息来评估操作。在此过程中，DYNAMIC 类型的变量被编译为对象类型的变量。因此，DYNAMIC 类型仅在编译时存在，而不在运行时存在。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">请注意，目前在应用程序中使用 DYNAMIC 类型，您必须在此时包含 Microsoft.CSharp DLL，并且属性名称和方法名称在此时区分大小写。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

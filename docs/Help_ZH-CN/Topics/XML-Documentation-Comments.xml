@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>XML Documentation Comments</title>
+<topic template="Default" modified="2024-06-09T23:23:07.230+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XML 文档注释</title>
   <body>
     <header>
-      <para styleclass="Heading1">XML Documentation Comments</para>
+      <para styleclass="Heading1">XML 文档注释</para>
     </header>
     <para styleclass="Normal">In X#, you can create documentation for your code by including XML elements in special comment fields (indicated by triple slashes) in the source code directly before the code block to which the comments refer, for example.</para>
     <para styleclass="Normal"></para>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-19T12:02:38.462+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Namespaces</title>
+<topic template="Default" modified="2024-06-09T23:33:41.831+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>命名空间</title>
   <body>
     <header>
-      <para styleclass="Heading1">Namespaces</para>
+      <para styleclass="Heading1">命名空间</para>
     </header>
     <para styleclass="Normal">A Namespace is a prefix to item names that provides a logical grouping of types and other .Net elements, making it easier to structure together items that have a common purpose and avoid naming conflicts. Due to the vast amount of libraries and classes available in .Net (in System and 3rd party libraries and in every application written in .Net), using simple small names without a namespace would had led to a lot of naming conflicts, making it impossible to distinguish between each other. For example, there&apos;s a type named &quot;Button&quot; (representing a Button control) in the Windows Forms system library, another for WPF, also one in the VOSDK GUI classes and of course the new typed VOSDK GUI classes library has one, too. Furthermore, it&apos;s very likely that also dozens of other custom control libraries include a same named type, too! In order to distinguish among all them, an additional prefix name (namespace) has been added to each version of the type:</para>
     <para styleclass="Normal"></para>

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Runtime Scripting</title>
+<topic template="Default" modified="2024-06-09T23:23:45.515+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>运行时脚本</title>
   <keywords>
     <keyword>ExecScript</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Runtime Scripting</para>
+      <para styleclass="Heading1">运行时脚本</para>
     </header>
     <para styleclass="Normal">XSharp 2.8 adds support for Runtime scripting through the ExecScript() function.</para>
     <para styleclass="Normal">Scripting was added for the FoxPro dialect but also works for other dialects.</para>

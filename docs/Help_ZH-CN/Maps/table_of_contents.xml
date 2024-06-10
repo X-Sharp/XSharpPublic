@@ -608,100 +608,100 @@
         <caption translate="true">UDC Tester</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="423889242125195" build="ALL" modified="2019-01-27T16:06:07.284Z" icon="0" href="X-Programming-guide">
-      <caption translate="true">X# Programming guide</caption>
-      <topicref type="topic" id="423891170408015" modified="2020-04-21T14:52:56.452Z" icon="0" href="Quick-Start">
-        <caption translate="true">Quick Start</caption>
+    <topicref type="topic" id="423889242125195" build="ALL" modified="2024-06-09T22:46:00.964Z" icon="0" href="X-Programming-guide">
+      <caption translate="true">X# 程序员指南</caption>
+      <topicref type="topic" id="423891170408015" modified="2024-06-09T22:46:41.579Z" icon="0" href="Quick-Start">
+        <caption translate="true">快速入门</caption>
       </topicref>
-      <topicref type="topic" id="423890630286744" modified="2020-04-21T14:52:56.462Z" icon="0" href="Arrays">
-        <caption translate="true">Arrays</caption>
+      <topicref type="topic" id="423890630286744" modified="2024-06-09T22:47:19.620Z" icon="0" href="Arrays">
+        <caption translate="true">数组</caption>
       </topicref>
-      <topicref type="topic" id="423888812622405" build="ALL" modified="2023-12-19T12:00:13.718Z" icon="0" href="Classes-and-Structures">
-        <caption translate="true">Classes and Structures</caption>
+      <topicref type="topic" id="423888812622405" build="ALL" modified="2024-06-09T22:47:51.090Z" icon="0" href="Classes-and-Structures">
+        <caption translate="true">类和结构</caption>
       </topicref>
-      <topicref type="topic" id="428997435733357" build="ALL" modified="2019-01-31T09:46:42.812Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
-        <caption translate="true">Codeblock, Lambda and Anonymous Method Expressions</caption>
+      <topicref type="topic" id="428997435733357" build="ALL" modified="2024-06-09T23:20:41.363Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
+        <caption translate="true">代码块、Lambda 和匿名方法表达式</caption>
       </topicref>
-      <topicref type="topic" id="423890322729183" modified="2020-04-21T14:53:08.743Z" icon="0" href="Delegates">
-        <caption translate="true">Delegates</caption>
+      <topicref type="topic" id="423890322729183" modified="2024-06-09T23:25:16.327Z" icon="0" href="Delegates">
+        <caption translate="true">委托</caption>
       </topicref>
-      <topicref type="topic" id="423890157788231" modified="2020-04-21T14:53:08.753Z" icon="0" href="Enumeration-Types">
-        <caption translate="true">Enumeration Types</caption>
+      <topicref type="topic" id="423890157788231" modified="2024-06-09T23:24:17.700Z" icon="0" href="Enumeration-Types">
+        <caption translate="true">枚举类型</caption>
       </topicref>
-      <topicref type="topic" id="423889529120510" modified="2020-04-21T14:53:08.767Z" icon="0" href="Events">
-        <caption translate="true">Events</caption>
+      <topicref type="topic" id="423889529120510" modified="2024-06-09T23:25:25.234Z" icon="0" href="Events">
+        <caption translate="true">事件</caption>
       </topicref>
-      <topicref type="topic" id="423890144002277" build="ALL" modified="2020-04-21T14:58:59.688Z" icon="0" href="Exceptions-and-Exception-Handl">
-        <caption translate="true">Exceptions and Exception Handling</caption>
+      <topicref type="topic" id="423890144002277" build="ALL" modified="2024-06-09T23:21:47.351Z" icon="0" href="Exceptions-and-Exception-Handl">
+        <caption translate="true">异常和异常处理</caption>
       </topicref>
-      <topicref type="topic" id="423887634112346" modified="2020-04-21T14:53:08.785Z" icon="0" href="File-System-and-the-Registry">
-        <caption translate="true">File System and the Registry</caption>
+      <topicref type="topic" id="423887634112346" modified="2024-06-09T23:25:58.862Z" icon="0" href="File-System-and-the-Registry">
+        <caption translate="true">文件系统和注册表</caption>
       </topicref>
-      <topicref type="topic" id="423887518590729" modified="2020-04-21T14:53:08.801Z" icon="0" href="Generics">
-        <caption translate="true">Generics</caption>
+      <topicref type="topic" id="423887518590729" modified="2024-06-09T23:26:38.937Z" icon="0" href="Generics">
+        <caption translate="true">泛型</caption>
       </topicref>
-      <topicref type="topic" id="423888716547497" modified="2020-04-21T14:53:08.809Z" icon="0" href="Indexers">
-        <caption translate="true">Indexers</caption>
+      <topicref type="topic" id="423888716547497" modified="2024-06-09T23:27:21.007Z" icon="0" href="Indexers">
+        <caption translate="true">索引器</caption>
       </topicref>
-      <topicref type="topic" id="423887935410958" modified="2020-04-21T14:53:08.822Z" icon="0" href="Interfaces">
-        <caption translate="true">Interfaces</caption>
+      <topicref type="topic" id="423887935410958" modified="2024-06-09T23:27:47.913Z" icon="0" href="Interfaces">
+        <caption translate="true">接口</caption>
       </topicref>
-      <topicref type="topic" id="423888497357636" modified="2020-04-21T14:53:22.080Z" icon="0" href="Interoperability">
-        <caption translate="true">Interoperability</caption>
+      <topicref type="topic" id="423888497357636" modified="2024-06-09T23:29:12.397Z" icon="0" href="Interoperability">
+        <caption translate="true">Interoperability(本机互操作性)</caption>
       </topicref>
-      <topicref type="topic" id="423888175410133" modified="2020-04-21T14:53:22.090Z" icon="0" href="LINQ-Query-Expressions">
-        <caption translate="true">LINQ Query Expressions</caption>
+      <topicref type="topic" id="423888175410133" modified="2024-06-09T23:29:26.319Z" icon="0" href="LINQ-Query-Expressions">
+        <caption translate="true">LINQ 查询表达式</caption>
       </topicref>
-      <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-31T09:46:42.954Z" icon="0" href="Memory-Variables">
-        <caption translate="true">Memory Variables</caption>
+      <topicref type="topic" id="434895842246435" build="ALL" modified="2024-06-09T23:22:18.017Z" icon="0" href="Memory-Variables">
+        <caption translate="true">内存变量</caption>
       </topicref>
-      <topicref type="topic" id="453305634100468" build="ALL" modified="2024-02-13T11:11:32.050Z" icon="0" href="Modifiers">
-        <caption translate="true">Modifiers</caption>
-        <topicref type="topic" id="453384530482641" build="ALL" modified="2024-02-19T11:56:45.260Z" icon="0" href="Modifiers_Visibility">
-          <caption translate="true">Access/Visibility modifiers</caption>
+      <topicref type="topic" id="453305634100468" build="ALL" modified="2024-06-09T23:30:37.369Z" icon="0" href="Modifiers">
+        <caption translate="true">修饰符</caption>
+        <topicref type="topic" id="453384530482641" build="ALL" modified="2024-06-10T11:35:36.057Z" icon="0" href="Modifiers_Visibility">
+          <caption translate="true">可见性修饰符</caption>
         </topicref>
-        <topicref type="topic" id="453383721769049" build="ALL" modified="2024-02-19T11:56:54.932Z" icon="0" href="Modifiers_ClassHierarchy">
-          <caption translate="true">Class hierarchy modifiers</caption>
+        <topicref type="topic" id="453383721769049" build="ALL" modified="2024-06-10T11:36:10.995Z" icon="0" href="Modifiers_ClassHierarchy">
+          <caption translate="true">类层次结构修饰符</caption>
         </topicref>
-        <topicref type="topic" id="453383233807824" build="ALL" modified="2024-02-19T11:57:01.144Z" icon="0" href="Modifiers_Static">
-          <caption translate="true">STATIC modifier</caption>
+        <topicref type="topic" id="453383233807824" build="ALL" modified="2024-06-10T11:36:38.539Z" icon="0" href="Modifiers_Static">
+          <caption translate="true">静态修饰符</caption>
         </topicref>
         <topicref type="topic" id="453415562205418" build="ALL" modified="2024-02-19T11:57:07.703Z" icon="0" href="Modifiers_Async_Await">
           <caption translate="true">ASYNC/AWAIT</caption>
         </topicref>
-        <topicref type="topic" id="453384960751694" build="ALL" modified="2024-02-19T11:57:12.540Z" icon="0" href="Modifiers_Others">
-          <caption translate="true">Other modifiers</caption>
+        <topicref type="topic" id="453384960751694" build="ALL" modified="2024-06-09T23:33:28.648Z" icon="0" href="Modifiers_Others">
+          <caption translate="true">其他修饰符</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="42389463199336" build="ALL" modified="2023-12-19T12:00:06.418Z" icon="0" href="Namespaces2">
-        <caption translate="true">Namespaces</caption>
+      <topicref type="topic" id="42389463199336" build="ALL" modified="2024-06-09T23:33:39.554Z" icon="0" href="Namespaces2">
+        <caption translate="true">命名空间</caption>
       </topicref>
-      <topicref type="topic" id="423889985895203" modified="2020-04-21T14:53:34.303Z" icon="0" href="Nullable-Types">
-        <caption translate="true">Nullable Types</caption>
+      <topicref type="topic" id="423889985895203" modified="2024-06-09T23:34:41.453Z" icon="0" href="Nullable-Types">
+        <caption translate="true">可以为 Null 的类型</caption>
       </topicref>
-      <topicref type="topic" id="423890724030365" modified="2020-04-21T14:53:34.315Z" icon="0" href="Statements_-Expressions-and-Op">
-        <caption translate="true">Statements, Expressions and Operators</caption>
+      <topicref type="topic" id="423890724030365" modified="2024-06-09T23:35:17.388Z" icon="0" href="Statements_-Expressions-and-Op">
+        <caption translate="true">语句、表达式和运算符</caption>
       </topicref>
-      <topicref type="topic" id="423888819569735" modified="2020-04-21T14:53:34.324Z" icon="0" href="Strings">
-        <caption translate="true">Strings</caption>
+      <topicref type="topic" id="423888819569735" modified="2024-06-09T23:35:28.240Z" icon="0" href="Strings">
+        <caption translate="true">字符串</caption>
       </topicref>
-      <topicref type="topic" id="42388775368697" modified="2024-01-08T09:01:42.195Z" icon="0" href="Types">
-        <caption translate="true">Types</caption>
+      <topicref type="topic" id="42388775368697" modified="2024-06-09T23:22:38.195Z" icon="0" href="Types">
+        <caption translate="true">类型</caption>
       </topicref>
-      <topicref type="topic" id="452683246054714" build="ALL" modified="2023-12-08T23:45:53.022Z" icon="0" href="Tuples">
-        <caption translate="true">Tuples</caption>
+      <topicref type="topic" id="452683246054714" build="ALL" modified="2024-06-09T23:36:20.802Z" icon="0" href="Tuples">
+        <caption translate="true">元组</caption>
       </topicref>
-      <topicref type="topic" id="423888708711938" modified="2020-04-21T14:53:34.344Z" icon="0" href="Unsafe-Code-and-Pointers">
-        <caption translate="true">Unsafe Code and Pointers</caption>
+      <topicref type="topic" id="423888708711938" modified="2024-06-09T23:36:52.015Z" icon="0" href="Unsafe-Code-and-Pointers">
+        <caption translate="true">不安全代码和指针</caption>
       </topicref>
-      <topicref type="topic" id="423891384096573" build="ALL" modified="2020-04-21T14:57:08.391Z" icon="0" href="XML-Documentation-Comments">
-        <caption translate="true">XML Documentation Comments</caption>
+      <topicref type="topic" id="423891384096573" build="ALL" modified="2024-06-09T23:22:59.778Z" icon="0" href="XML-Documentation-Comments">
+        <caption translate="true">XML 文档注释</caption>
       </topicref>
-      <topicref type="topic" id="437324895106794" modified="2024-01-08T09:01:52.392Z" icon="0" href="Strong-Typing">
-        <caption translate="true">Strong Typing</caption>
+      <topicref type="topic" id="437324895106794" modified="2024-06-09T23:23:14.169Z" icon="0" href="Strong-Typing">
+        <caption translate="true">强类型</caption>
       </topicref>
-      <topicref type="topic" id="443027840779407" build="ALL" modified="2023-07-07T22:44:05.379Z" icon="0" href="Runtime-Scripting">
-        <caption translate="true">Runtime Scripting</caption>
+      <topicref type="topic" id="443027840779407" build="ALL" modified="2024-06-09T23:23:35.147Z" icon="0" href="Runtime-Scripting">
+        <caption translate="true">运行时脚本</caption>
       </topicref>
       <topicref type="topic" id="451070096852790" build="ALL" modified="2024-05-26T17:00:13.961Z" icon="0" href="Calling-conventions">
         <caption translate="true">调用约定</caption>

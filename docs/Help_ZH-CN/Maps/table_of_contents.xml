@@ -707,15 +707,15 @@
         <caption translate="true">调用约定</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="423889629409879" build="ALL" modified="2017-01-09T09:14:07.526Z" icon="0" href="Chapter-2">
-      <caption translate="true">X# Language Reference</caption>
-      <topicref type="topic" id="423891053622515" build="ALL" modified="2019-10-15T13:46:40.539Z" icon="0" href="Keywords">
-        <caption translate="true">Keywords</caption>
+    <topicref type="topic" id="423889629409879" build="ALL" modified="2024-06-10T18:48:35.726Z" icon="0" href="Chapter-2">
+      <caption translate="true">X# 语言参考</caption>
+      <topicref type="topic" id="423891053622515" build="ALL" modified="2024-06-10T18:53:38.373Z" icon="0" href="Keywords">
+        <caption translate="true">关键字</caption>
       </topicref>
-      <topicref type="topic" id="423889842078590" build="ALL" modified="2016-01-19T22:48:15.647Z" icon="0" href="Built-in-Types">
-        <caption translate="true">Types</caption>
-        <topicref type="topic" id="423889647849809" build="ALL" modified="2017-05-19T16:33:10.765Z" icon="0" href="Native-Types">
-          <caption translate="true">Simple (Native) Types</caption>
+      <topicref type="topic" id="423889842078590" build="ALL" modified="2024-06-10T18:53:53.069Z" icon="0" href="Built-in-Types">
+        <caption translate="true">类型</caption>
+        <topicref type="topic" id="423889647849809" build="ALL" modified="2024-06-10T18:54:26.303Z" icon="0" href="Native-Types">
+          <caption translate="true">简单(固有)类型</caption>
           <topicref type="topic" id="423889963400613" build="ALL" modified="2016-01-19T20:54:01.330Z" icon="0" href="BYTE">
             <caption translate="true">BYTE</caption>
           </topicref>
@@ -771,8 +771,8 @@
             <caption translate="true">WORD</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423887482349676" build="ALL" modified="2016-01-19T20:50:25.533Z" icon="0" href="XBase-Specific-Types">
-          <caption translate="true">xBase Specific Types</caption>
+        <topicref type="topic" id="423887482349676" build="ALL" modified="2024-06-10T18:54:53.454Z" icon="0" href="XBase-Specific-Types">
+          <caption translate="true">xBase 特定类型</caption>
           <topicref type="topic" id="423890644701462" build="ALL" modified="2016-01-19T20:54:30.895Z" icon="0" href="ARRAY">
             <caption translate="true">ARRAY</caption>
           </topicref>
@@ -804,44 +804,44 @@
             <caption translate="true">USUAL</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423890697550599" build="ALL" modified="2018-11-09T10:14:05.188Z" icon="0" href="User-defined-Types">
-          <caption translate="true">User defined Types</caption>
+        <topicref type="topic" id="423890697550599" build="ALL" modified="2024-06-10T18:55:09.655Z" icon="0" href="User-defined-Types">
+          <caption translate="true">自定义类型</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423890220586711" build="ALL" modified="2016-01-19T20:51:14.267Z" icon="0" href="Literals">
-        <caption translate="true">Literals</caption>
-        <topicref type="topic" id="423887937208891" build="ALL" modified="2016-11-03T15:43:59.093Z" icon="0" href="CharLiterals">
-          <caption translate="true">Char Literals</caption>
+      <topicref type="topic" id="423890220586711" build="ALL" modified="2024-06-10T18:55:22.068Z" icon="0" href="Literals">
+        <caption translate="true">字面量</caption>
+        <topicref type="topic" id="423887937208891" build="ALL" modified="2024-06-10T18:55:51.071Z" icon="0" href="CharLiterals">
+          <caption translate="true">Char 字面量</caption>
         </topicref>
-        <topicref type="topic" id="423888241301361" build="ALL" modified="2016-11-15T10:43:58.515Z" icon="0" href="StringLiterals">
-          <caption translate="true">String Literals</caption>
+        <topicref type="topic" id="423888241301361" build="ALL" modified="2024-06-10T18:55:59.853Z" icon="0" href="StringLiterals">
+          <caption translate="true">String 字面量</caption>
         </topicref>
-        <topicref type="topic" id="423889587575677" build="ALL" modified="2016-11-03T15:44:16.962Z" icon="0" href="DateLiterals">
-          <caption translate="true">Date Literals</caption>
+        <topicref type="topic" id="423889587575677" build="ALL" modified="2024-06-10T18:56:17.656Z" icon="0" href="DateLiterals">
+          <caption translate="true">Date 字面量</caption>
         </topicref>
-        <topicref type="topic" id="423887867754946" build="ALL" modified="2016-11-03T15:44:26.511Z" icon="0" href="LogicLiterals">
-          <caption translate="true">Logic Literals</caption>
+        <topicref type="topic" id="423887867754946" build="ALL" modified="2024-06-10T18:56:27.737Z" icon="0" href="LogicLiterals">
+          <caption translate="true">Logic 字面量</caption>
         </topicref>
-        <topicref type="topic" id="423887993100569" build="ALL" modified="2016-11-03T15:44:35.250Z" icon="0" href="NullLiterals">
-          <caption translate="true">Null Literals</caption>
+        <topicref type="topic" id="423887993100569" build="ALL" modified="2024-06-10T18:56:38.403Z" icon="0" href="NullLiterals">
+          <caption translate="true">Null 字面量</caption>
         </topicref>
-        <topicref type="topic" id="423889745296552" build="ALL" modified="2016-11-03T15:44:44.706Z" icon="0" href="NumericLiterals">
-          <caption translate="true">Numeric Literals</caption>
-          <topicref type="topic" id="423890126324200" build="ALL" modified="2016-11-03T15:44:50.541Z" icon="0" href="IntegerLiterals">
-            <caption translate="true">Integer Literals</caption>
+        <topicref type="topic" id="423889745296552" build="ALL" modified="2024-06-10T18:56:50.641Z" icon="0" href="NumericLiterals">
+          <caption translate="true">Numeric 字面量</caption>
+          <topicref type="topic" id="423890126324200" build="ALL" modified="2024-06-10T19:01:18.789Z" icon="0" href="IntegerLiterals">
+            <caption translate="true">Integer 字面量</caption>
           </topicref>
-          <topicref type="topic" id="423890067649063" build="ALL" modified="2018-08-24T13:08:04.518Z" icon="0" href="RealLiterals">
-            <caption translate="true">Floating point Literals</caption>
+          <topicref type="topic" id="423890067649063" build="ALL" modified="2024-06-10T19:01:34.744Z" icon="0" href="RealLiterals">
+            <caption translate="true">Floating point 字面量</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="423890264622123" build="ALL" modified="2016-11-03T15:45:09.293Z" icon="0" href="SymbolLiterals">
-          <caption translate="true">Symbol Literals</caption>
+        <topicref type="topic" id="423890264622123" build="ALL" modified="2024-06-10T18:57:02.304Z" icon="0" href="SymbolLiterals">
+          <caption translate="true">Symbol 字面量</caption>
         </topicref>
-        <topicref type="topic" id="438724356265916" build="ALL" modified="2020-02-11T08:51:51.838Z" icon="0" href="Escape-codes">
-          <caption translate="true">Escape codes</caption>
+        <topicref type="topic" id="438724356265916" build="ALL" modified="2024-06-10T19:00:41.161Z" icon="0" href="Escape-codes">
+          <caption translate="true">字符转义</caption>
         </topicref>
-        <topicref type="topic" id="440706093225582" build="ALL" modified="2020-08-27T12:45:04.182Z" icon="0" href="Binary-Literals">
-          <caption translate="true">Binary Literals</caption>
+        <topicref type="topic" id="440706093225582" build="ALL" modified="2024-06-10T18:57:12.185Z" icon="0" href="Binary-Literals">
+          <caption translate="true">Binary 字面量</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="436906885634999" build="ALL" modified="2019-10-15T13:52:53.332Z" icon="0" href="Commands-by-Category">

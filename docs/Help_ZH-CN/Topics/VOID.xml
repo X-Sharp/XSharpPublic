@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-10T20:23:45.227+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>VOID</title>
   <keywords>
     <keyword>VOID</keyword>
@@ -9,6 +9,8 @@
     <header>
       <para styleclass="Heading1">VOID</para>
     </header>
-    <para styleclass="Normal">VOID specifies a return value type for a function or method that does not return a value.<br/>Procedures implicitly define a return type of VOID</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">VOID 用于指定不返回值的函数或方法的返回值类型。</para>
+    <para styleclass="Normal"><br/>Procedure 隐式定义返回类型为 VOID。</para>
   </body>
 </topic>

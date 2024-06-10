@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-08T23:58:10.709+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-09T23:36:23.275+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Codeblock, Lambda and Anonymous Method Expressions</title>
   <keywords>
     <keyword>Tuple</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Tuples</para>
+      <para styleclass="Heading1">元组</para>
     </header>
     <para styleclass="Heading2">Tuple generic data type</para>
     <para styleclass="Normal"></para>

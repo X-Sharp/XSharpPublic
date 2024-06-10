@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Strings</title>
+<topic template="Default" modified="2024-06-09T23:35:30.638+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>字符串</title>
   <body>
     <header>
-      <para styleclass="Heading1">Strings</para>
+      <para styleclass="Heading1">字符串</para>
     </header>
     <para styleclass="Normal"></para>
   </body>

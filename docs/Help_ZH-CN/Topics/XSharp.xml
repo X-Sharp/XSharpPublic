@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-26T17:51:05.421Z" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-10T17:57:31.988+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 文档</title>
   <keywords>
     <keyword>版本历史</keyword>
@@ -10,16 +10,17 @@
       <para styleclass="Heading1">X# (XSharp)</para>
     </header>
     <para styleclass="Heading1 Black" style="text-align:center;">欢迎使用 X# (XSharp) <var translate="false">&lt;%TXTVERSION%&gt;</var></para>
+    <para styleclass="Normal" style="text-align:center;">Powered By：<link displaytype="text" defaultstyle="true" type="weblink" href="https://www.deepl.com/translator" target="_blank">Deepl</link> &#160;And <link displaytype="text" defaultstyle="true" type="weblink" href="https://www.cursor.com/" target="_blank">Cursor</link>(<link displaytype="text" defaultstyle="true" type="weblink" href="https://openai.com/chatgpt/" target="_blank">ChartGPT</link>)</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.jpg" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"><line style="height:1px; color:#000000;"/></para>
+    <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory">版本历史</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues">已知问题</link></para>
     <para styleclass="Normal">X# 是基于 xBase 语言的 .NET 开源开发语言。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">它包含不同的方言，如 Core、Visual Objects、Vulcan.NET、xBase++、Harbour、Foxpro 等。</para>
     <para styleclass="Normal">当前版本的 X# 支持 <text style="font-weight:bold;">Core</text> 方言以及 <text style="font-weight:bold;">VO、Vulcan 和 Harbour </text>方言。<br/></para>
-    <para styleclass="Normal"><line style="height:1px; color:#000000;"/></para>
+    <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal">本文档仍在不断的完整过程中。文档中的某些部分尚不完整。</para>

@@ -919,7 +919,7 @@ RETURN isOK
 PROTECTED METHOD _putEndOfFileMarker() AS LOGIC
 	// According to DBASE.com Knowledge base :
 	// The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
-	LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64
+	LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * (INT64) SELF:_RecordLength AS INT64
 	// Note FoxPro does not write EOF character for files with 0 records
 	RETURN _oStream:SafeSetPos(lOffset) .AND. _oStream:SafeWriteByte(26) .AND. _oStream:SafeSetLength(lOffset+1)
 
@@ -1364,6 +1364,7 @@ RETURN oResult
 
 
     // Read & Write
+INTERNAL PROPERTY _RecordPos as INT64 GET SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * (INT64) SELF:_RecordLength
 
 // Move to the current record, then read the raw Data into the internal RecordBuffer; Set the DELETED Flag
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
@@ -1376,12 +1377,10 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	isOK := SELF:IsOpen
     //
 	IF  isOK
-        // Record pos is One-Based
-		LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
 #ifdef INPUTBUFFER
-		isOK := _inBuffer:Read(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+		isOK := _inBuffer:Read(SELF:_RecordPos, SELF:_RecordBuffer, SELF:_RecordLength)
 #else
-		isOK := _oStream:SafeReadAt(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+		isOK := _oStream:SafeReadAt(SELF:_RecordPos, SELF:_RecordBuffer, SELF:_RecordLength)
 #endif
 
 		IF isOK
@@ -1408,13 +1407,10 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 		ELSE
             SELF:_wasChanged := TRUE
             // Write Current Data Buffer
-            // Record pos is One-Based
-			LOCAL recordPos AS LONG
-			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
 #ifdef INPUTBUFFER
-            isOK := _inBuffer:Write(recordPos, SELF:_RecordBuffer, SELF:_RecordLength)
+            isOK := _inBuffer:Write(SELF:_RecordPos, SELF:_RecordBuffer, SELF:_RecordLength)
 #else
-            isOK :=  _oStream:SafeWriteAt(recordPos, SELF:_RecordBuffer)
+            isOK :=  _oStream:SafeWriteAt(SELF:_RecordPos, SELF:_RecordBuffer)
 #endif
 			IF isOK
 			   // Write Record

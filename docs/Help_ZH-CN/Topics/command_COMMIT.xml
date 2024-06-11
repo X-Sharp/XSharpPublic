@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>COMMIT Command</title>
+<topic template="Default" modified="2024-06-11T18:18:36.887+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COMMIT 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>COMMIT ALL command</keyword>
@@ -13,24 +13,23 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">COMMIT Command</para>
+      <para styleclass="Heading1">COMMIT 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Flush all pending updates in all work areas.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">刷新所有工作区的所有待更新内容。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">COMMIT [ALL]</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">COMMIT causes all pending updates to all work areas to be written to disk. &#160;It is functionally equivalent to DBCommit() for every occupied work area. &#160;<br/>COMMIT <text style="font-weight:bold;">ALL</text> is functionally equivalent to DBCommitAll().</para>
-    <para styleclass="Normal">All updated database and order buffers are written to disk, and a OS Commit request is issued for all files associated with all work areas.</para>
-    <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Shared mode: &#160;</text>COMMIT makes database updates visible to other processes. &#160;To insure data integrity, issue DBCommit() before an unlock operation. &#160;</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">In this example, COMMIT forces a write to disk after a series of memory variables are assigned to field variables:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">COMMIT 会将所有工作区的所有待处理更新写入磁盘。 对于每个占用的工作区，其功能等同于 DBCommit()。 <br/>COMMIT <text style="font-weight:bold;">ALL</text> 在功能上等同于 DBCommitAll()。</para>
+    <para styleclass="Normal">所有更新的数据库和记录缓冲区都会被写入磁盘，并且会对与所有工作区相关的所有文件发出 OS Commit 请求。</para>
+    <para styleclass="Heading1">注意</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">共享模式： &#160;COMMIT 可让其他进程看到数据库更新。 为确保数据完整性，应在解锁操作前发出 DBCommit()。 </text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">在本例中，COMMIT 在将一系列内存变量分配给字段变量后强制写入磁盘：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">EXCLUSIVE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BLANK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">REPLACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Sales-&gt;Name </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &quot;Jones&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">REPLACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Sales-&gt;Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 123.45</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">COMMIT</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参看</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCommit.htm" domain="XSharpRef.chm">DBCommit()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCommitAll.htm" domain="XSharpRef.chm">DBCommitAll()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_GO">GO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SKIP">SKIP</link></para>
     <para styleclass="Normal"></para>
   </body>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-11T17:08:14.676+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN SEQUENCE</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -16,30 +16,38 @@
     <header>
       <para styleclass="Heading1">BEGIN SEQUENCE</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Heading1"><text styleclass="Body Text">The </text><text styleclass="Body Text" style="font-weight:bold;">BEGIN SEQUENCE</text><text styleclass="Body Text"> keyword declares the beginning of an exception handling block.</text></para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Heading1"><text styleclass="Body Text">BEGIN SEQUENCE 关键字声明异常处理块的开始。</text></para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code Example">BEGIN SEQUENCE<br/> &#160; tryStatements<br/>[RECOVER [USING localVariable]<br/> &#160; recoveryStatements<br/>]<br/>[FINALLY<br/> &#160; finallyStatements<br/>]<br/>END [SEQUENCE]</para>
-    <para styleclass="Body Text">where:</para>
-    <para styleclass="List"><text style="font-style:italic;">tryStatements</text>&#32;<tab />One or more statements or expressions that may cause an exception to be thrown. </para>
-    <para styleclass="List"><text style="font-style:italic;">localVariable</text>&#32;<tab />A local variable that will receive the exception thrown by any code between the BEGIN SEQUENCE and RECOVER statements. This must be a variable typed as USUAL. </para>
-    <para styleclass="List"><text style="font-style:italic;">recoveryStatements</text><tab />One or more statements or expressions that will execute if an exception is thrown by any of the tryStatements. </para>
-    <para styleclass="List"><text style="font-style:italic;">finallyStatements</text>&#32;<tab />One or more statements or expressions that will always execute regardless of whether an exception is thrown or not. </para>
+    <para styleclass="Body Text">语法中：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List"><text style="font-style:italic;">tryStatements</text>&#32;<tab />一个或多个可能导致异常抛出的语句或表达式。</para>
+    <para styleclass="List"><text style="font-style:italic;">localVariable</text>&#32;<tab />一个局部变量，用于接收 BEGIN SEQUENCE(开始序列)和 RECOVER(恢复)语句之间的任何代码抛出的异常。该变量类型必须为 USUAL。</para>
+    <para styleclass="List"><text style="font-style:italic;">recoveryStatements</text><tab />如果任何 tryStatements 抛出异常，将执行的一条或多条语句或表达式。 </para>
+    <para styleclass="List"><text style="font-style:italic;">finallyStatements</text>&#32;<tab />无论是否抛出异常，都将始终执行的一条或多条语句或表达式。 </para>
     <para styleclass="List"></para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE is a control structure used for exception and runtime error handling. It delimits a block of statements defining a discrete operation, including invoked procedures and functions.</para>
-    <para styleclass="Normal">When an exception is thrown anywhere anywhere in the block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. If a RECOVER statement is not specified, control branches to the statement following the FINALLY statement, terminating the sequence. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
-    <para styleclass="Normal">If control reaches a RECOVER statement without an exception being thrown, control branches to the statement following the FINALLY statement. If a FINALLY statement is not specified, control branches to the statement following the END SEQUENCE statement, terminating the sequence.</para>
-    <para styleclass="Normal">The RECOVER statement optionally receives an exception thrown by a statement in the tryStatements block. This is usually an error object, generated and returned by the current error handling block defined by ErrorBlock(). If an error object is returned, it can be sent messages to query information about the error. With this information, a runtime error can be handled within the context of the operation rather than in the current runtime error handler.</para>
-    <para styleclass="Normal">The FINALLY statement block is useful for cleaning up any resources allocated in the BEGIN SEQUENCE block. Control is always passed to the FINALLY block (if present) regardless of how the BEGIN SEQUENCE block exits.</para>
-    <para styleclass="Normal">You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement. From within the RECOVER and FINALLY statement blocks however, you can LOOP, EXIT, BREAK, or RETURN since the sequence is essentially completed at that point. Using LOOP from within the RECOVER statement block is useful for re-executing the sequence statement block.</para>
-    <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE control structures can be nested to any depth.</para>
-    <para styleclass="Normal">The CanBreak() function returns TRUE if execution is within any BEGIN SEQUENCE block.</para>
-    <para styleclass="Heading1">Example</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE 是一种控制结构，用于异常和运行时错误处理。它限定了一个定义离散操作的语句块，包括调用的存储过程和函数。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">当在 BEGIN SEQUENCE 语句之后直到相应的 RECOVER 语句之前的语句块中的任何地方出现异常时，控制权将分支到紧跟 RECOVER 语句之后的程序语句。如果未指定 RECOVER 语句，控制将分支到 FINALLY 语句之后的语句，从而终止序列。如果未指定 FINALLY 语句，控制将分支到 END SEQUENCE 语句之后的语句，从而终止序列。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果控制到达 RECOVER 语句，但没有抛出异常，则控制分支到 FINALLY 语句后面的语句。如果未指定 FINALLY 语句，控制将分支到 END SEQUENCE 语句之后的语句，从而终止序列。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">RECOVER 语句可选择接收 tryStatements 块中的语句抛出的异常。这通常是一个错误对象，由 ErrorBlock() 定义的当前错误处理块生成并返回。如果返回了错误对象，则可以向其发送信息，以查询有关错误的信息。有了这些信息，运行时错误就可以在操作的上下文中处理，而不是在当前的运行时错误处理程序中处理。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FINALLY 语句块可用于清理在 BEGIN SEQUENCE 块中分配的任何资源。无论 BEGIN SEQUENCE 块如何退出，控制权始终会传递到 FINALLY 块(如果存在)。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在 BEGIN SEQUENCE 和 RECOVER 语句之间不能使用 RETURN、LOOP 或 EXIT。但在 RECOVER 和 FINALLY 语句块中，可以进行 LOOP、EXIT、BREAK(中断)或 RETURN操作，因为此时序列已基本完成。在 RECOVER 语句块中使用 LOOP 可以重新执行序列语句块。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">BEGIN SEQUENCE ... END SEQUENCE 控制结构可以嵌套到任意深度。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果在任何 BEGIN SEQUENCE 块内执行，CanBreak() 函数将返回 TRUE。</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x := 4, y := 0 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SEQUENCE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? x / y</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECOVER</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;oops&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in finally block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SEQUENCE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参看</para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BREAK">BREAK</link><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_THROW">THROW</link><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TRY_CATCH">TRY-CATCH-FINALLY </link></para>
     <para styleclass="Body Text"></para>
   </body>

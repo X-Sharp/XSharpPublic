@@ -844,13 +844,13 @@
           <caption translate="true">Binary 字面量</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="436906885634999" build="ALL" modified="2019-10-15T13:52:53.332Z" icon="0" href="Commands-by-Category">
-        <caption translate="true">Commands and Statements</caption>
-        <topicref type="topic" id="42389704422360" build="ALL" modified="2016-01-19T21:35:35.315Z" icon="0" href="Identifiers">
-          <caption translate="true">Identifiers</caption>
+      <topicref type="topic" id="436906885634999" build="ALL" modified="2024-06-11T16:00:48.493Z" icon="0" href="Commands-by-Category">
+        <caption translate="true">命令和语句</caption>
+        <topicref type="topic" id="42389704422360" build="ALL" modified="2024-06-11T16:13:29.320Z" icon="0" href="Identifiers">
+          <caption translate="true">标识符</caption>
         </topicref>
-        <topicref type="topic" id="43755519363475" build="ALL" modified="2020-02-11T10:05:01.716Z" icon="0" href="Blocks2">
-          <caption translate="true">Blocks and Namespaces</caption>
+        <topicref type="topic" id="43755519363475" build="ALL" modified="2024-06-11T16:17:47.483Z" icon="0" href="Blocks2">
+          <caption translate="true">(代码)块和命名空间</caption>
           <topicref type="topic" id="423889269807360" build="ALL" modified="2019-10-15T14:08:49.096Z" icon="0" href="command_BEGIN-CHECKED">
             <caption translate="true">BEGIN (UN)CHECKED</caption>
           </topicref>
@@ -885,22 +885,22 @@
             <caption translate="true">USING</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436964307295986" build="ALL" modified="2022-08-30T15:49:30.689Z" icon="0" href="cmd_cat_comment">
-          <caption translate="true">Comment</caption>
-          <topicref type="topic" id="384614496544850" build="ALL" modified="2022-08-30T15:16:32.720Z" icon="0" href="command_NOTE">
-            <caption translate="true">Comments</caption>
+        <topicref type="topic" id="436964307295986" build="ALL" modified="2024-06-11T18:04:05.986Z" icon="0" href="cmd_cat_comment">
+          <caption translate="true">注释</caption>
+          <topicref type="topic" id="384614496544850" build="ALL" modified="2024-06-11T18:04:47.656Z" icon="0" href="command_NOTE">
+            <caption translate="true">NOTE</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436967444455831" build="ALL" modified="2019-09-24T13:44:42.151Z" icon="0" href="cmd_cat_concur">
-          <caption translate="true">Concurrency Control</caption>
-          <topicref type="topic" id="384612166350409" build="ALL" modified="2019-09-24T13:46:33.719Z" icon="0" href="command_COMMIT">
-            <caption translate="true">COMMIT Command</caption>
+        <topicref type="topic" id="436967444455831" build="ALL" modified="2024-06-11T18:10:26.562Z" icon="0" href="cmd_cat_concur">
+          <caption translate="true">并发控制</caption>
+          <topicref type="topic" id="384612166350409" build="ALL" modified="2024-06-11T18:10:38.550Z" icon="0" href="command_COMMIT">
+            <caption translate="true">COMMIT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384612650664417" build="ALL" modified="2019-09-24T13:46:33.725Z" icon="0" href="command_SET_EXCLUSIVE">
-            <caption translate="true">SET EXCLUSIVE Command</caption>
+          <topicref type="topic" id="384612650664417" build="ALL" modified="2024-06-11T18:10:48.354Z" icon="0" href="command_SET_EXCLUSIVE">
+            <caption translate="true">SET EXCLUSIVE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614716522422" build="ALL" modified="2019-09-24T13:46:33.730Z" icon="0" href="command_UNLOCK">
-            <caption translate="true">UNLOCK Command</caption>
+          <topicref type="topic" id="384614716522422" build="ALL" modified="2024-06-11T18:10:58.843Z" icon="0" href="command_UNLOCK">
+            <caption translate="true">UNLOCK 命令</caption>
           </topicref>
         </topicref>
         <topicref type="topic" id="436905850607204" build="ALL" modified="2019-09-24T13:44:42.157Z" icon="0" href="cmd_cat_Database">

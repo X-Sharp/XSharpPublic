@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-11T16:55:35.001+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>BEGIN LOCK</title>
   <keywords>
     <keyword>BEGIN</keyword>
@@ -13,28 +13,27 @@
     <header>
       <para styleclass="Heading1">BEGIN LOCK</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">The BEGIN LOCK and END LOCK keywords mark a block of statements as a critical section.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK</text> 和 <text style="font-weight:bold;">END LOCK</text> 关键字将语句块标记为关键部分。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code Example">BEGIN LOCK <text style="font-style:italic;">object</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END LOCK</para>
-    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="List"><text style="font-style:italic;">object</text>&#32;<tab />An expression that evaluates to an object reference that is used as a locking object. </para>
-    <para styleclass="List"><text style="font-style:italic;">statements</text>&#32;<tab />One or more statements or expressions that are guarded by a mutual exclusion lock on the object specified in object. </para>
-    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="List"><text style="font-style:italic;">object</text>&#32;<tab />一个表达式，其求值指向一个用作锁定对象的对象引用。</para>
+    <para styleclass="List"><text style="font-style:italic;">statements</text>&#32;<tab />一个或多个语句或表达式，这些语句或表达式受 object 中指定的对象的互斥锁保护。</para>
+    <para styleclass="Heading1">备注</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> insures that multiple threads cannot execute the statements within the block at the same time. If one thread is executing code within the block, any other thread that attempts to enter the block will be suspended until the thread that is executing leaves the block.</para>
-    <para styleclass="Body Text">The object used as the locking object must be a reference type, it cannot be a value type and the expression cannot evaluate to NULL or a runtime error will occur.</para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> uses Monitor.Enter() and Monitor.Exit() to acquire and release a lock on the specified object. The following example:</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> 确保多个线程不能同时执行代码块中的语句。如果一个线程正在执行代码块中的代码，任何试图进入代码块的其他线程都将被暂停，直到正在执行的线程离开代码块。</para>
+    <para styleclass="Body Text">用作锁定对象的对象必须是引用类型，不能是值类型，表达式不能求值为 NULL，否则会出现运行时错误。</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> 使用 Monitor.Enter() 和 Monitor.Exit() 来获取和释放指定对象上的锁。示例如下：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCK</text><text style="font-weight:normal; font-style:normal; color:#000000;"> lockObj</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;在警卫区&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCK</text></para>
+    <para styleclass="Body Text">等价于</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.Enter( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;在警卫区&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">Exit</text><text style="font-weight:normal; font-style:normal; color:#000000;">( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCK</text><text style="font-weight:normal; font-style:normal; color:#000000;"> lockObj</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;In guarded block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCK</text></para>
-    <para styleclass="Body Text">is equivalent to:</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.Enter( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;In guarded block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">Exit</text><text style="font-weight:normal; font-style:normal; color:#000000;">( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">Using <text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> is recommended over using the Monitor class directly because the code is more concise and insures that the monitor object is released even if an exception occurs within the guarded block.</para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> provides functionality similar to the Windows API functions EnterCriticalSection() and LeaveCriticalSection(). However, instead of using an object created by InitializeCriticalSection(), any instance of a reference type may be used for the locking object.</para>
-    <para styleclass="Body Text">Please see the documentation for the System.Threading.Monitor class for more information.</para>
+    <para styleclass="Body Text">建议使用 <text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text>，而不是直接使用 Monitor(监视器) 类，因为这样代码更简洁，即使在保护块内出现异常，也能确保 Monitor(监视器) 对象被释放。</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> 提供的功能类似于 Windows API 函数 EnterCriticalSection() 和 LeaveCriticalSection()。不过，锁定对象可以使用任何引用类型的实例，而不是使用由 InitializeCriticalSection() 创建的对象。</para>
+    <para styleclass="Body Text">有关详细信息，请参阅 System.Threading.Monitor 类的文档。</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

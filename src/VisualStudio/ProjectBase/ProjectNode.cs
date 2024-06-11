@@ -7245,9 +7245,9 @@ namespace Microsoft.VisualStudio.Project
                 solutionExtension = Path.GetExtension(solutionFile);
             }
 
-            this.buildProject.SetGlobalProperty(GlobalProperty.SolutionDir.ToString(), solutionDirectory);
-            this.buildProject.SetGlobalProperty(GlobalProperty.SolutionPath.ToString(), solutionFile);
-            this.buildProject.SetGlobalProperty(GlobalProperty.SolutionFileName.ToString(), solutionFileName);
+            this.buildProject.SetGlobalProperty(GlobalProperty.SolutionDir.ToString(), Path.GetFullPath(solutionDirectory));
+            this.buildProject.SetGlobalProperty(GlobalProperty.SolutionPath.ToString(), Path.GetFullPath(solutionFile));
+            this.buildProject.SetGlobalProperty(GlobalProperty.SolutionFileName.ToString(), Path.GetFullPath(solutionFileName));
             this.buildProject.SetGlobalProperty(GlobalProperty.SolutionName.ToString(), solutionName);
             this.buildProject.SetGlobalProperty(GlobalProperty.SolutionExt.ToString(), solutionExtension);
 

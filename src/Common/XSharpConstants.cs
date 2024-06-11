@@ -34,6 +34,7 @@ namespace XSharp
         internal const string LanguageServiceName = "XSharp Language Service";
         internal const string EditorName = "XSharp Source Code Editor";
         internal const string ProjectSystemName = "XSharp Project System";
+        internal const string CpsProjectAssemblyName = "XSharp.VisualStudio.ProjectSystem";
 
         internal const string ProjectExtension = "xsproj";
         internal const string DottedProjectExtension = "." + ProjectExtension;

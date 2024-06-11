@@ -28,9 +28,10 @@ namespace XSharp.VisualStudio.ProjectSystem
                                     ProjectCapabilities.ComReferences + "; " +
                                     ProjectCapabilities.WinRTReferences + "; " +
                                       ProjectCapability.DotNet;
-        public const string XSharp = Default + "; " +
-                                     ProjectCapability.XSharp + "; " +
-                                     ProjectCapability.SortByDisplayOrder;
+        public const string XSharp = ProjectCapability.XSharp + "; " +
+                                     ProjectCapability.SortByDisplayOrder + "; "+
+                                     Default + "; " ;
+
 
     }
     internal static class ProjectCapability

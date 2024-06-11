@@ -37,8 +37,10 @@ namespace Microsoft.VisualStudio.Project
               {
                 "BaseIntermediateOutputPath",
                 "BaseOutputPath",
+                "Configuration",
                 "ConfigurationName",
                 "OutDir",
+                "Platform",
                 "PlatformName",
                 "ProjectDir",
                 "ProjectExt",
@@ -102,7 +104,12 @@ namespace Microsoft.VisualStudio.Project
                 {
                     value = project.GetProjectProperty(macroName);
                 }
-
+                if (macroName.EndsWith("path", StringComparison.OrdinalIgnoreCase) ||
+                    macroName.EndsWith("filename", StringComparison.OrdinalIgnoreCase) ||
+                    macroName.EndsWith("dir", StringComparison.OrdinalIgnoreCase))
+                {
+                    value = Path.GetFullPath(value);
+                }
                 this.list.Add(macroName, value);
             }
         }

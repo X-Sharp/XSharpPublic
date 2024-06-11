@@ -16,28 +16,28 @@ namespace XSharp.VisualStudio.ProjectSystem
     /// <summary>
     ///     Provides project designer property pages.
     /// </summary>
-    //[Export(typeof(IVsProjectDesignerPageProvider))]
-    //[AppliesTo(ProjectCapability.XSharpAppDesigner)]
-    //internal class XSharpProjectDesignerPageProvider : IVsProjectDesignerPageProvider
-    //{
+    [Export(typeof(IVsProjectDesignerPageProvider))]
+    [AppliesTo(ProjectCapability.XSharpAppDesigner)]
+    internal class XSharpProjectDesignerPageProvider : IVsProjectDesignerPageProvider
+    {
 
-    //    [ImportingConstructor]
-    //    internal XSharpProjectDesignerPageProvider()
-    //    {
-    //    }
+        [ImportingConstructor]
+        internal XSharpProjectDesignerPageProvider()
+        {
+        }
 
-    //    public Task<IReadOnlyCollection<IPageMetadata>> GetPagesAsync()
-    //    {
-    //        var builder = PooledArray<IPageMetadata>.GetInstance(capacity: 6);
+        public Task<IReadOnlyCollection<IPageMetadata>> GetPagesAsync()
+        {
+            var builder = PooledArray<IPageMetadata>.GetInstance(capacity: 6);
 
-    //        builder.Add(XSharpProjectDesignerPage.General);
-    //        builder.Add(XSharpProjectDesignerPage.Language);
-    //        builder.Add(XSharpProjectDesignerPage.Dialect);
-    //        builder.Add(XSharpProjectDesignerPage.Build);
-    //        builder.Add(XSharpProjectDesignerPage.BuildEvents);
-    //        builder.Add(XSharpProjectDesignerPage.Debug);
+            builder.Add(XSharpProjectDesignerPage.General);
+            builder.Add(XSharpProjectDesignerPage.Language);
+            builder.Add(XSharpProjectDesignerPage.Dialect);
+            builder.Add(XSharpProjectDesignerPage.Build);
+            builder.Add(XSharpProjectDesignerPage.BuildEvents);
+            builder.Add(XSharpProjectDesignerPage.Debug);
 
-    //        return Task.FromResult<IReadOnlyCollection<IPageMetadata>>(builder.ToImmutableAndFree());
-    //    }
-    //}
+            return Task.FromResult<IReadOnlyCollection<IPageMetadata>>(builder.ToImmutableAndFree());
+        }
+    }
 }

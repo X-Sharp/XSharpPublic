@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:47:25.173+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-11T17:28:39.701+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOCAL FUNCTION</title>
   <keywords>
     <keyword>END FUNCTION</keyword>
@@ -10,9 +10,9 @@
     <header>
       <para styleclass="Heading1">LOCAL FUNCTION</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a local function </para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明一个局部函数。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal"><tab />[Modifiers] <text style="font-weight:bold;">LOCAL FUNCTION</text> &lt;<text styleclass="Italic">idFunction</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
@@ -22,20 +22,20 @@
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
     <para styleclass="Normal"><tab />END FUNCTION</para>
-    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="List"><tab /></para>
-    <para styleclass="List">[Modifiers]<tab />The only valid modifiers for a local function are UNSAFE and/or ASYNC</para>
+    <para styleclass="List">[Modifiers]<tab />局部函数的唯一有效修饰符是 UNSAFE 和/或 ASYNC</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</para>
+    <para styleclass="List">&lt;idFunction&gt;<tab />函数的有效标识符名称。 函数是一个实体，因此与其他实体共享相同的名称空间。 这意味着不可能出现函数和类同名的情况。</para>
     <para styleclass="List"><snippet src="__IncludeLocalFunctionParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">END FUNCTION<tab />These <text style="font-weight:bold;">mandatory</text> keywords indicate the logical end of the function.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">A local function is defined as a nested function inside a containing member. The END FUNCTION is mandatory so the compiler knows where the function ends and its surrounding container continues.</para>
-    <para styleclass="Normal">In the example below the WAIT command is part of the Start() function and will be executed after result of the call to Fact() is shown.</para>
-    <para styleclass="Heading1">Example</para>
+    <para styleclass="List">END FUNCTION<tab />强制性关键字表示函数的逻辑终点。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">局部函数被定义为一个包含成员的嵌套函数。END FUNCTION 是必须的，这样编译器才能知道函数在哪里结束，其周围的容器在哪里继续。</para>
+    <para styleclass="Normal">在下面的示例中，WAIT 命令是 Start() 函数的一部分，将在显示对 Fact() 的调用结果后执行。</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;? Fact(10)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Fact(nNum </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nNum == 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nNum * Fact(nNum-1) &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">See Also</para>

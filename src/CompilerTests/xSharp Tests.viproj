@@ -129928,7 +129928,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C906 - Incorrect Compiler incorrectly resolves static member of another type to SELF property when /allowdot is enabled
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C907 - A single comma in a line of code causes an internal compiler error *************
 Application = C907 - A single comma in a line of code causes an internal compiler error
 IDEVersion = 1.06
@@ -130044,6 +130044,246 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C907 - A single comma in a line of code causes an internal compiler error
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C908 - Internal Compiler Error with duplicate declaring of fields/memvars *************
+Application = C908 - Internal Compiler Error with duplicate declaring of fields/memvars
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C908\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C908
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 59CA2647-568C-4DD7-9181-55A2FDB7B394
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars FileGroups]
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars Files]
+File = %AppPath%\Prg\C908.prg
+FileGUID = FF12E4EC-5973-4DB1-B12D-A35B32CC099B
+FileType = Code
+CopyToBin = 0
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars Resources]
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars Native Resources]
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars License files]
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[C908 - Internal Compiler Error with duplicate declaring of fields/memvars Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C908 - Internal Compiler Error with duplicate declaring of fields/memvars
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C909 - VFP: Bogus warning when calling a function with /fox2+ *************
+Application = C909 - VFP: Bogus warning when calling a function with /fox2+
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\C909\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C909
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6BCEC1B2-A6AC-4CAD-BD8B-1CB9BB55F071
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C909 - VFP: Bogus warning when calling a function with /fox2+ FileGroups]
+[C909 - VFP: Bogus warning when calling a function with /fox2+ Files]
+File = %AppPath%\Prg\C909.prg
+FileGUID = 2C8AC28C-4266-4BF1-91DF-C4E998155131
+FileType = Code
+CopyToBin = 0
+[C909 - VFP: Bogus warning when calling a function with /fox2+ References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+[C909 - VFP: Bogus warning when calling a function with /fox2+ Resources]
+[C909 - VFP: Bogus warning when calling a function with /fox2+ Native Resources]
+[C909 - VFP: Bogus warning when calling a function with /fox2+ License files]
+[C909 - VFP: Bogus warning when calling a function with /fox2+ General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[C909 - VFP: Bogus warning when calling a function with /fox2+ Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C909 - VFP: Bogus warning when calling a function with /fox2+
 [EndApplications]
 
 [Configurations]

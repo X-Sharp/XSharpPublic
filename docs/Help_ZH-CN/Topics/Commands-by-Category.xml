@@ -1,36 +1,39 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Commands and Statements</title>
+<topic template="Default" modified="2024-06-11T16:11:43.075+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>命令和语句</title>
   <body>
     <header>
-      <para styleclass="Heading1">Commands and Statements</para>
+      <para styleclass="Heading1">命令和语句</para>
     </header>
-    <para styleclass="Normal">The X# language knows commands and statements. The difference between these two is:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Statements are defined by the compiler. Examples are the declarations of functions,local variables and control structures such as IF statements and FOR statements</li>
-      <li styleclass="Normal">Commands are defined in a header file and are preprocessed by the compiler into function calls. Examples of a Command are the USE command and APPEND BLANK command</li>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 语言包含命令和语句。两者的区别在于：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">语句由编译器定义。例如函数声明、局部变量和控制结构(如 IF 语句和 FOR 语句)。</li>
+      <li styleclass="Normal">命令在头文件中定义，由编译器预处理为函数调用。命令的例子有 USE 命令和 APPEND BLANK 命令</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Statements are available in almost all dialects, with only a few exceptions.</para>
-    <para styleclass="Normal">The available commands are very much dependent on the dialect. For example in the Core dialect no commands are available at all. Most commands have optional parameters and depend on the X# runtime types such as USUAL</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This reference lists both the commands that are &apos;built-in&apos; into the compiler and commands that are defined as default &apos;User Defined Commands&apos; in STD.UDC.</para>
-    <para styleclass="Normal">Some commands are marked with an asterisk as &apos;deprecated&apos;. They may not be available in future versions of %APP%</para>
+    <para styleclass="Normal">几乎所有方言都有语句，只有少数例外。</para>
+    <para styleclass="Normal">可用的命令在很大程度上取决于方言。例如，在 Core 方言中根本没有可用的命令。大多数命令都有可选参数，并依赖于 X# 运行时类型，如 USUAL。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本参考既列出了编译器 “内置 ”的命令，也列出了在 STD.UDC 中定义为默认 “用户自定义命令 ”的命令。</para>
+    <para styleclass="Normal">某些命令以星号标记为 “弃用”。这些命令在 %APP% 的未来版本中可能不可用。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="4">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Heading2">Built-in Statements</para>
+          <para styleclass="Heading2" style="text-align:center;">内置语句</para>
         </td>
         <td>
-          <para styleclass="Heading2">Commands in header file</para>
+          <para styleclass="Heading2" style="text-align:center;">头文件中的命令</para>
         </td>
         <td>
-          <para styleclass="Heading2">Commands in header file</para>
+          <para styleclass="Heading2" style="text-align:center;">头文件中的命令</para>
         </td>
         <td>
-          <para styleclass="Heading2">Grouped by category</para>
+          <para styleclass="Heading2" style="text-align:center;">类别</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -162,21 +165,21 @@
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP" style="font-size:9pt;">ZAP</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_comment" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Comment</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_concur" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Concurrency Control</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_Database" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Database</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_date" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Date</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_entdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Entity Declaration</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_set" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Environment</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_file" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">File</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_index" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Index/Order</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_international" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">International</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_memvar" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Memory Variable</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_num" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Numeric</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_control" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Program Control</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_rtdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Runtime Declaration</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_terminal" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Terminal Window</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_vardecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Variable Declaration</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_comment" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">注释</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_concur" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">并发控制</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_Database" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">数据库</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_date" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">数据</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_entdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">实体声明</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_set" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">环境</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_file" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">文件</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_index" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">索引/排序</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_international" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">国际</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_memvar" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">内存变量</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_num" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">数值</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_control" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">程序控制</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_rtdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">运行时声明</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_terminal" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">终端窗口</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_vardecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">变量声明</link></para>
         </td>
       </tr>
     </table></para>

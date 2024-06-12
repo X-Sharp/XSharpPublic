@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T10:04:10.259+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-12T13:27:01.011+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>版本历史</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-weight:bold; text-decoration:none; vertical-align:baseline; color:#ff0000; background-color:#ffffff;">注：</text><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">当一个项目有一个匹配的 GitHub 票据时，票据编号就会出现在项目后面的括号中，前缀为 #。</text></para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">您可以访问 https://github.com/X-Sharp/XSharpPublic/issues/nnn 其中 nnnn 是票据编号。</text></para>
     <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; text-decoration:none; vertical-align:baseline; color:#000000;">如果您在 X# 中发现问题，我们建议您在 GitHub 上报告。我们会通知您问题的处理进度。</text></para>
-    <para styleclass="Heading1">Changes in 2.20</para>
+    <para styleclass="Heading1">Changes in 2.20.0.3</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -66,7 +66,7 @@
       <li styleclass="Normal">添加了缺失的无参数 SetColor() 函数重载（#1440）</li>
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">此版本包含了新的 <link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP_UI">XSharp.VFP.UI.DLL</link> ，该 DLL 由从 Visual FoxPro 导出的表单使用，通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="VFPXporter">VFP Exporter</link>&#32;实现。</li>
+      <li styleclass="Normal">此版本包含了新的 <link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP_UI">XSharp.VFP.UI.DLL</link> ，该 DLL 由从 Visual FoxPro 导出的表单使用，通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="VFPXporter">VFP Exporter</link> 实现。</li>
     </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">Bug 修复</para>
@@ -97,7 +97,7 @@
     </list>
     <para styleclass="Heading2">VFPXporter</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">该版本的 X# 包含 <link displaytype="text" defaultstyle="true" type="topiclink" href="VFPXporter">VFP Exporter</link>&#32;。该工具可将 Visual FoxPro 项目文件转换为 Visual Studio 解决方案</li>
+      <li styleclass="Normal">该版本的 X# 包含 <link displaytype="text" defaultstyle="true" type="topiclink" href="VFPXporter">VFP Exporter</link> 。该工具可将 Visual FoxPro 项目文件转换为 Visual Studio 解决方案</li>
     </list>
     <para styleclass="Heading2">XIDE</para>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -122,110 +122,111 @@
       <li styleclass="Normal">我们添加了(部分)翻译成简体中文的帮助文件。</li>
     </list>
     <para styleclass="Heading1">Changes in 2.19.0.2</para>
-    <para styleclass="Heading2">Compiler</para>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading2">编译器</para>
+    <para styleclass="Heading3">Bug 修复</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Now the compiler properly reports an error when duplicate field names are defined in a type (#1385)</li>
-      <li styleclass="Normal">Fixed problem with defining multiple type constraints in a generic type (#1389)</li>
-      <li styleclass="Normal">Fixed problem with global MEMVARs hiding local variables or parameters with the same name (#1294)</li>
-      <li styleclass="Normal">Bogus compiler error messages with not found type (#1396)</li>
-      <li styleclass="Normal">Fixed compiler crash with missing reference to XSharp.VFP in the FoxPro dialect (#1405)</li>
-      <li styleclass="Normal">Fixed problem with /initlocals compiler option incorrectly also initializing class fields (#1408)</li>
-      <li styleclass="Normal">Fixed a problem in the preprocessor where an extended match symbol would not properly match an expression that started with a string literal</li>
+      <li styleclass="Normal">现在编译器在类型中定义重复字段名时会正确报告错误 (#1385)。</li>
+      <li styleclass="Normal">修复了在泛型类型中定义多个类型约束的问题 (#1389)。</li>
+      <li styleclass="Normal">修复了全局 MEMVAR 隐藏同名局部变量或参数的问题 (#1294)。</li>
+      <li styleclass="Normal">修复了在找不到类型时出现虚假编译器错误消息的问题 (#1396)。</li>
+      <li styleclass="Normal">修复了在 FoxPro 方言中缺少对 XSharp.VFP 的引用导致编译器崩溃的问题 (#1405)。</li>
+      <li styleclass="Normal">修复了 /initlocals 编译选项错误地初始化类字段的问题 (#1408)。</li>
+      <li styleclass="Normal">修复了预处理器中扩展匹配符号无法正确匹配以字符串文字开头的表达式的问题。</li>
     </list>
-    <para styleclass="Heading3">New features</para>
+    <para styleclass="Heading3">新特性</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">We added support for dimensioning (FoxPro) class properties, such as in <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DIMENSION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> this.</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">Field</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">(10)</text><br/></li>
-      <li styleclass="Normal">We have added support for FOREACH AWAIT, like in the following example. (Works in .Net Core, .Net 5 and later)</li>
+      <li styleclass="Normal">我们增加了对维度(FoxPro)类属性的支持，例如：<br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DIMENSION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> this.</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">Field</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">(10)</text><br/></li>
+      <li styleclass="Normal">我们添加了对 FOREACH AWAIT 的支持，如以下示例(适用于 .Net Core、.Net 5 及更高版本)。</li>
     </list>
     <para styleclass="Normal"><tab /><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FOREACH</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AWAIT</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VAR</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> data </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> GenerateNumbersAsync(number)</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;</text><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SELF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">:oListView1:Items:Add(data)</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">NEXT</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">We have added support for &quot;Coalescing Member Access, such as in the following example where FirstName and LastName are both properties of the oPerson object:</li>
+      <li styleclass="Normal">我们已经添加了对合并成员访问的支持，例如在以下示例中，FirstName 和 LastName 都是 oPerson 对象的属性：:</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? oPerson:(FirstName+&quot; &quot;+LastName)</text></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;</text></para>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The WITH command now also recognizes the AS DataType clause</li>
+      <li styleclass="Normal">WITH 命令现在也能识别 AS DataType 子句。</li>
     </list>
     <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">XBase++ Class declarations now also allow “END CLASS” as closing token.</li>
+      <li styleclass="Normal">XBase++ 类声明现在也允许使用 “END CLASS ”作为结束标记。</li>
     </list>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Now the compiler reports an error when attempting to convert from Lambda Expression to usual (#1343)</li>
+      <li styleclass="Normal">现在，编译器在尝试将 Lambda 表达式转换为常规表达式时会报错 (#1343)</li>
     </list>
     <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">We have added support for <link displaytype="text" defaultstyle="true" type="topiclink" href="Tuples">TUPLE datatypes.</link> This includes declaring local variables, parameters, return value etc. <br/>We also support decomposition of a tuple return value into multiple locals. See the TUPLE help topic for more information.</li>
+      <li styleclass="Normal">我们增加了对 TUPLE 数据类型的支持。这包括声明局部变量、参数、返回值等。</li>
+      <li styleclass="Normal">我们还支持将 <link displaytype="text" defaultstyle="true" type="topiclink" href="Tuples">元组</link>&#32;返回值分解为多个本地变量。更多信息，请参见 <link displaytype="text" defaultstyle="true" type="topiclink" href="Tuples">元组</link> 帮助主题。.</li>
     </list>
-    <para styleclass="Heading2">Runtime</para>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading2">运行时</para>
+    <para styleclass="Heading3">Bug 修复</para>
     <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Fixed problem calling DoEvents() from the macro compiler (#872 )</li>
-      <li styleclass="Normal">Fixed problem with __Mem2StringRaw() (undocumented) function (#1302)</li>
-      <li styleclass="Normal">Fixed problem opening DBFCDX index file with incorrect collation information in the header #1360 </li>
-      <li styleclass="Normal">Fixed problem with OrdSetFocus() resetting the current order when called without arguments (#1362)</li>
-      <li styleclass="Normal">Fixed problems with some index files after a DBPack() (#1367)</li>
-      <li styleclass="Normal">Fixed problem with Deleted() returning TRUE on a table with all records deleted (#1370)</li>
-      <li styleclass="Normal">Fixed problem with opening and writing to a file with FWrite() etc functions when opened in exclusive and write only mode (#1382)</li>
-      <li styleclass="Normal">Fixed several problems (VO incompatibilities) with the SplitPath() function (#1384)</li>
-      <li styleclass="Normal">Now when there is no codepage found in a dbf header, then the DOS codepage from the RuntimeState is used and no longer the hardcoded codepage 437 (#1386)</li>
-      <li styleclass="Normal">Replaced the Dictionary&lt;,&gt; class used in some areas of the runtime with ConcurrentDictionary&lt;,&gt; to avoid issues in multi threaded apps (#1391)</li>
-      <li styleclass="Normal">Fixed problem with NoIVarget when using IDynamicProperties (FoxPro dialect) (#1401)</li>
-      <li styleclass="Normal">Fixed problem with Hex2C() giving different results with lower case letters than with upper case. <br/><text style="color:#ff0000;">Note that this bug existed also in VO, so now the behavior of Hex2C() with lower case hex letters in X# with is different to VO</text> (#1402)</li>
+      <li styleclass="Normal">修复了从宏编译器调用 DoEvents() 的问题 (#872)</li>
+      <li styleclass="Normal">修复了 __Mem2StringRaw()(文档未记录)函数的问题 (#1302)</li>
+      <li styleclass="Normal">修复了在头部中包含不正确排序信息的 DBFCDX 索引文件打开问题 (#1360)</li>
+      <li styleclass="Normal">修复了 OrdSetFocus() 在无参数调用时重置当前顺序的问题 (#1362)</li>
+      <li styleclass="Normal">修复了在 DBPack() 后一些索引文件的问题 (#1367)</li>
+      <li styleclass="Normal">修复了在所有记录都被删除的表上 Deleted() 返回 TRUE 的问题 (#1370)</li>
+      <li styleclass="Normal">修复了以独占和只写模式打开并使用 FWrite() 等函数写入文件的问题 (#1382)</li>
+      <li styleclass="Normal">修复了 SplitPath() 函数中的几个问题(与 VO 不兼容性) (#1384)</li>
+      <li styleclass="Normal">现在，当在 dbf 头部中找不到代码页时，将使用 RuntimeState 中的 DOS 代码页，而不再使用硬编码的代码页 437 (#1386)</li>
+      <li styleclass="Normal">在运行时的某些区域中使用的 Dictionary&lt;,&gt; 类被替换为 ConcurrentDictionary&lt;,&gt;，以避免多线程应用程序中的问题 (#1391)</li>
+      <li styleclass="Normal">在使用 IDynamicProperties(FoxPro 方言)时，修复了 NoIVarget 的问题 (#1401)</li>
+      <li styleclass="Normal">修复了 Hex2C() 使用小写字母时与使用大写字母时产生不同结果的问题。<br/><text style="font-weight:bold; color:#ff0000;">请注意，这个 bug 也存在于 VO 中，所以现在在 X# 中使用小写十六进制字母的 Hex2C() 的行为与 VO 不同</text> (#1402)</li>
     </list>
     <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Accessing properties on a closed DbServer object that was opened with the Advantage RDD could cause problems in the debugger. The DbServer class now returns empty values when the server is closed.</li>
+      <li styleclass="Normal">访问已使用 Advantage RDD 打开的已关闭 DbServer 对象上的属性可能会在调试器中引起问题。现在，当服务关闭时，DbServer 类将返回空值。</li>
     </list>
-    <para styleclass="Heading3">New features</para>
+    <para styleclass="Heading3">新特性</para>
     <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Implemented CREATE CURSOR command [FoxPro] (#247). Also implemented CREATE TABLE and ALTER TABLE (FoxPro dialect)</li>
-      <li styleclass="Normal">Implemented INSERT INTO commands (FoxPro dialect for inserting variables from values, arrays, objects and memory variables. INSERT INTO from a SQL query does not work yet. &#160;(FoxPro dialect)</li>
+      <li styleclass="Normal">实现了 CREATE CURSOR 命令 [FoxPro] (#247)。还实现了 CREATE TABLE 和 ALTER TABLE(FoxPro 方言)</li>
+      <li styleclass="Normal">实现了 INSERT INTO 命令(FoxPro 方言，用于从值、数组、对象和内存变量中插入变量)。SQL 查询中的 INSERT INTO 尚不能使用 (FoxPro 方言）</li>
     </list>
     <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Implemented new FoxPro-compatible version of Str() function in XSharp.VFP (#386)</li>
-      <li styleclass="Normal">Now an error is thrown when opening an index file fails (#1358)</li>
-      <li styleclass="Normal">Added AscA() function and made Asc() dependent on the SetAnsi() setting in the runtime (#1376)</li>
+      <li styleclass="Normal">在 XSharp.VFP 中实现了 Str() 函数的新 FoxPro 兼容版本 (#386)</li>
+      <li styleclass="Normal">现在，当打开索引文件失败时会抛出错误 (#1358)</li>
+      <li styleclass="Normal">添加了 AscA() 函数，并使 Asc() 依赖于运行时中的 SetAnsi() 设置 (#1376)</li>
     </list>
-    <para styleclass="Heading2">Header files</para>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading2">头文件</para>
+    <para styleclass="Heading3">Bug 修复</para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Implemented several missing commands (#1407)</li>
-      <li styleclass="Normal">Fixed typo in the SET DECIMALS TO command (#1406)</li>
-      <li styleclass="Normal">Added missing clauses NAME and MEMVAR for the GATHER command (FoxPro) (#1409)</li>
-      <li styleclass="Normal">Updated several commands to make some tokens optional and more compatible to various dialects (#1410, #1412)</li>
-      <li styleclass="Normal">Fixed various incompatibilities with COMMIT command in various dialects (#1411)</li>
+      <li styleclass="Normal">实现了几个缺失的命令 (#1407)</li>
+      <li styleclass="Normal">修正了 SET DECIMALS TO 命令中的拼写错误 (#1406)</li>
+      <li styleclass="Normal">为 GATHER 命令(FoxPro)添加了缺失的 NAME 和 MEMVAR 子句 (#1409)</li>
+      <li styleclass="Normal">更新了几个命令，使一些标记变为可选，并更加兼容各种方言 (#1410, #1412)</li>
+      <li styleclass="Normal">修复了在各种方言中 COMMIT 命令的各种不兼容性问题 (#1411)</li>
     </list>
-    <para styleclass="Heading2">Visual Studio Integration</para>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading2">Visual Studio 集成</para>
+    <para styleclass="Heading3">Bug 修复</para>
     <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Fixed problem with looking up public static field in type referenced by static using (#1307)</li>
-      <li styleclass="Normal">Fixed intellisense problem with locals defined inside block statements (#1345)</li>
-      <li styleclass="Normal">Fixed problem with intellisense incorrectly resolving type specified in code with full name to another from the usings list (#1363)</li>
-      <li styleclass="Normal">Fixed problem with member completion incorrectly showing static methods after typing a colon (#1379)</li>
-      <li styleclass="Normal">Fixed editor freezing with specific code (#1380)</li>
-      <li styleclass="Normal">Fixed problem with Class Navigation bar not showing the method name in certain cases (#1381)</li>
+      <li styleclass="Normal">修复了通过静态使用引用的类型中查找公共静态字段的问题 (#1307)</li>
+      <li styleclass="Normal">修复了在块语句内定义的局部变量的智能感知问题 (#1345)</li>
+      <li styleclass="Normal">修复了智能感知不正确地将代码中指定的类型解析为 usings 列表中的另一个类型的问题 (#1363)</li>
+      <li styleclass="Normal">修复了在输入冒号后不正确显示静态方法的成员完成问题 (#1379)</li>
+      <li styleclass="Normal">修复了特定代码导致编辑器冻结的问题 (#1380)</li>
+      <li styleclass="Normal">修复了在某些情况下类导航栏未显示方法名称的问题 (#1381)</li>
     </list>
-    <para styleclass="Heading3">New features</para>
+    <para styleclass="Heading3">新特性</para>
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Added support for IEnumerable and DataTable Debugger visualizers (#1373). <br/>Please note that when browsing X# arrays the results in the visualizer are really ugly because the visualizer ignores attributes to hide properties and fields for our USUAL class.</li>
-      <li styleclass="Normal">Adjusted the Globals, Workareas etc debugger windows to respect the global theme selected in VS (#1375). Also added status panel to the Workarea window, so you can see the workarea status or field names/values</li>
-      <li styleclass="Normal">Added intellisense support for locals declared with USING VAR or USING (LOCAL) IMPLIED (#1390)</li>
-      <li styleclass="Normal">Now the intellisense database uses an SQLite package that has ARM support, so the it will work also on a Mac and other platforms (#1397)</li>
+      <li styleclass="Normal">增加了对 IEnumerable 和 DataTable 调试可视化器的支持 (#1373)。<br/>请注意，当浏览 X# 数组时，可视化器中的结果看起来非常丑陋，因为可视化器忽略了隐藏属性和字段的属性，以用于我们的 USUAL 类。</li>
+      <li styleclass="Normal">调整了 Globals、Workareas 等调试器窗口，以遵循在 VS 中选择的全局主题 (#1375)。还向 Workarea 窗口添加了状态面板，这样您可以查看工作区状态或字段名称/值。</li>
+      <li styleclass="Normal">为使用 USING VAR 或 USING (LOCAL) IMPLIED 声明的本地变量添加了智能感知支持 (#1390)。</li>
+      <li styleclass="Normal">现在智能感知数据库使用了一个具有 ARM 支持的 SQLite 包，因此它也将在 Mac 和其他平台上工作 (#1397)。</li>
     </list>
     <para styleclass="Heading2">VOXporter</para>
     <para styleclass="Heading3">Fixes</para>
     <list id="22" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Fixed problem with VOXporter incorrectly modifying previously commented code with {VOXP:UNC} tags (#1404)</li>
     </list>
-    <para styleclass="Heading2">Documentation</para>
-    <para styleclass="Heading3">Bug Fixes</para>
+    <para styleclass="Heading2">文档</para>
+    <para styleclass="Heading3">Bug 修复</para>
     <list id="23" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The documentation of functions in the runtime help was describing functions incorrectly. <br/>For example the topic title for the &quot;Left&quot; function was &quot;Functions.Left Method&quot; This has been changed to &quot;Left Function&quot;</li>
-      <li styleclass="Normal">The &quot;SingleLineEdit&quot; class in the documentation was called &quot;Real4LineEdit&quot;. This has been fixed.</li>
+      <li styleclass="Normal">运行时帮助中函数的文档描述有误。<br/>例如，“Left” 函数的主题标题原为 “Functions.Left Method”，现已更改为 “Left Function”。</li>
+      <li styleclass="Normal">文档中的 “SingleLineEdit” 类被称为 “Real4LineEdit”，已进行修正。</li>
     </list>
-    <para styleclass="Heading3">New Features</para>
+    <para styleclass="Heading3">新特性</para>
     <list id="23" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">We have added additional documentation to the X# Programming guide about several subjects.</li>
+      <li styleclass="Normal">我们在 X# 编程指南中添加了有关多个主题的附加文档。</li>
     </list>
     <para styleclass="Heading1">Changes in 2.18.0.4</para>
     <para styleclass="Heading2">Compiler</para>

@@ -903,43 +903,43 @@
             <caption translate="true">UNLOCK 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436905850607204" build="ALL" modified="2019-09-24T13:44:42.157Z" icon="0" href="cmd_cat_Database">
-          <caption translate="true">Database</caption>
-          <topicref type="topic" id="436959948447118" build="ALL" modified="2019-09-24T14:15:51.700Z" icon="0" href="command_APPEND_BLANK">
-            <caption translate="true">APPEND BLANK Command</caption>
+        <topicref type="topic" id="436905850607204" build="ALL" modified="2024-06-12T11:14:19.445Z" icon="0" href="cmd_cat_Database">
+          <caption translate="true">数据库</caption>
+          <topicref type="topic" id="436959948447118" build="ALL" modified="2024-06-12T11:18:36.576Z" icon="0" href="command_APPEND_BLANK">
+            <caption translate="true">APPEND BLANK 命令</caption>
           </topicref>
-          <topicref type="topic" id="440852104056378" build="ALL" modified="2020-09-11T09:02:22.958Z" icon="0" href="Command_APPEND_FROM_ARRAY">
-            <caption translate="true">APPEND FROM ARRAY Command</caption>
+          <topicref type="topic" id="440852104056378" build="ALL" modified="2024-06-12T11:33:28.223Z" icon="0" href="Command_APPEND_FROM_ARRAY">
+            <caption translate="true">APPEND FROM ARRAY 命令</caption>
           </topicref>
-          <topicref type="topic" id="436956696260961" build="ALL" modified="2019-09-24T14:15:51.706Z" icon="0" href="command_APPEND_FROM">
-            <caption translate="true">APPEND FROM Command</caption>
+          <topicref type="topic" id="436956696260961" build="ALL" modified="2024-06-12T11:49:11.064Z" icon="0" href="command_APPEND_FROM">
+            <caption translate="true">APPEND FROM 命令</caption>
           </topicref>
-          <topicref type="topic" id="440853268889754" build="ALL" modified="2020-09-11T09:02:46.196Z" icon="0" href="command_APPEND_FROM_FoxPro">
-            <caption translate="true">APPEND FROM Command (FoxPro)</caption>
+          <topicref type="topic" id="440853268889754" build="ALL" modified="2024-06-12T12:15:48.803Z" icon="0" href="command_APPEND_FROM_FoxPro">
+            <caption translate="true">APPEND FROM 命令(FoxPro)</caption>
           </topicref>
-          <topicref type="topic" id="436959767492127" build="ALL" modified="2019-09-24T14:15:51.712Z" icon="0" href="command_AVERAGE">
-            <caption translate="true">AVERAGE Command</caption>
+          <topicref type="topic" id="436959767492127" build="ALL" modified="2024-06-12T16:14:32.710Z" icon="0" href="command_AVERAGE">
+            <caption translate="true">AVERAGE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436959392659364" build="ALL" modified="2019-09-24T14:15:51.719Z" icon="0" href="command_CLEAR_ALL">
-            <caption translate="true">CLEAR ALL Command</caption>
+          <topicref type="topic" id="436959392659364" build="ALL" modified="2024-06-12T16:24:54.945Z" icon="0" href="command_CLEAR_ALL">
+            <caption translate="true">CLEAR ALL 命令</caption>
           </topicref>
-          <topicref type="topic" id="436959858002471" build="ALL" modified="2019-09-24T14:15:51.725Z" icon="0" href="command_CLOSE">
-            <caption translate="true">CLOSE Command</caption>
+          <topicref type="topic" id="436959858002471" build="ALL" modified="2024-06-12T16:25:06.341Z" icon="0" href="command_CLOSE">
+            <caption translate="true">CLOSE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436959353901900" build="ALL" modified="2019-09-24T14:15:51.731Z" icon="0" href="command_CONTINUE">
-            <caption translate="true">CONTINUE Command</caption>
+          <topicref type="topic" id="436959353901900" build="ALL" modified="2024-06-12T16:29:37.483Z" icon="0" href="command_CONTINUE">
+            <caption translate="true">CONTINUE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436957491884871" build="ALL" modified="2019-09-24T14:15:51.737Z" icon="0" href="command_COPY_STRUCTURE">
-            <caption translate="true">COPY STRUCTURE Command</caption>
+          <topicref type="topic" id="436957491884871" build="ALL" modified="2024-06-12T16:36:31.553Z" icon="0" href="command_COPY_STRUCTURE">
+            <caption translate="true">COPY STRUCTURE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436958956041974" build="ALL" modified="2019-09-24T14:15:51.742Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
-            <caption translate="true">COPY STRUCTURE EXTENDED Command</caption>
+          <topicref type="topic" id="436958956041974" build="ALL" modified="2024-06-12T16:50:49.784Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
+            <caption translate="true">COPY STRUCTURE EXTENDED 命令</caption>
           </topicref>
-          <topicref type="topic" id="440852085590250" build="ALL" modified="2020-09-11T09:03:29.246Z" icon="0" href="command_COPY_TO_ARRAY">
-            <caption translate="true">COPY TO ARRAY Command</caption>
+          <topicref type="topic" id="440852085590250" build="ALL" modified="2024-06-12T17:00:07.634Z" icon="0" href="command_COPY_TO_ARRAY">
+            <caption translate="true">COPY TO ARRAY 命令</caption>
           </topicref>
-          <topicref type="topic" id="436968195685008" build="ALL" modified="2019-09-24T14:15:51.747Z" icon="0" href="command_COPY_TO">
-            <caption translate="true">COPY TO Command</caption>
+          <topicref type="topic" id="436968195685008" build="ALL" modified="2024-06-12T17:02:22.296Z" icon="0" href="command_COPY_TO">
+            <caption translate="true">COPY TO 命令</caption>
           </topicref>
           <topicref type="topic" id="440855290127548" build="ALL" modified="2020-09-11T09:03:19.695Z" icon="0" href="command_COPY_TO_FoxPro">
             <caption translate="true">COPY TO Command (FoxPro)</caption>

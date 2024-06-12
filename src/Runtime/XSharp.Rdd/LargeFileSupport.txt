@@ -1,0 +1,28 @@
+﻿Changes for X# 3.0 for larger DBF files:
+
+- Inside DBF class: 
+  Change Recno and RecCount from LONG to DWORD. The header already has room for 32 bits record locations
+  This also includes Goto(), GotoId(), _lockRecord, _unlockRecord etc
+- There are some references to UINT64. Check these
+- Change SortRecord class to use DWORD instead of LONG for Recno
+
+
+DBFCDX
+- Record numbers become DWORD instead of LONG. Add a check for 0xFFFFFFFF because that has a special meaning.
+- Change Recno in all structures to DWORD
+- Change LeftPtr and RightPtr to DWORD and initialize them with 0xFFFFFFFF
+- Harbour has a large CDX file support by storing page no instead of page location in the CDX. 
+  See Harbour header files. signature is set to CDX_HARBOUR_SIGNATURE 
+  #define CDX_HARBOUR_SIGNATURE               0x52434842L /* Harbour index signature: RCHB */
+  indexSig indicates normal or large. Normal = 0x01, Large = 0x21.
+  See hbrddcdx.h for documentation of where fields are stored in the tagheader
+- Change PageNo in all structures to DWORD
+- Change comparisons of PageNo with -1 to 0xFFFFFFFF
+
+DBFNTX
+- Change Recno in all structures to DWORD
+- Change PageNo in all structures to DWORD
+- Change comparisons of PageNo with -1 to 0xFFFFFFFF
+- Change PageOffSet to DWORD
+- Change comparisons of PageOffSet with -1 to 0xFFFFFFFF
+

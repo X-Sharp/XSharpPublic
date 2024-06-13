@@ -49,12 +49,34 @@ BEGIN NAMESPACE XSharp.RT.Tests
             aValuesC:Add($2.0)
             aValuesC:Add($3.0)
             aValuesC:Add($4.0)
-            var sumC := aValuesC:Sum()
-            var minC := aValuesC:Min()
-            var maxC := aValuesC:Max()
+            var sumC := aValuesC:Sum( )
+            var minC := aValuesC:Min( )
+            var maxC := aValuesC:Max( )
             Assert.True (sumC == $10.0)
             Assert.True (minC == $1.0)
             Assert.True (maxC == $4.0)
+            
+            local aValuesP := List<pair>{} as List<pair>
+            aValuesP:Add(pair{$1.0, $2.0})
+            aValuesP:Add(pair{$3.0, $4.0})
+            aValuesP:Add(pair{$5.0, $6.0})
+            sumC := aValuesP:Sum( { p => p:X})
+            minC := aValuesP:Min({ p => p:X})
+            maxC := aValuesP:Max({ p => p:X})
+            Assert.True (sumC == $9.0)
+            Assert.True (minC == $1.0)
+            Assert.True (maxC == $5.0)
 
+
+
+        class pair
+            export x as CURRENCY
+            export y as CURRENCY
+            constructor(nX as CURRENCY, nY as CURRENCY)
+                x := nX
+                y := nY
+            end constructor            
+        end class
+        
 END CLASS
 END NAMESPACE

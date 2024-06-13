@@ -809,6 +809,8 @@
       <file-mod href="__localSpec.xml"/>
       <file-mod href="__NotInCoreVulcan.xml"/>
       <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
+      <file-mod href="X-Examples.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
+      <file-mod href="X-Examples_MSHC.xml" build="HXS"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

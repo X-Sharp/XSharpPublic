@@ -89,6 +89,9 @@ FUNCTION IndexExt       () AS STRING STRICT
 FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 	LOCAL uRetVal   AS USUAL
     IF Used()
+        if nPosition:IsNumeric .and. nPosition == 0
+            nPosition := IndexOrd()
+        ENDIF
         uRetVal := DbOrderInfo(DBOI_EXPRESSION, "", nPosition)
     ELSE
         uRetVal := NIL

@@ -53,7 +53,7 @@ public static class ExtensionMethods
          throw Exception{"No elements in the collection"}
 
     public static method Min<TSource>(self source as IEnumerable<TSource>, selector as Func<TSource, float>) as float
-        return ExtensionMethods.Sum(Enumerable.Select<TSource, float>(source, selector))
+        return ExtensionMethods.Min(Enumerable.Select<TSource, float>(source, selector))
 
     public static method Max(SELF source as IEnumerable<float> )  as float
          if (source == null)
@@ -79,7 +79,7 @@ public static class ExtensionMethods
 
 
     public static method Max<TSource>(self source as IEnumerable<TSource>, selector as Func<TSource, float>) as float
-        return ExtensionMethods.Sum(Enumerable.Select<TSource, float>(source, selector))
+        return ExtensionMethods.Max(Enumerable.Select<TSource, float>(source, selector))
 
 #endregion
 
@@ -124,7 +124,7 @@ public static class ExtensionMethods
          throw Exception{"No elements in the collection"}
 
     public static method Min<TSource>(self source as IEnumerable<TSource>, selector as Func<TSource, currency>) as currency
-        return ExtensionMethods.Sum(Enumerable.Select<TSource, currency>(source, selector));
+        return ExtensionMethods.Min(Enumerable.Select<TSource, currency>(source, selector));
 
     public static method Max(SELF source as IEnumerable<currency> )  as currency
          if (source == null)
@@ -150,7 +150,7 @@ public static class ExtensionMethods
 
 
     public static method Max<TSource>(self source as IEnumerable<TSource>, selector as Func<TSource, currency>) as currency
-        return ExtensionMethods.Sum(Enumerable.Select<TSource, currency>(source, selector));
+        return ExtensionMethods.Max(Enumerable.Select<TSource, currency>(source, selector));
 
 
 #endregion

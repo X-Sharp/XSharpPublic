@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-07T14:59:43.837+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET MEMOBLOCK Command</title>
+<topic template="Default" modified="2024-06-13T16:45:17.061+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET MEMOBLOCK 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Databases</keyword>
@@ -11,7 +11,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET MEMOBLOCK Command</para>
+      <para styleclass="Heading1">SET MEMOBLOCK 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>

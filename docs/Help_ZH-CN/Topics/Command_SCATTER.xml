@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-13T16:44:13.477+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-14T17:09:55.729+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SCATTER 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,26 +12,26 @@
       <para styleclass="Heading1">SCATTER 命令 &#160;(FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Assign new values to the contents of one or more fields in the current record.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">为当前记录中一个或多个字段的内容分配新值。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SCATTER [FIELDS &lt;idFieldList&gt; | FIELDS LIKE &lt;Skeleton&gt;<br/> &#160; | FIELDS EXCEPT &lt;Skeleton&gt;] [MEMO] [BLANK]<br/> &#160; | TO ArrayName | MEMVAR<br/> &#160; | NAME ObjectName [ADDITIVE]</para>
-    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
-    <para styleclass="List">MEMO<tab /><text styleclass="Body Text">Specifies that the field list include one or more memo fields. </text></para>
+    <para styleclass="List">MEMO<tab /><text styleclass="Body Text">指定字段列表包括一个或多个备注字段。</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List">BLANK<tab />Include the BLANK keyword to create a set of empty variables or to fill the array or object with empty values. Each variable is assigned the same name, data type, and size as its field. If a field list is included, a variable is created for each field in the field list.</para>
+    <para styleclass="List">BLANK<tab />使用 BLANK 关键字可以创建一组空变量，或在数组或对象中填充空值。每个变量的名称、数据类型和大小都与其字段相同。如果包含字段列表，则会为字段列表中的每个字段创建一个变量。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;ArrayName&gt;<tab />Specifies an array to which the record contents are copied. Starting with the first field, SCATTER copies the contents of each field into each element of the array in sequential order.</para>
-    <para styleclass="List"><tab />SCATTER automatically creates a new array. The array elements have the same size and data types as the corresponding fields. </para>
+    <para styleclass="List">TO &lt;ArrayName&gt;<tab />指定将记录内容复制到哪个数组。从第一个字段开始，SCATTER 按顺序将每个字段的内容复制到数组的每个元素中。</para>
+    <para styleclass="List"><tab />SCATTER 会自动创建一个新数组。数组元素的大小和数据类型与相应字段相同。</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /></para>
-    <para styleclass="List">MEMVAR<tab />Scatters the data to a set of variables instead of an array. SCATTER creates one variable for each field in the table and fills each variable with data from the corresponding field in the current record, assigning to the variable the same name, size, and type as its field.</para>
+    <para styleclass="List">MEMVAR<tab />将数据分散到一组变量中，而不是数组中。SCATTER 为表中的每个字段创建一个变量，并用当前记录中相应字段的数据填充每个变量，同时为变量分配与其字段相同的名称、大小和类型。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">NAME &lt;ObjectName&gt;<tab />Creates an object whose properties have the same names as fields in the table. To copy the value of each field in the table to each object property, do not include the BLANK keyword. To leave the properties empty, include the BLANK keyword</para>
+    <para styleclass="List">NAME &lt;ObjectName&gt;<tab />创建一个对象，其属性名称与表中的字段相同。要将表中每个字段的值复制到每个对象属性中，请不要使用 BLANK 关键字。要使属性为空，请输入 BLANK 关键字</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ADDITIVE<tab />To update the property values of an existing and valid Visual FoxPro object specified by ObjectName. Using BLANK with ADDITIVE omits the values for existing properties that have matching field names.</para>
+    <para styleclass="List">ADDITIVE<tab />更新由 ObjectName 指定的现有有效 Visual FoxPro 对象的属性值。在使用 BLANK 和 ADDITIVE 时，将忽略具有匹配字段名的现有属性值。</para>
     <para styleclass="List"></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_GATHER">GATHER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_ARRAY">COPY TO ARRAY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_APPEND_FROM_ARRAY">APPEND FROM ARRAY</link></para>
   </body>
 </topic>

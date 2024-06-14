@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-13T16:44:45.164+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-14T17:21:35.937+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET DRIVER 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -15,14 +15,14 @@
       <para styleclass="Heading1">SET DRIVER 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the default RDD for the application.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改应用程序的默认 RDD。</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="Code with box">SET DRIVER TO &lt;<text styleclass="Italic">idDriverName</text>&gt;</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">SET DRIVER is functionally equivalent to DBSetDriver(). &#160;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET DRIVER 在功能上等同于 DBSetDriver()。 </para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetDriver.htm" domain="XSharpRef.chm">DbSetDriver()</link></para>
     <para styleclass="Normal"></para>
   </body>

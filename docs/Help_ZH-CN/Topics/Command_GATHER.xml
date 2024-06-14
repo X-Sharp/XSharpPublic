@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-13T16:42:50.979+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-14T15:59:52.678+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>GATHER 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,23 +12,24 @@
       <para styleclass="Heading1">GATHER 命令 &#160;(FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">Replaces the data in the current record of the currently selected table with data from an array, a set of variables, or an object.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text">用数组、变量集或对象中的数据替换当前选定表中当前记录的数据。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">GATHER FROM ArrayName | MEMVAR | NAME ObjectName<br/> &#160; [FIELDS FieldList | FIELDS LIKE Skeleton | FIELDS EXCEPT Skeleton]<br/> &#160; [MEMO]</para>
-    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="Normal"></para>
     <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">FROM &lt;ArrayName&gt;<tab />Specifies the array whose data replaces the data in the current record. The contents of the elements of the array, starting with the first element, replace the contents of the corresponding fields of the record. The contents of the first array element replace the first field of the record; the contents of the second array element replace the second field, and so on.<br/>If the array has fewer elements than the table has fields, the additional fields are ignored. If the array has more elements than the table has fields, the additional array elements are ignored. </para>
+    <para styleclass="List">FROM &lt;ArrayName&gt;<tab />指定数组，其数据将替换当前记录中的数据。从第一个元素开始，数组元素的内容将替换记录中相应字段的内容。第一个数组元素的内容替换记录的第一个字段；第二个数组元素的内容替换第二个字段，依此类推。</para>
+    <para styleclass="List"><tab />如果数组的元素数少于表的字段数，那么额外的字段将被忽略。如果数组的元素数多于表的字段数，则会忽略额外的数组元素。</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /></para>
-    <para styleclass="List">MEMVAR<tab />Specifies the variables or array from which data is copied to the current record. Data is transferred from the variable to the field that has the same name as the variable. The contents of a field are not replaced if a variable doesn&apos;t exist with the same name as the field.</para>
+    <para styleclass="List">MEMVAR<tab />指定将数据复制到当前记录的变量或数组。数据从变量转移到与变量同名的字段。如果不存在与字段同名的变量，则字段的内容不会被替换。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">NAME &lt;ObjectName&gt;<tab />Specifies an object whose properties have the same names as fields in the table. The contents of each field are replaced by the value of the property with the same names as the fields. The contents of a field are not replaced if a property doesn&apos;t exist with the same name as the field.</para>
+    <para styleclass="List">NAME &lt;ObjectName&gt;<tab />指定一个对象，其属性名称与表格中的字段相同。每个字段的内容都会被与字段同名的属性值替换。如果不存在与字段同名的属性，则字段内容不会被替换。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">MEMO<tab /><text styleclass="Body Text">Specifies that the contents of memo or Blob fields are replaced with the contents or array elements or variables. If you omit MEMO, memo and Blob fields are skipped when GATHER replaces the contents of fields with the contents of an array or variable. General and picture fields are always ignored in GATHER, even if you include the MEMO keyword.</text></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="List">MEMO<tab />指定将备注或 Blob 字段的内容替换为数组元素或变量的内容。如果省略 MEMO，当 GATHER 用数组或变量内容替换字段内容时，将跳过备注和 Blob 字段。即使包含 MEMO 关键字，GATHER 也始终忽略 General 字段和 Picture 字段。</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_APPEND_FROM_ARRAY">APPEND FROM ARRAY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_ARRAY">COPY TO ARRAY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SCATTER">SCATTER</link></para>
   </body>
 </topic>

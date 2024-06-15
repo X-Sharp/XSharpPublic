@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-14T20:38:10.253+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET CENTURY Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -16,16 +16,16 @@
       <para styleclass="Heading1">SET CENTURY Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that determines whether to include or omit century digits in the date format.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改日期格式中包含或省略世纪数字的设置。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET CENTURY ON | OFF | (&lt;lToggle&gt;)</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">SET CENTURY is functionally equivalent to SetCentury().</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">逻辑表达式，必须用括号表示。True 相当于 ON，False 相当于 OFF</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET CENTURY 在功能上等同于 SetCentury()。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_CToD.htm" domain="XSharpRef.chm">CToD()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DToC.htm" domain="XSharpRef.chm">DToC()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DToS.htm" domain="XSharpRef.chm">DToS()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetCentury.htm" domain="XSharpRef.chm">SetCentury()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDateCountry.htm" domain="XSharpRef.chm">SetDateCountry()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_SetDateFormat.htm" domain="XSharpRef.chm">SetDateFormat()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetEpoch.htm" domain="XSharpRef.chm">SetEpoch()</link>,<text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Today.htm" domain="XSharpRef.chm">Today()</link></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:47:08.496+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-15T19:18:37.989+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>GLOBAL Statement</title>
   <keywords>
     <keyword>Arrays<keyword>declaring</keyword></keyword>
@@ -15,51 +15,51 @@
     <header>
       <para styleclass="Heading1">GLOBAL Statement</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a variable or array that is available to the entire application or module.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明整个应用程序或模块都可使用的变量或数组。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">[Modifiers] &#160;GLOBAL &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [AS | IS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
     <para styleclass="Normal">[Modifiers] &#160;GLOBAL DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt;</para>
-    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
-    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the variable. &#160;A global variable is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a global variable and a function, for example, with the same name.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;uValue&gt;<tab />A constant value that is assigned to &lt;idVar&gt;. &#160;This value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</para>
+    <para styleclass="List">&lt;idVar&gt;<tab />变量的有效标识符名称。 全局变量是一个实体，因此与其他实体共享相同的名称空间。 这就意味着，全局变量和函数不可能具有相同的名称。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note: &#160;Although &lt;uValue&gt; can be a literal array, it must be one-dimensional. &#160;Multi-dimensional literal arrays are not allowed. &#160;For example, {1, 2, 3} is allowed, but { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} } is not.</para>
+    <para styleclass="List">&lt;uValue&gt;<tab />分配给 &lt;idVar&gt; 的常量值。 该值可以是下列数据类型的字面表示，也可以是只涉及运算符、字面表示和 DEFINE 常量的简单表达式；但不允许使用更复杂的表达式(包括类实例化)。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note: &#160;Although the Chr() function cannot be used in &lt;uValue&gt;, the _Chr() operator can. &#160;_Chr() is otherwise identical in functionality to Chr().</para>
+    <para styleclass="List"><tab />注意：虽然 &lt;uValue&gt; 可以是字面数组，但必须是一维数组。 不允许使用多维字面数组。 例如，{1, 2, 3} 是允许的，但 { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} } 是不允许的。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</para>
+    <para styleclass="List"><tab />注意：虽然 Chr() 函数不能在 &lt;uValue&gt; 中使用，但 _Chr() 操作符可以。 _Chr() 在其他方面的功能与 Chr() 完全相同。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果未指定 &lt;uValue&gt;，变量的初始值取决于所声明的数据类型(例如，如果不使用强类型，则为 NIL；如果使用 AS INT，则为 0，等等)。</para>
     <para styleclass="List"></para>
     <para styleclass="List"></para>
-    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />The specification for a dimensioned array to declare.</para>
+    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />要声明的有维数的数组规格。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;ArraySpec&gt;<tab />The specification for a dynamic array to declare.</para>
+    <para styleclass="List">&lt;ArraySpec&gt;<tab />要声明的动态数组的规格。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />In both cases, &lt;ArraySpec&gt; is one of the following:</para>
+    <para styleclass="List"><tab />在这两种情况下，&lt;ArraySpec&gt; 都是以下内容之一：</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
     <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</para>
-    <para styleclass="List"><tab />All dimensions except the first are optional.</para>
+    <para styleclass="List"><tab />除第一个 nElements 外，其他 nElements 均为可选。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to declare. &#160;For dynamic arrays, array elements are initialized to NIL. &#160;For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</para>
+    <para styleclass="List"><tab />&lt;idArray&gt; 是要声明的数组的有效标识符名称。 对于动态数组，数组元素初始化为 NIL。 对于有维数组，元素的初始值取决于数据类型，如上文对 &lt;uValue&gt; 所述。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
+    <para styleclass="List"><tab />&lt;nElements&gt; 定义数组特定维数中的元素个数。 维数由指定 &lt;nElements&gt; 参数的个数决定。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</para>
+    <para styleclass="List"><tab />&lt;nElements&gt; 可以是字面数字表示或只涉及运算符、字面数字和 DEFINE 常量的简单数字表达式；但不允许使用更复杂的表达式(如函数调用)。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__isType" inline="false"/></para>
-    <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Search order for variables: &#160;</text>You can hide a global variable name from a routine by declaring another variable with the same name (with LOCAL, MEMVAR, or FIELD). &#160;The search order for a variable name is as follows:</para>
+    <para styleclass="Heading1">注释</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">变量搜索顺序 &#160;通过声明同名变量(使用 LOCAL、MEMVAR 或 FIELD)，可以从例程中隐藏全局变量名。 变量名的搜索顺序如下：</text></para>
     <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">1.</text><tab /><text styleclass="Normal">LOCALs, local parameters, MEMVARs, and FIELDs</text></para>
-    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">2.</text><tab /><text styleclass="Normal">SELF instance variables (i.e., without &lt;</text><text styleclass="Italic">idObject</text><text styleclass="Normal">&gt;: &#160;prefix in class methods)</text></para>
-    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">3.</text><tab /><text styleclass="Normal">GLOBALs and DEFINEs</text></para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">The following example illustrates using the GLOBAL statement to create a global variable, a global dimensioned array, and a global dynamic array. &#160;The dynamic array, since it is declared with STATIC GLOBAL, is visible only in the current module:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">2.</text><tab /><text styleclass="Normal">SELF instance variables (即在类方法中没有 &lt;idObject&gt;: 前缀的变量)</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">3.</text><tab /><text styleclass="Normal">GLOBALs 和 DEFINEs</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">下面的示例说明了如何使用 GLOBAL 语句创建全局变量、全局维数组和全局动态数组。 由于动态数组是用 STATIC GLOBAL 声明的，因此只有在当前模块中可见：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cAppName </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Accounts Payable&quot;</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DIM</text><text style="font-weight:bold; font-style:normal; color:#000000;"> aiValues</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">[2][10]</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">STATIC</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> aPoly</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">[100]</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Start</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Start of &quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cAppName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot; application.&quot;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">AFill</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">aPoly</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">0)</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">...</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;End of &quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cAppName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot; application.&quot;</text></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE">DEFINE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>

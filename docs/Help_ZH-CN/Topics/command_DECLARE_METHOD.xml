@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-14T22:48:16.151+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DECLARE METHOD Statement</title>
   <keywords>
     <keyword>Declaration statements</keyword>
@@ -12,10 +12,10 @@
     <header>
       <para styleclass="Heading1"> DECLARE METHOD Statement</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Forward declare a method, access or Assign &#160;</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Body Text">DECLARE METHOD, DECLARE ASSIGN and DECLARE ACCESS are recognized by the X# compiler but no longer needed, so they are ignored.</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">转发声明METHOD、ACCESS 或 ASSIGN &#160;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">DECLARE METHOD、DECLARE ASSIGN 和 DECLARE ACCESS 可被 X# 编译器识别，但已不再需要，因此将被忽略。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

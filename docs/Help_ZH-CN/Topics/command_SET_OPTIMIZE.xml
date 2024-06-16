@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET OPTIMIZE Command</title>
+<topic template="Default" modified="2024-06-14T17:39:59.588+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET OPTIMIZE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Environment</keyword>
@@ -12,26 +12,26 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET OPTIMIZE Command</para>
+      <para styleclass="Heading1">SET OPTIMIZE 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that determines whether to optimize using the open orders when processing a filtered database file.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改设置，以确定在处理过滤数据库文件时是否使用优化。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET OPTIMIZE ON | OFF | (&lt;lToggle&gt;)</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ON<tab />Turns optimization on.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON<tab />开启优化。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">OFF<tab />Turns optimization off.</para>
+    <para styleclass="List">OFF<tab />关闭优化。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;lToggle&gt;<tab />Turns optimization on if TRUE or off is FALSE.</para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />如果为 TRUE，则开启优化；如果为 FALSE，则关闭优化。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Note: &#160;The initial default of this setting depends on the RDD. &#160;Check RDDInfo(_SET_OPTIMIZE) to find out the setting for the RDD in use for the current work area.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">For RDDs that support optimization, such as DBFCDX, SET OPTIMIZE determines whether to optimize filters based on the orders open in the current work area. &#160;If this flag is ON, the RDD will optimize the search for records that meet the filter condition to the fullest extent possible, minimizing the need to read the actual data from the database file.</para>
-    <para styleclass="Normal">If this flag is OFF, the RDD will not optimize.</para>
+    <para styleclass="List"><tab />注意： 该设置的初始默认值取决于 RDD。 请查看 RDDInfo(_SET_OPTIMIZE)，了解当前工作区使用的 RDD 的设置。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">对于支持优化的 RDD（如 DBFCDX），SET OPTIMIZE 决定是否根据当前工作区中打开的记录优化筛选器。 如果该标记为 ON，RDD 将尽可能优化符合筛选条件的记录搜索，最大限度减少从数据库文件读取实际数据的需要。</para>
+    <para styleclass="Normal">若此标记为 OFF，RDD 将不进行优化。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link>, <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RddInfo.htm" domain="XSharpRef.chm">RDDInfo()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FILTER">SET FILTER</link></para>
     <para styleclass="Normal"></para>
   </body>

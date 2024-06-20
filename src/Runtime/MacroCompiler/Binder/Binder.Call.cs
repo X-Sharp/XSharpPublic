@@ -118,6 +118,9 @@ namespace XSharp.MacroCompiler
                 for (int i = 0; i < methods.Symbols.Count; i++)
                 {
                     var m = methods.Symbols[i];
+                    // Skip abstract methods
+                    if (m is MethodSymbol msym && msym.Method.IsAbstract)
+                        continue;
                     if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
                     {
                         CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);

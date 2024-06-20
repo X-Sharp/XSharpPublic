@@ -5970,13 +5970,13 @@ RETURN
 			Assert.True( DbCreateIndex(cDbf, "FLD") )
 
 			DbGoTop()
-		
+
 			DbSetFilter(,"FLD=='123'")
 			DbGoTop()
 			Assert.True( Eof() )
 
 			DbSetFilter(,"")
-			DbGoTop() // runtime exception in X#
+			DbGoTop()
 			Assert.False( Eof() )
 			Assert.Equal("aaa", AllTrim(FieldGet(1)) )
 
@@ -5984,9 +5984,9 @@ RETURN
 			DbGoTop()
 			Assert.False( Eof() )
 			Assert.Equal("bbb", AllTrim(FieldGet(1)) )
-			
+
 			DbSetFilter("   ")
-			DbGoTop() // runtime exception in X#
+			DbGoTop()
 			Assert.False( Eof() )
 			Assert.Equal("aaa", AllTrim(FieldGet(1)) )
 

@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _look_ahead    AS INT
         PROTECT _look_behind   AS INT
         PROTECT _inBuffer      AS BYTE[]
-        PROTECT PROPERTY _inBufferOfs AS LONG GET _weakBuffer:InBufferOfs SET _weakBuffer:InBufferOfs := VALUE
+        PROTECT PROPERTY _inBufferOfs AS INT64 GET _weakBuffer:InBufferOfs SET _weakBuffer:InBufferOfs := VALUE
         PROTECT PROPERTY _inBufferLen   AS LONG GET _weakBuffer:InBufferLen SET _weakBuffer:InBufferLen := VALUE
         PROTECT PROPERTY _inBufferTick  AS INT GET _weakBuffer:InBufferTick SET _weakBuffer:InBufferTick := VALUE
 
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
         CLASS WeakBuffer
             INTERNAL RefCount := 1      AS LONG
             INTERNAL Buffer             AS BYTE[]
-            INTERNAL InBufferOfs := 0   AS LONG
+            INTERNAL InBufferOfs := 0   AS INT64
             INTERNAL InBufferLen := 0   AS LONG
             INTERNAL InBufferTick := 0  AS INT
             CONSTRUCTOR(size AS LONG)
@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:Close()
             RETURN
 
-        PRIVATE METHOD ReadAt(position AS LONG, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LONG
+        PRIVATE METHOD ReadAt(position AS INT64, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LONG
             LOCAL result AS LONG
             TRY
                 _stream:Position := position
@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             RETURN result
 
-        PRIVATE METHOD WriteAt(position AS LONG, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LOGIC
+        PRIVATE METHOD WriteAt(position AS INT64, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LOGIC
             LOCAL result AS LOGIC
             TRY
                 _stream:Position := position
@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.RDD
             END TRY
             RETURN result
 
-        METHOD Read(offset AS LONG, buffer AS BYTE[], size AS LONG) AS LOGIC
+        METHOD Read(offset AS INT64, buffer AS BYTE[], size AS LONG) AS LOGIC
             LOCAL tick := 0 AS INT
             IF _inBuffer == NULL
                 RETURN SELF:ReadAt(offset, buffer, 0, size) == size
@@ -144,7 +144,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
                 IF _inBufferOfs > offset .OR. _inBufferOfs+_inBufferLen < offset+size
-                    LOCAL ofs AS LONG
+                    LOCAL ofs AS INT64
                     IF offset > _inBufferOfs
                         ofs := offset - SELF:_look_behind*SELF:_recordLength
                     ELSE
@@ -156,14 +156,14 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR len := _inBuffer:Length
                     VAR bwd := FALSE
                     IF ofs > _inBufferOfs .AND. ofs < _inBufferOfs+_inBufferLen
-                        VAR delta := ofs - _inBufferOfs
+                        VAR delta := (INT) (ofs - _inBufferOfs)
                         _inBufferLen -= delta
                         _inBufferOfs := ofs
                         ofs += _inBufferLen
                         len -= _inBufferLen
                         Array.Copy(_inBuffer, delta, _inBuffer, 0, _inBufferLen)
                     ELSEIF ofs < _inBufferOfs .AND. ofs+len > _inBufferOfs .AND. _inBufferLen > 0
-                        VAR delta := _inBufferOfs - ofs
+                        VAR delta := (INT) (_inBufferOfs - ofs)
                         IF _inBufferLen+delta > len
                             _inBufferLen -= _inBufferLen + delta - len
                         ENDIF
@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
 
                     _inBufferTick := tick
-                    VAR res := SELF:ReadAt(ofs, _inBuffer, ofs-_inBufferOfs, len)
+                    VAR res := SELF:ReadAt(ofs, _inBuffer, (INT) (ofs-_inBufferOfs), len)
                     IF res > 0
                         _inBufferLen += res
                         IF bwd .AND. res != len
@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
             RETURN TRUE
 
-        METHOD Write(offset AS LONG, buffer AS BYTE[], size AS LONG) AS LOGIC
+        METHOD Write(offset AS INT64, buffer AS BYTE[], size AS LONG) AS LOGIC
             VAR res := SELF:WriteAt(offset, buffer, 0, size)
             IF res .AND. _inBuffer != NULL
                 BEGIN LOCK _weakBuffer

@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T18:22:41.425+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>调用约定</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">调用约定</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">调用约定是非托管世界的东西。它们描述了调用函数或方法时应如何传递参数，还描述了被调用函数/方法返回时由谁负责调整堆栈。</para>
+    <para styleclass="Body Text">不同的编译器有不同的向函数传递参数的默认策略。</para>
+    <para styleclass="Normal" style="margin-top:14px; line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><table styleclass="Default" rowcount="6" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text" style="text-align:center;">约定</para>
+        </td>
+        <td style="width:1070px;">
+          <para styleclass="Body Text" style="text-align:center;">描述</para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">STRICT</para>
+        </td>
+        <td style="width:1070px;">
+          <para styleclass="Body Text">这是 C/C++ 世界中最常见的调用约定。在这种约定下，参数被推入堆栈。值类型被完全推送，而对于引用类型，变量的地址被推送。当调用一个方法时，“this ”对象的地址也会被推入堆栈。</para>
+          <para styleclass="Body Text">函数/方法返回后，调用方法将调整堆栈。</para>
+          <para styleclass="Body Text">这种调用约定允许使用参数数量可变的函数或方法，如 printf()。调用者知道传递的参数个数，因此调用是调整堆栈的最佳选择。</para>
+          <para styleclass="Body Text">在 C/C++ 中，这也被称为 __cdecl</para>
+          <para styleclass="Body Text">在 VO（和 X#）中，还有一个同义词 “ASPEN”。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">PASCAL</para>
+        </td>
+        <td style="width:1070px;">
+          <para styleclass="Body Text">这种调用约定在 Pascal 的世界里被广泛使用。它看起来很像 STRICT 调用约定，但现在被调用的函数/方法会在返回时调整堆栈。当然，这也意味着不能有可变数量的参数。如果有必要，最后一个参数通常会变成一个数组，因此仍有一定的灵活性。</para>
+          <para styleclass="Body Text">在 C/C++ 中，这被称为 __stdcall 调用约定。</para>
+          <para styleclass="Body Text">Windows API 中的大多数函数都使用这种调用约定。</para>
+          <para styleclass="Body Text">在 VO 中，这也被称为 WINCALL 或 CALLBACK。在 16 位的 windows 中，WINCALL 与 PASCAL 不同，但 32 位及以后的 windows 则取消了这一区别。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">THISCALL</para>
+        </td>
+        <td style="width:1070px;">
+          <para styleclass="Body Text">这是 PASCAL 调用约定的一个特殊变体，“this ”指针不推入堆栈，而是通过寄存器（通常是 ECX 寄存器）传递。在寄存器中传递 “this ”会更快，特别是当寄存器未被用于其他用途时，因此重复调用同一对象时不必推送 “this ”指针。在 C/C++ 中，这被称为 __thisccall</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">FASTCALL</para>
+        </td>
+        <td style="width:1070px;">
+          <para styleclass="Body Text">这种调用方式试图在寄存器中传递尽可能多的参数。</para>
+          <para styleclass="Body Text">在 C/C++ 中，这被称为 __fastcall 。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:144px;">
+          <para styleclass="Body Text">CLIPPER</para>
+        </td>
+        <td style="width:1070px;">
+          <para styleclass="Body Text">这是 Xbase 世界中的一种特殊调用约定，在 Xbase 世界中，函数的参数（从技术上讲）都是可选的，而且可以传递比声明参数更多的值。最初，在 Xbase 语言中，调用代码会将值推入堆栈，同时也会传递参数数，这样被调用的函数就 “知道 ”传递了多少个参数。</para>
+          <para styleclass="Body Text">在.Net 中，没有真正的等价物。为了模拟 CLIPPER 调用约定，我们生成了一个特殊的 PARAMS 参数，其中包含一个 USUAL 值数组。PARAMS 类型的参数必须是参数列表中的最后一个（或唯一一个）参数。Roslyn 编译器（我们在 x# 中使用的编译器）会自动将传递给使用 clipper 调用约定的函数/方法的所有值封装在一个数组中。</para>
+          <para styleclass="Body Text">当然，当您这样声明一个函数</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo(a,b,c)</text></para>
+          <para styleclass="Body Text">然后，你希望在代码中使用 3 个名为 “a”、“b ”和 “c ”的局部变量。</para>
+          <para styleclass="Body Text">然而，编译器会生成一个带有参数的函数。类似这样</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo(args </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PARAMS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">[])</text></para>
+          <para styleclass="Body Text">然后，我们在函数内部生成局部变量，并将参数的名称标注出来</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> a := args[1] </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> b := args[2] </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> c := args[3] </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text></para>
+          <para styleclass="Body Text">实际上，代码会更复杂一些，因为您可能会决定在所有函数中使用比声明参数更少的参数。我们必须考虑到这一点。</para>
+          <para styleclass="Body Text">现在看起来是这样的</para>
+          <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> numParams := args:Length</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> a := </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">iif</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">(numParams &gt; 0, args[1], NIL) </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USUAL</text></para>
+          <para styleclass="Body Text">“numParams” 和 &#160;”args&quot; 的名称是由编译器生成的，其中包含一个特殊字符，以确保我们引入的变量名称不会与代码中的名称相冲突。</para>
+          <para styleclass="Body Text">X# 调试器支持层也会隐藏这些特殊变量。</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">对于 “正常的 ”托管代码，你实际上只需要处理两种调用约定：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">对于未类型方法，编译器使用 CLIPPER 调用约定</li>
+      <li styleclass="Body Text">对于类型化方法，编译器在 STRICT 和 PASCAL 之间没有区别。它们都产生相同的代码</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">只有在调用其他 DLL 中的非托管代码时，才需要使用其他调用约定。你必须 “知道 ”DLL 使用的是什么。一个问题是，C/C++ 代码中的调用约定往往隐藏在编译器宏中。</para>
+    <para styleclass="Body Text">根据经验，C/C++ 代码应使用 STRICT，Windows api 函数应使用 PASCAL。</para>
+    <para styleclass="Body Text">如果不起作用（例如，.Net 运行时抱怨堆栈问题），则应改用其他调用约定。</para>
+  </body>
+</topic>

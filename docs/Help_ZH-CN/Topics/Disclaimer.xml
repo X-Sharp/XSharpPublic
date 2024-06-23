@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T17:49:15.748Z" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>免责声明</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">免责声明</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">目前，X# 支持以下 Xbase 方言：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="4">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">方言</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">语法</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">类</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">函数</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Visual Objects</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Xbase++</para>
+        </td>
+        <td>
+          <para styleclass="Normal">完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">(Visual) FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">(X)Harbour</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+        <td>
+          <para styleclass="Normal">部分完成</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">详细信息请参阅 <link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects">方言</link> 。</para>
+  </body>
+</topic>

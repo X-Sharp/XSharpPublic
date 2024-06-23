@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:15:40.097+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>制表符</title>
+  <keywords>
+    <keyword>Options</keyword>
+    <keyword>Tabs</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">制表符</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含与选项卡有关的通用设置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">不同版本的 Visual Studio 可能会更改该页面。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Tabs.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:14:22.721+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>滚动条</title>
+  <keywords>
+    <keyword>Options</keyword>
+    <keyword>Scroll Bars</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">滚动条</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含有关滚动条的通用设置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">不同版本的 Visual Studio 可能会更改该页面。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Scrollbar.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

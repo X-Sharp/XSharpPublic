@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:20:41.677+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Usual 类型</title>
+  <keywords>
+    <keyword>USUAL</keyword>
+    <keyword>XSharp.__Usual</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Usual 类型</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 中的 USUAL 类型是作为 .Net 结构实现的。它包含一个类型标志和一个值。值可以是以下类型之一：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">NIL, Long, Date, Float, Array, Object, String, Logic, Codeblock, Symbol, Ptr, Int64, DateTime, Decimal, DateTime</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该类型的内部类型名称是 XSharp.__Usual<br/></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="17" colcount="2" style="width:auto; background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">类型</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Usual 类型值</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">NIL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Long</para>
+        </td>
+        <td>
+          <para styleclass="Normal">1</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Date</para>
+        </td>
+        <td>
+          <para styleclass="Normal">2</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Float</para>
+        </td>
+        <td>
+          <para styleclass="Normal">3</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Array</para>
+        </td>
+        <td>
+          <para styleclass="Normal">5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Object</para>
+        </td>
+        <td>
+          <para styleclass="Normal">6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">String</para>
+        </td>
+        <td>
+          <para styleclass="Normal">7</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Logic</para>
+        </td>
+        <td>
+          <para styleclass="Normal">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Codeblock</para>
+        </td>
+        <td>
+          <para styleclass="Normal">9</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Symbol</para>
+        </td>
+        <td>
+          <para styleclass="Normal">10</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Ptr</para>
+        </td>
+        <td>
+          <para styleclass="Normal">18</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Int64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">22</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DateTime</para>
+        </td>
+        <td>
+          <para styleclass="Normal">26</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Decimal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">27</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Currency</para>
+        </td>
+        <td>
+          <para styleclass="Normal">28</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Binary</para>
+        </td>
+        <td>
+          <para styleclass="Normal">29</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">请注意，本表中不包括某些常用类型值。编译器中有这些数字的定义，但它们从不存储在 USUAL 中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">因此，您可以写 UsualType(uValue) == REAL8，但这永远不会成真。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><br/>您可以将其他类型的值赋值给 USUAL，但这些值将被转换为第一个表中列出的类型。例如，如果将 DWORD 赋值给 USUAL，运行时将查看 DWORD 的值，如果小于或等于 MAX_LONG，则将其存储为 LONG。否则就会将其存储为 FLOAT。请注意，尽管我们支持 Int64 类型，但为了与 VO 兼容，DWORD 转换并不使用 Int64 类型。此外，如果将 PSZ 赋值给 USUAL，那么它将被存储为 STRING。因此，运行时将自动调用 Psz2String() 来获取字符串表示法。<br/></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="background-color:#ffffff; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">名称</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Usual 类型值</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Byte</para>
+        </td>
+        <td>
+          <para styleclass="Normal">11</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Short</para>
+        </td>
+        <td>
+          <para styleclass="Normal">12</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Word</para>
+        </td>
+        <td>
+          <para styleclass="Normal">13</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">DWord</para>
+        </td>
+        <td>
+          <para styleclass="Normal">14</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Real4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">15</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Real8</para>
+        </td>
+        <td>
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">PSZ</para>
+        </td>
+        <td>
+          <para styleclass="Normal">17</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Usual By Ref</para>
+        </td>
+        <td>
+          <para styleclass="Normal">19</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">UInt64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">23</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Char</para>
+        </td>
+        <td>
+          <para styleclass="Normal">24</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Dynamic</para>
+        </td>
+        <td>
+          <para styleclass="Normal">25</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="USUAL" inline="false"/></para>
+  </body>
+</topic>

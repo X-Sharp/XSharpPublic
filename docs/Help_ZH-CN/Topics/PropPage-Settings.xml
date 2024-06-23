@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T10:55:50.487+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>设置</title>
+  <keywords>
+    <keyword>app.config</keyword>
+    <keyword>Custom Tool</keyword>
+    <keyword>Settings</keyword>
+    <keyword>settings editor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">设置</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">应用程序设置可以动态存储应用程序信息。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesSettings.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><br/><text styleclass="Image Caption" style="font-style:normal;">设置允许您在客户端计算机上存储不应包含在应用程序代码中的信息（例如连接字符串）、用户偏好以及运行时需要的其他信息。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">每个应用程序设置都必须有一个唯一的名称。名称可以是字母、数字或下划线的任意组合，但不能以数字开头，也不能有空格。名称可通过 &quot;名称 &quot;属性更改。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">应用程序设置可存储为任何可序列化为 XML 或具有实现 ToString/FromString 的 TypeConverter 的数据类型。最常见的类型是字符串、整数和布尔，但也可以将值存储为颜色、对象或连接字符串。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">应用程序设置也有一个值。值通过 Value 属性设置，且必须与设置的数据类型相匹配。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">此外，还可以在设计时将应用程序设置绑定到表单或控件的属性上。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">根据范围的不同，有两种类型的应用程序设置：</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">应用范围设置可用于网络服务的 URL 或数据库连接字符串等信息。这些值与应用程序相关联。因此，用户无法在运行时更改它们。</text></li>
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">用户作用域设置可用于持久化表单最后位置或字体偏好等信息。用户可以在运行时更改这些值。</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">使用范围属性可以更改设置的类型。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">项目系统会在两个 XML 文件中存储应用程序设置：</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">app.config 文件，在设计时创建第一个应用程序设置时创建</text></li>
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">user.config 文件，在运行应用程序的用户更改任何用户设置值时创建。</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">请注意，用户设置的更改不会写入磁盘，除非应用程序专门调用一种方法来实现这一点。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过 &quot;设置属性 &quot;页面，您可以打开项目设置的设置编辑器。这些设置的定义将保存在项目的 &quot;属性 &quot;文件夹中。</para>
+    <para styleclass="Normal">这些设置的值将存储在项目根文件夹下的 app.config 文件中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">与资源编辑器一样，您也可以选择生成代码的可见性(集成开发环境会生成一个名为 Settings.Designer.prg 的文件)。这也会更改设置文件中的 &quot;自定义工具 &quot;属性。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">编译项目时，MsBuild 会生成一份 app.config 副本，并将其重命名为项目输出文件夹中的 &lt;yourapp&gt;.exe.config。</text></para>
+  </body>
+</topic>

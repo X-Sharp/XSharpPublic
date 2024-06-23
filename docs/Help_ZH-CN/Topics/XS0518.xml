@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0518</title>
+  <keywords>
+    <keyword>XS0518</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0518</para>
+    </header>
+    <para styleclass="Normal">Predefined type &apos;type&apos; is not defined or imported</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The main cause for this problem is that the project is not importing mscorlib.dll, which defines the entire System namespace. This can be caused by one of the following:</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostdlib">/nostdlib</link> option from the command line compiler has been specified. The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostdlib">/nostdlib</link> option prevents the import of mscorlib.dll. Use this option if you want to define or create a user-specific System namespace.</li>
+      <li styleclass="Normal" style="margin-left:13px;">An incorrect mscorlib.dll is referenced.</li>
+      <li styleclass="Normal" style="margin-left:13px;">A corrupt Visual Studio .NET or .NET Framework common language runtime installation exists.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Residual components from an earlier installation that are incompatible with the latest installation remain.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To resolve this problem, take one of the following actions:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Do not specify the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostdlib">/nostdlib</link> option from the command line compiler.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Make sure that the project refers to the correct mscorlib.dll.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Reinstall the .NET Framework common language runtime (if the previous solutions do not solve the problem).</li>
+    </list>
+  </body>
+</topic>

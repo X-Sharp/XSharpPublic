@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T21:02:31.588+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>String 字面量</title>
+  <keywords>
+    <keyword>Literals</keyword>
+    <keyword>STRING</keyword>
+    <keyword>String Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">String 字面量</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 中有几种不同的字符串类型。对于普通字符串，不同方言的符号可能不同：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">字面量</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO, FoxPro &amp; Harbour</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Vulcan &amp; Core</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&apos;&lt;char&gt;&apos;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String 字面量</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Char 字面量*</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&apos;&lt;char&gt;...&lt;char&gt;&apos;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String 字面量</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Not Supported</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&quot;&lt;char&gt;...&lt;char&gt;&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String 字面量</para>
+        </td>
+        <td>
+          <para styleclass="Normal">String 字面量</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">e</text>&quot;&lt;char&gt;...&lt;char&gt;&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">扩展的 string 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">扩展的 string 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">i</text>&quot;&lt;char&gt;.. &lt;char&gt;{表达式}&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">内插 string 字面量</para>
+        </td>
+        <td>
+          <para styleclass="Normal">内插 string 字面量</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">ei</text>&quot;&lt;char&gt;.. &lt;char&gt;{表达式}&quot; or</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">ie</text>&quot;&lt;char&gt;.. &lt;char&gt;{表达式}&quot; </para>
+        </td>
+        <td>
+          <para styleclass="Normal">扩展的内插 string 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">扩展的内插 string 字面量<text style="font-weight:bold;">*</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="Escape-codes" inline="false"/></para>
+  </body>
+</topic>

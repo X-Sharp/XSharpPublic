@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T10:46:47.632+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Debug(调试)</title>
+  <keywords>
+    <keyword>Command</keyword>
+    <keyword>Command Arguments</keyword>
+    <keyword>Debug Information</keyword>
+    <keyword>Enable unmanaged debugging</keyword>
+    <keyword>Generate Debug Information</keyword>
+    <keyword>unmanaged debugging</keyword>
+    <keyword>Working Directory</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Debug(调试)</para>
+    </header>
+    <para styleclass="Normal"><image src="ProjectPropertiesDebug.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="3">
+      <tr style="vertical-align:top">
+        <td style="width:211px;">
+          <para styleclass="Normal" style="text-align:center;">项目</para>
+        </td>
+        <td style="width:864px;">
+          <para styleclass="Normal" style="text-align:center;">描述</para>
+        </td>
+        <td style="width:158px;">
+          <para styleclass="Normal" style="text-align:center;">命令行选项</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:211px;">
+          <para styleclass="Normal">Command</para>
+          <para styleclass="Normal">(命令)</para>
+        </td>
+        <td style="width:864px;">
+          <para styleclass="Normal">要执行的调试命令。</para>
+        </td>
+        <td style="width:158px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:211px;">
+          <para styleclass="Normal">Command Arguments</para>
+          <para styleclass="Normal">(命令行参数)</para>
+        </td>
+        <td style="width:864px;">
+          <para styleclass="Normal">要传递给应用程序的命令行参数。</para>
+        </td>
+        <td style="width:158px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:211px;">
+          <para styleclass="Normal">Generate Debug Information</para>
+          <para styleclass="Normal">(生成调试信息)</para>
+        </td>
+        <td style="width:864px;">
+          <para styleclass="Normal">生成调试信息(无、完整、pdbonly)。</para>
+        </td>
+        <td style="width:158px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:211px;">
+          <para styleclass="Normal">Working Directory</para>
+          <para styleclass="Normal">(工作目录)</para>
+        </td>
+        <td style="width:864px;">
+          <para styleclass="Normal">应用程序的工作目录。默认情况下是包含项目文件的目录。</para>
+        </td>
+        <td style="width:158px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:211px;">
+          <para styleclass="Normal">Enable unmanaged debugging</para>
+          <para styleclass="Normal">(启用非托管调试)</para>
+        </td>
+        <td style="width:864px;">
+          <para styleclass="Normal">启用非托管调试。</para>
+        </td>
+        <td style="width:158px;">
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

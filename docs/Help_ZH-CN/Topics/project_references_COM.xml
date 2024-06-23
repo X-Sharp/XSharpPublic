@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T11:03:31.038+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COM</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">External COM Components</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">添加引用对话框中的 COM 页面列出了在计算机注册表中找到的 COM 组件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您可以从中选择一个组件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">但是，X# 编译器不能直接使用这些组件。因此，Visual Studio 会调用一个工具（tlbimp.exe）来读取 COM 组件的类型库，并生成一个围绕 COM 对象的托管封装器。该封装器的名称通常以 &quot;interop &quot;开头。在<link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">Email 示例</link>中，Internet Explorer 组件就属于这种情况，因此会生成 Interop.SHDocVw.dll。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果 COM 组件是 ActiveX，则将生成第二个程序集，其中的代码将为 ActiveX 控件声明一个继承于 System.Windows.Forms.AxHost 的对象。Visual Stdio 为此调用了 &quot;aximp.exe &quot;工具。这些封装器的文件名通常以 &quot;axinterop &quot;开头，如 &quot;AxInterop.SHDocVw.dll&quot;。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">有些 COM 组件使用频率很高，这些组件需要在计算机上安装所谓的 &quot;主要互操作程序集&quot;。对于这些组件，不会生成 &quot;互操作 &quot;程序集，但在编译时会使用主要互操作程序集。例如，ADO 的 GAC 中就有一个主要互操作程序集。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Image Caption"><image src="COM references 1.png" scale="100.00%" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

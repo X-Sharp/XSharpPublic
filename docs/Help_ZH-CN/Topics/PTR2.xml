@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T20:17:45.574+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PTR</title>
+  <keywords>
+    <keyword>PTR</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PTR</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">PTR 关键字表示一个整数类型，用于存储指向内存位置的指针。通常编译为 .Net 类型 System.IntPtr。</para>
+    <para styleclass="Body Text"><br/>请注意，PTR 的大小取决于底层操作系统，并且在应用程序以 x86 或 x64 模式运行时也会有所不同。</para>
+    <para styleclass="Body Text"><br/>在 Visual Objects 中，PTR 总是 32 位。许多人编写了将 INT 值转换为 PTR 并返回的代码。这是因为 VO 中这两个值都是 32 位的。</para>
+    <para styleclass="Body Text"><br/>在 .Net 中，安全的代码不能这样做，因为 PTR 的大小不是固定的。</para>
+  </body>
+</topic>

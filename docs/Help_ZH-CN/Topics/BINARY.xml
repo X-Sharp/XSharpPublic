@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T23:38:21.138+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BINARY</title>
+  <keywords>
+    <keyword>BINARY</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BINARY</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">BINARY 类型表示为一系列字节。</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">BINARY 字面量写作 0h12345678abcdef</li>
+      <li styleclass="Body Text">0h后面的值是一系列十六进制数字。每对十六进制数字(半字节)表示1个字节。必须有偶数个“半字节”。</li>
+      <li styleclass="Body Text">BINARY 字面量编码为字节数组。在 Core 方言中，BINARY 字面量表示为 byte[]。在其他方言中，二进制字面量是一种新类型(XSharp.__Binary)，可以用新的 BINARY 关键字指定。</li>
+      <li styleclass="Body Text">BINARY 的 UsualType() 为29。</li>
+      <li styleclass="Body Text">XSharp.__Binary类型具有操作符，可以将字符串添加到二进制中，也可以将二进制添加到字符串中。<br/>Binary + String 将返回一个二进制<br/>String + Binary 将返回一个字符串<br/>Binary + Binary 将返回一个二进制<br/>BINARY 类型还有比较运算符（&gt;、&lt;、&gt;=、&lt;=）。这些运算符将使用通过 SetCollation() 定义的字符串比较例程，但是当右侧比左侧短且前几个字节匹配时，单个等号的=比较不会返回TRUE。</li>
+      <li styleclass="Body Text">从 BINARY 到字符串的转换使用 Encoding.GetBytes() 和 Encoding.GetString() 函数进行，用于当前 Windows 编码。<br/>这意味着在单字节代码页上，字符串中的每个字符将导致一个字节，每个字节将导致一个字符。<br/>对于多字节代码页（中文、日文、韩文等），一些字符将导致多个字节，一些字节对将导致一个字符。</li>
+      <li styleclass="Body Text">有隐式操作符将 BINARY 转换为 byte[]，反之亦然。还有隐式操作符将 Binary 转换为 String，反之亦然。</li>
+      <li styleclass="Body Text">当使用 Vulcan Runtime 编译时，对于非 Core 方言，字节数组存储在 USUAL 值中。</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal">Binary 类型在 XSharp.__Binary 类中实现。</para>
+    <para styleclass="Normal"><br/>Binary 的 Usualtype 值为 29</para>
+  </body>
+</topic>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T09:45:22.660+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Properties and Fields</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Properties and Fields (FoxPro class syntax)</para>
+    </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明具有可选初始值的字段和或属性</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab />[FIELD] [modifiers] &lt;<text styleclass="List">IdName&gt;</text>, &lt;<text styleclass="List">IdName&gt;</text> ...] [AS &lt;idType&gt;]</para>
+    <para styleclass="Normal"><tab />[[.]Object.] &lt;<text styleclass="List">IdName</text>&gt; = &lt;Expression&gt; ...] </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">声明和/或初始化属性的两种语法均受支持。</para>
+    <para styleclass="Normal">我们添加了一个可选的 AS DataType 子句。</para>
+    <para styleclass="Normal">我们还添加了一个可选的 FIELD 子句，允许您声明字段(与属性相反)</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELD <tab />如果包含 FIELD 关键字，那么名称将是类中字段的名称</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Modifiers<tab />可选的修饰符列表，用于指定属性的可见性或作用域，如 PUBLIC、protected、hidden。protected(保护)、hidden(隐藏)。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;IdName&gt;<tab />要声明的字段或属性的有效标识符名称。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">Expression<tab />分配给字段/属性的初始值</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">属性的实现方式取决于 /fox1 编译器开关的值。启用该开关后，所有属性都将从自定义对象中声明的属性集合中读取/写入。未启用该开关时，&quot;普通 &quot;自动属性将通过该类中的支持字段声明。</para>
+  </body>
+</topic>

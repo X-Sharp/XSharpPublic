@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T21:08:25.916+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Date 字面量</title>
+  <keywords>
+    <keyword>DATE</keyword>
+    <keyword>Date Literals</keyword>
+    <keyword>DATETIME</keyword>
+    <keyword>DateTime Literals</keyword>
+    <keyword>Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Date 和 DateTime 字面量</para>
+    </header>
+    <para styleclass="Normal">Date 字面量的格式是</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">YYYY.MM.DD</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">或者</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">{^YYYY-MM-DD} </text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">DateTime 字面量可以用以下语法构建</para>
+    <para styleclass="Body Text"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">{^YYYY-MM-DD HH:MM:SS}.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">示例：</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2000.01.01</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2012.02.29</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; 2015.09.25</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// foxpro date 和 datetime 字面量</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {^2019.02.28}</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {^2020.02.29 23:59:59}</text></para>
+    <para styleclass="Body Text">所有方言都支持 Date 和 DateTime 字面量。在 Core 方言中，Date 和 DateTime 字面量都将转换为 DateTime 值。在其他方言中，Date 字面量将被转换为 Date 值。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">当然，您也可以使用运行时函数来构造字面量，例如 STOD(“20150925”) 或 ConDate(2019,9,25)，但字面量的效率更高。</para>
+  </body>
+</topic>

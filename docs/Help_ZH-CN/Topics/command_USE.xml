@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T18:39:11.717+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>USE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Concurrency control</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Files<keyword>opening</keyword></keyword>
+    <keyword>Opening<keyword>files</keyword></keyword>
+    <keyword>USE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">USE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">在当前或下一个可用工作区打开现有数据库文件、相关备注文件和可选的相关索引文件。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">USE [&lt;xcDataFile&gt; [INDEX &lt;xcIndexList&gt;] [ALIAS &lt;xcAlias&gt;] [FIELDS &lt;aFields&gt;] [NEW] [READONLY] <br/><tab />[EXCLUSIVE | SHARED] [VIA &lt;cDriver&gt;] [INHERIT &lt;acRDDs&gt;]]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xcDataFile&gt;<tab />要打开的数据库文件名，包括可选的驱动器、目录和扩展名。 如果数据库文件有相应的备注文件，也会打开。 数据库和备注文件的默认扩展名由 RDD 决定。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INDEX &lt;xcIndexFileList&gt;</para>
+    <para styleclass="List"><tab />要打开的索引文件名，包括每个文件的可选驱动器、目录和扩展名。 默认扩展名由 RDD 决定，可使用 DBOrderInfo(DBOI_INDEXEXT) 获取。 </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果将 &lt;xcIndexList&gt; 指定为表达式，且返回值为空格或 NIL，则该表达式将被忽略。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />建议使用 SET INDEX 或 DBSetIndex() 打开索引文件，以便在并发冲突时妥善解决。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果数据库文件、其对应的备注文件或任何索引文件不存在，则会出现运行时错误。 有关文件搜索和创建规则，请参见 SetDefault() 和 SetPath()。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALIAS &lt;xcAlias&gt;<tab />打开 &lt;xcDataFile&gt; 时与工作区相关联的标识符名称。 如果未指定，别名默认为数据库文件名。 单个应用程序内不允许使用重复的别名。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELDS &lt;aFields&gt;<tab />包含字段描述的数组，格式由 DBStruct() 返回。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />此参数不适用于 DBF 文件。 它适用于不存储字段描述的文件格式。 例如，如果使用支持 SDF 或分隔文件的 RDD，可以使用此参数定义文件结构，然后使用其他命令或函数访问字段说明。 以下是使用此参数的示例：</para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">aFields := {;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">{&quot;First&quot;, &quot;C&quot;, 35, 0};</text><br/><tab /><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">{&quot;Last&quot;, &quot;C&quot;, 35, 0};</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160;</text><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160;</text><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">{&quot;Birthday&quot;, &quot;D&quot;, 8, 0}}</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; </text><tab /><tab /><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Names </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FIELDS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> aFields VIA &quot;DELIM&quot;</text><br/><tab /><tab /><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;? First &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Return: &#160;Josie</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">NEW<tab />在打开 &lt;xcDataFile&gt; 前选择下一个可用的工作区。 如果未指定，&lt;xcDataFile&gt; 将在当前工作区打开。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">READONLY<tab />尝试以只读属性打开 &lt;xcDataFile&gt;，禁止更新工作区。 如果未指定，&lt;xcDataFile&gt; 将以读写方式打开，允许更新。 如果使用指定的属性无法访问 &lt;xcDataFile&gt;，则会出现运行时错误。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">EXCLUSIVE<tab />试图打开 &lt;xcDataFile&gt; 供独占（非共享）使用。 在关闭数据库文件之前，所有其他进程都被拒绝访问。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">SHARED<tab />尝试打开 &lt;xcDataFile&gt; 以供共享使用。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果既未指定 SHARED 模式，也未指定 EXCLUSIVE 模式，USE 命令将尝试以 SetExclusive() 标志指示的模式打开 &lt;xcDataFile&gt;。 不过，强烈建议将指定打开模式作为 USE 命令的一部分，而不是依赖 SetExclusive() 来决定。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">VIA &lt;cDriver&gt;<tab />为工作区提供服务的 RDD 名称。 如果未指定，则使用 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm" styleclass="Normal">RDDSetDefault()</link> 确定的默认 RDD。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INHERIT &lt;acRDDs&gt;<tab />包含 RDD 名称的一维数组，主 RDD 从这些 RDD 继承特殊功能。 这样，您就可以在不同的工作区和不同的数据库驱动程序中使用具有特殊功能（如加密或解密）的 RDD。 这些 RDD 将覆盖主 RDD（使用 VIA 子句指定）的特殊功能。 如果多个 RDD（用 INHERIT 子句指定）实现了相同的功能，则与列表中最后一个 RDD 相关的功能优先。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />在无参数情况下指定的 USE 会关闭当前工作区中打开的数据库文件。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">USE 命令尝试以指定模式打开 &lt;xcDataFile&gt;（及其关联的 .DBF 文件（如果有））。 如果文件成功打开，操作将继续以相同模式打开任何指定的索引文件 - 工作区中已打开的任何文件将被关闭。 列表中第一个索引文件的第一顺序成为控制顺序。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果由于其他进程独占使用数据库文件等原因而拒绝访问，NetErr() 将被设置为 TRUE，但不会引发运行时错误。 因此，建议将打开索引文件作为一项单独操作（使用 SET INDEX 或 DBSetIndex()）。 否则，当 USE 命令尝试打开列表中的第一个索引文件时，就会出现运行时错误，因为数据库文件尚未打开。</para>
+    <para styleclass="Normal">首次打开数据库文件时，记录指针位于文件中的第一条逻辑记录上（如果没有控制顺序，则位于第一条记录上）。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果数据库文件是在共享模式下打开的，其他进程可以并发访问该文件，而数据完整性的责任则由应用程序承担。 文件和记录锁定（使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XSharpRef.chm">RLock()</link> 或 DBRLock()）是禁止其他进程访问特定文件或记录的基本方法。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">有关如何关闭所有类型文件的信息，请参阅 CLOSE 命令。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">USE 在功能上等同于 DBUseArea()。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例将打开一个共享数据库文件及相关索引文件。 如果 NetErr() 返回 FALSE，表明 USE 成功，则索引被打开：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> accounts SHARED </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> !NetErr()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> acctnames, acctzip</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;文件打开失败&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BREAK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal">此示例打开了一个数据库文件，其中包含几个以扩展表达式指定的索引文件：</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">cDataFile = &quot;MyDbf&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">acIndex = {&quot;MyIndex1&quot;, &quot;MyIndex2&quot;, &quot;MyIndex3&quot;}</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (cDataFile) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (acIndex[1]), ;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;(acIndex[2]), (acIndex[3])</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSelect.htm" domain="XSharpRef.chm">DbSelect()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetIndex.htm" domain="XSharpRef.chm">DbSetIndex()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetOrder.htm" domain="XSharpRef.chm">DbSetOrder()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbUseArea.htm" domain="XSharpRef.chm">DbUseArea()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_NetErr.htm" domain="XSharpRef.chm">NetErr()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm">RddSetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SELECT">SELECT</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Used.htm" domain="XSharpRef.chm">Used()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

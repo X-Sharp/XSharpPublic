@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-09T21:55:17.756+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>调试器</title>
+  <keywords>
+    <keyword>breakpoint</keyword>
+    <keyword>breakpoint conditions</keyword>
+    <keyword>Debugger</keyword>
+    <keyword>debugger expression evaluator</keyword>
+    <keyword>Expression evaluator</keyword>
+    <keyword>intermediate window</keyword>
+    <keyword>late binding</keyword>
+    <keyword>watch window</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">调试器</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Studio 内的调试器与语言无关。我们增加了对 X# 语言的支持，因此你可以在本地窗口和自动窗口中看到 X# 特定类型的变量，也可以在观察窗口和中间窗口中输入 X# 表达式(例如，不区分大小写)，用于断点条件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在调试器表达式评估器（这就是它的名称）的背后是完整的 X# 编译器。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">我们在 Visual Studio 中添加了一个选项页，你可以通过它来控制 X# 调试器表达式评估器如何解析和编译表达式。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通常情况下，调试器按照主程序的设置工作。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">但是，如果启动应用程序不是 X# 应用程序，则会使用该对话框中的设置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">前两个选项始终有效。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果您的应用程序使用了后期绑定，并且您在调试器中看到了后期绑定的问题，那么您可以在此对话框中禁用后期绑定。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Debugger.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T08:29:51.434+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 运行时(Runtime)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">X# 运行时(Runtime)</para>
+    </header>
+    <para styleclass="Heading2"><text style="font-weight:bold;">在 X# 版本 2 - Bandol 中，我们引入了 X# 运行时。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在本章中，我们将向您概述我们所做的设计决定、运行时的外观、在哪里可以找到哪些类型和函数等。</para>
+    <para styleclass="Normal">我们还将在此列出尚未支持的功能。</para>
+    <para styleclass="Heading2">概述</para>
+    <para styleclass="Normal">在设计 X# 编译和 X# 运行时时，我们重点考虑了几个问题：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">语言和运行时应尽可能与 VO 兼容。我们知道 Vulcan 开发团队决定不支持 VO 的某些功能，但我们决定在技术上尽可能做到兼容。</li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">我们希望我们的运行时是完全 Unicode 和 AnyCPU 的。它应该可以在任何平台上运行，也可以在 x86 和 x64 模式下运行。 这带来了一些挑战，因为 VO 是 Ansi（而不是 Unicode），也是 X86。在 VO 中，您可以将一个 LONG 改为一个 PTR。这在 X64 模式下是行不通的，因为 LONG 是 32 位，而 PTR 是 64 位。</li>
+      <li styleclass="Normal">我们希望代码在 &quot;安全 &quot;模式下编译。在非严格需要的情况下，不要使用不安全的代码。这里最大的问题/挑战是 PTR 类型。有了 PTR，即使你不 &quot;拥有 &quot;内存，你也可以直接访问内存和读/写内存。然而，同样的 PTR 类型也被用作 &quot;唯一标识符&quot;，例如在低级文件 i/o 和图形用户界面类中的窗口和控制句柄。这些 PTR 值从不用于读/写内存，而是类似于对象引用。我们决定使用 .Net IntPtr 类型来处理这类句柄。当然，编译器可以在 PTR 和 IntPtr 之间进行透明转换。</li>
+      <li styleclass="Normal">我们希望证明 X# 语言是一流的 .Net 开发语言。这就是我们决定用 X# 编写 X# 运行时的原因。通过这样做，我们还创建了一个大型代码库来测试编译器。因此，这是一个双赢的局面。</li>
+      <li styleclass="Normal">我们希望运行时是线程安全的。每个线程都有自己的 &quot;全局 &quot;状态和开放工作区列表。当一个新线程启动时，它将继承主线程的状态，但不会继承主线程的工作区。</li>
+      <li styleclass="Normal">目前，X# Runtime 是根据 .Net Framework 4.6 编译的。</li>
+    </list>
+    <para styleclass="Heading2">X# 运行时中的程序集</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果您想知道某个函数或类型是在哪个 Assembly 中定义的，那么您的 &quot;好朋友 &quot;就是文档。我们使用一个工具来生成文档，因此文档总是正确的。</para>
+    <para styleclass="Normal"><br/>某些子系统在 XSharp.Core DLL 和 XSharp.VO.DLL 中也有函数。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">组件</text></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">适用方言</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Framework 版本</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Core">XSharp.Core.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">这是 X# 运行时的基础 DLL。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Data">XSharp.Data.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 包含支持基于 .Net SQL 的数据访问和基于 SQL 的游标的代码。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT">XSharp.RT.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">除 Core 外，所有方言都需要使用该 DLL。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# non - core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT_Debugger_DLL">XSharp.RT.Debugger.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 包含运行时调试器的功能和窗口。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 为运行时添加 VO 和 Vulcan 方言所需的功能。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# VO 和 X# Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_XPP">XSharp.XPP.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 为运行时添加 Xbase++ 方言所需的功能。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# XPP</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP">XSharp.VFP.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 为运行时添加 FoxPro 方言所需的功能。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler">XSharp.Macrocompiler.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 是 X# 的 &quot;快速 &quot;宏编译器。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler_Full_DLL">XSharp.MacroCompiler.Full.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 是 X# 的 &quot;完整 &quot;宏编译器。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">该 DLL 包含为 X# 实现的各种 RDD。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:20%;">
+          <para styleclass="Normal">VO SDK Class libs:<br/>VOConsoleClasses.dll</para>
+          <para styleclass="Normal">VOGUIClasses.dll</para>
+          <para styleclass="Normal">VOInternetClasses.dll</para>
+          <para styleclass="Normal">VORDDClasses.dll</para>
+          <para styleclass="Normal">VOReportClasses.dll</para>
+          <para styleclass="Normal">VOSQLClasses.dll</para>
+          <para styleclass="Normal">VOSystemClasses.dll</para>
+          <para styleclass="Normal">VOWin32APILibrary.dll</para>
+        </td>
+        <td style="width:595px;">
+          <para styleclass="Normal">这些 DLL 表示 Visual Objects 的类库。</para>
+        </td>
+        <td style="width:170px;">
+          <para styleclass="Normal">X# VO 和 X# Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">缺少或不完整的功能 </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="3" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">特性</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">预计时间</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">某些运行时功能尚不支持：<br/>Crypt 函数 (Crypt(), CryptA())<br/>Encoding 函数 (B64Enc.., UUEnc.., GetChunkBase64 等)<br/></para>
+        </td>
+        <td>
+          <para styleclass="Normal">这些函数很可能会在下一个测试版中加入。目前，当您使用这些函数时，它们将抛出一个未实现异常。</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-12T12:15:14.882+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>APPEND FROM 命令</title>
+  <keywords>
+    <keyword>APPEND FROM command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Importing<keyword>records</keyword></keyword>
+    <keyword>Records<keyword>importing</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"> APPEND FROM Command (non FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">从数据库或文本文件导入记录。</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">APPEND FROM &lt;xcSourceFile&gt; [FIELDS &lt;idFieldList&gt;] <br/>[&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;] <br/>[SDF] | [DELIMITED [WITH &lt;xcDelimiter&gt; | BLANK]] | <br/>[VIA &lt;cDriver&gt;] [INHERIT FROM &lt;acRDDs&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">FROM &lt;xcSourceFile&gt;<tab />添加记录的源文件名称，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 数据库文件的默认扩展名由 RDD 决定。 文本文件的默认扩展名是 .TXT。</para>
+    <para styleclass="List"><tab />该命令尝试以共享模式打开 &lt;xcSourceFile&gt;。 如果文件不存在，则会出现运行时错误。 如果文件成功打开，则继续执行操作。 如果由于其他进程独占该文件等原因而拒绝访问，NetErr() 将被设置为 “true”。 &#160;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__FieldList" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">SDF<tab />系统数据格式文件，格式规格如下表所示。 记录和字段为固定长度。.</para>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">内容<tab />格式</para>
+    <para styleclass="List">Character 字段<tab />填充尾部空白<tab /></para>
+    <para styleclass="List">Date 字段<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical 字段<tab />T 或 F<tab /></para>
+    <para styleclass="List">Memo 字段<tab />忽略<tab /></para>
+    <para styleclass="List">Numeric 字段<tab />用前导空格或 0 填充<tab /></para>
+    <para styleclass="List">字段分隔符<tab />无<tab /></para>
+    <para styleclass="List">记录分隔符<tab />回车/换行<tab /></para>
+    <para styleclass="List">文件结束标记<tab />1A hex 或 Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED [WITH &lt;xcDelimiter&gt;]</para>
+    <para styleclass="List"><tab />字符字段用双引号（默认分隔符）或指定的 &lt;xcDelimiter&gt; 括起来的文本文件。 字段和记录的长度可变，格式规范如下表所示：</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">内容<tab />格式<tab /></para>
+    <para styleclass="List">Character 字段<tab />可以分隔，并截去尾部的空白<tab /></para>
+    <para styleclass="List">Date 字段<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical 字段<tab />T 或 F<tab /></para>
+    <para styleclass="List">Memo 字段<tab />忽略<tab /></para>
+    <para styleclass="List">Numeric 字段<tab />可以截去前导零<tab /></para>
+    <para styleclass="List">字段分隔符<tab />(英文)逗号<tab /></para>
+    <para styleclass="List">记录分隔符<tab />回车/换行<tab /></para>
+    <para styleclass="List">文件结束标记<tab />1A hex 或 Chr(26)<tab /></para>
+    <para styleclass="List"><text style="font-weight:bold;">注意：</text>分隔符不是必需的，APPEND FROM 可以正确处理没有分隔符的字符字段。 </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED WITH BLANK</para>
+    <para styleclass="List"><tab />文本文件，其中字段之间用一个空格隔开，字符字段不括入分隔符。 格式规范如下表所示：</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">内容<tab />格式</para>
+    <para styleclass="List">Character 字段<tab />不分隔，可截断尾部空白<tab /></para>
+    <para styleclass="List">Date 字段<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical 字段<tab />T 或 F<tab /></para>
+    <para styleclass="List">Memo字段<tab />忽略<tab /></para>
+    <para styleclass="List">Numeric 字段<tab />可以截去前导零<tab /></para>
+    <para styleclass="List">字段分隔符<tab />单个空格<tab /></para>
+    <para styleclass="List">记录分隔符<tab />回车/换行<tab /></para>
+    <para styleclass="List">文件结束标记<tab />1A hex 或 Chr(26)<tab /></para>
+    <para styleclass="List"><text style="font-weight:bold;">警告：</text>如果在 APPEND FROM 命令行中指定了 DELIMITED WITH 子句，它必须是最后指定的子句。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">VIA &lt;cDriver&gt;<tab />为工作区提供服务的 RDD 名称。 如果未指定，则使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm" styleclass="Normal">RDDSetDefault()</link> 确定的默认 RDD。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INHERIT FROM &lt;acRDDs&gt;</para>
+    <para styleclass="List"><tab />包含 RDD 名称的一维数组，主 RDD 从这些 RDD 继承特殊功能。 这样，您就可以在不同的工作区和不同的数据库驱动程序中使用具有特殊功能（如加密或解密）的 RDD。 这些 RDD 将覆盖主 RDD（使用 VIA 子句指定）的特殊功能。 如果多个 RDD（使用 INHERIT FROM 子句指定）实现了相同的功能，则与列表中最后一个 RDD 相关的功能优先。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已删除记录： &#160;如果 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> 为 FALSE，&lt;xcSourceFile&gt; 中已删除的记录将附加到当前数据库文件并保留其已删除状态。 但如果 SetDeleted() 为 TRUE，删除的记录将不可见，因此不会被处理。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">字段宽度不匹配： &#160;如果当前数据库文件中的字段为字符类型，且字段长度大于输入的 &lt;xcSourceFile&gt; 数据，则 APPEND FROM 会在源数据中填充空白。 如果当前字段是字符数据类型，且其字段长度小于输入的源数据，则会截断源数据以适应其长度。 如果当前字段是数字类型，而输入源数据的位数多于当前字段的长度，则会出现运行时错误。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例使用字段列表和条件演示了 APPEND FROM 命令：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FROM</text><text style="font-weight:normal; font-style:normal; color:#000000;"> branchfile </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELDS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Branch, Salesman, Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Branch = 100</text></para>
+    <para styleclass="Normal">下一个示例演示了如何指定 &lt;Scope&gt; 从另一个数据库文件导入特定记录：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND RECORD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 5 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FROM</text><text style="font-weight:normal; font-style:normal; color:#000000;"> temp</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO">COPY TO</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbApp.htm" domain="XSharpRef.chm">DbApp()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAppDelim.htm" domain="XSharpRef.chm">DbAppDelim()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAppSdf.htm" domain="XSharpRef.chm">DbAppSDF()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm">RDDSetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-11T16:55:47.852+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN NAMESPACE</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN NAMESPACE</keyword>
+    <keyword>END</keyword>
+    <keyword>END NAMESPACE</keyword>
+    <keyword>NAMESPACE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN NAMESPACE</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN NAMESPACE</text> 和 <text style="font-weight:bold;">END NAMESPACE</text> 关键字对声明了一个作用域，并为该作用域内声明的所有类型添加了命名空间前缀</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box"><tab />BEGIN NAMESPACE namespaceName &#160; <br/><tab /><tab />typeDeclarations &#160; <br/><tab /><tab />namespaceDeclarations<br/><tab />END NAMESPACE</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List">namespaceName<tab />声明的命名空间名称。</para>
+    <para styleclass="List">typeDeclarations <tab />一个或多个类型声明(CLASS、STRUCTURE 等)。</para>
+    <para styleclass="List">namespaceDeclarations <tab />零个或多个命名空间声明。</para>
+    <para styleclass="List"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在命名空间范围内声明的任何类型，其类型名称前都会加上命名空间名称。例如，在名为 “MyNamespace ”的命名空间中声明的名为 “MyClass ”的类，其类型名称为 “MyNamespace.MyClass”。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在任何命名空间范围之外声明的类型都在 “global(全局) ”或 “unnamed(未命名) ”命名空间中声明。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN NAMESPACE ... END NAMESPACE</text> 块可以嵌套到任意深度。嵌套的命名空间名称会以包围的命名空间名称为前缀，中间用(英文)句号隔开。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">同一命名空间名称可以在同一文件或不同文件中声明多次。<text style="font-weight:bold;">BEGIN NAMESPACE</text> 和 <text style="font-weight:bold;">END NAMESPACE</text> 语句不会生成任何代码，它们只会影响命名空间块中声明的任何类型的名称。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在命名空间中出现的 <text style="font-weight:bold;">using</text> 指令只在包围命名空间块和任何嵌套命名空间块中有效。</para>
+    <para styleclass="Heading2">兼容性说明： </para>
+    <para styleclass="Body Text">使用 Transporter 从 Visual Objects 移植到 Vulcan.NET 的代码不会被放置在任何 BEGIN NAMESPACE ... END NAMESPACE 块中，因为 Visual Objects 没有命名空间的概念。因此，传输代码中的所有类都在 global(全局)或 “unnamed(未命名) ”命名空间中，并且没有预置命名空间名称。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Heading1">示例</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> a</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> one &#160; &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 实际类型名称为 &apos;a.one&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> b &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 命名空间的名称是 &apos;a.b&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> two &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 实际类型名称为 &apos;a.b.two&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160;...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NAMESPACE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> three &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 实际类型名称为 &apos;three&apos;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/></para>
+  </body>
+</topic>

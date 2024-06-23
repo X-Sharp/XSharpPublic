@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T10:39:11.274+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__FieldList</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__FieldList</para>
+    </header>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />要从 &lt;xcSourceFile&gt; 追加的字段列表。 默认为所有字段。</para>
+    <para styleclass="List"><tab />只有两个文件中名称和类型相同的字段才会被附加。 如果相同名称的字段在数据类型上不匹配，则会出现运行时错误。</para>
+  </body>
+</topic>

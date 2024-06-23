@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T17:13:42.455+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeExpression</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__IncludeExpression</para>
+    </header>
+    <para styleclass="List">&lt;Expression&gt;<tab />实现访问器的表达式。</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

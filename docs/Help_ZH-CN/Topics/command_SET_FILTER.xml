@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T17:28:13.577+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET FILTER 命令</title>
+  <keywords>
+    <keyword>Clearing filters</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Filters</keyword>
+    <keyword>Filters<keyword>clearing</keyword><keyword>setting</keyword></keyword>
+    <keyword>SET FILTER command</keyword>
+    <keyword>Setting<keyword>filters</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET FILTER 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">设置或清除当前工作区的筛选条件。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET FILTER TO [&lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">TO &lt;lCondition&gt;<tab />用于筛选记录的条件。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />不带参数的 SET FILTER TO 会清除过滤条件。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">设置过滤器后，不符合过滤器条件的记录在逻辑上将不可见。 过滤器条件可以使用 DBFilter() 函数以字符串形式返回。</para>
+    <para styleclass="Normal">也就是说，对逻辑记录执行的数据库操作将不会考虑这些记录，除非是通过记录编号专门访问这些记录。 因此，您可以 GOTO 已过滤的记录，或使用 RECORD &lt;nRecord&gt; 作用域处理记录。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">注意：一旦设置了过滤器，在记录指针从当前位置移动之前不会被激活。 您可以使用 GO TOP 激活它。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">带有条件的 SET FILTER TO 在功能上等同于 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link>，条件用代码块和字符串表示。 不带参数的 SET FILTER TO 相当于 DBClearFilter()。 </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">提示：如果您使用的 RDD 支持优化，请使用 SET OPTIMIZE 控制 RDD 是否会根据工作区中的可用记录优化过滤器搜索。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可见性： &#160;与 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> 一样，过滤器对 INDEX 和 REINDEX 没有影响。 要创建条件索引，请使用 INDEX 命令的 FOR 条件。</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例将 EMPLOYEE.DBF 筛选为年龄大于 50 岁的记录：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> employee </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; color:#000000;"> name </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FILTER</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Age &gt; 50</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">LIST Lastname, Firstname, Age, Phone</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FILTER</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbClearFilter.htm" domain="XSharpRef.chm">DbClearFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbFilter.htm" domain="XSharpRef.chm">DbFilter()</link>,<text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE">SET OPTIMIZE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

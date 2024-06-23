@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T16:30:41.017+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PACK 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases<keyword>records</keyword></keyword>
+    <keyword>Deleting</keyword>
+    <keyword>PACK command</keyword>
+    <keyword>Records<keyword>deleting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PACK 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">从当前数据库文件中删除所有标记为删除的记录，重建所有活动记录，并恢复被删除记录占用的所有物理空间。请注意，这不会影响备注文件。备注文件中未使用的空间只能通过 COPY 恢复。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">PACK &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">PACK 在功能上等同于 DBPack()。 </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">警告！ &#160;</text><text styleclass="Italic">PACK 不创建备份文件。 在使用该命令之前，您可能需要对文件进行备份（例如使用 COPY FILE），否则将无法恢复已删除的记录。</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">下面是一个简单 PACK 的结果：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? LastRec() &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: &#160;84</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DELETE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECORD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 4</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PACK</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? LastRec() &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: &#160;83</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbPack.htm" domain="XSharpRef.chm">DbPack()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Deleted.htm" domain="XSharpRef.chm">Deleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> , </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetExclusive.htm" domain="XSharpRef.chm">SetExclusive()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP">ZAP</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

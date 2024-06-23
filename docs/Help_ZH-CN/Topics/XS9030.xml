@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS9030</title>
+  <keywords>
+    <keyword>XS9030</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9030</para>
+    </header>
+    <para styleclass="Normal">Keyword {0} missing</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You may see this error in code that is incomplete, such as IF statements where the ENDIF is missing, or FOR statements where the NEXT keyword is missing.</para>
+    <para styleclass="Normal">In most case the error will be clear enough to indicate what the missing keyword is.</para>
+    <para styleclass="Normal">Example:</para>
+    <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Start</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#000000;">i</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">FOR</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#000000;">i</text><text style="font-weight:normal; font-style:normal; color:#000000;"> := </text><text style="font-weight:bold; font-style:normal; color:#000000;">1</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#000000;">10</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;? </text><text style="font-weight:bold; font-style:normal; color:#000000;">i</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">RETURN</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">In this example the error message will point to the line that starts with the FOR keyword, since that is the keyword that has a missing end token.</para>
+  </body>
+</topic>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T22:50:04.835+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DESTRUCTOR Statement</title>
+  <keywords>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>DESTRUCTOR statement</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DESTRUCTOR Statement</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明访问非导出或虚(拟)实例变量的方法。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">DESTRUCTOR [()]</text></para>
+    <para styleclass="Normal"><tab />[=&gt; &lt;expression&gt;] </para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[END DESTRUCTOR]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">END <text styleclass="Normal">DESTRUCTOR</text><tab />可选的结束语，表示 DESTRUCTOR 实体的结束</para>
+    <para styleclass="Heading1"></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

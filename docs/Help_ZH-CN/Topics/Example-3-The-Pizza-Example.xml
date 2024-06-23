@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Example 3: The Pizza Example</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Example 3: The Pizza Example</para>
+    </header>
+    <para styleclass="Body Text">Our 3rd migration example is the Pizza Example. You can find this in the Samples\Controls\Buttons folder in your VO Installation.<br/>I have selected the same output folder (C:\XporterOutput\Examples\) and the XPorter will create a Pizza subfolder with the contents of the AEF and a Pizza solution in the Examples folder.</para>
+    <para styleclass="Body Text">There is no real need to list the files again. You get the idea.</para>
+    <para styleclass="Body Text">After opening Pizza.sln inside visual Studio and compiling you will find the following problems:</para>
+    <para styleclass="Body Text"><image src="pizza.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text">The problem is:</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The original VO program had an output name &apos;PIZZA.EXE&apos;. </li>
+      <li styleclass="Body Text">The X# compiler uses the same logic as the Vulcan compiler and creates a static class called Pizza.Exe.Functions that will hold the functions in the application, the globals and (new for X#) the defines.</li>
+      <li styleclass="Body Text">The application also has an image called &apos;PIZZA&apos;. </li>
+      <li styleclass="Body Text">When we compile this app there is now a conflict between the class named PIZZA and the namespace Pizza (from the class Pizza.Exe.Functions).</li>
+      <li styleclass="Body Text">This is something that is not recommended by the DotNet standard. Vulcan ignores this and allows both a class Pizza and a namespace Pizza. X# follows the .Net guidelines more closely.</li>
+      <li styleclass="Body Text">There are 2 solutions to this problem:</li>
+      <list id="3" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Body Text">Rename the image class Pizza (inside Images.prg)</li>
+        <li styleclass="Body Text">Rename the output filename. To rename the output filename open the Project Settings (from the Project menu) and set the Assembly Name on the &quot;General&quot; page. You could rename the assembly to <text style="font-weight:bold;">PizzaApp</text> and it will solve the problem</li>
+      </list>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">In this case I choose to rename the PIZZA image. So open Images.PRG and rename</li>
+    </list>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> PIZZA </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INHERIT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Bitmap</text></para>
+    <para styleclass="Body Text" style="margin-left:13px;">to</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ImgPIZZA </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INHERIT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Bitmap</text></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Then recompile again. Now one problem is left: </li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">C:\XporterOutput\Examples\Pizza\Order Dialog.prg(165,25): error XS0246: The type or namespace name &apos;PIZZA&apos; could not be found (are you missing a using directive or an assembly reference?)</text></para>
+    <para styleclass="Normal"></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">This is the place where the Pizza image is used in the example app. To change this, open the Order Dialog window (Order Dialog.ORDERDIALOG.xsfrm). Select the button on the bottom left and change the &quot;Image&quot; text in the property window from Pizza to ImgPizza. Save the form. The code will be regenerated as well.</li>
+      <li styleclass="Body Text">If you look at the order dialog rc file after the changes you will see that the file has been marked with a header that this code was generated. Also #defines have been added for all windows styles used in the form. The resource is &quot;self contained&quot; so there is no dependency on any external file in the resource file.</li>
+      <li styleclass="Body Text">Recompile and the program compiles.</li>
+      <li styleclass="Body Text">When we run the program we see that it works as expected:</li>
+    </list>
+    <para styleclass="Body Text"><image src="Pizza1.png" scale="-99.90%" width="476" height="487" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">You will find the &quot;code before&quot; and &quot;code after&quot; in the XSharp Examples folder</text></para>
+  </body>
+</topic>

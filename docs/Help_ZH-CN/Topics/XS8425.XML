@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8425</title>
+<keywords>
+<keyword>XS8425</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8425</para>
+  </header>
+  <para styleclass="Normal">Async-iterator '{0}' has one or more parameters of type 'CancellationToken' but none of them is decorated with the 'EnumeratorCancellation' attribute, so the cancellation token parameter from the generated 'IAsyncEnumerable<>.GetAsyncEnumerator' will be unconsumed</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

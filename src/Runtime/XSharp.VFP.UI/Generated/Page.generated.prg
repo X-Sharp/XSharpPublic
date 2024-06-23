@@ -5,7 +5,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 #include "VFPControl.xh"
 		#include "VFPContainer.xh"
 
-		PROPERTY PAGEORDER AS USUAL AUTO
+		PROPERTY PageOrder AS USUAL AUTO
 		PROPERTY Picture AS STRING AUTO
 		METHOD SetFocus() AS VOID STRICT
 			//SELF:Focus()

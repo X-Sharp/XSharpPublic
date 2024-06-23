@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T19:59:24.833+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UNION Statement</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Compiledeclaration</keyword>
+    <keyword>END UNION</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>UNION</keyword>
+    <keyword>Union entities</keyword>
+    <keyword>Union entities<keyword>declaring</keyword><keyword>specifying members</keyword></keyword>
+    <keyword>UNION statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UNION Statement</para>
+    </header>
+    <para styleclass="Heading1"><snippet src="__VoVulcanOnly" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明一个 unino 实体及其成员名称。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab />[Modifiers] UNION &lt;<text styleclass="Italic">idUnion</text>&gt; [ALIGN 1|2|4|8]</para>
+    <para styleclass="Normal"><tab />MEMBER &lt;<text styleclass="Italic">idVarList</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal"><tab />MEMBER DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; [ ,…] AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal"><tab />[END UNION]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">注：为方便起见，MEMBER 语句使用了两个语法。 如果每个定义之间用逗号隔开，则可以使用单个 MEMBER 语句声明变量和标度数组。</text></para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idUnion&gt;<tab />union 的有效标识符名称。 union 是一个实体，与其他实体共享相同的名称空间。 这就意味着不可能存在同名的 union 和常量。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">MEMBER<tab />声明一个或多个 union 成员变量或标度数组。 您可以在不同行中指定多个 MEMBER 声明。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVarList&gt;<tab />以逗号分隔的 union 成员变量标识符名称列表。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />作为 union 成员使用的有维数组的规格。 &lt;ArraySpec&gt; 是以下格式之一：</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;],[&lt;nElements&gt;], [&lt;nElements&gt;]</para>
+    <para styleclass="List"><tab />除第一个 nElements 之外，其余都是可选的。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; 定义数组特定维数中的元素个数。 维数由指定 &lt;nElements&gt; 参数的个数决定。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />&lt;nElements&gt; 可以是字面数字表示或只涉及运算符、字面数字和 DEFINE 常量的简单数字表达式；但不允许使用更复杂的表达式(如函数调用)。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />指定所声明变量的数据类型(称为<link displaytype="text" defaultstyle="true" type="topiclink" href="Strong-Typing" styleclass="Normal">强类型</link>)。 对于 DIM 数组，声明所有数组元素的数据类型。 所有联合成员都需要 AS &lt;idType&gt;。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />有关 &lt;idType&gt; 的有效值列表，请参阅 CLASS 。 请注意，union 不支持以下数据类型，因为它们是需要垃圾回收的动态类型：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="List">ARRAY</li>
+        <li styleclass="List">FLOAT</li>
+        <li styleclass="List">OBJECT</li>
+        <li styleclass="List">&lt;idClass&gt;</li>
+        <li styleclass="List">STRING</li>
+        <li styleclass="List">USUAL</li>
+        <li styleclass="List"></li>
+      </list>
+    </list>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS &lt;idType&gt;<tab />指定一个 union 数据类型，在该 union 数据类型中，保存 union 数据所需的内存是在堆栈中分配的(也就是说，&lt;idUnion&gt; 是唯一允许使用 IS 关键字的 &lt;idType&gt; 类型)。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALIGN 1|2|4|8<tab />指定结构体的内存对齐方式。默认值为 4，这意味着所有成员都以 DWORD 边界对齐，因为这在 32 位平台上性能最佳，也是大多数 C/C++ 编译器的默认对齐方式。如果需要与定义了不同对齐方式（C/C++ 头文件中的 #pragma 包）的 C/C++ 结构相匹配，可能需要更改对齐方式。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />注意：C/C++ 编译器的默认对齐方式也是 4，除非结构包含双倍（&lt;%APP%&gt; 中的 REAL8）。在这种情况下，C/C++ 编译器会使用 8 的对齐方式。&lt;%APP%&gt; 不会自动选择 8 的对齐方式，因此在这种情况下，必须在结构体中添加 ALIGN 8。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">UNION 与 STRUCTURE 类似，但所有成员都从偏移量 0 (0) 开始。 换句话说，给一个 union 成员赋值会影响其他所有 union 成员。 由于 union 的大小等于最大成员的大小，因此改变一个成员将改变所有其他成员，因为它们占用相同的内存。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您可以使用 UNION 语句标记 union 实体定义的开始，然后使用一个或多个 MEMBER 语句定义 union 的外观。 </para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">下面是一个转换示例：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">UNION </text><text style="font-weight:bold; font-style:normal; color:#000000;">wb </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ALIGN</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMBER</text><text style="font-weight:bold; font-style:normal; color:#000000;"> w </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WORD</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> bLo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> bHi </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BYTE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> x</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> u </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IS</text><text style="font-weight:bold; font-style:normal; color:#000000;"> wb</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;"> u</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">w </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">0x1234</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> u</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">bLo &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// 52 (=0x34)</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> u</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">bHi &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// 18 (=0x12)</text></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">STRUCTURE</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

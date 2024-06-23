@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-10T21:09:50.159+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Logic 字面量</title>
+  <keywords>
+    <keyword>.F.</keyword>
+    <keyword>.N.</keyword>
+    <keyword>.T.</keyword>
+    <keyword>.Y.</keyword>
+    <keyword>FALSE</keyword>
+    <keyword>Literals</keyword>
+    <keyword>LOGIC</keyword>
+    <keyword>Logic Literals</keyword>
+    <keyword>TRUE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Logic 字面量</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">X# 使用下面的 Logical 字面量。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="3" colcount="2" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">值</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">TRUE 或 .T. 或 .Y.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">逻辑 TRUE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">FALSE 或 .F. 或 .N.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">逻辑 FALSE</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

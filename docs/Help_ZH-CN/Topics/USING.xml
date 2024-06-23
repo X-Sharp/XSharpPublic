@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-11T18:03:50.611+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>USING</title>
+  <keywords>
+    <keyword>#USING</keyword>
+    <keyword>STATIC</keyword>
+    <keyword>USING</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">USING 语句</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text" style="margin-left:13px;"></para>
+    <para styleclass="Body Text" style="margin-left:13px;">USING 语句允许使用命名空间中的类型，而不必指定完全限定的类型名。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Body Text" style="margin-left:13px;"></para>
+    <para styleclass="Code with box">using namespaceName<br/>using alias := namespaceName<br/>using static typeName</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">namespaceName <tab />指定一个完全限定的命名空间名称，编译器在尝试解析类型名称时将使用该名称。</para>
+    <para styleclass="List">alias<tab />命名空间的别名。</para>
+    <para styleclass="List">typeName<tab />指定类型的名称，其静态成员和嵌套类型可以在不指定类型的情况下被引用。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">NET 中的所有类型都有由命名空间名称和类型名称组成的全称。例如，“System.Windows.Forms.MessageBox ”指的是 “System.Windows.Forms ”命名空间中名为 “MessageBox”(在本例中是一个类)的类型。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在 .NET 中使用命名空间有助于防止类库之间的命名冲突。但是，键入完全限定的名称可能会很麻烦。using 语句指示编译器将指定的命名空间视为当前命名空间的一部分，以便进行类型解析。这样就可以在源代码中指定部分类型名称，而不是完全限定的名称。当然，无论是否存在任何 using 语句，您都可以使用完全限定的名称。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">请注意，using 语句只导入指定名称空间中的类型名称，而不导入嵌套名称空间或父名称空间中的名称。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">还要注意的是，每个源文件都有一个隐含的 <text style="font-weight:bold;">using System</text> 和 <text style="font-weight:bold;">using XSharp</text> 指令，因为 System 和 XSharp 命名空间包含几乎每个应用程序都会使用的类。明确指定 <text style="font-weight:bold;">using System</text> 或 <text style="font-weight:bold;">using XSharp</text> 是允许的，但没有必要。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> System.Windows.Forms</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dlg1 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> OpenFileDialog </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 错误，不包含 using 语句</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dlg2 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> System.Windows.Forms.OpenFileDialog </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 总是可以，但打字繁琐</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dlg1 := OpenFileDialog{} </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 错误，不包含 using 语句</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dlg2 := System.Windows.Forms.OpenFileDialog{} </text><text style="font-weight:bold; font-style:italic; color:#339966;">//总是可以，但打字繁琐</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">或者 </text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> SWF := System.Windows.Forms</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dlg1 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> SWF.OpenFileDialog </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 用别名代替全名</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dlg1 := SWF.OpenFileDialog{} </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">或者 </text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STATIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> System.Console</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">WriteLine(&quot;Hello world&quot;) &#160;</text><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// 这会调用 System.Console.WriteLine()</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">ReadLine() &#160; &#160; &#160; &#160; </text><tab /><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// 这会调用 System.Console.ReadLine()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+  </body>
+</topic>

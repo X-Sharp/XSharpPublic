@@ -23,10 +23,10 @@ namespace XSharp.VisualStudio.ProjectSystem
     /// <summary>
     /// This class implements the package exposed by this assembly.
     /// </summary>
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Description("XSharp CPS based Project System")]
     [Guid(XSharpConstants.guidCpsProjectTypeString)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [PackageRegistration(AllowsBackgroundLoading = true, RegisterUsing = RegistrationMethod.Assembly, UseManagedResourcesOnly = true)]
+    [Description("XSharp CPS based Project System")]
+    [ProvideAutoLoad(ActivationContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideUIContextRule(ActivationContextGuid,
         name: "Load X# Managed Project Package",
         expression: "dotnetcore",
@@ -52,6 +52,10 @@ namespace XSharp.VisualStudio.ProjectSystem
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
  			await Task.WhenAll(globalPackageServices.Select(s => s.InitializeAsync(this)));
+
+            var context = JoinableTaskFactory.Context;
+            var selector = new XSharpProjectSelector(context);
+            await selector.InitializeAsync(this);
 
         }
     }

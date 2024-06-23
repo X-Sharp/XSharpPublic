@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-11T17:16:55.449+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN USING</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN USING</keyword>
+    <keyword>END</keyword>
+    <keyword>END USING</keyword>
+    <keyword>USING</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN USING</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Heading1"><text styleclass="Body Text" style="font-weight:bold;">BEGIN USING</text><text styleclass="Body Text"> 和 </text><text styleclass="Body Text" style="font-weight:bold;">END USING</text><text styleclass="Body Text"> 关键字声明了一个代码块，以确保一次性对象的正确使用。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">BEGIN USING <text style="font-style:italic;">declaration</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END USING</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">declaration<tab />变量声明和赋值</para>
+    <para styleclass="List"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-style:italic; color:#000000;">statements</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text><tab />代码包括一条或多条可能包含不安全代码的语句。</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">当 IDisposable 对象的生命周期仅限于一个方法时，应在 using 语句中声明并实例化该对象。using 语句会以正确的方式调用对象上的 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose">Dispose</link> 方法，并且(如前所述)在调用 &#160;<link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/api/system.idisposable.dispose">Dispose</link> 时，对象本身也会退出作用域。在 using 语句块中，对象是只读的，不能修改或重新分配。</para>
+    <para styleclass="List"></para>
+    <para styleclass="Body Text"><text styleclass="Heading1">示例</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oTest := Test{}</text><br/><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">oTest:DoSomething()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">等价于：</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> oTest := Test{}</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; oTest:DoSomething()</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> oTest != NULL_OBJECT</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;((IDisposable)oTest):Dispose()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDIF</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TRY</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

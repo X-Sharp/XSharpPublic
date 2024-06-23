@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T20:42:09.292+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DATE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Dates<keyword>setting date format</keyword></keyword>
+    <keyword>SET DATE command</keyword>
+    <keyword>SET DATE TO command</keyword>
+    <keyword>Setting<keyword>date formats</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DATE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">从包含相应日期格式的常量列表中进行选择，更改决定 &lt;%APP%&gt; 日期格式的设置。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET DATE [TO] &lt;kCountrySetting&gt;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET DATE 在功能上等同于 SetDateCountry()。 </para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例说明了各种系统定义的国家设置：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">SET DATE German<br/>? Today()<tab /><tab /><tab /><tab />// Result: &#160;15.10.19<br/>SET DATE Ansi<br/>? Today()<tab /><tab /><tab /><tab />// Result: &#160;19.10.15</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_CToD.htm" domain="XSharpRef.chm">CToD()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DToC.htm" domain="XSharpRef.chm">DToC()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DToS.htm" domain="XSharpRef.chm">DToS()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetCentury.htm" domain="XSharpRef.chm">SetCentury()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDateCountry.htm" domain="XSharpRef.chm">SetDateCountry()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_SetDateFormat.htm" domain="XSharpRef.chm">SetDateFormat()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetEpoch.htm" domain="XSharpRef.chm">SetEpoch()</link>,<text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Today.htm" domain="XSharpRef.chm">Today()</link></para>
+  </body>
+</topic>

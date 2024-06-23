@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:20:17.699+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Options(选项)</title>
+  <keywords>
+    <keyword>Options</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Options(选项)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含 X# 专用开关，可让您控制 X# 源代码编辑器内的功能。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Options.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

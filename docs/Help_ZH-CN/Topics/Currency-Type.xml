@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:01:41.411+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Currency 类型</title>
+  <keywords>
+    <keyword>CURRENCY</keyword>
+    <keyword>XSharp.__Currency</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Currency 类型</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">它实现了 FoxPro 货币类型。</para>
+    <para styleclass="Normal"><br/>内部类型名是 XSharp.__Currency 。</para>
+    <para styleclass="Normal">&#32;<snippet src="CURRENCY" inline="false"/></para>
+  </body>
+</topic>

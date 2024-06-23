@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-04T23:38:45.986+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Binary 类型</title>
+  <keywords>
+    <keyword>BINARY</keyword>
+    <keyword>XSharp.__Binary</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Binary 类型</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">它实现了 FoxPro Binary 类型。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">内部类型名是 XSharp.__Binary</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="BINARY" inline="false"/></para>
+  </body>
+</topic>

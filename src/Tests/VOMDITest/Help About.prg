@@ -9,12 +9,11 @@ PARTIAL CLASS HelpAbout INHERIT DIALOGWINDOW
 	PROTECT oCCPushButton1 AS PUSHBUTTON
 	PROTECT oDCFixedBitmap1 AS FIXEDBITMAP
 
-	// {{%UC%}} User code starts here (DO NOT remove this line)
+	// {{%UC%}} User code starts here (DO NOT remove this line)  
 
 CONSTRUCTOR(oParent,uExtra)
 
 	SELF:PreInit(oParent,uExtra)
-        DoEvents()
 
 	SUPER(oParent , ResourceID{"HelpAbout" , _GetInst()} , TRUE)
 

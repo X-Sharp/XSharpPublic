@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T17:30:11.230+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET MEMOBLOCK 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Memo files</keyword>
+    <keyword>SET MEMOBLOCK command</keyword>
+    <keyword>Setting<keyword>block size for memo files</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET MEMOBLOCK 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改备注文件的块大小</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET MEMOBLOCK TO &lt;<text styleclass="Italic">nSize</text>&gt;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">初始备注文件块大小取决于 RDD。 对于大多数支持 .DBT 备注文件格式的驱动程序来说，它是 512 字节。 但是，如果通过从 DBFBLOB 驱动程序继承使用 BLOB 文件（.DBV），默认值为 1。</para>
+    <para styleclass="Normal">SET MEMOBLOCK 在功能上等同于调用 RDDInfo(_SET_MEMOBLOCKSIZE, &lt;nSize&gt;)。 </para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RddInfo.htm" domain="XSharpRef.chm">RDDInfo()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

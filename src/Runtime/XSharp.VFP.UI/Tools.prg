@@ -1,8 +1,8 @@
 ﻿// Tools.prg
-// Created by    : fabri
-// Creation Date : 5/16/2021 1:26:34 PM
-// Created for   : 
-// WorkStation   : FABXPS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
 
 FUNCTION VFPAlignmentConvert( n AS INT ) AS System.Drawing.ContentAlignment
 	VAR convert := System.Drawing.ContentAlignment.MiddleLeft
@@ -27,7 +27,7 @@ FUNCTION VFPAlignmentConvert( n AS INT ) AS System.Drawing.ContentAlignment
 		convert := System.Drawing.ContentAlignment.BottomCenter
 	END SWITCH
 	RETURN convert
-	
+
 FUNCTION VFPAlignmentConvert( convert AS System.Drawing.ContentAlignment ) AS INT
 	VAR n := 0
 	SWITCH convert
@@ -51,7 +51,7 @@ FUNCTION VFPAlignmentConvert( convert AS System.Drawing.ContentAlignment ) AS IN
 		n := 9
 	END SWITCH
 	RETURN n
-	
+
 FUNCTION VFPImageStrechConvert( n AS INT ) AS System.Windows.Forms.PictureBoxSizeMode
 	VAR convert := System.Windows.Forms.PictureBoxSizeMode.Normal
 	SWITCH n
@@ -61,8 +61,8 @@ FUNCTION VFPImageStrechConvert( n AS INT ) AS System.Windows.Forms.PictureBoxSiz
 		convert := System.Windows.Forms.PictureBoxSizeMode.StretchImage
 	END SWITCH
 	RETURN convert
-	
-	
+
+
 FUNCTION VFPTextAlignmentConvert( n AS INT ) AS System.Windows.Forms.HorizontalAlignment
 	VAR convert := System.Windows.Forms.HorizontalAlignment.Left
 	SWITCH n
@@ -76,8 +76,8 @@ FUNCTION VFPTextAlignmentConvert( n AS INT ) AS System.Windows.Forms.HorizontalA
 		convert := System.Windows.Forms.HorizontalAlignment.Left
 	END SWITCH
 	RETURN convert
-	
-	
+
+
 FUNCTION VFPGuessType( uValue AS USUAL ) AS STRING
 	LOCAL ret := String.Empty AS STRING
 	//
@@ -99,8 +99,8 @@ FUNCTION VFPGuessType( uValue AS USUAL ) AS STRING
 		ret := "C"
 	END SWITCH
 	RETURN ret
-	
-	
-	
-	
-	
+
+
+
+
+

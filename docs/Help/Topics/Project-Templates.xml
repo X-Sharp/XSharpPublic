@@ -1,10 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-27T09:52:58.188+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Project Templates</title>
   <keywords>
+    <keyword>ClassLibrary</keyword>
+    <keyword>Console Application</keyword>
+    <keyword>NUnit</keyword>
     <keyword>project templates</keyword>
     <keyword>templates</keyword>
+    <keyword>Test Library</keyword>
+    <keyword>VO MDI Application</keyword>
+    <keyword>VO SDI Application</keyword>
+    <keyword>Vulcan Console Application</keyword>
+    <keyword>Windows Forms Application</keyword>
+    <keyword>WPF Application</keyword>
+    <keyword>XUnit</keyword>
   </keywords>
   <body>
     <header>
@@ -34,7 +44,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">ClassLibrary</para>
@@ -54,7 +64,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryCore.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryCore.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Core ClassLibrary</para>
@@ -74,7 +84,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">FoxPro ClassLibrary</para>
@@ -94,7 +104,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO ClassLibrary</para>
@@ -114,7 +124,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Vulcan ClassLibrary</para>
@@ -134,7 +144,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ClassLibraryXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ClassLibraryXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">XPP ClassLibrary</para>
@@ -154,7 +164,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Console Application</para>
@@ -174,7 +184,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationFox.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">FoxPro Console Application</para>
@@ -194,7 +204,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationVO.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO Console Application</para>
@@ -214,7 +224,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationVulcan.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Vulcan Console Application</para>
@@ -234,7 +244,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="ConsoleApplicationXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="ConsoleApplicationXPP.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">XPP Console Application</para>
@@ -254,7 +264,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="WinFormApp.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="WinFormApp.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Windows Forms Application</para>
@@ -274,7 +284,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="WPFApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="WPFApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">WPF Application</para>
@@ -294,7 +304,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="VOMDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="VOMDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO MDI Application</para>
@@ -315,7 +325,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="VOSDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="VOSDIApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">VO SDI Application</para>
@@ -335,10 +345,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="VulcanApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="VulcanApplication.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
-          <para styleclass="Normal">Vulcan Application</para>
+          <para styleclass="Normal">Vulcan Console Application</para>
         </td>
         <td>
           <para styleclass="Normal">A project for creating a Vulcan command-line application.</para>
@@ -355,7 +365,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="MsTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="MsTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
           <para styleclass="Normal">Ms Test Library</para>
@@ -375,10 +385,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="NUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="NUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
-          <para styleclass="Normal">NUnitTest Library</para>
+          <para styleclass="Normal">NUnit Test Library</para>
         </td>
         <td>
           <para styleclass="Normal">A library with test support using the open source NUnit Framework</para>
@@ -395,10 +405,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><image src="XUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption"></image></para>
+          <para styleclass="Normal"><image src="XUnitTestClassLibrary.png" scale="25.00%" width="64" height="64" styleclass="Image Caption" figurelistinclude="0"></image></para>
         </td>
         <td>
-          <para styleclass="Normal">XUnitTest Library</para>
+          <para styleclass="Normal">XUnit Test Library</para>
         </td>
         <td>
           <para styleclass="Normal">A library with test support using the open source XUnit Framework</para>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:40:50.673+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Inactive conditional regions(非活动条件区域)</title>
+  <keywords>
+    <keyword>Inactive conditional regions</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Inactive conditional regions(非活动条件区域)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果使用 #ifdef ... #endif 区域进行有条件编译，那么在编辑器中，非活动区域将以不同颜色显示：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下面是 CDX RDD 中的一段代码。CHECKVERSIONS 定义未定义，因此在编辑器中存在一个非活动区域，该区域显示为浅灰色。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="InactiveRegion.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

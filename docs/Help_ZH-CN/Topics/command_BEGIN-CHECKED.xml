@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-11T16:55:11.581+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN (UN)CHECKED</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN CHECKED</keyword>
+    <keyword>BEGIN UNCHECKED</keyword>
+    <keyword>CHECKED</keyword>
+    <keyword>END</keyword>
+    <keyword>END CHECKED</keyword>
+    <keyword>END UNCHECKED</keyword>
+    <keyword>UNCHECKED</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN (UN)CHECKED</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN (UN)CHECKED</text> 和 <text style="font-weight:bold;">END (UN)CHECKED</text> 关键字标记启用或禁用溢出检查的编译语句块</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">BEGIN CHECKED<br/> &#160; statements<br/>END CHECKED<br/><br/>BEGIN UNCHECKED<br/> &#160; statements<br/>END CHECKED</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List"><text style="font-style:italic;">statements</text>&#32;<tab />编译时使用指定溢出检查的一条或多条语句或表达式</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN CHECKED ... END CHECKED</text> 可确保在编译代码块时使用明确的溢出检查选项，与编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">-ovf</link> 无关。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> intValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dwordValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; intValue := -1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dwordValue := (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text style="font-weight:normal; font-style:normal; color:#000000;">) intValue &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 溢出错误</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CHECKED</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> intValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> dwordValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; intValue := -1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; dwordValue := (</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text style="font-weight:normal; font-style:normal; color:#000000;">) intValue &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// 无溢出错误，dwordValue 现在的值为 UInt32.MaxValue</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">UNCHECKED</text></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

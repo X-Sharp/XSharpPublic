@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-11T18:09:43.643+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>NOTE</title>
+  <keywords>
+    <keyword>&amp;&amp; characters</keyword>
+    <keyword>* character</keyword>
+    <keyword>/* characters</keyword>
+    <keyword>// characters</keyword>
+    <keyword>Adding<keyword>comments</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Comments<keyword>adding</keyword></keyword>
+    <keyword>NOTE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">NOTE</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">X# 有多种注释格式。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">/* &#160;这是多行 <br/> &#160; &#160;注释 */<br/>// 这是单行注释<br/>&amp;&amp; 这是一个单行注释。它可以出现在一行的其他语句之后<br/>* 这也是一个注释。* 必须是该行第一个非空格字符</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">X# 有多种注释格式。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">这些例子展示了各种注释符号：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// 这是注释</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">/* 这是注释 */</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">* 这是注释</text><br/><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">&amp;&amp; 这是注释</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

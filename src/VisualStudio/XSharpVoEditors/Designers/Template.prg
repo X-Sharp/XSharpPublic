@@ -438,17 +438,30 @@ STATIC CLASS VOWindowEditorTemplate
 					IF nAt != -1
 						cLeft := cLine:Substring(0 , nAt):ToUpper()
 						cRight := cLine:Substring(nAt + 1):Trim()
-						IF cRight:Length != 0
-							nAt := cRight:LastIndexOf("\")
-							IF nAt != -1 .and. nAt < cRight:Length - 1
-								cRight := cRight:Substring(nAt + 1):Trim()
-							END IF
-							cRight := Funcs.GetFileDir(cCavoWed) + "\" + cRight
-							IF System.IO.File.Exists(cRight)
-								VOWindowEditorTemplate.LoadInfFile(cRight)
-							ELSE
-								Funcs.ErrorBox("Could not find file " + cRight , Resources.EditorName)
-							ENDIF
+                        IF cRight:Length != 0
+                            IF Funcs.SafeFileExists(cRight)
+                                VOWindowEditorTemplate.LoadInfFile(cRight)
+                            ELSE
+                                LOCAL cRelativePath := NULL AS STRING
+                                IF cRight:StartsWith("..") // relative path
+                                    cRelativePath := Funcs.GetFileDir(cCavoWed) + "\" + cRight
+                                ENDIF
+                                IF cRelativePath != NULL .and. Funcs.SafeFileExists(cRelativePath)
+                                    VOWindowEditorTemplate.LoadInfFile(cRelativePath)
+                                ELSE
+							        nAt := cRight:LastIndexOf("\")
+							        IF nAt != -1 .and. nAt < cRight:Length - 1
+								        cRight := cRight:Substring(nAt + 1):Trim()
+							        END IF
+							        cRight := Funcs.GetFileDir(cCavoWed) + "\" + cRight
+							        IF Funcs.SafeFileExists(cRight)
+								        VOWindowEditorTemplate.LoadInfFile(cRight)
+							        ELSE
+								        Funcs.ErrorBox("Could not find file " + cRight , Resources.EditorName)
+                                    ENDIF
+                                ENDIF
+                            ENDIF
+
 						ENDIF
 					ENDIF
 

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS9033</title>
+  <keywords>
+    <keyword>XS9033</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9033</para>
+    </header>
+    <para styleclass="Normal">Init and Exit procedures cannot define parameters.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Init procedures and exit procedures are called by the runtime system and will not receive any parameters.</para>
+    <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#000000;">RunAtStartup</text><text style="font-weight:normal; font-style:normal; color:#000000;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">a</text><text style="font-weight:normal; font-style:normal; color:#000000;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">b</text><text style="font-weight:normal; font-style:normal; color:#000000;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">c</text><text style="font-weight:normal; font-style:normal; color:#000000;">) </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">_INIT1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+  </body>
+</topic>

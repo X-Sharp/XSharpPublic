@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-06T16:39:12.598+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Application(应用程序)</title>
+  <keywords>
+    <keyword>Application Icon</keyword>
+    <keyword>Assembly Name</keyword>
+    <keyword>Default Namespace</keyword>
+    <keyword>Dialect</keyword>
+    <keyword>-main</keyword>
+    <keyword>-nowin32manifest</keyword>
+    <keyword>Output File</keyword>
+    <keyword>Output Type</keyword>
+    <keyword>Prefer native resource</keyword>
+    <keyword>Prefer native resource over managed resource</keyword>
+    <keyword>Project File</keyword>
+    <keyword>Project Folder</keyword>
+    <keyword>-rootnamespace</keyword>
+    <keyword>Startup Object</keyword>
+    <keyword>Suppress default Win32</keyword>
+    <keyword>Suppress default Win32 manifest</keyword>
+    <keyword>Target Framework Moniker</keyword>
+    <keyword>-usenativeversion</keyword>
+    <keyword>Vulcan Compatible Managed Resources</keyword>
+    <keyword>-win32icon</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Application(应用程序)</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">应用程序页面包含 Visual Studio 项目最重要的设置。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesGeneral.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="14" colcount="3">
+      <tr style="vertical-align:top">
+        <td style="width:308px;">
+          <para styleclass="Normal" style="text-align:center;">项目</para>
+        </td>
+        <td style="width:465px;">
+          <para styleclass="Normal" style="text-align:center;">描述</para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:center;">命令行选项</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Default Namespace</para>
+          <para styleclass="Normal">(默认命名空间)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:11pt; color:#000000;">为通过添加新项目对话框添加的项目(如类)指定默认命名空间。</text></para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">这不是编译器的命令行选项，但 Visual Studio 使用它。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Dialect</para>
+          <para styleclass="Normal">(方言)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">选择编译此项目时要使用的编译器方言。更改方言也可能会更改语言页面上的&apos;Allow Named Arguments&apos;(允许命名参数)设置。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Output Type</para>
+          <para styleclass="Normal">(输出类型)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">要创建的应用程序类型。</para>
+        </td>
+        <td style="height:19px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Startup Object</para>
+          <para styleclass="Normal">(启动对象)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">类的名称，该类包含启动应用程序时需要调用的 Start 方法。</para>
+          <para styleclass="Normal">X# 应用程序默认使用编译器生成的 Functions 类中的 Start 函数。</para>
+          <para styleclass="Normal">您可以在此处指定另一个类名来覆盖此设置。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-main">-main:</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Target Framework Moniker</para>
+          <para styleclass="Normal">(目标框架)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">输出程序集所使用的公共语言运行时版本。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">这不是编译器的命令行选项，而是控制加载参考程序集的位置。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Assembly Name</para>
+          <para styleclass="Normal">(程序集名)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">输出文件的名称，该文件将保存程序集元数据。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-out">-out</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Output File</para>
+          <para styleclass="Normal">(输出文件)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">项目的主要输出文件名。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">该名称源自程序集名称</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Project File</para>
+          <para styleclass="Normal">(项目文件)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">包含项目的构建、配置和其他信息的文件名。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">这是当前项目的名称</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Project Folder</para>
+          <para styleclass="Normal">(项目目录)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">项目的绝对位置</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">这是当前项目的位置</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Application Icon</para>
+          <para styleclass="Normal">(应用程序图标)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">设置用作应用程序图标的 .ico 文件。请注意，如果您的应用程序包含本地资源，该值将被忽略。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32icon">-win32icon</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Prefer native resource over managed resource</para>
+          <para styleclass="Normal">(优先选择本地资源而非托管资源)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">当您的应用程序包含本地资源时，请使用该本地资源，而不要根据 AssemblyTitle、AssemblyVersion 等全局程序集属性生成资源。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Opt-usenativeversion">-usenativeversion</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Suppress default Win32 manifest</para>
+          <para styleclass="Normal">(禁止默认的 Win32 清单)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">如果选择，则必须提供自己的 Win32 清单。</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest">-nowin32manifest</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:308px; height:19px;">
+          <para styleclass="Normal">Vulcan Compatible Managed Resources</para>
+          <para styleclass="Normal">(Vulcan 兼容管理资源)</para>
+        </td>
+        <td style="width:465px; height:19px;">
+          <para styleclass="Normal">使用 Vulcan 兼容托管资源(当为 &quot;真 &quot;时，资源文件包含在程序集中，不带命名空间前缀。当 &quot;为假 &quot;时，资源文件将以应用程序的命名空间作为前缀，就像其他 .Net 语言一样，如 C# 语言)</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal">.</para>
+  </body>
+</topic>

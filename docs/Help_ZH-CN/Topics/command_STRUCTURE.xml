@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T19:45:03.095+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STRUCTURE Statement</title>
+  <keywords>
+    <keyword>END STRUCTURE</keyword>
+    <keyword>STRUCTURE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">STRUCTURE Statement</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">向编译器声明一个结构名。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[StructureMembers]</para>
+    <para styleclass="Normal"><tab />END STRUCTURE</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic">idStructure</text>&gt;<tab />结构的有效标识符名称。 结构是一个实体，因此与其他实体共享相同的名称空间。 这就意味着不可能出现结构和全局变量同名的情况。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">该结构实现的接口名称</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">StructrureMembers<tab />可以是以下任何一种： <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR">CONSTRUCTOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR">DESTRUCTOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link>, 就像在 CLASS 声明中一样</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">在本例中，变量 x 和 z 被输入为 INT，而变量 cName 和 cAddr 被输入为 STRING。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">在向编译器声明结构名之后，紧跟其后的是 0 个或多个实例变量声明语句。 使用结构名声明变量（参见本指南中的 GLOBAL 和 LOCAL 语句）的目的是保存特定类的实例、实例化类的实例、定义方法（参见本指南中的 METHOD 语句）和类的子类。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">实例变量的绑定：实例变量可以是早期绑定或晚期绑定，这取决于您如何声明它们以及如何使用它们。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">如果在编译时知道变量的内存位置，则会发生早期绑定。编译器确切地知道如何引用变量，因此可以生成相应的代码。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">如果在编译时不知道变量的内存位置，则需要进行晚期绑定。编译器无法从程序源代码中确定变量的确切位置或如何引用它，因此会生成代码在表中查找符号。查找是在运行时执行的。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">由于早期绑定的实例变量不需要运行时查找，因此与晚期绑定变量相比，使用它们将显着提高应用程序的性能。以下表总结了四种类型的实例变量的绑定和可见性问题。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">变量类型</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">绑定</text><tab /><tab /><tab /><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可见性</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">EXPORT</text><tab /><text styleclass="Normal">如果可能，尽早绑定</text><tab /><text styleclass="Normal">全应用程序 CLASS 和全模块 STATIC CLASS</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">INSTANCE</text><tab /><text styleclass="Normal">永远是后期绑定</text><tab /><tab /><text styleclass="Normal">在类和子类中</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">HIDDEN</text><tab /><text styleclass="Normal">永远是前期绑定</text><tab /><tab /><text styleclass="Normal">仅在类中</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">PROTECT</text><tab /><text styleclass="Normal">永远是前期绑定</text><tab /><tab /><text styleclass="Normal">在类和子类中</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">对象实例化： &#160;声明类后，使用类名和实例操作符 {} 创建类的实例。 语法如下</para>
+    <para styleclass="Code Example">&lt;idClass&gt;{[&lt;uArgList&gt;]}</para>
+    <para styleclass="Normal">其中 &lt;uArgList&gt; 是以逗号分隔的可选值列表，这些值作为参数传递给一个名为 Init() 的特殊方法(有关 Init() 方法的更多信息，请参阅本指南中的 METHOD 语句)。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">访问实例变量： &#160;从外部访问导出的实例变量(即从任何不是其类方法的实体)的语法如下：</para>
+    <para styleclass="Code Example">&lt;idObject&gt;:&lt;idVar&gt;</para>
+    <para styleclass="Normal">只有在可以看到非导出实例变量的方法中，才能访问这些变量。 在一个方法中，可以使用以下语法访问所有实例变量：</para>
+    <para styleclass="Code Example">[SELF:]&lt;idVar&gt;</para>
+    <para styleclass="Normal">SELF: 前缀是可选的，除非是 ACCESS/ASSIGN 方法(更多信息请参阅本指南中的 ACCESS 和 ASSIGN 语句，以及 METHOD 语句中有关 SELF 的更多信息)。</para>
+    <para styleclass="Normal">实例变量与其他程序变量一样。 您可以在语言中允许使用表达式的任何地方访问它们。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&lt;%APP%&gt; 不再支持 [STATIC] 前缀</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">下面的示例定义了两个类，其中一个继承了另一个的值，并演示了如何创建一个带有实例变量初始值的类实例：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR" styleclass="List">CONSTRUCTOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR" styleclass="List">DESTRUCTOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY" styleclass="List">PROPERTY</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

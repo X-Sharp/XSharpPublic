@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-26T10:31:56.235+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__ExitLoop</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__ExitLoop</para>
+    </header>
+    <para styleclass="List">EXIT<tab />无条件地跳出 FOR、FOREACH、REPEAT 或 DO WHILE 循环，执行 ENDDO 或 NEXT 语句之后的语句。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">LOOP<tab />将控制转移到最近执行的 FOR、FOREACH、REPEAT 或 DO WHILE 语句。</para>
+  </body>
+</topic>

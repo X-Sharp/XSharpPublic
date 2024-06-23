@@ -1,8 +1,8 @@
 ﻿// Tooltips.xh
-// Created by    : fabri
-// Creation Date : 10/13/2022 8:04:02 PM
-// Created for   :
-// WorkStation   : FABXPS
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 		[System.ComponentModel.Category("VFP Properties"),System.ComponentModel.Description("Activate the ToolTip")];
 		PROPERTY ShowTips AS LOGIC

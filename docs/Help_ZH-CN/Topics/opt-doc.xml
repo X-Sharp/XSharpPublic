@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-doc</title>
+  <keywords>
+    <keyword>-doc</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-doc</para>
+    </header>
+    <para styleclass="Normal">The -doc compiler option allows you to place documentation comments in an XML file.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-doc:file &#160;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List"><text styleclass="Code Example">file</text><tab />The output file for XML, which is populated with the comments in the source code files of the compilation.</para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">In source code files, documentation comments that precede the following can be processed and added to the XML file:</para>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Such user-defined types as a class, delegate, or interface</li>
+      <li styleclass="Normal" style="margin-left:13px;">Such members as a field, event, property, or method</li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal">The source code file that contains Main is output first into the XML.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To use the generated .xml file for use with the IntelliSense feature, let the file name of the .xml file be the same as the assembly you want to support and then make sure the .xml file is in the same directory as the assembly. Thus, when the assembly is referenced in the Visual Studio project, the .xml file is found as well. See Supplying Code Comments and for more information.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Unless you compile with -target:module, file will contain &lt;assembly&gt;&lt;/assembly&gt; tags specifying the name of the file containing the assembly manifest for the output file of the compilation.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> <br/>Note </para>
+    <para styleclass="Normal">The -doc option applies to all input files; or, if set in the Project Settings, all files in the project. To disable warnings related to documentation comments for a specific file or section of code, use #pragma warning.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><br/>See Recommended Tags for Documentation Comments for ways to generate documentation from comments in your code.</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Build tab.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Modify the XML documentation file property.</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal">For information on how to set this compiler option programmatically, see DocumentationFile.</para>
+  </body>
+</topic>

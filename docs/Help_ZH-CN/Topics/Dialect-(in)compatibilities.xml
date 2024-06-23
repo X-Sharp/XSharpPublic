@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T22:39:22.223+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>方言的(不)兼容性</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">方言的(不)兼容性</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下页面列出了 X# 与各种方言之间的不兼容性。请注意，此列表尚不完整。</para>
+  </body>
+</topic>

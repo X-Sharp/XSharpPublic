@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0417</title>
+  <keywords>
+    <keyword>XS0417</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0417</para>
+    </header>
+    <para styleclass="Normal">&apos;identifier&apos;: cannot provide arguments when creating an instance of a variable type</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs if a call to the new operator on a type parameter has arguments. The only constructor that can be called by using the new operator on an unknown parameter type is a constructor that has no arguments. If you need to call another constructor, consider using a class type constraint or interface constraint.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0417:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0417  <br/> </para>
+    <para styleclass="Normal">  </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

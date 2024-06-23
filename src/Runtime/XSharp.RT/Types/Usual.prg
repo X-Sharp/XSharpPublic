@@ -44,12 +44,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
         #region constants
     [NOSHOW] PRIVATE CONST STR_NIL  := "NIL" AS STRING
-    [NOSHOW] PRIVATE CONST STR_NULL := "Null" AS STRING
-    [NOSHOW] PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
-    [NOSHOW] PRIVATE CONST STR_NULL_PSZ := "NULL_PSZ" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL := "NULL" AS STRING
     [NOSHOW] PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
     [NOSHOW] PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
-    [NOSHOW] PRIVATE CONST STR_NULL_OBJECT := "NULL_OBJECT" AS STRING
     [NOSHOW] PRIVATE CONST STR_USUAL := "USUAL" AS STRING
 
 #endregion
@@ -188,7 +185,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NODEBUG];
     PUBLIC CONSTRUCTOR(o AS OBJECT)
         IF o == NULL_OBJECT
-            SELF(__UsualType.Object)
+            SELF(__UsualType.Object, FALSE)
         ELSE
             SELF := _NIL
             VAR vartype := o:GetType()
@@ -304,11 +301,6 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 CASE srp as System.Reflection.Pointer
                     SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                     SELF:_valueData:p		:= IntPtr{System.Reflection.Pointer.Unbox(o)}
-                CASE objarray as OBJECT[]
-                    local a1 as ARRAY
-                    a1 := Array{objarray}
-                    SELF:_flags				:= UsualFlags{__UsualType.Array}
-                    SELF:_refData           := a1
 
                 OTHERWISE
                     IF vartype == TYPEOF(__Usual)
@@ -2137,9 +2129,8 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN u:ToString()
         CASE __UsualType.Binary
             RETURN u:_binaryValue:ToString()
-        OTHERWISE
-            THROW ConversionError(STRING, TYPEOF(STRING), u)
         END SWITCH
+        THROW ConversionError(STRING, TYPEOF(STRING), u)
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains an numeric value then this value is considered to be an index in the symbol table.</remarks>
     [NODEBUG];
@@ -2938,8 +2929,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Int64		; strResult := SELF:_i64Value:ToString()
         CASE __UsualType.Logic		; strResult := IIF(!SELF:_logicValue , ".F." , ".T.")
         CASE __UsualType.Ptr		; strResult := SELF:_ptrValue:ToString()
-        //CASE __UsualType.Psz		; strResult := IIF (SELF:_refData == NULL, STR_NULL_PSZ, SELF:_stringValue)
-        CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, STR_NULL_STRING, SELF:_stringValue)
+        CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, STR_NULL+" ( String ) " , SELF:_stringValue)
         CASE __UsualType.Symbol		; strResult := SELF:_symValue:ToString()
         CASE __UsualType.Void		; strResult := STR_NIL
         CASE __UsualType.Null		; strResult := STR_NULL
@@ -3415,17 +3405,15 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         IF SELF:IsNull
             strValue := STR_NULL
         ELSEIF SELF:IsNil
-            IF SELF:IsArray
-                strValue := STR_NULL_ARRAY
-            ELSEIF SELF:IsString
-                strValue := STR_NULL_STRING
-            ELSEIF SELF:IsCodeblock
-                strValue := STR_NULL_CODEBLOCK
-            ELSEIF SELF:IsObject
-                strValue := STR_NULL_OBJECT
-            ELSE
+            SWITCH self:_usualType
+            CASE __UsualType.Array
+            CASE __UsualType.String
+            CASE __UsualType.Codeblock
+            CASE __UsualType.Object
+                strValue := STR_NULL + " ( " + _usualType:ToString() + " )"
+            OTHERWISE
                 strValue := "("+STR_NIL+")"
-            ENDIF
+            END SWITCH
         ELSE
             strValue := SELF:Value:ToString() +" ( "
             IF SELF:IsByRef

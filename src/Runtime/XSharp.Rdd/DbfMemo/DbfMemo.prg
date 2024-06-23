@@ -7,5 +7,6 @@
 #translate RDDCLASS => DBFMEMO
 #translate PARENTCLASS => DBFNTX
 #translate MEMOCLASS => DBVMemo
+#define RDD_MEMO
 // Include common FlexFile code from FlexFile Folder
 #include "..\Flexfile\FlexRDD.xh"

@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-06T12:49:43.472+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>VFPXporter</title>
+  <keywords>
+    <keyword>export</keyword>
+    <keyword>PropRules.json</keyword>
+    <keyword>Statements.json</keyword>
+    <keyword>VFP</keyword>
+    <keyword>VFP2WinForms.json</keyword>
+    <keyword>VFPXporter</keyword>
+    <keyword>Visual FoxPro</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">VFPXporter</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">VFPXporter 工具旨在通过 XSharp 帮助您将 Visual FoxPro (VFP) 应用程序迁移到 .NET，使用您已经熟悉的语言。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">1.在导出过程中对代码的更改最小化</para>
+    <para styleclass="Body Text">2.如果进行了任何更改，将原始代码保留为注释</para>
+    <para styleclass="Body Text">3. 使用名为 XSharp.VFP.UI.Dll 的适配层/库，将 VFP 表单迁移到 Windows Forms</para>
+    <para styleclass="Body Text">4. 将 VCX 库作为包含表单/控件的外部项目进行迁移</para>
+    <para styleclass="Body Text">5. 创建真实的 Windows Forms 解决方案/项目，以便您可以在应用程序中使用任何现有的第三方 .NET 库</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">启动和设置</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Aptos; font-size:11pt; color:#000000;">首先，打开设置对话框：</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><image src="VFPExporter1.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Heading3">文件夹设置</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings.png" imagestyleclass="Default" scale="84.45%" width="676" height="733" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">默认 VFP 项目文件夹(Default VFP item Folder)：VFPXPorter 将默认从该文件夹开始搜索要导出的元素。</li>
+      <li styleclass="Body Text">默认输出文件夹(Default Output Folder)：VFPXPorter 将在该文件夹中创建生成的导出内容。</li>
+      <li styleclass="Body Text">默认导出资源文件夹(Default exporter resources Folder)：VFPXPorter 将在该文件夹中查找额外的模板/库/工具等。</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">然后你可以：</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">重置设置为默认值(Reset Settings)。</li>
+      <li styleclass="Body Text">打开存储 .json 设置文件的设置文件夹(Open Settings Folder)， 例如用于备份。</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">导出设置</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings2.png" imagestyleclass="Default" scale="86.61%" width="818" height="886" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text">检查或取消检查导出设置：通常默认值是最佳选择。</para>
+    <para styleclass="Body Text"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">默认字段修饰符(Default Fields modifiers)：导出类时，设置默认字段的可见性。</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">项目设置</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterSettings3.png" imagestyleclass="Default" scale="86.71%" width="819" height="887" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">忽略导出错误( Ignore export Errors)：允许在出现错误时继续导出过程。所有错误都会记录在目标文件夹中。</li>
+      <li styleclass="Body Text">如果需要，您可以为导出元素的文件夹指定自己的名称。</li>
+      <li styleclass="Body Text">每个类库在一个子文件夹中(Each ClassLibrary is in a SubFolder)：如果您的应用程序使用库，最好将它们单独导出。 &#160;</li>
+      <li styleclass="Body Text">清空目标文件夹(Empty the destination folder)：每次导出元素时，目标文件夹都会被清空。</li>
+    </list>
+    <para styleclass="Heading2">导出</para>
+    <para styleclass="Heading3">项目</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:11px; margin-right:0px; margin-bottom:5px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><image src="VFPExporterExport.png" imagestyleclass="Default" scale="73.15%" width="691" height="218" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">输入项目(Input Project)：搜索要导出的 .PJX 文件。</li>
+      <li styleclass="Body Text">输出文件夹(Output Folder)：指定 VFPXPorter 将生成文件写入的位置。</li>
+      <li styleclass="Body Text">分析(Analyze)：允许查看 VFPXPorter 在项目中检测到的内容。</li>
+      <li styleclass="Body Text">导出(Export)：导出项目。</li>
+      <li styleclass="Body Text">打开(Open)：打开包含生成文件的文件夹。</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">生成的文件夹应包含多个文件夹（如果已勾选设置，则每个库一个文件夹，一个用于检测到的 FreeTables，一个用于 XSharp 工具，...）。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">您将找到一个与导出项目同名的文件，扩展名为 .SLN。这是 MS Visual Studio 解决方案文件，将组合所有导出的顶级项目（项目、库等）。</para>
+    <para styleclass="Body Text">这是您应首先打开的文件。</para>
+    <para styleclass="Heading2">VFPXPorter 工作原理</para>
+    <para styleclass="Body Text">VFPXPorter 将读取您的项目及其元素。它会识别它们的类型并生成一些 X# 代码。</para>
+    <para styleclass="Body Text">为了生成代码，它会查看 Data 文件夹。</para>
+    <para styleclass="Body Text">在那里，我们可以找到几个 .JSON 文件，它们被用作转换规则： </para>
+    <para styleclass="Body Text">这些规则的文档可在 GitHub 的 &#160;<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/blob/main/src/Tools/VFPXPorter/DocumentationAndRules.md" target="_blank">VFPXPorter repository</link> 中找到</para>
+    <para styleclass="Body Text">然后，它将使用一些模板来生成文件： 每种文件类型一个。您可以在 GitHub 上找到这些模板 : <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/tree/main/src/Tools/VFPXPorter/Source/VFPXPorterLib/Data/Templates" target="_blank">模板</link></para>
+    <para styleclass="Heading2">从 VFP 进行转换</para>
+    <para styleclass="Heading3">常见问题</para>
+    <para styleclass="Body Text">在将您的 VFP 图形用户界面代码转换为 X# 和 WinForms 时，我们会遇到一些常见问题，请参见以下列表。</para>
+    <para styleclass="Heading3">事件和方法命名</para>
+    <para styleclass="Body Text">将应用程序从 VFP 转换到 X# 和 WinForms 时，您必须牢记这两个 “世界 ”对您的窗体使用不同的视角。<br/></para>
+    <para styleclass="Body Text">在 VFP 中，<text style="font-weight:bold;">事件</text>被路由到<text style="font-weight:bold;">控件</text>。</para>
+    <para styleclass="Body Text">因此，我们可以认为，例如，窗体上的每个按钮都有自己的类，该类继承自基类 CommandButton，并且是该特定类的实例： 因此，您可以重写该级别的事件和方法，这样就可以对发生的事情进行大量控制。</para>
+    <para styleclass="Body Text">在 WinForms 中，<text style="font-weight:bold;">事件</text>会传递给控件的所有者： <text style="font-weight:bold;">表单</text></para>
+    <para styleclass="Body Text">因此，使用方法是在事件处理程序和方法的前缀加上控件的名称。</para>
+    <para styleclass="Body Text">如果 button1 引发了单击事件，那么处理程序的名称就是 button1_click。</para>
+    <para styleclass="Body Text">如果是表单引发事件，由于表单是类，因此处理程序的名称将是 nameOfTheForm_Event。</para>
+    <para styleclass="Body Text">您可以通过导出器设置更改该名称：</para>
+    <para styleclass="Body Text"></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">(以 FORM 名称作为事件方法的前缀Prefix Event methods with FORM name)</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">Start() 函数</para>
+    <para styleclass="Body Text">生成的代码包含一个 Start() 函数，它是生成应用程序的启动对象。如果您在 VFP 代码中也使用了 Start() 函数，则必须在导出后对其进行重命名。</para>
+    <para styleclass="Heading3">Init() 方法</para>
+    <para styleclass="Body Text">在 VFP 中，创建对象时会调用 Init() 方法。</para>
+    <para styleclass="Body Text">在 X# 中，调用类的 Constructor() (使用 MyClass{} 语法)不会自动调用 Init() 方法。</para>
+    <para styleclass="Body Text">在导出过程中，<text style="font-style:italic;">InitType.prg</text> 模板会模拟这一过程。</para>
+    <para styleclass="Body Text">对于控件，在创建句柄时会调用 Init() 方法。这段代码由导出时使用的 <text style="font-style:italic;">InitType.prg</text> 模板生成。</para>
+    <para styleclass="Heading3">颜色</para>
+    <para styleclass="Body Text"><text style="font-style:italic;">遗憾的是，这些都无法自动处理，因为这会破坏 Visual Studio 中的 Windows 窗体设计器。</text></para>
+    <para styleclass="Body Text">使用 RGB 设置 BackColor 或 ForeColor，如 ：</para>
+    <para styleclass="Code Example"> &#160; &#160;this.Label1.ForeColor = RGB(255,0,0)</para>
+    <para styleclass="Body Text">将被转换为：</para>
+    <para styleclass="Code Example"> &#160; &#160;this.Label1.ForeColor = System.Drawing.Color.FromARGB( 255,0,0) )</para>
+    <para styleclass="Body Text">BUT.... 如果您在 PRG 文件中使用名为 RGB() 的函数返回 System.Drawing.Color 颜色，那么它将成为您导出解决方案的一部分，并取代 XSharp Runtime 定义，这样就可以解决这个问题了！</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">无参数的方法调用</para>
+    <para styleclass="Body Text">在 X# 中，“属性”包含一个用等号设置/获取的 “值”，而 “方法 ”包含调用时执行的代码。</para>
+    <para styleclass="Body Text">这在 VFP 中是允许的，但在 X# 中您必须纠正这一点</para>
+    <para styleclass="Code Example"> &#160; &#160;this.Refresh</para>
+    <para styleclass="Body Text">应更正为：</para>
+    <para styleclass="Code Example"> &#160; &#160;this.Refresh()</para>
+    <para styleclass="Body Text">如果在设置中勾选 “将语句转换为调用(Convert Statement to Call)”，就可以在导出时纠正这些问题。</para>
+    <para styleclass="Body Text">处理过的语句在 <text style="font-style:italic;">Statements.json</text> 文件中。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">表单属性封装</para>
+    <para styleclass="Body Text">要使用 Visual Studio 中的 Windows 窗体设计器修改窗体，属性必须遵守 WinForm 的格式。因此，您可能需要在 <text style="font-style:italic;">PropRules.json</text> 中添加一些属性，以便自动转换它们。</para>
+    <para styleclass="Body Text">这就是 ShowInTaskBar 在规则中显示为 ShowInTaskbar 的原因(注意小写的 b)。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3"><text style="font-style:italic;">VFP2WinForms.json 规则解决了以下问题</text></para>
+    <para styleclass="Heading3"><text style="font-style:italic;">父对象访问</text></para>
+    <para styleclass="Body Text">Windows 窗体中已经定义了父属性，并将其强类型化为 System.Windows.Forms.Control 对象。为了避免麻烦并简化应用程序的移植，支持库中包含了一个名为 _Parent 的属性，它可以访问控件的父对象，但却是一个弱类型对象。</para>
+    <para styleclass="Body Text">这将迫使 X# 进行后期绑定调用，并有助于解决移植代码的访问问题。</para>
+    <para styleclass="Body Text">对 _Parent 的调用由 XPorter 自动生成。</para>
+    <para styleclass="Heading3"><text style="font-style:italic;">在您的代码中调用一个对象的事件</text></para>
+    <para styleclass="Body Text">在父对象中，您有时可能会在 VFP 代码中直接调用事件处理程序。</para>
+    <para styleclass="Body Text">这可能会有问题，例如直接调用按钮的 Click 事件就会失败。</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">This.Parent.cmd_prec.Click</text></para>
+    <para styleclass="Body Text">导出时，“This ”将转为父对象 ThisObject。</para>
+    <para styleclass="Heading3"><text style="font-style:italic;">数组访问</text></para>
+    <para styleclass="Body Text">在 X# 中，使用括号 [] 访问数组元素。</para>
+    <para styleclass="Body Text">在 VFP 中，您可以使用括号 () 。</para>
+    <para styleclass="Body Text">但在访问.Net 类型数组时，这可能会造成问题。</para>
+    <para styleclass="Body Text">因此，为了简化 VFP 应用程序的移植，在 XSharp.VFP.UI 控制层中，一些数组访问被转为方法调用，从而简化了使用 VFP 语法访问 .NET 控件的过程。</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">x = __screen.FormCount</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">__screen.Forms(x-1).Release() </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// 在这里，表单数组将被表单方法调用所取代。</text></para>
+    <para styleclass="Heading3"><text style="font-style:italic;">访问当前工作区/Cursor中的字段</text></para>
+    <para styleclass="Body Text">在 VFP 中，可以使用当前工作区/Cursor 的名称来引用当前工作区/光标，也可以通过在 Dot(<text style="font-weight:bold;">.</text>) 后指定字段名称来指向特定字段，例如使用 .VFP：</para>
+    <para styleclass="Code Example">? movie.title</para>
+    <para styleclass="Body Text">遗憾的是，在 X# 中，Dot(<text style="font-weight:bold;">.</text>) 用于对象，因此您必须使用箭头作为选择器，如</para>
+    <para styleclass="Code Example">? movie-&gt;title</para>
+    <para styleclass="Heading3"><text style="font-style:italic;">未声明变量</text></para>
+    <para styleclass="Body Text">您可以在代码的任何地方使用未声明的变量。X# 会识别并支持这一点。</para>
+    <para styleclass="Body Text">在这种情况下，X# 会默默地创建一个变量：一个未类型化的局部变量。</para>
+    <para styleclass="Body Text">但在某些情况下，这样做是行不通的。例如</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> SQLExec(nHandle,</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#3366ff;">&quot;SELECT * &#160;FROM employees ORDER BY id ASC &#160;LIMIT 1&quot;</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">,</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#3366ff;">&quot;CurResult&quot;</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) &lt;=0 THEN &amp;&amp;&amp; validate error first. </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; Aerror(laErr)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; Messagebox(</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#3366ff;">&quot;Check the following error: &quot;</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> + Chr(13) + laErr[2],&apos;Alert&apos;,3000)</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> .F.</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDIF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text></para>
+    <para styleclass="Body Text">在代码中，变量 laErr 从未在这一级声明，但它被 AError() 函数用作以引用方式传递的参数。</para>
+    <para styleclass="Body Text">X# 不支持这种结构。您必须先创建一个局部变量 laErr。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3"><text style="font-style:italic;">不支持的函数</text></para>
+    <para styleclass="Body Text">在创建 VFP 应用程序时，您可能会调用一些 X# 尚不支持的函数。</para>
+    <para styleclass="Body Text">编译器会发出警告 (<text style="font-weight:bold;">XS0618</text>)，但生成的 Exe 肯定会在运行时崩溃。</para>
+    <para styleclass="Body Text">为了避免这种情况，可以将这些警告显示为错误。</para>
+    <para styleclass="Body Text">为此，请按照以下步骤使用 MS Visual Studio：</para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">打开项目属性</li>
+      <li styleclass="Body Text">转到 “生成”(Build)</li>
+      <li styleclass="Body Text">在 “将警告视为错误(Treat Warning as Errors)”部分，输入特定警告(Specific warnings:)：XS0618</li>
+    </list>
+    <para styleclass="Heading1">XSharp.VFP.UI.Dll：适配层</para>
+    <para styleclass="Body Text">VFP GUI 控件库与 .NET Windows Forms.UI.Dll 有很大不同： 属性、方法和事件处理都非常不同。</para>
+    <para styleclass="Body Text">为了提供图形用户界面导出，VFPXPorter 使用了一个适配层：XSharp.VFP.GUI。</para>
+    <para styleclass="Body Text">该库包含一些与 VFP 行为方式类似的控件。它公开了 VFP 的原始属性，并将其转换为 .NET Windows Forms 对应的属性。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">某些控件可能会丢失，某些属性/方法/事件也是如此： 请在 XSharp 论坛上报告您的问题。</para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

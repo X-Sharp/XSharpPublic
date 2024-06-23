@@ -282,7 +282,7 @@ FUNCTION DbClearIndex(uOrder, cIndexFile) AS LOGIC CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreate/*" />
-FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lOpen, acRDDs ) AS LOGIC CLIPPER
+FUNCTION DbCreate ( cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lOpen, acRDDs ) AS LOGIC CLIPPER
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC
 

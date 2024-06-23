@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T10:41:14.761+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Build(生成)</title>
+  <keywords>
+    <keyword>Code Signing KeyFile</keyword>
+    <keyword>-d</keyword>
+    <keyword>Defines</keyword>
+    <keyword>Defines for the preprocessor</keyword>
+    <keyword>Delayed sign only</keyword>
+    <keyword>-delaysign</keyword>
+    <keyword>Extra Command Line Options</keyword>
+    <keyword>Generate preprocessor output</keyword>
+    <keyword>Generate XML doc comments file</keyword>
+    <keyword>Intermediate Output Path</keyword>
+    <keyword>-keyfile</keyword>
+    <keyword>-nowarn</keyword>
+    <keyword>Optimize</keyword>
+    <keyword>Output Path</keyword>
+    <keyword>Platform Target</keyword>
+    <keyword>-ppo</keyword>
+    <keyword>Prefer 32 Bit</keyword>
+    <keyword>Preprocessor</keyword>
+    <keyword>Preprocessor output</keyword>
+    <keyword>Register for COM interop</keyword>
+    <keyword>Shared Compiler</keyword>
+    <keyword>-sign</keyword>
+    <keyword>Sign the output assembly</keyword>
+    <keyword>Suppress Specific Warnings</keyword>
+    <keyword>Use Shared Compiler</keyword>
+    <keyword>-warn</keyword>
+    <keyword>-warnaserror</keyword>
+    <keyword>Warning Level</keyword>
+    <keyword>Warnings As Errors</keyword>
+    <keyword>XML doc comments file name</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Build(生成)</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">生成页面包含<text style="font-weight:bold; font-style:italic;">特定配置</text>的属性。因此，Debug 配置和 Release 配置可以有不同的属性。有关生成配置的更多信息，请阅读<link displaytype="text" defaultstyle="true" type="topiclink" href="Build-Configurations">生成配置</link> 。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal" style="text-align:center;">项目</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal" style="text-align:center;">描述</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal" style="text-align:center;">命令行选项</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Platform Target</para>
+          <para styleclass="Normal">(平台目标)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">编译此项目时选择平台目标。应为 AnyCPU、X86、x64、Arm 或 Itanium。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-platform">-platform</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Prefer 32 Bit</para>
+          <para styleclass="Normal">(首选32位)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">选择 AnyCpu 平台时，首选 32 位。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-platform">-platform</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Intermediate Output Path</para>
+          <para styleclass="Normal">(中间输出路径)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">中间输出路径(允许使用宏)。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal">Visual Studio/MsBuild 使用</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Output Path</para>
+          <para styleclass="Normal">(输出路径)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">输出路径(允许使用宏)。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal">Visual Studio/MsBuild 使用</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Code Signing KeyFile</para>
+          <para styleclass="Normal">(代码签名密钥文件)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">选择代码签名密钥文件。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Delayed sign only</para>
+          <para styleclass="Normal">(只有延迟标识)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">延迟签署。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-delaysign">-delaysign</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Sign the output assembly</para>
+          <para styleclass="Normal">(对输出程序集进行签名)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">对程序集进行签名。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile">-keyfile</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Extra Command Line Options</para>
+          <para styleclass="Normal">(额外命令行选项)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">用户自定义命令行选项。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal">您可以在此处指定额外的命令行选项</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Optimize</para>
+          <para styleclass="Normal">(优化)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">编译器应优化输出吗？</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-optimize">-optimize</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Register for COM interop</para>
+          <para styleclass="Normal">(注册 COM 互操作)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">注册 COM Interop 的输出程序集(需要管理员权限)。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal">这将在生成后运行一个工具，为 COM 互操作注册程序集。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Use Shared Compiler</para>
+          <para styleclass="Normal">(使用共享编译器)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">是否应该使用共享编译器来编译项目？(更快，但可能会隐藏一些编译器错误)</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal">-shared</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Defines for the preprocessor</para>
+          <para styleclass="Normal">(为预处理器定义)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">为预处理器定义。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-define">-define</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Generate preprocessor output</para>
+          <para styleclass="Normal">(生成预处理器输出)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">将预处理器的输出保存为 .ppo 文件。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">-ppo</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Suppress Specific Warnings</para>
+          <para styleclass="Normal">(禁止特定的警告)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">指定要禁止的警告列表。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Warning Level</para>
+          <para styleclass="Normal">(警告级别)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">将警告级别设置为 0 至 4 之间的值。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">-warn</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Warnings As Errors</para>
+          <para styleclass="Normal">(将警告视为错误)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">将警告视为错误。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">Generate XML doc comments file</para>
+          <para styleclass="Normal">(生成 XML 文档注释文件)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">生成 XML 文档注释文件。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">-doc</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:230px;">
+          <para styleclass="Normal">XML doc comments file name</para>
+          <para styleclass="Normal">(XML 文档注释文件名)</para>
+        </td>
+        <td style="width:563px;">
+          <para styleclass="Normal">XML 文档注释文件名。</para>
+        </td>
+        <td style="width:367px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-doc">-doc</link></para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

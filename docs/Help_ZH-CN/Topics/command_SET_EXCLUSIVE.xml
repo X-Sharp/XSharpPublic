@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-11T18:23:21.361+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET EXCLUSIVE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Concurrency control</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Environment</keyword>
+    <keyword>Exclusive mode<keyword>setting</keyword></keyword>
+    <keyword>Files<keyword>opening</keyword></keyword>
+    <keyword>Modes<keyword>setting</keyword></keyword>
+    <keyword>Opening<keyword>files</keyword></keyword>
+    <keyword>SET EXCLUSIVE command</keyword>
+    <keyword>Shared mode<keyword>setting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET EXCLUSIVE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改决定以独占还是共享模式打开数据库文件的设置。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET EXCLUSIVE ON | OFF | (&lt;lToggle&gt;)</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON <tab />将在网络上打开的表的访问权限限制为打开该表的用户。网络上的其他用户无法访问该表。与 FLOCK( ) 不同的是，SET EXCLUSIVE ON 还可以阻止所有其他用户只读访问。通过在 USE 命令中加入 EXCLUSIVE 子句，也可以在网络上打开文件供独占使用。为独占使用而打开的表无需执行记录锁或文件锁。</para>
+    <para styleclass="List"><tab />为独占使用打开表可以确保其他用户无法更改文件。对于某些命令，只有在表被打开供独占使用后才能执行。这些命令包括 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP">ZAP</link>。</para>
+    <para styleclass="List">OFF<tab />允许网络上的任何用户共享和修改在网络上打开的表。</para>
+    <para styleclass="List">lToggle<tab /><text styleclass="Body Text">逻辑表达式，必须用括号表示。True 相当于 ON，False 相当于 OFF</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET EXCLUSIVE 在功能上等同于 SetExclusive()。 </para>
+    <para styleclass="Normal">更改 SET EXCLUSIVE 的设置不会改变以前打开的表的状态。例如，如果在打开表时将 SET EXCLUSIVE 设置为 ON，后来又将 SET EXCLUSIVE 更改为 OFF，则该表仍保持其独占使用状态。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_NetErr.htm" domain="XSharpRef.chm">NetErr()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XSharpRef.chm">RLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetExclusive.htm" domain="XSharpRef.chm">SetExclusive()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

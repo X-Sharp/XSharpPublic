@@ -4,17 +4,62 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 
+FUNCTION Start() AS VOID
+	LOCAL cFileName AS STRING
+	LOCAL cBaseRdd AS STRING
+	LOCAL cIndex AS STRING
+	LOCAL lNtx AS LOGIC
 
-FUNCTION Start() AS VOID STRICT
+	cFileName := "c:\test\dbmemo"
+	lNtx := false
+
+	IF lNtx
+		cBaseRdd := "DBFNTX"
+		cIndex := cFileName + ".ntx"
+	ELSE
+		cBaseRdd := "DBFCDX"
+		cIndex := cFileName + ".cdx"
+	ENDIF
+
+	FErase(cIndex)
+
+	? DbCreate(cFileName, {{"CFIELD","C",10,0},{"NFIELD","N",8,2},{"MFIELD","M",10,0}},cBaseRdd,,,,,{"DBFMEMO"})
+
+	? DbUseArea(TRUE,cBaseRdd,cFileName,,,,,,{"DBFMEMO"})
+	DbAppend()
+	FieldPut(1,"test1")
+	FieldPut(2,1)
+	FieldPut(3,"some text")
+	DbAppend()
+	FieldPut(1,"test3")
+	FieldPut(2,3)
+	FieldPut(3,"some text3")
+	DbAppend()
+	FieldPut(1,"test2")
+	FieldPut(2,2)
+	FieldPut(3,"some text2")
+	DbGoTop()
+	? DbCreateIndex(cFileName,"NFIELD")
+	DbGoBottom()
+    ? RecNo(), FieldGet(1), FieldGet(2), FieldGet(3)
+    ? DbOrderInfo(DBOI_FULLPATH)
+    DbCloseArea()
+
+
+	? File(cIndex)
+
+    wait
+
+FUNCTION Startx() AS VOID STRICT
     ? "DBFMEMO"
     CreateMemo()
     CreateBlob()
 FUNCTION CreateMemo as VOID
 
-    ? RddSetDefault("DBFMEMO")
-    ? RddSetDefault()
-    ? DBCREATE("Test", {{"ID","N",10,0}, {"MEMO","M",10,0}}) // creates test.dbf and test.dbv
-    ? DBUSEAREA(TRUE,,"Test")
+    ? RddSetDefault("DBFCDX")
+    ? DBCREATE("Test", {{"ID","N",10,0}, {"MEMO","M",10,0}}, ,,,,,{"DBFMEMO"})
+    ? DBUSEAREA(TRUE,,"Test",,,,,,{"DBFMEMO"})
+    ? DbCreateIndex("test", "ID")
     FOR VAR i := 1 to 10
         DBAPPEND()
         FIELDPUT(1,i)
@@ -22,7 +67,7 @@ FUNCTION CreateMemo as VOID
         DBCOMMIT()
     NEXT
     DbCloseArea()
- ? DBUSEAREA(TRUE,,"Test")
+ ? DBUSEAREA(TRUE,,"Test",,,,,,{"DBFMEMO"})
     DO WHILE ! EOF()
     	? FieldGet(1), FieldGet(2)
     	DbSkip(1)

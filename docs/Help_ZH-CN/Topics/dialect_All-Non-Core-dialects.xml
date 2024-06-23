@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-30T22:25:23.291+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>所有非 Core 方言</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">所有非 Core 方言</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在编译任何非 Core 方言时，编译器和运行时会有以下 &quot;特殊 &quot;行为：</para>
+    <para styleclass="Heading2">编译器</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">允许在 NEXT、ENDDO 等关键字后使用 &quot;垃圾&quot;。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不允许使用 DOT（&apos;.&apos;）操作符调用实例方法。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">需要引用 XSharp.Core 和 XSharp.RT 动态链接库。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">字符串比较映射到 XSharp 运行时中的函数。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">根据编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link> 的不同，NULL_STRING 会被编译为&quot;&quot;或 NULL。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">支持字面量符号(#SomeName)。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">字符串&quot;=&quot;操作符被映射为 XSharp 运行时中的函数。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不支持特定的 X# 类型，如 DATE、ARRAY、SYMBOL、FLOAT 和 USUAL，但需要运行时的引用。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">添加了对动态内存变量和未声明变量的支持。</li>
+    </list>
+    <para styleclass="Normal">&#32;</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">字符串字面量使用单引号(Vulcan 除外)。字符文字必须以 c 为前缀，如：cChar := c&apos;A&apos; </li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">允许使用 ASend() 为 X# 数组中的每个元素调用方法。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">&quot;=&quot; 操作符可用于赋值，但使用时会产生警告。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加对 BEGIN SEQUENCE ... END SEQUENCE 的支持。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加了对 ALIAS (-&gt;) 操作符的支持。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加了对 FIELD 语句的支持。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">支持宏编译器和 &amp;(变量) 语法。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加了对 ARRAY OF &lt;type&gt; 语法的支持。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">编译器的生成函数类名为<br/><tab />&lt;AssemblyName&gt;.Functions (DLLs)<tab /><tab /><tab /><tab />用于函数和全局<br/><tab />&lt;AssemblyName&gt;.Exe.Functions (EXEs)<tab /><tab /><tab />用于函数和全局</li>
+    </list>
+    <para styleclass="Normal"><tab />&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions<tab />用于静态函数和全局</para>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">编译器会添加几个属性(在 XSharp.Core 中定义)，用于描述默认命名空间和编译器版本。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">编译器为 EXE 文件生成代码，在 Runtimestate 中设置多个属性，以匹配编译器选项和主程序的方言。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">过程不能具有返回值。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加了对无类型变量和返回值的支持。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">支持未定义类型的函数和方法参数(所谓的 Clipper 调用约定)。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加了对后期绑定代码的支持（需要 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb">-lb</link> 编译器选项）。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">增加了对 INIT 和 EXIT 过程的支持。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">添加了对 Codeblocks 的支持(带有 USUAL 参数数组和 USUAL 返回值的非类型 Lambda 表达式)。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">允许在方法调用中跳过参数。跳过的参数被假定为 NIL。</li>
+    </list>
+    <para styleclass="Heading2">运行时(Runtime)</para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">默认 RDD 除 FoxPro 方言外均为 DBFNTX</li>
+    </list>
+  </body>
+</topic>

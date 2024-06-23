@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T09:47:37.268+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IMPLEMENTS clause</title>
+  <keywords>
+    <keyword>EXCLUDE</keyword>
+    <keyword>IMPLEMENTS</keyword>
+    <keyword>IN TypeLib</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FoxPro IMPLEMENTS clause</para>
+    </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明子句实现的接口</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt; [EXCLUDE] IN TypeLib | TypeLibGUID | ProgID ]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">该类实现的接口名称</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">EXCLUDE</text><tab /><text styleclass="Normal">此选项不支持</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">IN [Typelib etc]</text><tab /><text styleclass="Normal">此选项不支持</text></para>
+  </body>
+</topic>

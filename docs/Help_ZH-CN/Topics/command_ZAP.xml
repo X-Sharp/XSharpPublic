@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T18:27:34.654+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ZAP 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases<keyword>records</keyword></keyword>
+    <keyword>Deleting</keyword>
+    <keyword>Records<keyword>deleting</keyword></keyword>
+    <keyword>ZAP command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">ZAP 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">永久删除当前工作区数据库文件中的所有记录。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">ZAP &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">ZAP 在功能上等同于 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbZap.htm" domain="XSharpRef.chm">DBZap()</link>。 </para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbZap.htm" domain="XSharpRef.chm">DBZap()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

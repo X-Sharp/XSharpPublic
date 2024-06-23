@@ -1,8 +1,9 @@
 ﻿// VFPFunctions.prg
-// Created by    : fabri
-// Creation Date : 1/5/2022 1:55:48 PM
-// Created for   :
-// WorkStation   : FABXPS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+
 
 
 USING System
@@ -10,19 +11,19 @@ USING System.Collections.Generic
 USING System.Text
 USING System.Runtime.InteropServices
 
-_DLL FUNCTION SetForegroundWindow(hwnd AS PTR) AS LOGIC PASCAL:USER32.SetForegroundWindow
-_DLL FUNCTION FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS PTR PASCAL:USER32.FindWindowA
-_DLL FUNCTION SetActiveWindow( hwnd AS PTR) AS PTR PASCAL:USER32.SetActiveWindow
-_DLL FUNCTION IsWindowVisible(hwnd AS PTR) AS LOGIC PASCAL:USER32.IsWindowVisible
-_DLL FUNCTION ShowWindow(hwnd AS PTR, nCmdShow AS INT) AS LOGIC PASCAL:USER32.ShowWindow
+INTERNAL _DLL FUNCTION SetForegroundWindow(hwnd AS PTR) AS LOGIC PASCAL:USER32.SetForegroundWindow
+INTERNAL _DLL FUNCTION FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS PTR PASCAL:USER32.FindWindowA
+INTERNAL _DLL FUNCTION SetActiveWindow( hwnd AS PTR) AS PTR PASCAL:USER32.SetActiveWindow
+INTERNAL _DLL FUNCTION IsWindowVisible(hwnd AS PTR) AS LOGIC PASCAL:USER32.IsWindowVisible
+INTERNAL _DLL FUNCTION ShowWindow(hwnd AS PTR, nCmdShow AS INT) AS LOGIC PASCAL:USER32.ShowWindow
 DEFINE SW_HIDE                       := 0
 DEFINE SW_NORMAL                     := 1
 
 
-FUNCTION CreateObject(symClassName,InitParamsList) AS OBJECT CLIPPER
-	//
-	VAR oRet := CreateInstance( symClassName,InitParamsList )
-	RETURN oRet
+// FUNCTION CreateObject(symClassName,InitParamsList) AS OBJECT CLIPPER
+// 	//
+// 	VAR oRet := CreateInstance( symClassName,InitParamsList )
+// 	RETURN oRet
 
 FUNCTION Create(symClassName,InitParamsList) AS OBJECT CLIPPER
 	RETURN CreateObject(symClassName,InitParamsList)

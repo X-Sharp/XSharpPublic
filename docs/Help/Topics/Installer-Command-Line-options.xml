@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-05-28T10:01:24.480+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Installer Command Line options</title>
   <keywords>
     <keyword>/closeapplications</keyword>
@@ -88,7 +88,7 @@
         <td>
           <para styleclass="Body Text">Instructs Setup to suppress message boxes. Only has an effect when combined with &apos;/silent or &apos;/verysilent.</para>
           <para styleclass="Body Text">The default response in situations where there&apos;s a choice is:</para>
-          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+          <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Body Text">Yes in a &apos;Keep newer file?&apos; situation. </li>
             <li styleclass="Body Text">No in a &apos;File exists, confirm overwrite.&apos; situation. </li>
             <li styleclass="Body Text">Abort in Abort/Retry situations. </li>
@@ -98,7 +98,7 @@
             <li styleclass="Body Text">The recommended choice in a PrivilegesRequiredOverridesAllowed=dialog situation.</li>
           </list>
           <para styleclass="Body Text">5 message boxes are not suppressible:</para>
-          <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+          <list id="0" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
             <li styleclass="Body Text">The About Setup message box. </li>
             <li styleclass="Body Text">The Exit Setup? message box. </li>
             <li styleclass="Body Text">The FileNotInDir2 message box displayed when Setup requires a new disk to be inserted and the disk was not found. </li>
@@ -299,6 +299,22 @@
             </tr>
             <tr style="vertical-align:top">
               <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\debug</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Install debug versions of the runtime</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\netcore</text></para>
+              </td>
+              <td>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Install the .Net Core version of the compiler</text></para>
+              </td>
+            </tr>
+            <tr style="vertical-align:top">
+              <td>
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs</text></para>
               </td>
               <td>
@@ -307,26 +323,10 @@
             </tr>
             <tr style="vertical-align:top">
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\2015</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\1 thru vs\6</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 2015</text></para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\2017</text></para>
-              </td>
-              <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 2017</text></para>
-              </td>
-            </tr>
-            <tr style="vertical-align:top">
-              <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">vs\2019</text></para>
-              </td>
-              <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">Visual Studio 2019</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">The detected versions of Visual Studio</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -341,15 +341,6 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

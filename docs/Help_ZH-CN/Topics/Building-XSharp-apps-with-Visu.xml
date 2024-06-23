@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Building XSharp apps with Visual Studio and/or MsBuild</title>
+  <keywords>
+    <keyword>.g.prg</keyword>
+    <keyword>.rc</keyword>
+    <keyword>.sln</keyword>
+    <keyword>.xsproj</keyword>
+    <keyword>Compile</keyword>
+    <keyword>COMReference</keyword>
+    <keyword>CreateXSharpManifestResourceName</keyword>
+    <keyword>GAC</keyword>
+    <keyword>HintPath</keyword>
+    <keyword>LastXSharpNativeResourceResponseFile.Rsp&quot;</keyword>
+    <keyword>LastXSharpResponseFile.Rsp</keyword>
+    <keyword>machine.config</keyword>
+    <keyword>Native Resource compiler</keyword>
+    <keyword>NativeResourceCompiler</keyword>
+    <keyword>ProjectReference</keyword>
+    <keyword>Reference</keyword>
+    <keyword>referenced assemblies</keyword>
+    <keyword>solution file</keyword>
+    <keyword>TargetFrameworkVersion</keyword>
+    <keyword>Xsc</keyword>
+    <keyword>XSharp project file</keyword>
+    <keyword>XSHARPDEV</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Building XSharp apps with Visual Studio and/or MsBuild</para>
+    </header>
+    <para styleclass="Normal">When you build an application with MsBuild and/or Visual Studio you work with at least 2 types of files:</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The solution file (with the .sln extention)</li>
+      <li styleclass="Normal">One or more project files. XSharp projects have the .xsproj extension. CSharp projects have the .csproj extension, Visual Basic projects the .vbproj extension.</li>
+    </list>
+    <para styleclass="Heading2">The solution file (.sln)</para>
+    <para styleclass="Normal">The solution file is a text file with a list of project files and other information. Each project entry looks like this:</para>
+    <para styleclass="Code Example">Project(&quot;&lt;language guid&gt;&quot;) = &quot;&lt;ProjectName&gt;&quot;, &quot;&lt;Path and filename of the project file&gt;&quot;, &quot;&lt;project guid&gt;&quot;<br/>EndProject</para>
+    <para styleclass="Body Text">The &lt;language guid&gt; is always &quot;{AA6C8D78-22FF-423A-9C7C-5F2393824E04}&quot; for X# projects. This tells Visual Studio which project system to use to open the project file.</para>
+    <para styleclass="Body Text">The &lt;project guid&gt; is a generated and should match the project GUID that is defined inside the .xsproj file. These guids are also used in other sections of the .sln file.</para>
+    <para styleclass="Body Text"><br/>Other language guids that you may see are {FAE04EC0-301F-11D3-BF4B-00C04F79EFBC} and {9A19103F-16F7-4668-BE54-9A1E7A4F7556} for C# and {2150E333-8FDC-42A3-9474-1A3956D46DE8} for subfolders in your solution. There are many more guids of course.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal">Solution files also contain sections that describe the various configurations that are available for the solution (such as &quot;Debug&quot; and &quot;Release&quot;) and a section that maps solution configurations to project configurations and sometimes also a section that indicates how the source code control bindings for each of the projects are.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For the actual build process of your X# apps we can ignore the solution file for now. Solution files are &quot;language agnostic&quot;. The building is done based on information in the project file. </para>
+    <para styleclass="Heading2">The XSharp project file (.xsproj)</para>
+    <para styleclass="Normal">The project file contains all the instructions that are needed to build a X# project with MsBuild. The file is a Text file and contains XML contents in a specific format that MsBuild understands. <br/>The file contains all the settings that you can set from the project properties dialogs in Visual Studio and also a list of the items (prg files, resx files, rc files etc) in the project. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The file uses some common information that is installed in a MsBuild subfolder inside the XSharp installation folder that belongs to the Visual Studio version that you are using. <br/></para>
+    <para styleclass="Normal">The most important pieces in the file are for now:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Item</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&lt;Import Project=&quot;$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props&quot; /&gt;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This imports default settings for XSharp from the XSharp folder inside the current MsBuild folder. This file contains several default values for XSharp and also imports default values from a common file delivered by Microsoft (Microsoft.Common.props)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Several &lt;PropertyGroup&gt; sections.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">These sections contain values for the several options that you can find on the Project Properties dialog in Visual Studio. Some values are for all configurations, some values are configuration specific.<br/>These settings will be transformed to command line options for the X# compiler.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;Reference&gt; items</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The &lt;Reference&gt; items describe so called Assembly references that your project has. Usually you will find something like &lt;Reference Include=&quot;System&quot; /&gt; in there. Reference Items may also contain more information such as a version number etc. These references will be converted to<text styleclass="Code with box">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference" styleclass="Body Text">-reference</link><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference"> </link>command line options for the compiler </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;ProjectReference&gt; items</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The &lt;ProjectReference&gt; items describe so called Project References to other projects inside the same solution. MsBuild will determine the build order inside the solution based on the various project references and will try to build the referenced projects first before the projects referencing them. MSBuild will include a reference to the file produced by the project reference when building the command line for the compiler.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sectins with &lt;COMReference&gt; items</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The &lt;COMReference&gt; items describe references to COM components. This may be automation servers (such as Word or Excel for example) or ActiveX components (like the Shell Explorer that we use in the <link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">email example</link>). Automation Servers will have a single COMReference with a &lt;wrappertool&gt; child node of type &quot;tlbImp&quot;. ActiveX controls will have 2 COMReferences. One with the wrappertool set to &quot;tlbimp&quot; and another with the wrappertool set to &quot;aximp&quot;. See the section below on how this is processed by MSBuild.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;Compile&gt; items</para>
+        </td>
+        <td>
+          <para styleclass="Normal">The &lt;Compile&gt; items describe the source code items for the X# compiler. The template for the Console application has 2 of these items:<br/>&lt;Compile Include=&quot;Properties\AssemblyInfo.prg&quot; /&gt;<br/>&lt;Compile Include=&quot;Program.prg&quot; /&gt;</para>
+          <para styleclass="Normal">The &lt;Compile&gt; items may have an optional &lt;SubType&gt;child node with the value &quot;Code&quot;, &quot;Form&quot; or &quot;UserControl&quot;. This subtype is ignored by the build process but used by Visual Studio to determine the icon that is shown before the item in the tree and to determine which editor to open when the item is double clicked. &quot;Code&quot; opens the source code editor by default. The other 2 types open the Windows Forms editor.</para>
+          <para styleclass="Normal"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;VOBinary&gt;, &lt;NativeResource&gt;,&lt;EmbeddedResource&gt; and other types of items</para>
+        </td>
+        <td>
+          <para styleclass="Normal">&lt;NativeResource&gt; items are handled specially by the X# build process. These are combined together in an unmanaged resource. See below<br/>&lt;EmbeddedResource&gt; files are managed resources. These are handled by MSBuild. How this works is one of the things that is described in a file that is included below</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&lt;Import Project=&quot;$(MSBuildExtensionsPath)\XSharp\XSharp.targets&quot; /&gt;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">This file tells MSBuild how to handle the &lt;Compile&gt; and &lt;NativeResource&gt; items in the project file and also (indirectly) imports a file Microsoft.Common.targets that tells MSBuild how to handle XAML files and how to compile &lt;EmbeddedResources&gt;.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">How does MSBuild locate referenced assemblies</text></para>
+    <para styleclass="Normal">When locating the referenced assemblies needed for compiling your project it looks at the following:</para>
+    <list id="4" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Consolas; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">When the reference node has a &quot;hintpath&quot; then it tries to locate the file through this path. That could look like <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&lt;HintPath&gt;..\\SDK_Defines.dll&lt;/HintPath&gt;</text></li>
+      <li styleclass="Normal">When the reference node is a &quot;normal&quot; .Net framework assembly, it looks at the folder on your file system that matches the framework version. For example when the framework version of your project is 4.6 (there will be a node <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&lt;TargetFrameworkVersion&gt;v4.6&lt;/TargetFrameworkVersion&gt; </text><text styleclass="Body Text">then it will look for System.DLL in the folder c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">When the reference node is not a standard .Net framework assembly and the 3rd party vendor has registered a folder in a specific location then MsBuild will use that location. X# registers a folder in the </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text styleclass="Body Text">location. File registered in a location like this are also shown in the &quot;Add References&quot; dialogs in Visual Studio.</text></li>
+      <li styleclass="Normal">Finally (during building) MSBuild will look in the Global Assembly Cache (GAC).</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Please note that there is a difference between Compiling and Running. During the compilation the files in the reference folders have preference over files in the GAC. When running the app the GAC is used and/or the local folder or path. Files in the reference folders are NEVER used at runtime. This would also not be possible since these files have no executable code in them.</para>
+    <para styleclass="Normal">The idea behind this division is that you can have a newer Framework version &#160;installed (for example 4.8) then you would like to compile against (for example 4.6). The reference assembly in the 4.6 folder only contains the subset of the api that was available for .Net Framework 4.6. So you will not be able to (accidentally) use methods or types that were added after framework 4.6, even though these methods and/or types are installed in the GAC.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">How does MSBuild locate project references</text></para>
+    <para styleclass="Normal">When MSBuild delects a project reference then it tries to build that project first. When the project is successfully compiled then the output assembly from that project is included as &quot;normal&quot; reference to the X# compiler.</para>
+    <para styleclass="Heading2">How are COM references handled</para>
+    <para styleclass="Normal">COM references require special processing. MSBuild uses 2 command line tools to extract the type libraries from these COM references and produces .Net assemblies (so called Interop assemblies) that describe the COM references. There are 2 tools involved:</para>
+    <para styleclass="Normal">tlbimp.exe for automation servers</para>
+    <para styleclass="Normal">aximp.exe for ActiveX controls</para>
+    <para styleclass="Normal">In our <link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">email example</link> we are using the Shell.Explorer Active X. These 2 tools produce the files Interop.SHDocVw.dll &#160;and AxInterop.SHDocVw.dll . The AxInterop file describes the Windows Forms control and the Interop file the automation interface. In our<link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-Ole-Automation"> Excel example</link> we are referencing a &quot;precompiled&quot; assembly for Office and therefore we are not generating a new interop assembly but we are linking to a so called &quot;Primary Interop Assembly (PIA)&quot;, with the name Microsoft.Office.Interop.Excel.dll .<br/>If you include a COM component but you are not actually creating the COM objects but only consuming them then you can also set the &quot;EmbedInteropTypes&quot; option to true. When you do that then the X# compiler will copy the relevant information from the interop assembly and include that exe or dll, so you do not have to distribute the interop.dll with your application. In the Excel example that will not work because we are creating an excel application. The compiler will complain then &quot;<text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">error XS1752: Interop type &apos;Microsoft.Office.Interop.Excel.ApplicationClass&apos; cannot be embedded. Use the applicable interface instead.</text>&quot;</para>
+    <para styleclass="Normal">The resulting interop assemblies are produced before the compiler is called and are passed to the compiler as &quot;normal&quot; assembly references.</para>
+    <para styleclass="Heading2">How does MSBuild call the Native Resource compiler</para>
+    <para styleclass="Normal">When your application contains Native resources then we must compile these native resources before the X# compiler can be used, since the result of the resource compilation must be included in the final exe/dll file. Of course MSBuild does not &quot;know&quot; about X#, so we have to tell it what to do. The instructions for this are stored in the XSharp.Targets file.</para>
+    <para styleclass="Normal">This file contains the following instructions:</para>
+    <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;NativeResourceCompiler&quot; AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot; /&gt;<br/>&lt;NativeResourceCompiler&gt; .... &lt;/NativeResourceCompiler&gt;</para>
+    <para styleclass="Normal">The first entry tells the compiler that there is a special DLL in the XSharp folder with the name XSharp.Build.dll. This DLL contains a type NativeResourceCompile, which is a subtype of Microsoft.Build.Utilities.ToolTask.<br/>The second entry tells MSBuild how to pass information to this task to build the native resources.<br/>This includes a list of all items from the project file with the itemtype &lt;NativeResource&gt;. <br/>The task will then try to find the native resource compiler. To do that it looks in the registry in the following key:</para>
+    <para styleclass="Normal">- When running in 64 bit mode: &quot;HKEY_LOCAL_MACHINE\Software\WOW6432Node\XSharpBV\XSharp&quot;</para>
+    <para styleclass="Normal">- When running in 32 bit mode: &quot;HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp&quot;</para>
+    <para styleclass="Normal">Inside this key it looks for the (string) value <text style="font-weight:bold;">XSharpPath</text> which is set by the installer at compile time.</para>
+    <para styleclass="Normal">When it can&apos;t find that path it defaults to &quot;C:\Program Files (x86)\XSharp&quot;</para>
+    <para styleclass="Normal">The task will then look for the <text style="font-weight:bold;">rc.exe </text>program in the Bin subfolder below that folder.</para>
+    <para styleclass="Normal">When the tool is found then this task checks for the date/time stamps of the various .rc files and compares these with the date/time stamp of the output file (NativeResources.res ) in the &quot;intermediate&quot; folder. If the output file is older or does not exist then a command line for rc.exe is constructed and the compiler is called. </para>
+    <para styleclass="Normal">For this call we create a unique temporary rsp file in your temp folder. We are also saving the last version of this file in the file &#160;&quot;LastXSharpNativeResourceResponseFile.Rsp&quot;.</para>
+    <para styleclass="Normal">If you want to see which information was passed to the native resource compiler you can look for this file in your temp folder.</para>
+    <para styleclass="Normal">The resulting NativeResources.res will be passed to the X# compiler later to be included in the exe/dll. For this we use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/win32res</link> command line option of xsc.exe.</para>
+    <para styleclass="Heading2">How are managed resources compiled</para>
+    <para styleclass="Normal">The compilation process for managed resources is mostly managed by MSBuild itself. It already knows how to handle these.<br/>We do declare a task </para>
+    <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;CreateXSharpManifestResourceName&quot; AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot;/&gt;<br/>&lt;CreateXSharpManifestResourceName&gt; ... &lt;/CreateXSharpManifestResourceName&gt;</para>
+    <para styleclass="Normal">This task is also located in the same XSharp.Build.DLL and is used to help MSBuild to detect the right namespace for the generated resources. </para>
+    <para styleclass="Normal">The result of the managed resource compilation is that .resx files are compiled to one or more .resources file. These .resources files are then later passed to the compiler with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resources</link> command line option of xsc.exe.</para>
+    <para styleclass="Heading2">Processing of XAML files</para>
+    <para styleclass="Normal">If you are creating a project that contains WPF windows or controls then an extra step is needed to produce the exe/dll. </para>
+    <para styleclass="Normal">In this step MSBuild produces so called <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">.baml </text><text styleclass="Body Text">files and calls a code generator to generate source code for each XAML file. </text></para>
+    <para styleclass="Normal"><text styleclass="Body Text">For the WPF template 2 source files are produced:</text></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">WPFWindow1.g.prg</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">App.g.prg</text></li>
+    </list>
+    <para styleclass="Normal"><text styleclass="Body Text">These source files are automatically added to the command line for the X# compiler.</text></para>
+    <para styleclass="Normal"><text styleclass="Body Text">These source files contain a class declaration with a InitializeComponent() method that sets up the controls in your window. If you have named your controls then for each control with a name there will also be a field in the class and the generated Connect() method will set these fields to the control generated by the framework when the form is loaded.</text></para>
+    <para styleclass="Normal"><text styleclass="Body Text">App.g.prg also contains a class and a function Start() that is responsible for starting up your application.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold;">Note</text><text styleclass="Body Text">: This source code is generated by a tool that we have registered in </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">c:\Windows\Microsoft.NET\Framework\v4.0.30319\Config\machine.config .</text></para>
+    <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160;&lt;system.codedom&gt;</text></para>
+    <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;&lt;compilers&gt;</text></para>
+    <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;&lt;compiler language=&quot;XSharp&quot; extension=&quot;.prg&quot; type=&quot;XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version=2.1.0.0, Culture=neutral, </text></para>
+    <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL&quot; /&gt;</text></para>
+    <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;&lt;/compilers&gt;</text></para>
+    <para styleclass="Normal"><text styleclass="Body Text">The XSharpCodeDomProvider.dll &#160;assembly is registered in the GAC and it contains a XSharpCodeGenerator type that is responsible for the code generation. </text></para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold;">Note</text><text styleclass="Body Text">: this tool uses the keyword case setting that was specified in your Visual Studio options for the X# text editor.</text></para>
+    <para styleclass="Heading2">How does MSBuild call the X# compiler</para>
+    <para styleclass="Normal">When MSBuild has successfully handled all external references and has created the &quot;code behind&quot; for XAML files compiled the native and managed resources then it calls the X# compiler. <br/>Similar to how the native resource compiler is called the XSharp.Targets file also has instructions on how to call the compiler:</para>
+    <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;XSharp.Build.Xsc&quot; &#160;AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot;/&gt;<br/>&lt;Xsc&gt; ..... &lt;/Xsc&gt;</para>
+    <para styleclass="Normal">Again this describes a class in the XSharp.Build.DLL and the &lt;Xsc&gt; entry describes the properties of this type that need to be set.</para>
+    <para styleclass="Normal">The Xsc task looks for the xsc.exe just like how the native resource compiler does this:</para>
+    <para styleclass="Normal">- It looks for the installation location in the registry</para>
+    <para styleclass="Normal">- It defaults to the &#160;&quot;C:\Program Files (x86)\XSharp&quot; folder</para>
+    <para styleclass="Normal">There is one difference:</para>
+    <para styleclass="Normal">- It also looks for an environment variable &quot;XSHARPDEV&quot;. When this environment variable exists it assumes that this is an alternate location where it can find the xsc.exe. We are using this internally so we can compiler with a newer version of the compiler than the one that is installed inside C:\Program Files (x86)\XSharp. You may use if you want to work with more than one version of the compiler on your machine.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When we can find the xsc.exe compiler then we construct the command line to the compiler. We are creating a unique temporaty RSP file in the temp folder, just like we do for the native resource compiler. We are also saving the last version of this file to the &#160;&quot;LastXSharpResponseFile.Rsp&quot; file in that folder.</para>
+    <para styleclass="Normal">If you have enabled the &quot;Shared&quot; compiler on the Build page in your project properties (this defaults to true) then we add the command line option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-shared">/shared</link>. This will tell xsc.exe to run XSCompiler.exe and pass the command line to that tool. XSCompiler.exe will continue to run in memory even after the compilation is finished and will cache type information from referenced assemblies. As a result a second compilation of the same project will usually be much faster, since all the relevant type information is already cached. Of course the compiler is smart enough to detect when a referenced DLL was changed (the reference could be generated from a referenced project) and will then reload the type information from that reference. Normally you will only see one copy of XSCompiler.exe running memory. You may see multiple copies of xsc.exe running in memory when MSBuild detects that 2 projects in the same solution are &quot;independent&quot; and can be compiled simultaneously.</para>
+    <para styleclass="Normal">The only situation where you might see 2 copies of XSCompiler.exe running in memory is when projects are compiled with difference settings for case sensitivity (the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">/cs</link> command line option). One of the 2 copies will then have a case sensitive type cache and the other a case insensitive type cache.</para>
+    <para styleclass="Heading2">Debugging MSBuild</para>
+    <para styleclass="Normal">If you want to see what MSBuild imports when compiling your xsproj file you can call MSBuild with a special commandline option. To do so open a visual studio developer command prompt and type the following:</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">msbuild -preprocess &lt;yourproject.xsproj&gt; &gt; preprocessed.proj</text></para>
+    <para styleclass="Normal">The resulting preprocess.proj file will be an XML file that contains all imported instructions. You can open this inside Visual Studio. You may want to Format the document to make it a bit more readable.</para>
+    <para styleclass="Normal">You should see that all &quot;&lt;Import project&quot; nodes are now converted to comments and the contents of these imported files is inserted into the preprocessed output. </para>
+    <para styleclass="Normal">Some imports had a condition that was not met and these are just in the file as comments.</para>
+    <para styleclass="Normal">The generated file is HUGE (the WPF template produces a file of over 8700 lines and some of these lines are thousands of characters wide. Almost all of the first 8600 lines of this preprocessed file are all imported.</para>
+    <para styleclass="Normal">Somewhere in this file you will see that MSBuild.</para>
+    <para styleclass="Normal">Please note that you are NOT able to build the output file. It just serves to see what MSBuild imports to create your project.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you want to see how msbuild resolves the various references you should call msbuild from the command line and add the command line option to show detailed info. The /target:rebuild on the next line makes sure that everything is rebuilt. If you are compiling a project with native resources, managed resources or xaml files you should also see the logging of the tools that process this.</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">msbuild -verbosity:detailed &lt;yourproject.xsproj&gt; /target:rebuild &gt;buildlog.txt</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

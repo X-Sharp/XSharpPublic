@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-12T16:14:11.683+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>APPEND FROM 命令(FoxPro))</title>
+  <keywords>
+    <keyword>APPEND FROM command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Importing<keyword>records</keyword></keyword>
+    <keyword>Records<keyword>importing</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">APPEND FROM 命令(FoxPro))</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">从数据库或文本文件导入记录。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">APPEND FROM &lt;xcSourceFile&gt; <br/> &#160; [FIELDS &lt;idFieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<br/><tab />[&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]<br/> &#160; [[TYPE] [DELIMITED [WITH &lt;Delim&gt; | WITH BLANK | WITH TAB<br/> &#160; &#160; &#160;| WITH CHARACTER &lt;cDelim&gt;] | DIF | FW2 | MOD | PDOX | RPD |<br/> &#160; &#160; &#160;SDF | SYLK | WK1 | WK3 | WKS | WR1 | WRK | CSV | XLS | XL5 <br/> &#160; &#160; &#160;[SHEET &lt;cSheetName&gt;] | XL8 [SHEET &lt;cSheetName&gt;]]] [AS &lt;nCodePage&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">FROM &lt;xcSourceFile&gt;<tab />添加记录的源文件名称，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 数据库文件的默认扩展名由 RDD 决定。 文本文件的默认扩展名是 .TXT。</para>
+    <para styleclass="List"><tab />该命令尝试以共享模式打开 &lt;xcSourceFile&gt;。 如果文件不存在，则会出现运行时错误。 如果文件成功打开，则继续执行操作。 如果由于其他进程独占该文件等原因而拒绝访问，NetErr() 将被设置为 “true”。 </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED WITH <text styleclass="Body Text">&lt;Delim&gt;</text><tab />表示字符字段由引号以外的字符分隔。<tab />&#32;</para>
+    <para styleclass="List">DELIMITED WITH BLANK <tab />指定包含用空格而不是逗号分隔的字段的文件。</para>
+    <para styleclass="List">DELIMITED WITH TAB <tab />指定包含用制表符而不是逗号分隔的字段的文件。</para>
+    <para styleclass="List">WITH CHARACTER <text styleclass="Body Text">&lt;cDelim&gt;</text><tab />指定包含全部由 Delimiter 指定的字符括起来的字段的文件。如果 Delimiter 是分号(Visual FoxPro 中用于表示命令行续行的字符)，请用引号括起分号。您还可以为 Delimiter 指定 BLANK 和 TAB 关键字。</para>
+    <para styleclass="List"><tab />WITH Delimiter子句可以与 WITH CHARACTER子句结合使用。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List">TYPE<tab />在 FoxPro 允许使用的各种类型中，目前 X# 仅支持以下类型：</para>
+    <para styleclass="List"><tab />SDF<tab />SDF 文件是一种 ASCII 文本文件，其中的记录长度固定，以回车和换行结束。字段不分隔。<br/><tab />SDF 文件的扩展名假定为 .txt。</para>
+    <para styleclass="List"><br/>CSV<tab /><text styleclass="Body Text">逗号分隔文件。CSV 文件的第一行是字段名；导入文件时会忽略字段名。</text><br/><tab />CSV 文件的扩展名假定为 .csv。</para>
+    <para styleclass="List"><br/>OTHER<tab /><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">暂时还不支持</text></para>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List">AS &lt;nCodePage&gt;<tab />指定源文件使用的代码页。 <text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">暂时还不支持</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已删除记录： &#160;如果 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> 为 FALSE，&lt;xcSourceFile&gt; 中已删除的记录将附加到当前数据库文件并保留其已删除状态。 但如果 SetDeleted() 为 TRUE，删除的记录将不可见，因此不会被处理。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">字段宽度不匹配： &#160;如果当前数据库文件中的字段为字符类型，且字段长度大于输入的 &lt;xcSourceFile&gt; 数据，则 APPEND FROM 会用空白填充源数据。 如果当前字段是字符数据类型，且其字段长度小于输入的源数据，则会截断源数据以适应其长度。 如果当前字段是数值类型，而输入源数据的位数多于当前字段的长度，则会出现运行时错误。</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例使用字段列表和条件演示了 APPEND FROM 命令：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FROM</text><text style="font-weight:normal; font-style:normal; color:#000000;"> branchfile </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELDS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Branch, Salesman, Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Branch = 100</text></para>
+    <para styleclass="Normal">下一个示例演示了如何指定 &lt;Scope&gt; 从另一个数据库文件导入特定记录：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND RECORD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 5 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FROM</text><text style="font-weight:normal; font-style:normal; color:#000000;"> temp</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO">COPY TO</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbApp.htm" domain="XSharpRef.chm">DbApp()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAppDelim.htm" domain="XSharpRef.chm">DbAppDelim()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAppSdf.htm" domain="XSharpRef.chm">DbAppSDF()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm">RDDSetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

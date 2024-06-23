@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-13T15:52:26.962+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY TO 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY TO command</keyword>
+    <keyword>Copying<keyword>records</keyword></keyword>
+    <keyword>Databases</keyword>
+    <keyword>Exporting<keyword>records</keyword></keyword>
+    <keyword>Records</keyword>
+    <keyword>Records<keyword>copying</keyword><keyword>exporting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY TO 命令 (非 FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将记录导出到新的数据库或文本文件。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">COPY TO &lt;xcTargetFile&gt; [FIELDS &lt;idFieldList&gt;] [&lt;Scope&gt;] <br/><tab />[WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]<br/><tab />[SDF] | [DELIMITED [WITH BLANK | &lt;xcDelimiter&gt;]] | <br/><tab />[VIA &lt;cDriver&gt;] [INHERIT FROM &lt;acRDDs&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />目标文件的名称，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 数据库文件的默认扩展名由 RDD 决定。 文本文件的默认扩展名是 .TXT。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果 &lt;xcTargetFile&gt; 不存在，将创建该文件。 如果存在，该命令将尝试以独占模式打开文件，如果成功，文件将被覆盖，不会发出警告或出错。 如果由于其他进程正在使用该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__FieldList" inline="false"/></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">SDF<tab />系统数据格式文件，格式规格如下表所示。 记录和字段为固定长度。<br/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">内容<tab />格式</para>
+    <para styleclass="List">Character 字段<tab />填充尾部空白</para>
+    <para styleclass="List">Date 字段<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical 字段<tab />T 或 F<tab /></para>
+    <para styleclass="List">Memo 字段<tab />忽略<tab /></para>
+    <para styleclass="List">Numeric 字段<tab />用前导空白填充零</para>
+    <para styleclass="List">字段分隔符<tab />无</para>
+    <para styleclass="List">记录分隔符<tab />回车/换行<tab /></para>
+    <para styleclass="List">文件结束标记<tab />1A hex 或 Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED [WITH &lt;xcDelimiter&gt;]</para>
+    <para styleclass="List"><tab />字符字段用双引号（默认分隔符）或指定的 &lt;xcDelimiter&gt; 括起来的文本文件。 字段和记录的长度可变，格式规范如下表所示：</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">内容<tab />格式</para>
+    <para styleclass="List">Character 字段<tab />Delimited, 尾部空白被截断<tab /></para>
+    <para styleclass="List">Date 字段<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical 字段<tab />T 或 F<tab /></para>
+    <para styleclass="List">Memo 字段<tab />忽略<tab /></para>
+    <para styleclass="List">Numeric 字段<tab />截去前导零</para>
+    <para styleclass="List">字段分隔符<tab />(英文)逗号<tab /></para>
+    <para styleclass="List">记录分隔符<tab />回车/换行<tab /></para>
+    <para styleclass="List">文件结束标记<tab />1A hex 或 Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DELIMITED WITH BLANK</para>
+    <para styleclass="List"><tab />文本文件，其中字段之间用一个空格隔开，字符字段不括入分隔符。 格式规范如下表所示：</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">内容<tab />格式</para>
+    <para styleclass="List">Character 字段<tab />Not Delimited, 尾部空白截断</para>
+    <para styleclass="List">Date 字段<tab />yyyymmdd<tab /></para>
+    <para styleclass="List">Logical 字段<tab />T 或 F<tab /></para>
+    <para styleclass="List">Memo 字段<tab />忽略<tab /></para>
+    <para styleclass="List">Numeric 字段<tab />截断前导零<tab /></para>
+    <para styleclass="List">字段分隔符<tab />单个空格<tab /></para>
+    <para styleclass="List">记录分隔符<tab />回车/换行<tab /></para>
+    <para styleclass="List">文件结束标记<tab />1A hex 或 Chr(26)<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />警告 &#160;如果在 COPY TO 命令行中指定了 DELIMITED WITH 子句，它必须是最后指定的子句。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">VIA &lt;cDriver&gt;<tab />为工作区提供服务的 RDD 名称。 如果未指定，则使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm" styleclass="Normal">RDDSetDefault()</link> 确定的默认 RDD。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INHERIT FROM &lt;acRDDs&gt;</para>
+    <para styleclass="List"><tab /><tab />包含 RDD 名称的一维数组，主 RDD 从这些 RDD 继承特殊功能。 这样，您就可以在不同的工作区和不同的数据库驱动程序中使用具有特殊功能（如加密或解密）的 RDD。 这些 RDD 将覆盖主 RDD（使用 VIA 子句指定）的特殊功能。 如果多个 RDD（使用 INHERIT FROM 子句指定）实现了相同的功能，则与列表中最后一个 RDD 相关的功能优先。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已删除记录： &#160;如果</text>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text> 为 FALSE，源文件中已删除的记录将被复制到 &lt;xcTargetFile&gt; 中，并保留其已删除状态。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可见性 &#160;但是，如果 SetDeleted() 设置为 &quot;true&quot;，删除的记录将不可见，因此不会被处理。 同样，过滤记录（使用</text>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link> 或条件控制命令）也不会被处理。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例演示了复制到另一个数据库文件：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text></para>
+    <para styleclass="Normal">本例演示了 SDF 文件的布局，该文件有四个字段，每种数据类型一个字段：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE testdata NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp SDF</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TYPE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">txt</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;Character &#160; 12.0019890801T</text></para>
+    <para styleclass="Normal">下一个示例演示了 DELIMITED 文件的布局：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp DELIMITED</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TYPE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">.</text><text style="font-weight:bold; font-style:normal; color:#000000;">txt</text><br/><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;&quot;Character&quot;,12.00,19890801,T</text></para>
+    <para styleclass="Normal">最后，本例演示了使用不同分隔符的 DELIMITED 文件的布局：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp DELIMITED </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&apos;</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">TYPE temp.txt</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">// Result: &#160;&apos;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Character</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&apos;,12.00,19890801,T</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM">APPEND FROM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_FILE">COPY FILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopy.htm" domain="XSharpRef.chm">DbCopy()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopyDelim.htm" domain="XSharpRef.chm">DbCopyDelim()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopySDF.htm" domain="XSharpRef.chm">DbCopySDF()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XSharpRef.chm">RDDSetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

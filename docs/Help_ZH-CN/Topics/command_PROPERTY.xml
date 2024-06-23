@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T08:57:44.095+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PROPERTY Statement</title>
+  <keywords>
+    <keyword>Access() Methods</keyword>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables<keyword>accessing</keyword><keyword>assigning values</keyword><keyword>non-exported</keyword><keyword>virtual variables</keyword></keyword>
+    <keyword>Methods<keyword>accessing instance variables</keyword></keyword>
+    <keyword>PROPERTY statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>Strong typing<keyword>defined</keyword></keyword>
+    <keyword>Virtual variables</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PROPERTY Statement</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明访问非导出或虚拟实例变量的方法。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">PROPERTY</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [&lt;<text styleclass="Italic">idConvention</text>&gt;]<br/><tab />[</para>
+    <para styleclass="Normal"> &#160;<tab /> AUTO [Attributes] [Modifiers] GET | SET | INIT</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;Expression&gt; ] &#160;[ [Attributes] [Modifiers] SET &lt;Expression&gt;] &#160; [ [Attributes] [Modifiers] INIT &lt;Expression&gt;] &#160;</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;Body &gt; END GET]</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET =&gt; &lt;Expression&gt;]</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ [Attributes] [Modifiers] &#160;SET &lt;Body &gt; END SET] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] SET =&gt; &lt;Expression&gt;]</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ [Attributes] [Modifiers] &#160;INIT &lt;Body &gt; END INIT] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] INIT =&gt; &lt;Expression&gt;]</para>
+    <para styleclass="Normal"><tab /> &#160;END PROPERTY</para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic" style="font-style:normal;">idName</text>&gt;<tab />定义的属性的有效标识符名称。 与其他方法一样，属性也是实体。在一个类中，属性名称必须是唯一的，但也可以与应用程序中的其他实体名称相同。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpression" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">属性声明有 3 种类型：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不含 AUTO 子句的单行声明</li>
+      <li styleclass="Normal">带 GET / SET / INIT 访问器的单行声明</li>
+      <li styleclass="Normal">带 GET 访问块和/或 SET/INIT 访问块的多行声明。对于多行声明，END &#160;PROPERTY 是强制性的</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">INIT 访问器声明一个属性只能在类的构造函数中更改。一个属性不能同时拥有 SET 和 INIT 访问器。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

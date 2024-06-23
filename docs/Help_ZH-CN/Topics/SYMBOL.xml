@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:14:52.296+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SYMBOL</title>
+  <keywords>
+    <keyword>SYMBOL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SYMBOL</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SYMBOL 类型是一个32位整数，表示字符串数组中的索引。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">由于 SYMBOL 表示一个字符串，因此从 SYMBOL 到 STRING，以及从 STRING 到 SYMBOL 都有内置的隐式转换。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">由于 SYMBOL 的基础值是整数，因此从 SYMBOL 到 DWORD，以及从 DWORD 到 SYMBOL 都有内置的显式转换。在执行显式转换时需要进行强制转换。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">与 Visual Objects 不同，符号的数量不受可用内存或在另一个库中声明的符号的限制。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">文字符号由 &apos;#&apos; 字符后跟一个或多个字母数字字符组成。第一个字符必须是字母或下划线。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下是一些文字符号的示例：</para>
+    <para styleclass="Normal">#XSharp<br/>#XSHARP</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">请注意，虽然文字符号可以用小写或大写字母指定，但它们表示的字符串在编译时会转换为大写，以与 Visual Objects 兼容。无法指定包含小写字母的文字符号，必须使用 StringToAtom() 函数。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器定义的常量 NULL_SYMBOL 可用于表示空符号，即没有关联字符串值的符号。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">实现</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SYMBOL 类型在 XSharp.__Symbol 结构中实现。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SYMBOL 的 UsualType 值是 10。</para>
+  </body>
+</topic>

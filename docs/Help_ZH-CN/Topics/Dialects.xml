@@ -1,0 +1,1116 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-05-30T22:02:08.508+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>方言</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">方言</para>
+    </header>
+    <para styleclass="Body Text">X# 编译器可以识别 X# 的不同方言。下表显示了这些方言之间的区别。<br/>您可以使用 /dialect 编译器选项来选择要使用的方言。</para>
+    <para styleclass="Body Text">默认使用 Core 方言。除 Core 方言外，其他方言都需要引用 XSharp 运行时动态链接库</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="46" colcount="7" style="width:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">功能</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_Core" style="font-weight:bold;">Core</link><text style="font-weight:bold;">&#32;</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_VO" style="font-weight:bold;">VO</link><text style="font-weight:bold;">&#32;</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_Vulcan" style="font-weight:bold;">Vulcan</link></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_Harbour" style="font-weight:bold;">Harbour</link></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_XPP" style="font-weight:bold;">Xbase</link><text style="font-weight:bold;">++ 14</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_FoxPro" style="font-weight:bold;">FoxPro</link></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:normal;">关键词的</text><text style="font-weight:bold;">4 个字母的缩写</text><text style="font-weight:normal;">(FUNC、WHIL 等). </text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes &#160;<text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes &#160;<text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">遵循 Xbase++ 的约定</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes &#160;<text style="font-size:7pt; font-weight:bold; vertical-align:super;">11</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">&amp;&amp;</text><text style="font-weight:normal;"> 作为单行注释的用法(</text><text style="font-weight:bold;">//</text> 的替代语法)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes </para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-size:12pt; font-weight:bold;">*</text><text style="font-weight:normal;"> 作为首字符用于注释的用法</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">ALIAS</text> (-&gt;) 操作符</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">使用<text style="font-weight:bold;"> AND, NOT, OR, XOR</text> 替代 .AND., .NOT. 等</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">ARRAY</text> 类型，包括 Array 子面量和 NULL_ARRAY，包括缺失元素(的 Array)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">BREAK</text> 语句</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">BEGIN SEQUENCE .. RECOVER .. END SEQUENCE</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">CLIPPER</text> 调用约定(需要 USUAL 支持)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">CODEBLOCK</text> 类型</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">DATE</text> 类型，包括 NULL_DATE</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">DATE 和 DateTime 字面量</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">包含可选类型子句的<text style="font-weight:bold;"> DEFINE </text><text style="font-weight:normal;">语句</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">FIELD</text> 语句，并识别为字段名而不是局部变量或者变量实例</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text> 类型，包括 Float 字面量和 &#160;<text style="font-weight:bold;">/vo14</text> 编译器选项</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">FOR .. ENDFOR </text>替代 <text style="font-weight:bold;">FOR .. NEXT</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">FOR EACH </text>替代 <text style="font-weight:bold;">FOREACH</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">GLOBAL</text><text style="font-weight:normal;"> 语句</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() 表达式和 <text style="font-weight:bold;">/vo10</text> 编译器选项</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes<text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes <text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">后期绑定</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Yes (with /lb+)</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">LPARAMETERS </text>语句</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">MACRO </text>编译器</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">- <text style="font-weight:bold;">13</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">MEMVAR, PUBLIC, PRIVATE, PARAMETERS</text> 语句，包括未声明变量 <text style="font-size:7pt; font-weight:bold; vertical-align:super;">14</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">PSZ</text> 类型，包括 NULL_PSZ 和(伪) PSZ 转换函数 (String2Psz(), Cast2Psz()</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">PSZ 索引</text>&#32;</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">n/a</para>
+        </td>
+        <td>
+          <para styleclass="Normal">1 based</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">0 based</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal">1 based</para>
+        </td>
+        <td>
+          <para styleclass="Normal">1 based</para>
+        </td>
+        <td>
+          <para styleclass="Normal">1 based</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">NULL_STRING</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Yes 9</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 9</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">SYMBOL</text> 类型，包括 Symbol 字面量和 NULL_SYMBOL</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">源文件中第一个实体之前的<text style="font-weight:bold;"> Statements</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">USUAL</text> 类型，包括 NIL 字面量 (1,2)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 15</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">TEXT 命令</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">特殊功能</text></para>
+        </td>
+        <td style="width:71px;">
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">VOSTRUCT </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS </text><text style="font-weight:normal;">语法 (10)</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">UNION </text><text style="font-weight:normal;">和 </text><text style="font-weight:bold;">AS / IS 语法</text><text style="font-weight:normal;"> (10)</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">未定义类型的字面量数组(Untyped Literal Arrays)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 8</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 8</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">允许不定义类型(Missing types allowed)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 3</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 3</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">函数/方法调用中允许缺少参数 MyFunc(1,,2)</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">伪函数</text></para>
+        </td>
+        <td style="width:71px;">
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"> PCount(), _GetMParam(), _GetFParam(), _Args()</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 4</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"> SLen()</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 5</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal">_Chr()</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"> AltD()</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes 6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"> PCall, PCallNative</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"> CCall, CCallNative</para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">-</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Yes</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">其他信息</text></para>
+        </td>
+        <td style="width:71px;">
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:40%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Generated Function class </text><text style="font-weight:normal;">name</text></para>
+        </td>
+        <td style="width:71px;">
+          <para styleclass="Normal">Functions<br/>X$&lt;ModuleName&gt;$Functions <br/>for static functions and globals</para>
+        </td>
+        <td colspan="4">
+          <para styleclass="Normal">&lt;AssemblyName&gt;.Functions (DLLs) <br/>&lt;AssemblyName&gt;.Exe.Functions (EXEs)<br/>&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions <br/>for static functions and globals</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">需要 VulcanRT.DLL 或 XSharp.VO.DLL</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">需要 VulcanRTFuncs.DLL 或 XSharp.VO.DLL</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">缺少定义的类型会被翻译为 USUAL。使用新的 /vo15 编译器选项，您可以告诉编译器不允许缺少类型定义。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">仅支持在函数和方法中使用 Clipper 调用约定</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Vulcan 运行时没有 SLen() 函数。编译器会将其转换为访问字符串的 Length 属性。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">这将被转换为：</li>
+    </list>
+    <para styleclass="Normal"><br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 Core 方言中，每个表达式都被转换为 OBJECT。在其他方言中，表达式被转换为 USUAL。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 VO/Vulcan 方言中，无类型的字面量数组被转换为 VO 数组类型：</li>
+    </list>
+    <para styleclass="Normal" style="margin-left:39px;"><br/> {&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</para>
+    <para styleclass="Normal" style="margin-left:39px;"><br/>类型字面量数组的前缀是 &lt;Type&gt;，如下所示：</para>
+    <para styleclass="Normal" style="margin-left:39px;"><br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</para>
+    <para styleclass="Normal" style="margin-left:39px;"><br/>这就变成了字面量字符串数组</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"> /vo2 编译器选项会将 NULL_STRING 编译为空字符串。否则编译为 NULL。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">VOSTRUCT 和 UNION 可以用标准的 .NET 结构代替。对于 Union，您需要在结构体上使用 [StructLayout(LayoutKind.Explicit)] 属性，并在每个字段上使用 [FieldOffSet()] 属性来明确定义字段的位置。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">仅适用于与 VO 兼容的关键字，不适用于 Vulcan 或 XSharp 中引入的关键字。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 Harbour 和 Xbase++ 中，IIF() 的 true 和 false 表达式是可选的。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">不支持宏编译器。然而，当你在 Core 方言中使用 RDD 系统时，索引表达式仍将使用宏编译器，并且需要引用 XSharp.RT.DLL 以支持宏编译器。</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">这需要 XSharp 运行时。</li>
+    </list>
+    <para styleclass="Normal">.</para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">在 FoxPro 中不允许使用 NIL，并将其重新定义为 FALSE。</li>
+    </list>
+  </body>
+</topic>

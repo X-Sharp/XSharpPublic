@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T18:25:49.738+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UPDATE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Fields<keyword>updating</keyword></keyword>
+    <keyword>UPDATE command</keyword>
+    <keyword>Updating fields</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UPDATE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">根据指定的键值，用另一个工作区的值替换当前工作区中的字段。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">UPDATE FROM &lt;xcAlias&gt; ON &lt;uKeyValue&gt; [RANDOM]REPLACE &lt;idField&gt; WITH &lt;uValue&gt;<tab /> [, &lt;idField&gt; WITH &lt;uValue&gt;...]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">FROM &lt;xcAlias&gt;<tab />用于更新当前工作区记录的工作区别名标识符。 如果没有与指定别名相关联的开放数据库文件，则会出现运行时错误。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ON &lt;uKeyValue&gt;<tab />定义 FROM 工作区中匹配记录的表达式。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">REPLACE &lt;idField&gt;<tab />用新值更新当前工作区中的一个字段。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WITH &lt;uValue&gt;<tab />用于更新当前字段的值。 您必须使用正确的别名引用 FROM 工作区中包含的任何字段。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">RANDOM<tab />如果指定，则当前工作区必须按 &lt;uKeyValue&gt; 排序（使用索引顺序），但 FROM 工作区记录可以按任意顺序排列。 如果未指定，则当前工作区和 FROM 工作区都必须按 &lt;uKeyValue&gt; 排序（逻辑上或物理上）。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">UPDATE 只能更新当前工作区中具有唯一键值的记录。 当一个键值有多个实例时，只能更新具有该键值的第一条记录。 然而，FROM 工作区可以有重复的键值。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">UPDATE 在功能上等同于 DBUpdate()。 </para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已删除记录： &#160;如果 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XSharpRef.chm">SetDeleted()</link><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> 为 FALSE，则会同时处理两个文件中的已删除记录。 被更新文件中的记录保留其已删除状态，不受 FROM 文件中记录的删除状态影响。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可见性： &#160;如果 SetDeleted() 为 TRUE，则删除的记录不可见，因此不会被处理。 同样，过滤记录（使用 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> 或条件控制命令）也不会被处理。</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">共享模式： &#160;对于共享数据库，UPDATE 需要对当前数据库文件加锁。 FROM 数据库文件可以在任何模式下打开。</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例用未清发票金额更新 CUSTOMER 数据库文件：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> invoices </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INDEX</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">UPDATE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FROM</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Invoices </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ON</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Last;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">REPLACE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Owed </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Owed + Invoices-&gt;Amount </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RANDOM</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCreateIndex.htm" domain="XSharpRef.chm">DBCreateIndex()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbUpdate.htm" domain="XSharpRef.chm">DBUpdate()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_JOIN">JOIN</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_SetUnique.htm" domain="XSharpRef.chm">SetUnique()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

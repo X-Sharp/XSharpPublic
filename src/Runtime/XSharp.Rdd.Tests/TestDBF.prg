@@ -731,7 +731,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             PROPERTY LookAhead      AS INT GET _look_ahead SET _look_ahead := VALUE
             PROPERTY LookBehind     AS INT GET _look_behind SET _look_behind := VALUE
             PROPERTY InBuffer       AS BYTE[] GET _inBuffer
-            PROPERTY InBufferOfs    AS LONG GET _inBufferOfs SET _inBufferOfs := VALUE
+            PROPERTY InBufferOfs    AS INT64 GET _inBufferOfs SET _inBufferOfs := VALUE
             PROPERTY InBufferLen    AS LONG GET _inBufferLen SET _inBufferLen := VALUE
             PROPERTY InBufferTick   AS INT GET _inBufferTick SET _inBufferTick := VALUE
             CONSTRUCTOR(stream AS System.IO.Stream, headerLength AS INT, recordLength AS INT, shared AS LOGIC) AS VOID

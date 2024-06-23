@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:17:34.111+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Generator(生成器)</title>
+  <keywords>
+    <keyword>Generator</keyword>
+    <keyword>Options</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Generator(生成器)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页 X# 有关在 VS 内生成源代码的特定设置。</para>
+    <para styleclass="Normal"><br/>这不仅适用于 Windows 窗体编辑器生成的源代码，也适用于为外部程序集中定义的成员选择 &quot;转到定义 &quot;时生成的源代码。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Generator.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:18:49.934+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Indentation(缩进)</title>
+  <keywords>
+    <keyword>Indentation</keyword>
+    <keyword>Options</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Indentation(缩进)</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本页包含与源代码缩进有关的 X# 特定设置。在 &quot;制表符 &quot;页面选择 &quot;智能 &quot;缩进选项时，编辑器会使用该设置。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Indentation.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">顶部的列表视图显示可供选择的选项。底部的编辑控件显示设置结果。</para>
+  </body>
+</topic>

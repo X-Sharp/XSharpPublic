@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-12T16:20:40.142+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>AVERAGE 命令</title>
+  <keywords>
+    <keyword>AVERAGE command</keyword>
+    <keyword>Calculating<keyword>averages</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Records<keyword>calculating averages</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">AVERAGE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">为当前数据库文件中的一系列记录计算一个或多个数字表达式到变量的平均值。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">AVERAGE &lt;nValueList&gt; TO &lt;idVarList&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><text styleclass="Normal">&lt;</text><text styleclass="Italic">nValueList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">每个记录的平均值列表。</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">TO &lt;</text><text styleclass="Italic">idVarList</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">包含平均结果的接收变量或字段名列表。 不存在或不可见的变量将创建为私有变量。 &lt;idVarList&gt; 必须包含与 &lt;nValueList&gt; 相同数量的元素。</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">除非使用 FOR 条件明确排除，否则零 (0) 值将计入平均值。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例使用条件从数据库文件中选择记录子集，对单个数字字段进行平均处理：</para>
+    <para styleclass="Code Example">USE sales NEW<br/>AVERAGE Amount TO nAvgAmount FOR Branch = &quot;100&quot;</para>
+    <para styleclass="Normal">下一个示例将找出一系列日期的平均日期：</para>
+    <para styleclass="Code Example">AVERAGE (SaleDate - CToD(&quot;00/00/00&quot;)) ;</para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example">TO nAvgDays FOR !Empty(SaleDate)</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example">dAvgDate := CToD(&quot;00/00/00&quot;) + nAvgDays</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DBEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL">TOTAL</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

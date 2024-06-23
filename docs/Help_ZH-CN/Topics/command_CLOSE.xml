@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-12T16:29:20.439+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLOSE 命令</title>
+  <keywords>
+    <keyword>CLOSE ALL command</keyword>
+    <keyword>CLOSE ALTERNATE command</keyword>
+    <keyword>CLOSE command</keyword>
+    <keyword>CLOSE DATABASES command</keyword>
+    <keyword>CLOSE FORMAT command</keyword>
+    <keyword>CLOSE INDEXES command</keyword>
+    <keyword>Closing<keyword>files</keyword></keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Files<keyword>closing</keyword></keyword>
+    <keyword>Index/order</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLOSE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">关闭指定的文件类型。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">CLOSE [&lt;xcAlias&gt; | ALL | ALTERNATE | DATABASES | INDEXES]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xcAlias&gt;<tab />关闭所有文件的工作区的别名标识符。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALL<tab />关闭所有工作区的数据库和索引文件，释放所有活动过滤器、关系和格式定义。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ALTERNATE<tab />关闭当前打开的备用文件。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">DATABASES<tab />关闭所有工作区中的所有数据库、备注和相关索引文件，并释放所有活动过滤器和关系。 但不会对活动格式产生任何影响。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INDEXES<tab />关闭所有索引文件并清除当前工作区的排序列表。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">不带选项的 CLOSE 关闭当前数据库和相关文件。 其他一些操作也会关闭文件，但最好在使用完毕后明确关闭文件。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCloseArea.htm" domain="XSharpRef.chm">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FClose.htm" domain="XSharpRef.chm">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

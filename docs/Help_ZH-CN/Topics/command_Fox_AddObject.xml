@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T09:50:50.731+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ADD OBJECT Clause</title>
+  <keywords>
+    <keyword>ADD OBJECT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FoxPro ADD OBJECT Clause</para>
+    </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将其他类中的对象添加到类定义中。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">ADD OBJECT</text> [Modifiers] &lt;ObjectName&gt; AS &lt;idType&gt; [NOINIT] [WITH &lt;Propertylist&gt;]]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">Modifiers<tab />指定实体可见性或范围的可选修饰符列表，如 PUBLIC, PROTECTED, HIDDEN, INTERNAL</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;<text styleclass="Normal">ObjectName</text>&gt;<tab />要声明的字段或属性的有效标识符名称。</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">NOINIT<tab />不支持此选项</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WITH &lt;PropertyList&gt;<tab />为添加到类定义中的对象指定属性及其值的列表。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">该对象将被实例化并添加到类的 &quot;子对象 &quot;列表中。此外，还将创建一个属性，其名称和类型将在 ADD OBJECT 子句中指定。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Body Text">属性的实现方式取决于 /fox1 编译器开关的值。启用该开关后，所有属性都将从自定义对象中声明的属性集合中读取/写入。未启用该开关时，&quot;普通 &quot;自动属性将通过该类中的支持字段声明。</para>
+  </body>
+</topic>

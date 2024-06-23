@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-05T16:11:34.783+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PSZ 类型</title>
+  <keywords>
+    <keyword>PSZ</keyword>
+    <keyword>XSharp.__Psz</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">PSZ 类型</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该结构包含一个指向含有 Ansi 字符串的内存块的指针。如果使用 String2Psz() 和 Cast2Psz() 创建，编译器将负责释放这些内存块。如果使用其他运行时函数（如 StringAlloc()）创建，则需要自行释放内存。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该类型的内部类型名称是 XSharp.__Psz</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">注意</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">请不要在新代码中使用 PSZ 类型。它仅用于向后兼容。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">即使是调用 windows API 的新代码，也可以使用更好的替代方法，例如使用框架中的 [DllImportAttribute] 方法。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="PSZ" inline="false"/></para>
+  </body>
+</topic>

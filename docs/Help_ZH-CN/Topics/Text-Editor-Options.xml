@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T17:12:04.364+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>文本编辑器选项</title>
+  <keywords>
+    <keyword>EditorSettings.json</keyword>
+    <keyword>settings</keyword>
+    <keyword>Tools/Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">文本编辑器选项</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Visual Studio 编辑器的各种设置可通过 &quot;工具/选项 &quot;菜单进行控制。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">设置值存储在漫游配置文件文件夹中的 XSharp\EditorSettings.json 文件中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果你安装了多个 Visual Studio，那么这些设置将在这些安装之间共享。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">打开该菜单后，你会看到这样一个窗口：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><text styleclass="Image Caption">工具/选项对话框</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">左侧有一个树状视图，您可以从中选择感兴趣的选项类别。</para>
+    <para styleclass="Body Text"><br/>该对话框包含大量选项。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">为了方便浏览，可以使用顶部的编辑控件进行筛选。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在该控件中输入 X#，即可找到所有 X# 选项：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">然后您将看到 X# 的类别：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="Tools-Options-XSharp.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"><text styleclass="Image Caption">在 X# 上过滤的工具选项</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">文本编辑器（Text Editor）类别（在第一张图片上也能看到）包含 Visual Studio 或安装在 Visual Studio 内的扩展（例如我们的 Visual Studio X# 扩展）所支持的所有语言的设置。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">调试类别下还有一个条目，用于调试器内 X# 表达式求值器使用的设置。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">最后一个类别包含 VO 兼容表单编辑器和其他一些 X# 特定编辑器的一些设置。</para>
+  </body>
+</topic>

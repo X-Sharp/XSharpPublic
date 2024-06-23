@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DEFAULT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Data type/parameter checking</keyword>
+    <keyword>DEFAULT command</keyword>
+    <keyword>NILs<keyword>assigning default values</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DEFAULT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Assign a default value to a NIL argument.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">DEFAULT &lt;idVar&gt; TO &lt;uDefault&gt; [, &lt;idVar&gt; TO &lt;uDefault&gt;...]</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">DEFAULT is functionally equivalent to Default(), except that DEFAULT lets you assign multiple default values. &#160;</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1"></para>
+  </body>
+</topic>

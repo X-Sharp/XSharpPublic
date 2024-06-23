@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-08T11:00:12.209+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>.Net</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">External .Net Assemblies</para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">程序集引用页面显示在开发者机器上找到的程序集列表。</para>
+    <para styleclass="Body Text">您可以从该列表中选择一个引用，无需额外工作即可使用该引用。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Image Caption"><image src=".Net references 1.png" scale="100.00%" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

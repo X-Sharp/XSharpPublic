@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-14T17:16:59.651+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SELECT 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>SELECT command</keyword>
+    <keyword>Selecting<keyword>work areas</keyword></keyword>
+    <keyword>Work areas<keyword>changing</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SELECT 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改当前工作区</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SELECT &lt;<text styleclass="Italic">xnWorkArea</text>&gt; | &lt;<text styleclass="Italic">xcAlias</text>&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xnWorkArea&gt;<tab />0 到 250 之间的数字，指定要选择的工作区。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;xcAlias&gt;<tab />要选择的工作区的别名标识符。 如果指定的别名没有关联的开放数据库文件，则会出现运行时错误。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SELECT 会使指定的工作区成为当前工作区。 除非为某个操作明确指定了其他工作区，否则所有后续数据库操作都将应用于该工作区。</para>
+    <para styleclass="Normal">SELECT 在功能上等同于 DBSelectArea()。 </para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="List">Select 0 ： &#160;<tab />选择工作区 0 会使编号最低的未占用工作区成为当前工作区。 在打开文件前使用 SELECT 0 相当于使用 &quot;NEW &quot;选项。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">别名表达式： &#160;<tab />别名操作符 (-&gt;) 可以在表达式求值时临时选择一个工作区，并在求值后自动恢复之前选择的工作区。 </para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例通过按编号选择每个工作区，然后使用该工作区中的每个数据库文件来打开一系列数据库文件：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELECT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 1</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELECT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 2</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> invoices</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELECT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 3</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> parts</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELECT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer</text></para>
+    <para styleclass="Normal">为了使代码与所使用的工作区编号无关，更好的方法是通过在 USE 命令行中指定 NEW 子句，在下一个可用工作区中打开每个数据库。 在本例中，使用了 USE...NEW 而不是 SELECT 0，然后 USE：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE invoices NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT customer</text></para>
+    <para styleclass="Normal">该代码片段在使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Select.htm" domain="XSharpRef.chm">Select()</link> 函数将当前工作区名称保存到变量中的同时更改了工作区。 执行新工作区的操作后，将恢复原来的工作区：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">nLastArea </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Select</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE newfile NEW</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;">&lt;Statements</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;...</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SELECT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">(</text><text style="font-weight:bold; font-style:normal; color:#000000;">nLastArea</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">)</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Alias.htm" domain="XSharpRef.chm">Alias()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSelectArea.htm" domain="XSharpRef.chm">DbSelectArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Select.htm" domain="XSharpRef.chm">Select()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Used.htm" domain="XSharpRef.chm">Used()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-06-15T12:47:53.910+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELEGATE Statement</title>
+  <keywords>
+    <keyword>DELEGATE</keyword>
+    <keyword>reference type</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DELEGATE Statement</para>
+    </header>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">向编译器声明一个委托。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">DELEGATE</text> &lt;<text styleclass="Italic">idDelegate</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Typeparameters]</para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic">idDelegate</text>&gt;<tab />委托的有效标识符名称。 委托名称在名称空间内必须是唯一的。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeTypeParameterConstraints" inline="false"/></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">委托是一种封装函数或方法的引用类型。委托类似于 Visual Objects、C 和 C++ 等本地代码语言中的函数指针，但与函数指针不同的是，委托是面向对象的、安全的和类型安全的。</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">DELEGATE</text> 语句声明了一种特殊类型的类，它部分由编译器实现，部分由 CLR 实现。所有委托类都继承自 System.MulticastDelegate。</para>
+    <para styleclass="Body Text">每个委托都有一个签名，它是其参数和返回值类型的组合。</para>
+    <para styleclass="Heading3">实例</para>
+    <para styleclass="Heading3"><text styleclass="Body Text">您可以明确地调用委托构造函数，例如</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := MyDelegate{ </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NULL</text><text style="font-weight:normal; font-style:normal; color:#000000;">, @SomeClass.Test() }</text></para>
+    <para styleclass="Normal">对于静态方法</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := MyDelegate{ </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;">, @SomeClass.Test() }</text></para>
+    <para styleclass="Normal">对于实例方法，也可以这样写：</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := SomeClass.Test</text></para>
+    <para styleclass="Normal">对于静态方法</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">f := </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;">:Test</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DELEGATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyDelegate( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

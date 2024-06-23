@@ -305,6 +305,9 @@ BEGIN NAMESPACE VFPXPorterLib
             dummy := xmlDoc:CreateElement("Dialect")
             dummy:InnerText := "FoxPro"
             parent:AppendChild( dummy )
+            dummy := xmlDoc:CreateElement("AllowOldStyleAssignments")
+            dummy:InnerText := "True"
+            parent:AppendChild( dummy )
             // ToDo : Late Binding always on ??
             dummy := xmlDoc:CreateElement("LB")
             dummy:InnerText := "true"

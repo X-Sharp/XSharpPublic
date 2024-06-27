@@ -1012,6 +1012,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseOne(LCURLY);
                         }
                         break;
+                    case '\u001a':        // EOF
+                        parseOne(EOF);
+                        break;
                     case '}':
                         parseOne(RCURLY);
                         break;

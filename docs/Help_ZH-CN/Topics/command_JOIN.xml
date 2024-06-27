@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>JOIN Command</title>
+<topic template="Default" modified="2024-06-14T16:13:22.436+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>JOIN 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Creating<keyword>files</keyword></keyword>
@@ -11,34 +11,34 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">JOIN Command</para>
+      <para styleclass="Heading1">JOIN 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Create a new database file by merging selected records and fields from two work areas based on a specified condition.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">根据指定条件，合并两个工作区中的选定记录和字段，创建新的数据库文件。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">JOIN WITH &lt;<text styleclass="Italic">xcAlias</text>&gt; TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; FOR &lt;<text styleclass="Italic">lCondition</text>&gt; [FIELDS &lt;<text styleclass="Italic">idFieldList</text>&gt;]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">WITH &lt;xcAlias&gt;<tab />The alias identifier for the work area to merge with the current work area. &#160;If there is no open database associated with &lt;xcAlias&gt;, a runtime error is raised.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">WITH &lt;xcAlias&gt;<tab />要与当前工作区合并的工作区的别名标识符。 如果没有与 &lt;xcAlias&gt; 关联的开放数据库，则会出现运行时错误。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD .</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />目标数据库文件的名称，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 数据库文件的默认扩展名由 RDD .NET 文件决定。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
+    <para styleclass="List"><tab />如果 &lt;xcTargetFile&gt; 不存在，将创建该文件。 如果存在，该命令将尝试以独占模式打开文件，如果成功，文件将被覆盖，不会发出警告或出错。 如果由于其他进程正在使用该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。 </para>
     <para styleclass="List"></para>
-    <para styleclass="List">FOR &lt;lCondition&gt;<tab />A condition that is processed for each visible record in the current work area using every visible record in the WITH work area. &#160;If a record meets the condition, a new record is written to &lt;xcTargetFile&gt;. &#160;If a record does not meet the specified condition, it is ignored and the next record is processed.</para>
+    <para styleclass="List">FOR &lt;lCondition&gt;<tab />使用 WITH 工作区中的每条可见记录对当前工作区中的每条可见记录进行处理的条件。 如果记录符合条件，新记录将被写入 &lt;xcTargetFile&gt;。 如果记录不符合指定条件，则忽略该记录并处理下一条记录。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />Warning! &#160;The number of records processed will be the <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_LastRec.htm" domain="XSharpRef.chm" styleclass="Normal">LastRec()</link> of the primary work area multiplied by the LastRec() of the secondary work area. &#160;For example, if you have two database files with 100 records each, the number of records JOIN processes is the equivalent of sequentially processing a single database file of 10,000 records. &#160;Therefore, use this command carefully.</para>
+    <para styleclass="List"><tab />警告 &#160;处理的记录数将是主工作区的 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_LastRec.htm" domain="XSharpRef.chm" styleclass="Normal">LastRec()</link> 乘以次工作区的 LastRec()。 例如，如果有两个数据库文件，每个文件有 100 条记录，那么 JOIN 处理的记录数相当于顺序处理一个有 10,000 条记录的数据库文件。 因此，请谨慎使用该命令。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The projection of fields from both work areas into the new database file. &#160;To specify fields in the secondary work area, reference them with the alias operator (-&gt;). &#160;If the FIELDS clause is not specified, all fields from the current work area are included in the target database file.</para>
-    <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If SetDeleted() is FALSE, deleted records in both source files are processed, but their deleted status is not retained in &lt;<text styleclass="Italic">xcTargetFile</text>&gt;; thus, no record in the target file is marked for deletion, regardless of its deleted status in the source files.</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>If SetDeleted() is TRUE, deleted records (in both files) are not visible and are, therefore, not processed. &#160;Similarly, records that are filtered (with <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link> or a conditional controlling order) are not processed.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example joins the CUSTOMER.DBF with INVOICES.DBF to produce PURCHASES.DBF:</para>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />将两个工作区中的字段投影到新数据库文件中。 要指定次要工作区中的字段，请使用别名操作符 (-&gt;) 引用它们。 如果未指定 FIELDS 子句，则当前工作区中的所有字段都将包含在目标数据库文件中。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">已删除记录： &#160;如果 SetDeleted() 为 FALSE，则会处理两个源文件中已删除的记录，但其删除状态不会保留在 &lt;xcTargetFile&gt; 中；因此，目标文件中的记录不会被标记为删除，无论其在源文件中的删除状态如何。</text></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">可见性： &#160;如果 SetDeleted() 为 &quot;true&quot;，则（两个文件中的）已删除记录都不可见，因此不会被处理。 同样，被过滤（使用 </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"> 或条件控制命令）的记录也不会被处理。</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例将 CUSTOMER.DBF 与 INVOICES.DBF 相结合，生成 PURCHASES.DBF：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE invoices NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">JOIN </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> purchases</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FOR</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Last </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Last</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">FIELDS First</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Last</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Number</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">;</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">Invoices</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-&gt;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Amount</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbJoin.htm" domain="XSharpRef.chm">DbJoin()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_RELATION">SET RELATION</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

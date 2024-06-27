@@ -844,13 +844,13 @@
           <caption translate="true">Binary 字面量</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="436906885634999" build="ALL" modified="2019-10-15T13:52:53.332Z" icon="0" href="Commands-by-Category">
-        <caption translate="true">Commands and Statements</caption>
-        <topicref type="topic" id="42389704422360" build="ALL" modified="2016-01-19T21:35:35.315Z" icon="0" href="Identifiers">
-          <caption translate="true">Identifiers</caption>
+      <topicref type="topic" id="436906885634999" build="ALL" modified="2024-06-11T16:00:48.493Z" icon="0" href="Commands-by-Category">
+        <caption translate="true">命令和语句</caption>
+        <topicref type="topic" id="42389704422360" build="ALL" modified="2024-06-11T16:13:29.320Z" icon="0" href="Identifiers">
+          <caption translate="true">标识符</caption>
         </topicref>
-        <topicref type="topic" id="43755519363475" build="ALL" modified="2020-02-11T10:05:01.716Z" icon="0" href="Blocks2">
-          <caption translate="true">Blocks and Namespaces</caption>
+        <topicref type="topic" id="43755519363475" build="ALL" modified="2024-06-11T16:17:47.483Z" icon="0" href="Blocks2">
+          <caption translate="true">(代码)块和命名空间</caption>
           <topicref type="topic" id="423889269807360" build="ALL" modified="2019-10-15T14:08:49.096Z" icon="0" href="command_BEGIN-CHECKED">
             <caption translate="true">BEGIN (UN)CHECKED</caption>
           </topicref>
@@ -885,61 +885,61 @@
             <caption translate="true">USING</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436964307295986" build="ALL" modified="2022-08-30T15:49:30.689Z" icon="0" href="cmd_cat_comment">
-          <caption translate="true">Comment</caption>
-          <topicref type="topic" id="384614496544850" build="ALL" modified="2022-08-30T15:16:32.720Z" icon="0" href="command_NOTE">
-            <caption translate="true">Comments</caption>
+        <topicref type="topic" id="436964307295986" build="ALL" modified="2024-06-11T18:04:05.986Z" icon="0" href="cmd_cat_comment">
+          <caption translate="true">注释</caption>
+          <topicref type="topic" id="384614496544850" build="ALL" modified="2024-06-11T18:04:47.656Z" icon="0" href="command_NOTE">
+            <caption translate="true">NOTE</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436967444455831" build="ALL" modified="2019-09-24T13:44:42.151Z" icon="0" href="cmd_cat_concur">
-          <caption translate="true">Concurrency Control</caption>
-          <topicref type="topic" id="384612166350409" build="ALL" modified="2019-09-24T13:46:33.719Z" icon="0" href="command_COMMIT">
-            <caption translate="true">COMMIT Command</caption>
+        <topicref type="topic" id="436967444455831" build="ALL" modified="2024-06-11T18:10:26.562Z" icon="0" href="cmd_cat_concur">
+          <caption translate="true">并发控制</caption>
+          <topicref type="topic" id="384612166350409" build="ALL" modified="2024-06-11T18:10:38.550Z" icon="0" href="command_COMMIT">
+            <caption translate="true">COMMIT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384612650664417" build="ALL" modified="2019-09-24T13:46:33.725Z" icon="0" href="command_SET_EXCLUSIVE">
-            <caption translate="true">SET EXCLUSIVE Command</caption>
+          <topicref type="topic" id="384612650664417" build="ALL" modified="2024-06-11T18:10:48.354Z" icon="0" href="command_SET_EXCLUSIVE">
+            <caption translate="true">SET EXCLUSIVE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614716522422" build="ALL" modified="2019-09-24T13:46:33.730Z" icon="0" href="command_UNLOCK">
-            <caption translate="true">UNLOCK Command</caption>
+          <topicref type="topic" id="384614716522422" build="ALL" modified="2024-06-11T18:10:58.843Z" icon="0" href="command_UNLOCK">
+            <caption translate="true">UNLOCK 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436905850607204" build="ALL" modified="2019-09-24T13:44:42.157Z" icon="0" href="cmd_cat_Database">
-          <caption translate="true">Database</caption>
-          <topicref type="topic" id="436959948447118" build="ALL" modified="2019-09-24T14:15:51.700Z" icon="0" href="command_APPEND_BLANK">
-            <caption translate="true">APPEND BLANK Command</caption>
+        <topicref type="topic" id="436905850607204" build="ALL" modified="2024-06-12T11:14:19.445Z" icon="0" href="cmd_cat_Database">
+          <caption translate="true">数据库</caption>
+          <topicref type="topic" id="436959948447118" build="ALL" modified="2024-06-12T11:18:36.576Z" icon="0" href="command_APPEND_BLANK">
+            <caption translate="true">APPEND BLANK 命令</caption>
           </topicref>
-          <topicref type="topic" id="440852104056378" build="ALL" modified="2020-09-11T09:02:22.958Z" icon="0" href="Command_APPEND_FROM_ARRAY">
-            <caption translate="true">APPEND FROM ARRAY Command</caption>
+          <topicref type="topic" id="440852104056378" build="ALL" modified="2024-06-12T11:33:28.223Z" icon="0" href="Command_APPEND_FROM_ARRAY">
+            <caption translate="true">APPEND FROM ARRAY 命令</caption>
           </topicref>
-          <topicref type="topic" id="436956696260961" build="ALL" modified="2019-09-24T14:15:51.706Z" icon="0" href="command_APPEND_FROM">
-            <caption translate="true">APPEND FROM Command</caption>
+          <topicref type="topic" id="436956696260961" build="ALL" modified="2024-06-12T11:49:11.064Z" icon="0" href="command_APPEND_FROM">
+            <caption translate="true">APPEND FROM 命令</caption>
           </topicref>
-          <topicref type="topic" id="440853268889754" build="ALL" modified="2020-09-11T09:02:46.196Z" icon="0" href="command_APPEND_FROM_FoxPro">
-            <caption translate="true">APPEND FROM Command (FoxPro)</caption>
+          <topicref type="topic" id="440853268889754" build="ALL" modified="2024-06-12T12:15:48.803Z" icon="0" href="command_APPEND_FROM_FoxPro">
+            <caption translate="true">APPEND FROM 命令(FoxPro)</caption>
           </topicref>
-          <topicref type="topic" id="436959767492127" build="ALL" modified="2019-09-24T14:15:51.712Z" icon="0" href="command_AVERAGE">
-            <caption translate="true">AVERAGE Command</caption>
+          <topicref type="topic" id="436959767492127" build="ALL" modified="2024-06-12T16:14:32.710Z" icon="0" href="command_AVERAGE">
+            <caption translate="true">AVERAGE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436959392659364" build="ALL" modified="2019-09-24T14:15:51.719Z" icon="0" href="command_CLEAR_ALL">
-            <caption translate="true">CLEAR ALL Command</caption>
+          <topicref type="topic" id="436959392659364" build="ALL" modified="2024-06-12T16:24:54.945Z" icon="0" href="command_CLEAR_ALL">
+            <caption translate="true">CLEAR ALL 命令</caption>
           </topicref>
-          <topicref type="topic" id="436959858002471" build="ALL" modified="2019-09-24T14:15:51.725Z" icon="0" href="command_CLOSE">
-            <caption translate="true">CLOSE Command</caption>
+          <topicref type="topic" id="436959858002471" build="ALL" modified="2024-06-12T16:25:06.341Z" icon="0" href="command_CLOSE">
+            <caption translate="true">CLOSE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436959353901900" build="ALL" modified="2019-09-24T14:15:51.731Z" icon="0" href="command_CONTINUE">
-            <caption translate="true">CONTINUE Command</caption>
+          <topicref type="topic" id="436959353901900" build="ALL" modified="2024-06-12T16:29:37.483Z" icon="0" href="command_CONTINUE">
+            <caption translate="true">CONTINUE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436957491884871" build="ALL" modified="2019-09-24T14:15:51.737Z" icon="0" href="command_COPY_STRUCTURE">
-            <caption translate="true">COPY STRUCTURE Command</caption>
+          <topicref type="topic" id="436957491884871" build="ALL" modified="2024-06-12T16:36:31.553Z" icon="0" href="command_COPY_STRUCTURE">
+            <caption translate="true">COPY STRUCTURE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436958956041974" build="ALL" modified="2019-09-24T14:15:51.742Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
-            <caption translate="true">COPY STRUCTURE EXTENDED Command</caption>
+          <topicref type="topic" id="436958956041974" build="ALL" modified="2024-06-12T16:50:49.784Z" icon="0" href="command_COPY_STRUCTURE_EXTENDE">
+            <caption translate="true">COPY STRUCTURE EXTENDED 命令</caption>
           </topicref>
-          <topicref type="topic" id="440852085590250" build="ALL" modified="2020-09-11T09:03:29.246Z" icon="0" href="command_COPY_TO_ARRAY">
-            <caption translate="true">COPY TO ARRAY Command</caption>
+          <topicref type="topic" id="440852085590250" build="ALL" modified="2024-06-12T17:00:07.634Z" icon="0" href="command_COPY_TO_ARRAY">
+            <caption translate="true">COPY TO ARRAY 命令</caption>
           </topicref>
-          <topicref type="topic" id="436968195685008" build="ALL" modified="2019-09-24T14:15:51.747Z" icon="0" href="command_COPY_TO">
-            <caption translate="true">COPY TO Command</caption>
+          <topicref type="topic" id="436968195685008" build="ALL" modified="2024-06-12T17:02:22.296Z" icon="0" href="command_COPY_TO">
+            <caption translate="true">COPY TO 命令</caption>
           </topicref>
           <topicref type="topic" id="440855290127548" build="ALL" modified="2020-09-11T09:03:19.695Z" icon="0" href="command_COPY_TO_FoxPro">
             <caption translate="true">COPY TO Command (FoxPro)</caption>
@@ -7124,14 +7124,74 @@
         <caption translate="true">Special classes and code generated by the compiler</caption>
       </topicref>
     </topicref>
+    <topicref type="topic" id="454563858889433" build="HXS" modified="2024-06-13T10:35:34.728Z" icon="0" href="X-Examples_MSHC">
+      <caption translate="true">X# Examples</caption>
+      <topicref type="topic" id="454564356459839" build="ALL" modified="2024-06-13T10:45:09.255Z" icon="0" href="Ex-Anonymous-Methods_MSHC">
+        <caption translate="true">匿名方法</caption>
+      </topicref>
+      <topicref type="topic" id="454563260221924" build="ALL" modified="2024-06-13T10:37:05.598Z" icon="0" href="Ex-Anonymous-Types_MSHC">
+        <caption translate="true">Anonymous Types </caption>
+      </topicref>
+      <topicref type="topic" id="454562527741333" build="ALL" modified="2024-06-13T10:45:23.645Z" icon="0" href="Ex-ASYNC_MSHC">
+        <caption translate="true">ASYNC  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454564053060693" build="ALL" modified="2024-06-13T10:46:15.270Z" icon="0" href="Ex-BEGIN-UNSAFE_MSHC">
+        <caption translate="true">BEGIN UNSAFE  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454566081243548" build="ALL" modified="2024-06-13T10:46:13.585Z" icon="0" href="Ex-BEGIN-USING_MSHC">
+        <caption translate="true">BEGIN USING  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454564941547035" build="ALL" modified="2024-06-13T10:46:17.113Z" icon="0" href="Ex-CHECKED_MSHC">
+        <caption translate="true">CHECKED  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454565216398569" build="ALL" modified="2024-06-13T10:46:18.805Z" icon="0" href="Ex-EVENT_MSHC">
+        <caption translate="true">EVENT  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454562422210325" build="ALL" modified="2024-06-13T10:46:47.813Z" icon="0" href="Ex-Expression_MSHC">
+        <caption translate="true">Expression  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454565394648538" build="ALL" modified="2024-06-13T10:46:21.300Z" icon="0" href="Ex-FIXED_MSHC">
+        <caption translate="true">FIXED  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454563036693319" build="ALL" modified="2024-06-13T10:46:22.873Z" icon="0" href="Ex-GENERICs_MSHC">
+        <caption translate="true">GENERICs  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454566320772023" build="ALL" modified="2024-06-13T10:39:01.620Z" icon="0" href="Ex-Lamda-Expressions_MSHC">
+        <caption translate="true">Lamda Expressions</caption>
+      </topicref>
+      <topicref type="topic" id="454562641149911" build="ALL" modified="2024-06-13T10:46:25.544Z" icon="0" href="Ex-LINQ_MSHC">
+        <caption translate="true">LINQ  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454566165116909" build="ALL" modified="2024-06-13T10:46:27.080Z" icon="0" href="Ex-NOP_MSHC">
+        <caption translate="true">NOP  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454563687020242" build="ALL" modified="2024-06-13T10:46:28.737Z" icon="0" href="Ex-SWITCH_MSHC">
+        <caption translate="true">SWITCH  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454562416794142" build="ALL" modified="2024-06-13T10:39:36.429Z" icon="0" href="Ex-Typed-Enums_MSHC">
+        <caption translate="true">Typed Enums</caption>
+      </topicref>
+      <topicref type="topic" id="454562470142573" build="ALL" modified="2024-06-13T10:46:31.303Z" icon="0" href="Ex-USING_MSHC">
+        <caption translate="true">USING  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454565291803232" build="ALL" modified="2024-06-13T10:46:33.193Z" icon="0" href="Ex-VAR_MSHC">
+        <caption translate="true">VAR  示例</caption>
+      </topicref>
+      <topicref type="topic" id="454563477854302" build="ALL" modified="2024-06-13T10:40:03.864Z" icon="0" href="Ex-Vulcan-Runtime-Types-BYOR_MSHC">
+        <caption translate="true">Vulcan Runtime (BYOR)</caption>
+      </topicref>
+      <topicref type="topic" id="454562244905057" build="ALL" modified="2024-06-13T10:46:42.635Z" icon="0" href="Ex-YIELD-_MSHC">
+        <caption translate="true">YIELD  示例</caption>
+      </topicref>
+    </topicref>
     <topicref type="weblink" id="449724048793663" build="HTML" modified="2023-02-15T14:00:53.339Z" icon="1" href="https://www.xsharp.eu/runtimehelp/html/R_Project_XSharpRef.htm" target="_blank">
       <caption translate="true">X# Runtime and VO SDK Reference</caption>
     </topicref>
   </topicref>
-  <navref href="XSharpRef.chm::\XSharpRef.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
+  <navref href="XSharpRef.chm::\XSharpRef.hhc" build="CHM,EBOOK,HTML,PDF,PRINT" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
     <caption translate="true">XSharpRef.chm::\XSharpRef.hhc</caption>
   </navref>
-  <topicref type="topic" id="424249573402452" build="ALL" modified="2024-06-04T22:56:16.783Z" icon="0" href="X-Examples">
+  <topicref type="topic" id="424249573402452" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-04T22:56:16.783Z" icon="0" href="X-Examples">
     <caption translate="true">X# 示例</caption>
     <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
       <caption translate="true">匿名方法</caption>

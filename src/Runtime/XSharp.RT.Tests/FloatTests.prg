@@ -175,6 +175,27 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.True (minF == 1.0)
             Assert.True (maxF == 4.0)
 
+            local aValuesP := List<pair>{} as List<pair>
+            aValuesP:Add(pair{1.0, 2.0})
+            aValuesP:Add(pair{3.0, 4.0})
+            aValuesP:Add(pair{5.0, 6.0})
+            sumF := aValuesP:Sum( { p => p:X})
+            minF := aValuesP:Min({ p => p:X})
+            maxF := aValuesP:Max({ p => p:X})
+            Assert.True (sumF == 9.0)
+            Assert.True (minF == 1.0)
+            Assert.True (maxF == 5.0)
+
+
+
+        class pair
+            export x as FLOAT
+            export y as FLOAT
+            constructor(nX as FLOAT, nY as FLOAT)
+                x := nX
+                y := nY
+            end constructor
+        end class
 
 
     END CLASS

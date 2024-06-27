@@ -194,7 +194,7 @@ OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
 			IF SELF:Shared .AND. nRec > SELF:_RecCount
 				SELF:_RecCount := SELF:_calculateRecCount()
 			ENDIF
-            LOCAL nCount := SELF:_RecCount AS LONG
+            VAR nCount := SELF:_RecCount
             // Normal positioning, VO resets FOUND to FALSE after a recprd movement
             SELF:_Found := FALSE
       	    SELF:_BufferValid := FALSE
@@ -545,11 +545,10 @@ PROTECTED PROPERTY CurrentThreadId AS STRING GET System.Threading.Thread.Current
     // Unlock a record. The Offset depends on the LockScheme
 PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
 	LOCAL unlocked AS LOGIC
-	LOCAL iOffset AS INT64
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
+	VAR iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
 	unlocked :=  _oStream:SafeUnlock(iOffset, SELF:_lockScheme:RecordSize)
 	IF ! unlocked
 		SELF:_dbfError(FException(), Subcodes.ERDD_WRITE_UNLOCK,Gencode.EG_LOCK_ERROR,  "DBF._unlockRecord", FALSE)
@@ -636,13 +635,12 @@ RETURN isOK
     // Lock a record number. The Offset depends on the LockScheme
 PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
 	LOCAL locked AS LOGIC
-	LOCAL iOffset AS INT64
     //
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
 
-    iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
+    VAR iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
     locked := SELF:_tryLock(iOffset, SELF:_lockScheme:RecordSize ,FALSE)
 	IF locked
 		SELF:_Locks:Add( recordNbr )
@@ -919,7 +917,7 @@ RETURN isOK
 PROTECTED METHOD _putEndOfFileMarker() AS LOGIC
 	// According to DBASE.com Knowledge base :
 	// The end of the file is marked by a single byte, with the end-of-file marker, an OEM code page character value of 26 (0x1A).
-	LOCAL lOffset   := SELF:_HeaderLength + SELF:_RecCount * SELF:_RecordLength AS INT64
+	VAR lOffset   := SELF:_getRecordPos(SELF:_RecCount +1)
 	// Note FoxPro does not write EOF character for files with 0 records
 	RETURN _oStream:SafeSetPos(lOffset) .AND. _oStream:SafeWriteByte(26) .AND. _oStream:SafeSetLength(lOffset+1)
 
@@ -1257,8 +1255,9 @@ OVERRIDE METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 	SELF:_HasMemo := FALSE
 RETURN SUPER:SetFieldExtent(fieldCount)
 
-
-    // Add a Field to the _Fields List. Fields are added in the order of method call
+    /// <summary>
+    /// Add a Field to the _Fields List. Fields are added in the order of method call
+    /// </summary>
     /// <inheritdoc />
 OVERRIDE METHOD AddField(info AS RddFieldInfo) AS LOGIC
 	LOCAL isOK AS LOGIC
@@ -1273,7 +1272,7 @@ OVERRIDE METHOD AddField(info AS RddFieldInfo) AS LOGIC
 RETURN isOK
 
 PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
-    // FieldName
+    // FieldName in DBF is limited to 10 characters and in UpperCase
 	info:Name := info:Name:ToUpper():Trim()
     IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0
         info:Name := _NULLFLAGS
@@ -1364,6 +1363,8 @@ RETURN oResult
 
 
     // Read & Write
+   INTERNAL METHOD _getRecordPos (recNo as INT64) as INT64
+       return SELF:_HeaderLength + ( recNo -1) * SELF:_RecordLength
 
 // Move to the current record, then read the raw Data into the internal RecordBuffer; Set the DELETED Flag
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
@@ -1375,13 +1376,12 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
     // File Ok ?
 	isOK := SELF:IsOpen
     //
-	IF  isOK
-        // Record pos is One-Based
-		LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
+    IF  isOK
+        var offSet := SELF:_getRecordPos(SELF:_RecNo)
 #ifdef INPUTBUFFER
-		isOK := _inBuffer:Read(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+		isOK := _inBuffer:Read(offSet  , SELF:_RecordBuffer, SELF:_RecordLength)
 #else
-		isOK := _oStream:SafeReadAt(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+		isOK := _oStream:SafeReadAt(offSet , SELF:_RecordBuffer, SELF:_RecordLength)
 #endif
 
 		IF isOK
@@ -1408,13 +1408,11 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 		ELSE
             SELF:_wasChanged := TRUE
             // Write Current Data Buffer
-            // Record pos is One-Based
-			LOCAL recordPos AS LONG
-			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
+            VAR offSet  := SELF:_getRecordPos(SELF:_RecNo)
 #ifdef INPUTBUFFER
-            isOK := _inBuffer:Write(recordPos, SELF:_RecordBuffer, SELF:_RecordLength)
+            isOK := _inBuffer:Write(offSet , SELF:_RecordBuffer, SELF:_RecordLength)
 #else
-            isOK :=  _oStream:SafeWriteAt(recordPos, SELF:_RecordBuffer)
+            isOK :=  _oStream:SafeWriteAt(offSet , SELF:_RecordBuffer)
 #endif
 			IF isOK
 			   // Write Record

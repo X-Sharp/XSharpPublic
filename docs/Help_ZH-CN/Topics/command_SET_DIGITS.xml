@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-16T08:42:21.039+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET DIGITS Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -15,14 +15,14 @@
       <para styleclass="Heading1">SET DIGITS Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.</para>
-        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改显示数字时小数点左侧显示位数的设置。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET DIGITS TO [&lt;<text styleclass="Italic">nDigits</text>&gt;]</para>
-        <para styleclass="Heading1"><text>Description</text></para>
-    <para styleclass="Normal">SET DIGITS is functionally equivalent to SetDigit(). &#160;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET DIGITS 在功能上等同于 SetDigit()。 </para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-        <para styleclass="Heading1"><text>See Also</text></para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDigit.htm" domain="XSharpRef.chm">SetDigit()</link></para>
     <para styleclass="Normal"></para>
   </body>

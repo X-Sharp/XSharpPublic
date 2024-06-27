@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-07T17:37:31.081Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Blocks and Namespaces</title>
+<topic template="Default" modified="2024-06-11T16:17:49.702+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>(代码)块和命名空间</title>
   <body>
     <header>
-      <para styleclass="Heading1">Blocks and Namespaces</para>
+      <para styleclass="Heading1">(代码)块和命名空间</para>
     </header>
-    <para styleclass="Normal">There are several block statements that allow you to group a block of code. Variables declared inside a block are only visible for the duration of the block.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">有几种代码块语句可以将代码块组合起来。在代码块内声明的变量只在代码块的持续时间内可见。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN-CHECKED">BEGIN CHECKED</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN-FIXED">BEGIN FIXED</link></para>

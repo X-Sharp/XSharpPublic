@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-14T20:53:26.920+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>CLASS Members</title>
+<topic template="Default" modified="2024-06-27T19:54:08.920+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLASS 成员</title>
   <body>
     <header>
-      <para styleclass="Heading1">CLASS Members</para>
+      <para styleclass="Heading1">CLASS 成员</para>
     </header>
     <para styleclass="Normal"></para>
   </body>

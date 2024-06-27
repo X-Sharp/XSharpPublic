@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T08:57:44.095+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>PROPERTY Statement</title>
+<topic template="Default" modified="2024-06-27T19:56:00.741+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PROPERTY 语句</title>
   <keywords>
     <keyword>Access() Methods</keyword>
     <keyword>Compile-time declaration</keyword>
@@ -18,7 +18,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">PROPERTY Statement</para>
+      <para styleclass="Heading1">PROPERTY 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">声明访问非导出或虚拟实例变量的方法。</para>

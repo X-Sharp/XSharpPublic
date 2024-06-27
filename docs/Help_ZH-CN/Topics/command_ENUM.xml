@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T18:43:09.855+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>ENUM Statement</title>
+<topic template="Default" modified="2024-06-27T20:09:15.931+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ENUM 语句</title>
   <keywords>
     <keyword>ENUM</keyword>
     <keyword>enumeration</keyword>
@@ -9,7 +9,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">ENUM Statement</para>
+      <para styleclass="Heading1">ENUM 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">向编译器声明一个枚举。</para>

@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T09:32:48.460+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Instance Variables</title>
+<topic template="Default" modified="2024-06-27T20:00:18.419+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Instance变量</title>
   <keywords>
     <keyword>Instance Variables</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Instance Variables</para>
+      <para styleclass="Heading1">Instance变量</para>
     </header>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Declare fields/ instance variables with optional initial values</para>
+    <para styleclass="Normal">声明带有可选初始值的字段/实例变量</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><tab />[Attributes] [Modifiers] [INSTANCE] [DIM] &lt;idVar&gt;[ [ &lt;dimensions&gt; ] ] &#160; &#160;[:= &lt;uValue&gt;] &#160; &#160;[, ...] [AS &lt;idType&gt;] [, ...]]</para>

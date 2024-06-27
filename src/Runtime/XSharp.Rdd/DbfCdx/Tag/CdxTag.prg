@@ -1026,6 +1026,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END TRY
             RETURN result
 
+       INTERNAL METHOD ResetFilter() AS VOID
+            SELF:_mustCheckEof := TRUE
 
 
     END CLASS

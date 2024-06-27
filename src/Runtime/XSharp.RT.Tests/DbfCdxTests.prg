@@ -5956,6 +5956,42 @@ RETURN
 
 			DbCloseArea()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD DBSetFilter_with_whitespace() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1489
+			LOCAL cDbf,cIndex AS STRING
+			RddSetDefault( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","C",10,0}} , {"bbb", "ccc", "aaa"} , FALSE)
+
+			DbUseArea( TRUE,,cDbf,,FALSE)
+			Assert.True( DbCreateIndex(cDbf, "FLD") )
+
+			DbGoTop()
+
+			DbSetFilter(,"FLD=='123'")
+			DbGoTop()
+			Assert.True( Eof() )
+
+			DbSetFilter(,"")
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal("aaa", AllTrim(FieldGet(1)) )
+
+			DbSetFilter(,"Alltrim(FLD)=='bbb'")
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal("bbb", AllTrim(FieldGet(1)) )
+
+			DbSetFilter("   ")
+			DbGoTop()
+			Assert.False( Eof() )
+			Assert.Equal("aaa", AllTrim(FieldGet(1)) )
+
+			DbCloseArea()
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

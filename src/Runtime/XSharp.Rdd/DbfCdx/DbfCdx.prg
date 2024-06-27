@@ -588,6 +588,21 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL METHOD ReadRecord() AS LOGIC
             RETURN SELF:_readRecord()
 
+        OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+            IF SELF:CurrentOrder != null
+                SELF:CurrentOrder:ResetFilter()
+            ENDIF
+	        SELF:ForceRel()
+        RETURN SUPER:SetFilter(info)
+        
+        OVERRIDE METHOD ClearFilter() AS LOGIC
+            IF SELF:CurrentOrder != null
+                SELF:CurrentOrder:ResetFilter()
+            ENDIF
+	        SELF:ForceRel()
+        RETURN SUPER:ClearFilter()
+        
+        
         OVERRIDE METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
 

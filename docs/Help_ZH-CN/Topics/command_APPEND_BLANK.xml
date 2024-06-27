@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>APPEND BLANK Command</title>
+<topic template="Default" modified="2024-06-12T11:33:13.417+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>APPEND BLANK 命令</title>
   <keywords>
     <keyword>Adding<keyword>records</keyword></keyword>
     <keyword>APPEND BLANK command</keyword>
@@ -11,29 +11,29 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"> APPEND BLANK Command</para>
+      <para styleclass="Heading1"> APPEND BLANK 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Add a new record to the end of the current database file and make it the current record.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">在当前数据库文件末尾添加一条新记录，使其成为当前记录。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">APPEND BLANK &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List"><text styleclass="Heading1">参数</text></para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">The new field values are initialized to the empty values for each data type: &#160;character fields are assigned with spaces; numeric fields are assigned 0; logical fields are assigned FALSE; date fields are assigned NULL_DATE; and memo fields are left empty.</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">新字段值初始化为每种数据类型的空值：字符字段赋值为空格；数字字段赋值为 0；逻辑字段赋值为 FALSE；日期字段赋值为 NULL_DATE；备忘字段留空。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For a shared database, APPEND BLANK automatically places a record lock on the new record. &#160;If the record cannot be locked, NetErr() is set to TRUE, indicating that the record was not added, and execution continues.</para>
+    <para styleclass="Normal">对于共享数据库，APPEND BLANK 会自动为新记录加锁。 如果记录无法锁定，NetErr() 将被设置为 “true”，表示记录未被添加，然后继续执行。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>APPEND BLANK will not release any file locks set by the current process.</para>
-    <para styleclass="Normal">If NetErr() returns FALSE, the record was successfully added and locked, you can begin updating it. &#160;The newly appended record remains locked until you explicitly release the lock (for example, with UNLOCK), close the database file, or attempt another lock. &#160;</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example attempts to add a record to a shared database file and uses NetErr() to test if the operation succeeded:</para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">注意：APPEND BLANK 不会释放当前进程设置的任何文件锁。</text></para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">如果 NetErr() 返回 FALSE，说明记录已成功添加并锁定，可以开始更新。 新添加的记录将保持锁定状态，直到您明确释放锁（例如使用 UNLOCK）、关闭数据库文件或尝试另一个锁。 </text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例尝试向共享数据库文件添加记录，并使用 NetErr() 测试操作是否成功：</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SHARED</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt;...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND BLANK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> !NetErr()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &lt;Update EMPTY record&gt;...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;Append operation failed&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BREAK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> sales </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SHARED</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;一些语句&gt;...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">APPEND BLANK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> !NetErr()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &lt;更新 EMPTY 记录&gt;...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;追加操作失败的处理&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BREAK</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM">APPEND FROM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAppend.htm" domain="XSharpRef.chm">DBAppend()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DBRLock.htm" domain="XSharpRef.chm">DBRLock()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_NetErr.htm" domain="XSharpRef.chm">NetErr()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XSharpRef.chm">RLock()</link></para>
     <para styleclass="Normal"></para>
   </body>

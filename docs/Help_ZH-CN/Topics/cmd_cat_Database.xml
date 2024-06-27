@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-02T13:09:54.338+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Database</title>
+<topic template="Default" modified="2024-06-12T11:18:13.493+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>数据库</title>
   <keywords>
     <keyword>/nostddef</keyword>
     <keyword>Commands<keyword>Database</keyword></keyword>
@@ -9,11 +9,14 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Database</para>
+      <para styleclass="Heading1">数据库</para>
     </header>
-    <para styleclass="Normal">Most Database commands are implemented as User Defined command in the standard header files, and call Runtime Functions under the hood.</para>
-    <para styleclass="Normal">Make sure that you include the standard header file during compilation (so do NOT use the option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">-nostddefs</link>). </para>
-    <para styleclass="Normal">If you use the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs">-stddefs</link> to use an alternate standard header file then it is your responsibilty to make sure that these commands are implemented.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">大多数数据库命令都是在标准头文件中作为用户自定义命令实现的，并在引擎下调用运行时函数。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">请确保在编译时包含标准头文件（因此不要使用选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs">-nostddefs</link>）。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果你使用编译器选项 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-stddefs">-stddefs</link> 来使用另一个标准头文件，那么你就有责任确保这些命令得到执行。</para>
     <para styleclass="Normal"></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_BLANK">APPEND BLANK</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM">APPEND FROM</link></para>

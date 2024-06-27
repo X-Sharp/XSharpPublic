@@ -668,6 +668,11 @@
           <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
+      <config-group name="lenovo">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
     </config-group>
     <config-group name="chm">
       <config-value name="defaultext">.html</config-value>
@@ -809,6 +814,8 @@
       <file-mod href="__localSpec.xml"/>
       <file-mod href="__NotInCoreVulcan.xml"/>
       <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
+      <file-mod href="X-Examples.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
+      <file-mod href="X-Examples_MSHC.xml" build="HXS"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

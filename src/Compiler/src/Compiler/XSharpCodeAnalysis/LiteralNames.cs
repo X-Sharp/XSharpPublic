@@ -86,6 +86,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string IsInstance = "global::XSharp.Internal.IsInstanceAttribute";
         internal const string TypesChanged = "global::XSharp.Internal.TypesChangedAttribute";
         internal const string XppAbstract = "global::XSharp.XPP.Abstract";
+        internal const string VfpCustom = "global::XSharp.VFP.Custom";
     }
     internal static class XSharpIntrinsicNames
     {

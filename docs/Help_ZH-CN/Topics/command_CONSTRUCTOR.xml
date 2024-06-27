@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-14T22:45:34.859+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-27T19:54:47.839+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>ACCESS CONSTRUCTOR</title>
   <keywords>
     <keyword>Compile-time declaration</keyword>
@@ -11,7 +11,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">CONSTRUCTOR Statement</para>
+      <para styleclass="Heading1">CONSTRUCTOR 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">声明访问非导出或虚(拟)实例变量的方法。</para>

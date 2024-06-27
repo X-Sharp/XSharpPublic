@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-16T08:59:54.335+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>ERASE Command</title>
+<topic template="Default" modified="2024-06-27T20:15:59.439+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ERASE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Deleting<keyword>files</keyword></keyword>
@@ -11,7 +11,7 @@
   <body>
     <header>
       <para styleclass="Normal"></para>
-      <para styleclass="Heading1">ERASE Command</para>
+      <para styleclass="Heading1">ERASE 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>

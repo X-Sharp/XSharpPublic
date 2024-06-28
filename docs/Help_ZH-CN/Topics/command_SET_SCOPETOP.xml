@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET SCOPETOP Command</title>
+<topic template="Default" modified="2024-06-28T00:32:41.332+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET SCOPETOP 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Databases</keyword>
@@ -11,17 +11,17 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET SCOPETOP Command</para>
+      <para styleclass="Heading1">SET SCOPETOP 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the top boundary for scoping key values in the controlling order.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改控制 order 中键值范围的最高边界。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET SCOPETOP TO [&lt;uNewTop&gt;]</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">SET SCOPETOP, when used with the &lt;<text styleclass="Italic">uNewTop</text>&gt; argument, is functionally equivalent to OrdScope(0, &lt;<text styleclass="Italic">uNewTop</text>&gt;). &#160;SET SCOPETOP, when used with no argument, is functionally equivalent to OrdScope(0, NIL). &#160;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET SCOPETOP 与 &lt;uNewTop&gt; 参数一起使用时，功能等同于 OrdScope(0,&lt;uNewTop&gt;)。 SET SCOPETOP 不带参数时，功能等同于 OrdScope(0,NIL)。 </para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdScope.htm" domain="XSharpRef.chm">OrdScope()</link></para>
     <para styleclass="Normal"></para>
   </body>

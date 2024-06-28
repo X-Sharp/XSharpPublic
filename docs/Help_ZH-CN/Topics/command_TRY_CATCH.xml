@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>TRY CATCH Statement</title>
+<topic template="Default" modified="2024-06-29T00:54:04.115+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TRY CATCH 语句</title>
   <keywords>
     <keyword>Branching</keyword>
     <keyword>CATCH statement</keyword>
@@ -14,7 +14,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">TRY CATCH Statement</para>
+      <para styleclass="Heading1">TRY CATCH 语句</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text"><text style="font-weight:bold;">TRY</text>, <text style="font-weight:bold;">CATCH </text>and <text style="font-weight:bold;">FINALLY </text>are used to declare an exception handling block.</para>

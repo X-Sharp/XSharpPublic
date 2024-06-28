@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>IF Statement</title>
+<topic template="Default" modified="2024-06-29T00:52:28.589+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IF 语句</title>
   <keywords>
     <keyword>Branching</keyword>
     <keyword>Conditional execution</keyword>
@@ -15,7 +15,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">IF Statement</para>
+      <para styleclass="Heading1">IF 语句</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Conditionally execute a block of statements.</para>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>STATIC Statement</title>
+<topic template="Default" modified="2024-06-29T00:59:47.945+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STATIC 语句</title>
   <keywords>
     <keyword>Arrays<keyword>declaring</keyword></keyword>
     <keyword>Compiledeclaration</keyword>
@@ -13,7 +13,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">STATIC Statement</para>
+      <para styleclass="Heading1">STATIC 语句</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">Declare and initialize static variables and arrays.</para>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>TEXT Command (FoxPro)</title>
+<topic template="Default" modified="2024-06-29T00:58:28.990+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT 命令(FoxPro))</title>
   <body>
     <header>
-      <para styleclass="Heading1">TEXT Command (FoxPro)</para>
+      <para styleclass="Heading1">TEXT 命令(FoxPro))</para>
     </header>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ADDITIVE</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXTMERGE</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOSHOW</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FLAGS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nValue] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRETEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> eExpression]]</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; TextLines</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>

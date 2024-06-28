@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>LOOP Statement</title>
+<topic template="Default" modified="2024-06-29T00:52:45.393+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>LOOP 语句</title>
   <keywords>
     <keyword>LOOP</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">LOOP Statement</para>
+      <para styleclass="Heading1">LOOP 语句</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">The LOOP statement causes control to jump back to the beginning of the innermost <text styleclass="List">FOR, FOREACH , REPEAT or DO WHILE</text> statement.</para>

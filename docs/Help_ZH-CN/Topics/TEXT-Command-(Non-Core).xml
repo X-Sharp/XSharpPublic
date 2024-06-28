@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>TEXT Command (Non-Core)</title>
+<topic template="Default" modified="2024-06-29T00:58:03.248+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT 命令(Non-Core))</title>
   <keywords>
     <keyword>ENDTEXT</keyword>
     <keyword>TEXT</keyword>
@@ -10,7 +10,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">TEXT Command (Non-Core)</para>
+      <para styleclass="Heading1">TEXT 命令(Non-Core)</para>
     </header>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INTO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRIMMED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]] | </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">[</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INTO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WRAP</text><text style="font-weight:normal; font-style:normal; color:#000000;">] | </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">[</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INTO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WRAP</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;cLineBreak&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRIMMED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]] </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; TextLines</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>

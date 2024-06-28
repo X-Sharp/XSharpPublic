@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-07T17:46:23.101+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>LPARAMETERS Statement</title>
+<topic template="Default" modified="2024-06-29T00:59:36.380+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>LPARAMETERS 语句</title>
   <keywords>
     <keyword>Declaration statements</keyword>
     <keyword>LOCAL statement</keyword>
@@ -12,7 +12,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">LPARAMETERS Statement </para>
+      <para styleclass="Heading1">LPARAMETERS 语句 </para>
     </header>
     <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Body Text"></para>

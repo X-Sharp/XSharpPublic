@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>Error XS8852</title>
 <keywords>
 <keyword>XS8852</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">Error XS8852</para>
   </header>
-  <para styleclass="Normal">Init-only property or indexer '{0}' can only be assigned in an object initializer, or on 'SELF' or 'SUPER' in an instance constructor or an 'init' accessor.</para>
+  <para styleclass="Normal">Init-only property or indexer &apos;{0}&apos; can only be assigned in an object initializer, or on &apos;SELF&apos; or &apos;SUPER&apos; in an instance constructor or an &apos;init&apos; accessor.</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

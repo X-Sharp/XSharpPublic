@@ -1267,25 +1267,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool matchExtendedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             int iStart = iSource;
-            var iend = -1;
+            int iend;
             bool found = true;
-            if (matchAmpersandToken(mToken, tokens, iStart, ref iend))
+            if (matchAmpersandToken(mToken, tokens, iStart, out iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
             }
-            else if (matchFileName(tokens, iStart, ref iend))
+            else if (matchFileName(tokens, iStart, out iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
             }
             else
             {
-                found = matchExpression(iSource, tokens, mToken.StopToken, out int iEnd);
+                found = matchExpression(iSource, tokens, mToken.StopToken, out iend);
                 if (found)
                 {
-                    matchInfo[mToken.Index].SetPos(iSource, iEnd);
-                    iSource = iEnd + 1;
+                    if (tokens[iend].Type == XSharpLexer.WS && iend > iSource)
+                    {
+                        iend -= 1;
+                    }
+                    matchInfo[mToken.Index].SetPos(iSource, iend);
+                    iSource = iend + 1;
                 }
             }
             return found;
@@ -2045,7 +2049,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        bool matchAmpersandToken(PPMatchToken mToken, IList<XSharpToken> tokens, int start, ref int end)
+        bool matchAmpersandToken(PPMatchToken mToken, IList<XSharpToken> tokens, int start, out int end)
         {
             end = -1;
             if (tokens.Count >= start + 1 && tokens[start].Type == XSharpLexer.AMP)
@@ -2086,8 +2090,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        static bool matchFileName(IList<XSharpToken> tokens, int start, ref int end)
+        static bool matchFileName(IList<XSharpToken> tokens, int start, out int end)
         {
+            end = -1;
             if (start >= tokens.Count - 2)
                 return false;
             int current = start;

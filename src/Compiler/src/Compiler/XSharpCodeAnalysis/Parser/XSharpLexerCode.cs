@@ -576,16 +576,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var text = _textSb.ToString().Substring(1);
                 if (KwIds.ContainsKey(text))
                 {
-                    var kwid = KwIds[text];
-                    if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
-                    {
-                        // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
-                        parseType(NEQ2);
-                        _textSb.Clear();
-                        _textSb.Append('#');
-                        InputStream.Seek(_startCharIndex + 1);
-                    }
-                    else if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
+                    // VO allows the symbols #NULL_DATE etc.
+                    //var kwid = KwIds[text];
+                    //if (kwid >= FIRST_NULL && kwid <= LAST_NULL && kwid != NULL)
+                    //{
+                    //    // #NIL or #NULL_STRING etc., however #NULL must be allowed as Symbol
+                    //    parseType(NEQ2);
+                    //    _textSb.Clear();
+                    //    _textSb.Append('#');
+                    //    InputStream.Seek(_startCharIndex + 1);
+                    //} else
+                    if (text.Equals("USING", StringComparison.OrdinalIgnoreCase))
                     {
                         parseType(USING);
                     }

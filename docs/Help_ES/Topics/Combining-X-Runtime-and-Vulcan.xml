@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Combining X# Runtime and Vulcan Runtime</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Combining X# Runtime and Vulcan Runtime</para>
+    </header>
+    <para styleclass="Normal">Technically it is possible to include both the X# and the Vulcan runtime libraries in your application. When you do so then the compiler will assume that you want to use the X# implementations for the XBase types such as USUAL and DATE. If the compiler does not find the XSharp.Core and XSharp.VO assemblies then it will assume you want to map these types to the Vulcan runtime types.</para>
+    <para styleclass="Normal">So you can mix things. However if you want to call code in the Vulcan runtime DLLs you may have to use the fully qualified classnames or typenames.</para>
+    <para styleclass="Normal">And remember: there is no automatic translation between the X# types and Vulcan types. </para>
+    <para styleclass="Normal">If you want to convert an X# variable to a Vulcan variable you may have to cast it to an intermediate type &#160;first.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Call Vulcans implementation of Left()</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cValue := VulcanRTFuncs.Functions.Left(&quot;abcdefg&quot;,2)</text></para>
+    <para styleclass="Normal">If you want to convert an X# usual to a Vulcan usual, cast to OBJECT</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__Usual</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xUsual := 10</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vUsual := (OBJECT) xUsual</text></para>
+    <para styleclass="Normal">For dates you can do something similar. In that case you should cast the X# date to a DateTime.</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DATE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// will call the X# implementation of ToDay()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vDate := (System.DateTime) xDate</text></para>
+  </body>
+</topic>

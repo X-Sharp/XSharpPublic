@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Dialect (in)compatibilities</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Dialect (in)compatibilities</para>
+    </header>
+    <para styleclass="Normal">The following pages list incompatibilties between X# and the various dialects. Please note that this list is not complete yet.</para>
+  </body>
+</topic>

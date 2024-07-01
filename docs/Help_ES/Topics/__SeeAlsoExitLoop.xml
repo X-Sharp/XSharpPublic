@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-10-22T13:00:19.648-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__SeeAlsoExitLoop</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__SeeAlsoExitLoop</para>
+    </header>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXIT">EXIT</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOOP">LOOP</link></para>
+  </body>
+</topic>

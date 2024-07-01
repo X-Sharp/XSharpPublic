@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Files<keyword>closing</keyword></keyword>
+    <keyword>Terminal window</keyword>
+    <keyword>TEXT Statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">TEXT Command</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a block of text that can be assigned to a variable or send to an output device.</para>
+    <para styleclass="Normal">There are several different variations of the TEXT Statement:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(Core)">Core TEXT Command</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(Non-Core)">Non-Code TEXT Command</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(FoxPro)">FoxPro TEXT Command</link></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The different variations of the TEXT commands are implemented as User Defined commands in XSharpDefs.xh or one of the other header files.</para>
+    <para styleclass="Normal">All of these commands map to the preprocessor directives <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext</link> where the actual work is done.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

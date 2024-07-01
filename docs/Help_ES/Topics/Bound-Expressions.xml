@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Bound Expressions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Bound Expressions</para>
+    </header>
+    <para styleclass="Normal">Bound expressions are expressions that access properties or members from objects or structures</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><table styleclass="Default" rowcount="7" colcount="2">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:middle; width:30%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bound Member Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">boundexpression (.|:) simpleName</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bound Method Call</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">boundexpression ( argumentlist? )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bound Array Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">boundexpression [ argumentlist ]</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bound Conditional Access </para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">expression ? boundexpression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bind Member Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(.|:) simpleName</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bind Array Access</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">[ argumentlist ]</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-06-26T12:45:48.730+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Workareas window</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Workareas window</para>
+    </header>
+    <para styleclass="Normal">On this window you will see the workareas are open at the current line of your source code, for the current thread.</para>
+    <para styleclass="Normal">The currently selected areas is marked with a checkbox.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="debugger-Workareas.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text">In the future we may extend this window so you can see the properties of an area (such as BoF(), EoF() and RecNo()) and/or the field names and their values for the current record.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">When your app does not include the X# runtime then a message will be shown that the runtime has not been loaded:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><image src="debugger-Workareas-NoRuntime.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

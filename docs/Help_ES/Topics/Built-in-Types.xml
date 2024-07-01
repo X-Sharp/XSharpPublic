@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>Types</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Types</para>
+    </header>
+    <para styleclass="Normal">The X# language knows the following data types</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">xBase Specific Types</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="User-defined-Types">User Defined Types</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0523</title>
+  <keywords>
+    <keyword>XS0523</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0523</para>
+    </header>
+    <para styleclass="Normal">Struct member &apos;struct2 field&apos; of type &apos;struct1&apos; causes a cycle in the struct layout</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The definitions of two structs include recursive references. Change the struct definitions such that each does not define itself on the other. This limitation applies only to structs, since structs are value types. If using recursive references, declare your types as classes.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0523:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0523.prg  <br/>// compile with: /target:library  <br/> </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

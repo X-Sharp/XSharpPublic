@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1001</title>
+  <keywords>
+    <keyword>XS1001</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1001</para>
+    </header>
+    <para styleclass="Normal">Identifier expected</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You did not supply an identifier. An identifier is the name of a class, struct, namespace, method, variable and so on that you provide.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example declares a simple class but does not give the class a name:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">//XS1001.prg  <br/></para>
+    <para styleclass="Normal">  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Parameter names are required even if the compiler doesn&apos;t use them, for example, in an interface definition. These parameters are required so that programmers who are consuming the interface know something about the what the parameters mean.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1001-2.prg  <br/>// compile with: /target:library  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

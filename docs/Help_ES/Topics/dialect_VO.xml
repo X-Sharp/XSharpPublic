@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Visual Objects</title>
+  <keywords>
+    <keyword>&amp;&amp;</keyword>
+    <keyword>__VO__</keyword>
+    <keyword>_WINBOOL</keyword>
+    <keyword>4 letter abbreviations</keyword>
+    <keyword>PSZ</keyword>
+    <keyword>UNION</keyword>
+    <keyword>Visual Objects</keyword>
+    <keyword>VOSTRUCT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Visual Objects</para>
+    </header>
+    <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;</para>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Visual Objects&quot; dialect.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Allows 4 letter abbreviations of some older keywords</li>
+      <li styleclass="Normal">Allows &quot;&amp;&amp;&quot; as same line comment characters, just like &quot;//&quot;</li>
+      <li styleclass="Normal">When a reference to XSharp.VO is added then certain functions that are VO specific are enabled, such as RtRegString() </li>
+    </list>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
+      <li styleclass="Normal">The preprocessor adds a define __VO__ with a value of TRUE</li>
+      <li styleclass="Normal">Adds the VOSTRUCT and UNION entity types</li>
+      <li styleclass="Normal">Uses the _WINBOOL type for logical values inside VOSTRUCT and UNION entities</li>
+      <li styleclass="Normal">The indexer on PSZ types start with element 1</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">When running in Ansi more (SetAnsi(TRUE), which is the default) then the DBF header for DBFNTX gets the Ansi bit set</li>
+    </list>
+  </body>
+</topic>

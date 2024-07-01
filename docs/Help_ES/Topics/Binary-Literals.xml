@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Binary Literals</title>
+  <keywords>
+    <keyword>BINARY</keyword>
+    <keyword>Binary Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Binary Literals</para>
+    </header>
+    <para styleclass="Body Text">Binary literals are written as 0h12345678abcdef</para>
+    <para styleclass="Body Text">The value behind 0h is a sequence of hex numbers. Each pair of hex numbers (nibble) represents 1 byte. There must be an even number of &apos;nibbles&apos;.</para>
+    <para styleclass="Body Text">The compiler compiles these literals into a byte[] array which is stored into a variable of the type <link displaytype="text" defaultstyle="true" type="topiclink" href="BINARY">BINARY</link></para>
+  </body>
+</topic>

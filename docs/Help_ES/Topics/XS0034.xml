@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0034</title>
+  <keywords>
+    <keyword>XS0034</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0034</para>
+    </header>
+    <para styleclass="Normal">Operator &apos;operator&apos; is ambiguous on operands of type &apos;type1&apos; and &apos;type2&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An operator was used on two objects and the compiler found more than one conversion. Because conversions have to be unique, you either have to make a cast or to make one of the conversions explicit. For more information, see Conversion Operators.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0034:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

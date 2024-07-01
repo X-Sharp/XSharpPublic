@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# Preprocessor Directives</title>
+  <keywords>
+    <keyword>Preprocessor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">X# Preprocessor Directives</para>
+    </header>
+    <para styleclass="Normal">The XSharp preprocessor supports the following preprocessor directives</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">#command</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Define">#define</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Else">#else</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif">#endif</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Region">#endregion</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-If">#if</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Include">#include</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Line">#line</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Region">#region</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Stdout">#stdout</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Translate">#translate</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Undef">#undef</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

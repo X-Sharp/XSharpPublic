@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:44:35.538+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Code Completion</title>
+  <keywords>
+    <keyword>Code Completion</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Code Completion</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">IntelliSense is an invaluable resource when you&apos;re coding. It can show you information about available members of a type, or parameter details for different overloads of a method. You can also use IntelliSense to complete a word after you type enough characters to disambiguate it. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">While typing bits of code, you see IntelliSense show you Quick Info about the query symbol.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To insert the rest of the word query by using IntelliSense&apos;s word completion functionality, press Tab.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code completion.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code completion 2.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+  </body>
+</topic>

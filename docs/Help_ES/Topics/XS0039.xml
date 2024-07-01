@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0039</title>
+  <keywords>
+    <keyword>XS0039</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0039</para>
+    </header>
+    <para styleclass="Normal">Cannot convert type &apos;type1&apos; to &apos;type2&apos; via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A conversion with the as operator is allowed by inheritance, reference conversions, and boxing conversions. For more information, see Conversion Operators.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following example generates XS0039.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

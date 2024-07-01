@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9007</title>
+  <keywords>
+    <keyword>XS9007</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9007</para>
+    </header>
+    <para styleclass="Normal">Feature &apos;{0}&apos; is not available in the selected dialect {1}</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error is generated with you compile in a dialect that does not support a particular feature</para>
+    <para styleclass="Normal">Assume the following code is compiled in the Core dialect</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">// Compile in Core dialect</para>
+    <para styleclass="Code Example">FUNCTION Test(a,b,c)<tab />// error XS9007: Feature &apos;USUAL&apos; is not available in the selected dialect Core</para>
+    <para styleclass="Code Example">RETURN a,b,c</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

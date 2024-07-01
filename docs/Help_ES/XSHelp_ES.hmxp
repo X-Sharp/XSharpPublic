@@ -7,26 +7,16 @@
         <export-tasks>
           <export-task name="Publish as CHM" format="CHM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.chm</task-config-value>
-              <task-config-value name="skin">XSharp.hmskin</task-config-value>
+              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp_es.chm</task-config-value>
+              <task-config-value name="skin">..\help\XSharp.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
-          <export-task name="Publish as HTM" format="HTM">
-            <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\artifacts\Doc\HTML\index.html</task-config-value>
-              <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>
-              <task-config-value name="make3include">HTML</task-config-value>
-              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</task-config-value>
-              <task-config-value name="make3status">*</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
-            </task-config-group>
-          </export-task>
           <export-task name="Publish as PDF" format="PDF">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.pdf</task-config-value>
+              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp_es.pdf</task-config-value>
               <task-config-value name="template">Standard_manual_A4.mnl</task-config-value>
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
@@ -38,10 +28,11 @@
           </export-task>
           <export-task name="Publish as HXS" format="HXS">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.mshc</task-config-value>
+              <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp_es.mshc</task-config-value>
               <task-config-value name="deletetemp">0</task-config-value>
               <task-config-value name="make2include">HXS</task-config-value>
               <task-config-value name="make2status">*</task-config-value>
+              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -206,7 +197,7 @@
       <config-value name="insertseealsostyle">4</config-value>
       <config-value name="linkcolor">16711680</config-value>
       <config-value name="ignoreblank">1</config-value>
-      <config-value name="outputfile">..\..\artifacts\Doc\XSharp.pdf</config-value>
+      <config-value name="outputfile">..\..\artifacts\Doc\XSharp_es.pdf</config-value>
       <config-value name="template">Standard_manual_A4.mnl</config-value>
       <config-value name="highlighthotspots">0</config-value>
       <config-value name="exportcomments">0</config-value>
@@ -489,7 +480,7 @@
       <config-value name="googleanalytics">UA-68123763-1</config-value>
       <config-value name="outputfile">..\..\artifacts\Help\HTML\index.html</config-value>
       <config-value name="highlighthotspots">1</config-value>
-      <config-value name="skin">XSharp_WebHelp.hmskin</config-value>
+      <config-value name="skin">..\help\XSharp_WebHelp.hmskin</config-value>
       <config-value name="searcheditor">0</config-value>
       <config-value name="searchsimpletext1" translate="true"><![CDATA[<p class="navbar"><a href="<%HREF_CONTENT_PAGE%>">Contents</a>
 <IF_INDEX_PAGE> | <a href="<%HREF_INDEX_PAGE%>">Index</a></IF_INDEX_PAGE>
@@ -682,8 +673,8 @@
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
-      <config-value name="skin">XSharp.hmskin</config-value>
-      <config-value name="outputfile">..\..\artifacts\Doc\XSharp.chm</config-value>
+      <config-value name="skin">..\help\XSharp.hmskin</config-value>
+      <config-value name="outputfile">..\..\artifacts\Doc\XSharp_es.chm</config-value>
       <config-value name="deletetemp">1</config-value>
       <config-value name="usesecondarywindows">0</config-value>
     </config-group>
@@ -699,7 +690,7 @@
       <config-value name="fkeywords">1</config-value>
       <config-value name="namespace">XSharp</config-value>
       <config-value name="uniqueid">XSharp</config-value>
-      <config-value name="outputfile">..\..\artifacts\Doc\XSharp.mshc</config-value>
+      <config-value name="outputfile">..\..\artifacts\Help\XSharp_es.mshc</config-value>
       <config-value name="deletetemp">0</config-value>
     </config-group>
     <config-group name="print">

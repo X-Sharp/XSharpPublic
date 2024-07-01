@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-23T09:39:23.566+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T20:43:21.462+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options By Category</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -171,7 +171,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">-namedarguments</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">-namedargs</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies whether to allow named arguments in the parser or not.</text></para>

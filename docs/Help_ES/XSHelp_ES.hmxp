@@ -154,7 +154,7 @@
       <config-value name="versionmajor">2</config-value>
       <config-value name="versionminor">20</config-value>
       <config-value name="versionbuild">0</config-value>
-      <config-value name="lcid" translate="true">en-us</config-value>
+      <config-value name="lcid" translate="true">es-mo</config-value>
       <config-value name="charset" translate="true">ANSI_CHARSET</config-value>
       <config-value name="deffont">font-family:Verdana; font-size:10pt; color:#000000; </config-value>
       <config-value name="autohelpstart">0</config-value>
@@ -638,7 +638,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">2</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>

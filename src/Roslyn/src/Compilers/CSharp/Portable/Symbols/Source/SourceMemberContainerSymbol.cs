@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -1628,6 +1629,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // (*) NOTE: Throughout the rest of this method I will use "field" as a shorthand for
             // "non-method, non-conversion, non-type member", rather than spelling out
             // "field, property or event...")
+
+#if XSHARP
+            // Check for overloaded Clipper methods
+            foreach (var members in membersByName.Values)
+            {
+                if (members.Length > 1)
+                {
+                    foreach (var member in members)
+                    {
+                        if (member.HasClipperCallingConvention())
+                        {
+                            diagnostics.Add(ErrorCode.ERR_ClipperOverloaded, member.Locations[0], member.ContainingType, member.Name);
+                            return;
+                        }
+                    }
+                }
+            }
+#endif
 
             foreach (var pair in membersByName)
             {

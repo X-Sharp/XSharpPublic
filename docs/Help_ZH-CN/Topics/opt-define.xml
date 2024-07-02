@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-02T05:44:15.661+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-define</title>
   <keywords>
     <keyword>-define</keyword>
@@ -9,35 +9,37 @@
     <header>
       <para styleclass="Heading1">-define</para>
     </header>
-    <para styleclass="Normal">The -define compiler option defines name as a symbol in all source code files your program.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器选项 -define 将 name 定义为程序所有源代码文件中的一个符号。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-define:name[;name2] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab />The name of one or more symbols that you want to define.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The -define option has the same effect as using a #define preprocessor directive except that the compiler option is in effect for all files in the project. A symbol remains defined in a source file until an #undef directive in the source file removes the definition. When you use The -define option, an #undef directive in one file has no effect on other source code files in the project.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">name, name2</text><tab />您要定义的一个或多个符号的名称。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">除了编译器选项对项目中的所有文件都有效外，-define 选项与使用 #define 预处理器指令的效果相同。在源文件中的 #undef 指令删除符号定义之前，该符号一直保留在源文件中。使用 -define 选项时，一个文件中的 #undef 指令对项目中的其他源代码文件没有影响。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can use symbols created by this option with #if, #else, #elif, and #endif to compile source files conditionally.</para>
+    <para styleclass="Normal">你可以将该选项创建的符号与 #if、#else、#elif 和 #endif 一起使用，有条件地编译源文件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-d is the short form of -define.</para>
+    <para styleclass="Normal">-d是-define的简写。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can define multiple symbols with -define by using a semicolon or comma to separate symbol names. For example:</para>
+    <para styleclass="Normal">使用分号或逗号分隔符号名，可以用 -define 定义多个符号。例如</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">-define:DEBUG;TUESDAY &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The X# compiler defines a couple of symbols automatically. See the <link displaytype="text" defaultstyle="true" type="topiclink" href="Compiler-Macros">Macros </link>topic elsewhere in this documentation.</para>
-    <para styleclass="Normal"><br/><text styleclass="Heading3">To set this compiler option in the Visual Studio development environment</text></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">On the Build tab, type the symbol that is to be defined in the Conditional compilation symbols box. For example, if you are using the code example that follows, just type xx into the text box.</li>
+    <para styleclass="Normal">X# 编译器会自动定义一些符号。请参阅本文档的<link displaytype="text" defaultstyle="true" type="topiclink" href="Compiler-Macros">Macros(编译器宏)</link>。 </para>
+    <para styleclass="Normal"><br/><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性 &quot;页面.</li>
+      <li styleclass="Normal" style="margin-left:13px;">在 Build(编译)选项卡上，在 &quot;<text style="color:#000000;">Defines for the preprocessor</text>&quot;框中键入要定义的符号。例如，如果使用下面的代码示例，只需在文本框中键入 xx 即可。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">For information on how to set this compiler option programmatically, see DefineConstants.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">有关如何以编程方式设置该编译器选项的信息，请参阅 DefineConstants。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">-/ preprocessor_define.prg &#160;<br/>-/ compile with: -define:xx &#160;<br/>-/ or uncomment the next line &#160;<br/>-/ #define xx &#160;<br/>using System; &#160;<br/>public class Test &#160; <br/>{ &#160;<br/> &#160; &#160;public static void Main() &#160; <br/> &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160;#if (xx) &#160; <br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#else &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx not defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#endif &#160;<br/> &#160; &#160;} &#160;<br/>} <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-/ preprocessor_define.prg &#160;<br/>-/ 编译时使用: -define:xx &#160;<br/>-/ 或取消对下一行的注释 &#160;<br/>-/ #define xx &#160;<br/>using System; &#160;<br/>public class Test &#160; <br/>{ &#160;<br/> &#160; &#160;public static void Main() &#160; <br/> &#160; &#160;{ &#160;<br/> &#160; &#160; &#160; &#160;#if (xx) &#160; <br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#else &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;Console.WriteLine(&quot;xx not defined&quot;); &#160;<br/> &#160; &#160; &#160; &#160;#endif &#160;<br/> &#160; &#160;} &#160;<br/>} <text styleclass="Normal">&#32;</text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

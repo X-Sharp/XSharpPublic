@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T21:55:41.274+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-addmodule</title>
   <keywords>
     <keyword>-addmodule</keyword>
@@ -9,22 +9,23 @@
     <header>
       <para styleclass="Heading1">-addmodule</para>
     </header>
-    <para styleclass="Normal">This option adds a module that was created with the target:module switch to the current compilation.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该选项将使用 target:module 开关创建的模块添加到当前编译中。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-addmodule:file[;file2] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">file, file2</text><tab />An output file that contains metadata. The file cannot contain an assembly manifest. To import more than one file, separate file names with either a comma or a semicolon.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">All modules added with -addmodule must be in the same directory as the output file at run time. That is, you can specify a module in any directory at compile time but the module must be in the application directory at run time. If the module is not in the application directory at run time, you will get a TypeLoadException.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">file, file2</text><tab />包含元数据的输出文件。该文件不能包含程序集清单。要导入多个文件，请用逗号或分号分隔文件名。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">使用 -addmodule 添加的所有模块在运行时必须与输出文件位于同一目录。也就是说，编译时可以在任何目录下指定模块，但运行时模块必须在应用程序目录下。如果运行时模块不在应用程序目录中，则会出现 TypeLoadException 异常。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">file cannot contain an assembly. For example, if the output file was created with -target:module, its metadata can be imported with -addmodule.</para>
+    <para styleclass="Normal">文件不能包含程序集。例如，如果输出文件是用 -target:module 创建的，则可以用 -addmodule 导入其元数据。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If the output file was created with a -target option other than -target:module, its metadata cannot be imported with -addmodule but can be imported with -reference.</para>
+    <para styleclass="Normal">如果输出文件是用 -target:module 以外的 -target 选项创建的，则其元数据不能用 -addmodule 导入，但可以用 -reference 导入。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio; a project cannot reference a module. In addition, this compiler option cannot be changed programmatically.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用；项目不能引用模块。此外，该编译器选项不能通过编程更改。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compile source file input.prg and add metadata from metad1.netmodule and metad2.netmodule to produce out.exe:</para>
+    <para styleclass="Normal">编译源文件 input.prg，并添加 metad1.netmodule 和 metad2.netmodule 中的元数据，生成 out.exe：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">xsc -addmodule:metad1.netmodule;metad2.netmodule -out:out.exe input.prg &#160;</para>
     <para styleclass="Normal"></para>

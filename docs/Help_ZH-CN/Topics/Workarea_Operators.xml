@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T10:18:35.578+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Workarea</title>
   <keywords>
     <keyword>_FIELD</keyword>
@@ -16,18 +16,19 @@
     <header>
       <para styleclass="Heading1">Workarea</para>
     </header>
-    <para styleclass="Normal">X# uses the following Workarea operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 使用以下 Workarea 操作符：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">操作符</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">示例</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">含义</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -38,30 +39,37 @@
           <para styleclass="Normal">Customer-&gt;LastName<br/>FIELD-&gt;FirstName<br/>_FIELD-&gt;Salary<br/>M-&gt;Name<br/>A-&gt;City</para>
         </td>
         <td>
-          <para styleclass="Body Text">Field &quot;<text styleclass="Normal">LastName</text>&quot; in the &quot;<text styleclass="Normal">Customer</text>&quot; workarea<br/>Field &quot;<text styleclass="Normal">FirstName</text>&quot; in the current workarea<br/>Field &quot;<text styleclass="Normal">Salary</text>&quot; in the current workarea<br/>The dynamic memory variable &quot;<text styleclass="Normal">Name</text>&quot; (public or private)<br/>The field <text styleclass="Normal">City</text> in workarea 1. <br/>Allowed single letter aliases are A .. J. <br/><br/>Note that FIELD and _FIELD are synonyms.<br/>Keywords that appear directly after the -&gt; operator are seen as identifier and not keyword.</para>
+          <para styleclass="Body Text">&quot;Customer&quot; &#160;workarea 中的 &quot;LastName&quot; 字段</para>
+          <para styleclass="Body Text">当前 workarea 中的 &quot;FirstName&quot; 字段</para>
+          <para styleclass="Body Text">当前 workarea 中的 &quot;Salary&quot; 字段</para>
+          <para styleclass="Body Text">动态内存变量 &quot;Name&quot;（公共或私有）</para>
+          <para styleclass="Body Text"> workarea &#160;1 中的 &quot;City&quot; 字段</para>
+          <para styleclass="Body Text">允许的单字母别名为 A 到 J。<br/><br/>注意： FIELD 和 _FIELD 是同义词。<br/>直接跟在 -&gt; 运算符后面的关键字被视为标识符而不是关键字。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">. (Dot)</para>
+          <para styleclass="Normal">. (点)</para>
         </td>
         <td>
           <para styleclass="Normal">Customer.LastName<br/><br/><br/></para>
         </td>
         <td>
-          <para styleclass="Body Text">In the VFP dialect we also support the DOT (&quot;.&quot;) syntax for aliased operations.<br/>Please note that this is ambiguous because the compiler cannot detect at compile time if CUSTOMER is a workarea or for example a MEMVAR. If there is a local variable with the name CUSTOMER then this will access the LASTNAME property of the CUSTOMER local variable.</para>
-          <para styleclass="Body Text">In all other cases this will produce code that looks for either a CUSTOMER workarea or memory variable at runtime.<br/>Keywords that appear directly after the &quot;.&quot; operator are seen as identifier and not keyword.</para>
+          <para styleclass="Body Text">在 VFP 方言中，我们还支持用于别名操作的 DOT（&quot;.&quot;）语法。</para>
+          <para styleclass="Body Text">请注意，这一点很模糊，因为编译器无法在编译时检测 CUSTOMER 是工作区还是 MEMVAR。如果有一个名称为 CUSTOMER 的局部变量，那么将访问 CUSTOMER 局部变量的 LASTNAME 属性。</para>
+          <para styleclass="Body Text">在所有其他情况下，该代码将在运行时查找 CUSTOMER 工作区或内存变量。</para>
+          <para styleclass="Body Text">直接出现在&quot;. &quot;操作符之后的关键字将被视为标识符而非关键字。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">. (Dot)</para>
+          <para styleclass="Normal">. (点)</para>
         </td>
         <td>
           <para styleclass="Normal">M.Name</para>
         </td>
         <td>
-          <para styleclass="Body Text">In the VFP dialect we also support the DOT (&quot;.&quot;) syntax for memvar access. This is also ambiguous because NAME can be both a local variable or a dynamic memory variable &quot;NAME&quot; (public or private). However the compiler will be able to detect the local variable at compile time and when this is not found then it will access the dynamic memory variable.</para>
+          <para styleclass="Body Text">在 VFP 方言中，我们还支持访问 memvar 的 DOT（&quot;.&quot;）语法。这也有歧义，因为 NAME 既可以是局部变量，也可以是动态内存变量 &quot;NAME&quot;（公有或私有）。不过，编译器可以在编译时检测到局部变量，如果找不到，就会访问动态内存变量。</para>
         </td>
       </tr>
     </table></para>

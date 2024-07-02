@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T09:35:39.483+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Logical</title>
   <keywords>
     <keyword>!</keyword>
@@ -17,18 +17,19 @@
     <header>
       <para styleclass="Heading1">Logical</para>
     </header>
-    <para styleclass="Normal">X# uses the following Logical operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 使用以下逻辑操作符：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">操作符</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">示例</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">含义</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -39,7 +40,7 @@
           <para styleclass="Body Text">x .AND. y</para>
         </td>
         <td>
-          <para styleclass="Body Text">Returns TRUE when both operands are TRUE, otherwise FALSE</para>
+          <para styleclass="Body Text">当两个操作数均为 TRUE 时返回 TRUE，否则返回 FALSE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -50,7 +51,7 @@
           <para styleclass="Body Text">x .OR. y</para>
         </td>
         <td>
-          <para styleclass="Body Text">Returns TRUE with one or both operands are TRUE. Only when both operands are FALSE then FALSE is returned</para>
+          <para styleclass="Body Text">当一个操作数或两个操作数均为 TRUE 时，返回 TRUE。只有当两个操作数都为 FALSE 时，才返回 FALSE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -61,7 +62,7 @@
           <para styleclass="Body Text">.NOT. x</para>
         </td>
         <td>
-          <para styleclass="Body Text">Reverses TRUE and FALSE.</para>
+          <para styleclass="Body Text">反转 TRUE 和 FALSE。</para>
         </td>
       </tr>
     </table></para>

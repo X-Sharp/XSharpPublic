@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>PRIVATE statement</title>
+<topic template="Default" modified="2024-06-28T01:12:18.696+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>PRIVATE 语句</title>
   <keywords>
     <keyword>Arrays<keyword>creating</keyword></keyword>
     <keyword>Creating<keyword>variables</keyword></keyword>
@@ -13,58 +13,54 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">PRIVATE Statement</para>
+      <para styleclass="Heading1">PRIVATE 语句</para>
     </header>
-    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><text styleclass="Heading1">Purpose</text></para>
-    <para styleclass="Normal">Create variables and arrays visible within current and invoked routines.</para>
-    <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] | &lt;ArraySpec&gt; [, ...]<br/>PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] [AS &lt;Type&gt; [OF &lt;ClassLibrary&gt;] ] &#160;// FoxPro dialect</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the private variable to create.</para>
+    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/></para>
+    <para styleclass="NotesBox"><text styleclass="Heading1">用途</text></para>
+    <para styleclass="Normal">创建在当前例程和调用例程中可见的变量和数组。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] | &lt;ArraySpec&gt; [, ...]<br/>PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] [AS &lt;Type&gt; [OF &lt;ClassLibrary&gt;] ] &#160;// FoxPro 方言</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;idVar&gt;<tab />要创建的私有变量的有效标识符名称。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the variable. &#160;If not specified, the variable is initialized to NIL.</para>
+    <para styleclass="List">&lt;uValue&gt;<tab />变量的初始值。 如果未指定，变量将被初始化为 NIL。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;ArraySpec&gt;<tab />The specification for a dynamic array to create. &#160;&lt;ArraySpec&gt; is one of the following:</para>
+    <para styleclass="List">&lt;ArraySpec&gt;<tab />要创建的动态数组的规格。 &lt;ArraySpec&gt; 是以下内容之一：</para>
     <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</para>
     <para styleclass="List"><tab />&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</para>
-    <para styleclass="List"><tab />All dimensions except the first are optional.</para>
-    <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to create. &#160;Array elements are initialized to NIL.</para>
-    <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
+    <para styleclass="List"><tab />除第一个 nElements 外，其他均为可选。</para>
+    <para styleclass="List"><tab />&lt;idArray&gt;<tab />是要创建的数组的有效标识符名称。 数组元素初始化为 NIL。</para>
+    <para styleclass="List"><tab />&lt;nElements&gt; <tab />定义数组特定维数的元素个数。 维数由指定 &lt;nElements&gt; 参数的个数决定。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__TypeAndCLass" inline="false"/></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">PRIVATE is an executable statement which means you must specify it after any variable declaration statements (such as FIELD, LOCAL, and MEMVAR) in the routine that you are defining.</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">PRIVATE 是一条可执行语句，这意味着您必须在定义例程中的任何变量声明语句(如 FIELD、LOCAL 和 MEMVAR)之后指定它。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! &#160;</text><text styleclass="Italic">Any reference to a variable created with this statement will produce a compiler error unless the Undeclared Variables compiler option is checked.</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">警告 &#160;</text><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">除非未声明变量(Undeclared Variables)编译器选项被选中，否则使用此语句创建的任何变量引用都会产生编译器错误。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When you create a private variable or array, existing and visible private and public variables of the same name are hidden until the current routine terminates or the private variable is explicitly released.</para>
+    <para styleclass="Normal">创建私有变量或数组时，同名的现有可见私有变量和公有变量将被隐藏，直到当前例程终止或显式释放私有变量。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Attempting to specify a private variable that conflicts with a visible declared variable (for example, LOCAL, GLOBAL, or DEFINE) of the same name is not recognized by the compiler as an error because PRIVATE is not a compiler declaration statement. &#160; &#160;Instead, the declared variable will hide the public variable at runtime. &#160;This means that you will not be able to access the public variable at all until the declared variable is released.</para>
+    <para styleclass="Normal">由于 PRIVATE 不是编译器声明语句，因此编译器不会将与可见的同名已声明变量(如 LOCAL、GLOBAL 或 DEFINE)冲突的私有变量指定为错误。 &#160; 相反，声明的变量将在运行时隐藏公有变量。 这意味着，在声明的变量被释放之前，你根本无法访问公有变量。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In class methods, instance variables (with the exception of access/assign variables) are always more visible than private variables of the same name. &#160;Use the _MEMVAR-&gt; alias to access a private variable within a method if there is a name conflict. &#160;For access/assign variables, use the SELF: &#160;prefix to override a name conflict with a private variable.</para>
+    <para styleclass="Normal">在类方法中，实例变量(ACCESS/ASSIGN变量除外)总是比同名的私有变量更可见。 如果存在名称冲突，请使用 _MEMVAR-&gt; 别名 访问方法中的私有变量。 对于ACCESS/ASSIGN变量，使用 SELF: 前缀来覆盖名称冲突的私有变量。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In addition to the PRIVATE statement, you can create private variables by:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">Assigning to a variable that does not exist or is not visible will create a private variable</text></li>
-      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">Receiving parameters using the PARAMETERS statement</text></li>
+    <para styleclass="Normal">除 PRIVATE 语句外，还可以通过以下方法创建私有变量：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">为不存在或不可见的变量赋值将创建一个私有变量</text></li>
+      <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">使用 PARAMETERS 语句接收参数</text></li>
     </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Private variables are dynamically scoped. &#160;They exist until the creating routine returns to its caller or until explicitly released with CLEAR ALL, or CLEAR MEMORY. &#160;</para>
-    <para styleclass="Heading1">Notes</para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Compatibility: &#160;</text>The ALL, LIKE, and EXCEPT clauses of the PRIVATE statement supported by other Xbase dialects are not supported.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">The following example creates two PRIVATE arrays and three other PRIVATE variables:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Normal">私有变量是动态作用域。 它们一直存在，直到创建例程返回给调用者，或用 CLEAR ALL 或 CLEAR MEMORY 明确释放为止。 </para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">兼容性： &#160;不支持其他 Xbase 方言支持的 PRIVATE 语句中的 ALL、LIKE 和 EXCEPT 子句。</text></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">下面的示例创建了两个 PRIVATE 数组和另外三个 PRIVATE 变量：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray1[10], aArray2[20], var1, var2, var3</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The next example creates a multi-dimensional private array using each element addressing convention:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下一个示例使用每个元素的寻址约定创建了一个多维私有数组：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray[10][10][10], aArray2[10, 10, 10]</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This example uses PRIVATE statements to create and initialize arrays and variables:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本例使用 PRIVATE 语句创建和初始化数组和变量：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray := { 1, 2, 3, 4 }, ;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;aArray2 := ArrayNew(12, 24)</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cChar := Space(10), cColor := SetColor()</text></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DIMENSION</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE</link></para>
     <para styleclass="Normal"></para>
   </body>

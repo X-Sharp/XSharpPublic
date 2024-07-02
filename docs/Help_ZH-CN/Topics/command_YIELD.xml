@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>YIELD Statement</title>
+<topic template="Default" modified="2024-06-29T23:03:02.536+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>YIELD 语句</title>
   <keywords>
     <keyword>YIELD</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">YIELD Statement</para>
+      <para styleclass="Heading1">YIELD 语句</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">When you use the yield keyword in a statement, you indicate that the method, operator, or get accessor in which it appears is an iterator. <br/></para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text">在语句中使用 yield 关键字时，表示出现该关键字的方法、运算符或获取访问器是一个迭代器。<br/></para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">YIELD RETURN &lt;<text style="font-style:italic;">expression</text>&gt;<br/>YIELD (EXIT|BREAK) </para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">YIELD RETURN<tab/>You use YIELD RETURN &lt;expression&gt; to return each element one at a time.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">YIELD RETURN<tab />您可以使用 YIELD RETURN &lt;表达式&gt; 一次返回一个元素。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">YIELD [BREAK|EXIT]<tab/>You use YIELD BREAK or YIELD EXIT to end the iteration.</para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="List">YIELD [BREAK|EXIT]<tab />您可以使用 YIELD BREAK 或 YIELD EXIT 来结束迭代。</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Normal"><snippet src="Ex-YIELD-" inline="false"/></para>
   </body>
 </topic>

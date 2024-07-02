@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T22:53:35.422+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-cs</title>
   <keywords>
     <keyword>-cs</keyword>
@@ -9,27 +9,28 @@
     <header>
       <para styleclass="Heading1">-cs</para>
     </header>
-    <para styleclass="Normal">The -cs option directs the compiler to treat all identifiers and type names as case-sensitive.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-cs选项指示编译器将所有标识符和类型名称视为区分大小写。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-cs[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+|-<tab />Specifying +, or just -cs, directs the compiler to treat all type names as case-sensitive. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">This option is for those users who prefer a case-sensitive language. </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+|-<tab />指定 + 或只指定 -cs，会指示编译器将所有类型名称视为区分大小写。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">该选项适用于偏好大小写敏感语言的用户。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This option can also affect case sensitivity of preprocessor symbols, depending on the state of the -vo8 compiler option; if -vo8 is enabled, then -cs controls if also preprocessor symbols are treated as case-sensitive; if -vo8 is disabled, then preprocessor symbols are always case-sensitive and the state of -cs does not affect this behavior of the preprocessor. See the topic about <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">-vo8</link> for more information.</para>
+    <para styleclass="Normal">该选项也会影响预处理器符号的大小写敏感性，这取决于 -vo8 编译器选项的状态；如果启用了 -vo8，那么 -cs 将控制预处理器符号是否也被视为大小写敏感；如果禁用了 -vo8，那么预处理器符号始终是大小写敏感的，而 -cs 的状态不会影响预处理器的这一行为。更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">-vo8</link> 相关主题。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This option also does not affect keywords. Keywords in X# are always case-insensitive.</para>
-    <para styleclass="Heading3">Note</para>
-    <para styleclass="Normal">If you run the shared compiler you have to pass the -cs compiler option through the commandline and not through a response file.</para>
-    <para styleclass="Normal">And when you mix case sensitive and not case sensitive projects then there will be 2 shared compiler processes running, one in case sensitive mode and the other in case insensitive mode.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">该选项也不影响关键字。X# 中的关键字始终区分大小写。</para>
+    <para styleclass="Heading3">注意</para>
+    <para styleclass="Normal">如果运行共享编译器，必须通过命令行而不是响应文件传递 -cs 编译器选项。</para>
+    <para styleclass="Normal">如果混合使用区分大小写和不区分大小写的项目，那么将有两个共享编译器进程运行，一个处于区分大小写模式，另一个处于不区分大小写模式。</para>
+    <para styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the General section, modify the Case Sensitive Type Names property in the General. </li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性 &quot;页面.</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Language 页签 </li>
+      <li styleclass="Normal" style="margin-left:13px;">在 General(常规)部分，修改常规中的 Case Sensitive(大小写敏感类型名称)属性。</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></li>
     </list>
   </body>
 </topic>

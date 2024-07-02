@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>MEMVAR Statement</title>
+<topic template="Default" modified="2024-06-28T01:14:44.588+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>MEMVAR 语句</title>
   <keywords>
     <keyword>Compiledeclaration</keyword>
     <keyword>Declaration statements</keyword>
@@ -12,27 +12,26 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">MEMVAR Statement</para>
+      <para styleclass="Heading1">MEMVAR 语句</para>
     </header>
-    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><text styleclass="Heading1">Purpose</text></para>
-    <para styleclass="Normal">Declare one or more memory variable names to be used by the current routine.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/></para>
+    <para styleclass="NotesBox"><text styleclass="Heading1">用途</text></para>
+    <para styleclass="Normal">声明一个或多个内存变量名，供当前例程使用。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">MEMVAR &lt;idMemvarList&gt;</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;idMemvarList&gt;<tab />A list of public and private variable names to declare to the compiler.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">When you use the MEMVAR statement to declare variables, unaliased references to variables in &lt;<text styleclass="Italic">idMemvarList</text>&gt; are treated as if they were preceded by the special memory variable alias </para>
-    <para styleclass="Normal">(_MEMVAR-&gt;).</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;idMemvarList&gt;<tab />向编译器声明的公有变量和私有变量名称列表。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">当使用 MEMVAR 语句声明变量时，对 &lt;idMemvarList&gt; 中变量的无标记引用将被视为在其前面使用了特殊的内存变量别名 </para>
+    <para styleclass="Normal">(_MEMVAR-&gt;)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Like other variable declaration statements (such as LOCAL and FIELD), you must place MEMVAR statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The MEMVAR statement has no effect on the macro operator, which always assumes memory variables.</para>
+    <para styleclass="Normal">与其他变量声明语句（如 LOCAL 和 FIELD）一样，必须将 MEMVAR 语句放在所定义例程的任何可执行语句（包括 PRIVATE、PUBLIC 和 PARAMETERS）之前。 MEMVAR 语句对宏运算符没有影响，宏运算符总是假定内存变量。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The MEMVAR statement neither creates the variables nor verifies their existence. &#160;Its primary purpose is to ensure correct references to variables that are known to exist at runtime. &#160;Attempting to access variables before they are created will raise a runtime error.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example demonstrates the relationship between a private and field variable with the same name. &#160;The private variable is declared with the MEMVAR statement:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Example()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Amount, Address</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Amount := 100</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; USE customer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? Amount &#160; &#160; &#160;</text><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// Refers to Amount private variable</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? Customer-&gt;Amount</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// Refers to Amount field variable</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal">MEMVAR 语句既不创建变量，也不验证变量的存在。 其主要目的是确保正确引用运行时已知存在的变量。 如果在变量创建之前试图访问它们，将引发运行时错误。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例演示了同名私有变量和字段变量之间的关系。 私有变量是用 MEMVAR 语句声明的：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Example()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">MEMVAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Amount, Address</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Amount := 100</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; USE customer </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? Amount &#160; &#160; &#160;</text><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// 指私有变量 Amount</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? Customer-&gt;Amount</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 指字段变量 Amount</text></para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD">FIELD</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
     <para styleclass="Normal"></para>
   </body>

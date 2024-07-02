@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T19:56:41.029+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-nologo</title>
   <keywords>
     <keyword>-nologo</keyword>
@@ -9,13 +9,14 @@
     <header>
       <para styleclass="Heading1">-nologo</para>
     </header>
-    <para styleclass="Normal">The -nologo option suppresses display of the sign-on banner when the compiler starts up and display of informational messages during compiling.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">选项 -nologo 会在编译器启动时禁止显示登录横幅，并在编译过程中禁止显示信息。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-nologo &#160;</para>
-    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Heading2">备注</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This option is not available from within the development environment; it is only available when compiling from the command line.</para>
+    <para styleclass="Normal">该选项在开发环境中不可用，只有在命令行编译时才可用。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也不能通过编程更改。</para>
   </body>
 </topic>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>#ifndef Statement</title>
+<topic template="Default" modified="2024-06-29T21:01:18.068+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#ifndef 语句</title>
   <keywords>
     <keyword>#else statement</keyword>
     <keyword>#endif statement</keyword>
@@ -13,26 +13,24 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">#ifndef Statement</para>
+      <para styleclass="Heading1">#ifndef 语句</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Build a section of code if a constant is FALSE, 0, or not defined.</para>
-        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">如果常量为 FALSE、0 或未定义，则编译一段代码。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">#ifndef &lt;idConstant&gt; <br/><tab />&lt;Statements&gt;...<br/>[#else] <br/><tab />&lt;Statements&gt;...<br/>#endif</para>
-        <para styleclass="Heading1"><text>Arguments</text></para>
-    <para styleclass="List">&lt;idConstant&gt;<tab />The name of a constant whose absence is being verified.</para>
-        <para styleclass="Heading1"><text>Description</text></para>
-    <para styleclass="Normal">#ifndef...#endif lets you perform a conditional build by identifying a section of source code to include if a specified constant is defined as FALSE or 0 or is not defined. &#160;The #else statement specifies the code to include if the #ifndef condition fails, and the #endif terminates the conditional build block.</para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>You can use #ifndef with compiler entities other than constants, such as functions and globals. &#160;In these cases, the statement tests for existence only, and does not look at the value of the entity.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;idConstant&gt;<tab />常量的名称，需要验证该常量是否存在。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">#ifndef...#endif可以在指定常量定义为FALSE或0或未定义时，确定要包含的源代码部分，从而执行条件编译。 如果 #ifndef 条件失败，#else 语句指定要包含的代码，而 #endif 则终止条件编译块。</para>
+    <para styleclass="Normal">注意：您可以将 #ifndef 用于常量以外的编译器实体，如函数和全局。 在这种情况下，语句只测试实体是否存在，而不查看实体的值。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Heading1">Examples</text></para>
-    <para styleclass="Normal">This code fragment is a general skeleton for a conditional build with #ifndef. &#160;Since the constant <text styleclass="Italic">lDebug </text>is set to FALSE, the code between the #ifndef and #else statements will be built, and the code between the #else and #endif statements will be ignored:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Heading1">示例</text></para>
+    <para styleclass="Normal">该代码片段是使用 #ifndef 进行有条件编译的一般结构。 由于常量 lDebug 被设置为 FALSE，因此 #ifndef 和 #else 语句之间的代码将被编译，而 #else 和 #endif 语句之间的代码将被忽略：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lDebug </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Start</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">#IFNDEF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lDebug</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">&lt;Optimized version </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> code</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;...</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ELSE</text><br/><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">&lt;Debugging version </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> code</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&gt;...</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ENDIF</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Changing the DEFINE statement as follows will build the code between the #else and #endif statements instead.</para>
+    <para styleclass="Normal">对 DEFINE 语句进行如下修改后，代码将在 #else 和 #endif 语句之间构建。</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> lDebug </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">:=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRUE</text></para>
-        <para styleclass="Heading1"><text>See Also</text></para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFDEF" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">#ifdef</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">DEFINE</link></para>
     <para styleclass="Normal"></para>
   </body>

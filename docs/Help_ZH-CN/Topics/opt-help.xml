@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T10:54:22.142+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-help, -?</title>
   <keywords>
     <keyword>-?</keyword>
@@ -10,12 +10,13 @@
     <header>
       <para styleclass="Heading1">-help, -?</para>
     </header>
-    <para styleclass="Normal">This option sends a listing of compiler options, and a brief description of each option, to stdout.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-help &#160;<br/>-? <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">If this option is included in a compilation, no output file will be created and no compilation will take place.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
+    <para styleclass="Normal">该选项将编译器选项列表以及每个选项的简要说明发送到 stdout。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-help &#160;<br/>-? <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">如果编译时包含该选项，则不会创建输出文件，也不会进行编译。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也不能通过编程更改。</para>
   </body>
 </topic>

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Date and Time</title>
+<topic template="Default" modified="2024-06-27T19:47:15.094+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>日期和时间</title>
   <keywords>
     <keyword>Commands<keyword>Date</keyword></keyword>
     <keyword>Date Commands</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Date and Time</para>
+      <para styleclass="Heading1">日期和时间</para>
     </header>
     <para styleclass="link"></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CENTURY">SET CENTURY</link></para>

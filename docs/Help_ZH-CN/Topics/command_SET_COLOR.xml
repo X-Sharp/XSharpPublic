@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:56:38.865+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-29T23:40:00.589+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET COLOR 命令</title>
   <keywords>
     <keyword>Colors<keyword>setting</keyword></keyword>
@@ -15,17 +15,17 @@
       <para styleclass="Heading1">SET COLOR 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that determines the current color for the terminal window.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改决定终端窗口当前颜色的设置。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET COLOR | COLOUR TO [&lt;<text styleclass="Italic">xcColorString</text>&gt;]</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">SET COLOR is functionally equivalent to SetColor(). &#160;SET COLOR TO with no arguments is the same as SetColor(NULL_STRING), returning to the default color settings.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example uses the unselected setting to make the current GET red on white while the rest are black on white:</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">COLOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> gr+/B &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Yellow on Blue</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCREEN</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? &quot;Hello world&quot;</text><br/></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET COLOR 在功能上等同于 SetColor()。 不带参数的 SET COLOR TO 与 SetColor(NULL_STRING) 相同，返回默认颜色设置。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例使用未选择的设置，使当前 GET 为白底红字，而其余为白底黑字：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">COLOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> gr+/B &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// 蓝底黄字</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCREEN</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? &quot;Hello world&quot;</text><br/></para>
     <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetColor.htm" domain="XSharpRef.chm">SetColor()</link></para>
     <para styleclass="Normal"></para>
   </body>

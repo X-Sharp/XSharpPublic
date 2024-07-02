@@ -1,69 +1,69 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-19T13:17:06.531+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Expressions</title>
+<topic template="Default" modified="2024-06-30T01:19:51.770+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>表达式</title>
   <body>
     <header>
-      <para styleclass="Heading1">Expressions</para>
+      <para styleclass="Heading1">表达式</para>
     </header>
-    <para styleclass="Normal">Expressions are an important element of the language. There are many types of expressions. The expression rule in the compiler is the biggest rule</para>
-    <para styleclass="Normal">The table below lists the various expression types in the order they are recognized by the compiler. Some expression types are covered in a separate topic.</para>
-    <para styleclass="Normal">As you can see most expression types are recursive. They contain one or more references to sub expressions</para>
+    <para styleclass="Normal">表达式是语言的重要组成部分。表达式有很多种。编译器中的表达式规则是最大的规则。</para>
+    <para styleclass="Normal">下表按照编译器识别的顺序列出了各种表达式类型。某些表达式类型将在单独的主题中介绍。</para>
+    <para styleclass="Normal">正如您所看到的，大多数表达式类型都是递归的。它们包含一个或多个对子表达式的引用</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Expressions </para>
+    <para styleclass="Heading2">表达式</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><table styleclass="Default" rowcount="28" colcount="2" style="width:auto; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">表达式类型</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Syntax</para>
+          <para styleclass="Body Text" style="text-align:center;">语法</para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle; width:25%;">
-          <para styleclass="Normal">Member Access</para>
+          <para styleclass="Normal">成员访问</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression? (.|:) identifier</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Member Access with Ampersand (resolved at runtime)</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression? (.|:) &amp;identifier<br/>expression? (.|:) &amp;(expr)</para>
+          <para styleclass="Body Text">表达式? (.|:) 标识符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Method Call</para>
+          <para styleclass="Normal">使用标点符号访问成员（在运行时解决）</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression ( argumentlist? )</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Arrayelement Access</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression [ argumentlist ]</para>
+          <para styleclass="Body Text">表达式? (.|:) &amp;标识符<br/>表达式? (.|:) &amp;(expr)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Conditional Access</para>
+          <para styleclass="Normal">方法调用</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression ? <link displaytype="text" defaultstyle="true" type="topiclink" href="Bound-Expressions">boundexpression</link></para>
+          <para styleclass="Body Text">表达式 ( 参数列表? )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typecast</para>
+          <para styleclass="Normal">数组元素访问</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 [ 参数列表]</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">有条件的访问</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 ? <link displaytype="text" defaultstyle="true" type="topiclink" href="Bound-Expressions">boundexpression</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">类型</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">( datatype )</para>
@@ -71,74 +71,74 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Postfix </para>
+          <para styleclass="Normal">后缀 </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression (++ | --)</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Await</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">AWAIT expression</para>
+          <para styleclass="Body Text">表达式 (++ | --)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">StackAlloc</para>
+          <para styleclass="Normal">等待</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">STACKALLOC expression</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Prefix</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(+|-|~|@|++|--|^) expression</para>
+          <para styleclass="Body Text">AWAIT 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typecheck</para>
+          <para styleclass="Normal">StackAlloc(堆栈分配)</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression IS datatype VAR newVariable</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">As Typecheck</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expresion ASTYPE datatype</para>
+          <para styleclass="Body Text">STACKALLOC 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Powerof</para>
+          <para styleclass="Normal">前缀</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression (^|**) expression</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">MulDiv</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression (*|/|%) expression</para>
+          <para styleclass="Body Text">(+|-|~|@|++|--|^) 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">PlusMinus</para>
+          <para styleclass="Normal">类型检查</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression (+|-) expression</para>
+          <para styleclass="Body Text">表达式 IS datatype VAR newVariable</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">As 类型检查</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 ASTYPE datatype</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">幂</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 (^|**) 表达式</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">百分比</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 (*|/|%) 表达式</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">正数</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 (+|-) 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -146,7 +146,7 @@
           <para styleclass="Normal">LShift</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression &lt;&lt; expression</para>
+          <para styleclass="Body Text">表达式 &lt;&lt; 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -154,15 +154,15 @@
           <para styleclass="Normal">RShift</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression &gt;&gt; expression</para>
+          <para styleclass="Body Text">表达式 &gt;&gt; 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Comparison</para>
+          <para styleclass="Normal">比较</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression OPERATOR expression, <br/>where OPERATOR is <br/>&lt;,&lt;=, &gt;, &gt;=, =, ==, $, !=, &lt;&gt;, #</para>
+          <para styleclass="Body Text">表达式 OPERATOR 表达式, <br/>这里 OPERATOR代表<br/>&lt;,&lt;=, &gt;, &gt;=, =, ==, $, !=, &lt;&gt;, #</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -170,7 +170,7 @@
           <para styleclass="Normal">Bitwise And</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression &amp; expression</para>
+          <para styleclass="Body Text">表达式 &amp; 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -178,7 +178,7 @@
           <para styleclass="Normal">Bitwise XOR</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression ~ expression</para>
+          <para styleclass="Body Text">表达式 ~ 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -186,55 +186,55 @@
           <para styleclass="Normal">Bitwise OR</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression | expression</para>
+          <para styleclass="Body Text">表达式 | 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Not Expression</para>
+          <para styleclass="Normal">Not 表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(.NOT. | !) expression</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical AND expression</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression (.AND.|&amp;&amp;) expression</para>
+          <para styleclass="Body Text">(.NOT. | !) 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical OR expression</para>
+          <para styleclass="Normal">逻辑和表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression (.OR. | ||) expression</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Default expression</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression DEFAULT expression</para>
+          <para styleclass="Body Text">表达式 (.AND.|&amp;&amp;) 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Assignment expression</para>
+          <para styleclass="Normal">逻辑或表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression ASSIGN_OP expression<br/>where ASSIGN_OP is<br/>:=, +=, -=, *=, ^=, /=, %=, &amp;=, |=, &lt;&lt;=, &gt;&gt;=, ~=, ??=</para>
+          <para styleclass="Body Text">表达式 (.OR. | ||) 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Primary expression</para>
+          <para styleclass="Normal">Default 表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Primary-Expressions">See other rule</link></para>
+          <para styleclass="Body Text">表达式 DEFAULT 表达式</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">赋值表达式</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">表达式 ASSIGN_OP 表达式<br/>这里 ASSIGN_OP 代表<br/>:=, +=, -=, *=, ^=, /=, %=, &amp;=, |=, &lt;&lt;=, &gt;&gt;=, ~=, ??=</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal">Primary 表达式</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Primary-Expressions">参见其他规则</link></para>
         </td>
       </tr>
     </table></para>

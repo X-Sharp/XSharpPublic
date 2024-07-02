@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T01:27:34.647+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-enforceself</title>
   <keywords>
     <keyword>-enforceself</keyword>
@@ -9,19 +9,26 @@
     <header>
       <para styleclass="Heading1">-enforceself</para>
     </header>
-    <para styleclass="Normal">The -enforceself compiler option allows you to control if you can access members of the SELF objects with or without the SELF: prefix.<br/>In Visual Objects and most other original languages this was not allowed. This is equivalent to /enforceself+. In .Net the default is that this is allowed. This is equivalent to /enforceself-.</para>
-    <para styleclass="Normal">The effect of this is that the compiler may report an ambiguity when a method exists with the same name as a built in function. If you enable /enforceself then the compiler &quot;knows&quot; that without the SELF: prefix you intend to call the function.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-enforceself[+ | -] <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过 -enforceself 编译器选项，可以控制是否可以访问带有或不带 SELF: 前缀的 SELF 对象成员。</para>
+    <para styleclass="Normal">在 Visual Objects 和大多数其他原始语言中，这是不允许的。这相当于 /enforceself+。在 .Net 中，默认情况下是允许的。这相当于 /enforceself-。</para>
+    <para styleclass="Normal">这样做的结果是，当存在与内置函数同名的方法时，编译器可能会报告歧义。如果启用 /enforceself，编译器就会 &quot;知道&quot;，如果不使用 SELF: 前缀，你打算调用该函数。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-enforceself[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab />指定 + 或仅指定 -</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性 &quot;页面.</li>
+    </list>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡 &#160;</li>
+    </list>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">更改 Enforce SELF(强制 SELF) 值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></li>
     </list>
     <para styleclass="Heading2"></para>
   </body>

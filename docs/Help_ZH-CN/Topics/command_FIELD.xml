@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:58:51.894+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T00:23:49.808+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>FIELD 语句</title>
   <keywords>
     <keyword>Compiledeclaration</keyword>
@@ -14,25 +14,24 @@
     <header>
       <para styleclass="Heading1">FIELD 语句</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare one or more database field names to be used by the current routine.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明一个或多个数据库字段名，供当前例程使用。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">FIELD &lt;idFieldList&gt; [IN &lt;idAlias&gt;]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;idFieldList&gt;<tab />A list of names to declare as fields to the compiler.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;idFieldList&gt;<tab />向编译器声明为字段的名称列表。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IN &lt;idAlias&gt;<tab />An alias to assume when there are unaliased references to the names specified in the &lt;idFieldList&gt;.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">When you use the FIELD statement to declare fields, unaliased references to variables in &lt;<text styleclass="Italic">idFieldList</text>&gt; are treated as if they were preceded by the special field alias (_FIELD-&gt;) or &lt;<text styleclass="Italic">idAlias</text>&gt;-&gt; if the IN clause is specified.</para>
+    <para styleclass="List">IN &lt;idAlias&gt;<tab />当存在对 &lt;idFieldList&gt; 中指定的名称的无标注引用时使用的别名。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">使用 FIELD 语句声明字段时，对 &lt;idFieldList&gt; 中变量的无标记引用将被视为在其前面使用了特殊字段别名 (_FIELD-&gt;) 或 &lt;idAlias&gt;-&gt; （如果指定了 IN 子句）。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Like other variable declaration statements (i.e., LOCAL and MEMVAR), you must place FIELD statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The FIELD statement has no effect on the macro operator, which always assumes memory variables.</para>
+    <para styleclass="Normal">与其他变量声明语句(即 LOCAL 和 MEMVAR)一样，必须将 FIELD 语句放在例程定义的任何可执行语句(包括 PRIVATE、PUBLIC 和 PARAMETERS)之前。 FIELD 语句对宏运算符没有影响，宏运算符总是假定内存变量。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The FIELD statement neither opens a database file nor verifies the existence of the specified fields. &#160;It is useful primarily to ensure correct references to fields that are known to exist at runtime. &#160;Attempting to access the fields when the associated database is not in use will raise a runtime error.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This function includes statements to declare database field names in both the current and Employee work areas:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> DisplayRecord</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> OrderNo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Orders</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpCode </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Employee</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">USE employee NEW</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">USE orders NEW</text><br/><tab /><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNo</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Refers to Orders-&gt;CustNo</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpName</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Refers to Employee-&gt;EmpName</text><br/><tab /><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CLOSE orders</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CLOSE employee</text></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal">FIELD 语句既不打开数据库文件，也不验证指定字段是否存在。 它主要用于确保正确引用运行时已知存在的字段。 如果在不使用相关数据库的情况下尝试访问字段，将导致运行时出错。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">该功能包括在当前工作区和雇员工作区声明数据库字段名称的语句：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:bold; font-style:normal; color:#000000;"> DisplayRecord</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> OrderNo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Orders</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">FIELD</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpName</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpCode </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:bold; font-style:normal; color:#000000;"> Employee</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">USE employee NEW</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">USE orders NEW</text><br/><tab /><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> CustNo</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// 指的是 Orders-&gt;CustNo</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;"> EmpName</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// 指的是 Employee-&gt;EmpName</text><br/><tab /><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CLOSE orders</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">CLOSE employee</text></para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbFieldInfo.htm" domain="XSharpRef.chm">DBFieldInfo()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
     <para styleclass="Normal"></para>
   </body>

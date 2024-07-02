@@ -1,68 +1,69 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Bound Expressions</title>
+<topic template="Default" modified="2024-06-30T01:27:57.199+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Bound 表达式</title>
   <body>
     <header>
-      <para styleclass="Heading1">Bound Expressions</para>
+      <para styleclass="Heading1">Bound 表达式</para>
     </header>
-    <para styleclass="Normal">Bound expressions are expressions that access properties or members from objects or structures</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Bound 表达式是访问对象或结构中的属性或成员的表达式</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><table styleclass="Default" rowcount="7" colcount="2">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle; width:30%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">表达式类型</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">语法</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bound Member Access</para>
+          <para styleclass="Body Text">Bound 成员访问</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">boundexpression (.|:) simpleName</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bound Method Call</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">boundexpression ( argumentlist? )</para>
+          <para styleclass="Body Text">boundexpression (.|:) 简单名称</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bound Array Access</para>
+          <para styleclass="Body Text">Bound 方法调用</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">boundexpression [ argumentlist ]</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bound Conditional Access </para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression ? boundexpression</para>
+          <para styleclass="Body Text">boundexpression ( 参数列表? )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bind Member Access</para>
+          <para styleclass="Body Text">Bound 数组访问</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(.|:) simpleName</para>
+          <para styleclass="Body Text">boundexpression [ 参数列表 ]</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bind Array Access</para>
+          <para styleclass="Body Text">Bound 有条件的访问</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">[ argumentlist ]</para>
+          <para styleclass="Body Text">表达式 ? boundexpression</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bind 成员访问</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">(.|:) 简单名称</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Bind 数组访问</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">[ 参数列表 ]</para>
         </td>
       </tr>
     </table></para>

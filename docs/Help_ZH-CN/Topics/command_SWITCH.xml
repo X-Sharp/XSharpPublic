@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:53:46.069+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-29T22:42:18.842+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SWITCH 语句</title>
   <keywords>
     <keyword>Branching</keyword>
@@ -15,35 +15,38 @@
     <header>
       <para styleclass="Heading1">SWITCH 语句</para>
     </header>
-    <para styleclass="Heading2">Purpose</para>
-    <para styleclass="Body Text">Conditionally execute a block of statements.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Heading2">用途</para>
+    <para styleclass="Body Text">有条件地执行语句块</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">SWITCH &lt;expression&gt;<br/>CASE &lt;<text style="font-style:italic;">constantvalue</text>&gt; [WHEN &lt;<text style="font-style:italic;">whenexpression</text>&gt;]<br/> &#160; &lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[CASE &lt;<text style="font-style:italic;">constantvalue</text>&gt;]<br/>[CASE &lt;<text style="font-style:italic;">constantvalue</text>&gt;]<br/> &#160; &lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[CASE &lt;<text style="font-style:italic;">constantvalue</text>&gt;]<br/> &#160; &lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[CASE &lt;<text style="font-style:italic;">variablename</text>&gt; AS &lt;<text style="font-style:italic;">datatype</text>&gt;] [WHEN &lt;<text style="font-style:italic;">whenexpression</text>&gt;]<br/> &#160; &lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[OTHERWISE]<br/> &#160; &lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>END [SWITCH]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">&lt;<text style="font-style:italic;">constantvalue</text>&gt;<tab />A constant value that can be evaluated at compile time. You can also have 2 consecutive CASE lines without statements between them. In that case both CASE lines share the same statementblock. If you want a case block without statements, then insert a NOP statement as its statement.</para>
-    <para styleclass="List">&lt;<text style="font-style:italic;">whenexpression</text>&gt;<tab />A logical expression that determines if the particular CASE block should be active This is sometimes called an expression filter.</para>
-    <para styleclass="List">&lt;<text style="font-style:italic;">variablename</text>&gt;<tab />A variablename that gets declared by the pattern matching expression </para>
-    <para styleclass="List">&lt;<text style="font-style:italic;">datatype</text>&gt;<tab />The datatype of the variable in the pattern matching expression</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">&lt;<text style="font-style:italic;">constantvalue</text>&gt;<tab />可在编译时评估的常量值。也可以有 2 行连续的 CASE 行，但行与行之间没有语句。在这种情况下，两个 CASE 行共享同一个语句块。如果想要一个不带语句的 case 块，则插入一条 NOP 语句作为其语句。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">OTHERWISE<tab />If none of the preceding CASE conditions match, the statements following the OTHERWISE up until the next END SWITCH are executed. Afterwards, control branches to the statement following the next END SWITCH statement.</para>
-    <para styleclass="Heading2">Description</para>
-    <para styleclass="Body Text">SWITCH works by branching to the statement following the first CASE &lt;constantvalue&gt; that evaluates to TRUE. If all CASE conditions evaluate to FALSE, it branches to the statement following the OTHERWISE statement (if specified). </para>
-    <para styleclass="Body Text">In general there are 2 types of SWITCH statements:</para>
+    <para styleclass="List">&lt;<text style="font-style:italic;">whenexpression</text>&gt;<tab />逻辑表达式，用于确定特定 CASE 块是否应处于活动状态。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;<text style="font-style:italic;">variablename</text>&gt;<tab />通过模式匹配表达式声明的变量名 </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;<text style="font-style:italic;">datatype</text>&gt;<tab />模式匹配表达式中变量的数据类型</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">OTHERWISE<tab />如果前面的 CASE 条件都不匹配，则执行 OTHERWISE 之后直到下一个 END SWITCH 之前的语句。之后，控制权分支到下一条END SWITCH 语句之后的语句。</para>
+    <para styleclass="Heading2">描述</para>
+    <para styleclass="Body Text">SWITCH 的工作方式是分支到第一个求值为 TRUE 的 CASE &lt;constantvalue&gt; 之后的语句。如果所有 CASE 条件的结果都是 FALSE，它就会分支到 OTHERWISE 语句（如果指定）后面的语句。</para>
+    <para styleclass="Body Text">一般来说，SWITCH 语句有两种类型：</para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Switch statements with constant values (CASE &lt;constantvalue&gt;)</li>
-      <li styleclass="Body Text">Switch statements with pattern matching expressions (CASE &lt;varName&gt; AS &lt;datatype&gt;)</li>
+      <li styleclass="Body Text">带常量值的开关语句(CASE &lt;constantvalue&gt;)</li>
+      <li styleclass="Body Text">使用模式匹配表达式的交换语句(CASE &lt;varName&gt; AS &lt;datatype&gt;)</li>
     </list>
-    <para styleclass="Body Text">Both types of SWITCH statements can be enhanced with WHEN filters.</para>
-    <para styleclass="Body Text">If you do not have a WHEN filter then each CASE line must be &quot;unique&quot;, so no two CASEs can have the same constantvalue or same datatype. If you add a WHEN filter then this is allowed.</para>
-    <para styleclass="Body Text">The compiler may (and will) rearrange the order of the CASE labels when generating code for example to combine two CASEs with the same constant value and a WHEN filter. These may be combined into one CASE label with an embedded IF statement.</para>
+    <para styleclass="Body Text">这两种类型的 SWITCH 语句都可以通过 WHEN 过滤器来增强。</para>
+    <para styleclass="Body Text">如果没有 WHEN 过滤器，则每个 CASE 行必须是 &quot;唯一 &quot;的，因此没有两个 CASE 可以具有相同的常量值或相同的数据类型。如果添加了 WHEN 过滤器，就可以做到这一点。</para>
+    <para styleclass="Body Text">编译器在生成代码时可能（也会）重新排列 CASE 标签的顺序，例如将两个具有相同常量值和 WHEN 过滤器的 CASE 合并。这些标签可以合并为一个带有嵌入式 IF 语句的 CASE 标签。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">Execution proceeds until the next CASE, OTHERWISE, or END SWITCH is encountered, and control then branches to the first statement following the next ENDCASE statement.</para>
-    <para styleclass="Body Text">Control structures can be nested to any depth. The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Body Text">执行一直进行到遇到下一个 CASE、OTHERWISE 或 END SWITCH，然后控制分支到下一个 ENDCASE 语句后的第一个语句。</para>
+    <para styleclass="Body Text">控制结构可以嵌套到任何深度。唯一的要求是每个控制结构都必须正确嵌套。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading2">Examples</para>
-    <para styleclass="Body Text">This example uses SWITCH in a menu structure to branch control based on user selection:</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Body Text">本示例在菜单结构中使用 SWITCH，根据用户的选择进行控制分支：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ActonChoice(nChoice </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SWITCH</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nChoice</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;0</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ChoiceOne()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 2</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ChoiceTwo()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SWITCH</text></para>
-    <para styleclass="Heading2">See Also</para>
+    <para styleclass="Heading2">参见</para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN-SEQUENCE">BEGIN SEQUENCE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH</link>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link>&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="Ex-SWITCH">DO CASE</link></para>
     <para styleclass="Body Text"></para>
   </body>

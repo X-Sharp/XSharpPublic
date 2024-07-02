@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:59:36.380+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T00:47:07.660+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LPARAMETERS 语句</title>
   <keywords>
     <keyword>Declaration statements</keyword>
@@ -16,28 +16,30 @@
     </header>
     <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The LPARAMETERS Statemenent is identical to the PARAMETERS statement. <br/>The Variables however will be created as LOCAL variables and not as Dynamic Memory Variables and the optional &lt;Type&gt; clause is respected.</para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">Create local variables to receive passed values or references.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Body Text">LPARAMETERS 语句与 PARAMETERS 语句相同。</para>
+    <para styleclass="Body Text">不过，变量将创建为 LOCAL 变量，而不是动态内存变量，并遵守可选的 &lt;Type&gt; 子句。</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text">创建局部变量，接收传递的值或引用。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">LPARAMETERS &lt;idParameterList&gt;<br/>LPARAMETERS &lt;Parameter1&gt; [ AS &lt;Type&gt; [ OF &lt;ClassLibrary&gt; ] ] [, &lt;Parameter2&gt; [ AS &lt;Type&gt; [ OF &lt;ClassLibrary&gt; ] ] ] </para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;<text styleclass="Code with box">idParameterList</text>&gt;<tab /><text styleclass="Body Text">One or more parameter variables separated by commas. These variables are used to receive arguments that you pass when you call the routine. The variables will be dynamic memory variables</text></para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;<text styleclass="Code with box">idParameterList</text>&gt;<tab /><text styleclass="Body Text">一个或多个参数变量，用逗号分隔。这些变量用于接收调用例程时传递的参数。这些变量将是动态内存变量</text></para>
+    <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__TypeAndCLass" inline="false"/></para>
-    <para styleclass="List"><tab /><text styleclass="Normal">The &lt;ClassLibrary&gt; is ignored but the &lt;Type&gt; is enforced.</text></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Body Text">When a LPARAMETERS statement executes, all variables in the parameter list are created as local variables.</para>
-    <para styleclass="Body Text">Parameters can also be declared as local variables if specified as a part of the PROCEDURE or FUNCTION declaration statement (see the example). Parameters specified in this way are referred to as formal parameters. Note that you cannot specify both formal parameters and a PARAMETERS statement within a procedure or function definition. </para>
-    <para styleclass="Body Text">Attempting to do this results in a compiler error.</para>
-    <para styleclass="Body Text">The number of receiving variables does not have to match the number of arguments passed by the calling routine. If you specify more arguments than parameters, the extra arguments are ignored. If you specify fewer arguments than parameters, the extra parameters are created with a NIL value. If you skip an argument, the corresponding parameter is initialized to NIL.</para>
-    <para styleclass="Body Text">The PCount() function returns the position of the last argument passed in the list of arguments. This is different than the number of parameters passed, since it includes skipped parameters.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Body Text">This function receives values passed into private parameters with a PARAMETERS statement:</para>
+    <para styleclass="List"><tab /><text styleclass="Normal">&lt;ClassLibrary&gt; 会被忽略，但 &lt;Type&gt; 会被执行。</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">LPARAMETERS 语句执行时，参数列表中的所有变量都会创建为局部变量。</para>
+    <para styleclass="Body Text">如果将参数指定为 PROCEDURE 或 FUNCTION 声明语句的一部分，也可以将参数声明为局部变量（请参阅示例）。以这种方式指定的参数称为形参。需要注意的是，在过程或函数定义中不能同时指定形参和 PARAMETERS 语句。</para>
+    <para styleclass="Body Text">否则会导致编译器出错。</para>
+    <para styleclass="Body Text">接收变量的数量不必与调用例程传递的参数数量一致。如果指定的参数多于参数，多余的参数将被忽略。如果指定的参数少于参数，多余的参数将以 NIL 值创建。如果跳过一个参数，相应的参数将被初始化为 NIL。</para>
+    <para styleclass="Body Text">PCount() 函数返回参数列表中最后一个参数的位置。这与传递的参数数不同，因为它包括跳过的参数。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Body Text">该函数接收通过 PARAMETERS 语句传递给私有参数的值：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyFunc()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LPARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cOne, cTwo, cThree</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? cOne, cTwo, cThree</text></para>
-    <para styleclass="Body Text">The next example is identical, but receives values passed into local variables, declared within the FUNCTION declaration:</para>
+    <para styleclass="Body Text">下一个示例完全相同，但接收的是传入局部变量的值，这些局部变量是在 FUNCTION 中声明的：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyFunc(cOne, cTwo, cThree)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? cOne, cTwo, cThree</text></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link></para>
     <para styleclass="Code Example"></para>
   </body>

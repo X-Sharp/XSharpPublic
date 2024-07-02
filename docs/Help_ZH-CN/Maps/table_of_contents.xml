@@ -1465,40 +1465,40 @@
           </topicref>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423890338204503" build="ALL" modified="2019-10-15T13:46:32.053Z" icon="0" href="Expressions">
-        <caption translate="true">Expressions</caption>
-        <topicref type="topic" id="426895968187001" build="ALL" modified="2016-11-15T09:53:58.175Z" icon="0" href="Bound-Expressions">
-          <caption translate="true">Bound Expressions</caption>
+      <topicref type="topic" id="423890338204503" build="ALL" modified="2024-06-30T00:59:05.890Z" icon="0" href="Expressions">
+        <caption translate="true">表达式</caption>
+        <topicref type="topic" id="426895968187001" build="ALL" modified="2024-06-30T01:20:26.532Z" icon="0" href="Bound-Expressions">
+          <caption translate="true">Bound 表达式</caption>
         </topicref>
-        <topicref type="topic" id="426892156794608" build="ALL" modified="2016-11-15T09:54:05.925Z" icon="0" href="Primary-Expressions">
-          <caption translate="true">Primary Expressions</caption>
+        <topicref type="topic" id="426892156794608" build="ALL" modified="2024-06-30T01:20:36.706Z" icon="0" href="Primary-Expressions">
+          <caption translate="true">Primary 表达式</caption>
         </topicref>
         <topicref type="topic" id="426894908055984" build="ALL" modified="2016-11-15T10:12:00.342Z" icon="0" href="Codeblocks">
           <caption translate="true">Codeblocks</caption>
         </topicref>
-        <topicref type="topic" id="452794107968885" build="ALL" modified="2023-12-19T13:57:00.992Z" icon="0" href="Lamda-Expressions">
-          <caption translate="true">Lamda Expressions</caption>
+        <topicref type="topic" id="452794107968885" build="ALL" modified="2024-06-30T01:20:46.929Z" icon="0" href="Lamda-Expressions">
+          <caption translate="true">Lamda 表达式</caption>
         </topicref>
-        <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
-          <caption translate="true">LINQ Expressions</caption>
+        <topicref type="topic" id="423886881484677" build="ALL" modified="2024-06-30T01:20:56.845Z" icon="0" href="LINQ">
+          <caption translate="true">LINQ 表达式</caption>
         </topicref>
-        <topicref type="topic" id="426895382962818" build="ALL" modified="2023-12-19T14:02:17.488Z" icon="0" href="Initializers">
-          <caption translate="true">Initializers</caption>
+        <topicref type="topic" id="426895382962818" build="ALL" modified="2024-06-30T01:22:05.007Z" icon="0" href="Initializers">
+          <caption translate="true">Initializers(初始化器)</caption>
         </topicref>
-        <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
-          <caption translate="true">Compiler Macros</caption>
+        <topicref type="topic" id="425386471139560" build="ALL" modified="2024-06-30T01:22:35.620Z" icon="0" href="Compiler-Macros">
+          <caption translate="true">编译器宏</caption>
         </topicref>
-        <topicref type="topic" id="426775124635299" build="ALL" modified="2016-11-03T12:48:43.200Z" icon="0" href="Pseudo-Functions">
-          <caption translate="true">Pseudo Functions</caption>
+        <topicref type="topic" id="426775124635299" build="ALL" modified="2024-06-30T01:23:10.822Z" icon="0" href="Pseudo-Functions">
+          <caption translate="true">伪函数</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423889109101067" build="ALL" modified="2019-10-15T13:46:43.118Z" icon="0" href="Operators">
-        <caption translate="true">Operators</caption>
+      <topicref type="topic" id="423889109101067" build="ALL" modified="2024-06-30T02:20:18.085Z" icon="0" href="Operators">
+        <caption translate="true">操作符</caption>
         <topicref type="topic" id="423889867171741" build="ALL" modified="2019-08-09T13:02:56.793Z" icon="0" href="Binary_Operators">
           <caption translate="true">Binary</caption>
         </topicref>
-        <topicref type="topic" id="423887682890922" build="ALL" modified="2019-08-09T12:34:49.373Z" icon="0" href="Assignment_Operators">
-          <caption translate="true">Assignment operators</caption>
+        <topicref type="topic" id="423887682890922" build="ALL" modified="2024-06-30T09:19:47.838Z" icon="0" href="Assignment_Operators">
+          <caption translate="true">赋值操作符</caption>
         </topicref>
         <topicref type="topic" id="42387974843972" build="ALL" modified="2019-08-09T12:34:54.498Z" icon="0" href="Logical_Operators">
           <caption translate="true">Logical</caption>
@@ -1506,33 +1506,33 @@
         <topicref type="topic" id="42390446934182" build="ALL" modified="2019-08-09T12:34:58.928Z" icon="0" href="Bitwise_Operators">
           <caption translate="true">Bitwise</caption>
         </topicref>
-        <topicref type="topic" id="42390595140805" build="ALL" modified="2019-08-09T12:35:04.309Z" icon="0" href="Relational_Operators">
-          <caption translate="true">Relational</caption>
+        <topicref type="topic" id="42390595140805" build="ALL" modified="2024-06-30T09:41:29.372Z" icon="0" href="Relational_Operators">
+          <caption translate="true">关系操作符</caption>
         </topicref>
-        <topicref type="topic" id="423889057077198" build="ALL" modified="2019-08-09T12:35:09.251Z" icon="0" href="Shift_Operators">
-          <caption translate="true">Shift</caption>
+        <topicref type="topic" id="423889057077198" build="ALL" modified="2024-06-30T10:01:03.256Z" icon="0" href="Shift_Operators">
+          <caption translate="true">移位操作符</caption>
         </topicref>
-        <topicref type="topic" id="423890249914780" build="ALL" modified="2019-08-09T12:35:14.296Z" icon="0" href="Unary_Operators">
-          <caption translate="true">Unary</caption>
+        <topicref type="topic" id="423890249914780" build="ALL" modified="2024-06-30T10:00:47.371Z" icon="0" href="Unary_Operators">
+          <caption translate="true">一元操作符</caption>
         </topicref>
         <topicref type="topic" id="423888894934256" build="ALL" modified="2019-08-09T12:35:20.228Z" icon="0" href="Workarea_Operators">
           <caption translate="true">Workarea</caption>
         </topicref>
-        <topicref type="topic" id="448037249319543" build="ALL" modified="2022-08-30T15:25:05.659Z" icon="0" href="operator_IIF">
-          <caption translate="true">IIF Operator</caption>
+        <topicref type="topic" id="448037249319543" build="ALL" modified="2024-06-30T10:19:48.556Z" icon="0" href="operator_IIF">
+          <caption translate="true">IIF 操作符</caption>
         </topicref>
-        <topicref type="topic" id="448037383456629" build="ALL" modified="2022-08-30T15:47:52.552Z" icon="0" href="Operator_SizeOf">
-          <caption translate="true">SizeOf Operator</caption>
+        <topicref type="topic" id="448037383456629" build="ALL" modified="2024-06-30T10:29:11.521Z" icon="0" href="Operator_SizeOf">
+          <caption translate="true">SizeOf 操作符</caption>
         </topicref>
-        <topicref type="topic" id="448037292972327" build="ALL" modified="2022-08-30T15:48:00.141Z" icon="0" href="Operator_Typeof">
-          <caption translate="true">TypeOf operator</caption>
+        <topicref type="topic" id="448037292972327" build="ALL" modified="2024-06-30T10:29:20.995Z" icon="0" href="Operator_Typeof">
+          <caption translate="true">TypeOf 操作符</caption>
         </topicref>
-        <topicref type="topic" id="448037931033087" build="ALL" modified="2022-08-30T15:48:08.407Z" icon="0" href="Operator_NameOf">
-          <caption translate="true">NameOf Operator</caption>
+        <topicref type="topic" id="448037931033087" build="ALL" modified="2024-06-30T10:29:30.506Z" icon="0" href="Operator_NameOf">
+          <caption translate="true">NameOf 操作符</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">
-        <caption translate="true">X# Preprocessor Directives</caption>
+      <topicref type="topic" id="423891454294167" build="ALL" modified="2024-06-30T10:38:43.759Z" icon="0" href="X-Preprocessor-Directives">
+        <caption translate="true">X# 预处理器指令</caption>
         <topicref type="topic" id="424525433369825" build="ALL" modified="2023-08-24T15:48:00.469Z" icon="0" href="pp-Command">
           <caption translate="true">#command</caption>
         </topicref>
@@ -1584,24 +1584,24 @@
         <topicref type="topic" id="424524899744417" build="ALL" modified="2016-03-23T11:43:39.153Z" icon="0" href="pp-Undef">
           <caption translate="true">#undef</caption>
         </topicref>
-        <topicref type="topic" id="444973200832473" build="ALL" modified="2021-10-28T12:15:17.154Z" icon="0" href="pp_Match-Markers">
-          <caption translate="true">Match Markers</caption>
+        <topicref type="topic" id="444973200832473" build="ALL" modified="2024-06-30T12:18:30.510Z" icon="0" href="pp_Match-Markers">
+          <caption translate="true">模式匹配</caption>
         </topicref>
-        <topicref type="topic" id="444973078090040" build="ALL" modified="2021-10-28T12:15:24.342Z" icon="0" href="pp_Result-Markers">
-          <caption translate="true">Result Markers</caption>
+        <topicref type="topic" id="444973078090040" build="ALL" modified="2024-06-30T12:52:13.738Z" icon="0" href="pp_Result-Markers">
+          <caption translate="true">结果标记</caption>
         </topicref>
       </topicref>
     </topicref>
-    <topicref type="topic" id="423887666250768" build="ALL" modified="2016-01-19T22:47:35.766Z" icon="0" href="X-Compiler-Options">
-      <caption translate="true">X# Compiler Options</caption>
-      <topicref type="topic" id="423891769948279" build="ALL" modified="2016-01-20T08:58:14.880Z" icon="0" href="Command-line-Building-With-xsc">
-        <caption translate="true">Command-line Building With xsc.exe</caption>
+    <topicref type="topic" id="423887666250768" build="ALL" modified="2024-06-30T13:06:46.701Z" icon="0" href="X-Compiler-Options">
+      <caption translate="true">X# 编译器选项</caption>
+      <topicref type="topic" id="423891769948279" build="ALL" modified="2024-06-30T13:10:00.755Z" icon="0" href="Command-line-Building-With-xsc">
+        <caption translate="true">使用 xsc.exe 进行命令行构建</caption>
       </topicref>
-      <topicref type="topic" id="423888293315751" build="ALL" modified="2016-01-19T22:53:23.657Z" icon="0" href="X-Compiler-Options-By-Category">
-        <caption translate="true">X# Compiler Options By Category</caption>
+      <topicref type="topic" id="423888293315751" build="ALL" modified="2024-06-30T13:10:34.999Z" icon="0" href="X-Compiler-Options-By-Category">
+        <caption translate="true">按类别划分的 X# 编译器选项</caption>
       </topicref>
-      <topicref type="topic" id="423888629693577" build="ALL" modified="2016-01-19T22:53:23.717Z" icon="0" href="X-Compiler-Options-Listed-Alph">
-        <caption translate="true">X# Compiler Options Listed Alphabetically</caption>
+      <topicref type="topic" id="423888629693577" build="ALL" modified="2024-06-30T13:10:54.282Z" icon="0" href="X-Compiler-Options-Listed-Alph">
+        <caption translate="true">按字母顺序排列的 X# 编译器选项</caption>
         <topicref type="topic" id="423895745392288" build="ALL" modified="2016-01-20T09:45:47.193Z" icon="0" href="opt-At">
           <caption translate="true">@</caption>
         </topicref>

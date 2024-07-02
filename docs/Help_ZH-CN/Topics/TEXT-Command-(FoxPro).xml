@@ -1,36 +1,43 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:58:28.990+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T00:14:29.850+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>TEXT 命令(FoxPro))</title>
   <body>
     <header>
       <para styleclass="Heading1">TEXT 命令(FoxPro))</para>
     </header>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ADDITIVE</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXTMERGE</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOSHOW</text><text style="font-weight:normal; font-style:normal; color:#000000;">] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FLAGS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nValue] [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRETEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> eExpression]]</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; TextLines</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">TextLines <tab /><text styleclass="Normal">Specifies text to send to the current output device. TextLines can consist of text, memory variables, array elements, expressions, functions, or any combination of these.</text><br/><text styleclass="Normal">Note</text><br/><text styleclass="Normal">X# evaluates expressions, functions, memory variables, and array elements specified with TextLines only if you set SET TEXTMERGE to ON and enclose them with the delimiters specified by SET TEXTMERGE DELIMITERS. If SET TEXTMERGE is OFF, Visual FoxPro outputs expressions, functions, memory variables, and array elements as string literals along with their delimiters.</text><br/><br/><text styleclass="Normal">For example, X# evaluates and outputs the current date when you specify the DATE( ) function as TextLines only if SET TEXTMERGE is ON, and TextLines contains the function and the appropriate delimiters, such as &lt;&lt;DATE( )&gt;&gt;. If SET TEXTMERGE is OFF, X#outputs &lt;&lt;DATE( )&gt;&gt; as a string literal.</text><br/></para>
-    <para styleclass="List"><tab />If you place comments within TEXT...ENDTEXT or after the single backslash character (\) or double backslash characters (\\), <text styleclass="Normal">X#</text> outputs the comments. </para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">TextLines <tab />指定要发送到当前输出设备的文本。TextLines 可以由文本、内存变量、数组元素、表达式、函数或它们的任意组合组成。</para>
+    <para styleclass="List"><tab />注意</para>
+    <para styleclass="List"><tab />只有将 SET TEXTMERGE 设为 ON 并用 SET TEXTMERGE DELIMITERS 指定的分隔符括起来时，X# 才会计算用 TextLines 指定的表达式、函数、内存变量和数组元素。如果 SET TEXTMERGE 为 OFF，Visual FoxPro 将以字符串字面形式输出表达式、函数、内存变量和数组元素及其分隔符。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />例如，当您指定 DATE( ) 函数为 TextLines 时，只有当 SET TEXTMERGE 为 ON 时，X# 才会求值并输出当前日期，并且 TextLines 包含函数和适当的定界符，如 &lt;&lt;DATE()&gt;&gt;。如果 SET TEXTMERGE 为 OFF，X# 输出 &lt;&lt;DATE( )&gt;&gt; 将以字符串字面形式输出。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />如果将注释放在 TEXT...ENDTEXT 中或单反斜线字符 (\) 或双反斜线字符 (\\) 之后，X# 将输出注释。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">TO &lt;VariableName&gt;<tab />Specifies the memory variable name to use for passing the contents of the TEXT...ENDTEXT. This variable can already exist. </para>
+    <para styleclass="List">TO &lt;VariableName&gt;<tab />指定用于传递 TEXT...ENDTEXT 内容的内存变量名。该变量可以已经存在。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />If the variable has not yet been declared, X# automatically creates it as a private variable. The TO clause operates regardless of how SET TEXTMERGE is set. If SET TEXTMERGE is set to a file, and the TO statement is included, Visual FoxPro outputs both the file and variable. </para>
+    <para styleclass="List"><tab />如果变量尚未声明，X# 会自动将其创建为私有变量。TO 子句的作用与 SET TEXTMERGE 的设置无关。如果 SET TEXTMERGE 被设置为文件，并且包含 TO 语句，Visual FoxPro 将同时输出文件和变量。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ADDITIVE <tab /><text styleclass="Normal">Determines whether the contents of the TO variable are overwritten or added to existing contents. </text><br/><br/><text styleclass="Normal">If the contents of TO &#160;VarName is not a string, X# always overwrites the contents in VarName.</text></para>
+    <para styleclass="List">ADDITIVE <tab /><text styleclass="Normal">决定 TO 变量的内容是被覆盖还是添加到现有内容中。</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab /><text styleclass="Normal">如果 TO VarName 中的内容不是字符串，X# 将始终覆盖 VarName 中的内容。</text></para>
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">TEXTMERGE <tab /><text styleclass="Normal">Enables evaluation of contents surrounded by delimiters without setting SET TEXTMERGE to ON.</text></para>
+    <para styleclass="List">TEXTMERGE <tab /><text styleclass="Normal">无需将 SET TEXTMERGE 设置为 ON，即可评估分隔符包围的内容。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">NOSHOW <tab /><text styleclass="Normal">Disables display of the text merge to the screen.</text></para>
+    <para styleclass="List">NOSHOW <tab /><text styleclass="Normal">禁止在屏幕上显示合并文本。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">FLAGS nValue<tab /><text styleclass="Normal">Specifies a numerical value that determines if output is suppressed to an output file, or if blank lines preceding any text are included in the output.</text></para>
+    <para styleclass="List">FLAGS nValue<tab /><text styleclass="Normal">指定一个数值，用于决定是否抑制输出到输出文件，或是否在输出中包含任何文本前的空行。</text></para>
     <para styleclass="List"><table rowcount="1" colcount="1" style="width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:#ccffff;">
       <tr style="vertical-align:top">
         <td style="width:1051px;">
           <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
             <tr style="vertical-align:top">
               <td style="width:130px;">
-                <para styleclass="Normal">Value (additive)</para>
+                <para styleclass="Normal" style="text-align:center;">值(附加) </para>
               </td>
               <td style="width:899px;">
               </td>
@@ -40,7 +47,7 @@
                 <para styleclass="Normal">1</para>
               </td>
               <td style="width:899px;">
-                <para styleclass="Normal"> Suppresses output to the file specified with the _TEXT System Variable.</para>
+                <para styleclass="Normal"> 禁止输出到使用 _TEXT 系统变量指定的文件。</para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -48,9 +55,9 @@
                 <para styleclass="Normal">2</para>
               </td>
               <td style="width:899px;">
-                <para styleclass="Normal"> When the NOSHOW clause is included, preserves blank lines preceding text that appears within TEXT...ENDTEXT. Setting nValue to 2 will separate current TEXT...ENDTEXT output from previous TEXT...ENDTEXT output with a line feed.</para>
+                <para styleclass="Normal"> 当包含 NOSHOW 子句时，TEXT...ENDTEXT 中出现的文本前保留空行。将 nValue 设置为 2 时，当前的 TEXT...ENDTEXT 输出将与之前的 TEXT...ENDTEXT 输出换行分隔。</para>
                 <para styleclass="Normal"></para>
-                <para styleclass="Normal">Combining an nValue setting of 2 and PRETEXT of 4 will separate current TEXT…ENDTEXT output from previous TEXT…ENDTEXT output with a line feed while removing empty lines in the TEXT...ENDTEXT output. </para>
+                <para styleclass="Normal">如果将 nValue 设置为 2 和 PRETEXT 设置为 4，则当前的 TEXT...ENDTEXT 输出将与之前的 TEXT...ENDTEXT 输出以换行方式分开，同时删除 TEXT...ENDTEXT 输出中的空行。</para>
               </td>
             </tr>
           </table></para>
@@ -60,32 +67,35 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">PRETEXT eExpression<tab />Specifies a character string to insert before each line of the text merge contents between TEXT...ENDTEXT or a numeric expression. </para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><tab />The following table describes behaviors of the PRETEXT clause depending on the expression specified by eExpression. </para>
+    <para styleclass="List">PRETEXT eExpression<tab />指定在 TEXT...ENDTEXT 或数字表达式之间的每行文本合并内容之前插入的字符串。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text style="font-weight:bold;">eExpression</text><tab /><text style="font-weight:bold;">PRETEXT behavior &#160;</text></para>
+    <para styleclass="List"><tab />下表根据 eExpression 指定的表达式描述了 PRETEXT 子句的行为。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">Character expression<tab /><text styleclass="Normal"> Insert the expression before each line of the text merge contents appearing between the TEXT...ENDTEXT statement. When using PRETEXT with TEXT...ENDTEXT, eExpression is limited to a maximum length of 255 characters.</text></para>
-    <para styleclass="List"><tab /><br/><text styleclass="Normal">eExpression overrides the contents of the _PRETEXT system variable. When eExpression contains an expression that needs to be evaluated, for example, a user-defined function (UDF), Visual FoxPro evaluates it only once when the TEXT command first appears.</text></para>
+    <para styleclass="List"><text style="font-weight:bold;">eExpression</text><tab /><text style="font-weight:bold;">PRETEXT 行为 &#160;</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Character expression<tab /><text styleclass="Normal">在 TEXT...ENDTEXT 语句之间出现的文本合并内容的每一行之前插入表达式。与 TEXT...ENDTEXT 一起使用 PRETEXT 时，eExpression 的最大长度限制为 255 个字符。</text></para>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List"><tab /><text styleclass="Normal">eExpression 会覆盖 _PRETEXT 系统变量的内容。当 eExpression 包含一个需要求值的表达式（例如用户定义函数 (UDF)）时，Visual FoxPro 只在 TEXT 命令首次出现时求值一次。</text></para>
     <para styleclass="Normal">&#32;</para>
-    <para styleclass="List">Numeric expression<tab /> Specify additive flag values to determine behavior for the text merge contents appearing between the TEXT...ENDTEXT statement. </para>
-    <para styleclass="List"><br/><text styleclass="Normal">For example, a value of 7 specifies that Visual FoxPro eliminate all white space including spaces, tabs, and carriage returns. A value falling outside of the range of 0-15 produces an error.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><tab /><text styleclass="Normal" style="font-weight:bold;">Note</text></para>
-    <para styleclass="List"><tab />Specifying a value of zero does not eliminate white space.</para>
-    <para styleclass="Normal">&#32;</para>
-    <para styleclass="List"><tab />When eExpression is a numeric expression, you can use the _PRETEXT system variable to insert additional text after Visual FoxPro eliminates white space.<br/>The following table lists numeric additive flags that you can use in eExpression to specify additional behavior. </para>
+    <para styleclass="List">Numeric expression<tab /> 指定加法标志值，以确定在 TEXT...ENDTEXT 语句之间出现的文本合并内容的行为。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />例如，值为 7 时，Visual FoxPro 将消除所有空白，包括空格、制表符和回车。超出 0-15 范围的值将产生错误。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab /><text style="font-weight:bold;">注意</text></para>
+    <para styleclass="List"><tab />指定值为 0 不会消除空白。</para>
+    <para styleclass="List">&#32;</para>
+    <para styleclass="List"><tab />当 eExpression 是数字表达式时，可以使用 _PRETEXT 系统变量在 Visual FoxPro 消除空白后插入附加文本。</para>
+    <para styleclass="List"><tab />下表列出了可以在 eExpression 中使用的数字加法标志，用于指定附加行为。</para>
     <para styleclass="List"><table rowcount="1" colcount="1" style="width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:#ccffff;">
       <tr style="vertical-align:top">
         <td style="width:1245px;">
           <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
             <tr style="vertical-align:top">
               <td style="width:118px;">
-                <para styleclass="Normal">Value (Additive) </para>
+                <para styleclass="Normal" style="text-align:center;">值(附加) </para>
               </td>
               <td style="width:1089px;">
-                <para styleclass="Normal"> Description &#160;</para>
+                <para styleclass="Normal" style="text-align:center;"> 描述</para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -93,7 +103,7 @@
                 <para styleclass="Normal">1</para>
               </td>
               <td style="width:1089px;">
-                <para styleclass="Normal"> Eliminate spaces before each line.</para>
+                <para styleclass="Normal"> 取消每行前的空格。</para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -101,7 +111,7 @@
                 <para styleclass="Normal">2</para>
               </td>
               <td style="width:1089px;">
-                <para styleclass="Normal"> Eliminate tabs before each line</para>
+                <para styleclass="Normal"> 取消每行前的制表符</para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -109,7 +119,7 @@
                 <para styleclass="Normal">4</para>
               </td>
               <td style="width:1089px;">
-                <para styleclass="Normal"> Eliminate carriage returns, for example, blank lines, before each line.</para>
+                <para styleclass="Normal"> 取消每行前的回车，例如空行。</para>
               </td>
             </tr>
             <tr style="vertical-align:top">
@@ -117,41 +127,42 @@
                 <para styleclass="Normal">8</para>
               </td>
               <td style="width:1089px;">
-                <para styleclass="Normal"> Eliminate line feeds.</para>
+                <para styleclass="Normal"> 取消换行</para>
               </td>
             </tr>
           </table></para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="List"><tab />Note &#160;<br/><text styleclass="Normal">Unlike the _PRETEXT system variable, the PRETEXT clause does not have global scope and applies only to the TEXT...ENDTEXT statement in which it appears. </text><br/><br/><text styleclass="Normal">Characters removed using the PRETEXT clause apply only to text within the TEXT...ENDTEXT statement and not to evaluated text merged from cExpression. In the following example, the spaces in the memory variable, myvar, are not removed when merged with the text in TEXT...ENDTEXT: </text></para>
+    <para styleclass="List"><tab />注意事项 &#160;</para>
+    <para styleclass="List"><tab />与 _PRETEXT 系统变量不同，PRETEXT 子句不具有全局范围，仅适用于出现该子句的 TEXT...ENDTEXT 语句。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><tab />使用 PRETEXT 子句删除的字符仅适用于 TEXT...ENDTEXT 语句中的文本，而不适用于从 cExpression 合并的已评估文本。在下面的示例中，内存变量 myvar 中的空格与 TEXT...ENDTEXT 中的文本合并时不会被删除： </para>
     <para styleclass="List"><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">myvar = &quot; &#160; AAA&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">TEXT </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> x NOSHOW </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ADDITIVE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> TEXTMERGE PRETEXT 7</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">Start Line</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&lt;&lt;myvar&gt;&gt;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;BBB</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; CCC</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">ENDTEXT </text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">By default, TEXT ... ENDTEXT sends output to the terminal window. To suppress output to the terminal window, issue SET CONSOLE OFF. To send output to a printer or a text file, use SET PRINTER. To send output from TEXT ... ENDTEXT to a low-level file that you created or opened using FCREATE( ) or FOPEN( ), store the file handle returned by FCREATE( ) or FOPEN( ) to the _TEXT system variable, which you can use to direct output to the corresponding low-level file.</para>
+    <para styleclass="Normal">默认情况下，TEXT ... ENDTEXT 会将输出发送到终端窗口。要禁止向终端窗口输出，请执行 SET CONSOLE OFF。要将输出发送到打印机或文本文件，请使用 SET PRINTER。要将 TEXT ... ENDTEXT 的输出发送到使用 FCREATE( ) 或 FOPEN( ) 创建或打开的底层文件，请将 FCREATE( ) 或 FOPEN( ) 返回的文件句柄存储到 _TEXT 系统变量中，然后使用该变量将输出导向相应的底层文件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The text merge process usually includes any white space that might appear before each line in a TEXT...ENDTEXT statement. However, the inclusion of white space might cause the text merge to fail, for example, when XML is used in a Web browser. You must remove such white space to avoid incorrectly formatted XML.</para>
+    <para styleclass="Normal">文本合并过程通常包括 TEXT...ENDTEXT 语句中每行前可能出现的空白。但是，包含空白可能会导致文本合并失败，例如在 Web 浏览器中使用 XML 时。您必须删除这些空白，以避免 XML 格式错误。</para>
     <para styleclass="Normal">&#32;</para>
-    <para styleclass="Normal">Nesting TEXT...ENDTEXT statements is not recommended, especially if using the PRETEXT clause because the nested statements can affect the format of the outer statements.</para>
-    <para styleclass="Heading1">Example 1 </para>
+    <para styleclass="Normal">不建议嵌套 TEXT...ENDTEXT 语句，尤其是在使用 PRETEXT 子句时，因为嵌套语句会影响外层语句的格式。</para>
+    <para styleclass="Heading1">示例1 </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example demonstrates creating a low-level file called myNamesFile.txt and storing its file handle in the _TEXT system variable. The program exits if the myNamesFile.txt file cannot be created. </para>
+    <para styleclass="Normal">下面的示例演示了创建名为 myNamesFile.txt 的底层文件，并将其文件句柄存储在 _TEXT 系统变量中。如果无法创建 myNamesFile.txt 文件，程序将退出。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The code opens the customer table and outputs the names of the first ten contacts to CotactList.txt. </para>
-    <para styleclass="Normal">The code outputs the text and results of the functions to the text file. </para>
+    <para styleclass="Normal">代码打开客户表，并将前十位联系人的姓名输出到 CotactList.txt。</para>
+    <para styleclass="Normal">代码将文本和函数结果输出到文本文件。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="__TextMerge-Example" inline="false"/><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
-    <para styleclass="Heading1">Example 2 </para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example shows a custom procedure that uses TEXT...ENDTEXT to store an XML DataSet to a variable. In the example, all spaces, tabs, and carriage returns are eliminated.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myProcedure</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DO</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nValue = 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myVar </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOSHOW</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRETEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 7</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;DataSet xmlns=&quot;http://tempuri.org&quot;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;&lt;ALLTRIM(STRCONV(leRetVal.item(0).xml,9))&gt;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;/DataSet&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OTHERWISE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDCASE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDPROC</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
-    <para styleclass="Heading1">See Also</para>
-    <para styleclass="Normal">FOPEN( ) Function</para>
-    <para styleclass="Normal">_PRETEXT System Variable</para>
-    <para styleclass="Normal">SET TEXTMERGE Command</para>
-    <para styleclass="Normal">SET TEXTMERGE DELIMITERS Command</para>
-    <para styleclass="Normal">_TEXT System Variable</para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text directive</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext directive</link></para>
+    <para styleclass="Heading1">示例2 </para>
+    <para styleclass="Normal">下面的示例显示了一个自定义过程，该过程使用 TEXT...ENDTEXT 将 XML 数据集存储到变量中。在示例中，所有空格、制表符和回车符都被删除。</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myProcedure</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DO</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nValue = 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myVar </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NOSHOW</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRETEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> 7</text><tab /><text style="font-weight:normal; font-style:normal; color:#000000;">&amp;&amp; 1 + 2 + 4</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;DataSet xmlns=&quot;http://tempuri.org&quot;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;&lt;ALLTRIM(STRCONV(leRetVal.item(0).xml,9))&gt;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &lt;/DataSet&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">OTHERWISE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDCASE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDPROC</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal">FOPEN( ) 函数</para>
+    <para styleclass="Normal">_PRETEXT 系统变量</para>
+    <para styleclass="Normal">SET TEXTMERGE 命令</para>
+    <para styleclass="Normal">SET TEXTMERGE DELIMITERS 命令</para>
+    <para styleclass="Normal">_TEXT 系统变量</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text 指令</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext 指令</link></para>
   </body>
 </topic>

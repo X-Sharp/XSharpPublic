@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T09:40:27.410+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Bitwise</title>
   <keywords>
     <keyword>&amp;</keyword>
@@ -15,21 +15,22 @@
     <header>
       <para styleclass="Heading1">Bitwise</para>
     </header>
-    <para styleclass="Normal">X# uses the following Bitwise (binary) operators. There are simple character versions of these and also pseudo functions:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 使用以下Bitwise (binary) 操作符。这些操作符有简单的字符版本，也有伪函数：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4" style="width:auto;">
       <tr style="vertical-align:top">
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">操作符</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Pseudo Function</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">伪函数</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">示例</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+          <para styleclass="Normal"><text style="font-weight:bold;">含义</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -90,7 +91,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">The result of a bitwise operation is best understood via ‘truth tables’. If two numbers can, for instance, be defined by 4 bits (expressing numbers 0 up to 15 in decimal value) then, when ‘Anding’ them, use the AND truth table for each bit in turn. If the values in decimal are 5 and 1 then their bit representations are 0101 and 0001. </para>
-    <para styleclass="Body Text"><image src="bitwise-operations.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Body Text">bitwise 操作的结果最好通过 &quot;真值表 &quot;来理解。例如，如果两个数可以用 4 位来定义(用十进制表示的 0 到 15)，那么在对它们进行 &quot;Anding &quot;运算时，依次对每一位使用 AND 真值表。如果十进制数值是 5 和 1，那么它们的位表示就是 0101 和 0001。</para>
+    <para styleclass="Body Text"><image src="bitwise-operations.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
   </body>
 </topic>

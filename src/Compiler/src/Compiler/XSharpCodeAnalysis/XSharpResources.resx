@@ -7723,7 +7723,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
    <data name="WRN_FileWideMemVarDuplicate" xml:space="preserve">
   <value>FIELD or VARIABLE '{0}' has already been declared.</value>
  </data>
-W
+  <data name="ERR_EnforceSelf" xml:space="preserve">
+  <value>{0} '{1}' must be prefixed with {2} when the compiler option -enforceself is enabled.</value>
+ </data>
+
 
 </root>
 

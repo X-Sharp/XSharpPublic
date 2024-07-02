@@ -1031,6 +1031,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         bool isNamedType = (symbol.Kind == SymbolKind.NamedType) || (symbol.Kind == SymbolKind.ErrorType);
 
+                        if (node is IdentifierNameSyntax && !symbol.IsStatic)
+                        {
+                            if (Compilation.Options.HasOption(CompilerOption.EnforceSelf, node))
+                            {
+                                var strSelf = "'SELF:'";
+                                if (Compilation.Options.Dialect == XSharpDialect.FoxPro)
+                                    strSelf += "or 'THIS.'";
+                                diagnostics.Add(ErrorCode.ERR_EnforceSelf, node.Location, symbol.Kind, symbol.Name,strSelf);
+                            }
+                        }
+
                         if (hasTypeArguments && isNamedType)
                         {
                             symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);

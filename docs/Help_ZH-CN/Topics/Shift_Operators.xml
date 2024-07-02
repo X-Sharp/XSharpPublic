@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Shift</title>
+<topic template="Default" modified="2024-06-30T10:01:27.952+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>移位操作符</title>
   <keywords>
     <keyword>&lt;&lt;</keyword>
     <keyword>&gt;&gt;</keyword>
@@ -10,20 +10,21 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Shift</para>
+      <para styleclass="Heading1">移位操作符</para>
     </header>
-    <para styleclass="Normal">X# uses the following shift operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 使用以下移位操作符：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">操作符</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">示例</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">含义</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -34,7 +35,7 @@
           <para styleclass="Normal">x &gt;&gt; y</para>
         </td>
         <td>
-          <para styleclass="Body Text">shift bits right. If the left operand is signed, then left bits are filled with the sign bit. If the left operand is unsigned, then left bits are filled with zero.</para>
+          <para styleclass="Body Text">右移位。如果左操作数是有符号的，那么左 bits 将被符号位填充。如果左操作数是无符号的，则左 bits 将被填充为 0。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -45,11 +46,11 @@
           <para styleclass="Normal">x &lt;&lt; y</para>
         </td>
         <td>
-          <para styleclass="Body Text">shift bits left and fill with zero on the right.</para>
+          <para styleclass="Body Text">左移位并在右边填充 0。</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that shift operators are only supported on integral numeric types</para>
+    <para styleclass="Normal">请注意，移位运算符只支持整数数字类型</para>
   </body>
 </topic>

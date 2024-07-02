@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T11:34:44.381+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#line</title>
   <keywords>
     <keyword>#line</keyword>
@@ -10,13 +10,13 @@
     <header>
       <para styleclass="Heading1">#line</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">#line sets the current line number for the compiler. It is usually inserted by the preprocessor after preprocessing an include file to synchronize the line numbers with the original source file.</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text">#line 为编译器设置当前行号。它通常由预处理器在预处理包含文件后插入，以便使行号与原始源文件同步。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Code with box">#line &lt;number&gt; [FileName]</para>
     <para styleclass="Heading1">Argumes</para>
-    <para styleclass="List">line number <tab />the new line number to use by the compiler. </para>
-    <para styleclass="List">FileName <tab />An optional new filename to use by the compiler </para>
+    <para styleclass="List">line number <tab />编译器使用的新行号。</para>
+    <para styleclass="List">FileName <tab />编译器使用的新文件名，可选项 </para>
     <para styleclass="List"><br/></para>
     <para styleclass="Normal"></para>
   </body>

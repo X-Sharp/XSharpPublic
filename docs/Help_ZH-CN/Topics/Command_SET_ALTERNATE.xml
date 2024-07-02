@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:56:30.186+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-29T23:37:55.370+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET ALTERNATE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,28 +12,28 @@
       <para styleclass="Heading1">SET ALTERNATE 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Write screen output to a text file.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将屏幕输出写入文本文件。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET ALTERNATE TO [&lt;cFileName&gt; [ADDITIVE] ] </para>
     <para styleclass="Normal">SET ALTERNATE ON | OFF | &lt;lToggle&gt; </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;cFileName&gt;<tab />Specifies the name of the ASCII file where screen output is recorded. The name must contain the drive and path. The file name can be specified either as a literal file name or as a character expression in parentheses. When the file name is specified without a file extension, the extension &quot;.TXT&quot; is used by default. <br/></para>
-    <para styleclass="List">ADDITIVE<tab />The option ADDITIVE adds the screen output to the current contents of the file &lt;cFileName&gt; . Without this option, the contents of the file are deleted if the file already exists. If a file with the name &lt;cFileName&gt; does not exist, it is created. </para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;cFileName&gt;<tab />指定记录屏幕输出的 ASCII 文件名称。文件名必须包含驱动器和路径。文件名既可以是字面文件名，也可以是括号中的字符表达式。如果指定的文件名没有文件扩展名，则默认使用扩展名&quot;.TXT&quot;。<br/></para>
+    <para styleclass="List">ADDITIVE<tab />选项 ADDITIVE 将屏幕输出添加到文件 &lt;cFileName&gt; 的当前内容中。如果没有该选项，文件内容将被删除。如果名称为 &lt;cFileName&gt; 的文件不存在，则会创建该文件。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;lToggle&gt;<tab />&lt;lToggle&gt; is a logical expression which must appear in parentheses. Instead of the logical expression, the option ON can be specified for the value .T. (true) or OFF for the value .F. (false). When .T. or ON is specified, screen output is recorded in the file &lt;cFileName&gt; . </para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Body Text">The command SET ALTERNATE opens an ASCII file to record screen output. Only screen output performed using commands like ? or LIST and functions like QOut() and QQOut() is written into the file. Commands containing the option TO FILE work like SET ALTERNATE. . </para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />&lt;lToggle&gt; 是一个逻辑表达式，必须放在括号中。除了逻辑表达式，还可以为 .T. 值指定选项 ON（真），为 .F.值指定选项 OFF（假）。指定 .T. 或 ON 时，屏幕输出将记录在文件 &lt;cFileName&gt; 中。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">命令 SET ALTERNATE 将打开一个记录屏幕输出的 ASCII 文件。只有使用 ? 或 LIST 等命令以及 QOut() 和 QQOut() 等函数执行的屏幕输出才会写入文件。包含 TO FILE 选项的命令与 SET ALTERNATE 类似。. </para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The alternate file (the ASCII file &lt;cFileName&gt; ) is not tied to a single work area, but can be used from all work areas. Output to the file is turned on or off by the options ON | OFF or the logical value of &lt;lToggle&gt; . An alternate file is defined by including a file name in the command SET ALTERNATE. When SET ALTERNATE TO is called without a specified file name, the currently open alternate file is closed and recording screen output to a file is no longer possible. The alternate file is also closed by the commands CLOSE ALTERNATE and CLOSE ALL. </para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Body Text">备用文件（ASCII 文件 &lt;cFileName&gt; ）并不局限于一个工作区，而是可以在所有工作区使用。向文件的输出由选项 ON | OFF 或 &lt;lToggle&gt; 的逻辑值打开或关闭。在 SET ALTERNATE 命令中包含一个文件名，就定义了一个备用文件。如果调用 SET ALTERNATE TO 命令时没有指定文件名，则当前打开的备用文件将被关闭，屏幕输出将无法记录到文件中。通过 CLOSE ALTERNATE 和 CLOSE ALL 命令也可以关闭备用文件。</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="__ConsoleExample" inline="false"/></para>
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetAlternate.htm" domain="XSharpRef.chm" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SetAlternate()</link><text styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">,</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetAltFile.htm" domain="XSharpRef.chm" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SetAltFile()</link><text styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_CONSOLE" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SET CONSOLE</link></para>
   </body>
 </topic>

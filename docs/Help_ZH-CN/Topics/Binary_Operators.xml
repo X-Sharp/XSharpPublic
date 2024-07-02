@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T02:33:11.993+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Binary</title>
   <keywords>
     <keyword>-</keyword>
@@ -15,20 +15,21 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Binary Operators</para>
+      <para styleclass="Heading1">Binary 操作符</para>
     </header>
-    <para styleclass="Normal">X# uses the following binary operators:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 使用以下二进制操作符：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">操作符</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">示例</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">含义</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -39,7 +40,7 @@
           <para styleclass="Normal">x + y</para>
         </td>
         <td>
-          <para styleclass="Body Text">addition</para>
+          <para styleclass="Body Text">加法</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -50,7 +51,7 @@
           <para styleclass="Normal">x - y</para>
         </td>
         <td>
-          <para styleclass="Body Text">subtraction</para>
+          <para styleclass="Body Text">减法</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -61,7 +62,7 @@
           <para styleclass="Normal">x * y</para>
         </td>
         <td>
-          <para styleclass="Body Text">multiplication</para>
+          <para styleclass="Body Text">乘法</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -72,7 +73,7 @@
           <para styleclass="Normal">x / y</para>
         </td>
         <td>
-          <para styleclass="Body Text">division. If the operands are integers, the result is an integer truncated toward zero (for example, -7 / 2 is -3).</para>
+          <para styleclass="Body Text">除法。如果操作数是整数，结果是一个向零截断的整数（例如，-7 / 2 是-3）。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -83,29 +84,29 @@
           <para styleclass="Normal">x % y</para>
         </td>
         <td>
-          <para styleclass="Body Text">modulus. If the operands are integers, this returns the remainder of dividing x by y. If q = x / y and r = x % y, then x = q * y + r.</para>
+          <para styleclass="Body Text">模数。如果操作数是整数，则返回 x 除以 y 的余数。如果 q = x / y，r = x % y，则 x = q * y + r。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">^ or **</para>
+          <para styleclass="Normal">^ 或 **</para>
         </td>
         <td>
-          <para styleclass="Normal">x ^ y or x ** y</para>
+          <para styleclass="Normal">x ^ y 或 x ** y</para>
         </td>
         <td>
-          <para styleclass="Body Text">power of. x ^ y returns x to the power of y</para>
+          <para styleclass="Body Text">x ^ y 将返回 x 的 y 次幂</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">default or ??</para>
+          <para styleclass="Normal">default 或 ??</para>
         </td>
         <td>
           <para styleclass="Normal">x DEFAULT y<br/>x ?? y</para>
         </td>
         <td>
-          <para styleclass="Body Text">When x is not null then x, otherwise y. Can be chained: x DEFAULT y DEFAULT z or x ?? y ?? z</para>
+          <para styleclass="Body Text">当 x 不为 null 时为 x，否则为 y。可以串联： x DEFAULT y DEFAULT z or x ?? y ?? z</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -118,19 +119,19 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Binary operators and XBase types </para>
-    <para styleclass="Normal">The following XBase types support binary operators.</para>
+    <para styleclass="Heading2">二进制操作符和 XBase 类型 </para>
+    <para styleclass="Normal">以下 XBase 类型支持二进制操作符。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="3">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Type</para>
+          <para styleclass="Normal" style="text-align:center;">类型</para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal">Operator</para>
+          <para styleclass="Normal" style="text-align:center;">操作符</para>
         </td>
         <td>
-          <para styleclass="Normal">Description</para>
+          <para styleclass="Normal" style="text-align:center;">描述</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -138,10 +139,10 @@
           <para styleclass="Normal">ARRAY</para>
         </td>
         <td>
-          <para styleclass="Normal">none</para>
+          <para styleclass="Normal">无</para>
         </td>
         <td>
-          <para styleclass="Normal">binary operators are not supported for arrays</para>
+          <para styleclass="Normal">数组不支持二进制操作符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -149,10 +150,11 @@
           <para styleclass="Normal">DATE</para>
         </td>
         <td>
-          <para styleclass="Normal">+ and -</para>
+          <para styleclass="Normal">+ 和 -</para>
         </td>
         <td>
-          <para styleclass="Normal">You can add and subtract a numeric to a date, which is the equivalent of adding days.<br/>You can subtract a date from a date which will return the number of days between the dates</para>
+          <para styleclass="Normal">您可以对日期进行加减运算，这相当于增加天数。</para>
+          <para styleclass="Normal">您可以从日期中减去一个日期，返回日期之间的天数。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -160,10 +162,10 @@
           <para styleclass="Normal">FLOAT</para>
         </td>
         <td>
-          <para styleclass="Normal">all</para>
+          <para styleclass="Normal">所有</para>
         </td>
         <td>
-          <para styleclass="Normal">You can perform all binary operations on FLOATs when both operands are numeric. The compiler will automatically insert a conversion from &lt;any numeric type&gt; to FLOAT when the right hand side of the binary operator is not a float</para>
+          <para styleclass="Normal">当两个操作数都是数值时，可以对 FLOAT 执行所有二进制操作。当二进制运算符的右边不是浮点数时，编译器会自动插入从 &lt; 任何数值类型&gt; 到 FLOAT 的转换</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -171,10 +173,10 @@
           <para styleclass="Normal">SYMBOL</para>
         </td>
         <td>
-          <para styleclass="Normal">none</para>
+          <para styleclass="Normal">无</para>
         </td>
         <td>
-          <para styleclass="Normal">binary operators are not supported for arrays</para>
+          <para styleclass="Normal">数组不支持二进制操作符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -182,10 +184,10 @@
           <para styleclass="Normal">STRING</para>
         </td>
         <td>
-          <para styleclass="Normal">+ and -</para>
+          <para styleclass="Normal">+ 和 -</para>
         </td>
         <td>
-          <para styleclass="Normal">The + operator will add 2 strings. The - operator will add the RHS to the LHS and move all trailing spaces of the LHS to the end of the resulting string. You can also add STRING values and SYMBOL values. The SYMBOLs will automatically be converted to strings</para>
+          <para styleclass="Normal">+ 运算符将添加 2 个字符串。操作符 - 会将 RHS 添加到 LHS，并将 LHS 的所有尾部空格移到结果字符串的末尾。您还可以添加字符串值和符号值。符号将自动转换为字符串</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -193,10 +195,10 @@
           <para styleclass="Normal">USUAL</para>
         </td>
         <td>
-          <para styleclass="Normal">all</para>
+          <para styleclass="Normal">所有</para>
         </td>
         <td>
-          <para styleclass="Normal">You can use all binary operators on USUALs. The code in the runtime will check to see if the 2 sides are &quot;compatible&quot; and will produce a runtime error when the operation is not available.</para>
+          <para styleclass="Normal">您可以在 USUAL 上使用所有二进制运算符。运行时代码会检查两边是否 &quot;兼容&quot;，如果操作不可用，就会产生运行时错误。</para>
         </td>
       </tr>
     </table></para>

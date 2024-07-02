@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Preprocessor Directives</title>
+<topic template="Default" modified="2024-06-30T10:39:09.550+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 预处理器指令</title>
   <keywords>
     <keyword>Preprocessor</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">X# Preprocessor Directives</para>
+      <para styleclass="Heading1">X# 预处理器指令</para>
     </header>
-    <para styleclass="Normal">The XSharp preprocessor supports the following preprocessor directives</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">XSharp 预处理器支持以下预处理器指令</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">#command</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Define">#define</link></para>

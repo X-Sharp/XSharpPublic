@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-02T06:29:17.432+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-checksumalgorithm</title>
   <keywords>
     <keyword>-checksumalgorithm</keyword>
@@ -9,16 +9,17 @@
     <header>
       <para styleclass="Heading1">-checksumalgorithm</para>
     </header>
-    <para styleclass="Body Text">Specify the algorithm for calculating the source file checksum stored in PDB. Supported values are: SHA1 (default) or SHA256.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">指定计算 PDB 中存储的源文件校验和的算法。支持的值有 SHA1（默认）或 SHA256。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-checksumalgorithm:&lt;alg&gt;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;User-Defined Command Line options&quot; property</li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性 &quot;页面.</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 页签</li>
+      <li styleclass="Normal" style="margin-left:13px;">在 &quot;Extra Command Line options&quot;属性中添加该选项</li>
     </list>
   </body>
 </topic>

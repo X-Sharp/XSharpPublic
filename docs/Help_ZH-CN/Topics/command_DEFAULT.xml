@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T00:51:09.634+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-29T21:32:19.522+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DEFAULT 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -13,12 +13,12 @@
       <para styleclass="Heading1">DEFAULT 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Assign a default value to a NIL argument.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">为 NIL 参数指定默认值。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">DEFAULT &lt;idVar&gt; TO &lt;uDefault&gt; [, &lt;idVar&gt; TO &lt;uDefault&gt;...]</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">DEFAULT is functionally equivalent to Default(), except that DEFAULT lets you assign multiple default values. &#160;</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">DEFAULT 的功能等同于 Default()，只是 DEFAULT 可以分配多个默认值。 </para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1"></para>
   </body>

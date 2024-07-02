@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>IIF Operator</title>
+<topic template="Default" modified="2024-06-30T10:28:59.222+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IIF 操作符</title>
   <body>
     <header>
-      <para styleclass="Heading1">IIF Operator</para>
+      <para styleclass="Heading1">IIF 操作符</para>
     </header>
-    <para styleclass="Body Text">The IIF operator returns one of two values, depending on an expression that returns a value of type LOGIC. The IIF operator is of the form:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">IIF 运算符根据返回 LOGIC 类型值的表达式，返回两个值中的一个。IIF 运算符的形式为</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table rowcount="1" colcount="1" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
@@ -15,38 +16,40 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Heading1">备注</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><text style="font-style:italic;">conditionExpression</text> may be any expression that returns a value of type LOGIC, or a type that can be implicitly converted to LOGIC.</para>
-    <para styleclass="Body Text">If <text style="font-style:italic;">conditionExpression</text> evaluates to TRUE, <text style="font-style:italic;">trueExpression</text> is evaluated and is the result. If <text style="font-style:italic;">conditionExpression</text> evaluates to FALSE, <text style="font-style:italic;">falseExpression</text> is evaluated and is the result. <br/>Only one of the two expressions is ever evaluated.</para>
+    <para styleclass="Body Text"><text style="font-style:italic;">conditionExpression 可以是任何返回 LOGIC 类型值的表达式，或可以隐式转换为 LOGIC 类型的表达式。</text></para>
+    <para styleclass="Body Text"><text style="font-style:italic;">如果 conditionExpression 的值为 TRUE，则会对 trueExpression 进行求值并得到结果。如果 conditionExpression 的值为 FALSE，则会对 falseExpression 进行运算并得出结果。</text></para>
+    <para styleclass="Body Text"><text style="font-style:italic;">两个表达式中只有一个会被求值。</text></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The return type of the IIF operator is determined by the following rules:</para>
-    <para styleclass="Body Text">Given:</para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">tT is the type of trueExpression</li>
-      <li styleclass="Body Text">tF is the type of falseExpression</li>
-      <li styleclass="Body Text">tR is the return type of the IIF expression</li>
+    <para styleclass="Body Text"><text style="font-style:italic;">IIF 运算符的返回类型由以下规则决定：</text></para>
+    <para styleclass="Body Text"><text style="font-style:italic;">前提</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">tT 是 trueExpression 的类型</li>
+      <li styleclass="Body Text">tF 是 falseExpression 的类型</li>
+      <li styleclass="Body Text">tR 是 IIF 表达式类型</li>
     </list>
     <para styleclass="Body Text"></para>
-    <list id="13" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">If tT and tF are the same type, tR is that type. </li>
-      <li styleclass="Body Text">If tT and/or tF is USUAL, then tT or tF is converted to USUAL if necessary, and tR is USUAL. </li>
-      <li styleclass="Body Text">If tT can be implicitly converted to tF, tR is tF. </li>
-      <li styleclass="Body Text">If tF can be implicitly converted to tT, tR is tT. </li>
-      <li styleclass="Body Text">If tT can be implicitly converted to tF and tF can be implicitly converted to tT, then tR is ambiguous and a compiler error is raised. </li>
-      <li styleclass="Body Text">If tT cannot be implicitly converted to tF and tF cannot be implicitly converted to tT, then tR is indeterminate and a compiler error s raised. <br/><text style="font-weight:bold;">Note </text>that if tT and tF are VOID, tR is VOID and the IIF operator cannot be used as an operand in another expression, or as a function or method parameter. <br/>In this case, the IIF operator is essentially the same as an IF...ELSE...ENDIF construct and can only be used in stand-alone expression statements.<br/></li>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">如果 tT 和 tF 是同一类型，则 tR 就是该类型。</li>
+      <li styleclass="Body Text">如果 tT 和/或 tF 为 USUAL，则必要时将 tT 或 tF 转换为 USUAL，tR 为 USUAL。</li>
+      <li styleclass="Body Text">如果 tT 可以隐式转换为 tF，那么 tR 就是 tF。</li>
+      <li styleclass="Body Text">如果 tF 可以隐式转换为 tT，那么 tR 就是 tT。</li>
+      <li styleclass="Body Text">如果 tT 可以隐式地转换为 tF，而 tF 也可以隐式地转换为 tT，那么 tR 就是模棱两可的，编译器会出错。</li>
+      <li styleclass="Body Text">如果 tT 不能隐式转换为 tF，而 tF 又不能隐式转换为 tT，那么 tR 就是不确定的，编译器会出错。<br/><text style="font-weight:bold;">请注意</text>，如果 tT 和 tF 是 VOID，则 tR 也是 VOID，并且 IIF 操作符不能用作其他表达式的操作数，也不能用作函数或方法参数。</li>
     </list>
-    <para styleclass="Body Text">In cases 5 and 6, it may be possible to resolve the error by specifying an explicit cast on trueExpression or falseExpression.</para>
+    <para styleclass="Body Text"> &#160; &#160; 在这种情况下，IIF 操作符本质上与 IF...ELSE...ENDIF 结构相同，只能在独立的表达式语句中使用。<br/></para>
+    <para styleclass="Body Text">在第 5 和第 6 种情况下，可以通过对 trueExpression 或 falseExpression 进行显式转换来解决错误。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">This behavior is different than in some other XBase dialects In these dialects the return is usually determined by the following rules</para>
-    <list id="14" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">If tT and tF are the same type, tR is that type. </li>
-      <li styleclass="Body Text">Otherwise tT and tR are implicitly converted to USUAL and tR is USUAL. </li>
+    <para styleclass="Body Text">在这些方言中，返回值通常由以下规则决定</para>
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">如果 tT 和 tF 是同一类型，则 tR 就是该类型。</li>
+      <li styleclass="Body Text">否则 tT 和 tR 将隐式转换为 USUAL，tR 为 USUAL。</li>
     </list>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">You can use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">/vo10</link> compiler option to enable this behavior in X#, but this is only recommended for code originally written in other environments, such as Visual Objects.</para>
+    <para styleclass="Body Text">您可以使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10">/vo10</link> 编译器选项在 X# 中启用此行为，但只建议在其他环境（如 Visual Objects）中编写的代码使用此选项。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading2">Note</para>
-    <para styleclass="Normal">For compatibility with Visual Objects and several other dialects the IF() operator is also supported</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">为了与 Visual Objects 和其他几种方言兼容，还支持 IF() 操作符</para>
   </body>
 </topic>

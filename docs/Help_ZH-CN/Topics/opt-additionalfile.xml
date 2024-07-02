@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T21:51:40.864+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-additionalfile</title>
   <keywords>
     <keyword>-additionalfile</keyword>
@@ -9,12 +9,14 @@
     <header>
       <para styleclass="Heading1">-additionalfile</para>
     </header>
-    <para styleclass="Body Text">The -additionalfile commandline option allows you to include extra files in the assembly. To support this scenario the X# compiler can accept additional, non-source text files as inputs.</para>
-    <para styleclass="Body Text"><text styleclass="Heading2">Syntax</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">通过 -additionalfile 命令行选项，您可以在程序集中包含额外的文件。为了支持这种情况，X# 编译器可以接受额外的非源代码文本文件作为输入。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Heading2">语法</text></para>
     <para styleclass="Code with box">-additionalfile:file &#160;</para>
-    <para styleclass="Body Text">For example, an analyzer may enforce that a set of banned terms is not used within a project, or that every source file has a certain copyright header. The terms or copyright header could be passed to the analyzer as an additional file, rather than being hard-coded in the analyzer itself.</para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">On the command line, additional files can be passed using The -additionalfile option. For example:</para>
+    <para styleclass="Body Text">例如，分析器可以强制要求在项目中不使用一组禁用术语，或者每个源文件都有特定的版权标题。术语或版权标题可以作为附加文件传递给分析器，而不是硬编码在分析器本身。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">在命令行中，可以使用 -additionalfile 选项传递附加文件。例如</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">xsc alpha.prg -additionalfile:terms.txt &#160;</para>

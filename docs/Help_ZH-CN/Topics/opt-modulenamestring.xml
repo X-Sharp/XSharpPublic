@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-01T19:42:13.201+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-modulename</title>
   <keywords>
     <keyword>-modulename</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">-modulename:&lt;string&gt;</para>
     </header>
-    <para styleclass="Body Text">Specify the name of the source module</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">指定源模块名称</para>
   </body>
 </topic>

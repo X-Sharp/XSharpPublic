@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T01:29:29.261+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-errorendlocation</title>
   <keywords>
     <keyword>-errorendlocation</keyword>
@@ -9,10 +9,11 @@
     <header>
       <para styleclass="Heading1">-errorendlocation</para>
     </header>
-    <para styleclass="Normal">The -errorendlocation tells the compiler to Output the line and column of the end location of &#160;each error in addition to the start location of the error/</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">errorendlocation告诉编译器，除了输出错误的起始位置外，还要输出每个错误结束位置的行和列。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-errorendlocation</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically. It is enabled by default when compiling inside Visual Studio.</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也无法通过编程更改。在 Visual Studio 中编译时，默认启用该选项。</para>
   </body>
 </topic>

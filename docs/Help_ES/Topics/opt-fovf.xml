@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T20:49:15.928+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-fovf</title>
   <keywords>
     <keyword>-checked</keyword>
@@ -10,6 +10,9 @@
     <header>
       <para styleclass="Heading1">-fovf</para>
     </header>
-    <para styleclass="Normal">The -fovf compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">-checked</link> command line option for compatibility.</para>
+    <para styleclass="Normal">The -ovf compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">-checked</link> command line option for compatibility.</para>
+    <para styleclass="Normal">We have added this option because Vulcan.Net also had that option.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></para>
   </body>
 </topic>

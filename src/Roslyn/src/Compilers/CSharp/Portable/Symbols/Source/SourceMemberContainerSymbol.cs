@@ -1638,7 +1638,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     foreach (var member in members)
                     {
-                        if (member.HasClipperCallingConvention())
+                        if (member is MethodSymbol && member.HasClipperCallingConvention())
                         {
                             diagnostics.Add(ErrorCode.ERR_ClipperOverloaded, member.Locations[0], member.ContainingType, member.Name);
                             return;

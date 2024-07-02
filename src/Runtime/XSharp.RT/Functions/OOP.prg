@@ -840,10 +840,12 @@ internal static class OOPHelpers
             oObject := oWrapped:Object
             t       := oWrapped:Type
         endif
+        var found := false
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, true, lSelf)
             if propInfo != null_object .and. propInfo:CanRead
                 var visible := lSelf .or. propInfo:GetMethod:IsPublic
+                found := true
                 if (! visible .and. propInfo:GetMethod:IsAssembly)
                     visible := IsInternalVisible(propInfo)
                 endif
@@ -884,10 +886,16 @@ internal static class OOPHelpers
         if SendHelper(oObject, "NoIVarGet", <usual>{cIVar}, out var oResult,false)
             return oResult
         end if
-        var oError := Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar} )
-        oError:Description := oError:Message+" '"+cIVar+"'"
-        throw oError
-
+        if found
+            // the error should indicate that the property was found but it is not visible in this code
+            var oError :=  Error.VOError( EG_NOACCESS, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, lSelf})
+            oError:Description := "Access to variable '"+cIVar+"' not allowed in this context"
+            throw oError
+        else
+            var oError := Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar} )
+            oError:Description := oError:Message+" '"+cIVar+"'"
+            throw oError
+        endif
         // This property is set in the constructor of Dynamic Classes
         // To allow the codeblock for the INIT method to access hidden/private fields
     internal static property EmulateSelf as logic auto
@@ -909,9 +917,11 @@ internal static class OOPHelpers
         endif
         lSelf := lSelf .or. EmulateSelf
         try
+            var found := false
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
             if propInfo != null_object .and. propInfo:CanWrite
                 var visible := lSelf .or. propInfo:SetMethod:IsPublic
+                found := true
                 if (! visible .and. propInfo:SetMethod:IsAssembly)
                     visible := IsInternalVisible(propInfo)
                 endif
@@ -923,6 +933,7 @@ internal static class OOPHelpers
             endif
             var fldInfo := OOPHelpers.FindField(t, cIVar, false, lSelf)
             if fldInfo != null_object
+                found := true
                 oValue := OOPHelpers.ValueConvert(oValue, fldInfo:FieldType)
                 fldInfo:SetValue(oObject, oValue)
                 return
@@ -931,9 +942,16 @@ internal static class OOPHelpers
             if SendHelper(oObject, "NoIVarPut", <usual>{cIVar, oValue})
                 return
             end if
-            var oError :=  Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, oValue, lSelf})
-            oError:Description := oError:Message+" '"+cIVar+"'"
-            throw oError
+            if found
+                // the error should indicate that the property was found but it is not visible in this code
+                var oError :=  Error.VOError( EG_NOACCESS, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, oValue, lSelf})
+                oError:Description := "Access to variable '"+cIVar+"' not allowed in this context"
+                throw oError
+            else
+                var oError :=  Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, oValue, lSelf})
+                oError:Description := oError:Message+" '"+cIVar+"'"
+                throw oError
+            endif
         catch e as TargetInvocationException
             if e:InnerException is WrappedException
                 throw e:InnerException

@@ -2346,6 +2346,9 @@
   <data name="RT_MSG_ERR_59" xml:space="preserve">
     <value>Exception raised by CLR or external code</value>
   </data>
+  <data name="RT_MSG_ERR_60" xml:space="preserve">
+    <value>No Access to field or variable</value>
+  </data>
   <data name="RT_MSG_ERR_UNKNOWN" xml:space="preserve">
     <value>Unknown error</value>
   </data>

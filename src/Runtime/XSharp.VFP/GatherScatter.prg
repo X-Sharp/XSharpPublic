@@ -82,8 +82,8 @@ FUNCTION __ScatterMemVar(aFieldList, lBlank,lMemo) AS LOGIC CLIPPER
     NEXT
     RETURN TRUE
 
-FUNCTION __GatherMemVar(aFieldList) AS LOGIC CLIPPER
-    VAR aFields := __BuildFieldList(aFieldList, FALSE)
+FUNCTION __GatherMemVar(aFieldList, lMemo) AS LOGIC CLIPPER
+    VAR aFields := __BuildFieldList(aFieldList, lMemo)
     FOREACH var cField in aFields
         __FieldSet(cField, MemVarGet(cField))
     NEXT
@@ -118,8 +118,8 @@ FUNCTION __ScatterArray(uSource, aFieldList, lBlank, lMemo) AS ARRAY CLIPPER
     RETURN aResult
 
 
-FUNCTION __GatherArray(uSource, aFieldList) AS LOGIC CLIPPER
-    VAR aFields := __BuildFieldList(aFieldList, FALSE)
+FUNCTION __GatherArray(uSource, aFieldList, lMemo) AS LOGIC CLIPPER
+    VAR aFields := __BuildFieldList(aFieldList, lMemo)
     VAR current := 0
     IF ! IsArray(uSource)
         RETURN FALSE
@@ -175,8 +175,8 @@ FUNCTION __ScatterObject(aFieldList, lBlank, cObject, lAdditive, lMemo) AS OBJEC
     RETURN oResult
 
 
-FUNCTION __GatherObject(oObject, aFieldList ) AS LOGIC CLIPPER
-    VAR aFields := __BuildFieldList(aFieldList, FALSE)
+FUNCTION __GatherObject(oObject, aFieldList, lMemo ) AS LOGIC CLIPPER
+    VAR aFields := __BuildFieldList(aFieldList, lMemo)
     LOCAL oLocal as OBJECT
     IF ! IsObject(oObject)
         RETURN FALSE

@@ -200,6 +200,9 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
     cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
     local cOutPutType as STRING
     LOCAL result as LOGIC
+    EnforceType(REF lCdx, __UsualType.Logic)
+    EnforceType(REF lRest, __UsualType.Logic)
+    EnforceType(REF lNoOptimize, __UsualType.Logic)
     VAR aFieldNames := __BuildFieldList(aFields, TRUE)
     LOCAL acFields := {} AS ARRAY
     FOREACH var cField in aFieldNames
@@ -222,10 +225,10 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
             endif
             result := DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
         CASE "dbf"
-            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
+            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, RddSetDefault(),,,lCdx)
         CASE "foxplus"
         CASE "fox2x"
-            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX")
+            result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX",,, lCdx)
 
         OTHERWISE
             // Other Formats
@@ -460,9 +463,6 @@ FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
 FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     lOnline, lAdmin, lAgain, lNoData, lNoRequery, nDataSession, uConnection) AS LOGIC CLIPPER
 
-IF ! IsNil(uArea)
-    DbSelectArea(uArea)
-ENDIF
 LOCAL cDriver := "DBFVFP" AS STRING
 IF !IsNil(lAgain) .and. lAgain
     // select other area where cDataFile is open and copy lShared, lReadonly
@@ -520,12 +520,23 @@ FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     ELSE
         acStruct := NULL_ARRAY
     ENDIF
+    VAR siFrom   := VoDbGetSelect()
     var result := DbCreate(cTargetFile, VoDb.FieldList(DbStruct(), acStruct, NULL_ARRAY) )
     IF IsLogic(lCdx) .and. lCdx
-        // Create index later
+        local aOrders := {} AS ARRAY
+        aOrders := __DbGetTags()
+        result  := DbUseArea(TRUE, ,cTargetFile,__UniqueAlias(cTargetFile),FALSE,FALSE)
+        IF result
+            result := __DbCreateTags(aOrders)
+            VoDbCloseArea()
+        ENDIF
     ENDIF
+    VoDbSetSelect((INT) siFrom)
     return result
 
 
 FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC
     return DbCopyXStruct(cTargetFile)
+
+
+

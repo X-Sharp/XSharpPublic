@@ -260,16 +260,15 @@ FUNCTION DbAppSdf(cSourceFile, acFields, cbForCondition,cbWhileCondition, nNext,
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopy/*" />
 FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
-        nNext, nRecord, lRest, cDriver, acRDDs, lNoOpt)     AS LOGIC CLIPPER
+        nNext, nRecord, lRest, cDriver, acRDDs, lNoOpt, lIndexes)     AS LOGIC CLIPPER
 
     LOCAL siFrom        AS DWORD
     LOCAL siTo          AS DWORD
     LOCAL lRetCode      AS LOGIC
     LOCAL lAnsi         AS LOGIC
     LOCAL lDbfAnsi      AS LOGIC
-
+    LOCAL aOrders := {} as ARRAY
     lAnsi    := SetAnsi()
-
     siFrom   := VoDbGetSelect()
     siTo    := 0
     lRetCode := .F.
@@ -283,17 +282,16 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
         lDbfAnsi := DbInfo(DBI_ISANSI)
 
         IF  Empty(acFields)                      .AND. ;
-                cbForCondition:IsNil                      .AND. ;
-                cbWhileCondition:IsNil                    .AND. ;
-                nNext:IsNil                        .AND. ;
-                nRecord:IsNil                         .AND. ;
-                Empty(lRest)                        .AND. ;
-                cDriver:IsNil                      .AND. ;
-                acRDDs:IsNil                      .AND. ;
-                ( lDbfAnsi == lAnsi )               .AND. ;
-                ( DbInfo(DBI_MEMOHANDLE) == 0 )     .AND. ;
+                cbForCondition:IsNil             .AND. ;
+                cbWhileCondition:IsNil           .AND. ;
+                nNext:IsNil                      .AND. ;
+                nRecord:IsNil                    .AND. ;
+                Empty(lRest)                     .AND. ;
+                cDriver:IsNil                    .AND. ;
+                acRDDs:IsNil                     .AND. ;
+                ( lDbfAnsi == lAnsi )            .AND. ;
+                ( DbInfo(DBI_MEMOHANDLE) == 0 )  .AND. ;
                 (DbOrderInfo(DBOI_ORDERCOUNT) = 0)
-
             lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cTargetFile, DbInfo(DBI_FULLPATH) )
         ELSE
             IF !IsArray(acFields)
@@ -323,7 +321,17 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
             DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
             VoDbSelect(siFrom, out siTo)
 
+            IF IsLogic(lIndexes) .and. lIndexes
+                aOrders := __DbGetTags()
+            ENDIF
+
+
             lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
+
+            IF lRetCode .and. IsLogic(lIndexes) .and. lIndexes
+                VoDbSetSelect(INT(siTo))
+                lRetCode := __DbCreateTags(aOrders)
+            ENDIF
 
             IF (siTo > 0)
                 VoDbSetSelect(INT(siTo))
@@ -347,6 +355,31 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
 
 #define BUFF_SIZE 0x00008000
 #define FO_CREATE 0x00001000
+
+FUNCTION __DbGetTags() AS ARRAY
+    LOCAL aOrders := {} as ARRAY
+    LOCAL nOrders := DbOrderInfo(DBOI_ORDERCOUNT) AS LONG
+    FOR var i := 1 to nOrders
+        var name    := DbOrderInfo(DBOI_NAME,, i)
+        var expr    := DbOrderInfo(DBOI_EXPRESSION,, i)
+        var unique  := DbOrderInfo(DBOI_UNIQUE,, i)
+        AAdd(aOrders, {name, expr, unique})
+    NEXT
+    RETURN aOrders
+
+FUNCTION __DbCreateTags(aOrders as ARRAY) AS LOGIC
+    local lRetCode := .T. AS LOGIC
+    FOR var i := 1 to ALen(aOrders)
+            var name    := aOrders[i][1]
+            var expr    := aOrders[i][2]
+            var unique  := aOrders[i][3]
+            lRetCode := OrdCreate(,name, expr, ,unique)
+            IF ! lRetCode
+                EXIT
+            endif
+    NEXT
+    RETURN lRetCode
+
 
 FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS LOGIC
 
@@ -955,5 +988,6 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
     END TRY
 
     RETURN (lRetCode)
+
 
 

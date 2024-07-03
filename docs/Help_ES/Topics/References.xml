@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>References</title>
+  <keywords>
+    <keyword>References to External .Net Assemblies</keyword>
+    <keyword>References to External COM components</keyword>
+    <keyword>References to other Visual Studio projects</keyword>
+    <keyword>References to unmanaged code</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">References</para>
+    </header>
+    <para styleclass="Normal">XSharp projects inside Visual studio work with source code items and may contain references to code defined in external libraries.</para>
+    <para styleclass="Normal">Inside Visual Studio you can set these references through the References dialog.</para>
+    <para styleclass="Normal">In short there are 3 kinds of references:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="project_references_Assembly">External .Net assemblies</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="project_references_COM">External COM components</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="project_references_Project">Other projects inside the same Visual Studio solution.</link></li>
+    </list>
+    <para styleclass="Heading2">References to unmanaged code</para>
+    <para styleclass="Normal">You cannot add references to unmanaged code using the Project References. </para>
+    <para styleclass="Normal">To call unmanaged code you will have to declare either functions or procedures with the _DLL prefix, or you declare static methods or functions and add a special [DllImport()] attribute to them. </para>
+  </body>
+</topic>

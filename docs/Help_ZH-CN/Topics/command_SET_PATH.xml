@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET PATH Command</title>
+<topic template="Default" modified="2024-06-27T20:16:37.031+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET PATH 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Environment</keyword>
@@ -13,17 +13,17 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET PATH Command</para>
+      <para styleclass="Heading1">SET PATH 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1"><text>Purpose</text></para>
-    <para styleclass="Normal">Change the setting that determines the &lt;%APP%&gt; search path for opening files.</para>
-        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改用于确定打开文件的 &lt;%APP%&gt; 搜索路径的设置。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET PATH TO [&lt;<text styleclass="Italic">xcPathSpecList</text>&gt;]</para>
-        <para styleclass="Heading1"><text>Description</text></para>
-    <para styleclass="Normal">SET PATH is functionally equivalent to SetPath() except that semicolons are not allowed as separators in SET PATH&apos;s &lt;<text styleclass="Italic">xcPathSpecList</text>&gt;. &#160;</para>
-      <para styleclass="Body Text"><snippet src="__IncludeLibCore" inline="false"/></para>
-        <para styleclass="Heading1"><text>See Also</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET PATH 在功能上等同于 SetPath()，只是在 SET PATH 的 &lt;xcPathSpecList&gt; 中不允许使用分号作为分隔符。 </para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibCore" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_CurDir.htm" domain="XSharpRef.chm">CurDir()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, &#160;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_GetCurPath.htm" domain="XSharpRef.chm">GetCurPath</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

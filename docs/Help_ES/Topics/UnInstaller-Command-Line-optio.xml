@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UnInstaller Command Line options</title>
+  <keywords>
+    <keyword>/log</keyword>
+    <keyword>/norestart</keyword>
+    <keyword>/silent</keyword>
+    <keyword>/suppressmsgboxes</keyword>
+    <keyword>/verysilent</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UnInstaller Command Line options</para>
+    </header>
+    <para styleclass="Normal">The Uninstaller (which can be found in the &lt;Installdir&gt;\Uninst folder) has the following command line options:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/silent, /verysilent</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">When specified, the uninstaller will not ask the user for startup confirmation or display a message stating that uninstall is complete. Shared files that are no longer in use are deleted automatically without prompting. Any critical error messages will still be shown on the screen. When &apos;/verysilent is specified, the uninstallation progress window is not displayed.</para>
+          <para styleclass="Body Text">If a restart is necessary and the &apos;/norestart command isn&apos;t used (see below) and &apos;/verysilent is specified, the uninstaller will reboot without asking.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/suppressmsgboxes</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs the uninstaller to suppress message boxes. Only has an effect when combined with &apos;/silent and &apos;/verysilent. </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/log</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Causes Uninstall to create a log file in the user&apos;s TEMP directory detailing file uninstallation and actions taken during the uninstallation process. This can be a helpful debugging aid.<br/>The log file is created with a unique name based on the current date. (It will not overwrite or append to existing files.)</para>
+          <para styleclass="Body Text">The information contained in the log file is technical in nature and therefore not intended to be understandable by end users. Nor is it designed to be machine-parsable; the format of the file is subject to change without notice.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/log=&quot;filename&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Same as /log, except it allows you to specify a fixed path/filename to use for the log file. If a file with the specified name already exists it will be overwritten. If the file cannot be created, Uninstall will abort with an error message.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">/norestart</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Instructs the uninstaller not to reboot even if it&apos;s necessary.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:7px; margin-right:0px; margin-bottom:7px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+  </body>
+</topic>

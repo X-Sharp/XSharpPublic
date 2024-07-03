@@ -135,12 +135,11 @@ namespace XSharp.Project
         }
         internal void SetDialectOptions(string dialect)
         {
-            bool Core = dialect == XSharpProjectFileConstants.DialectCore;
-            bool FoxPro = dialect == XSharpProjectFileConstants.DialectFoxPro;
+            bool Core = string.Equals(dialect, Dialect.Core.ToString(), StringComparison.OrdinalIgnoreCase) ;
+            bool FoxPro = string.Equals(dialect,Dialect.FoxPro.ToString(), StringComparison.OrdinalIgnoreCase);
             ThreadHelper.ThrowIfNotOnUIThread();
             chkMemVar.Enabled = !Core;
             chkLB.Enabled = !Core;
-            chkOldStyleAssignments.Checked = dialect == XSharpProjectFileConstants.DialectFoxPro; 
 
             if (!Core)
             {
@@ -163,6 +162,13 @@ namespace XSharp.Project
                     this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.Allowdot, "True");
                     chkAllowDot.Checked = true;
                 }
+            }
+            var strAllowOldStyle = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AllowOldStyleAssignments);
+            // 2 properties have a default of TRUE for some dialects and FALSE for others
+            if (string.IsNullOrEmpty(strAllowOldStyle) && FoxPro)
+            {
+                this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.AllowOldStyleAssignments, "True");
+                chkOldStyleAssignments.Checked = true;
             }
             var strNamedArgs = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.NamedArgs);
             if (string.IsNullOrEmpty(strNamedArgs))

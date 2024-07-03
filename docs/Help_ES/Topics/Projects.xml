@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Projects</title>
+  <keywords>
+    <keyword>ItemGroup</keyword>
+    <keyword>PropertyGroup</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Projects</para>
+    </header>
+    <para styleclass="Normal">Project properties in Visual Studio are stored in the project files. The file names for X# projects end with the .xsproj extension.</para>
+    <para styleclass="Normal">Project files are a special kind of XML files. </para>
+    <para styleclass="Normal">These XML files contains various groups of information.</para>
+    <para styleclass="Normal">Properties at the project level are stored in &lt;PropertyGroup&gt; nodes.</para>
+    <para styleclass="Normal">Some of these properties are &quot;Global&quot; and some of these properties have a condition through which they are only active when a certain &quot;configuration&quot; is selected, such as &quot;Debug&quot; or &quot;Release&quot;.</para>
+    <para styleclass="Normal">Properties as the dialect and the output filename are global.</para>
+    <para styleclass="Normal">Properties such as the optimization, PDB generation and output folders are configuration specific.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The project files also contain the list of references to external assemblies, other projects and COM components and the list of files.</para>
+    <para styleclass="Normal">The build system inside Visual Studio uses the contents of the project files and construct a commandline that is passed to the X# compiler to produce the output for the project.</para>
+    <para styleclass="Normal">We have developed a set of dialogs that allows you to set the various properties for a project. The following chapters will show you these dialogs and will discuss the various options that you can set on each page.</para>
+    <para styleclass="NotesBox" style="border-color:#000000; border-style:single; border-width:1px; padding:0px;"><br/>Tip<br/><br/>Since the project file is a XML file you can also directly edit the project file if you want and for example add &lt;Import&gt; lines to import common properties from &quot;include&quot; files. <br/>We use that internally for our assemblies, so common properties are declared at one location. <br/>If you do that then you must be careful when using the project property dialogs inside Visual Studio. <br/>These dialogs will not understand that some values were read from an imported file and will change the values in the xsproj file, even when they were imported from an external file.<br/>Also the order of the various property groups is important:<br/>The PropertyGroups with the Pre and PostBuild events are expected to be at the end of the XML file.<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The lists of external references and lists of items inside a project are stored in &lt;ItemGroup&gt; nodes.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

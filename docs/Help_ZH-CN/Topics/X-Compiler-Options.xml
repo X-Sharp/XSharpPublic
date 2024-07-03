@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Compiler Options</title>
+<topic template="Default" modified="2024-06-30T13:07:13.821+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 编译器选项</title>
   <keywords>
     <keyword>compiler options</keyword>
     <keyword>options</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">X# Compiler Options</para>
+      <para styleclass="Heading1">X# 编译器选项</para>
     </header>
-    <para styleclass="Normal">The X# compiler is a command line tool named xsc.exe. This tool can be controlled using command line options. The following pages describe these command line options.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 编译器是一个名为 xsc.exe 的命令行工具。可以使用命令行选项控制该工具。下文将介绍这些命令行选项。</para>
   </body>
 </topic>

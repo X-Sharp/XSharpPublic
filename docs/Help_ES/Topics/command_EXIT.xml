@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>EXIT Statement</title>
+  <keywords>
+    <keyword>EXIT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">EXIT Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text"><text styleclass="List">Unconditionally branches control from within a FOR, FOREACH , REPEAT or DO WHILE statement to the statement immediately following the corresponding ENDDO or NEXT statement.</text></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">EXIT</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Body Text">The EXIT statement is only valid within a DO WHILE, &#160;FOR ... NEXT, FOREACH .. NEXT or REPEAT .. UNTIL &#160;construct. An EXIT statement outside of either construct will raise a compile time error.</para>
+    <para styleclass="Heading1">See Also<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR" styleclass="Body Text">FOR </link><br/><text styleclass="Body Text">F</text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH" styleclass="Body Text">OREACH </link><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE" styleclass="Body Text">DO WHILE </link><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPEAT_UNTIL" styleclass="Body Text">REPEAT UNTIL </link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+  </body>
+</topic>

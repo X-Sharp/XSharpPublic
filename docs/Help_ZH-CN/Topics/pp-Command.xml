@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-08-24T15:48:45.328+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T10:40:57.080+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#command</title>
   <keywords>
     <keyword>#command</keyword>
@@ -10,12 +10,12 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">#command , #xcommand and #ycommand</para>
+      <para styleclass="Heading1">#command , #xcommand 和 #ycommand</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Specify a user-defined command or translation directive</para>
-    <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code Example">#command &#160;&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<tab />// can be abbreviated to 4 characters<br/>#xcommand &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<tab />// cannot be abbreviated to 4 characters<br/>#ycommand &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<tab />// cannot be abbreviated to 4 characters and must match case </para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定用户定义的命令或翻译指令</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code Example">#command &#160;&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<tab />// 可缩写为 4 个字符<br/>#xcommand &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<tab />// 不能缩写为 4 个字符<br/>#ycommand &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<tab />// 不能缩写为 4 个字符，且必须与大小写匹配 </para>
     <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
   </body>
 </topic>

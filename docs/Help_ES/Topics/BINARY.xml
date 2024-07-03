@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BINARY</title>
+  <keywords>
+    <keyword>BINARY</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BINARY</para>
+    </header>
+    <para styleclass="Normal">The BINARY type is represented a series of bytes. </para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Binary literals are written as 0h12345678abcdef</li>
+      <li styleclass="Body Text">The value behind 0h is a sequence of hex numbers. Each pair of hex numbers (nibble) represents 1 byte. There must be an even number of &apos;nibbles&apos;.</li>
+      <li styleclass="Body Text">The binary literals are encoded in an array of bytes. In the Core dialect the binary literals are represented as a byte[]. In the other dialects the binary literals are a new type (XSharp.__Binary) which can be specified as the new BINARY keyword.</li>
+      <li styleclass="Body Text">The UsualType() of BINARY is 29.</li>
+      <li styleclass="Body Text">The XSharp.__Binary type has operators to add a string to a binary and add a binary to a string. <br/>Binary + String will return a Binary<br/>String + Binary will return a String<br/>Binary + Binary will return a Binary.<br/>There are also comparison operators on the Binary type (&gt;, &lt;, &gt;=, &lt;=). These will use the string comparison routines that are defined with SetCollation() &#160;with the exception that an = comparison with a single equals operator does not return TRUE when the Right hand side is shorter than the Left hand side and the first bytes match.</li>
+      <li styleclass="Body Text">Conversions from Binary to String are done with the Encoding.GetBytes() and Encoding.GetString() functions for the current Windows Encoding. <br/>That means that on single byte code pages each character in the string will result in one byte and each byte will result in one character. <br/>For multibyte code pages (Chinese, Japanese, Korean etc) some characters will result in more than one byte and some byte pairs will result in a single character.</li>
+      <li styleclass="Body Text">There are implicit operators that convert a BINARY to a byte[] and back. There are also implicit operators that convert a Binary to a String and back.</li>
+      <li styleclass="Body Text">When compiling with the Vulcan Runtime then the byte[] array is stored in a USUAL value for the non core dialects.</li>
+    </list>
+    <para styleclass="Heading3">Implementation</para>
+    <para styleclass="Normal">The BINARY type is implemented in the class XSharp.__Binary<br/>The Usualtype of BINARY has the value 29</para>
+  </body>
+</topic>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T09:45:22.660+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Properties and Fields</title>
+<topic template="Default" modified="2024-06-27T20:02:41.170+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>属性和字段</title>
   <body>
     <header>
-      <para styleclass="Heading1">Properties and Fields (FoxPro class syntax)</para>
+      <para styleclass="Heading1">属性和字段 (FoxPro class 语法)</para>
     </header>
     <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">用途</para>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-05-19T12:47:57.268+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STRUCTURE Statement</title>
+  <keywords>
+    <keyword>END STRUCTURE</keyword>
+    <keyword>STRUCTURE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">STRUCTURE Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a class name to the compiler.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">STRUCTURE </text>&lt;<text styleclass="Italic">idStructure</text>&gt; <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[StructureMembers]</para>
+    <para styleclass="Normal"><tab />END STRUCTURE</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic">idStructure</text>&gt;<tab />A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">StructrureMembers<tab />This can be any of <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR">CONSTRUCTOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR">DESTRUCTOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link>, just like in the CLASS declaration</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">In this case, the variables x and z are typed as INT, while the variables cName and cAddr are typed as STRING.</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">After the structure name is declared to the compiler, it is followed by 0 or more instance variable declaration statements. &#160;You use a structure name to declare variables (see GLOBAL and LOCAL statements in this guide) designed to hold instances of a specific class, to instantiate instances of the class, and to define methods (see the METHOD statement in this guide) and subclasses for the class.</para>
+    <para styleclass="Heading1">Notes</para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Binding of instance variables: &#160;</text>Instance variables can be either <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">early </text>or <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">late bound</text>, depending on how you declare them and how you use them.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Early binding happens if the memory location of a variable is known at compile time. &#160;The compiler knows exactly how to reference the variable and can, therefore, generate code to do so.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Late binding is necessary if the memory location of a variable is unknown at compile time. &#160;The compiler cannot determine from the program source code exactly where the variable is or how to go about referencing it, so it generates code to look the symbol up in a table. &#160;The lookup is performed at runtime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Since there is no need for a runtime lookup with early bound instance variables, using them instead of late bound variables will significantly improve the performance of your application. &#160;The following table summarizes the binding and visibility issues for the four types of instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Variable Type</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Binding</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">EXPORT</text><tab /><text styleclass="Normal">Early, if possible</text><tab /><text styleclass="Normal">Application-wide for CLASS and module-wide for STATIC CLASS</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">INSTANCE</text><tab /><text styleclass="Normal">Always late</text><tab /><text styleclass="Normal">In class and subclasses</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">HIDDEN</text><tab /><text styleclass="Normal">Always early</text><tab /><text styleclass="Normal">In class only</text><tab /></para>
+    <para styleclass="List"><text styleclass="Normal">PROTECT</text><tab /><text styleclass="Normal">Always early</text><tab /><text styleclass="Normal">In class and subclasses</text><tab /></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Object instantiation: &#160;</text>Once you declare a class, you create instances of the class using the class name followed by the instantiation operators, {}. &#160;The syntax is as follows:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">&lt;idClass&gt;{[&lt;uArgList&gt;]}</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">where &lt;<text styleclass="Italic">uArgList</text>&gt; is an optional comma-separated list of values passed as arguments to a special method called Init() (see the METHOD statement in this guide for more information on the Init() method).</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Accessing instance variables: &#160;</text>The syntax to access an exported instance variable externally (i.e., from any entity that is not a method of its class) is as follows:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">&lt;idObject&gt;:&lt;idVar&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can access non-exported instance variables only from methods in which they are visible. &#160;Within a method, you use the following syntax for accessing all instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">[SELF:]&lt;idVar&gt;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The SELF: &#160;prefix is optional except in the case of an access/assign method (see the ACCESS and ASSIGN statement entries in this guide for more information and the METHOD statement for more information on SELF).</para>
+    <para styleclass="Normal">Instance variables are just like other program variables. &#160;You can access them anywhere in the language where an expression is allowed.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The prefix [STATIC] is no longer supported &#160;by &lt;%APP%&gt;</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">The following example defines two classes, one of which inherits values from the other, and demonstrates how to create a class instance with initial values for the instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR" styleclass="List">CONSTRUCTOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR" styleclass="List">DESTRUCTOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY" styleclass="List">PROPERTY</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

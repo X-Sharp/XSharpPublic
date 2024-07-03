@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__ByRef</title>
+  <body>
+    <para styleclass="List1" style="background-color:#ffffaa; border:none;"><text style="font-size:9pt; background-color:#ffffaa;">Note</text><tab /><text style="font-size:9pt; background-color:#ffffaa;">Please note that passing variables by reference to untyped functions/methods (the so called CLIPPER calling convention) is not supported in the current release of X#</text></para>
+  </body>
+</topic>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET EXACT Command</title>
+<topic template="Default" modified="2024-06-27T20:14:32.095+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET EXACT 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Exact</keyword>
@@ -9,19 +9,19 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET EXACT Command</para>
+      <para styleclass="Heading1">SET EXACT 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">Toggles and exact match for character string comparisons.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET EXACT ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">SET EXACT is functionally equivalent to SetExact(). &#160;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">逻辑表达式，必须用括号表示。True 相当于 ON，False 相当于 OFF</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET EXACT 在功能上等同于 SetExact()。 </para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetExact.htm" domain="XSharpRef.chm">SetExact()</link></para>
     <para styleclass="Normal"></para>
   </body>

@@ -435,21 +435,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxclsctor([NotNull] XSharpParser.FoxclsctorContext context)
         {
-            if (_options.fox1)
+            if (_options.HasOption(CompilerOption.Fox1, context, _pragmas))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
             }
         }
         public override void ExitFoxclsdtor([NotNull] XSharpParser.FoxclsdtorContext context)
         {
-            if (_options.fox1)
+            if (_options.HasOption(CompilerOption.Fox1, context, _pragmas))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
             }
         }
         public override void ExitFoxclass([NotNull] XSharpParser.FoxclassContext context)
         {
-            if (context.BaseType == null && _options.fox1)
+            if (context.BaseType == null && !_options.HasOption(CompilerOption.Fox1, context, _pragmas))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxAsClauseMandatory));
             }

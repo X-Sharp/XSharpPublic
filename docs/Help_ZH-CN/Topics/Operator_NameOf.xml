@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>NameOf Operator</title>
+<topic template="Default" modified="2024-06-30T10:37:55.827+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>NameOf 操作符</title>
   <body>
     <header>
-      <para styleclass="Heading1">NameOf Operator</para>
+      <para styleclass="Heading1">NameOf 操作符</para>
     </header>
-    <para styleclass="Body Text">A nameof expression produces the name of a variable, type, or member as the string constant:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">You can use a nameof expression to make the argument-checking code more maintainable:</para>
+    <para styleclass="Body Text">nameof 表达式将变量、类型或成员的名称转换为字符串常量：</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Body Text">使用 nameof 表达式可以使参数检查代码更易于维护：</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">NameOf( identifier )</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Test(cName </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cName == </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">null</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;"> &#160; throw</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">new</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ArgumentNullException(nameof(cName), i&quot;{nameof(cName)} cannot be null&quot;);</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text></para>

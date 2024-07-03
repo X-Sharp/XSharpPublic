@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Command-line Building With xsc.exe</title>
+  <keywords>
+    <keyword>compiler options</keyword>
+    <keyword>options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Command-line Building With xsc.exe</para>
+    </header>
+    <para styleclass="Normal">You can invoke the X# compiler by typing the name of its executable file (xsc.exe) at a command prompt.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you use a standard Command Prompt window, you must adjust your path before you can invoke xsc.exe from any subdirectory on your computer. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">You can also use MSBuild to build X# programs programmatically. For more information, see the MSBuild documentation on MSDN.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The xsc.exe executable file usually is located in the {Program Files}\XSharp\Bin folder under the Windows directory. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When you build programs with the Visual Studio IDE then Visual Studio will locate the X# compiler automatically for you and the build output from the compiler will be shown in the Output Windows of Visual Studio.</para>
+    <para styleclass="Normal">You can set the verbosity level of the compiler output from the Tools/Options, Projects and Solutions, Build and Run page.</para>
+    <para styleclass="Heading2">Rules for Command-Line Syntax for the X# Compiler</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The X# compiler uses the following rules when it interprets arguments given on the operating system command line:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Arguments are delimited by white space, which is either a space or a tab.</li>
+      <li styleclass="Normal">The caret character (^) is not recognized as an escape character or delimiter. The character is handled by the command-line parser in the operating system before it is passed to the argv array in the program.</li>
+      <li styleclass="Normal">A string enclosed in double quotation marks (&quot;string&quot;) is interpreted as a single argument, regardless of white space that is contained within. A quoted string can be embedded in an argument.</li>
+      <li styleclass="Normal">A double quotation mark preceded by a backslash (\&quot;) is interpreted as a literal double quotation mark character (&quot;).</li>
+      <li styleclass="Normal">Backslashes are interpreted literally, unless they immediately precede a double quotation mark.</li>
+      <li styleclass="Normal">If an even number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is interpreted as a string delimiter.</li>
+      <li styleclass="Normal">If an odd number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is &quot;escaped&quot; by the remaining backslash. This causes a literal double quotation mark (&quot;) to be added in compiler options array.</li>
+      <li styleclass="Normal">Commandline options can start with a hyphen (-) or a slash (/). On Non windows platforms the hyphen should be used because the slash may be seen as a path delimiter character</li>
+      <li styleclass="Normal">If you do not use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> compiler option then references to the assemblies listed in xsc.exe will be automatically included.</li>
+    </list>
+    <para styleclass="Heading2">Sample commands for the X# Compiler</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc file.prg</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compile File.prg and produce File.exe</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -target:library file.prg</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compile File.prg and produce File.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -out:Program.exe file.prg</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compile File.prg and produce Program.exe</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -define:DEBUG -optimize -out:File.exe *.prg</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compiles all the X# files in the current directory, with optimizations on and defines the DEBUG symbol. The output is File2.exe</para>
+          <para styleclass="Normal"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc /target:library /out:File2.dll /warn:0 /nologo /debug *.prg</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compiles all the X# files in the current directory producing a debug version of File2.dll. No logo and no warnings are displayed</para>
+          <para styleclass="Normal"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc /target:library /out:MyBase.rdd *.prg</text></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Compiles all the X# files in the current directory to MyBase.rdd &#160;(a DLL):</para>
+          <para styleclass="Normal"></para>
+          <para styleclass="Normal"></para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

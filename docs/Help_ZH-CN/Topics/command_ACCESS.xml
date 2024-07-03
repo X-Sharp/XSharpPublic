@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-14T22:35:57.077+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>ACCESS Statement</title>
+<topic template="Default" modified="2024-06-27T19:54:31.219+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ACCESS 语句</title>
   <keywords>
     <keyword>ACCESS statement</keyword>
     <keyword>Access() Methods</keyword>
@@ -18,7 +18,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">ACCESS Statement</para>
+      <para styleclass="Heading1">ACCESS 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">声明访问非导出(non-<text styleclass="p_normal" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">exported</text>)或虚(拟)实例变量的方法。</para>

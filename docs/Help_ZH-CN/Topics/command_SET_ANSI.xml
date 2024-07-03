@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET ANSI Command</title>
+<topic template="Default" modified="2024-06-27T20:12:12.779+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET ANSI 命令</title>
   <keywords>
     <keyword>ANSI format</keyword>
     <keyword>Commands</keyword>
@@ -13,19 +13,19 @@
   <body>
     <header>
       <para styleclass="Normal"></para>
-      <para styleclass="Heading1">SET ANSI Command</para>
+      <para styleclass="Heading1">SET ANSI 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改设置，以确定数据库文件是使用 ANSI 还是 OEM 格式创建，以及某些文本文件操作是否在两种字符集之间进行转换。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET ANSI ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">SET ANSI is functionally equivalent to SetAnsi().</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">逻辑表达式，必须用括号表示。True 相当于 ON，False 相当于 OFF</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET ANSI 在功能上等同于 SetAnsi()。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetAnsi.htm" domain="XSharpRef.chm">SetAnsi()</link></para>
   </body>
 </topic>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-05-19T12:47:32.559+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>LOCAL PROCEDURE</title>
+  <keywords>
+    <keyword>END PROCEDURE</keyword>
+    <keyword>LOCAL PROCEDURE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">LOCAL PROCEDURE</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a local procedure </para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Modifiers] <text style="font-weight:bold;">LOCAL PROCEDURE</text> &lt;<text styleclass="Italic">idFunction</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Typeparameters]</para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
+    <para styleclass="Normal"><tab />[=&gt; &lt;expression&gt;]</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />END PROCEDURE</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><tab /></para>
+    <para styleclass="List">[Modifiers]<tab />The only valid modifiers for a local function are UNSAFE and/or ASYNC</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</para>
+    <para styleclass="List"><snippet src="__IncludeLocalFunctionParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">END PROCEDURE<tab />These <text style="font-weight:bold;">mandatory</text> keywords indicate the logical end of the function.</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">A local function is defined as a nested function inside a containing member. The END PROCEDURE is mandatory so the compiler knows where the function ends and its surrounding container continues.</para>
+    <para styleclass="Normal">In the example below the WAIT command is part of the Start() function and will be executed after the call to Log(3)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;Log(1)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;Log(2)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;Log(3)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Log(nNum </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;? nNum</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD">FIELD</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
+  </body>
+</topic>

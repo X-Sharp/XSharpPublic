@@ -17,7 +17,6 @@ namespace XSharp.LanguageService
         public bool ExcludeMembersFromOtherFiles { get; set; }
         public bool KeywordsInAll { get; set; }
         public bool ShowAfterChar { get; set; }
-        public KeywordCase KeywordCase { get; set; }
         public bool IncludeFieldsInNavigationBars { get; set; }
         public bool SortNavigationBars { get; set; }
         public bool ShowMembersOfCurrentTypeOnly { get; set; }
@@ -47,7 +46,6 @@ namespace XSharp.LanguageService
             ExcludeMembersFromOtherFiles = true;
             KeywordsInAll = true;
             ShowAfterChar = true;
-            KeywordCase = KeywordCase.Upper;
             IncludeFieldsInNavigationBars = true;
             SortNavigationBars = true;
             ShowMembersOfCurrentTypeOnly = false;

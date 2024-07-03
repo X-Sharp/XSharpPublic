@@ -162,7 +162,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var name = CleanVarName(context.Id.GetText());
                 var alias = XSharpSpecialNames.MemVarPrefix;
-                CheckForFileWideVar(name, context);
+                CheckForFileWideVar(name, context, true);
                 var field = findVar(name);
                 if (field == null)
                 {
@@ -802,6 +802,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
             }
+            else if (_options.HasOption(CompilerOption.Fox1, context, PragmaOptions))
+            {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(GenerateQualifiedName(XSharpQualifiedTypeNames.VfpCustom)));
+            }
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -837,7 +841,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Do this after VOProps generation because GenerateVOProperty sets the members
             // for Access & Assign to NULL
-            ConstructorDeclarationSyntax ctor = null;
+            ConstructorDeclarationSyntax ctor = null; 
             foreach (var mCtx in context._Members)
             {
                 if (mCtx is XP.FoxclsvarinitContext cvi)
@@ -1064,7 +1068,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 }
             }
-            if (_options.fox1)
+            if (_options.HasOption(CompilerOption.Fox1, context, PragmaOptions))
             {
                 if (stmts.Count > 0)
                 {

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>International</title>
+<topic template="Default" modified="2024-06-28T00:35:55.457+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>国际</title>
   <keywords>
     <keyword>Commands<keyword>International</keyword></keyword>
     <keyword>International Commands</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">International</para>
+      <para styleclass="Heading1">国际</para>
     </header>
     <para styleclass="link"></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION">SET COLLATION</link></para>

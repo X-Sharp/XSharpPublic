@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Pseudo Functions</title>
+  <keywords>
+    <keyword>_ARGS</keyword>
+    <keyword>_Chr</keyword>
+    <keyword>_GETFPARAM</keyword>
+    <keyword>_GetInst</keyword>
+    <keyword>_GETMPARAM</keyword>
+    <keyword>ALTD</keyword>
+    <keyword>ARGCOUNT</keyword>
+    <keyword>CCALL</keyword>
+    <keyword>CCallNative</keyword>
+    <keyword>Chr</keyword>
+    <keyword>PCALL</keyword>
+    <keyword>PCallNative</keyword>
+    <keyword>PCOUNT</keyword>
+    <keyword>SLen</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Pseudo Functions</para>
+    </header>
+    <para styleclass="Normal">The following pseudo functions are supported by the X# compiler</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Function</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:30%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">PCOUNT</text>()</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This pseudo function is only available in methods or functions with a CLIPPER calling convention. <br/>It returns the number of argument passed to the function. The function does not expect and does not allow any arguments.<br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">ARGCOUNT</text>()</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This pseudo function returns the number of arguments defined for the current method or function.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">_GETMPARAM</text>() and <text style="font-weight:bold;">_GETFPARAM</text>()</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">These pseudo functions are only available in methods or functions with a CLIPPER calling convention. <br/>You can use them to retrieve a function parameter by position. You must pass a numeric expression to these functions. If you pass a number that is larger than the actual number of parameters at runtime then you will get an array access exception. <br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">String2Psz</text>() and <text style="font-weight:bold;">Cast2Psz</text>()</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">These pseudo functions are used to convert DotNet strings to unmanaged Ansi PSZ strings. Not only is a PSZ created, but the functions also change the code generation and set up code to clear the allocated PSZ variable on exit of the function in which they are created. <br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">ALTD</text>()</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This function will insert a call to System.Diagnostics.Debugger.Break inside a check to see if the debugger is attached (System.Diagnostics.Debugger.IsAttached)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">_GetInst</text>()</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This function will return the module handle for the current module. Behind the scenes this is translated to System.Runtime.InteropServices.Marshal.GetHINSTANCE(TypeOf(FunctionsClass):Module)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">PCALL()</text> and <text style="font-weight:bold;">CCALL()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The methods are used to call an API function for a strongly typed PTR.<br/>The function expects a first parameter of type PTR and the other parameters must match the parameters defined in the function to which the typed PTR points<br/>The compiler creates a delegate with the proper prototype and uses Marshal.GetDelegateForFunctionPointer() to call the function.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">PCallNative&lt;Type&gt;()</text> and <text style="font-weight:bold;">CCallNative&lt;Type&gt;()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The methods are used to call an API function for an untyped PTR</para>
+          <para styleclass="Body Text">The function expects a generic type parameter which indicates the return type and a first parameter of type PTR. Other parameters are allowed and must not point to managed memory.</para>
+          <para styleclass="Body Text">The compiler creates a delegate with the proper prototype and uses Marshal.GetDelegateForFunctionPointer() to call the function.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">_ARGS()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This pseudo function returns is replaced by the compiler to a reference to the generated array of parameters for functions/methods with clipper calling convention</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">SLen()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This function is translated by the compiler to a call of the Length property of the string, with a built-in check for NULL.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Chr(), _Chr()</text></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">When the numeric parameter of this function is a literal number between 0 and 127 then the compiler replaces the function call with a literal string with a character of that value. Larger values are not converted at compile time but at runtime because these numbers are codepage dependent.<br/>So an expression like <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&quot;Hello world&quot;+Chr(13)+Chr(10)</text>&#32;<br/>will be translated into a literal string containing &quot;Hello world&quot; followed by the <text style="font-weight:bold;">CRLF</text> characters (the compiler concatenates the strings at compile time).</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

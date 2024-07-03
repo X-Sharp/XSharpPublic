@@ -314,14 +314,14 @@ FUNCTION DbCreate ( cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lOpe
         lOpen := .F.
     ENDIF
 
-    local oDriver as object
+    LOCAL oDriver AS OBJECT
     IF cDriver:IsNil
         cDriver         := RuntimeState.DefaultRDD
     ENDIF
     oDriver := cDriver
 
     IF oDriver IS STRING
-        var aRdds       := VoDb.RddList(cDriver, acRDDs)
+        VAR aRdds       := VoDb.RddList(cDriver, acRDDs)
         oDriver         := ATail(aRdds)
         lRetCode := VoDbCreate(cTargetFile, aStruct, (STRING) oDriver, lNew, cAlias, cDelim, lKeep, lOpen)
     ELSEIF oDriver IS System.Type
@@ -615,34 +615,36 @@ FUNCTION DbSetDriver(cNewSetting) AS STRING CLIPPER
 FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
     LOCAL sCondition AS STRING
     LOCAL cbCond AS CODEBLOCK
-    if PCount() == 0 .or. (cbCondition:IsNil .and. cCondition:IsNil)
-        return DbClearFilter()
-    endif
+    IF PCount() == 0 .or. (cbCondition:IsNil .and. cCondition:IsNil) .or. ; 
+                          (cbCondition:IsString .and. String.IsNullOrWhiteSpace((STRING)cbCondition)) .or. ; 
+                          (cbCondition:IsNil .and. cCondition:IsString .and. String.IsNullOrWhiteSpace((STRING)cCondition))
+        RETURN DbClearFilter()
+    ENDIF
     // Only one parameter passed and it is a string
     // Move it to the second parameter and clear the first parameter
     IF cbCondition:IsString .and. PCount() == 1
         cCondition  := cbCondition
         cbCondition := NIL
-    endif
+    ENDIF
     // Create Compiled codeblock from String
     IF cbCondition:IsNil
         EnforceType(cCondition, STRING)
         sCondition := cCondition
         sCondition := sCondition:Trim()
-        if !sCondition:StartsWith("{||")
+        IF !sCondition:StartsWith("{||")
             cbCondition := &("{||"+sCondition+"}")
-        else
+        ELSE
             cbCondition := &(cCondition)
-        endif
+        ENDIF
     ENDIF
-    if cCondition:IsNil
-        local oBlock as Object
+    IF cCondition:IsNil
+        LOCAL oBlock AS OBJECT
         EnforceType(cbCondition, CODEBLOCK)
         oBlock := cbCondition
         // When the codeblock is a macro compiled codeblock
         IF oBlock IS XSharp.Codeblock VAR cbMacro
             sCondition := cbMacro:ToString():Trim()
-            if sCondition:StartsWith("{||") .and. sCondition:EndsWith("}")
+            IF sCondition:StartsWith("{||") .and. sCondition:EndsWith("}")
                 sCondition := sCondition:Substring(3, sCondition:Length-4):Trim()
             ENDIF
             cCondition := sCondition

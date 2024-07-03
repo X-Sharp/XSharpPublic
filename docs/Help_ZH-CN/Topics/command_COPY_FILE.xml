@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>COPY FILE Command</title>
+<topic template="Default" modified="2024-06-27T20:15:25.252+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY FILE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>COPY FILE command</keyword>
@@ -10,32 +10,29 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">COPY FILE Command</para>
+      <para styleclass="Heading1">COPY FILE 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Copy a file to a new file or to a device.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将文件复制到新文件或设备。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">COPY FILE &lt;xcSourceFile&gt; TO &lt;xcTargetFile&gt; | &lt;xcDevice&gt;</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the source file to copy, including an optional drive, directory, and extension.</para>
-    <para styleclass="List"><tab />If &lt;xcSourceFile&gt; does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in shared mode and, if successful, it proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />要复制的源文件的名称，包括可选的驱动器、目录和扩展名。</para>
+    <para styleclass="List"><tab />如果 &lt;xcSourceFile&gt; 不存在，运行时将出错。 如果存在，该命令会尝试以共享模式打开文件，如果成功，则继续运行。 如果由于其他进程独占该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target file, including an optional drive, directory, and extension.</para>
-    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. </para>
-    <para styleclass="List"><tab />See SetDefault() and SetPath() for file searching and creation rules. &#160;This command does not supply a default extension for either file name.</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />目标文件的名称，包括可选的驱动器、目录和扩展名。</para>
+    <para styleclass="List"><tab />如果 &lt;xcTargetFile&gt; 不存在，将创建该文件。 如果存在，该命令将尝试以独占模式打开文件，如果成功，文件将被覆盖，不会发出警告或出错。 如果由于其他进程正在使用该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。</para>
+    <para styleclass="List"><tab />有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 该命令不提供文件名的默认扩展名。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;xcDevice&gt;<tab />The name of the target device specified without a trailing colon. &#160;When you specify one of the following device names: &#160;PRN, LPT1, LPT2, LPT3, COM1, or COM2, COPY FILE searches the Windows section of WIN.INI for a Device entry to use for the printing device. &#160;If there is no Device entry, it looks for a Devices entry and presents the user with a list box of devices from which to choose.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example copies a file to a new file, then tests for the existence of the new file:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="List">TO &lt;xcDevice&gt;<tab />指定的目标设备名称，不带冒号。 如果指定以下设备名称之一： &#160;PRN、LPT1、LPT2、LPT3、COM1 或 COM2 时，COPY FILE 会在 WIN.INI 的 Windows 部分中查找打印设备要使用的 &quot;设备 &quot;条目。 如果没有找到，它就会显示一个查找 &quot;设备 &quot;条目，并向用户提供一个设备列表框供用户选择。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例将文件复制到一个新文件，然后测试新文件是否存在：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">COPY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> FILE test.prg </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> real.prg</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? File(&quot;real.prg&quot;) &#160; &#160; &#160; &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// Result: &#160;TRUE</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The next example prints the contents of a file by copying it to the default device:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下一个示例通过将文件复制到默认设备来打印文件内容：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">COPY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> FILE real.prg </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> PRN</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibCore" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO">COPY TO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_FCopy.htm" domain="XSharpRef.chm">FCopy()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">,</text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE">DELETE FILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME">RENAME</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

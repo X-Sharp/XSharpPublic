@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T10:53:16.891+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-fullpaths</title>
   <keywords>
     <keyword>-fullpaths</keyword>
@@ -9,12 +9,13 @@
     <header>
       <para styleclass="Heading1">-fullpaths</para>
     </header>
-    <para styleclass="Normal">The -fullpaths option causes the compiler to specify the full path to the file when listing compilation errors and warnings.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-fullpaths &#160;</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">By default, errors and warnings that result from compilation specify the name of the file in which an error was found. The -fullpaths option causes the compiler to specify the full path to the file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically. It is enabled by default when compiling inside Visual Studio.</para>
+    <para styleclass="Normal">在列出编译错误和警告时，-fullpaths 选项会使编译器指定文件的完整路径。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-fullpaths &#160;</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">默认情况下，编译产生的错误和警告会指定发现错误的文件名。而 -fullpaths 选项则会使编译器指定文件的完整路径。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也不能通过编程更改。在 Visual Studio 中编译时默认启用该选项。</para>
   </body>
 </topic>

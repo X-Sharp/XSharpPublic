@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#endtext</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">#endtext</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">Mark the end of a #text .. #endtext region</para>
+    <para styleclass="Heading1">Syntax </para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#text := &lt;varname&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">First Line</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Second Line</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#endtext</text></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Body Text">The language supports the TEXT .. ENDTEXT construct. These commands are converted by the preprocessor into a #text .. #endtext constract.</para>
+    <para styleclass="Body Text">#endtext always appears &quot;alone&quot; on a line of code and will be replaced by a call to the (optional) endfunction that is declared with the #text directive and when the block is assigned to a variable then the assignment will be performed on the #endtext line.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Body Text">Please note that the 2 UDCs below are already defined in XSharpDefs.xh</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#xcommand </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> =&gt; #</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endtext</text><br/><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#xcommand &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> FILE &lt;(file)&gt; ;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;=&gt; &#160;_TextSave( &lt;(file)&gt; ) ;;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160;#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">text</text><text style="font-weight:normal; font-style:normal; color:#000000;"> QOut, _TextRestore</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> FILE EXAMPLE.TXT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">line 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">line 2</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">line 3</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">line 4</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text></para>
+    <para styleclass="Body Text">The TEXT TO FILE command is translated into a call to the function _TextSave(), followed by the #text directive, that specifies that each line must be sent to the QOut() function and that also declares that the #endtext line must be replaced by a call to the _TextRestore() function. The QOut() and _TextRestore function names are specified without parameters. Each line in the block will be sent to the QOut() function as parameter.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">So this code is converted to </para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">_TextSave(&quot;EXAMPLE.TXT&quot;);</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 1&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 2&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 3&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 4&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">_TextRestore()</text></para>
+    <para styleclass="Heading1">See also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXT">TEXT command</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text Directive</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

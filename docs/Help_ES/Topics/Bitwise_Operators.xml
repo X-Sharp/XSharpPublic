@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Bitwise</title>
+  <keywords>
+    <keyword>&amp;</keyword>
+    <keyword>.AND.</keyword>
+    <keyword>.OR.</keyword>
+    <keyword>|</keyword>
+    <keyword>~</keyword>
+    <keyword>bitwise operator</keyword>
+    <keyword>operator</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Bitwise</para>
+    </header>
+    <para styleclass="Normal">X# uses the following Bitwise (binary) operators. There are simple character versions of these and also pseudo functions:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Pseudo Function</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Meaning</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">|</para>
+        </td>
+        <td>
+          <para styleclass="Normal">_OR(..)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x | y, _OR(x,y)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Returns the bitwise OR of x and y<br/>_OR() may have more than 2 parameters.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">~</para>
+        </td>
+        <td>
+          <para styleclass="Normal">_XOR(..)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x ~ y, _XOR(x,y)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Returns the bitwise XOR of x and y</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">&amp;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">_AND(..)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">x &amp; y, _AND(x,y)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Returns the bitwise AND of x and y.<br/>_AND() may have more than 2 parameters.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">~</para>
+        </td>
+        <td>
+          <para styleclass="Normal">_NOT(..)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">~ x, _NOT(x)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Returns the bitwise NOT of x (aka one&apos;s complement). _NOT() can only have one parameter</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">The result of a bitwise operation is best understood via ‘truth tables’. If two numbers can, for instance, be defined by 4 bits (expressing numbers 0 up to 15 in decimal value) then, when ‘Anding’ them, use the AND truth table for each bit in turn. If the values in decimal are 5 and 1 then their bit representations are 0101 and 0001. </para>
+    <para styleclass="Body Text"><image src="bitwise-operations.png" scale="100.00%" styleclass="Image Caption"></image></para>
+  </body>
+</topic>

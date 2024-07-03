@@ -5,6 +5,9 @@
   </topicref>
   <topicref type="topic" id="436965854048353" modified="2019-08-27T15:20:43.693Z" icon="0" href="Embedded_topics">
     <caption translate="true">Embedded topics</caption>
+    <topicref type="topic" id="454751736802873" modified="2024-07-02T08:09:41.220Z" icon="0" href="__buildExtra">
+      <caption translate="true">__buildExtra</caption>
+    </topicref>
     <topicref type="topic" id="436998848002267" modified="2020-11-26T20:46:31.769Z" icon="0" href="__asType">
       <caption translate="true">__asType</caption>
     </topicref>
@@ -941,167 +944,167 @@
           <topicref type="topic" id="436968195685008" build="ALL" modified="2024-06-12T17:02:22.296Z" icon="0" href="command_COPY_TO">
             <caption translate="true">COPY TO 命令</caption>
           </topicref>
-          <topicref type="topic" id="440855290127548" build="ALL" modified="2020-09-11T09:03:19.695Z" icon="0" href="command_COPY_TO_FoxPro">
-            <caption translate="true">COPY TO Command (FoxPro)</caption>
+          <topicref type="topic" id="440855290127548" build="ALL" modified="2024-06-27T19:41:07.291Z" icon="0" href="command_COPY_TO_FoxPro">
+            <caption translate="true">COPY TO 命令(FoxPro)</caption>
           </topicref>
-          <topicref type="topic" id="436966343721035" build="ALL" modified="2019-09-24T14:15:51.753Z" icon="0" href="command_COUNT">
-            <caption translate="true">COUNT Command</caption>
+          <topicref type="topic" id="436966343721035" build="ALL" modified="2024-06-27T19:41:22.160Z" icon="0" href="command_COUNT">
+            <caption translate="true">COUNT 命令</caption>
           </topicref>
-          <topicref type="topic" id="436967002478975" build="ALL" modified="2019-09-24T14:15:51.758Z" icon="0" href="command_CREATE">
-            <caption translate="true">CREATE Command</caption>
+          <topicref type="topic" id="436967002478975" build="ALL" modified="2024-06-27T19:41:35.263Z" icon="0" href="command_CREATE">
+            <caption translate="true">CREATE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436966393377422" build="ALL" modified="2019-09-24T14:15:51.763Z" icon="0" href="command_CREATE_FROM">
-            <caption translate="true">CREATE FROM Command</caption>
+          <topicref type="topic" id="436966393377422" build="ALL" modified="2024-06-27T19:41:46.608Z" icon="0" href="command_CREATE_FROM">
+            <caption translate="true">CREATE FROM 命令</caption>
           </topicref>
-          <topicref type="topic" id="436965452119672" build="ALL" modified="2019-09-24T14:15:51.768Z" icon="0" href="command_DELETE">
-            <caption translate="true">DELETE Command</caption>
+          <topicref type="topic" id="436965452119672" build="ALL" modified="2024-06-27T19:41:57.729Z" icon="0" href="command_DELETE">
+            <caption translate="true">DELETE 命令</caption>
           </topicref>
-          <topicref type="topic" id="440854220320355" build="ALL" modified="2020-09-11T09:33:46.628Z" icon="0" href="Command_GATHER">
-            <caption translate="true">GATHER Command</caption>
+          <topicref type="topic" id="440854220320355" build="ALL" modified="2024-06-27T19:42:06.637Z" icon="0" href="Command_GATHER">
+            <caption translate="true">GATHER 命令</caption>
           </topicref>
-          <topicref type="topic" id="436966502892146" build="ALL" modified="2019-09-24T14:15:51.784Z" icon="0" href="command_GO">
-            <caption translate="true">GO Command</caption>
+          <topicref type="topic" id="436966502892146" build="ALL" modified="2024-06-27T19:42:18.472Z" icon="0" href="command_GO">
+            <caption translate="true">GO 命令</caption>
           </topicref>
-          <topicref type="topic" id="436965560095848" build="ALL" modified="2019-09-24T14:15:51.795Z" icon="0" href="command_JOIN">
-            <caption translate="true">JOIN Command</caption>
+          <topicref type="topic" id="436965560095848" build="ALL" modified="2024-06-27T19:42:29.865Z" icon="0" href="command_JOIN">
+            <caption translate="true">JOIN 命令</caption>
           </topicref>
-          <topicref type="topic" id="436967129970219" build="ALL" modified="2019-09-24T14:15:51.800Z" icon="0" href="command_LOCATE">
-            <caption translate="true">LOCATE Command</caption>
+          <topicref type="topic" id="436967129970219" build="ALL" modified="2024-06-27T19:42:40.779Z" icon="0" href="command_LOCATE">
+            <caption translate="true">LOCATE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436967019277769" build="ALL" modified="2019-09-24T14:15:51.805Z" icon="0" href="command_PACK">
-            <caption translate="true">PACK Command</caption>
+          <topicref type="topic" id="436967019277769" build="ALL" modified="2024-06-27T19:42:49.849Z" icon="0" href="command_PACK">
+            <caption translate="true">PACK 命令</caption>
           </topicref>
-          <topicref type="topic" id="436964499571576" build="ALL" modified="2019-09-24T14:15:51.810Z" icon="0" href="command_RECALL">
-            <caption translate="true">RECALL Command</caption>
+          <topicref type="topic" id="436964499571576" build="ALL" modified="2024-06-27T19:43:09.659Z" icon="0" href="command_RECALL">
+            <caption translate="true">RECALL 命令</caption>
           </topicref>
-          <topicref type="topic" id="436964775577943" build="ALL" modified="2019-09-24T14:15:51.821Z" icon="0" href="command_REPLACE">
-            <caption translate="true">REPLACE Command</caption>
+          <topicref type="topic" id="436964775577943" build="ALL" modified="2024-06-27T19:43:18.622Z" icon="0" href="command_REPLACE">
+            <caption translate="true">REPLACE 命令</caption>
           </topicref>
-          <topicref type="topic" id="440854753996284" build="ALL" modified="2020-09-11T09:02:05.975Z" icon="0" href="Command_SCATTER">
-            <caption translate="true">SCATTER Command</caption>
+          <topicref type="topic" id="440854753996284" build="ALL" modified="2024-06-27T19:43:39.014Z" icon="0" href="Command_SCATTER">
+            <caption translate="true">SCATTER 命令</caption>
           </topicref>
-          <topicref type="topic" id="436967563823030" build="ALL" modified="2019-09-24T14:15:51.832Z" icon="0" href="command_SELECT">
-            <caption translate="true">SELECT Command</caption>
+          <topicref type="topic" id="436967563823030" build="ALL" modified="2024-06-27T19:43:49.101Z" icon="0" href="command_SELECT">
+            <caption translate="true">SELECT 命令</caption>
           </topicref>
-          <topicref type="topic" id="436967282935349" build="ALL" modified="2019-09-24T14:15:51.837Z" icon="0" href="command_SET_DELETED">
-            <caption translate="true">SET DELETED Command</caption>
+          <topicref type="topic" id="436967282935349" build="ALL" modified="2024-06-27T19:43:59.198Z" icon="0" href="command_SET_DELETED">
+            <caption translate="true">SET DELETED 命令</caption>
           </topicref>
-          <topicref type="topic" id="436966462679483" build="ALL" modified="2019-09-24T14:15:51.850Z" icon="0" href="command_SET_DRIVER">
-            <caption translate="true">SET DRIVER Command</caption>
+          <topicref type="topic" id="436966462679483" build="ALL" modified="2024-06-27T19:44:26.931Z" icon="0" href="command_SET_DRIVER">
+            <caption translate="true">SET DRIVER 命令</caption>
           </topicref>
-          <topicref type="topic" id="436964458216359" build="ALL" modified="2019-09-24T14:15:51.855Z" icon="0" href="command_SET_FILTER">
-            <caption translate="true">SET FILTER Command</caption>
+          <topicref type="topic" id="436964458216359" build="ALL" modified="2024-06-27T19:44:34.891Z" icon="0" href="command_SET_FILTER">
+            <caption translate="true">SET FILTER 命令</caption>
           </topicref>
-          <topicref type="topic" id="436965469408273" build="ALL" modified="2019-09-24T14:15:59.749Z" icon="0" href="command_SET_MEMOBLOCK">
-            <caption translate="true">SET MEMOBLOCK Command</caption>
+          <topicref type="topic" id="436965469408273" build="ALL" modified="2024-06-27T19:44:43.212Z" icon="0" href="command_SET_MEMOBLOCK">
+            <caption translate="true">SET MEMOBLOCK 命令</caption>
           </topicref>
-          <topicref type="topic" id="436966554635745" build="ALL" modified="2019-09-24T14:15:59.760Z" icon="0" href="command_SET_OPTIMIZE">
-            <caption translate="true">SET OPTIMIZE Command</caption>
+          <topicref type="topic" id="436966554635745" build="ALL" modified="2024-06-27T19:44:52.709Z" icon="0" href="command_SET_OPTIMIZE">
+            <caption translate="true">SET OPTIMIZE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436967275368455" build="ALL" modified="2019-09-24T14:15:59.772Z" icon="0" href="command_SET_RELATION">
-            <caption translate="true">SET RELATION Command</caption>
+          <topicref type="topic" id="436967275368455" build="ALL" modified="2024-06-27T19:45:00.619Z" icon="0" href="command_SET_RELATION">
+            <caption translate="true">SET RELATION 命令</caption>
           </topicref>
-          <topicref type="topic" id="436965926570940" build="ALL" modified="2019-09-24T14:15:59.806Z" icon="0" href="command_SKIP">
-            <caption translate="true">SKIP Command</caption>
+          <topicref type="topic" id="436965926570940" build="ALL" modified="2024-06-27T19:45:08.739Z" icon="0" href="command_SKIP">
+            <caption translate="true">SKIP 命令</caption>
           </topicref>
-          <topicref type="topic" id="436964952992197" build="ALL" modified="2019-09-24T14:15:59.811Z" icon="0" href="command_SORT">
-            <caption translate="true">SORT Command</caption>
+          <topicref type="topic" id="436964952992197" build="ALL" modified="2024-06-27T19:45:16.428Z" icon="0" href="command_SORT">
+            <caption translate="true">SORT 命令</caption>
           </topicref>
-          <topicref type="topic" id="436968546403547" build="ALL" modified="2019-09-24T14:15:59.817Z" icon="0" href="command_SUM">
-            <caption translate="true">SUM Command</caption>
+          <topicref type="topic" id="436968546403547" build="ALL" modified="2024-06-27T19:45:24.457Z" icon="0" href="command_SUM">
+            <caption translate="true">SUM 命令</caption>
           </topicref>
-          <topicref type="topic" id="436966568640458" build="ALL" modified="2019-09-24T14:15:59.822Z" icon="0" href="command_TOTAL">
-            <caption translate="true">TOTAL Command</caption>
+          <topicref type="topic" id="436966568640458" build="ALL" modified="2024-06-27T19:45:31.491Z" icon="0" href="command_TOTAL">
+            <caption translate="true">TOTAL 命令</caption>
           </topicref>
-          <topicref type="topic" id="436965041647076" build="ALL" modified="2019-09-24T14:15:59.828Z" icon="0" href="command_UPDATE">
-            <caption translate="true">UPDATE Command</caption>
+          <topicref type="topic" id="436965041647076" build="ALL" modified="2024-06-27T19:45:41.707Z" icon="0" href="command_UPDATE">
+            <caption translate="true">UPDATE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436964862908011" build="ALL" modified="2019-09-24T14:15:59.833Z" icon="0" href="command_USE">
-            <caption translate="true">USE Command</caption>
+          <topicref type="topic" id="436964862908011" build="ALL" modified="2024-06-27T19:45:52.109Z" icon="0" href="command_USE">
+            <caption translate="true">USE 命令</caption>
           </topicref>
-          <topicref type="topic" id="436964926565696" build="ALL" modified="2019-09-24T14:15:59.839Z" icon="0" href="command_ZAP">
-            <caption translate="true">ZAP Command</caption>
-          </topicref>
-        </topicref>
-        <topicref type="topic" id="43694637611075" build="ALL" modified="2019-09-24T13:44:42.162Z" icon="0" href="cmd_cat_date">
-          <caption translate="true">Date and Time</caption>
-          <topicref type="topic" id="384615935739412" build="ALL" modified="2019-09-24T14:16:07.252Z" icon="0" href="command_SET_CENTURY">
-            <caption translate="true">SET CENTURY Command</caption>
-          </topicref>
-          <topicref type="topic" id="384613369312902" build="ALL" modified="2019-09-24T14:16:07.258Z" icon="0" href="command_SET_DATE">
-            <caption translate="true">SET DATE Command</caption>
-          </topicref>
-          <topicref type="topic" id="384614137980743" build="ALL" modified="2019-09-24T14:16:07.263Z" icon="0" href="command_SET_DATE_FORMAT">
-            <caption translate="true">SET DATE FORMAT Command</caption>
-          </topicref>
-          <topicref type="topic" id="384613915494717" build="ALL" modified="2019-09-24T14:16:07.270Z" icon="0" href="command_SET_EPOCH">
-            <caption translate="true">SET EPOCH Command</caption>
+          <topicref type="topic" id="436964926565696" build="ALL" modified="2024-06-27T19:46:00.827Z" icon="0" href="command_ZAP">
+            <caption translate="true">ZAP 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966835316603" build="ALL" modified="2019-09-24T13:44:42.167Z" icon="0" href="cmd_cat_entdecl">
-          <caption translate="true">Entity Declaration</caption>
-          <topicref type="topic" id="384613959523963" build="ALL" modified="2019-09-24T14:17:26.154Z" icon="0" href="command__DLL">
-            <caption translate="true">_DLL Statement</caption>
+        <topicref type="topic" id="43694637611075" build="ALL" modified="2024-06-27T19:47:12.565Z" icon="0" href="cmd_cat_date">
+          <caption translate="true">日期和时间</caption>
+          <topicref type="topic" id="384615935739412" build="ALL" modified="2024-06-27T19:47:22.505Z" icon="0" href="command_SET_CENTURY">
+            <caption translate="true">SET CENTURY 命令</caption>
           </topicref>
-          <topicref type="topic" id="437476792465459" build="ALL" modified="2019-10-09T20:20:57.964Z" icon="0" href="Class-Members2">
-            <caption translate="true">CLASS Members</caption>
-            <topicref type="topic" id="384615648750741" build="ALL" modified="2019-09-24T14:17:26.159Z" icon="0" href="command_ACCESS">
-              <caption translate="true">ACCESS Statement</caption>
-            </topicref>
-            <topicref type="topic" id="384614387635292" build="ALL" modified="2019-09-24T14:17:26.165Z" icon="0" href="command_ASSIGN">
-              <caption translate="true">ASSIGN Statement</caption>
-            </topicref>
-            <topicref type="topic" id="436995536280198" build="ALL" modified="2019-09-24T14:17:26.181Z" icon="0" href="command_CONSTRUCTOR">
-              <caption translate="true">CONSTRUCTOR Statement</caption>
-            </topicref>
-            <topicref type="topic" id="384616246317208" build="ALL" modified="2019-09-24T14:17:26.188Z" icon="0" href="command_DECLARE_METHOD">
-              <caption translate="true">DECLARE METHOD Statement</caption>
-            </topicref>
-            <topicref type="topic" id="436998878760536" build="ALL" modified="2019-09-24T14:17:26.199Z" icon="0" href="command_DESTRUCTOR">
-              <caption translate="true">DESTRUCTOR Statement</caption>
-            </topicref>
-            <topicref type="topic" id="436996135072412" build="ALL" modified="2019-09-24T14:17:26.205Z" icon="0" href="command_EVENT">
-              <caption translate="true">EVENT Statement</caption>
-            </topicref>
-            <topicref type="topic" id="38462307661086" build="ALL" modified="2019-09-24T14:17:26.223Z" icon="0" href="command_METHOD">
-              <caption translate="true">METHOD Statement</caption>
-            </topicref>
-            <topicref type="topic" id="436998671179174" build="ALL" modified="2019-09-24T14:17:26.230Z" icon="0" href="command_OPERATOR">
-              <caption translate="true">OPERATOR Statement</caption>
-            </topicref>
-            <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
-              <caption translate="true">PROPERTY Statement</caption>
-            </topicref>
+          <topicref type="topic" id="384613369312902" build="ALL" modified="2024-06-27T19:47:29.244Z" icon="0" href="command_SET_DATE">
+            <caption translate="true">SET DATE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384613776896508" build="ALL" modified="2019-10-09T20:05:41.376Z" icon="0" href="command_CLASS">
-            <caption translate="true">CLASS Statement (All dialects)</caption>
-            <topicref type="topic" id="437479735698648" build="ALL" modified="2019-10-09T20:19:21.160Z" icon="0" href="command_Instance_Variable">
-              <caption translate="true">Instance Variables</caption>
-            </topicref>
-            <topicref type="topic" id="437477572536812" build="ALL" modified="2019-10-09T20:11:57.391Z" icon="0" href="command_ClassMembers">
-              <caption translate="true">Other Classmembers</caption>
-            </topicref>
+          <topicref type="topic" id="384614137980743" build="ALL" modified="2024-06-27T19:47:37.004Z" icon="0" href="command_SET_DATE_FORMAT">
+            <caption translate="true">SET DATE FORMAT 命令</caption>
           </topicref>
-          <topicref type="topic" id="437477445546098" build="ALL" modified="2019-10-09T20:06:40.463Z" icon="0" href="command_CLASS_Fox">
-            <caption translate="true">CLASS Statement (FoxPro dialect)</caption>
-            <topicref type="topic" id="437478995700105" build="ALL" modified="2019-10-11T17:18:45.696Z" icon="0" href="command_Fox_Properties">
-              <caption translate="true">Properties and Fields</caption>
+          <topicref type="topic" id="384613915494717" build="ALL" modified="2024-06-27T19:47:45.030Z" icon="0" href="command_SET_EPOCH">
+            <caption translate="true">SET EPOCH 命令</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="436966835316603" build="ALL" modified="2024-06-27T19:48:19.360Z" icon="0" href="cmd_cat_entdecl">
+          <caption translate="true">实体声明</caption>
+          <topicref type="topic" id="384613959523963" build="ALL" modified="2024-06-27T19:53:17.289Z" icon="0" href="command__DLL">
+            <caption translate="true">_DLL 语句</caption>
+          </topicref>
+          <topicref type="topic" id="437476792465459" build="ALL" modified="2024-06-27T19:54:02.772Z" icon="0" href="Class-Members2">
+            <caption translate="true">CLASS 成员</caption>
+            <topicref type="topic" id="384615648750741" build="ALL" modified="2024-06-27T19:54:21.859Z" icon="0" href="command_ACCESS">
+              <caption translate="true">ACCESS 语句</caption>
             </topicref>
-            <topicref type="topic" id="437495321298598" build="ALL" modified="2019-10-11T17:19:07.237Z" icon="0" href="command_Fox_Implements">
-              <caption translate="true">IMPLEMENTS clause</caption>
+            <topicref type="topic" id="384614387635292" build="ALL" modified="2024-06-27T19:54:40.385Z" icon="0" href="command_ASSIGN">
+              <caption translate="true">ASSIGN 语句</caption>
             </topicref>
-            <topicref type="topic" id="437497882149526" build="ALL" modified="2019-10-11T17:19:10.611Z" icon="0" href="command_Fox_AddObject">
-              <caption translate="true">ADD OBJECT Clause</caption>
+            <topicref type="topic" id="436995536280198" build="ALL" modified="2024-06-27T19:54:47.718Z" icon="0" href="command_CONSTRUCTOR">
+              <caption translate="true">CONSTRUCTOR 语句</caption>
             </topicref>
-            <topicref type="topic" id="437479355046292" build="ALL" modified="2019-10-11T17:19:23.008Z" icon="0" href="command_Fox_CommAttrib">
-              <caption translate="true">COMMAttrib Clause</caption>
+            <topicref type="topic" id="384616246317208" build="ALL" modified="2024-06-27T19:54:54.264Z" icon="0" href="command_DECLARE_METHOD">
+              <caption translate="true">DECLARE METHOD 语句</caption>
             </topicref>
-            <topicref type="topic" id="437494694042229" build="ALL" modified="2019-10-11T17:19:28.821Z" icon="0" href="command_Fox_FunctionProcedure">
-              <caption translate="true">FUNCTION and PROCEDURE</caption>
+            <topicref type="topic" id="436998878760536" build="ALL" modified="2024-06-27T19:55:00.288Z" icon="0" href="command_DESTRUCTOR">
+              <caption translate="true">DESTRUCTOR 语句</caption>
+            </topicref>
+            <topicref type="topic" id="436996135072412" build="ALL" modified="2024-06-27T19:55:37.743Z" icon="0" href="command_EVENT">
+              <caption translate="true">EVENT 语句</caption>
+            </topicref>
+            <topicref type="topic" id="38462307661086" build="ALL" modified="2024-06-27T19:55:47.254Z" icon="0" href="command_METHOD">
+              <caption translate="true">METHOD 语句</caption>
+            </topicref>
+            <topicref type="topic" id="436998671179174" build="ALL" modified="2024-06-27T19:55:53.132Z" icon="0" href="command_OPERATOR">
+              <caption translate="true">OPERATOR 语句</caption>
+            </topicref>
+            <topicref type="topic" id="436996775134688" build="ALL" modified="2024-06-27T19:56:00.565Z" icon="0" href="command_PROPERTY">
+              <caption translate="true">PROPERTY 语句</caption>
             </topicref>
           </topicref>
-          <topicref type="topic" id="437476375544384" build="ALL" modified="2019-10-09T20:06:45.951Z" icon="0" href="command_CLASS_Xpp">
-            <caption translate="true">CLASS Statement (Xbase++ dialect)</caption>
+          <topicref type="topic" id="384613776896508" build="ALL" modified="2024-06-27T19:56:37.934Z" icon="0" href="command_CLASS">
+            <caption translate="true">CLASS 语句(所有方言)</caption>
+            <topicref type="topic" id="437479735698648" build="ALL" modified="2024-06-27T20:00:14.477Z" icon="0" href="command_Instance_Variable">
+              <caption translate="true">Instance变量</caption>
+            </topicref>
+            <topicref type="topic" id="437477572536812" build="ALL" modified="2024-06-27T20:00:30.178Z" icon="0" href="command_ClassMembers">
+              <caption translate="true">其他类成员</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="437477445546098" build="ALL" modified="2024-06-27T20:05:16.559Z" icon="0" href="command_CLASS_Fox">
+            <caption translate="true">CLASS 语句(FoxPro 方言)</caption>
+            <topicref type="topic" id="437478995700105" build="ALL" modified="2024-06-27T20:02:28.064Z" icon="0" href="command_Fox_Properties">
+              <caption translate="true">属性和字段</caption>
+            </topicref>
+            <topicref type="topic" id="437495321298598" build="ALL" modified="2024-06-27T20:02:53.973Z" icon="0" href="command_Fox_Implements">
+              <caption translate="true">IMPLEMENTS 子句</caption>
+            </topicref>
+            <topicref type="topic" id="437497882149526" build="ALL" modified="2024-06-27T20:03:29.681Z" icon="0" href="command_Fox_AddObject">
+              <caption translate="true">ADD OBJECT 子句</caption>
+            </topicref>
+            <topicref type="topic" id="437479355046292" build="ALL" modified="2024-06-27T20:03:49.992Z" icon="0" href="command_Fox_CommAttrib">
+              <caption translate="true">COMMAttrib 子句</caption>
+            </topicref>
+            <topicref type="topic" id="437494694042229" build="ALL" modified="2024-06-27T20:04:11.855Z" icon="0" href="command_Fox_FunctionProcedure">
+              <caption translate="true">FUNCTION 和 PROCEDURE</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="437476375544384" build="ALL" modified="2024-06-27T20:08:05.156Z" icon="0" href="command_CLASS_Xpp">
+            <caption translate="true">CLASS 语句(Xbase++ 方言)</caption>
             <topicref type="topic" id="437477277472577" build="ALL" modified="2019-10-11T17:21:17.108Z" icon="0" href="command_Xpp_InstanceVariables">
               <caption translate="true">Fields</caption>
             </topicref>
@@ -1112,393 +1115,393 @@
               <caption translate="true">METHOD Implementation</caption>
             </topicref>
           </topicref>
-          <topicref type="topic" id="384613569689846" build="ALL" modified="2019-09-24T14:17:26.193Z" icon="0" href="command_DEFINE">
-            <caption translate="true">DEFINE Statement</caption>
+          <topicref type="topic" id="384613569689846" build="ALL" modified="2024-06-27T20:08:48.539Z" icon="0" href="command_DEFINE">
+            <caption translate="true">DEFINE 语句</caption>
           </topicref>
-          <topicref type="topic" id="437496445795713" build="ALL" modified="2019-10-11T15:01:27.114Z" icon="0" href="command_DELEGATE">
-            <caption translate="true">DELEGATE Statement</caption>
+          <topicref type="topic" id="437496445795713" build="ALL" modified="2024-06-27T20:08:59.015Z" icon="0" href="command_DELEGATE">
+            <caption translate="true">DELEGATE 语句</caption>
           </topicref>
-          <topicref type="topic" id="437494672938695" build="ALL" modified="2019-10-11T15:03:01.253Z" icon="0" href="command_ENUM">
-            <caption translate="true">ENUM Statement</caption>
+          <topicref type="topic" id="437494672938695" build="ALL" modified="2024-06-27T20:09:14.243Z" icon="0" href="command_ENUM">
+            <caption translate="true">ENUM 语句</caption>
           </topicref>
-          <topicref type="topic" id="384614238351044" build="ALL" modified="2019-09-24T14:17:26.210Z" icon="0" href="command_FUNCTION">
-            <caption translate="true">FUNCTION Statement</caption>
+          <topicref type="topic" id="384614238351044" build="ALL" modified="2024-06-27T20:09:24.131Z" icon="0" href="command_FUNCTION">
+            <caption translate="true">FUNCTION 语句</caption>
           </topicref>
-          <topicref type="topic" id="384615018311778" build="ALL" modified="2019-09-24T14:17:26.217Z" icon="0" href="command_GLOBAL">
-            <caption translate="true">GLOBAL Statement</caption>
+          <topicref type="topic" id="384615018311778" build="ALL" modified="2024-06-27T20:09:36.149Z" icon="0" href="command_GLOBAL">
+            <caption translate="true">GLOBAL 语句</caption>
           </topicref>
-          <topicref type="topic" id="436995949548839" build="ALL" modified="2019-09-24T14:17:26.175Z" icon="0" href="command_INTERFACE">
-            <caption translate="true">INTERFACE Statement</caption>
+          <topicref type="topic" id="436995949548839" build="ALL" modified="2024-06-27T20:09:49.539Z" icon="0" href="command_INTERFACE">
+            <caption translate="true">INTERFACE 语句</caption>
           </topicref>
-          <topicref type="topic" id="441767194784056" build="ALL" modified="2020-12-11T15:40:05.276Z" icon="0" href="command_LOCAL-FUNCTION">
-            <caption translate="true">LOCAL FUNCTION Statement</caption>
+          <topicref type="topic" id="441767194784056" build="ALL" modified="2024-06-27T20:09:59.776Z" icon="0" href="command_LOCAL-FUNCTION">
+            <caption translate="true">LOCAL FUNCTION 语句</caption>
           </topicref>
-          <topicref type="topic" id="441768159581787" build="ALL" modified="2020-12-11T15:40:00.210Z" icon="0" href="command_LOCAL-PROCEDURE">
-            <caption translate="true">LOCAL PROCEDURE Statement</caption>
+          <topicref type="topic" id="441768159581787" build="ALL" modified="2024-06-27T20:10:12.850Z" icon="0" href="command_LOCAL-PROCEDURE">
+            <caption translate="true">LOCAL PROCEDURE 语句</caption>
           </topicref>
-          <topicref type="topic" id="384615026623733" build="ALL" modified="2019-09-24T14:17:26.236Z" icon="0" href="command_PROCEDURE">
-            <caption translate="true">PROCEDURE Statement</caption>
+          <topicref type="topic" id="384615026623733" build="ALL" modified="2024-06-27T20:10:27.164Z" icon="0" href="command_PROCEDURE">
+            <caption translate="true">PROCEDURE 语句</caption>
           </topicref>
-          <topicref type="topic" id="436997490436234" build="ALL" modified="2021-02-09T11:54:27.715Z" icon="0" href="command_STRUCTURE">
-            <caption translate="true">STRUCTURE Statement</caption>
+          <topicref type="topic" id="436997490436234" build="ALL" modified="2024-06-27T20:10:37.602Z" icon="0" href="command_STRUCTURE">
+            <caption translate="true">STRUCTURE 语句</caption>
           </topicref>
-          <topicref type="topic" id="384613186762724" build="ALL" modified="2019-09-24T14:17:26.263Z" icon="0" href="command_UNION">
-            <caption translate="true">UNION Statement</caption>
+          <topicref type="topic" id="384613186762724" build="ALL" modified="2024-06-27T20:10:48.171Z" icon="0" href="command_UNION">
+            <caption translate="true">UNION 语句</caption>
           </topicref>
-          <topicref type="topic" id="385275819227227" build="ALL" modified="2019-09-24T14:17:26.270Z" icon="0" href="command_VOSTRUCT">
-            <caption translate="true">VOSTRUCT Statement</caption>
-          </topicref>
-        </topicref>
-        <topicref type="topic" id="436968382800624" build="ALL" modified="2022-09-07T14:51:30.547Z" icon="0" href="cmd_cat_set">
-          <caption translate="true">Environment</caption>
-          <topicref type="topic" id="384613507102286" build="ALL" modified="2022-09-07T14:51:30.553Z" icon="0" href="command_SET_ANSI">
-            <caption translate="true">SET ANSI Command</caption>
-          </topicref>
-          <topicref type="topic" id="43700395884884" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:12.457Z" icon="0" href="command_SET_CENTURY">
-            <caption translate="true">SET CENTURY Command</caption>
-          </topicref>
-          <topicref type="topic" id="436985524344551" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:54.928Z" icon="0" href="command_SET_DATE">
-            <caption translate="true">SET DATE Command</caption>
-          </topicref>
-          <topicref type="topic" id="385413837929920" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:54.934Z" icon="0" href="command_SET_DATE_FORMAT">
-            <caption translate="true">SET DATE FORMAT Command</caption>
-          </topicref>
-          <topicref type="topic" id="384613069718970" build="ALL" modified="2022-09-07T14:51:30.580Z" icon="0" href="command_SET_DECIMALS">
-            <caption translate="true">SET DECIMALS Command</caption>
-          </topicref>
-          <topicref type="topic" id="385414395175438" build="ALL" modified="2022-09-07T14:51:30.585Z" icon="0" href="command_SET_DEFAULT">
-            <caption translate="true">SET DEFAULT Command</caption>
-          </topicref>
-          <topicref type="topic" id="384614063710025" build="ALL" modified="2022-09-07T14:51:30.591Z" icon="0" href="command_SET_DIGITFIXED">
-            <caption translate="true">SET DIGITFIXED Command</caption>
-          </topicref>
-          <topicref type="topic" id="384612814452770" build="ALL" modified="2022-09-07T14:51:30.597Z" icon="0" href="command_SET_DIGITS">
-            <caption translate="true">SET DIGITS Command</caption>
-          </topicref>
-          <topicref type="topic" id="385414484815343" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:51:34.236Z" icon="0" href="command_SET_DRIVER">
-            <caption translate="true">SET DRIVER Command</caption>
-          </topicref>
-          <topicref type="topic" id="385412955773853" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:54.940Z" icon="0" href="command_SET_EPOCH">
-            <caption translate="true">SET EPOCH Command</caption>
-          </topicref>
-          <topicref type="topic" id="384613116326190" build="ALL" modified="2022-09-07T14:51:30.615Z" icon="0" href="command_SET_EXACT">
-            <caption translate="true">SET EXACT Command</caption>
-          </topicref>
-          <topicref type="topic" id="384612443430574" build="ALL" modified="2022-09-07T14:51:30.621Z" icon="0" href="command_SET_FIXED">
-            <caption translate="true">SET FIXED Command</caption>
-          </topicref>
-          <topicref type="topic" id="385413402566730" build="ALL" modified="2022-09-07T14:51:30.626Z" icon="0" href="command_SET_PATH">
-            <caption translate="true">SET PATH Command</caption>
+          <topicref type="topic" id="385275819227227" build="ALL" modified="2024-06-27T20:11:03.659Z" icon="0" href="command_VOSTRUCT">
+            <caption translate="true">VOSTRUCT 语句</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966332704012" build="ALL" modified="2019-09-24T13:44:42.177Z" icon="0" href="cmd_cat_file">
-          <caption translate="true">File</caption>
-          <topicref type="topic" id="38460739823867" build="ALL" modified="2019-09-24T14:18:26.519Z" icon="0" href="command_COPY_FILE">
-            <caption translate="true">COPY FILE Command</caption>
+        <topicref type="topic" id="436968382800624" build="ALL" modified="2024-06-27T20:11:54.467Z" icon="0" href="cmd_cat_set">
+          <caption translate="true">环境</caption>
+          <topicref type="topic" id="384613507102286" build="ALL" modified="2024-06-27T20:12:05.254Z" icon="0" href="command_SET_ANSI">
+            <caption translate="true">SET ANSI 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615328358574" build="ALL" modified="2019-09-24T14:18:26.524Z" icon="0" href="command_DELETE_FILE">
-            <caption translate="true">DELETE FILE Command</caption>
+          <topicref type="topic" id="43700395884884" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-27T20:12:20.715Z" icon="0" href="command_SET_CENTURY">
+            <caption translate="true">SET CENTURY 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615191143206" build="ALL" modified="2019-09-24T14:18:26.530Z" icon="0" href="command_DIR">
-            <caption translate="true">DIR Command</caption>
+          <topicref type="topic" id="436985524344551" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-27T20:12:30.052Z" icon="0" href="command_SET_DATE">
+            <caption translate="true">SET DATE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615283978754" build="ALL" modified="2019-09-24T14:18:26.537Z" icon="0" href="command_ERASE">
-            <caption translate="true">ERASE Command</caption>
+          <topicref type="topic" id="385413837929920" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-27T20:12:39.924Z" icon="0" href="command_SET_DATE_FORMAT">
+            <caption translate="true">SET DATE FORMAT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384613927016688" build="ALL" modified="2019-09-24T14:18:26.543Z" icon="0" href="command_RENAME">
-            <caption translate="true">RENAME Command</caption>
+          <topicref type="topic" id="384613069718970" build="ALL" modified="2024-06-27T20:13:28.052Z" icon="0" href="command_SET_DECIMALS">
+            <caption translate="true">SET DECIMALS 命令</caption>
           </topicref>
-          <topicref type="topic" id="384613828801244" build="CHM,HTML,PDF,PRINT" modified="2022-09-16T14:52:39.628Z" icon="0" href="command_SET_DEFAULT">
-            <caption translate="true">SET DEFAULT Command</caption>
+          <topicref type="topic" id="385414395175438" build="ALL" modified="2024-06-27T20:13:37.930Z" icon="0" href="command_SET_DEFAULT">
+            <caption translate="true">SET DEFAULT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384613704359085" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:53:20.637Z" icon="0" href="command_SET_PATH">
-            <caption translate="true">SET PATH Command</caption>
+          <topicref type="topic" id="384614063710025" build="ALL" modified="2024-06-27T20:13:49.211Z" icon="0" href="command_SET_DIGITFIXED">
+            <caption translate="true">SET DIGITFIXED 命令</caption>
           </topicref>
-        </topicref>
-        <topicref type="topic" id="436966805247382" build="ALL" modified="2019-09-24T13:44:42.182Z" icon="0" href="cmd_cat_index">
-          <caption translate="true">Index/Order</caption>
-          <topicref type="topic" id="385413327814999" build="ALL" modified="2019-09-24T14:18:33.339Z" icon="0" href="command_DELETE_TAG">
-            <caption translate="true">DELETE TAG Command</caption>
+          <topicref type="topic" id="384612814452770" build="ALL" modified="2024-06-27T20:13:59.272Z" icon="0" href="command_SET_DIGITS">
+            <caption translate="true">SET DIGITS 命令</caption>
           </topicref>
-          <topicref type="topic" id="384612688722303" build="ALL" modified="2019-09-24T14:18:33.347Z" icon="0" href="command_FIND">
-            <caption translate="true">FIND Command</caption>
+          <topicref type="topic" id="385414484815343" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-27T20:14:08.624Z" icon="0" href="command_SET_DRIVER">
+            <caption translate="true">SET DRIVER 命令</caption>
           </topicref>
-          <topicref type="topic" id="384613270948688" build="ALL" modified="2019-09-24T14:18:33.354Z" icon="0" href="command_INDEX">
-            <caption translate="true">INDEX Command</caption>
+          <topicref type="topic" id="385412955773853" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-27T20:14:17.773Z" icon="0" href="command_SET_EPOCH">
+            <caption translate="true">SET EPOCH 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615476754451" build="ALL" modified="2019-09-24T14:18:33.361Z" icon="0" href="command_REINDEX">
-            <caption translate="true">REINDEX Command</caption>
+          <topicref type="topic" id="384613116326190" build="ALL" modified="2024-06-27T20:14:29.275Z" icon="0" href="command_SET_EXACT">
+            <caption translate="true">SET EXACT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614857202088" build="ALL" modified="2019-09-24T14:18:33.367Z" icon="0" href="command_SEEK">
-            <caption translate="true">SEEK Command</caption>
+          <topicref type="topic" id="384612443430574" build="ALL" modified="2024-06-27T20:14:40.453Z" icon="0" href="command_SET_FIXED">
+            <caption translate="true">SET FIXED 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614273942449" build="ALL" modified="2019-09-24T14:18:33.374Z" icon="0" href="command_SET_DESCENDING">
-            <caption translate="true">SET DESCENDING Command</caption>
-          </topicref>
-          <topicref type="topic" id="384614110631580" build="ALL" modified="2019-09-24T14:18:33.380Z" icon="0" href="command_SET_INDEX">
-            <caption translate="true">SET INDEX Command</caption>
-          </topicref>
-          <topicref type="topic" id="384614321325935" build="ALL" modified="2019-09-24T14:18:33.393Z" icon="0" href="command_SET_ORDER">
-            <caption translate="true">SET ORDER Command</caption>
-          </topicref>
-          <topicref type="topic" id="384615107900420" build="ALL" modified="2019-09-24T14:18:33.400Z" icon="0" href="command_SET_SCOPE">
-            <caption translate="true">SET SCOPE Command</caption>
-          </topicref>
-          <topicref type="topic" id="384616005582003" build="ALL" modified="2019-09-24T14:18:33.407Z" icon="0" href="command_SET_SCOPEBOTTOM">
-            <caption translate="true">SET SCOPEBOTTOM Command</caption>
-          </topicref>
-          <topicref type="topic" id="384613546473992" build="ALL" modified="2019-09-24T14:18:33.413Z" icon="0" href="command_SET_SCOPETOP">
-            <caption translate="true">SET SCOPETOP Command</caption>
-          </topicref>
-          <topicref type="topic" id="384614212760215" build="ALL" modified="2019-09-24T14:18:33.421Z" icon="0" href="command_SET_SOFTSEEK">
-            <caption translate="true">SET SOFTSEEK Command</caption>
-          </topicref>
-          <topicref type="topic" id="384616122645001" build="ALL" modified="2019-09-24T14:18:33.427Z" icon="0" href="command_SET_UNIQUE">
-            <caption translate="true">SET UNIQUE Command</caption>
+          <topicref type="topic" id="385413402566730" build="ALL" modified="2024-06-27T20:14:49.580Z" icon="0" href="command_SET_PATH">
+            <caption translate="true">SET PATH 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966257699611" build="ALL" modified="2019-09-24T13:44:42.186Z" icon="0" href="cmd_cat_international">
-          <caption translate="true">International</caption>
-          <topicref type="topic" id="384613776732228" build="ALL" modified="2019-09-24T14:18:57.708Z" icon="0" href="command_SET_COLLATION">
-            <caption translate="true">SET COLLATION Command</caption>
+        <topicref type="topic" id="436966332704012" build="ALL" modified="2024-06-27T20:15:12.681Z" icon="0" href="cmd_cat_file">
+          <caption translate="true">文件</caption>
+          <topicref type="topic" id="38460739823867" build="ALL" modified="2024-06-27T20:15:22.989Z" icon="0" href="command_COPY_FILE">
+            <caption translate="true">COPY FILE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615263405968" build="ALL" modified="2019-09-24T14:18:57.714Z" icon="0" href="command_SET_INTERNATIONAL">
-            <caption translate="true">SET INTERNATIONAL Command</caption>
+          <topicref type="topic" id="384615328358574" build="ALL" modified="2024-06-27T20:15:31.290Z" icon="0" href="command_DELETE_FILE">
+            <caption translate="true">DELETE FILE 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384615191143206" build="ALL" modified="2024-06-27T20:15:40.373Z" icon="0" href="command_DIR">
+            <caption translate="true">DIR 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384615283978754" build="ALL" modified="2024-06-27T20:15:49.939Z" icon="0" href="command_ERASE">
+            <caption translate="true">ERASE 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384613927016688" build="ALL" modified="2024-06-27T20:16:13.952Z" icon="0" href="command_RENAME">
+            <caption translate="true">RENAME 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384613828801244" build="CHM,HTML,PDF,PRINT" modified="2024-06-27T20:16:21.908Z" icon="0" href="command_SET_DEFAULT">
+            <caption translate="true">SET DEFAULT 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384613704359085" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-27T20:16:32.105Z" icon="0" href="command_SET_PATH">
+            <caption translate="true">SET PATH 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436905710726514" build="ALL" modified="2019-10-11T16:49:53.420Z" icon="0" href="macros">
-          <caption translate="true">Macros</caption>
+        <topicref type="topic" id="436966805247382" build="ALL" modified="2024-06-27T20:17:06.323Z" icon="0" href="cmd_cat_index">
+          <caption translate="true">索引/排序</caption>
+          <topicref type="topic" id="385413327814999" build="ALL" modified="2024-06-27T20:17:18.550Z" icon="0" href="command_DELETE_TAG">
+            <caption translate="true">DELETE TAG 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384612688722303" build="ALL" modified="2024-06-27T20:17:27.151Z" icon="0" href="command_FIND">
+            <caption translate="true">FIND 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384613270948688" build="ALL" modified="2024-06-27T20:17:37.667Z" icon="0" href="command_INDEX">
+            <caption translate="true">INDEX 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384615476754451" build="ALL" modified="2024-06-27T20:17:47.367Z" icon="0" href="command_REINDEX">
+            <caption translate="true">REINDEX 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384614857202088" build="ALL" modified="2024-06-27T20:17:56.272Z" icon="0" href="command_SEEK">
+            <caption translate="true">SEEK 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384614273942449" build="ALL" modified="2024-06-27T20:18:04.824Z" icon="0" href="command_SET_DESCENDING">
+            <caption translate="true">SET DESCENDING 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384614110631580" build="ALL" modified="2024-06-27T20:18:13.326Z" icon="0" href="command_SET_INDEX">
+            <caption translate="true">SET INDEX 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384614321325935" build="ALL" modified="2024-06-27T20:18:26.743Z" icon="0" href="command_SET_ORDER">
+            <caption translate="true">SET ORDER 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384615107900420" build="ALL" modified="2024-06-28T00:20:21.430Z" icon="0" href="command_SET_SCOPE">
+            <caption translate="true">SET SCOPE 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384616005582003" build="ALL" modified="2024-06-28T00:20:46.611Z" icon="0" href="command_SET_SCOPEBOTTOM">
+            <caption translate="true">SET SCOPEBOTTOM 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384613546473992" build="ALL" modified="2024-06-28T00:20:57.231Z" icon="0" href="command_SET_SCOPETOP">
+            <caption translate="true">SET SCOPETOP 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384614212760215" build="ALL" modified="2024-06-28T00:21:05.989Z" icon="0" href="command_SET_SOFTSEEK">
+            <caption translate="true">SET SOFTSEEK 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384616122645001" build="ALL" modified="2024-06-28T00:21:17.182Z" icon="0" href="command_SET_UNIQUE">
+            <caption translate="true">SET UNIQUE 命令</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="436966257699611" build="ALL" modified="2024-06-28T00:35:50.558Z" icon="0" href="cmd_cat_international">
+          <caption translate="true">国际</caption>
+          <topicref type="topic" id="384613776732228" build="ALL" modified="2024-06-28T00:36:05.530Z" icon="0" href="command_SET_COLLATION">
+            <caption translate="true">SET COLLATION 命令</caption>
+          </topicref>
+          <topicref type="topic" id="384615263405968" build="ALL" modified="2024-06-28T00:36:15.239Z" icon="0" href="command_SET_INTERNATIONAL">
+            <caption translate="true">SET INTERNATIONAL 命令</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="436905710726514" build="ALL" modified="2024-06-28T00:38:52.344Z" icon="0" href="macros">
+          <caption translate="true">宏</caption>
           <topicref type="topic" id="43692603731653" build="ALL" modified="2019-09-24T14:19:02.912Z" icon="0" href="Amp_Command">
             <caption translate="true">&amp; Command</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436964703826547" build="ALL" modified="2019-09-24T13:44:42.195Z" icon="0" href="cmd_cat_memvar">
-          <caption translate="true">Memory Variable</caption>
-          <topicref type="topic" id="384614637434115" build="ALL" modified="2019-09-24T14:19:09.607Z" icon="0" href="command_CLEAR_MEMORY">
-            <caption translate="true">CLEAR MEMORY Command</caption>
+        <topicref type="topic" id="436964703826547" build="ALL" modified="2024-06-28T00:39:09.246Z" icon="0" href="cmd_cat_memvar">
+          <caption translate="true">内存变量</caption>
+          <topicref type="topic" id="384614637434115" build="ALL" modified="2024-06-28T00:39:37.482Z" icon="0" href="command_CLEAR_MEMORY">
+            <caption translate="true">CLEAR MEMORY 命令</caption>
           </topicref>
-          <topicref type="topic" id="385414682643284" build="ALL" modified="2022-08-30T12:24:55.907Z" icon="0" href="command_DECLARE">
-            <caption translate="true">DECLARE / DIMENSION Statement</caption>
+          <topicref type="topic" id="385414682643284" build="ALL" modified="2024-06-28T00:39:47.319Z" icon="0" href="command_DECLARE">
+            <caption translate="true">DECLARE / DIMENSION 语句</caption>
           </topicref>
-          <topicref type="topic" id="385414626514556" build="ALL" modified="2019-09-24T14:19:09.629Z" icon="0" href="command_MEMVAR">
-            <caption translate="true">MEMVAR Statement</caption>
+          <topicref type="topic" id="385414626514556" build="ALL" modified="2024-06-28T00:39:57.892Z" icon="0" href="command_MEMVAR">
+            <caption translate="true">MEMVAR 语句</caption>
           </topicref>
-          <topicref type="topic" id="384615998847401" build="ALL" modified="2019-09-24T14:19:09.636Z" icon="0" href="command_PARAMETERS">
-            <caption translate="true">PARAMETERS Statement</caption>
+          <topicref type="topic" id="384615998847401" build="ALL" modified="2024-06-28T00:40:06.490Z" icon="0" href="command_PARAMETERS">
+            <caption translate="true">PARAMETERS 语句</caption>
           </topicref>
-          <topicref type="topic" id="384612922797643" build="ALL" modified="2019-09-24T14:19:09.643Z" icon="0" href="command_PRIVATE">
-            <caption translate="true">PRIVATE statement</caption>
+          <topicref type="topic" id="384612922797643" build="ALL" modified="2024-06-28T00:40:14.791Z" icon="0" href="command_PRIVATE">
+            <caption translate="true">PRIVATE 语句</caption>
           </topicref>
-          <topicref type="topic" id="385415371996093" build="ALL" modified="2019-09-24T14:19:09.648Z" icon="0" href="command_PUBLIC">
-            <caption translate="true">PUBLIC Statement</caption>
+          <topicref type="topic" id="385415371996093" build="ALL" modified="2024-06-28T00:40:24.411Z" icon="0" href="command_PUBLIC">
+            <caption translate="true">PUBLIC 语句</caption>
           </topicref>
-          <topicref type="topic" id="38539576350877" build="ALL" modified="2019-09-24T14:19:09.654Z" icon="0" href="command_RELEASE">
-            <caption translate="true">RELEASE Command</caption>
+          <topicref type="topic" id="38539576350877" build="ALL" modified="2024-06-28T00:40:33.852Z" icon="0" href="command_RELEASE">
+            <caption translate="true">RELEASE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384613807507342" build="ALL" modified="2019-09-24T14:19:09.660Z" icon="0" href="command_RESTORE">
-            <caption translate="true">RESTORE Command</caption>
+          <topicref type="topic" id="384613807507342" build="ALL" modified="2024-06-28T00:40:42.598Z" icon="0" href="command_RESTORE">
+            <caption translate="true">RESTORE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614269570999" build="ALL" modified="2019-09-24T14:19:09.666Z" icon="0" href="command_SAVE">
-            <caption translate="true">SAVE Command</caption>
+          <topicref type="topic" id="384614269570999" build="ALL" modified="2024-06-28T00:40:51.563Z" icon="0" href="command_SAVE">
+            <caption translate="true">SAVE 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615761998452" build="ALL" modified="2019-09-24T14:19:09.672Z" icon="0" href="command_STORE">
-            <caption translate="true">STORE Command</caption>
-          </topicref>
-        </topicref>
-        <topicref type="topic" id="436964407573243" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.752Z" icon="0" href="cmd_cat_num">
-          <caption translate="true">Numeric</caption>
-          <topicref type="topic" id="385414610315142" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.761Z" icon="0" href="command_SET_DECIMALS">
-            <caption translate="true">SET DECIMALS Command</caption>
-          </topicref>
-          <topicref type="topic" id="385412794601021" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.767Z" icon="0" href="command_SET_DIGITFIXED">
-            <caption translate="true">SET DIGITFIXED Command</caption>
-          </topicref>
-          <topicref type="topic" id="385413909787819" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.774Z" icon="0" href="command_SET_DIGITS">
-            <caption translate="true">SET DIGITS Command</caption>
-          </topicref>
-          <topicref type="topic" id="385416098540798" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.781Z" icon="0" href="command_SET_FIXED">
-            <caption translate="true">SET FIXED Command</caption>
+          <topicref type="topic" id="384615761998452" build="ALL" modified="2024-06-28T00:40:59.720Z" icon="0" href="command_STORE">
+            <caption translate="true">STORE 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436964675005123" build="ALL" modified="2019-09-24T13:44:42.205Z" icon="0" href="cmd_cat_control">
-          <caption translate="true">Program Control</caption>
-          <topicref type="topic" id="384615443353630" build="ALL" modified="2019-09-24T14:19:27.335Z" icon="0" href="command_IFDEF">
-            <caption translate="true">#ifdef Statement</caption>
+        <topicref type="topic" id="436964407573243" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-29T00:45:16.977Z" icon="0" href="cmd_cat_num">
+          <caption translate="true">数值</caption>
+          <topicref type="topic" id="385414610315142" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-29T00:45:48.687Z" icon="0" href="command_SET_DECIMALS">
+            <caption translate="true">SET DECIMALS 命令</caption>
           </topicref>
-          <topicref type="topic" id="384612076795495" build="ALL" modified="2019-09-24T14:19:27.347Z" icon="0" href="command_IFNDEF">
-            <caption translate="true">#ifndef Statement</caption>
+          <topicref type="topic" id="385412794601021" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-29T00:46:06.366Z" icon="0" href="command_SET_DIGITFIXED">
+            <caption translate="true">SET DIGITFIXED 命令</caption>
+          </topicref>
+          <topicref type="topic" id="385413909787819" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-29T00:46:17.119Z" icon="0" href="command_SET_DIGITS">
+            <caption translate="true">SET DIGITS 命令</caption>
+          </topicref>
+          <topicref type="topic" id="385416098540798" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2024-06-29T00:46:31.124Z" icon="0" href="command_SET_FIXED">
+            <caption translate="true">SET FIXED 命令</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="436964675005123" build="ALL" modified="2024-06-29T00:46:55.078Z" icon="0" href="cmd_cat_control">
+          <caption translate="true">程序控制</caption>
+          <topicref type="topic" id="384615443353630" build="ALL" modified="2024-06-29T00:50:11.995Z" icon="0" href="command_IFDEF">
+            <caption translate="true">#ifdef 语句</caption>
+          </topicref>
+          <topicref type="topic" id="384612076795495" build="ALL" modified="2024-06-29T00:50:23.813Z" icon="0" href="command_IFNDEF">
+            <caption translate="true">#ifndef 语句</caption>
           </topicref>
           <topicref type="topic" id="423889013011988" build="ALL" modified="2020-02-06T15:55:14.992Z" icon="0" href="command_ASYNC_AWAIT">
             <caption translate="true">ASYNC .. AWAIT</caption>
           </topicref>
-          <topicref type="topic" id="384613465012339" build="ALL" modified="2019-09-24T14:19:27.356Z" icon="0" href="command_BEGIN_SEQUENCE">
-            <caption translate="true">BEGIN SEQUENCE Statement</caption>
+          <topicref type="topic" id="384613465012339" build="ALL" modified="2024-06-29T00:50:37.068Z" icon="0" href="command_BEGIN_SEQUENCE">
+            <caption translate="true">BEGIN SEQUENCE 语句</caption>
           </topicref>
-          <topicref type="topic" id="426775265173163" build="ALL" modified="2020-02-06T15:01:32.712Z" icon="0" href="command_BREAK">
-            <caption translate="true">BREAK statement</caption>
+          <topicref type="topic" id="426775265173163" build="ALL" modified="2024-06-29T00:50:46.747Z" icon="0" href="command_BREAK">
+            <caption translate="true">BREAK 语句</caption>
           </topicref>
-          <topicref type="topic" id="384612716846275" build="ALL" modified="2019-09-24T14:19:27.363Z" icon="0" href="command_CANCEL">
-            <caption translate="true">CANCEL Command</caption>
+          <topicref type="topic" id="384612716846275" build="ALL" modified="2024-06-29T00:50:56.431Z" icon="0" href="command_CANCEL">
+            <caption translate="true">CANCEL 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614041083108" build="ALL" modified="2019-09-24T14:19:27.369Z" icon="0" href="command_DEFAULT">
-            <caption translate="true">DEFAULT Command</caption>
+          <topicref type="topic" id="384614041083108" build="ALL" modified="2024-06-29T00:51:07.378Z" icon="0" href="command_DEFAULT">
+            <caption translate="true">DEFAULT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614597322040" build="ALL" modified="2019-09-24T14:19:27.375Z" icon="0" href="command_DO_CASE">
-            <caption translate="true">DO CASE Statement</caption>
+          <topicref type="topic" id="384614597322040" build="ALL" modified="2024-06-29T00:51:16.908Z" icon="0" href="command_DO_CASE">
+            <caption translate="true">DO CASE 语句</caption>
           </topicref>
-          <topicref type="topic" id="384612279994244" build="ALL" modified="2019-09-24T14:19:27.381Z" icon="0" href="command_DO">
-            <caption translate="true">DO Statement</caption>
+          <topicref type="topic" id="384612279994244" build="ALL" modified="2024-06-29T00:51:28.387Z" icon="0" href="command_DO">
+            <caption translate="true">DO 语句</caption>
           </topicref>
-          <topicref type="topic" id="384614699101848" build="ALL" modified="2019-09-24T14:19:27.386Z" icon="0" href="command_DO_WHILE">
-            <caption translate="true">DO WHILE Statement</caption>
+          <topicref type="topic" id="384614699101848" build="ALL" modified="2024-06-29T00:51:37.906Z" icon="0" href="command_DO_WHILE">
+            <caption translate="true">DO WHILE 语句</caption>
           </topicref>
-          <topicref type="topic" id="423887945589974" build="ALL" modified="2020-02-06T15:17:51.733Z" icon="0" href="command_EXIT">
-            <caption translate="true">EXIT Statement</caption>
+          <topicref type="topic" id="423887945589974" build="ALL" modified="2024-06-29T00:51:47.828Z" icon="0" href="command_EXIT">
+            <caption translate="true">EXIT 语句</caption>
           </topicref>
-          <topicref type="topic" id="384613350517014" build="ALL" modified="2020-02-06T15:23:39.198Z" icon="0" href="command_EXTERNAL">
-            <caption translate="true">EXTERNAL Command</caption>
+          <topicref type="topic" id="384613350517014" build="ALL" modified="2024-06-29T00:51:57.200Z" icon="0" href="command_EXTERNAL">
+            <caption translate="true">EXTERNAL 命令</caption>
           </topicref>
-          <topicref type="topic" id="384614708239396" build="ALL" modified="2019-09-24T14:19:27.397Z" icon="0" href="command_FOR">
-            <caption translate="true">FOR Statement</caption>
+          <topicref type="topic" id="384614708239396" build="ALL" modified="2024-06-29T00:52:08.052Z" icon="0" href="command_FOR">
+            <caption translate="true">FOR 语句</caption>
           </topicref>
-          <topicref type="topic" id="436999119843888" build="ALL" modified="2019-09-24T14:19:27.402Z" icon="0" href="command_FOREACH">
-            <caption translate="true">FOREACH Statement</caption>
+          <topicref type="topic" id="436999119843888" build="ALL" modified="2024-06-29T00:52:17.965Z" icon="0" href="command_FOREACH">
+            <caption translate="true">FOREACH 语句</caption>
           </topicref>
-          <topicref type="topic" id="384614779259998" build="ALL" modified="2019-09-24T14:19:27.408Z" icon="0" href="command_IF">
-            <caption translate="true">IF Statement</caption>
+          <topicref type="topic" id="384614779259998" build="ALL" modified="2024-06-29T00:52:26.619Z" icon="0" href="command_IF">
+            <caption translate="true">IF 语句</caption>
           </topicref>
-          <topicref type="topic" id="423889431246127" build="ALL" modified="2020-02-06T15:17:57.467Z" icon="0" href="command_LOOP">
-            <caption translate="true">LOOP Statement</caption>
+          <topicref type="topic" id="423889431246127" build="ALL" modified="2024-06-29T00:52:36.028Z" icon="0" href="command_LOOP">
+            <caption translate="true">LOOP 语句</caption>
           </topicref>
-          <topicref type="topic" id="436997670757836" build="ALL" modified="2019-09-24T14:19:27.413Z" icon="0" href="command_NOP">
-            <caption translate="true">NOP Statement</caption>
+          <topicref type="topic" id="436997670757836" build="ALL" modified="2024-06-29T00:52:53.212Z" icon="0" href="command_NOP">
+            <caption translate="true">NOP 语句</caption>
           </topicref>
-          <topicref type="topic" id="384612172638112" build="ALL" modified="2019-09-24T14:19:27.419Z" icon="0" href="command_QUIT">
-            <caption translate="true">QUIT Command</caption>
+          <topicref type="topic" id="384612172638112" build="ALL" modified="2024-06-29T00:53:02.504Z" icon="0" href="command_QUIT">
+            <caption translate="true">QUIT 命令</caption>
           </topicref>
-          <topicref type="topic" id="436997417190491" build="ALL" modified="2019-09-24T14:19:27.424Z" icon="0" href="command_REPEAT_UNTIL">
-            <caption translate="true">REPEAT UNTIL Statement</caption>
+          <topicref type="topic" id="436997417190491" build="ALL" modified="2024-06-29T00:53:13.646Z" icon="0" href="command_REPEAT_UNTIL">
+            <caption translate="true">REPEAT UNTIL 语句</caption>
           </topicref>
-          <topicref type="topic" id="384614113111175" build="ALL" modified="2019-09-24T14:19:27.429Z" icon="0" href="command_RETURN">
-            <caption translate="true">RETURN Statement</caption>
+          <topicref type="topic" id="384614113111175" build="ALL" modified="2024-06-29T00:53:23.693Z" icon="0" href="command_RETURN">
+            <caption translate="true">RETURN 语句</caption>
           </topicref>
-          <topicref type="topic" id="384615570493792" build="ALL" modified="2019-09-24T14:19:27.435Z" icon="0" href="command_RUN">
-            <caption translate="true">RUN Command</caption>
+          <topicref type="topic" id="384615570493792" build="ALL" modified="2024-06-29T00:53:33.468Z" icon="0" href="command_RUN">
+            <caption translate="true">RUN 命令</caption>
           </topicref>
-          <topicref type="topic" id="43701717101438" build="ALL" modified="2019-09-24T14:19:27.440Z" icon="0" href="command_SWITCH">
-            <caption translate="true">SWITCH Statement</caption>
+          <topicref type="topic" id="43701717101438" build="ALL" modified="2024-06-29T00:53:44.210Z" icon="0" href="command_SWITCH">
+            <caption translate="true">SWITCH 语句</caption>
           </topicref>
-          <topicref type="topic" id="423887467190100" build="ALL" modified="2020-02-06T15:39:30.825Z" icon="0" href="command_THROW">
-            <caption translate="true">THROW Statement</caption>
+          <topicref type="topic" id="423887467190100" build="ALL" modified="2024-06-29T00:53:53.293Z" icon="0" href="command_THROW">
+            <caption translate="true">THROW 语句</caption>
           </topicref>
-          <topicref type="topic" id="436999313841944" build="ALL" modified="2019-09-24T14:19:27.452Z" icon="0" href="command_TRY_CATCH">
-            <caption translate="true">TRY CATCH Statement</caption>
+          <topicref type="topic" id="436999313841944" build="ALL" modified="2024-06-29T00:54:02.235Z" icon="0" href="command_TRY_CATCH">
+            <caption translate="true">TRY CATCH 语句</caption>
           </topicref>
-          <topicref type="topic" id="452216963134192" build="ALL" modified="2023-10-22T13:04:40.172Z" icon="0" href="command_WITH">
-            <caption translate="true">WITH command</caption>
+          <topicref type="topic" id="452216963134192" build="ALL" modified="2024-06-29T00:54:11.068Z" icon="0" href="command_WITH">
+            <caption translate="true">WITH 命令</caption>
           </topicref>
-          <topicref type="topic" id="437526355445228" build="ALL" modified="2019-10-14T12:34:05.369Z" icon="0" href="command_YIELD">
-            <caption translate="true">YIELD Statement</caption>
-          </topicref>
-        </topicref>
-        <topicref type="topic" id="43688506710440" build="ALL" modified="2019-09-24T13:44:42.214Z" icon="0" href="cmd_cat_terminal">
-          <caption translate="true">Terminal Window</caption>
-          <topicref type="topic" id="436965716006732" build="ALL" modified="2019-09-24T14:19:41.732Z" icon="0" href="command_QUESTION">
-            <caption translate="true">?|?? Statement</caption>
-          </topicref>
-          <topicref type="topic" id="437329592748324" build="ALL" modified="2019-09-24T21:35:31.529Z" icon="0" href="command_BACKSLASH">
-            <caption translate="true">\|\\ Statement</caption>
-          </topicref>
-          <topicref type="topic" id="436968219137144" build="ALL" modified="2019-09-24T14:19:41.739Z" icon="0" href="command_ACCEPT">
-            <caption translate="true">ACCEPT Command</caption>
-          </topicref>
-          <topicref type="topic" id="441613443425482" build="ALL" modified="2020-11-26T11:10:54.189Z" icon="0" href="Command_CLEAR_SCREEN">
-            <caption translate="true">CLEAR SCREEN Command</caption>
-          </topicref>
-          <topicref type="topic" id="441614645996510" build="ALL" modified="2020-11-26T11:08:31.512Z" icon="0" href="Command_SET_ALTERNATE">
-            <caption translate="true">SET ALTERNATE Command</caption>
-          </topicref>
-          <topicref type="topic" id="436967895211580" build="ALL" modified="2019-09-24T14:19:41.745Z" icon="0" href="command_SET_COLOR">
-            <caption translate="true">SET COLOR Command</caption>
-          </topicref>
-          <topicref type="topic" id="441616197923658" build="ALL" modified="2020-11-26T11:07:48.664Z" icon="0" href="Command_SET_CONSOLE">
-            <caption translate="true">SET CONSOLE Command</caption>
-          </topicref>
-          <topicref type="topic" id="441614633390246" build="ALL" modified="2022-08-30T15:16:03.941Z" icon="0" href="Command_SET_TEXTMERGE">
-            <caption translate="true">SET TEXTMERGE Command</caption>
-          </topicref>
-          <topicref type="topic" id="441615750279407" build="ALL" modified="2022-03-29T16:22:10.726Z" icon="0" href="command_TEXT">
-            <caption translate="true">TEXT Command</caption>
-            <topicref type="topic" id="446497864113287" build="ALL" modified="2022-03-29T16:23:53.721Z" icon="0" href="TEXT-Command-(Core)">
-              <caption translate="true">TEXT Command (Core)</caption>
-            </topicref>
-            <topicref type="topic" id="446497654402449" build="ALL" modified="2022-03-29T16:23:39.512Z" icon="0" href="TEXT-Command-(Non-Core)">
-              <caption translate="true">TEXT Command (Non-Core)</caption>
-            </topicref>
-            <topicref type="topic" id="446497227706621" build="ALL" modified="2022-03-29T16:23:33.317Z" icon="0" href="TEXT-Command-(FoxPro)">
-              <caption translate="true">TEXT Command (FoxPro)</caption>
-            </topicref>
-          </topicref>
-          <topicref type="topic" id="436966366054767" build="ALL" modified="2019-09-24T14:19:41.752Z" icon="0" href="command_WAIT">
-            <caption translate="true">WAIT Command</caption>
+          <topicref type="topic" id="437526355445228" build="ALL" modified="2024-06-29T00:54:39.691Z" icon="0" href="command_YIELD">
+            <caption translate="true">YIELD 语句</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966642707120" build="ALL" modified="2019-09-24T13:44:42.219Z" icon="0" href="cmd_cat_vardecl">
-          <caption translate="true">Variable Declaration</caption>
-          <topicref type="topic" id="384612535274782" build="ALL" modified="2019-09-24T14:19:49.120Z" icon="0" href="command_FIELD">
-            <caption translate="true">FIELD Statement</caption>
+        <topicref type="topic" id="43688506710440" build="ALL" modified="2024-06-29T00:47:23.821Z" icon="0" href="cmd_cat_terminal">
+          <caption translate="true">终端窗口</caption>
+          <topicref type="topic" id="436965716006732" build="ALL" modified="2024-06-29T00:55:40.860Z" icon="0" href="command_QUESTION">
+            <caption translate="true">?|?? 语句</caption>
           </topicref>
-          <topicref type="topic" id="384615072995608" build="ALL" modified="2019-09-24T14:19:49.132Z" icon="0" href="command_LOCAL">
-            <caption translate="true">LOCAL Statement</caption>
+          <topicref type="topic" id="437329592748324" build="ALL" modified="2024-06-29T00:55:59.509Z" icon="0" href="command_BACKSLASH">
+            <caption translate="true">\|\\ 语句</caption>
           </topicref>
-          <topicref type="topic" id="448034202442935" build="ALL" modified="2022-08-30T12:40:59.530Z" icon="0" href="command_LPARAMETERS">
-            <caption translate="true">LPARAMETERS Statement</caption>
+          <topicref type="topic" id="436968219137144" build="ALL" modified="2024-06-29T00:56:08.314Z" icon="0" href="command_ACCEPT">
+            <caption translate="true">ACCEPT 命令</caption>
           </topicref>
-          <topicref type="topic" id="384615064228400" build="ALL" modified="2019-09-24T14:19:49.149Z" icon="0" href="command_STATIC">
-            <caption translate="true">STATIC Statement</caption>
+          <topicref type="topic" id="441613443425482" build="ALL" modified="2024-06-29T00:56:19.219Z" icon="0" href="Command_CLEAR_SCREEN">
+            <caption translate="true">CLEAR SCREEN 命令</caption>
+          </topicref>
+          <topicref type="topic" id="441614645996510" build="ALL" modified="2024-06-29T00:56:28.157Z" icon="0" href="Command_SET_ALTERNATE">
+            <caption translate="true">SET ALTERNATE 命令</caption>
+          </topicref>
+          <topicref type="topic" id="436967895211580" build="ALL" modified="2024-06-29T00:56:36.820Z" icon="0" href="command_SET_COLOR">
+            <caption translate="true">SET COLOR 命令</caption>
+          </topicref>
+          <topicref type="topic" id="441616197923658" build="ALL" modified="2024-06-29T00:56:54.632Z" icon="0" href="Command_SET_CONSOLE">
+            <caption translate="true">SET CONSOLE 命令</caption>
+          </topicref>
+          <topicref type="topic" id="441614633390246" build="ALL" modified="2024-06-29T00:57:08.782Z" icon="0" href="Command_SET_TEXTMERGE">
+            <caption translate="true">SET TEXTMERGE 命令</caption>
+          </topicref>
+          <topicref type="topic" id="441615750279407" build="ALL" modified="2024-06-29T00:57:19.955Z" icon="0" href="command_TEXT">
+            <caption translate="true">TEXT 命令</caption>
+            <topicref type="topic" id="446497864113287" build="ALL" modified="2024-06-29T00:57:35.664Z" icon="0" href="TEXT-Command-(Core)">
+              <caption translate="true">TEXT 命令(Core)</caption>
+            </topicref>
+            <topicref type="topic" id="446497654402449" build="ALL" modified="2024-06-29T00:57:48.702Z" icon="0" href="TEXT-Command-(Non-Core)">
+              <caption translate="true">TEXT 命令(Non-Core)</caption>
+            </topicref>
+            <topicref type="topic" id="446497227706621" build="ALL" modified="2024-06-29T00:58:12.908Z" icon="0" href="TEXT-Command-(FoxPro)">
+              <caption translate="true">TEXT 命令(FoxPro)</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="436966366054767" build="ALL" modified="2024-06-29T00:58:37.641Z" icon="0" href="command_WAIT">
+            <caption translate="true">WAIT 命令</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="436966642707120" build="ALL" modified="2024-06-29T00:47:42.036Z" icon="0" href="cmd_cat_vardecl">
+          <caption translate="true">变量声明</caption>
+          <topicref type="topic" id="384612535274782" build="ALL" modified="2024-06-29T00:58:49.657Z" icon="0" href="command_FIELD">
+            <caption translate="true">FIELD 语句</caption>
+          </topicref>
+          <topicref type="topic" id="384615072995608" build="ALL" modified="2024-06-29T00:58:58.733Z" icon="0" href="command_LOCAL">
+            <caption translate="true">LOCAL 语句</caption>
+          </topicref>
+          <topicref type="topic" id="448034202442935" build="ALL" modified="2024-06-29T00:59:08.833Z" icon="0" href="command_LPARAMETERS">
+            <caption translate="true">LPARAMETERS 语句</caption>
+          </topicref>
+          <topicref type="topic" id="384615064228400" build="ALL" modified="2024-06-29T00:59:45.970Z" icon="0" href="command_STATIC">
+            <caption translate="true">STATIC 语句</caption>
           </topicref>
           <topicref type="topic" id="449596176809893" build="ALL" modified="2023-02-02T13:10:29.848Z" icon="0" href="STACKALLOC">
             <caption translate="true">STACKALLOC</caption>
           </topicref>
-          <topicref type="topic" id="449647588802199" build="ALL" modified="2023-02-07T17:45:18.016Z" icon="0" href="command_VAR">
-            <caption translate="true">VAR Statement</caption>
+          <topicref type="topic" id="449647588802199" build="ALL" modified="2024-06-29T00:59:57.953Z" icon="0" href="command_VAR">
+            <caption translate="true">VAR 语句</caption>
           </topicref>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423890338204503" build="ALL" modified="2019-10-15T13:46:32.053Z" icon="0" href="Expressions">
-        <caption translate="true">Expressions</caption>
-        <topicref type="topic" id="426895968187001" build="ALL" modified="2016-11-15T09:53:58.175Z" icon="0" href="Bound-Expressions">
-          <caption translate="true">Bound Expressions</caption>
+      <topicref type="topic" id="423890338204503" build="ALL" modified="2024-06-30T00:59:05.890Z" icon="0" href="Expressions">
+        <caption translate="true">表达式</caption>
+        <topicref type="topic" id="426895968187001" build="ALL" modified="2024-06-30T01:20:26.532Z" icon="0" href="Bound-Expressions">
+          <caption translate="true">Bound 表达式</caption>
         </topicref>
-        <topicref type="topic" id="426892156794608" build="ALL" modified="2016-11-15T09:54:05.925Z" icon="0" href="Primary-Expressions">
-          <caption translate="true">Primary Expressions</caption>
+        <topicref type="topic" id="426892156794608" build="ALL" modified="2024-06-30T01:20:36.706Z" icon="0" href="Primary-Expressions">
+          <caption translate="true">Primary 表达式</caption>
         </topicref>
         <topicref type="topic" id="426894908055984" build="ALL" modified="2016-11-15T10:12:00.342Z" icon="0" href="Codeblocks">
           <caption translate="true">Codeblocks</caption>
         </topicref>
-        <topicref type="topic" id="452794107968885" build="ALL" modified="2023-12-19T13:57:00.992Z" icon="0" href="Lamda-Expressions">
-          <caption translate="true">Lamda Expressions</caption>
+        <topicref type="topic" id="452794107968885" build="ALL" modified="2024-06-30T01:20:46.929Z" icon="0" href="Lamda-Expressions">
+          <caption translate="true">Lamda 表达式</caption>
         </topicref>
-        <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
-          <caption translate="true">LINQ Expressions</caption>
+        <topicref type="topic" id="423886881484677" build="ALL" modified="2024-06-30T01:20:56.845Z" icon="0" href="LINQ">
+          <caption translate="true">LINQ 表达式</caption>
         </topicref>
-        <topicref type="topic" id="426895382962818" build="ALL" modified="2023-12-19T14:02:17.488Z" icon="0" href="Initializers">
-          <caption translate="true">Initializers</caption>
+        <topicref type="topic" id="426895382962818" build="ALL" modified="2024-06-30T01:22:05.007Z" icon="0" href="Initializers">
+          <caption translate="true">Initializers(初始化器)</caption>
         </topicref>
-        <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
-          <caption translate="true">Compiler Macros</caption>
+        <topicref type="topic" id="425386471139560" build="ALL" modified="2024-06-30T01:22:35.620Z" icon="0" href="Compiler-Macros">
+          <caption translate="true">编译器宏</caption>
         </topicref>
-        <topicref type="topic" id="426775124635299" build="ALL" modified="2016-11-03T12:48:43.200Z" icon="0" href="Pseudo-Functions">
-          <caption translate="true">Pseudo Functions</caption>
+        <topicref type="topic" id="426775124635299" build="ALL" modified="2024-06-30T01:23:10.822Z" icon="0" href="Pseudo-Functions">
+          <caption translate="true">伪函数</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423889109101067" build="ALL" modified="2019-10-15T13:46:43.118Z" icon="0" href="Operators">
-        <caption translate="true">Operators</caption>
+      <topicref type="topic" id="423889109101067" build="ALL" modified="2024-06-30T02:20:18.085Z" icon="0" href="Operators">
+        <caption translate="true">操作符</caption>
         <topicref type="topic" id="423889867171741" build="ALL" modified="2019-08-09T13:02:56.793Z" icon="0" href="Binary_Operators">
           <caption translate="true">Binary</caption>
         </topicref>
-        <topicref type="topic" id="423887682890922" build="ALL" modified="2019-08-09T12:34:49.373Z" icon="0" href="Assignment_Operators">
-          <caption translate="true">Assignment operators</caption>
+        <topicref type="topic" id="423887682890922" build="ALL" modified="2024-06-30T09:19:47.838Z" icon="0" href="Assignment_Operators">
+          <caption translate="true">赋值操作符</caption>
         </topicref>
         <topicref type="topic" id="42387974843972" build="ALL" modified="2019-08-09T12:34:54.498Z" icon="0" href="Logical_Operators">
           <caption translate="true">Logical</caption>
@@ -1506,33 +1509,33 @@
         <topicref type="topic" id="42390446934182" build="ALL" modified="2019-08-09T12:34:58.928Z" icon="0" href="Bitwise_Operators">
           <caption translate="true">Bitwise</caption>
         </topicref>
-        <topicref type="topic" id="42390595140805" build="ALL" modified="2019-08-09T12:35:04.309Z" icon="0" href="Relational_Operators">
-          <caption translate="true">Relational</caption>
+        <topicref type="topic" id="42390595140805" build="ALL" modified="2024-06-30T09:41:29.372Z" icon="0" href="Relational_Operators">
+          <caption translate="true">关系操作符</caption>
         </topicref>
-        <topicref type="topic" id="423889057077198" build="ALL" modified="2019-08-09T12:35:09.251Z" icon="0" href="Shift_Operators">
-          <caption translate="true">Shift</caption>
+        <topicref type="topic" id="423889057077198" build="ALL" modified="2024-06-30T10:01:03.256Z" icon="0" href="Shift_Operators">
+          <caption translate="true">移位操作符</caption>
         </topicref>
-        <topicref type="topic" id="423890249914780" build="ALL" modified="2019-08-09T12:35:14.296Z" icon="0" href="Unary_Operators">
-          <caption translate="true">Unary</caption>
+        <topicref type="topic" id="423890249914780" build="ALL" modified="2024-06-30T10:00:47.371Z" icon="0" href="Unary_Operators">
+          <caption translate="true">一元操作符</caption>
         </topicref>
         <topicref type="topic" id="423888894934256" build="ALL" modified="2019-08-09T12:35:20.228Z" icon="0" href="Workarea_Operators">
           <caption translate="true">Workarea</caption>
         </topicref>
-        <topicref type="topic" id="448037249319543" build="ALL" modified="2022-08-30T15:25:05.659Z" icon="0" href="operator_IIF">
-          <caption translate="true">IIF Operator</caption>
+        <topicref type="topic" id="448037249319543" build="ALL" modified="2024-06-30T10:19:48.556Z" icon="0" href="operator_IIF">
+          <caption translate="true">IIF 操作符</caption>
         </topicref>
-        <topicref type="topic" id="448037383456629" build="ALL" modified="2022-08-30T15:47:52.552Z" icon="0" href="Operator_SizeOf">
-          <caption translate="true">SizeOf Operator</caption>
+        <topicref type="topic" id="448037383456629" build="ALL" modified="2024-06-30T10:29:11.521Z" icon="0" href="Operator_SizeOf">
+          <caption translate="true">SizeOf 操作符</caption>
         </topicref>
-        <topicref type="topic" id="448037292972327" build="ALL" modified="2022-08-30T15:48:00.141Z" icon="0" href="Operator_Typeof">
-          <caption translate="true">TypeOf operator</caption>
+        <topicref type="topic" id="448037292972327" build="ALL" modified="2024-06-30T10:29:20.995Z" icon="0" href="Operator_Typeof">
+          <caption translate="true">TypeOf 操作符</caption>
         </topicref>
-        <topicref type="topic" id="448037931033087" build="ALL" modified="2022-08-30T15:48:08.407Z" icon="0" href="Operator_NameOf">
-          <caption translate="true">NameOf Operator</caption>
+        <topicref type="topic" id="448037931033087" build="ALL" modified="2024-06-30T10:29:30.506Z" icon="0" href="Operator_NameOf">
+          <caption translate="true">NameOf 操作符</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">
-        <caption translate="true">X# Preprocessor Directives</caption>
+      <topicref type="topic" id="423891454294167" build="ALL" modified="2024-06-30T10:38:43.759Z" icon="0" href="X-Preprocessor-Directives">
+        <caption translate="true">X# 预处理器指令</caption>
         <topicref type="topic" id="424525433369825" build="ALL" modified="2023-08-24T15:48:00.469Z" icon="0" href="pp-Command">
           <caption translate="true">#command</caption>
         </topicref>
@@ -1584,24 +1587,24 @@
         <topicref type="topic" id="424524899744417" build="ALL" modified="2016-03-23T11:43:39.153Z" icon="0" href="pp-Undef">
           <caption translate="true">#undef</caption>
         </topicref>
-        <topicref type="topic" id="444973200832473" build="ALL" modified="2021-10-28T12:15:17.154Z" icon="0" href="pp_Match-Markers">
-          <caption translate="true">Match Markers</caption>
+        <topicref type="topic" id="444973200832473" build="ALL" modified="2024-06-30T12:18:30.510Z" icon="0" href="pp_Match-Markers">
+          <caption translate="true">模式匹配</caption>
         </topicref>
-        <topicref type="topic" id="444973078090040" build="ALL" modified="2021-10-28T12:15:24.342Z" icon="0" href="pp_Result-Markers">
-          <caption translate="true">Result Markers</caption>
+        <topicref type="topic" id="444973078090040" build="ALL" modified="2024-06-30T12:52:13.738Z" icon="0" href="pp_Result-Markers">
+          <caption translate="true">结果标记</caption>
         </topicref>
       </topicref>
     </topicref>
-    <topicref type="topic" id="423887666250768" build="ALL" modified="2016-01-19T22:47:35.766Z" icon="0" href="X-Compiler-Options">
-      <caption translate="true">X# Compiler Options</caption>
-      <topicref type="topic" id="423891769948279" build="ALL" modified="2016-01-20T08:58:14.880Z" icon="0" href="Command-line-Building-With-xsc">
-        <caption translate="true">Command-line Building With xsc.exe</caption>
+    <topicref type="topic" id="423887666250768" build="ALL" modified="2024-06-30T13:06:46.701Z" icon="0" href="X-Compiler-Options">
+      <caption translate="true">X# 编译器选项</caption>
+      <topicref type="topic" id="423891769948279" build="ALL" modified="2024-06-30T13:10:00.755Z" icon="0" href="Command-line-Building-With-xsc">
+        <caption translate="true">使用 xsc.exe 进行命令行构建</caption>
       </topicref>
-      <topicref type="topic" id="423888293315751" build="ALL" modified="2016-01-19T22:53:23.657Z" icon="0" href="X-Compiler-Options-By-Category">
-        <caption translate="true">X# Compiler Options By Category</caption>
+      <topicref type="topic" id="423888293315751" build="ALL" modified="2024-06-30T13:10:34.999Z" icon="0" href="X-Compiler-Options-By-Category">
+        <caption translate="true">按类别划分的 X# 编译器选项</caption>
       </topicref>
-      <topicref type="topic" id="423888629693577" build="ALL" modified="2016-01-19T22:53:23.717Z" icon="0" href="X-Compiler-Options-Listed-Alph">
-        <caption translate="true">X# Compiler Options Listed Alphabetically</caption>
+      <topicref type="topic" id="423888629693577" build="ALL" modified="2024-06-30T13:10:54.282Z" icon="0" href="X-Compiler-Options-Listed-Alph">
+        <caption translate="true">按字母顺序排列的 X# 编译器选项</caption>
         <topicref type="topic" id="423895745392288" build="ALL" modified="2016-01-20T09:45:47.193Z" icon="0" href="opt-At">
           <caption translate="true">@</caption>
         </topicref>

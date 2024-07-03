@@ -24,23 +24,23 @@ INTERNAL FUNCTION __GetFieldValues(aFieldList IN USUAL, lIncludeMemo AS LOGIC, l
         endif
         values:Add( NameValuePair{cName, uValue})
     NEXT
-RETURN values:ToArray()
+    RETURN values:ToArray()
 
 INTERNAL FUNCTION __GetAllElements(cSource as STRING) AS STRING[]
     cSource := cSource:ToUpperInvariant()
-RETURN cSource:Split(<Char>{c' ',c',',c'\t'}, StringSplitOptions.RemoveEmptyEntries)
+    RETURN cSource:Split(<Char>{c' ',c',',c'\t'}, StringSplitOptions.RemoveEmptyEntries)
 
 INTERNAL FUNCTION __BuildFieldList(aFieldList IN USUAL, lIncludeMemo as LOGIC) AS IList<String>
-VAR selected := List<string>{}
-IF IsArray(aFieldList)
-    var aFlds := (ARRAY) aFieldList
-    IF aFlds:Length > 0
-        FOREACH cFld AS STRING in aFieldList
-            selected:Add(cFld:ToString())
-        NEXT
-        RETURN selected
+    VAR selected := List<string>{}
+    IF IsArray(aFieldList)
+        var aFlds := (ARRAY) aFieldList
+        IF aFlds:Length > 0
+            FOREACH cFld AS STRING in aFieldList
+                selected:Add(cFld:ToString())
+            NEXT
+            RETURN selected
+        ENDIF
     ENDIF
-ENDIF
     LOCAL fCount as DWORD
     fCount := FCount()
     FOR VAR nFld := 1u to fCount
@@ -48,12 +48,12 @@ ENDIF
         LOCAL cType := NIL as USUAL
         VoDb.FieldInfo(DBS_TYPE, nFld,@cType)
         SWITCH (STRING) cType
-            CASE "M"
-                lInclude := lIncludeMemo
-            CASE "G"
-                lInclude := FALSE
-            OTHERWISE
-                lInclude := TRUE
+        CASE "M"
+            lInclude := lIncludeMemo
+        CASE "G"
+            lInclude := FALSE
+        OTHERWISE
+            lInclude := TRUE
         END SWITCH
         IF lInclude
             LOCAL oVar := NULL AS OBJECT
@@ -66,13 +66,16 @@ ENDIF
             ENDIF
         ENDIF
     NEXT
-return selected
+    return selected
 
 
 
 
-FUNCTION __ScatterMemVar(aFieldList, lBlank) AS LOGIC CLIPPER
-    VAR aFields := __GetFieldValues(aFieldList, FALSE, lBlank)
+FUNCTION __ScatterMemVar(aFieldList, lBlank,lMemo) AS LOGIC CLIPPER
+    EnforceType(@lBlank, __UsualType.Logic)
+    EnforceType(@lMemo, __UsualType.Logic)
+
+    VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     FOREACH var oField in aFields
         __MemVarDecl(oField:Name, TRUE)
         __MemVarPut(oField:Name, oField:Value)
@@ -85,10 +88,12 @@ FUNCTION __GatherMemVar(aFieldList) AS LOGIC CLIPPER
         __FieldSet(cField, MemVarGet(cField))
     NEXT
     RETURN TRUE
-    #pragma options ("az", on)
+#pragma options ("az", on)
 
-FUNCTION __ScatterArray(uSource, aFieldList, lBlank) AS ARRAY CLIPPER
-    VAR aFields := __GetFieldValues(aFieldList, FALSE, lBlank)
+FUNCTION __ScatterArray(uSource, aFieldList, lBlank, lMemo) AS ARRAY CLIPPER
+    EnforceType(@lBlank, __UsualType.Logic)
+    EnforceType(@lMemo, __UsualType.Logic)
+    VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     VAR nLen    := (DWORD) aFields:Length
 
     LOCAL aResult AS ARRAY
@@ -130,12 +135,15 @@ FUNCTION __GatherArray(uSource, aFieldList) AS LOGIC CLIPPER
     NEXT
     RETURN found
 
-    #pragma options ("az", default)
+#pragma options ("az", default)
 
-[NeedsAccessToLocals(FALSE)];
-FUNCTION __ScatterObject(aFieldList, lBlank, cObject, lAdditive) AS OBJECT CLIPPER
+    [NeedsAccessToLocals(FALSE)];
+FUNCTION __ScatterObject(aFieldList, lBlank, cObject, lAdditive, lMemo) AS OBJECT CLIPPER
     LOCAL oResult := NULL_OBJECT as OBJECT
-    VAR aFields := __GetFieldValues(aFieldList, FALSE, lBlank)
+    EnforceType(@lBlank, __UsualType.Logic)
+    EnforceType(@lBlank, __UsualType.Logic)
+    EnforceType(@lMemo, __UsualType.Logic)
+    VAR aFields := __GetFieldValues(aFieldList, lMemo, lBlank)
     IF IsArray(aFieldList)
         aFields := aFieldList
     ENDIF
@@ -190,6 +198,7 @@ FUNCTION __GatherObject(oObject, aFieldList ) AS LOGIC CLIPPER
         NEXT
     ENDIF
     RETURN TRUE
+
 
 
 

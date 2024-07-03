@@ -71,10 +71,6 @@ BEGIN NAMESPACE VFPXPorterLib
             SELF:ReferenceFiles := List<Reference>{}
             SELF:ReferenceLibFiles := List<Reference>{}
             //
-            //SELF:SetLoggerToFile( NULL )
-
-        METHOD _SetLoggerToFile( fileLog AS STRING ) AS VOID
-            XPorterLogger.SetLoggerToFile( fileLog )
 
         PROPERTY ResultText AS STRING
             GET
@@ -238,9 +234,10 @@ BEGIN NAMESPACE VFPXPorterLib
             LOCAL result := TRUE AS LOGIC
             LOCAL exitExport := FALSE AS LOGIC
             VAR Dependencies := EnumerateDependencies( )
-            // All strings written to ResultText will be written to the log File
-            XPorterLogger.SetLoggerToFile( Path.Combine( SELF:outputPath, "VFPXPorter.log" )  )
+            //
             TRY
+                // All strings written to ResultText will be written to the log File
+                XPorterLogger.SetLoggerToFile( Path.Combine( SELF:outputPath, "VFPXPorter.log" )  )
                 // Before, we need to enumerate all Controls that belongs to Libraries
                 // These definitions will be used when converting Control Properties
                 VAR newControls := Dictionary<STRING, SCXVCXItem>{}
@@ -554,6 +551,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 XPorterLogger.Instance:Error( e.Message)
                 THROW e
             FINALLY
+                XPorterLogger.CloseLogger()
                 XPorterLogger.SetLoggerToFile( NULL )
             END TRY
 

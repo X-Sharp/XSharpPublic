@@ -1325,17 +1325,21 @@ internal static class OOPHelpers
         var level := 2
         var mi := st:GetFrame(level):GetMethod()
         var type := mi:DeclaringType
+        local lastFrame := null as StackFrame
         if type != null // For dynamic methods the type can be NULL
             // when nested call from the runtime walk the stack
             do while aXsAssemblies:Contains(type:Assembly)
                 level += 1
                 var frame := st:GetFrame(level)
                 if (frame != null)
-                    mi := frame:GetMethod()
+                    lastFrame := frame
                 else
                     exit
                 endif
             enddo
+            if lastFrame != null
+                mi := lastFrame:GetMethod()
+            endif
         endif
         return mi
 
@@ -1569,8 +1573,9 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     local uResult as usual
     try
         uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
-    catch  as Exception when !lSelf
-        // retry for hidden properties/fields ?
+    catch as Exception when !lSelf
+        // retry so we can access hidden properties/fields
+        // from within methods of the same type
         var mi := OOPHelpers.GetCallingMethod()
         if mi:DeclaringType == oObject:GetType()
             uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, true)

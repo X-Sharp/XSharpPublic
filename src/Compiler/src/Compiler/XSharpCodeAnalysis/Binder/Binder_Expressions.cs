@@ -1031,6 +1031,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         bool isNamedType = (symbol.Kind == SymbolKind.NamedType) || (symbol.Kind == SymbolKind.ErrorType);
 
+
                         if (hasTypeArguments && isNamedType)
                         {
                             symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);
@@ -1252,6 +1253,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             lookupResult.Free();
+
+            if (node is IdentifierNameSyntax &&
+                  Compilation.Options.HasOption(CompilerOption.EnforceSelf, node))
+            {
+                Symbol symbol = null;
+                if (expression is BoundFieldAccess bfa)
+                {
+                    symbol = bfa.FieldSymbol;
+                }
+                else if (expression is BoundPropertyAccess bpa)
+                {
+                    symbol = bpa.PropertySymbol;
+                }
+                if (symbol != null && !symbol.IsStatic)
+                {
+                    diagnostics.Add(ErrorCode.ERR_ObjectRequired, node.Location, symbol);
+                }
+            }
+
             return expression;
         }
 

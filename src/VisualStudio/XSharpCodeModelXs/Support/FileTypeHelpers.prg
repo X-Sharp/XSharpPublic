@@ -66,9 +66,15 @@ STATIC CLASS XFileTypeHelpers
         CASE ".xsdbs"
         CASE ".vndbs"
             RETURN XFileType.VODBServer
+        CASE ".xssql"
+        CASE ".vnsqs"
+            RETURN XFileType.VOSqlTable
         CASE ".xsfs"
         CASE ".vnfs"
             RETURN XFileType.VOFieldSpec
+        CASE ".xsrep"
+        CASE ".vnrep"
+            RETURN XFileType.VOReport
         CASE ".xaml"
             RETURN XFileType.XAML
         CASE ".settings"

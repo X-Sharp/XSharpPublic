@@ -208,6 +208,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER Template           := 15       // tpl and inf
       MEMBER TextTemplate       := 16     // tt
       MEMBER Config             := 17     // config for app.config and packages.config
+      MEMBER VOSqlTable         := 18
+      MEMBER VOReport           := 19
       MEMBER Other              := 99
    END ENUM
 

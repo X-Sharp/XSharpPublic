@@ -1031,16 +1031,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         bool isNamedType = (symbol.Kind == SymbolKind.NamedType) || (symbol.Kind == SymbolKind.ErrorType);
 
-                        if (node is IdentifierNameSyntax && !symbol.IsStatic)
-                        {
-                            if (Compilation.Options.HasOption(CompilerOption.EnforceSelf, node))
-                            {
-                                var strSelf = "'SELF:'";
-                                if (Compilation.Options.Dialect == XSharpDialect.FoxPro)
-                                    strSelf += "or 'THIS.'";
-                                diagnostics.Add(ErrorCode.ERR_EnforceSelf, node.Location, symbol.Kind, symbol.Name,strSelf);
-                            }
-                        }
 
                         if (hasTypeArguments && isNamedType)
                         {
@@ -1263,6 +1253,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             lookupResult.Free();
+
+            if (node is IdentifierNameSyntax &&
+                  Compilation.Options.HasOption(CompilerOption.EnforceSelf, node))
+            {
+                Symbol symbol = null;
+                if (expression is BoundFieldAccess bfa)
+                {
+                    symbol = bfa.FieldSymbol;
+                }
+                else if (expression is BoundPropertyAccess bpa)
+                {
+                    symbol = bpa.PropertySymbol;
+                }
+                if (symbol != null && !symbol.IsStatic)
+                {
+                    diagnostics.Add(ErrorCode.ERR_ObjectRequired, node.Location, symbol);
+                }
+            }
+
             return expression;
         }
 

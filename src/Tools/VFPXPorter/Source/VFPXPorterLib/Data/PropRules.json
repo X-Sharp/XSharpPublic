@@ -107,7 +107,7 @@
     "DisabledBackColor": "",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
-    "Image": "Image.FromFile(??<@Picture@>??)",
+    "Image": "VFPImageFromFile(??<@Picture@>??)",
     "Picture": "??<@Picture@>??",
     "OLEDragPicture": "??<@OLEDragPicture@>",
     "DragIcon": "??<@DragIcon@>??",

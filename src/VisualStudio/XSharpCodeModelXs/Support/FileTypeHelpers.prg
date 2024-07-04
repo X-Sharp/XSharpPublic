@@ -112,6 +112,8 @@ STATIC CLASS XFileTypeHelpers
         CASE XFileType.VOForm
         CASE XFileType.VOIndex
         CASE XFileType.VOOrder
+        CASE XFileType.VOReport
+        CASE XFileType.VOSqlTable
             RETURN TRUE
         END SWITCH
         RETURN FALSE

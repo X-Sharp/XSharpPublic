@@ -313,6 +313,8 @@ namespace XSharp.Project
                 case XFileType.VOIndex:
                 case XFileType.VOMenu:
                 case XFileType.VOOrder:
+                case XFileType.VOSqlTable:
+                case XFileType.VOReport:
                 case XFileType.NativeResource:
                     if (relationIndex >= 0)
                     {

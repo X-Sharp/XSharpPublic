@@ -1,20 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T20:58:55.857+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-undeclared</title>
   <body>
     <header>
       <para styleclass="Heading1">-undeclared</para>
     </header>
-    <para styleclass="Normal">The -<text styleclass="Body Text">undeclared</text> option tells the compiler to enable the support for  &apos;undeclared variables&apos;</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-undeclared [+ | -]  </para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab/>Specifying +, or just -undeclared, directs the compiler to <text styleclass="Normal">enable the support for  &apos;undeclared variables&apos;</text></para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">This will NOT work with the Core and Vulcan dialects.</para>
-    <para styleclass="Normal">When the compiler detects an &apos;unknown identifier&apos; it will assume that this is either a field in the current workarea or a memory variable.</para>
-    <para styleclass="Normal">The compiler option will only have effect when you also enabled -memvar</para>
-    <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-<text styleclass="Body Text">undeclared </text>选项会告诉编译器启用对 &quot;undeclared variables(未声明变量)&quot;的支持。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-undeclared [+ | -] &#160;</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab /><text styleclass="Normal">指定 + 或 -undeclared，可指示编译器启用对 &quot;未声明变量 &quot;的支持</text></para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">这不适用于 Core 和 Vulcan 方言。</para>
+    <para styleclass="Normal">当编译器检测到 &quot;未知标识符 &quot;时，它会认为这是当前工作区中的一个字段或内存变量。</para>
+    <para styleclass="Normal">只有同时启用 -memvar 时，编译器选项才会生效。</para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></para>
   </body>
 </topic>

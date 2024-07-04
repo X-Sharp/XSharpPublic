@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T19:40:31.818+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ppo</title>
   <keywords>
     <keyword>-ppo</keyword>
@@ -9,27 +9,28 @@
     <header>
       <para styleclass="Heading1">-ppo</para>
     </header>
-    <para styleclass="Normal">The -ppo option directs the compiler to write the output of the preprocessor to a file.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-ppo选项指示编译器将预处理器的输出写入文件。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-ppo [+ | -] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -ppo, directs the compiler to write the output of the preprocessor to a file. <br/>When ppo is not enabled then the compiler will delete any existing ppo files that match input file names </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">Each source file will be written to a file with the same base name and an extension of .ppo, in the same directory as the source file. If a .ppo file already exists, it will be overwritten without warning.</para>
-    <para styleclass="Heading2">Tip: </para>
-    <para styleclass="Normal">.ppo files can be viewed within Visual Studio. After enabling The -ppo option and rebuilding the project, select any node in the project in Solution Explorer, click the Show All Files button in the Solution Explorer toolbar, then double click the desired .ppo file node.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab />指定 + 或 -ppo，可指示编译器将预处理器的输出写入文件。</para>
+    <para styleclass="List"><tab />当 ppo 未启用时，编译器将删除任何与输入文件名匹配的现有 ppo 文件。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">每个源文件都将被写入与源文件位于同一目录下、具有相同基本文件名且扩展名为 .ppo 的文件。如果 .ppo 文件已经存在，它将被覆盖而不会发出警告。</para>
+    <para styleclass="Heading2">技巧</para>
+    <para styleclass="Normal">.ppo 文件可以在 Visual Studio 中查看。启用 -ppo 选项并重建项目后，在 &quot;解决方案资源管理器 &quot;中选择项目中的任意节点，单击 &quot;解决方案资源管理器 &quot;工具栏中的 &quot;显示所有文件 &quot;按钮，然后双击所需的 .ppo 文件节点。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To view a .prg and .ppo file side-by-side to compare them, right click the document tab in either the .prg or .ppo file and click New Vertical Tab Group.</para>
+    <para styleclass="Normal">要并排查看 .prg 和 .ppo 文件以进行比较，请右键单击 .prg 或 .ppo 文件中的文档选项卡，然后单击新建垂直选项卡组。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Open the project&apos;s Properties page (see How to: Set Build Properties). </li>
-      <li styleclass="Normal">Click the Build tab. </li>
-      <li styleclass="Normal">In the Preprocessor section, modify the &quot;Generate preprocessor output&quot;property. </li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">在 General 部分，修改 &quot;Generate preprocessor output(生成预处理器输出) &quot;属性。</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

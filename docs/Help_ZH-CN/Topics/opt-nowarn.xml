@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T18:37:32.563+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-nowarn</title>
   <keywords>
     <keyword>-nowarn</keyword>
@@ -9,20 +9,22 @@
     <header>
       <para styleclass="Heading1">-nowarn</para>
     </header>
-    <para styleclass="Normal">The -nowarn option lets you suppress the compiler from displaying one or more warnings. Separate multiple warning numbers with a comma.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-nowarn:number1[,number2,...] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">number1, number2</text><tab />Warning number(s) that you want the compiler to suppress.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">You should only specify the numeric part of the warning identifier. For example, if you want to suppress XS0028, you could specify <text styleclass="Code Example">-nowarn:28</text>.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the &quot;Suppress Specific Warnings&quot; property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <para styleclass="Normal">通过 -nowarn 选项，可以阻止编译器显示一个或多个警告。多个警告号之间用逗号隔开。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-nowarn:number1[,number2,...] &#160;</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">number1, number2</text><tab />您希望编译器抑制的警告编号。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">只能指定警告标识符的数字部分。例如，如果要抑制 XS0028，可以指定 -nowarn:28。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">编辑 &quot;Suppress Specific Warnings(禁止特定的警告)&quot; 属性</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
   </body>
 </topic>

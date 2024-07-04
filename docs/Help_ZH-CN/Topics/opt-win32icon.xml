@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T23:30:35.476+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-win32icon</title>
   <keywords>
     <keyword>-win32icon</keyword>
@@ -9,30 +9,29 @@
     <header>
       <para styleclass="Heading1">-win32icon</para>
     </header>
-    <para styleclass="Normal">The -win32icon option inserts an .ico file in the output file, which gives the output file the desired appearance in the File Explorer.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-win32icon:filename  </para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">filename<tab/>The .ico file that you want to add to your output file.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">An .ico file can be created with the Resource Compiler. The Resource Compiler is invoked when you compile a Visual C++ program; an .ico file is created from the .rc file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">-linkresource</link> (to reference) or <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link> (to attach) a .NET Framework resource file. See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">-win32res</link> to import a .res file.</para>
+    <para styleclass="Normal">-win32icon选项会在输出文件中插入一个.ico文件，使输出文件在文件资源管理器中呈现所需的外观。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-win32icon:filename &#160;</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">filename<tab />要添加到输出文件中的 .ico 文件。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">资源编译器可以创建 .ico 文件。编译 Visual C++ 程序时将调用资源编译器；.ico 文件将从 .rc 文件创建。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal">请参见 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">-linkresource(</link>引用)或 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link>(附加) .NET Framework 资源文件。请参见 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">-win32res</link> 导入 .res 文件。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties pages.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Application property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the Application icon property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面.</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Application 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">编辑 Application icon 属性</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">查看属性页</link></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">Compile in.prg and attach an .ico file rf.ico to produce in.exe:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -win32icon:rf.ico in.prg  </para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">编译 in.prg，并附加 .ico 文件 rf.ico，生成 in.exe：</para>
+    <para styleclass="Code with box">xsc -win32icon:rf.ico in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T20:46:39.210+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-subsystemversion</title>
   <keywords>
     <keyword>-subsystemversion</keyword>
@@ -9,26 +9,27 @@
     <header>
       <para styleclass="Heading1">-subsystemversion</para>
     </header>
-    <para styleclass="Normal">Specifies the minimum version of the subsystem on which the generated executable file can run, thereby determining the versions of Windows on which the executable file can run. Most commonly, this option ensures that the executable file can leverage particular security features that aren’t available with older versions of Windows.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text style="font-weight:bold;">Note </text></para>
-    <para styleclass="Normal">To specify the subsystem itself, use The -target compiler option.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal">指定生成的可执行文件可以运行的子系统的最低版本，从而确定可执行文件可以运行的 Windows 版本。最常见的情况是，该选项可确保可执行文件利用旧版本 Windows 所不具备的特定安全功能。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-weight:bold;">注意</text></para>
+    <para styleclass="Normal">要指定子系统本身，请使用 -target 编译器选项。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-subsystemversion:major.minor &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text style="font-weight:bold;">Parameters</text></para>
-    <para styleclass="List">major.minor<tab />The minimum required version of the subsystem, as expressed in a dot notation for major and minor versions. For example, you can specify that an application can&apos;t run on an operating system that&apos;s older than Windows 7 if you set the value of this option to 6.01, as the table later in this topic describes. You must specify the values for major and minor as integers.</para>
+    <para styleclass="Normal"><text style="font-weight:bold;">参数</text></para>
+    <para styleclass="List">major.minor<tab />子系统所需的最小版本，用主版本和次版本的点号表示。例如，如果将该选项的值设置为 6.01，就可以指定应用程序不能在旧版本的 Windows 7 操作系统上运行，本主题后面的表格对此进行了说明。必须以整数形式指定主版本和次版本的值。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Leading zeroes in the minor version don&apos;t change the version, but trailing zeroes do. For example, 6.1 and 6.01 refer to the same version, but 6.10 refers to a different version. We recommend expressing the minor version as two digits to avoid confusion.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The following table lists common subsystem versions of Windows.</para>
+    <para styleclass="Normal">次版本中的前导零不会改变版本，但尾部零会。例如，6.1 和 6.01 表示同一版本，但 6.10 表示不同的版本。我们建议用两位数表示次版本，以避免混淆。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">下表列出了常见的 Windows 子系统版本。</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:296px;">
-          <para styleclass="Normal">Windows version</para>
+          <para styleclass="Normal" style="text-align:center;">Windows 版本</para>
         </td>
         <td style="width:256px;">
-          <para styleclass="Normal">Subsystem version</para>
+          <para styleclass="Normal" style="text-align:center;">子系统版本</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -88,23 +89,23 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Default values</para>
-    <para styleclass="Normal">The default value of The -subsystemversion compiler option depends on the conditions in the following list:</para>
+    <para styleclass="Heading2">默认值</para>
+    <para styleclass="Normal"> -subsystemversion 编译器选项的默认值取决于下列条件：</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">The default value is 6.02 if any compiler option in the following list is set:</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">如果设置了下列编译器选项，默认值为 6.02：</li>
     </list>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:39px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:39px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:39px;">-target:appcontainerexe</li>
       <li styleclass="Normal" style="margin-left:39px;">-target:winmdobj</li>
       <li styleclass="Normal" style="margin-left:39px;">-platform:arm</li>
     </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">The default value is 6.00 if you&apos;re using MSBuild, you&apos;re targeting .NET Framework 4.5, and you haven&apos;t set any of the compiler options that were specified earlier in this list.</li>
-      <li styleclass="Normal" style="margin-left:13px;">The default value is 4.00 if none of the previous conditions is true.</li>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">如果使用的是 MSBuild，目标是 .NET Framework 4.5，且未设置本列表前面指定的任何编译器选项，则默认值为 6.00。</li>
+      <li styleclass="Normal" style="margin-left:13px;">如果前面的条件都不成立，默认值为 4.00。</li>
     </list>
-    <para styleclass="Heading2">Setting this option</para>
-    <para styleclass="Normal">To set The -subsystemversion compiler option in Visual Studio, you must open the .xsproj file and specify a value for the <text styleclass="Code Example">SubsystemVersion</text> property in the MSBuild XML. You can&apos;t set this option in the Visual Studio IDE. </para>
+    <para styleclass="Heading2">设置此选项</para>
+    <para styleclass="Normal">要在 Visual Studio 中设置 -subsystemversion 编译器选项，必须打开 .xsproj 文件并在 MSBuild XML 中指定 SubsystemVersion 属性的值。在 Visual Studio IDE 中无法设置该选项。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

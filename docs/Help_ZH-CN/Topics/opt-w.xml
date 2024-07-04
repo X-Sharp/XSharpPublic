@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T23:16:07.314+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-w</title>
   <keywords>
     <keyword>-w</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">-w</para>
     </header>
-    <para styleclass="Normal">The -w compiler option is an alias for the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> command line option for compatibility.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">为了兼容，-w 编译器选项是 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> 命令行选项的别名。</para>
   </body>
 </topic>

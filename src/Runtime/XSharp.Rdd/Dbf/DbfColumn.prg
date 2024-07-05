@@ -107,11 +107,15 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECTED METHOD _GetString(buffer AS BYTE[]) AS STRING
             // The default implementation returns the part of the buffer as a string
             local result as string
-            if SELF:RDD is DBFNTX var oDbfNtx .and. ! oDbfNtx:Header:IsAnsi
+            // when the table is Not Ansi and the runtimestate is Ansi then VO
+            // encodes the string in the DBF as OEM characters
+            // It uses the current Windows Codepage and not the Codepage of the table
+
+            if SELF:RDD is DBF var oDbf .and. ! oDbf:Header:IsAnsi .and. RuntimeState.Ansi
                 var tmp := Byte[]{SELF:Length}
                 Array.Copy(buffer, SELF:Offset, tmp, 0, SELF:Length)
-                Ansi2OemA(tmp)
-                result := SELF:RDD:_Encoding:GetString(tmp, 0, SELF:Length)
+                Oem2AnsiA(tmp)
+                result := RuntimeState.WinEncoding:GetString(tmp, 0, SELF:Length)
             else
                 result := SELF:RDD:_Encoding:GetString(buffer, SELF:Offset, SELF:Length)
             endif
@@ -246,10 +250,13 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN FALSE
 
         PROTECTED METHOD _PutString(buffer AS BYTE[], strValue AS STRING) AS VOID
-            if SELF:RDD is DBFNTX var oDbfNtx .and. ! oDbfNtx:Header:IsAnsi
+            // when the table is Not Ansi and the runtimestate is Ansi then VO
+            // converts the string to OEM before writing it to the buffer
+            // It uses the current Windows Codepage and not the Codepage of the table
+            if SELF:RDD is DBF var oDbf .and. ! oDbf:Header:IsAnsi .and. RuntimeState.Ansi
                 var tmp := Byte[]{SELF:Length}
-                SELF:RDD:_Encoding:GetBytes(strValue, 0, SELF:Length, tmp, 0)
-                Oem2AnsiA(tmp)
+                RuntimeState.WinEncoding:GetBytes(strValue, 0, SELF:Length, tmp, 0)
+                Ansi2OemA(tmp)
                 Array.Copy(tmp, 0, buffer, SELF:Offset, SELF:Length)
             ELSE
                 SELF:RDD:_Encoding:GetBytes(strValue, 0, SELF:Length, buffer, SELF:Offset)

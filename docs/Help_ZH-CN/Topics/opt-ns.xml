@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:53:25.830+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-05T18:46:50.234+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ns</title>
   <keywords>
     <keyword>-ns</keyword>
@@ -36,11 +36,10 @@
     <para styleclass="Normal"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
-      <li styleclass="Normal" style="margin-left:13px;">点击 Application 选项卡 </li>
-      <li styleclass="Normal" style="margin-left:13px;">编辑 “Default Namespace(默认命名空间)”属性 </li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡</li>
-      <li styleclass="Normal" style="margin-left:13px;">在 Namespaces 部分，编辑 “Prefix classes with Default Namespace(使用默认命名空间为类加前缀)”属性</li>
+      <li styleclass="Normal" style="margin-left:13px;">编辑 “Prefix classes with Default Namespace(使用默认命名空间为类加前缀)”属性</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></li>
+      <li styleclass="Normal" style="margin-left:13px;">然后，构建系统会生成一个命令行选项，将此属性与项目属性的<link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application 选项卡</link>上指定的默认命名空间结合起来</li>
     </list>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>

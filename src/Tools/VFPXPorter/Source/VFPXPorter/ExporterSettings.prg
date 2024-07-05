@@ -76,7 +76,10 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY DefaultFolders AS STRING GET XPorterSettings.DefaultFolders
 
 		PROPERTY LibInSubFolder AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "LibInSubFolder", TRUE ) ;
-			SET SELF:iniSettings:WriteValue( "Project", "LibInSubFolder", VALUE )
+            SET SELF:iniSettings:WriteValue( "Project", "LibInSubFolder", VALUE )
+
+        PROPERTY AddLibraryNamespace AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "AddLibraryNamespace", TRUE ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "AddLibraryNamespace", VALUE )
 		PROPERTY IgnoreErrors AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "IgnoreErrors", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Project", "IgnoreErrors", VALUE )
 		PROPERTY StoreInFolders AS LOGIC GET SELF:iniSettings:ReadValue( "Project", "StoreInFolders", TRUE ) ;
@@ -101,7 +104,8 @@ BEGIN NAMESPACE VFPXPorter
 			settings:ItemsPath		:= SELF:Items
 			settings:ItemsType		:= SELF:ItemsType
 			settings:KeepOriginal	:= SELF:KeepOriginal
-			settings:LibInSubFolder	:= SELF:LibInSubFolder
+            settings:LibInSubFolder	:= SELF:LibInSubFolder
+            settings:AddLibraryNamespace := SELF:AddLibraryNamespace
 			settings:Modifier		:= SELF:Modifier
 			settings:NameUDF		:= SELF:NameUDF
 			settings:OutputPath		:= SELF:Output

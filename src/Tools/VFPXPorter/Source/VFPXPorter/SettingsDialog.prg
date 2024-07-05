@@ -34,6 +34,7 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:iniSettings:Items := SELF:vfpPathTextBox:Text
 			//SELF:iniSettings:WriteValue( "Items", "SeparateFile", SELF:checkItemAsFile:Checked )
 			SELF:iniSettings:LibInSubFolder := SELF:checkLibraryAsSubFolder:Checked
+			SELF:iniSettings:AddLibraryNamespace := SELF:checkAddLibraryNamespace:Checked
 			SELF:iniSettings:IgnoreErrors := SELF:checkIgnoreExportError:Checked
 			SELF:iniSettings:StoreInFolders := SELF:checkStoreInFolders:Checked
 			SELF:iniSettings:EmptyFolder := SELF:checkEmptyFolder:Checked
@@ -74,7 +75,8 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:outputPathTextBox:Text := SELF:iniSettings:Output
 			SELF:vfpPathTextBox:Text := SELF:iniSettings:Items
 			SELF:ressourcesTextBox:Text := SELF:iniSettings:RessourcesFolder
-			SELF:checkLibraryAsSubFolder:Checked := SELF:iniSettings:LibInSubFolder
+            SELF:checkLibraryAsSubFolder:Checked := SELF:iniSettings:LibInSubFolder
+            SELF:checkAddLibraryNamespace:Checked := SELF:iniSettings:AddLibraryNamespace
 			//SELF:checkItemAsFile:Checked := SELF:iniSettings:ReadValue( "Items", "SeparateFile", FALSE )
 			SELF:checkIgnoreExportError:Checked := SELF:iniSettings:IgnoreErrors
 			SELF:checkStoreInFolders:Checked := SELF:iniSettings:StoreInFolders

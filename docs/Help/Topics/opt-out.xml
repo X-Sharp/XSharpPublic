@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-05T10:01:22.051+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-out</title>
   <keywords>
     <keyword>-out</keyword>
@@ -11,9 +11,9 @@
     </header>
     <para styleclass="Normal">The -out option specifies the name of the output file.</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-out:filename  </para>
+    <para styleclass="Code with box">-out:filename &#160;</para>
     <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/>The name of the output file created by the compiler.</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name of the output file created by the compiler.</para>
     <para styleclass="Heading2">Remarks</para>
     <para styleclass="Normal">On the command line, it is possible to specify multiple output files for your compilation. The compiler expects to find one or more source code files following The -out option. Then, all source code files will be compiled into the output file specified by that -out option.</para>
     <para styleclass="Normal"></para>
@@ -21,7 +21,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you do not specify the name of the output file:</para>
     <para styleclass="Normal"></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">An .exe will take its name from the source code file that contains the Main method.</li>
       <li styleclass="Normal" style="margin-left:13px;">A .dll or .netmodule will take its name from the first source code file.</li>
     </list>
@@ -35,10 +35,10 @@
     <para styleclass="Normal">The -out compiler option is required in order for an exe to be the target of a friend assembly. </para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Application property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the Assembly name property.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Modify the Application Name property.</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Click here to see the property page</link></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
@@ -48,7 +48,7 @@
     <para styleclass="Normal">Compile t.prg and create output file <text styleclass="Code Example">t.exe</text>, as well as build <text styleclass="Code Example">t2.prg</text> and create module output file <text styleclass="Code Example">mymodule.netmodule</text>:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc t.prg -out:mymodule.netmodule -target:module t2.prg  </para>
+    <para styleclass="Code with box">xsc t.prg -out:mymodule.netmodule -target:module t2.prg &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

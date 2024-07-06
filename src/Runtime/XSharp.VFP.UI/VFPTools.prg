@@ -34,5 +34,33 @@ STATIC PUBLIC CLASS VFPTools
         var image := System.Drawing.Image.FromFile( filename )
         //
         RETURN image
+
+    STATIC METHOD ImageStrechConvert( n AS INT ) AS System.Windows.Forms.PictureBoxSizeMode
+        VAR convert := System.Windows.Forms.PictureBoxSizeMode.Normal
+        SWITCH n
+            CASE 1
+                convert := System.Windows.Forms.PictureBoxSizeMode.AutoSize
+            CASE 2
+                convert := System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        END SWITCH
+        RETURN convert
+
+
+    STATIC METHOD TextAlignmentConvert( n AS INT ) AS System.Windows.Forms.HorizontalAlignment
+        VAR convert := System.Windows.Forms.HorizontalAlignment.Left
+        SWITCH n
+            CASE 0
+                convert := System.Windows.Forms.HorizontalAlignment.Left
+            CASE 1
+                convert := System.Windows.Forms.HorizontalAlignment.Right
+            CASE 2
+                convert := System.Windows.Forms.HorizontalAlignment.Center
+            CASE 3
+                convert := System.Windows.Forms.HorizontalAlignment.Left
+        END SWITCH
+        RETURN convert
+
+
+
 END CLASS
 END NAMESPACE // XSharp.VFP.UI

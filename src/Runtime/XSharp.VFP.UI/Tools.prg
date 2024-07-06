@@ -53,29 +53,11 @@ FUNCTION VFPAlignmentConvert( convert AS System.Drawing.ContentAlignment ) AS IN
     RETURN n
 
 FUNCTION VFPImageStrechConvert( n AS INT ) AS System.Windows.Forms.PictureBoxSizeMode
-    VAR convert := System.Windows.Forms.PictureBoxSizeMode.Normal
-    SWITCH n
-        CASE 1
-            convert := System.Windows.Forms.PictureBoxSizeMode.AutoSize
-        CASE 2
-            convert := System.Windows.Forms.PictureBoxSizeMode.StretchImage
-    END SWITCH
-    RETURN convert
+    RETURN VFPTools.ImageStrechConvert( n )
 
 
 FUNCTION VFPTextAlignmentConvert( n AS INT ) AS System.Windows.Forms.HorizontalAlignment
-    VAR convert := System.Windows.Forms.HorizontalAlignment.Left
-    SWITCH n
-        CASE 0
-            convert := System.Windows.Forms.HorizontalAlignment.Left
-        CASE 1
-            convert := System.Windows.Forms.HorizontalAlignment.Right
-        CASE 2
-            convert := System.Windows.Forms.HorizontalAlignment.Center
-        CASE 3
-            convert := System.Windows.Forms.HorizontalAlignment.Left
-    END SWITCH
-    RETURN convert
+    RETURN VFPTools.TextAlignmentConvert( n )
 
 
 FUNCTION VFPGuessType( uValue AS USUAL ) AS STRING

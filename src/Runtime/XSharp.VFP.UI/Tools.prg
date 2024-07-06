@@ -105,18 +105,7 @@ FUNCTION VFPGuessType( uValue AS USUAL ) AS STRING
 /// </summary>
 /// <returns></returns>
 FUNCTION VFPImageFromFile( filename AS STRING ) AS System.Drawing.Image
-    // In Visual Studio ? So...In the Designer
-    IF VPFIsInDesignMode()
-        // Check if the file exists
-        IF !System.IO.File.Exists( filename )
-            // To avoid a crash in Designer
-            RETURN XSharp.VFP.UI.Properties.Resources.XSharp
-        ENDIF
-    ENDIF
-    // Do it
-    var image := System.Drawing.Image.FromFile( filename )
-    //
-    RETURN image
+    RETURN VFPTools.ImageFromFile( filename )
 
 /// <summary>
 /// Check if we are running in Visual Studio (devenv.exe)
@@ -127,4 +116,7 @@ FUNCTION VPFIsInDesignMode() AS LOGIC
         return true
     ENDIF
     return false
+
+
+
 

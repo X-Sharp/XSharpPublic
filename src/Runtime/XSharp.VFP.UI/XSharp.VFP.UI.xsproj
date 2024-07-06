@@ -168,6 +168,7 @@
     <Compile Include="OptionButton.prg" />
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
+    <Compile Include="VFPTools.prg" />
     <Compile Include="_OtherClasses.prg" />
   </ItemGroup>
   <ItemGroup>

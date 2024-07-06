@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:27:49.227+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0034</title>
   <keywords>
     <keyword>XS0034</keyword>
@@ -9,11 +9,12 @@
     <header>
       <para styleclass="Heading1">Error XS0034</para>
     </header>
-    <para styleclass="Normal">Operator &apos;operator&apos; is ambiguous on operands of type &apos;type1&apos; and &apos;type2&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">An operator was used on two objects and the compiler found more than one conversion. Because conversions have to be unique, you either have to make a cast or to make one of the conversions explicit. For more information, see Conversion Operators.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0034:</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">运算符</text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">&#32;</text><text styleclass="Normal"> &apos;operator&apos; </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">对于</text><text styleclass="Normal"> &apos;type1&apos; </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">和</text><text styleclass="Normal"> &apos;type2&apos; </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">类型的操作数具有二义性</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#000000;">运算符用在了两个对象上，并且编译器找到多个转换。 由于转换必须是唯一的，因此必须进行强制转换，或者使其中一个转换成为显式转换。 有关详细信息，请参阅用户定义转换运算符。</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">下面的示例生成 </text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">XS0034</text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">：</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>

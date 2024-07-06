@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:38:16.955+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0051</title>
   <keywords>
     <keyword>XS0051</keyword>
@@ -9,15 +9,16 @@
     <header>
       <para styleclass="Heading1">Warning XS0051</para>
     </header>
-    <para styleclass="Normal">Inconsistent accessibility: parameter type &apos;type&apos; is less accessible than method &apos;method&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The return type and each of the types referenced in the formal parameter list of a method must be at least as accessible as the method itself. Make sure the types used in method signatures are not accidentally private due to the omission of the public modifier. For more information, see Access Modifiers.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">可访问性不一致：参数类型</text><text styleclass="Normal"> &apos;type&apos; </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">的可访问性低于方法</text><text styleclass="Normal"> &apos;method&apos;</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">方法的返回类型和形参表中引用的每个类型都必须至少具有和方法自身相同的可访问性。请确保方法签名中使用的类型不会因为省略 </text><text styleclass="" style="font-family:Consolas; font-size:10pt; color:#161616;">public </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">修饰符而意外变为私有类型。 有关详细信息，请参阅</text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#000000;">访问修饰符。</text></para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0051:</para>
+    <para styleclass="Normal">以下代码生成 XS0051:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0051.prg  <br/></para>
+    <para styleclass="Code with box">// XS0051.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

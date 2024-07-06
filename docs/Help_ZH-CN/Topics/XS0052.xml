@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:39:47.594+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0052</title>
   <keywords>
     <keyword>XS0052</keyword>
@@ -9,14 +9,15 @@
     <header>
       <para styleclass="Heading1">Warning XS0052</para>
     </header>
-    <para styleclass="Normal">Inconsistent accessibility: field type &apos;type&apos; is less accessible than field &apos;field&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The type of a field cannot be less accessible than the field itself because all public constructs must return a publicly accessible object.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">可访问性不一致：字段类型 &apos;type&apos; 的可访问性低于字段 &apos;field&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0052:</para>
+    <para styleclass="Normal">字段类型的可访问性不能低于字段本身的可访问性，因为所有公共构造函数都必须返回一个可公开访问的对象。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下代码生成 XS0052:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">// XS0052.prg  <br/></para>
+    <para styleclass="Code with box">// XS0052.prg &#160;<br/></para>
   </body>
 </topic>

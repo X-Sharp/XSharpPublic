@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:41:37.261+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0054</title>
   <keywords>
     <keyword>XS0054</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">Warning XS0054</para>
     </header>
-    <para styleclass="Normal">Inconsistent accessibility: indexer return type &apos;{1}&apos; is less accessible than indexer &apos;{0}&apos;</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">可访问性不一致：索引器返回类型 &apos;{1}&apos; 的可访问性低于索引器 &apos;{0}&apos;</para>
   </body>
 </topic>

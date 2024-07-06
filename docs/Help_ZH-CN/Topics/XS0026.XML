@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:14:06.987+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0026</title>
   <keywords>
     <keyword>XS0026</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS0026</para>
     </header>
-    <para styleclass="Normal">Keyword &apos;SELF&apos; is not valid in a static property, static method, or static field initializer</para>
     <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">关键字 </text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">&apos;SELF&apos; </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">在静态属性、静态方法或静态字段初始值设定项中无效</text></para>
   </body>
 </topic>

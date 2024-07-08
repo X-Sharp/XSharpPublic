@@ -5,7 +5,24 @@
 		PROPERTY DisabledForeColor AS LONG AUTO
 		PROPERTY DisabledPicture AS STRING AUTO
 		PROPERTY DownPicture AS STRING AUTO
-		PROPERTY Picture AS STRING AUTO
+
+
+        PRIVATE _picture AS STRING
+        PROPERTY Picture AS STRING
+            GET
+                IF SELF:_picture == NULL
+                    SELF:_picture := ""
+                ENDIF
+				RETURN SELF:_picture
+			END GET
+
+			SET
+                SELF:Image := VFPTools.ImageFromFile( VALUE )
+                SELF:_picture := value
+			END SET
+        END PROPERTY
+
+
 		PROPERTY PictureMargin AS LONG AUTO
 		PROPERTY PicturePosition AS LONG AUTO
 		PROPERTY PictureSpacing AS LONG AUTO

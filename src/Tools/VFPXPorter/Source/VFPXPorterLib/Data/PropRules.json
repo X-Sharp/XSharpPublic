@@ -29,7 +29,7 @@
   "TextBox": {
     "Margin": "System.Windows.Forms.Padding{0,0,0,0}",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
-    "TextAlign": "VFPTextAlignmentConvert(<@Alignment@>)",
+    "TextAlign": "VFPTools.TextAlignmentConvert(<@Alignment@>)",
     "Value": "!Value"
   },
 
@@ -81,7 +81,7 @@
   },
 
   "Image": {
-    "SizeMode": "VFPImageStrechConvert(<@Stretch@>)",
+    "SizeMode": "VFPTools.ImageStrechConvert(<@Stretch@>)",
     "Stretch": ""
   },
 
@@ -107,14 +107,14 @@
     "DisabledBackColor": "",
     "ControlSource": "::SetBinding(<@_CurrentObject_@>, <@ControlSource@>)",
     "Anchor": "::SetAnchor(<@_CurrentObject_@>, <@Anchor@>)",
-    "Image": "VFPImageFromFile(??<@Picture@>??)",
+    "Image": "VFPTools.ImageFromFile(??<@Picture@>??)",
     "Picture": "??<@Picture@>??",
     "OLEDragPicture": "??<@OLEDragPicture@>",
     "DragIcon": "??<@DragIcon@>??",
     "MouseIcon": "??<@MouseIcon@>??",
     "BorderColor": "",
     "FontName": "??<@FontName@>??",
-    "TextAlign": "VFPAlignmentConvert(<@Alignment@>)",
+    "TextAlign": "VFPTools.AlignmentConvert(<@Alignment@>)",
     "Alignment": "",
     "ToolTipText": ""
   }

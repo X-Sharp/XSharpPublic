@@ -34,8 +34,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			//
             SELF:_vfpStyle := 0
             SELF:Size := Size{100, 17}
-
 			//
+
 
 
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)];

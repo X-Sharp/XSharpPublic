@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T20:53:57.591+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-target</title>
   <keywords>
     <keyword>-target</keyword>
@@ -9,29 +9,23 @@
     <header>
       <para styleclass="Heading1">-target</para>
     </header>
-    <para styleclass="Normal">The -target compiler option can be specified in one of four forms:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">-target:appcontainerexe<tab />To create an .exe file for Windows 8.x Store apps.</para>
-    <para styleclass="List">-target:exe<tab /><tab /><tab />To create an .exe file.</para>
-    <para styleclass="List">-target:library<tab /><tab /><tab />To create a code library.</para>
-    <para styleclass="List">-target:module<tab /><tab />To create a module.</para>
-    <para styleclass="List">-target:winexe<tab /><tab /><tab />To create a Windows program.</para>
-    <para styleclass="List">-target:winmdobj<tab /><tab />To create an intermediate .winmdobj file.</para>
+    <para styleclass="Normal">-target 编译器选项有四种指定形式：</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Unless you specify -target:module, -target causes a .NET Framework assembly manifest to be placed in an output file. For more information, see Assemblies in the Common Language Runtime and Common Attributes.</para>
-    <para styleclass="Normal">The assembly manifest is placed in the first .exe output file in the compilation or in the first DLL, if there is no .exe output file. For example, in the following command line, the manifest will be placed in<text styleclass="Code Example"> 1.exe</text>:</para>
+    <para styleclass="List">-target:appcontainerexe<tab /><tab /><tab />为 Windows 8.x 应用商店创建 .exe 文件。</para>
+    <para styleclass="List">-target:exe<tab /><tab /><tab />创建 .exe 文件。</para>
+    <para styleclass="List">-target:library<tab /><tab /><tab />创建代码库。</para>
+    <para styleclass="List">-target:module<tab /><tab /><tab />创建 module.</para>
+    <para styleclass="List">-target:winexe<tab /><tab /><tab />创建 Windows program.</para>
+    <para styleclass="List">-target:winmdobj<tab /><tab /><tab />创建中间 .winmdobj 文件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">除非指定 -target:module，否则 -target 会将 .NET Framework 程序集清单放在输出文件中。更多信息，请参阅公共语言运行时和公共属性中的程序集。</para>
+    <para styleclass="Normal">程序集清单将放在编译中的第一个 .exe 输出文件中，如果没有 .exe 输出文件，则放在第一个 DLL 中。例如，在以下命令行中，清单将放在 1.exe 中：</para>
     <para styleclass="Code with box">xsc -out:1.exe t1.prg -out:2.netmodule t2.prg &#160;</para>
+    <para styleclass="Normal">编译器每次编译只创建一个程序集清单。编译中所有文件的信息都会放在程序集清单中。除使用 -target:module 创建的文件外，所有输出文件都可以包含一个程序集清单。在命令行下生成多个输出文件时，只能创建一个程序集清单，而且必须放入命令行指定的第一个输出文件中。无论第一个输出文件是什么（/target:exe、-target:winexe、-target:library 或 -target:module），在同一编译中生成的任何其他输出文件都必须是模块 (/target:module)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The compiler creates only one assembly manifest per compilation. Information about all files in a compilation is placed in the assembly manifest. All output files except those created with -target:module can contain an assembly manifest. When producing multiple output files at the command line, only one assembly manifest can be created and it must go into the first output file specified on the command line. No matter what the first output file is (/target:exe, -target:winexe, -target:library or -target:module), any other output files produced in the same compilation must be modules (/target:module).</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you create an assembly, you can indicate that all or part of your code is CLS compliant with the CLSCompliantAttribute attribute.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果您创建了程序集，您可以使用 CLSCompliantAttribute 属性指出全部或部分代码符合 CLS 标准。</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// target_clscompliant.prg &#160;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">[</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">assembly</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">:System.CLSCompliant(true)] &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// specify assembly compliance </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">[System.CLSCompliant(false)]; &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// specify compliance for an element &#160;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> TestClass &#160;</text><br/><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STATIC</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information about setting this compiler option programmatically, see OutputType.Enter topic text here.</para>
+    <para styleclass="Normal">有关以编程方式设置该编译器选项的更多信息，请参阅 OutputType。</para>
   </body>
 </topic>

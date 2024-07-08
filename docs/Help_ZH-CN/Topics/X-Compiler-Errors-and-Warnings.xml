@@ -1,13 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Compiler Errors and Warnings</title>
+<topic template="Default" modified="2024-07-06T18:38:20.264+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>X# 编译器错误和警告</title>
   <body>
     <header>
-      <para styleclass="Heading1">X# Compiler Errors and Warnings</para>
+      <para styleclass="Heading1">X# 编译器错误和警告</para>
     </header>
-    <para styleclass="Normal">The complete list of X# Compiler errors and warnings is not included in this &quot;book like&quot; documentation but can be found in the CHM, Visual Studio Help and/or Webhelp</para>
-    <para styleclass="Normal">The compiler warnings with numbers &lt; 9000 are &quot;standard&quot; Roslyn (C#) compiler errors.</para>
-    <para styleclass="Normal">The compiler warnings with numbers &gt; 9000 are specific X# compiler errors.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 编译器错误和警告的完整列表不包含在这本 &quot;像书一样 &quot;的文档中，但可以在 CHM、Visual Studio 帮助和/或 Webhelp 中找到。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">数字 &lt; 9000 的编译器警告是 &quot;标准&quot; Roslyn (C#) 编译器错误。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">数字 &gt; 9000 的编译器警告是特定的 X# 编译器错误。</para>
   </body>
 </topic>

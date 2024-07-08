@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T23:25:46.308+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-warnaserror</title>
   <keywords>
     <keyword>-warnaserror</keyword>
@@ -9,30 +9,29 @@
     <header>
       <para styleclass="Heading1">-warnaserror</para>
     </header>
-    <para styleclass="Normal">The -warnaserror+ option treats all warnings as errors</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">选项 -warnaserror+ 会将所有警告视为错误</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-warnaserror[+|-][:warning-list] &#160;</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">Any messages that would ordinarily be reported as warnings are instead reported as errors, and the build process is halted (no output files are built).</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">任何通常被报告为警告的信息都会被报告为错误，并停止编译进程（不编译输出文件）。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">By default, -warnaserror- is in effect, which causes warnings to not prevent the generation of an output file. -warnaserror, which is the same as -warnaserror+, causes warnings to be treated as errors.</para>
+    <para styleclass="Normal">默认情况下，-warnaserror- 有效，警告不会阻止生成输出文件。与 -warnaserror+ 相同，-warnaserror- 会将警告视为错误。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Optionally, if you want only a few specific warnings to be treated as errors, you may specify a comma-separated list of warning numbers to treat as errors.</para>
+    <para styleclass="Normal">如果只想将一些特定的警告作为错误处理，还可以指定一个以逗号分隔的警告编号列表。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">-warn</link> to specify the level of warnings that you want the compiler to display. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> to disable certain warnings.</para>
+    <para styleclass="Normal">使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn">-warn</link> 可指定希望编译器显示的警告级别。使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> 可禁用某些警告。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the &quot;Warnings As Errors&quot; property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">编辑 &quot;Warnings As Errors&quot; 属性</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and have the compiler display no warnings:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">编译 in.prg，编译器不会显示任何警告：</para>
     <para styleclass="Code with box">xsc -warnaserror in.prg &#160;<br/>xsc -warnaserror:642,649,652 in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -48,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                    ImmutableArray<BoundExpression>.Builder rewrittenArgs,
                                    ImmutableArray<LocalSymbol>.Builder temps,
                                    BoundLocal[] argBoundTemps,
-                                   BoundPropertyAccess[] boundProperties,
+                                   BoundExpression[] boundProperties,
                                    out bool hasRef)
         {
             exprs.Clear();
@@ -124,6 +125,33 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         boundProperties[i] = bc.PropertyAccess;
                     }
+                    else if (a is BoundDynamicMemberAccess dm)
+                    {
+                        boundProperties[i] = dm;
+                        var newarg = VisitExpression(dm);
+                        newarg = MakeConversionNode(newarg, _compilation.UsualType(), @checked: false);
+                        rewrittenArgs.Add(MakeRefUsual(newarg));
+                        normalArg = false;
+                    }
+                    else if (a is BoundIndexerAccess bi)
+                    {
+                        BoundExpression[] blas = new BoundExpression[bi.Arguments.Length];
+                        for(var ai = 0; ai < bi.Arguments.Length; ai++)
+                        {
+                            var arg = bi.Arguments[ai];
+                            LocalSymbol la = _factory.SynthesizedLocal(arg.Type);
+                            temps.Add(la);
+                            var bla = blas[ai] = _factory.Local(la);
+                            var lasgn = _factory.AssignmentExpression(bla, arg);
+                            exprs.Add(VisitAssignmentOperator(lasgn, true));
+                        }
+                        bi = bi.Update(bi.ReceiverOpt, bi.Indexer, blas.ToImmutableArrayOrEmpty(), bi.ArgumentNamesOpt, bi.ArgumentRefKindsOpt, bi.Expanded, bi.ArgsToParamsOpt, bi.DefaultArguments, bi.Type);
+                        boundProperties[i] = bi;
+                        var newarg = VisitExpression(bi);
+                        newarg = MakeConversionNode(newarg, _compilation.UsualType(), @checked: false);
+                        rewrittenArgs.Add(MakeRefUsual(newarg));
+                        normalArg = false;
+                    }
                     if (normalArg)
                     {
                         a = VisitExpression(a);
@@ -151,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private void writeRefBack(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
-            BoundExpression boundPars, BoundLocal[] argBoundTemps, BoundPropertyAccess[] boundProperties,
+            BoundExpression boundPars, BoundLocal[] argBoundTemps, BoundExpression[] boundProperties,
             ImmutableArray<BoundExpression>.Builder exprs, int offSet)
         {
             exprs.Clear();
@@ -161,9 +189,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     BoundExpression idx = _factory.Literal(i - offSet);
                     var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));
-                    if (boundProperties[i] != null)
+                    if (boundProperties[i] is BoundPropertyAccess bp)
                     {
-                        if (boundProperties[i].PropertySymbol is XsFoxMemberAccessSymbol foxAccess)
+                        if (bp.PropertySymbol is XsFoxMemberAccessSymbol foxAccess)
                         {
                             // fore now handle special FoxPro member assign here
                             var method = foxAccess.SetMethod;
@@ -176,10 +204,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                         else
                         {
                             // no needs to convert. The param is a usual and the property as well
-                            BoundExpression ass = _factory.AssignmentExpression(boundProperties[i], elem);
+                            BoundExpression ass = _factory.AssignmentExpression(bp, elem);
                             ass = VisitExpression(ass);
                             exprs.Add(ass);
                         }
+                    }
+                    else if (boundProperties[i] is BoundDynamicMemberAccess dm)
+                    {
+                        var conv = MakeConversionNode(elem, dm.Type, false);
+                        //var asgn = _factory.AssignmentExpression(dm, conv);
+                        BoundExpression asgn = new BoundAssignmentOperator(elem.Syntax, dm, conv, dm.Type, isRef: false) { WasCompilerGenerated = true };
+                        asgn = VisitExpression(asgn);
+                        exprs.Add(asgn);
+                    }
+                    else if (boundProperties[i] is BoundIndexerAccess bi)
+                    {
+                        var conv = MakeConversionNode(elem, bi.Type, false);
+                        BoundExpression asgn = new BoundAssignmentOperator(elem.Syntax, bi, conv, bi.Type, isRef: false) { WasCompilerGenerated = true };
+                        asgn = VisitExpression(asgn);
+                        exprs.Add(asgn);
                     }
                     else
                     {
@@ -226,7 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
                 var argBoundTemps = new BoundLocal[arguments.Length];
                 var refKinds = new RefKind[arguments.Length];
-                var properties = new BoundPropertyAccess[arguments.Length];      // for xsVariableSymbols
+                var properties = new BoundExpression[arguments.Length];      // for xsVariableSymbols
                 var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
                 for (int i = 0; i < arguments.Length; i++)
                 {
@@ -472,7 +515,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
             var argBoundTemps = new BoundLocal[arguments.Length];
             var refKinds = new RefKind[arguments.Length];
-            var properties = new BoundPropertyAccess[arguments.Length];      // for xsVariableSymbols
+            var properties = new BoundExpression[arguments.Length];      // for xsVariableSymbols
 
             for (int i = 0; i < arguments.Length; i++)
             {
@@ -527,7 +570,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
             var argBoundTemps = new BoundLocal[arguments.Length];
             var refKinds = new RefKind[arguments.Length];
-            var properties = new BoundPropertyAccess[arguments.Length];      // for xsVariableSymbols
+            var properties = new BoundExpression[arguments.Length];      // for xsVariableSymbols
             var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
             for (int i = 0; i < arguments.Length; i++)
             {

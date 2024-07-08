@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:29:00.733+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-08T09:28:06.304+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-highentropyva</title>
   <keywords>
     <keyword>-highentropyva</keyword>
@@ -20,12 +20,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">当指定 -highentropyva 编译器选项时，目标可执行文件及其依赖的任何模块在作为 64 位进程运行时，必须能够处理大于 4 GB 的指针值。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
-    <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
-      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
-      <li styleclass="Normal" style="margin-left:13px;">在 &quot;Extra Command Line options&quot; 中增加属性</li>
-    </list>
+    <para styleclass="Normal"><snippet src="__buildExtra" inline="false"/></para>
   </body>
 </topic>

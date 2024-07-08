@@ -494,14 +494,18 @@ BEGIN NAMESPACE VFPXPorterLib
                                 ENDIF
                             NEXT
                             // If we have generated some Namespaces, add them at the end of the VFPXPorter.xh
-                            IF Settings:AddLibraryNamespace .AND. !String.IsNullOrEmpty( vfpxporterPath )
+                            IF !String.IsNullOrEmpty( vfpxporterPath )
                                 VAR uniqueNamespaces := generatedNamespaces:Distinct():ToList()
                                 VAR headerText := File.ReadAllText( vfpxporterPath )
+                                VAR comment := "// "
+                                IF Settings:AddLibraryNamespace
+                                    comment := ""
+                                ENDIF
                                 //
                                 headerText += Environment.NewLine
                                 headerText += Environment.NewLine + "// VFPXPorter - Generated Namespaces"
                                 FOREACH VAR definition IN uniqueNamespaces
-                                    headerText += Environment.NewLine + "USING " + definition
+                                    headerText += Environment.NewLine + comment + "USING " + definition
                                 NEXT
                                 headerText += Environment.NewLine
                                 File.WriteAllText( vfpxporterPath, headerText )

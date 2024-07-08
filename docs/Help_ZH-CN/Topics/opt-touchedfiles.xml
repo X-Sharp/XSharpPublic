@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T20:55:55.975+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-touchedfiles</title>
   <keywords>
     <keyword>-touchedfiles</keyword>
@@ -9,15 +9,16 @@
     <header>
       <para styleclass="Heading1">-touchedfiles</para>
     </header>
-    <para styleclass="Normal">The -touchedfiles compiler option allows you to declare a file in which the compiler will list which files have been touched during the compilation process.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-touchedfiles:filename</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The compiler will produce 2 output files:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">filename.read<tab /><tab />This lists all the files that were read by the compiler</para>
-    <para styleclass="List">filename.write<tab /><tab />This lists all the files that were written by the compiler. That includes the exe, pdb, ppo etc.</para>
+    <para styleclass="Normal">编译器选项 -touchedfiles 允许你声明一个文件，编译器将在该文件中列出编译过程中接触过的文件。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-touchedfiles:filename</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">编译器将生成 2 个输出文件：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">filename.read<tab /><tab />这将列出编译器读取的所有文件</para>
+    <para styleclass="List">filename.write<tab /><tab />这将列出编译器编写的所有文件。其中包括 exe、ppdb、ppo 等。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">The file names in both files are all capitalized and in alphabetical order</para>
+    <para styleclass="List">两个文件中的文件名均大写，并按字母顺序排列。</para>
   </body>
 </topic>

@@ -1,30 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T21:49:49.658+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo15</title>
   <keywords>
     <keyword>-vo15</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo15: Allow untyped Locals and return types </para>
+      <para styleclass="Heading1">-vo15: 允许未类型化的局部变量和返回类型。 </para>
     </header>
-    <para styleclass="Normal">This compiler option will allow you to control what the compiler will do with local variables, parameters and return types without type specification.</para>
-    <para styleclass="Normal">The default is -vo15+ for the VO and Vulcan dialects. For the Core dialect the default is -vo15-</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-vo15[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -vo15, tells the compiler to treat untyped locals and return types as USUAL</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <para styleclass="Normal">通过该编译器选项，您可以控制编译器在未指定类型的情况下如何处理局部变量、参数和返回类型。</para>
+    <para styleclass="Normal">VO 和 Vulcan 方言的默认值为 -vo15+。Core 方言的默认值为 -vo15-</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-vo15[+|-]</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab />指定 + 或 -vo15，编译器会将未类型化的局部变量和返回类型视为 USUAL</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> LongSquare(nLong </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &#160; &#160; &#160;-/ Note that the </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">return</text><text style="font-weight:normal; font-style:normal; color:#000000;"> type </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">is</text><text style="font-weight:normal; font-style:normal; color:#000000;"> missing</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLong * nLong</text><br/></para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> LongSquare(nLong </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><text style="font-weight:normal; font-style:normal; color:#000000;">) &#160; &#160; &#160;-/ 请注意，缺少返回类型</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLong * nLong</text><br/></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal">In VO/Vulcan mode this will (by default) generate a method with a USUAL return type. In Core mode this will not compile but produce a &quot;Missing Type&quot; error (XS1031)</para>
     <para styleclass="Normal"></para>

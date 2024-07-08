@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:15:23.626+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0028</title>
   <keywords>
     <keyword>XS0028</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">Warning XS0028</para>
     </header>
-    <para styleclass="Normal">&apos;{0}&apos; has the wrong signature to be an entry point</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&apos;{0}&apos; 的签名错误，不能作为入口点</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

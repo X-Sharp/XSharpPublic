@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:27:01.273+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-08T09:30:50.633+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-checked</title>
   <keywords>
     <keyword>-checked</keyword>
@@ -22,13 +22,8 @@
     <para styleclass="Normal">该选项的默认值是 -checked-。使用 -checked- 的一种情况是构建大型应用程序。您可以通过指定 -checked- 来覆盖工具的全局默认值。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">VO Compatibility 编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">-ovf</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">-fovf</link> 都设置了该选项</para>
-    <para styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面.</li>
-      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
-      <li styleclass="Normal" style="margin-left:13px;">在 &quot;Extra Command Line options&quot;属性中添加该选项</li>
-    </list>
+    <para styleclass="Normal"><snippet src="__buildExtra" inline="false"/></para>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">下面的命令用于编译 t2.prg。在命令中使用 -checked 后，如果文件中的任何整数运算语句不在关键字 checked 或 unchecked 的范围内，并且产生的值超出了数据类型的范围，则会在运行时产生异常。</para>

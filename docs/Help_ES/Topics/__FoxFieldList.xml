@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-10-22T12:57:21.839-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__FieldList_2</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__FoxFieldList</para>
+    </header>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The list of fields to process. The default is all fields with the exception of memo fields, unless the command supports the MEMO clause.</para>
+    <para styleclass="List"><tab />Only fields with the same names and types in both files are appended. &#160;If fields with the same name do not match in data type, a runtime error is raised.</para>
+    <para styleclass="List">FIELDS LIKE &lt;<text styleclass="Body Text">Skeleton</text>&gt;<tab />You can specify field names with a wild card, such as FIELDS LIKE *name</para>
+    <para styleclass="List">FIELDS EXCEPT &lt;<text styleclass="Body Text">Skeleton</text>&gt;<tab />You can exclude fields, such as for example the primary keys: FIELDS EXCEPT Id<br/>&lt;<text styleclass="Body Text">Skeleton</text>&gt;<text styleclass="Body Text"> supports wildcards (* and ?). For example, to replace all fields that begin with the letters A and P, use: </text><br/><text styleclass="Code Example">FIELDS LIKE A*,P*</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="List">Please note that you can combine FIELDS LIKE and FIELDS EXCEPT but you cannot combine a fields list with the LIKE and EXCEPT clauses.</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

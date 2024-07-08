@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-08T09:28:06.304+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-highentropyva</title>
   <keywords>
     <keyword>-highentropyva</keyword>
@@ -9,22 +9,17 @@
     <header>
       <para styleclass="Heading1">-highentropyva</para>
     </header>
-    <para styleclass="Normal">The -highentropyva compiler option tells the Windows kernel whether a particular executable supports high entropy Address Space Layout Randomization (ASLR).</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-highentropyva编译器选项会告诉Windows内核某个可执行文件是否支持地址空间布局随机化（ASLR）。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-highentropyva[+ | -] <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />This option specifies that a 64-bit executable or an executable that is marked by The -platform:anycpu compiler option supports a high entropy virtual address space. The option is disabled by default. Use -highentropyva+ or -highentropyva to enable it.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The -highentropyva option enables compatible versions of the Windows kernel to use higher degrees of entropy when randomizing the address space layout of a process as part of ASLR. Using higher degrees of entropy means that a larger number of addresses can be allocated to memory regions such as stacks and heaps. As a result, it is more difficult to guess the location of a particular memory region.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />该选项指定 64 位可执行文件或由 -platform:anycpu 编译器选项标记的可执行文件支持地址空间布局随机化。该选项默认为禁用。使用 -highentropyva+ 或 -highentropyva 可启用该选项。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">作为 ASLR 的一部分，-highentropyva 选项可使兼容版本的 Windows 内核在随机化进程的地址空间布局时使用更高的熵值。使用更高的熵值意味着可以为堆栈和堆等内存区域分配更多地址。因此，猜测特定内存区域的位置会更加困难。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When The -highentropyva compiler option is specified, the target executable and any modules that it depends on must be able to handle pointer values that are larger than 4 gigabytes (GB) when they are running as a 64-bit process.</para>
+    <para styleclass="Normal">当指定 -highentropyva 编译器选项时，目标可执行文件及其依赖的任何模块在作为 64 位进程运行时，必须能够处理大于 4 GB 的指针值。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;User-Defined Command Line options&quot; property</li>
-    </list>
+    <para styleclass="Normal"><snippet src="__buildExtra" inline="false"/></para>
   </body>
 </topic>

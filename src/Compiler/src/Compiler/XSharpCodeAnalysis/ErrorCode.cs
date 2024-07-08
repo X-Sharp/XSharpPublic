@@ -2093,7 +2093,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_LambdaConversionNotPossible = 9121,
         WRN_FileWideMemVarName = 9122,
         ERR_UnexpectedNamedArgument = 9123,
-        ERR_ParenthesizedExpressionList = 9214,
+        ERR_ParenthesizedExpressionList = 9224,
+        WRN_FileWideMemVarDuplicate = 9125,
+        ERR_ClipperOverloaded = 9126,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

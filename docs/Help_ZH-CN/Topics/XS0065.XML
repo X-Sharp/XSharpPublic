@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:48:05.416+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0065</title>
   <keywords>
     <keyword>XS0065</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS0065</para>
     </header>
-    <para styleclass="Normal">&apos;{0}&apos;: event property must have both add and remove accessors</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">&apos;{0}&apos;: <text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">事件属性必须同时具有 </text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">add </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">和 </text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">remove </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">访问器</text></para>
   </body>
 </topic>

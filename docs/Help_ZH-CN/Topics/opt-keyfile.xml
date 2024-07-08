@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T18:29:27.850+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-keyfile</title>
   <keywords>
     <keyword>-keyfile</keyword>
@@ -9,32 +9,34 @@
     <header>
       <para styleclass="Heading1">-keyfile</para>
     </header>
-    <para styleclass="Normal">Specifies the filename containing the cryptographic key.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">指定包含加密密钥的文件名。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-keyfile:file <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">file</text><tab />The name of the file containing the strong name key.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">When this option is used, the compiler inserts the public key from the specified file into the assembly manifest and then signs the final assembly with the private key. To generate a key file, type sn -k file at the command line.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">file</text><tab />包含强名称密钥的文件名。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">使用该选项时，编译器会将指定文件中的公钥插入程序集清单，然后用私钥签署最终程序集。要生成密钥文件，请在命令行键入 sn -k file。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you compile with -target:module, the name of the key file is held in the module and incorporated into the assembly that is created when you compile an assembly with -addmodule.</para>
+    <para styleclass="Normal">如果使用 -target:module 进行编译，密钥文件的名称将保存在模块中，并在使用 -addmodule 编译程序集时并入程序集中。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can also pass your encryption information to the compiler with -keycontainer. Use -delaysign if you want a partially signed assembly.</para>
+    <para styleclass="Normal">你也可以使用 -keycontainer 将加密信息传递给编译器。如果需要部分签名的程序集，请使用 -delaysign。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In case both -keyfile and -keycontainer are specified (either by command line option or by custom attribute) in the same compilation, the compiler will first try the key container. If that succeeds, then the assembly is signed with the information in the key container. If the compiler does not find the key container, it will try the file specified with -keyfile. If that succeeds, the assembly is signed with the information in the key file and the key information will be installed in the key container (similar to sn -i) so that on the next compilation, the key container will be valid.</para>
+    <para styleclass="Normal">如果在同一编译中同时指定了 -keyfile 和 -keycontainer（通过命令行选项或自定义属性），编译器将首先尝试密钥容器。如果成功，程序集将根据密钥容器中的信息签名。如果编译器找不到密钥容器，它将尝试使用 -keyfile 指定的文件。如果成功，程序集将使用密钥文件中的信息签名，密钥信息将被安装到密钥容器中（类似于 sn -i），这样在下一次编译时，密钥容器将是有效的。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that a key file might contain only the public key.</para>
+    <para styleclass="Normal">请注意，密钥文件可能只包含公钥。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">更多信息，请参阅创建和使用强命名程序集和延迟签名程序集。</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Signing property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the Choose a strong name key file property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 属性页</li>
+      <li styleclass="Normal" style="margin-left:13px;">修改 &quot;Code Signing KeyFile(代码签名密钥文件) &quot;属性。</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">You can programmatically access this compiler option with AssemblyOriginatorKeyFile.</para>
+    <para styleclass="Normal">您可以通过 AssemblyOriginatorKeyFile 以编程方式访问该编译器选项。</para>
   </body>
 </topic>

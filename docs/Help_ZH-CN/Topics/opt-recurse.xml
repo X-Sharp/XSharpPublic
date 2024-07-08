@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T19:52:10.768+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-recurse</title>
   <keywords>
     <keyword>-recurse</keyword>
@@ -9,26 +9,23 @@
     <header>
       <para styleclass="Heading1">-recurse</para>
     </header>
-    <para styleclass="Normal">The -recurse option enables you to compile source code files in all child directories of either the specified directory (dir) or of the project directory.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">使用 -recurse 选项，可以编译指定目录 (dir) 或项目目录下所有子目录中的源代码文件。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-recurse:[dir\]file &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">dir (optional)<tab />The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</para>
-    <para styleclass="List">file<tab />The file(s) to search for. Wildcard characters are allowed.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The -recurse option lets you compile source code files in all child directories of either the specified directory (dir) or of the project directory.</para>
-    <para styleclass="Normal">You can use wildcards in a file name to compile all matching files in the project directory without using -recurse.</para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">dir (可选)<tab />开始搜索的目录。如果未指定，搜索将从项目目录开始。</para>
+    <para styleclass="List">file<tab />要搜索的文件。允许使用通配符。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">通过 -recurse 选项，可以编译指定目录 (dir) 或项目目录下所有子目录中的源代码文件。</para>
+    <para styleclass="Normal">您可以在文件名中使用通配符来编译项目目录中的所有匹配文件，而无需使用 -recurse 选项。</para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也不能通过编程更改。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compiles all X# files in the current directory:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译当前目录下的所有 X# 文件：</para>
     <para styleclass="Code with box">xsc *.prg &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compiles all of the X# files in the dir1\dir2 directory and any directories below it and generates dir2.dll:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译 dir1\dir2 目录及其下任何目录中的所有 X# 文件，并生成 dir2.dll：</para>
     <para styleclass="Code with box">xsc -target:library -out:dir2.dll -recurse:dir1\dir2\*.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>

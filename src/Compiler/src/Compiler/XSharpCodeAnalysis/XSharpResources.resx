@@ -7720,6 +7720,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
    <data name="ERR_ParenthesizedExpressionList" xml:space="preserve">
   <value>Parenthesized Expression Lists are not supported when using the -modernsyntax compiler option.</value>
  </data>
+   <data name="WRN_FileWideMemVarDuplicate" xml:space="preserve">
+  <value>FIELD or VARIABLE '{0}' has already been declared.</value>
+ </data>
+
 
 </root>
 

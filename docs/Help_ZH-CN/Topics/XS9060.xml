@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1">Error XS9060</para>
     </header>
-    <para styleclass="Normal">Cannot cast type '{0}' to '{1}'</para>
+    <para styleclass="Normal">Cannot cast type &apos;{0}&apos; to &apos;{1}&apos;</para>
   </body>
 </topic>

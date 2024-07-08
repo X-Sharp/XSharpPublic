@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-08T09:30:42.694+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-baseaddress</title>
   <keywords>
     <keyword>-baseaddress</keyword>
@@ -9,23 +9,19 @@
     <header>
       <para styleclass="Heading1">-baseaddress</para>
     </header>
-    <para styleclass="Normal">The -baseaddress option lets you specify the preferred base address at which to load a DLL. </para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过 -baseaddress 选项，可以指定加载 DLL 的首选基地址。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-baseaddress:address &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">address<tab />The base address for the DLL. This address can be specified as a decimal, hexadecimal, or octal number.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The default base address for a DLL is set by the .NET Framework common language runtime.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">address<tab />DLL 的基地址。该地址可以指定为十进制、十六进制或八进制数。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">DLL 的默认基地址由 .NET Framework 公共语言运行时设置。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Be aware that the lower-order word in this address will be rounded. For example, if you specify 0x11110001, it will be rounded to 0x11110000.</para>
+    <para styleclass="Normal">请注意，该地址中的低阶字将被四舍五入。例如，如果指定 0x11110001，它将被舍入为 0x11110000。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To complete the signing process for a DLL, use SN.EXE with the -R option.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;User-Defined Command Line options&quot; property</li>
-    </list>
+    <para styleclass="Normal">要完成 DLL 的签名过程，请使用 SN.EXE 并带 -R 选项。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__buildExtra" inline="false"/></para>
   </body>
 </topic>

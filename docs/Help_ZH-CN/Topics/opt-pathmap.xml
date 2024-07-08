@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T19:18:55.212+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-pathmap</title>
   <keywords>
     <keyword>-pathmap</keyword>
@@ -9,23 +9,25 @@
     <header>
       <para styleclass="Heading1">-pathmap</para>
     </header>
-    <para styleclass="Normal">Specify a mapping for source path names output by the compiler.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal">指定编译器输出的源路径名映射。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-<text styleclass="lang-console" style="font-family:&apos;Courier New&apos;; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">pathmap:path1=sourcePath1,path2=sourcePath2</text></para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">path1 <tab /><tab />The full path to the source files in the current environment</para>
-    <para styleclass="List">sourcePath1 <tab />The source path substituted for path1 in any output files.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">path1 <tab /><tab />当前环境中源文件的完整路径</para>
+    <para styleclass="List">sourcePath1 <tab /><tab />在任何输出文件中被 path1 替代的源路径。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">To specify multiple mapped source paths, separate each with a comma.</para>
+    <para styleclass="List">要指定多个映射源路径，请用逗号隔开。</para>
     <para styleclass="List"></para>
-    <para styleclass="Body Text"><text styleclass="Heading2">Remarks</text></para>
-    <para styleclass="Body Text">The compiler writes the source path into its output for the following reasons:</para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The source path is substituted for an argument when the CallerFilePathAttribute is applied to an optional parameter.</li>
-      <li styleclass="Body Text">The source path is embedded in a PDB file.</li>
-      <li styleclass="Body Text">The path of the PDB file is embedded into a PE (portable executable) file.</li>
+    <para styleclass="Body Text"><text styleclass="Heading2">备注</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">编译器会将源代码路径写入输出，原因如下：</para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">当 CallerFilePathAttribute 应用于可选参数时，源路径将被替换为参数。</li>
+      <li styleclass="Body Text">源路径嵌入 PDB 文件。</li>
+      <li styleclass="Body Text">PDB 文件的路径被嵌入到 PE（可移植可执行文件）文件中。</li>
     </list>
-    <para styleclass="Body Text">This option maps each physical path on the machine where the compiler runs to a corresponding path that should be written in the output files.</para>
+    <para styleclass="Body Text">该选项将编译器运行所在机器上的每个物理路径映射为输出文件中应写入的相应路径。</para>
   </body>
 </topic>

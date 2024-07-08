@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:43:12.906+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0056</title>
   <keywords>
     <keyword>XS0056</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">Warning XS0056</para>
     </header>
-    <para styleclass="Normal">Inconsistent accessibility: return type &apos;{1}&apos; is less accessible than operator &apos;{0}&apos;</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">可访问性不一致：返回类型 &apos;{1}&apos; 的可访问性低于运算符 &apos;{0}&apos;</para>
   </body>
 </topic>

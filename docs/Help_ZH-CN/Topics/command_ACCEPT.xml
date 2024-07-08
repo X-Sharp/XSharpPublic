@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>ACCEPT Command</title>
+<topic template="Default" modified="2024-06-29T23:32:28.466+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ACCEPT 命令</title>
   <keywords>
     <keyword>ACCEPT command</keyword>
     <keyword>Commands</keyword>
@@ -10,26 +10,26 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">ACCEPT Command</para>
+      <para styleclass="Heading1">ACCEPT 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Take input from the keyboard and assign it to a memory variable.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">接收键盘输入并将其赋值给内存变量。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">ACCEPT [&lt;<text styleclass="Italic">uValuePrompt</text>&gt;] TO &lt;<text styleclass="Italic">idVar</text>&gt;</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;uValuePrompt&gt;<tab />An optional prompt displayed before the input area.</para>
-    <para styleclass="List">TO &lt;idVar&gt;<tab />The variable that will hold input from the keyboard. &#160;If there is no variable named &lt;idVar&gt; that is visible to the current routine, a private variable is created.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">When ACCEPT is executed, it first performs a carriage return/linefeed, displays the prompt in the terminal window, and begins taking characters from the keyboard at the position immediately following the prompt.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;uValuePrompt&gt;<tab />输入区域前显示的可选提示。</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO &lt;idVar&gt;<tab />用于保存键盘输入的变量。 如果当前例程中没有名为 &lt;idVar&gt; 的变量，则会创建一个私有变量。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">执行 ACCEPT 时，首先执行回车/换行，在终端窗口中显示提示，然后在紧跟提示的位置开始从键盘输入字符。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Up to 255 characters can be entered. &#160;When input reaches the edge of the window, as defined by MaxCol(), the cursor moves to the next line.</para>
+    <para styleclass="Normal">最多可输入 255 个字符。 当输入到达 MaxCol() 所定义的窗口边缘时，光标会移动到下一行。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">ACCEPT supports only two editing keys: &#160;Backspace and Enter (Esc is not supported). &#160;Backspace deletes the last character typed. &#160;Enter confirms entry and is the only key that can terminate an ACCEPT. &#160;If Enter is the only key pressed, ACCEPT assigns a NULL_STRING to &lt;<text styleclass="Italic">idVar</text>&gt;.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example uses ACCEPT to get keyboard input from the user:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">ACCEPT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Enter a value: &#160;&quot;</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> NULL_STRING</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;User pressed Enter&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;User input:&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
+    <para styleclass="Normal">ACCEPT 只支持两个编辑键： &#160;Backspace 和 Enter（不支持 Esc）。 退格键删除最后输入的字符。 回车键确认输入，是唯一可以终止 ACCEPT 的键。 如果 Enter 是唯一被按下的键，ACCEPT 将为 &lt;idVar&gt; 分配一个 NULL_STRING。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例使用 ACCEPT 获取用户的键盘输入：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">ACCEPT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Enter a value: &#160;&quot;</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;"> NULL_STRING</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;用户按下 Enter&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ELSE</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;用户输入内容：&quot;,</text><text style="font-weight:bold; font-style:normal; color:#000000;"> cVar</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text></para>
     <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
   </body>

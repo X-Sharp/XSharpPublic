@@ -1,25 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Operators</title>
+<topic template="Default" modified="2024-06-30T10:01:48.549+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>操作符</title>
   <body>
     <header>
-      <para styleclass="Heading1">Operators</para>
+      <para styleclass="Heading1">操作符</para>
     </header>
-    <para styleclass="Normal">X# has many operators. These are </para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Binary_Operators">Binary operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Assignment_Operators">Assignment operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Logical_Operators">Logical operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Bitwise_Operators">Bitwise operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Relational_Operators">Relational operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Shift_Operators">Shift operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Unary_Operators">Unary operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Workarea_Operators">Workarea operators</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="operator_IIF">IIF() Operator</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_SizeOf">SizeOf() Operator</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_Typeof">TypeOf() Operator</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_NameOf">NameOf() Operator</link></li>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 有许多运算符。它们是 </para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Binary_Operators">Binary 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Assignment_Operators">赋值操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Logical_Operators">Logical 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Bitwise_Operators">Bitwise 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Relational_Operators">关系操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Shift_Operators">移位操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Unary_Operators">一元操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Workarea_Operators">Workarea 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="operator_IIF">IIF() 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_SizeOf">SizeOf() 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_Typeof">TypeOf() 操作符</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_NameOf">NameOf() 操作符</link></li>
     </list>
   </body>
 </topic>

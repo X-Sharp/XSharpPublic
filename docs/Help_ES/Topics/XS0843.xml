@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0843</title>
+  <keywords>
+    <keyword>XS0843</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0843</para>
+    </header>
+    <para styleclass="Normal">Backing field for automatically implemented property &apos;name&apos; must be fully assigned before control is returned to the caller. Consider calling the default constructor from a constructor initializer.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To assign a value to an automatically-implemented property from a constructor, you must first invoke the default constructor to create the object.</para>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Add a call to the default constructor in a constructor initializer as shown in the following example. Note the use of : this(). For more information, see this.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following code generates XS0843:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0843.prg  <br/></para>
+  </body>
+</topic>

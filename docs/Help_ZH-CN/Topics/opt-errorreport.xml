@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T18:28:30.149+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-errorreport</title>
   <keywords>
     <keyword>-errorreport</keyword>
@@ -9,33 +9,36 @@
     <header>
       <para styleclass="Heading1">-errorreport</para>
     </header>
-    <para styleclass="Normal">This compiler option provides a convenient way to report a X# internal compiler error</para>
-    <para styleclass="Normal"><br/> Note </para>
-    <para styleclass="Normal">On Windows Vista and Windows Server 2008, the error reporting settings that you make for Visual Studio do not override the settings made through Windows Error Reporting (WER). WER settings always take precedence over Visual Studio error reporting settings.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该编译器选项提供了一种报告 X# 内部编译器错误的便捷方法</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> 注意 </para>
+    <para styleclass="Normal">在 Windows Vista 和 Windows Server 2008 中，为 Visual Studio 所做的错误报告设置不会覆盖通过 Windows 错误报告 (WER) 所做的设置。WER 设置始终优先于 Visual Studio 错误报告设置。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">-errorreport:{ none | prompt | queue | send } &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="Normal">none<tab />Reports about internal compiler errors will not be collected or sent to Microsoft.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="Normal">none<tab /><tab /><tab /><tab />有关内部编译器错误的报告不会被收集或发送给微软。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">prompt<tab />Prompts you to send a report when you receive an internal compiler error. prompt is the default when you compile an application in the development environment.</para>
+    <para styleclass="List">prompt<tab />提示您在收到内部编译器错误时发送报告。提示是在开发环境中编译应用程序时的默认设置。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">queue<tab />Queues the error report. When you log on with administrative credentials, you can report any failures since the last time that you were logged on. You will not be prompted to send reports for failures more than once every three days. queue is the default when you compile an application at the command line.</para>
+    <para styleclass="List">queue<tab />排队等待错误报告。使用管理凭据登录时，可以报告自上次登录以来的任何故障。提示您发送故障报告的次数不会超过每三天一次。在命令行下编译应用程序时，队列是默认设置。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List">send<tab />Automatically sends reports of internal compiler errors to Microsoft. To enable this option, you must first agree to the Microsoft data collection policy. The first time that you specify -errorreport:send on a computer, a compiler message will refer you to a Web site that contains the Microsoft data collection policy.</para>
+    <para styleclass="List">send<tab />自动向 Microsoft 发送内部编译器错误报告。要启用此选项，您必须首先同意 Microsoft 数据收集策略。首次在计算机上指定 -errorreport:send 时，编译器信息会将您转到包含 Microsoft 数据收集策略的网站。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">An internal compiler error (ICE) results when the compiler cannot process a source code file. When an ICE occurs, the compiler does not produce an output file or any useful diagnostic that you can use to fix your code.</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">当编译器无法处理源代码文件时，就会产生内部编译器错误 (ICE)。当发生内部编译器错误时，编译器不会生成输出文件或任何有用的诊断，您可以用它来修复您的代码。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A user&apos;s ability to send reports depends on computer and user policy permissions.</para>
+    <para styleclass="Normal">用户发送报告的能力取决于计算机和用户策略权限。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information about error debugger, see Description of the Dr. Watson for Windows (Drwtsn32.exe) Tool.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal">有关错误调试器的更多信息，请参阅 Windows 版 Drwtsn32.exe 工具说明。</para>
+    <para styleclass="Heading3"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Advanced button.</li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">点击 Build 选项卡</link></li>
+      <li styleclass="Normal" style="line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text styleclass="x.x-first.x-last" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#1f2328; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">在 Extra Commandline Options control 中增加 -errorreport </text></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
   </body>

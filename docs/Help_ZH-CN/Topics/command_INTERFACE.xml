@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T19:21:03.453+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>INTERFACE Statement</title>
+<topic template="Default" modified="2024-06-27T20:09:49.773+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>INTERFACE 语句</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
     <keyword>Class names<keyword>declaring</keyword></keyword>
@@ -18,7 +18,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">INTERFACE Statement</para>
+      <para styleclass="Heading1">INTERFACE 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">向编译器声明接口名称。</para>
@@ -35,7 +35,7 @@
     <para styleclass="List">InterfaceMembers<tab />可以是以下任何一种： <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link></para>
     <para styleclass="Heading1">描述</para>
     <para styleclass="Heading1">备注</para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS" styleclass="List">CLASS</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY" styleclass="List">PROPERTY</link><text styleclass="List">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE" styleclass="List">STRUCTURE</link></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left ;"></para>
   </body>

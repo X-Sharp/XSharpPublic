@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T21:06:58.370+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-utf8output</title>
   <keywords>
     <keyword>-utf8output</keyword>
@@ -9,12 +9,13 @@
     <header>
       <para styleclass="Heading1">-utf8output</para>
     </header>
-    <para styleclass="Normal">The -utf8output option displays compiler output using UTF-8 encoding.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-utf8output &#160;</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">In some international configurations, compiler output cannot correctly be displayed in the console. In these configurations, use -utf8output and redirect compiler output to a file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
+    <para styleclass="Normal">-utf8output 选项使用 UTF-8 编码显示编译器输出。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-utf8output &#160;</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">在某些国际配置中，编译器输出无法正确显示在控制台中。在这些配置中，请使用 -utf8output 并将编译器输出重定向到文件。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也无法通过编程更改。</para>
   </body>
 </topic>

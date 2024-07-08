@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-08T09:28:33.912+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-parseonly</title>
   <keywords>
     <keyword>-parseonly</keyword>
@@ -9,21 +9,17 @@
     <header>
       <para styleclass="Heading1">-parseonly</para>
     </header>
-    <para styleclass="Normal">Performs a syntax check on the input files only. Does not produce the output exe, dll or pdb</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-Performs 仅对输入文件进行语法检查。不生成 exe、dll 或 pdb 输出文件</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-parseonly[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -parseonly, tells the compiler to only parse the source code and not to not to bind and generate an output file. <br/>When combined with The -ppo option then there will be .ppo files written.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">This command line option allows you to check the code without generating a binary. </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />指定 + 或只指定 -parseonly，编译器将只解析源代码，而不会绑定和生成输出文件。</para>
+    <para styleclass="List"><tab />当与 -ppo 选项结合使用时，将写入 .ppo 文件。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">通过该命令行选项，可以在不生成二进制文件的情况下检查代码。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;Extra Command Line options&quot; property</li>
-    </list>
+    <para styleclass="Normal"><snippet src="__buildExtra" inline="false"/></para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
   </body>
 </topic>

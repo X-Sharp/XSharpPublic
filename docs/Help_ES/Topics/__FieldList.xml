@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-10-22T12:56:46.594-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__FieldList</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__FieldList</para>
+    </header>
+    <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The list of fields to append from &lt;xcSourceFile&gt;. &#160;The default is all fields.</para>
+    <para styleclass="List"><tab />Only fields with the same names and types in both files are appended. &#160;If fields with the same name do not match in data type, a runtime error is raised.</para>
+  </body>
+</topic>

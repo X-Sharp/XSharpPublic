@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T19:59:44.491+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-reference</title>
   <keywords>
     <keyword>-reference</keyword>
@@ -9,59 +9,54 @@
     <header>
       <para styleclass="Heading1">-reference</para>
     </header>
-    <para styleclass="Normal">The -reference option causes the compiler to import public type information in the specified file into the current project, thus enabling you to reference metadata from the specified assembly files.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">使用 -reference 选项，编译器会将指定文件中的公共类型信息导入当前项目，从而使您可以引用指定程序集中的元数据。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-reference:[alias=]filename &#160;<br/>-reference:filename &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name of a file that contains an assembly manifest. To import more than one file, include a separate -reference option for each file.</para>
-    <para styleclass="List"><text styleclass="Code Example">alias</text><tab />A valid X# identifier that will represent a root namespace that will contain all namespaces in the assembly.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">To import from more than one file, include a -reference option for each file.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />包含程序集清单的文件名。若要导入多个文件，请为每个文件包含一个单独的 -reference 选项。</para>
+    <para styleclass="List"><text styleclass="Code Example">alias</text><tab />一个有效的 X# 标识符，代表一个根命名空间，该命名空间将包含程序集中的所有命名空间。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">要从多个文件导入，请为每个文件添加一个 -reference 选项。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The files you import must contain a manifest; the output file must have been compiled with one of The -target options other than -target:module.</para>
+    <para styleclass="Normal">导入的文件必须包含清单；输出文件必须是用 -target:module 以外的 -target 选项编译的。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-r is the short form of -reference.</para>
+    <para styleclass="Normal">-r 是 -reference 的简写。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use -addmodule to import metadata from an output file that does not contain an assembly manifest.</para>
+    <para styleclass="Normal">使用 -addmodule 可从不包含程序集清单的输出文件中导入元数据。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you reference an assembly (Assembly A) that references another assembly (Assembly B), you will need to reference Assembly B if:</para>
+    <para styleclass="Normal">如果你引用了一个程序集（程序集 A），而该程序集又引用了另一个程序集（程序集 B），那么在下列情况下，你需要引用程序集 B：</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">A type you use from Assembly A inherits from a type or implements an interface from Assembly B.</li>
-      <li styleclass="Normal" style="margin-left:13px;">You invoke a field, property, event, or method that has a return type or parameter type from Assembly B.</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">您从程序集 A 使用的类型继承自程序集 B 的类型或实现了程序集 B 的接口。</li>
+      <li styleclass="Normal" style="margin-left:13px;">您调用的字段、属性、事件或方法具有来自程序集 B 的返回类型或参数类型。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">Use -lib to specify the directory in which one or more of your assembly references is located. The -lib topic also discusses the directories in which the compiler searches for assemblies.</para>
+    <para styleclass="Normal">使用 -lib 可指定一个或多个程序集引用所在的目录。-lib 主题还讨论了编译器搜索程序集的目录。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In order for the compiler to recognize a type in an assembly, and not in a module, it needs to be forced to resolve the type, which you can do by defining an instance of the type. There are other ways to resolve type names in an assembly for the compiler: for example, if you inherit from a type in an assembly, the type name will then be recognized by the compiler.</para>
+    <para styleclass="Normal">为了让编译器识别程序集（而非模块）中的类型，需要强制编译器解析该类型，这可以通过定义该类型的实例来实现。编译器还有其他方法来解析程序集中的类型名：例如，如果从程序集中的类型继承，编译器就能识别该类型名。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Sometimes it is necessary to reference two different versions of the same component from within one assembly. To do this, use the alias suboption on The -reference switch for each file to distinguish between the two files. This alias will be used as a qualifier for the component name, and will resolve to the component in one of the files.</para>
+    <para styleclass="Normal">有时需要在一个程序集中引用同一组件的两个不同版本。为此，在每个文件的 -reference 开关中使用别名子选项来区分两个文件。该别名将用作组件名称的限定符，并解析为其中一个文件中的组件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The xsc response (.rsp) file, which references commonly used .NET Framework assemblies, is used by default. Use -noconfig if you do not want the compiler to use xsc.rsp.</para>
+    <para styleclass="Normal">默认使用 xsc 响应 (.rsp) 文件，该文件引用常用的 .NET Framework 程序集。如果不想让编译器使用 xsc.rsp，请使用 -noconfig。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Note </para>
-    <para styleclass="Normal">In Visual Studio, use the Add Reference dialog box. </para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Heading2">注意 </para>
+    <para styleclass="Normal">在 Visual Studio 中，使用 &quot;添加引用 &quot;对话框。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This example shows how to use the extern alias feature.</para>
+    <para styleclass="Normal">本例演示了如何使用外部别名功能。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You compile the source file and import metadata from <text styleclass="Code Example">grid.dll</text> and <text styleclass="Code Example">grid20.dll</text>,which have been compiled previously. The two DLLs contain separate versions of the same component, and you use two -reference with alias options to compile the source file. The options look like this:</para>
+    <para styleclass="Normal">你编译源文件，并从之前编译过的 grid.dll 和 grid20.dll 中导入元数据。这两个 DLL 包含同一组件的不同版本，你使用两个 -reference with alias 选项来编译源文件。选项如下</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-reference:GridV1=grid.dll and -reference:GridV2=grid20.dll</para>
+    <para styleclass="Normal">-reference:GridV1=grid.dll 和 -reference:GridV2=grid20.dll</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This sets up the external aliases &quot;GridV1&quot; and &quot;GridV2,&quot; which you use in your program by means of an extern statement:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">这将设置外部别名 &quot;GridV1 &quot;和 &quot;GridV2&quot;，并通过外部语句在程序中使用：</para>
     <para styleclass="Code with box">extern alias GridV1; &#160;<br/>extern alias GridV2; &#160;<br/>-/ Using statements go here. &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Once this is done, you can refer to the grid control from grid.dll by prefixing the control name with GridV1, like this:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">完成上述操作后，就可以像下面这样，在 grid.dll 中引用 grid 控件，方法是在控件名称前加上 GridV1：</para>
     <para styleclass="Code with box">GridV1::Grid &#160;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In addition, you can refer to the grid control from grid20.dll by prefixing the control name with GridV2 like this:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">此外，在引用 grid20.dll 中的 grid 控件时，可以在控件名称前加上 GridV2 这样的前缀：</para>
     <para styleclass="Code with box">GridV2::Grid &#160; </para>
     <para styleclass="Normal"></para>
   </body>

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.RT</title>
+  <keywords>
+    <keyword>XSharp.RT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.RT</para>
+    </header>
+    <para styleclass="Normal">This DLL adds the following features to the runtime:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">XBase specific types , such as DATE, ARRAY, USUAL, PSZ, SYMBOL etc </li>
+      <li styleclass="Normal">CodeBlock type (base class for compile time codeblocks)</li>
+      <li styleclass="Normal">_CodeBlock type (base class for macro compiled codeblocks)</li>
+      <li styleclass="Normal">Runtime functions that accept parameters of these types.</li>
+      <li styleclass="Normal">Memory related functions (MemAlloc, MemFree etc) </li>
+      <li styleclass="Normal">Terminal IO functions (QOut(), Accept, Wait).</li>
+      <li styleclass="Normal">RDD Related functions that have optional parameters or parameters of XBase Type</li>
+      <li styleclass="Normal">Functions to compile and evaluate macros (MComp, MExec)</li>
+      <li styleclass="Normal">Late binding functions such as Send(), IVarGet() etc</li>
+      <li styleclass="Normal">VObject type</li>
+      <li styleclass="Normal">OLEAutoObject type</li>
+    </list>
+    <para styleclass="List">This assembly should be linked in when you compile for anything other than the Core dialect</para>
+  </body>
+</topic>

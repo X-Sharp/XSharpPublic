@@ -90,7 +90,8 @@ CLASS XPorterSettings
 		SELF:PrefixClassFile := TRUE
 		SELF:Modifier := "PUBLIC"
 		SELF:ItemsType := XPorterSettings.DefaultFolders
-		SELF:LibInSubFolder := TRUE
+        SELF:LibInSubFolder := TRUE
+        SELF:AddLibraryNamespace := TRUE
 		SELF:IgnoreErrors := TRUE
 		SELF:StoreInFolders := FALSE
 		SELF:EmptyFolder := TRUE
@@ -187,7 +188,12 @@ CLASS XPorterSettings
 	/// <summary>
 	/// Indicate if Lib Files are exported in the same folder as Project files (and Form), or in a SubFolder
 	/// </summary>
-	PROPERTY LibInSubFolder AS LOGIC AUTO
+    PROPERTY LibInSubFolder AS LOGIC AUTO
+
+    /// <summary>
+	/// Indicate if ClassLibrary namespace name must be added to the common Header : VFPXPorter.xh
+	/// </summary>
+	PROPERTY AddLibraryNamespace AS LOGIC AUTO
 
 	/// <summary>
 	/// Keep trying to export

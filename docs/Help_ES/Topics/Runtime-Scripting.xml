@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Runtime Scripting</title>
+  <keywords>
+    <keyword>ExecScript</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Runtime Scripting</para>
+    </header>
+    <para styleclass="Normal">XSharp 2.8 adds support for Runtime scripting through the ExecScript() function.</para>
+    <para styleclass="Normal">Scripting was added for the FoxPro dialect but also works for other dialects.</para>
+    <para styleclass="Normal">Inside scripts you will have the full X# language at your disposal. </para>
+    <para styleclass="Normal">The first time a script runs it will be compiled. If you run the same script a second time then the script compiler can reuse the already compiled version of the first script.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">An example (FoxPro dialect, MessageBox() is a FoxPro functon)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> cScript := &apos;MessageBox(&quot;Hello ExecScript&quot;)&apos;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">ExecScript(cScript)</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Of course scripts can also be multiple lines and can call any function in the runtime and in your code.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">PUBLIC and PRIVATE variables that are visible when your script is started are accessible by the script.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">You can also declare new local variables in the script and use any statement and user defined command that you would normally use.</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">We did an online session about scripting in Jan 2021 that shows several example scripts. See </text><link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">https://www.youtube.com/watch?v=88crZsEiAOg&amp;t=5s</link><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> for the recording.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">One sample script from that demo is </text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#ff0000;">LPARAMETERS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> oForm</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> employees.dbf</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">PrintOut(oForm, &apos;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">private</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&apos;,MyPrivate, Used(), Alias())</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">GO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TOP</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">WHILE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ! Eof() &#160;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; PrintOut(oForm, RecNo(), FieldGet(1), FieldGet(2), FieldGet(3)) &#160; &#160; &#160; </text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; SKIP</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDDO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">That script calls a PrintOut function and passes it the form that was received as parameter. The PrintOut function then adds a line of text to the terminal window that was passed to the script. The USE, GO TOP and SKIP commands are all UDCs that are handled by the script compiler without problems.</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"></para>
+  </body>
+</topic>

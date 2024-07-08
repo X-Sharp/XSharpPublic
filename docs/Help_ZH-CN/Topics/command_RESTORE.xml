@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>RESTORE Command</title>
+<topic template="Default" modified="2024-06-29T00:32:25.954+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RESTORE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Memory variables<keyword>restoring</keyword></keyword>
@@ -10,33 +10,32 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">RESTORE Command</para>
+      <para styleclass="Heading1">RESTORE 命令</para>
     </header>
     <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Recreate public and private variables previously saved to a file and initialize them with their former values.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">重新创建之前保存到文件中的公有变量和私有变量，并用它们之前的值进行初始化。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">RESTORE FROM &lt;xcSourceFile&gt; [ADDITIVE]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the memory file (created, for example, with SAVE), including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is .MEM.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xcSourceFile&gt;<tab />内存文件的名称(例如用 SAVE 创建的文件)，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 默认扩展名为 .MEM。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />This command attempts to open &lt;xcSourceFile&gt; in shared mode. &#160;If the file does not exist, a runtime error is raised. &#160;If the file is successfully opened, the operation proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE. &#160;</para>
+    <para styleclass="List"><tab />此命令尝试以共享模式打开 &lt;xcSourceFile&gt;。 如果文件不存在，将出现运行时错误。 如果文件成功打开，则继续执行操作。 如果由于其他进程独占该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。 </para>
     <para styleclass="List"></para>
-    <para styleclass="List">ADDITIVE<tab />Causes memory variables loaded from the memory file to be added to the existing pool of memory variables.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">The scope of the variable is not saved with the variable but is instead established when the variable is restored. &#160;Arrays and declared variables cannot be saved or restored.</para>
+    <para styleclass="List">ADDITIVE<tab />将从内存文件加载的内存变量添加到现有内存变量池中。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">变量的作用域不会随变量一起保存，而是在恢复变量时建立。 数组和已声明变量不能被保存或还原。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When memory variables are restored, they are recreated as private variables with the scope of the current procedure or function unless they exist as public variables and you specify the ADDITIVE clause . &#160;If ADDITIVE is specified, public and private variables with the same names are overwritten unless hidden with PRIVATE. &#160;If ADDITIVE is not specified, all public and private variables are released before the memory file is loaded.</para>
+    <para styleclass="Normal">恢复内存变量时，它们将作为私有变量重新创建，并与当前过程或函数的作用域保持一致，除非它们作为公有变量存在并指定了 ADDITIVE 子句。 如果指定了 ADDITIVE 子句，除非使用 PRIVATE 隐藏，否则同名的公有变量和私有变量会被覆盖。 如果未指定 ADDITIVE 子句，则在加载内存文件之前，所有公有变量和私有变量都会被释放。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When restoring variables that were saved in a CLIPPER program, the variable names are truncated to 10 characters. &#160;This is because CLIPPER honors only the first 10 characters and generates the .MEM file using only these characters. &#160;&lt;%APP%&gt;, however, honors <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">all</text> characters. &#160;For example, in CLIPPER, the two variable names ThisIsALongVariable and ThisIsALon refer to the same variable; this is not the case in &lt;%APP%&gt;.</para>
+    <para styleclass="Normal">恢复保存在 CLIPPER 程序中的变量时，变量名将被截断为 10 个字符。 这是因为 CLIPPER 只识别前 10 个字符，并只使用这些字符生成 .MEM 文件。 而 &lt;%APP%&gt; 则支持所有字符。 例如，在 CLIPPER 中，两个变量名 ThisIsALongVariable 和 ThisIsALon 指的是同一个变量；而在 &lt;%APP%&gt; 中，情况并非如此。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>Declared variables are not affected by the RESTORE command. &#160;If a variable has been declared in the current routine, and a variable with the same name is restored, only the declared variable is visible unless references to the restored variable are prefaced with the _MEMVAR-&gt; alias.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example demonstrates a typical application of SAVE and RESTORE. &#160;Here memory variables containing screens are created using SAVE TO and RESTORE FROM:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example">// Create and use a pseudo array of screens<br/>SAVE SCREEN TO cScreen1<br/>SAVE ALL LIKE cScreen* TO Screens<br/><br/>&lt;Statements&gt;...<br/><br/>RESTORE FROM Screens ADDITIVE<br/>nNumber = &quot;1&quot;<br/>RESTORE SCREEN FROM (&quot;cScreen&quot; + nNumber)</para>
+    <para styleclass="Normal">注意：已声明的变量不受 RESTORE 命令的影响。 如果在当前例程中声明了一个变量，并且恢复了一个同名变量，那么只有声明的变量可见，除非在引用恢复的变量前使用 _MEMVAR-&gt; 别名。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例演示了 SAVE 和 RESTORE 的典型应用。 这里使用 SAVE TO 和 RESTORE FROM 创建了包含屏幕的内存变量：</para>
+    <para styleclass="Code Example">// 创建并使用屏幕伪数组<br/>SAVE SCREEN TO cScreen1<br/>SAVE ALL LIKE cScreen* TO Screens<br/><br/>&lt;Statements&gt;...<br/><br/>RESTORE FROM Screens ADDITIVE<br/>nNumber = &quot;1&quot;<br/>RESTORE SCREEN FROM (&quot;cScreen&quot; + nNumber)</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SAVE">SAVE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

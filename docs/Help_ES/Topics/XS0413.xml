@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0413</title>
+  <keywords>
+    <keyword>XS0413</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0413</para>
+    </header>
+    <para styleclass="Normal">The type parameter &apos;type parameter&apos; cannot be used with the &apos;as&apos; operator because it does not have a class type constraint nor a &apos;class&apos; constraint</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error occurs if a generic type uses the as operator, but that generic type does not have a class type constraint. The as operator is only allowed with reference types, so the type parameter must be constrained to guarantee that it is not a value type. To avoid this error, use a class type constraint or a reference type constraint.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This is because the as operator could return null, which is not a possible value for a value type, and the type parameter must be treated as a value type unless it is a class type constraint or a reference type constraint.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0413.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0413.prg  <br/>// compile with: /target:library  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

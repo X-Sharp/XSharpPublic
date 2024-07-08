@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-07T17:46:38.296+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T00:51:00.661+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STACKALLOC</title>
   <keywords>
     <keyword>STACKALLOC</keyword>
@@ -9,19 +9,19 @@
     <header>
       <para styleclass="Heading1">STACKALLOC Modifier</para>
     </header>
-    <para styleclass="Normal">The STACKALLOC keyword allows you allocate a block of memory on the stack of the current function / method</para>
-    <para styleclass="Normal">The syntax to use STACKALLOC is</para>
+    <para styleclass="Normal">使用 STACKALLOC 关键字，可以在当前函数/方法的堆栈中分配一个内存块。</para>
+    <para styleclass="Normal">使用 STACKALLOC 的语法是</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">VAR x := StackAlloc &lt;dword&gt;{1,2,3,4,5,6,7,8,9,10}<br/>VAR y := StackAlloc int[]{10}</para>
-    <para styleclass="Body Text">or more generic</para>
+    <para styleclass="Body Text">或更通用的</para>
     <para styleclass="Code with box">VAR x := StackAlloc &lt;typed Literal array&gt;<br/>VAR y := StackAlloc &lt;typed array&gt;</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The compiler will generate variables of &#160;the type &quot;Typed PTR&quot;. So in the first example x will be of type DWORD PTR and y will be of type INT PTR.</para>
+    <para styleclass="Body Text">编译器将生成 &quot;Typed PTR &quot;类型的变量。因此，在第一个示例中，x 将是 DWORD PTR 类型，y 将是 INT PTR 类型。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">You can also declare the variables with a normal LOCAL keyword. In that case the type must be &lt;Type&gt; PTR</para>
+    <para styleclass="Body Text">也可以使用普通的 LOCAL 关键字声明变量。在这种情况下，类型必须是 &lt;Type&gt; PTR</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Code with box">LOCAL x := StackAlloc &lt;dword&gt;{1,2,3,4,5,6,7,8,9,10} AS DWORD PTR<br/>LOCAL y := StackAlloc INT[]{10} AS INT PTR</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">You can also use STACKALLOC for an expression that is not a variable declaration. In that case the compiler will resolve the STACKALLOC expression to an allocation of an object of type System.Span&lt;T&gt;. This type is not available in the .Net Framework, but only in .Net 5 and later.</para>
+    <para styleclass="Body Text">您也可以在非变量声明的表达式中使用 STACKALLOC。在这种情况下，编译器会将 STACKALLOC 表达式解析为分配 System.Span&lt;T&gt; 类型的对象。这种类型在 .Net Framework 中不可用，只有在 .Net 5 及更高版本中才可用。</para>
   </body>
 </topic>

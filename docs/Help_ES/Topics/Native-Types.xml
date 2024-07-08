@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Simple (Native) Types</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Simple (Native) Types</para>
+    </header>
+    <para styleclass="Normal">By simple data types we mean data types that are not primarily used to hold other data, e.g. Objects, Structures, Arrays, etc., that we will see later.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Most data types are identical across all .Net languages. This contributes to the ease with which one can use assemblies written in different .Net languages within one application, one of the main The simple data types come in various categories; some include several types. The following table just groups data types by category:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="4">
+      <thead style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Type</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Category</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">.Net Name</text></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Size in Bits</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="BYTE">BYTE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Unsigned Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Byte</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CHAR">CHAR</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Character</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Char</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DWORD">DWORD</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Unsigned Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">UInt32</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DECIMAL">DECIMAL</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Numeric</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Decimal</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">96</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DYNAMIC">DYNAMIC</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Multi purpose</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Dynamic</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Reference (32 or 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INT">INT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Signed Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int32</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INT64">INT64</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Signed Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int64</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LOGIC">LOGIC</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Logic</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Boolean</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">8 </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INT">LONGINT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Signed Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int32</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="OBJECT">OBJECT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Multi purpose</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Object</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Reference (32 or 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PTR2">PTR</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Multi purpose</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Intptr</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Reference (32 or 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="REAL4">REAL4</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Floating Point</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Single</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">32</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="REAL8">REAL8</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Floating Point</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Double</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="SBYTE">SBYTE</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Signed Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">SByte</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="SHORT">SHORT</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Signed Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Int16</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="STRING">STRING</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">String</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">String</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Reference (32 or 64 bits)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="UINT64">UINT64</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Unsigned Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Uint64</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">64</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VOID">VOID</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Not a type</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Void</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">0</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="WORD">WORD</link></para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">Unsigned Integer</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">UInt16</para>
+        </td>
+        <td style="vertical-align:top;">
+          <para styleclass="Normal">16</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

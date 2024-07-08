@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>IF Statement</title>
+<topic template="Default" modified="2024-06-29T22:12:52.420+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IF 语句</title>
   <keywords>
     <keyword>Branching</keyword>
     <keyword>Conditional execution</keyword>
@@ -15,29 +15,28 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">IF Statement</para>
+      <para styleclass="Heading1">IF 语句</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Conditionally execute a block of statements.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">有条件地执行语句块</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">IF &lt;<text style="font-style:italic;">lCondition</text>&gt; [THEN]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[ELSEIF &lt;<text style="font-style:italic;">lCondition</text>&gt;]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[ELSE]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>END[IF]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">[THEN]<tab />The THEN keyword is optional and has been added because Visual FoxPro allows this keyword.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">[THEN]<tab />添加的 THEN 关键字是可选的，因为 Visual FoxPro 允许使用该关键字。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;lCondition&gt;<tab />If this expression evaluates to TRUE, the statements following it up until the next ELSEIF, ELSE, or ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</para>
+    <para styleclass="List">&lt;lCondition&gt;<tab />如果该表达式求值为 TRUE，则执行其后的语句，直到下一个 ELSEIF、ELSE 或 ENDIF。 之后，控制分支到下一个 ENDIF 语句之后的语句。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ELSE<tab />If all preceding IF and ELSEIF conditions evaluate to FALSE, the statements following the ELSE up until the next ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">IF works by branching to the statement following the first &lt;<text styleclass="Italic">lCondition</text>&gt; that evaluates to TRUE. &#160;If all conditions evaluate to FALSE, it branches to the statement following the ELSE statement (if specified). &#160;Execution proceeds until the next ELSEIF, ELSE, or ENDIF is encountered, and control then branches to the first statement following the next ENDIF statement.</para>
+    <para styleclass="List">ELSE<tab />如果前面所有的 IF 和 ELSEIF 条件都评估为 FALSE，则执行 ELSE 之后的语句，直到下一个 ENDIF。 之后，控制分支到下一个 ENDIF 语句之后的语句。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">IF 的工作方式是分支到第一个 &lt;lCondition&gt; 之后的语句，该语句的评估结果为 TRUE。 如果所有条件均为 FALSE，则分支到 ELSE 语句（如果指定）后面的语句。 执行一直进行到遇到下一个 ELSEIF、ELSE 或 ENDIF，然后控制分支到下一个 ENDIF 语句后面的第一个语句。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Normal">控制结构可以嵌套到任意深度。 唯一的要求是每个控制结构都要正确嵌套。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>IF...ELSEIF...ENDIF is identical to DO CASE...ENDCASE, with neither syntax having a performance advantage over the other. &#160;The IF construct is also similar to the IIf() operator which can be used within expressions.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example evaluates a number of conditions using an IF...ELSEIF...ENDIF construct:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example">LOCAL nNumber := 0<br/><br/>IF nNumber &lt; 50<br/><tab />? &quot;Less than 50&quot;<br/>ELSEIF nNumber = 50<br/><tab />? &quot;Is equal to 50&quot;<br/>ELSE<br/><tab />? &quot;Greater than 50&quot;<br/>ENDIF</para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal">注意：IF...ELSEIF...ENDIF 与 DO CASE...ENDCASE 相同，两种语法在性能上都没有优势。 IF 结构也类似于 IIf() 操作符，可以在表达式中使用。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例使用 IF...ELSEIF...ENDIF 结构对多个条件进行评估：</para>
+    <para styleclass="Code Example">LOCAL nNumber := 0<br/><br/>IF nNumber &lt; 50<br/><tab />? &quot;小于 50&quot;<br/>ELSEIF nNumber = 50<br/><tab />? &quot;等于 50&quot;<br/>ELSE<br/><tab />? &quot;大于 50&quot;<br/>ENDIF</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator_IIf">IIf()</link></para>
     <para styleclass="Normal"></para>
   </body>

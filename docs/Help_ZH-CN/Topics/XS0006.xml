@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:01:13.032+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0006</title>
   <keywords>
     <keyword>XS0006</keyword>
@@ -9,8 +9,9 @@
     <header>
       <para styleclass="Heading1">Error XS0006</para>
     </header>
-    <para styleclass="Normal">Metadata file &apos;dll_name&apos; could not be found </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The program was compiled and explicitly passed the name of a file that contained metadata; however, the .dll was not found. For more information, see <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">/reference</link> (X# Compiler Options).</para>
+    <para styleclass="Normal" style="line-height:1.00; background-color:#ffffff; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="text-decoration:none; vertical-align:baseline; color:#161616;">未能找到元数据文件 &apos;dll_name&apos; 。</text></para>
+    <para styleclass="Normal" style="line-height:1.00; background-color:#ffffff; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"></para>
+    <para styleclass="Normal" style="line-height:1.00; background-color:#ffffff; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"><text style="text-decoration:none; vertical-align:baseline; color:#161616;">程序已编译并已显式传递了包含元数据的文件的名称，但没有找到 .dll。 有关详细信息，请参阅</text><text style="background-color:#ffffff;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference">/reference</link><text style="background-color:#ffffff;"> (X# 编译器选项).</text></para>
   </body>
 </topic>

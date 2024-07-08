@@ -1,30 +1,32 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T18:28:47.429+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-fox1</title>
   <keywords>
     <keyword>-fox1</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-fox1<tab /><tab />Classes are assumed to inherit from the Custom class</para>
+      <para styleclass="Heading1">-fox1<tab /><tab />假定类继承自 Custom 类</para>
     </header>
-    <para styleclass="Normal">The -fox1 compiler option tells the compiler that all classes with the FoxPro class syntax are assumed to inherit from the Custom class. This means:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">the AS &lt;idType&gt; CLASS becomes mandatory</li>
-      <li styleclass="Normal">the code generation for properties assumes that the class inherits from the Custom class and creates Get and Set methods that read/write the values to the properties collection inside the Custom class</li>
-    </list>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-fox1[+ | -] <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <para styleclass="Normal">编译器选项 -fox1 告诉编译器，所有使用 FoxPro 类语法的类都假定继承 Custom 类。这意味着:</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">AS &lt;idType&gt; CLASS 变为必填项</li>
+      <li styleclass="Normal">属性代码生成假定类继承 Custom 类，并创建 GET 和 SET 方法，用于读取/写入 Custom 类内的属性集合值</li>
+    </list>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-fox1[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab />指定 + 或仅指定 -</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面.</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
     <para styleclass="Heading2"></para>
   </body>

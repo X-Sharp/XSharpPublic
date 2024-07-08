@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Application</title>
+  <keywords>
+    <keyword>Application Icon</keyword>
+    <keyword>Assembly Name</keyword>
+    <keyword>Default Namespace</keyword>
+    <keyword>Dialect</keyword>
+    <keyword>-main</keyword>
+    <keyword>-nowin32manifest</keyword>
+    <keyword>Output File</keyword>
+    <keyword>Output Type</keyword>
+    <keyword>Prefer native resource</keyword>
+    <keyword>Prefer native resource over managed resource</keyword>
+    <keyword>Project File</keyword>
+    <keyword>Project Folder</keyword>
+    <keyword>-rootnamespace</keyword>
+    <keyword>Startup Object</keyword>
+    <keyword>Suppress default Win32</keyword>
+    <keyword>Suppress default Win32 manifest</keyword>
+    <keyword>Target Framework Moniker</keyword>
+    <keyword>-usenativeversion</keyword>
+    <keyword>Vulcan Compatible Managed Resources</keyword>
+    <keyword>-win32icon</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Application</para>
+    </header>
+    <para styleclass="Body Text">The Application page contains the most important settings for your Visual Studio project</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesGeneral.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="14" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Item</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Description</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Command item</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Default Namespace</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:11pt; color:#000000;">Specifies the default namespace for added items, such as classes, that are added via the Add New Item Dialog Box.</text></para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">This is not a commandline option for the compiler but used by Visual Studio.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Dialect</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">Select the compiler dialect to use when compiling this project. Changing the dialect may also change the &apos;Allow NamedArguments&apos; setting on the Language page.&quot;</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Output Type</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The type of application to build.</para>
+        </td>
+        <td style="height:19px;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Startup Object</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The name of the class that contains the Start method that you want called when you launch your application. </para>
+          <para styleclass="Normal">The default for X# applications is the Start function inside the compiler generated Functions class. </para>
+          <para styleclass="Normal">You can override this setting by specifying another classname here.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-main">-main:</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Target Framework Moniker</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The version of the Common Language Runtime to use for output assembly.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">This is not a commandline option for the compiler but controls the location from which reference assemblies are loaded.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Assembly Name</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The name of the output file that will hold assembly metadata.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-out">-out</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Output File</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The name of the protject&apos;s primary output file.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">This is derived from the assembly name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Project File</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The name of the file containing build, configuration, and other information about the project.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">This is the name from the current project</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Project Folder</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">The absolute location of the project</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">This is the location from the current project</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Application Icon</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">Sets the .ico file to use as your application icon. Please note that if your application contains native resources then this value will be ignored.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32icon">-win32icon</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Prefer native resource over managed resource</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Opt-usenativeversion">-usenativeversion</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Suppress default Win32 manifest</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one.</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest">-nowin32manifest</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="height:19px;">
+          <para styleclass="Normal">Vulcan Compatible Managed Resources</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal">Use Vulcan Compatible Managed Resources (when &apos;True&apos; then resources files are included in the assembly without namespace prefix. When &apos;False&apos; then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)</para>
+        </td>
+        <td style="height:19px;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal">.</para>
+  </body>
+</topic>

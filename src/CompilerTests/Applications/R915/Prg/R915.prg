@@ -1,4 +1,4 @@
-using XSHarp.VFP
+using XSharp.VFP
 FUNCTION Start( ) AS VOID
     try
 	local aStruct as Array

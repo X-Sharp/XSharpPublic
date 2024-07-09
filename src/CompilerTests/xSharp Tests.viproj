@@ -38,17 +38,8 @@ RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
 RecentReference = GAC:XSharp.VO,v4,2.6.0.0
 RecentReference = GAC:XSharp.XPP,v4,2.6.0.0
 RecentReference = GAC:XSharp.Harbour,v4,2.6.0.0
-RecentReference = Browse:E:\XSharp\Dev\Artifacts\Debug\XSharp.Core.dll
-RecentReference = Browse:E:\XSharp\Dev\Artifacts\Debug\XSharp.RT.dll
-RecentReference = Browse:E:\XSharp\Dev\Artifacts\Debug\XSharp.XPP.dll
-RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll
-RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll
-RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll
 RecentReference = GAC:System.Windows.Forms,v4,4.0.0.0
 RecentReference = GAC:System.Drawing,v4,4.0.0.0
-RecentReference = GAC:XSharp.Core,v4,
-RecentReference = GAC:XSharp.RT,v4,
-RecentReference = GAC:XSharp.VO,v4,
 RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.VFP.dll
 
 [Application Groups]
@@ -129748,9 +129739,9 @@ CopyToBin = 0
 [R905b - Late Bound access to hidden members (with /xpp1+) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.XPP.dll,1,1
 [R905b - Late Bound access to hidden members (with /xpp1+) Resources]
 [R905b - Late Bound access to hidden members (with /xpp1+) Native Resources]
 [R905b - Late Bound access to hidden members (with /xpp1+) License files]
@@ -130058,7 +130049,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C907 - A single comma in a line of code causes an internal compiler error
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C908 - Internal Compiler Error with duplicate declaring of fields/memvars *************
 Application = C908 - Internal Compiler Error with duplicate declaring of fields/memvars
 IDEVersion = 1.06
@@ -130298,7 +130289,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C909 - VFP: Bogus warning when calling a function with /fox2+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 3AF1ABF5-A5F7-479A-BB57-D226C13AA002
 ; ************** APPLICATION C910 - Compiler problem reading clipper/harbour .prg file with end of file marker *************
 Application = C910 - Compiler problem reading clipper/harbour .prg file with end of file marker
 IDEVersion = 1.06
@@ -130418,7 +130409,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C910 - Compiler problem reading clipper/harbour .prg file with end of file marker
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C911 - /enforceself compiler option is being ignored *************
 Application = C911 - /enforceself compiler option is being ignored
 IDEVersion = 1.06
@@ -130698,8 +130689,8 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
 [R922- EnForceSelf should not interfere with DialogResult.OK Resources]
 [R922- EnForceSelf should not interfere with DialogResult.OK Native Resources]
 [R922- EnForceSelf should not interfere with DialogResult.OK License files]
@@ -130817,9 +130808,9 @@ CopyToBin = 0
 [R920 - Multi Line strings VFP dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VFP.dll,1,1
 [R920 - Multi Line strings VFP dialect Resources]
 [R920 - Multi Line strings VFP dialect Native Resources]
 [R920 - Multi Line strings VFP dialect License files]
@@ -130937,9 +130928,9 @@ CopyToBin = 0
 [R923 - Clipper Call Array By Ref References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.XPP.dll,1,1
 [R923 - Clipper Call Array By Ref Resources]
 [R923 - Clipper Call Array By Ref Native Resources]
 [R923 - Clipper Call Array By Ref License files]
@@ -131057,9 +131048,9 @@ CopyToBin = 0
 [R924 - XBase++ field and property with same name References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.Core.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.RT.dll,1,1
+ReferenceBrowse = %ProjectPath%\Runtime\XSharp.XPP.dll,1,1
 [R924 - XBase++ field and property with same name Resources]
 [R924 - XBase++ field and property with same name Native Resources]
 [R924 - XBase++ field and property with same name License files]

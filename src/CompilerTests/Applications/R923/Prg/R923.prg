@@ -1,23 +1,23 @@
 // see https://github.com/X-Sharp/XSharpPublic/issues/1492
-procedure main1
-    local a := {1, 2, 3}
-    local nLen := Len(a)
-    local i
+PROCEDURE main
+    LOCAL a := {1, 2, 3}
+    LOCAL nLen := Len(a)
+    LOCAL i
 
-    for i := 1 to nLen
+    FOR i := 1 TO nLen
         _Increment(@a[i])
-    next
+    NEXT
 
-    for i := 1 to nLen
+    FOR i := 1 TO nLen
         ? a[i]
         xAssert(a[i] == i+1)
-    next
-return
+    NEXT
+RETURN
 
 
-static procedure _Increment(nNumber)
+STATIC PROCEDURE _Increment(nNumber)
     nNumber++
-return
+RETURN
 
 
 PROC xAssert(l AS LOGIC)

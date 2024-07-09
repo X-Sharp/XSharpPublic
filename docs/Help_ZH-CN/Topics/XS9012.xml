@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T12:33:09.337+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9012</title>
   <keywords>
     <keyword>XS9012</keyword>
@@ -9,15 +9,15 @@
     <header>
       <para styleclass="Heading1">Warning XS9012</para>
     </header>
-    <para styleclass="Normal">Duplicate define with different value detected &apos;{0}&apos;, {1} &lt;=&gt; {2}</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">检测到具有不同值的重复定义 &apos;{0}&apos;, {1} &lt;=&gt; {2}</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This warning is generated when a second define was found with a different value.</para>
-    <para styleclass="Normal">Please note that the preprocessor does not &quot;evaluate&quot; the contents of the define. It does a strict text comparison.</para>
-    <para styleclass="Normal">So &quot;1&quot; is not the same as &quot;1L&quot; or &quot;1U&apos;</para>
+    <para styleclass="Normal">当发现第二个定义的值不同时，就会产生该警告。</para>
+    <para styleclass="Normal">请注意，预处理器并不 &quot;评估&quot; 定义的内容。它进行的是严格的文本比较。</para>
+    <para styleclass="Normal">因此，&quot;1 &quot;与 &quot;1L &quot;或 &quot;1U&apos;&quot;并不相同</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">#define MYDEFINE 1</para>
-    <para styleclass="Code Example">#define MYDEFINE 1U<tab/><tab/>// Warning XS9012</para>
+    <para styleclass="Code Example">#define MYDEFINE 1U<tab /><tab />// Warning XS9012</para>
     <para styleclass="Code Example"></para>
     <para styleclass="Normal"></para>
   </body>

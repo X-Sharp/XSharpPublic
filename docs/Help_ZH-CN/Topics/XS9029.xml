@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T12:59:38.254+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9029</title>
   <keywords>
     <keyword>XS9029</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Warning XS9029</para>
     </header>
-    <para styleclass="Normal">Compiler Option {0} ({1}) is recognized by the compiler but not yet implemented</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器选项 {0} ({1}) 已被编译器识别，但未执行</para>
   </body>
 </topic>

@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS9044</title>
-<keywords>
-<keyword>XS9044</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Error XS9044</para>
-  </header>
-  <para styleclass="Normal">Implicitly-typed variables cannot be STATIC.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-09T13:18:51.196+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9044</title>
+  <keywords>
+    <keyword>XS9044</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9044</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">隐式类型变量不能是 STATIC(静态)变量。</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

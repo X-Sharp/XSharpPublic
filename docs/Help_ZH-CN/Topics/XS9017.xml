@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-09T12:37:40.859+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9017</title>
   <keywords>
     <keyword>XS9017</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS9017</para>
     </header>
-    <para styleclass="Normal">Invalid dialect {0}. Must be &apos;Core&apos;, &apos;Vo&apos;, &apos;Vulcan&apos;, &apos;dBase&apos;, &apos;FoxPro&apos;, &apos;Harbour&apos; or &apos;XBasepp&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">无效方言 {0}。必须是 &quot;Core&quot;、&quot;Vo&quot;、&quot;Vulcan&quot;、&quot;dBase&quot;、&quot;FoxPro&quot;、&quot;Harbour &quot;或 &quot;XBasepp&quot;。</para>
   </body>
 </topic>

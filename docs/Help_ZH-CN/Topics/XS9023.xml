@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T12:52:00.656+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9023</title>
   <keywords>
     <keyword>XS9023</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Warning XS9023</para>
     </header>
-    <para styleclass="Normal">You are taking the address of an unfixed expression</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您正在获取一个未固定表达式的地址</para>
   </body>
 </topic>

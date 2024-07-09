@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-09T12:52:37.973+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9024</title>
   <keywords>
     <keyword>XS9024</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS9024</para>
     </header>
-    <para styleclass="Normal">The EXIT statement is not allowed inside a SWITCH statement</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">SWITCH 语句内不允许使用 EXIT 语句</para>
   </body>
 </topic>

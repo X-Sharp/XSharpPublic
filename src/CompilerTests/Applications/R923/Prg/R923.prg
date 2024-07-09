@@ -1,5 +1,5 @@
 // see https://github.com/X-Sharp/XSharpPublic/issues/1492
-procedure main
+procedure main1
     local a := {1, 2, 3}
     local nLen := Len(a)
     local i
@@ -26,3 +26,5 @@ IF .NOT. l
 END IF
 ? "Assertion passed"
 RETURN
+
+

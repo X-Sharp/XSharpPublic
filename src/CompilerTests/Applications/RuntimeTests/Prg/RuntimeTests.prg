@@ -44,7 +44,7 @@ FUNCTION Start() AS INT
 	 "R875", "R876", "R878", "R879", "R883", "R884", "R885", "R886", "R888", /*"R888b",*/ "R889", ; // R888b needs /xpp1
 	 "R890", "R892", "R895", "R897", "R899", "R900", "R902", "R903", "R904", "R905", "R905b",;
 	 "R906", "R907", "R908", "R909", "R910", "R911", "R912", "R913", "R914", "R918", "R919",;
-	 "R920", "R921", "R923",;
+	 "R920", "R921", "R923", "R924",;
 	 "C899"; // run last because it changes settings
 	 }
 
@@ -94,9 +94,6 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	LOCAL lSucces := FALSE AS LOGIC
 	LOCAL oAssembly AS Assembly
 	? "Running test" , cExe
-	IF cExe == "R753"
-	    NOP
-	ENDIF
 	oAssembly := Assembly.LoadFile(Application.StartupPath + "\" + cExe + ".exe")
 	LOCAL cType := ""  AS STRING
 	FOREACH oCustAtt AS CustomAttributeData IN oAssembly:CustomAttributes:ToArray()

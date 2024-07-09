@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T12:27:35.137+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9008</title>
   <keywords>
     <keyword>XS9008</keyword>
@@ -9,17 +9,16 @@
     <header>
       <para styleclass="Heading1">Error XS9008</para>
     </header>
-    <para styleclass="Normal">Untyped arrays are not available in the selected dialect &apos;{0}&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This error happens when you use an untyped (VO) array in a dialect that does not support that.</para>
+    <para styleclass="Normal">所选方言 &apos;{0}&apos; 不支持未类型化数组</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">// Compile in Core dialect</para>
+    <para styleclass="Normal">在不支持未类型化（VO）数组的方言中使用该数组时，会出现此错误。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example">// 编译 Core 方言代码</para>
     <para styleclass="Code Example">FUNCTION Test(a AS LONG,b AS LONG) AS OBJECT[] </para>
-    <para styleclass="Code Example">RETURN {a,b} // error XS9008: Untyped arrays are not available in the selected dialect &apos;Core&apos;</para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"></para>
-    <para styleclass="Body Text">The following code will work and will return a types array of objects:</para>
-    <para styleclass="Code Example">// Compile in Core dialect</para>
+    <para styleclass="Code Example">RETURN {a,b} // error XS9008: 所选方言 &apos;Core&apos; 不支持未类型化数组</para>
+    <para styleclass="Body Text">下面的代码可以正常工作，并将返回一个对象类型数组：</para>
+    <para styleclass="Code Example">// 编译 Core 方言代码</para>
     <para styleclass="Code Example">FUNCTION Test(a AS LONG,b AS LONG) AS OBJECT[]</para>
     <para styleclass="Code Example">RETURN &lt;OBJECT&gt;{a,b}</para>
     <para styleclass="Body Text"></para>

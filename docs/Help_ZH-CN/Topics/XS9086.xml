@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T03:49:17.115+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9086</title>
   <keywords>
     <keyword>TEXT .. ENDTEXT</keyword>
@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">Error XS9086</para>
     </header>
-    <para styleclass="Normal">FoxPro dialect: TEXT statement found without matching ENDTEXT.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FoxPro 方言： 发现 TEXT 语句，但没有匹配的 ENDTEXT。</para>
   </body>
 </topic>

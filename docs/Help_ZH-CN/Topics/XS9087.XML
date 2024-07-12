@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Warning XS9087</title>
-<keywords>
-<keyword>XS9087</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Warning XS9087</para>
-  </header>
-  <para styleclass="Normal">&apos;ARRAY&apos; does not have a method &apos;{0}&apos;. This code is converted to an &apos;ASend()&apos; function call.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-13T03:50:20.574+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Warning XS9087</title>
+  <keywords>
+    <keyword>XS9087</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9087</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&apos;ARRAY&apos; 没有方法 &apos;{0}&apos;。这段代码将转换为 &apos;ASend()&apos; 函数调用。</para>
+  </body>
 </topic>

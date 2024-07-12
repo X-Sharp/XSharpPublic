@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T03:17:11.519+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Warning XS9071</title>
   <keywords>
     <keyword>Modifier</keyword>
@@ -11,7 +11,7 @@
     <header>
       <para styleclass="Heading1">Warning XS9071</para>
     </header>
-    <para styleclass="Normal">Parameter {0} needs a(n) &apos;{1}&apos; modifier. This modifier was automatically added.</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">参数 {0} 需要 a(n) &apos;{1}&apos; &#160;修饰符。该修饰符已自动添加。</para>
   </body>
 </topic>

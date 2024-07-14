@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T00:20:06.713+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9097</title>
   <body>
     <header>
       <para styleclass="Heading1">Error XS9097</para>
     </header>
-    <para styleclass="Body Text">The base class &apos;{0}&apos; declares a {1} &apos;{2}&apos; that differs from this {1} &apos;{3}&apos; only in case.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">This error will be shown if you declare a method in a subclass that only differs in case from a method in the base class when the /cs (case sensitive compilation) flag is enabled.</para>
-    <para styleclass="Body Text">Without this compiler option the compiler will &quot;adjust&quot; the case of the method in the subclass.</para>
+    <para styleclass="Body Text">基类 &apos;{0}&apos; 声明了一个{1}&apos;{2}&apos;，与 {1}&apos;{3}&apos; 的不同之处仅在于大小写不同。</para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">启用 /cs(大小写敏感编译)编译器选项志后，如果在子类中声明的方法与基类中的方法仅在大小写上不同，则会显示此错误。</para>
+    <para styleclass="Body Text">如果没有该编译器选项，编译器将 &quot;调整 &quot;子类中方法的大小写。</para>
   </body>
 </topic>

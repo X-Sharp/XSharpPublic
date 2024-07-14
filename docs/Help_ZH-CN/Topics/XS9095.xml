@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T00:16:06.631+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9095</title>
   <body>
     <header>
       <para styleclass="Heading1">Error XS9095</para>
     </header>
-    <para styleclass="Body Text">The CURRENCY Type requires a reference to the X# runtime and is not supported by the Vulcan runtime.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">This error will be shown if you compile code that uses the new CURRENCY type against the Vulcan runtime.</para>
+    <para styleclass="Body Text">CURRENCY 类型需要引用 X# 运行时，而 Vulcan 运行时不支持该类型。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">如果针对 Vulcan 运行时编译使用新 CURRENCY 类型的代码，将显示此错误。</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

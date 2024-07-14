@@ -137,6 +137,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             };
         }
 
+        private static SyntaxToken DecodeReadonlyVisibility(int vis)
+        {
+            return vis switch
+            {
+                XP.EXPORTED or XP.PUBLIC => SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "READONLY"),
+                XP.PROTECTED => SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "READONLY"),
+                XP.INTERNAL => SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "READONLY"),
+                _ => SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "HIDDEN"),
+            };
+        }
+
         private XppClassInfo FindClassInfo(string name)
         {
             foreach (var info in _xppClasses)
@@ -436,17 +447,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var variable = GenerateVariable(idToken);
                 varList.Add(variable);
                 SyntaxToken isReadonly = null;
-                if (context.ReadOnly != null)
-                {
-                    isReadonly = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword, context.ReadOnly.Text);
-                }
                 // calculate modifiers
                 // each field is added separately so we can later decide which field to keep and which one to delete when they are duplicated by a 
                 var modifiers = decodeXppMemberModifiers(context, context.Visibility, false,
                     context.Modifiers?._Tokens, false, isReadonly);
-                if (context.Assignment != null)
+                if (context.Assignment != null || context.ReadOnly != null)
                 {
-                    var setvis = context.Assignment.xppvisibility().Token.SyntaxKeyword();
+                    var setvis = context.Assignment?.xppvisibility().Token.SyntaxKeyword() ?? DecodeReadonlyVisibility(context.Visibility);
                     var acclist = MakeAccessorList(
                                 _syntaxFactory.AccessorDeclaration(
                                     kind: SyntaxKind.GetAccessorDeclaration,

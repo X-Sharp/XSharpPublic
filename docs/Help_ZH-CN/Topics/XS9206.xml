@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Warning XS9206</title>
-<keywords>
-<keyword>XS9206</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Warning XS9206</para>
-  </header>
-  <para styleclass="Normal">The XPP: READONLY clause for instance variables is not supported (yet) and ignored.</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-15T04:09:00.014+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Warning XS9206</title>
+  <keywords>
+    <keyword>XS9206</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9206</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">XPP：不支持实例变量的 READONLY 子句（暂不支持），且忽略该子句。</para>
+  </body>
 </topic>

@@ -19,10 +19,17 @@ PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
     PRIVATE listedFileNames as  IList<string>
     PRIVATE cSelected := NULL AS STRING
     PRIVATE cCompareFileName AS STRING
+    Private cStartUpDir as STRING
+
+
     public constructor(file AS XFile, cFileName AS STRING) strict
         InitializeComponent()
         Self:cCompareFileName := cFileName
         Self:listedFileNames:=  List<string>{}
+        local fiProjectFile := FileInfo{file:Project:FileName} as FileInfo
+
+        Self:cStartUpDir := fiProjectFile:DirectoryName
+
         //save the first loadet filelist
         listedFileNames := file:Project:GetFilesOfType(XFileType.VOForm, TRUE)
 
@@ -70,9 +77,11 @@ PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
         //filter list
         local nl as IList<string>
         nl:= List<string>{}
-        foreach var li  in  listedFileNames//SELF:oFilesList:Items
-            if li:ToUpper():Contains(searchString:ToUpper())
-                nl:Add(li)
+        foreach var li  in  listedFileNames
+            IF !String.Equals(li, Self:cCompareFileName,StringComparison.OrdinalIgnoreCase)
+                if li:ToUpper():Contains(searchString:ToUpper())
+                    nl:Add(li)
+                endif
             endif
         next
 
@@ -91,6 +100,7 @@ PUBLIC PARTIAL CLASS WindowCloneSelectDlg	;
         begin using var fbd := FolderBrowserDialog{}
 
             local result as DialogResult
+            fbd:SelectedPath := Self:cStartUpDir
             result := fbd:ShowDialog()
             if  result == DialogResult.OK .AND. !String.IsNullOrWhiteSpace(fbd:SelectedPath)
                 //replace or add the files....

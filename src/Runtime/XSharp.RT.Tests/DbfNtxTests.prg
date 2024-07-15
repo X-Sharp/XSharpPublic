@@ -1664,6 +1664,39 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			
 		RETURN
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD NtxSetOrderZero() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/958
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFNTX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","C",10,0}}, { "bbb" , "ccc" , "aaa" })
+			DbCreateIndex( cDbf,"FLD" )
+			
+			Assert.True(DbSetOrder(1))
+			DbGoTop()
+			Assert.Equal("aaa", AllTrim(FieldGet(1)))
+			DbGoBottom()
+			Assert.Equal("ccc", AllTrim(FieldGet(1)))
+			
+			Assert.True(DbSetOrder(0))
+			DbGoTop()
+			Assert.Equal("bbb", AllTrim(FieldGet(1)))
+			DbGoBottom()
+			Assert.Equal("aaa", AllTrim(FieldGet(1)))
+
+			Assert.True(DbSetOrder(1))
+			DbGoTop()
+			Assert.Equal("aaa", AllTrim(FieldGet(1)))
+			DbGoBottom()
+			Assert.Equal("ccc", AllTrim(FieldGet(1)))
+			
+			DbCloseArea()
+			
+		RETURN
+
 
     END CLASS
 END NAMESPACE

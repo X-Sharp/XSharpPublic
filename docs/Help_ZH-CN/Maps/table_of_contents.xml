@@ -283,20 +283,20 @@
     </topicref>
     <topicref type="topic" id="428984094992566" build="ALL" modified="2024-06-04T08:08:25.825Z" icon="0" href="MigratingappsfromVOtoX">
       <caption translate="true">将应用程序从 VO 迁移到 X#</caption>
-      <topicref type="topic" id="428986318132862" build="ALL" modified="2017-06-22T14:10:39.314Z" icon="0" href="Example-1-The-VO-Explorer-Examp">
-        <caption translate="true">Example 1: The VO Explorer Example</caption>
+      <topicref type="topic" id="428986318132862" build="ALL" modified="2024-07-18T19:39:55.588Z" icon="0" href="Example-1-The-VO-Explorer-Examp">
+        <caption translate="true">示例 1: VO Explorer 示例</caption>
       </topicref>
-      <topicref type="topic" id="428986216317597" build="ALL" modified="2017-06-22T14:10:46.039Z" icon="0" href="Example-2-The-VOPAD-Example">
-        <caption translate="true">Example 2: The VOPAD Example</caption>
+      <topicref type="topic" id="428986216317597" build="ALL" modified="2024-07-18T19:40:22.078Z" icon="0" href="Example-2-The-VOPAD-Example">
+        <caption translate="true">示例 2: VOPAD 示例</caption>
       </topicref>
-      <topicref type="topic" id="428984468885707" build="ALL" modified="2017-06-12T13:01:28.742Z" icon="0" href="Example-3-The-Pizza-Example">
-        <caption translate="true">Example 3: The Pizza Example</caption>
+      <topicref type="topic" id="428984468885707" build="ALL" modified="2024-07-18T19:40:45.395Z" icon="0" href="Example-3-The-Pizza-Example">
+        <caption translate="true">示例 3: Pizza 示例</caption>
       </topicref>
-      <topicref type="topic" id="429063907598028" build="ALL" modified="2017-06-20T09:37:57.133Z" icon="0" href="Example-4-Ole-Automation">
-        <caption translate="true">Example 4: Ole Automation - Excel</caption>
+      <topicref type="topic" id="429063907598028" build="ALL" modified="2024-07-18T19:41:06.900Z" icon="0" href="Example-4-Ole-Automation">
+        <caption translate="true">示例 4: Ole 自动化 - Excel</caption>
       </topicref>
-      <topicref type="topic" id="42897067116215" build="ALL" modified="2017-06-20T09:23:11.986Z" icon="0" href="Example-4-The-Email-Client-Exa">
-        <caption translate="true">Example 5: OCX - The Email Client Example </caption>
+      <topicref type="topic" id="42897067116215" build="ALL" modified="2024-07-18T19:41:40.340Z" icon="0" href="Example-4-The-Email-Client-Exa">
+        <caption translate="true">示例 5: OCX - 电子邮件客户端示例 </caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="432585631903751" build="ALL" modified="2024-06-04T08:11:26.637Z" icon="0" href="The-X-Runtime">
@@ -1108,11 +1108,11 @@
             <topicref type="topic" id="437477277472577" build="ALL" modified="2019-10-11T17:21:17.108Z" icon="0" href="command_Xpp_InstanceVariables">
               <caption translate="true">Fields</caption>
             </topicref>
-            <topicref type="topic" id="43749586475796" build="ALL" modified="2019-10-11T17:22:34.036Z" icon="0" href="command_Xpp_Classmembers">
-              <caption translate="true">METHOD Declarations</caption>
+            <topicref type="topic" id="43749586475796" build="ALL" modified="2024-07-18T20:24:19.661Z" icon="0" href="command_Xpp_Classmembers">
+              <caption translate="true">METHOD 声明</caption>
             </topicref>
-            <topicref type="topic" id="437497035229946" build="ALL" modified="2019-10-11T17:22:28.158Z" icon="0" href="command_XPP_Methods">
-              <caption translate="true">METHOD Implementation</caption>
+            <topicref type="topic" id="437497035229946" build="ALL" modified="2024-07-18T20:24:31.216Z" icon="0" href="command_XPP_Methods">
+              <caption translate="true">METHOD 实现</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="384613569689846" build="ALL" modified="2024-06-27T20:08:48.539Z" icon="0" href="command_DEFINE">
@@ -7132,8 +7132,8 @@
       <topicref type="topic" id="454564356459839" build="ALL" modified="2024-06-13T10:45:09.255Z" icon="0" href="Ex-Anonymous-Methods_MSHC">
         <caption translate="true">匿名方法</caption>
       </topicref>
-      <topicref type="topic" id="454563260221924" build="ALL" modified="2024-06-13T10:37:05.598Z" icon="0" href="Ex-Anonymous-Types_MSHC">
-        <caption translate="true">Anonymous Types </caption>
+      <topicref type="topic" id="454563260221924" build="ALL" modified="2024-07-18T00:05:17.201Z" icon="0" href="Ex-Anonymous-Types_MSHC">
+        <caption translate="true">匿名类型</caption>
       </topicref>
       <topicref type="topic" id="454562527741333" build="ALL" modified="2024-06-13T10:45:23.645Z" icon="0" href="Ex-ASYNC_MSHC">
         <caption translate="true">ASYNC  示例</caption>
@@ -7171,8 +7171,8 @@
       <topicref type="topic" id="454563687020242" build="ALL" modified="2024-06-13T10:46:28.737Z" icon="0" href="Ex-SWITCH_MSHC">
         <caption translate="true">SWITCH  示例</caption>
       </topicref>
-      <topicref type="topic" id="454562416794142" build="ALL" modified="2024-06-13T10:39:36.429Z" icon="0" href="Ex-Typed-Enums_MSHC">
-        <caption translate="true">Typed Enums</caption>
+      <topicref type="topic" id="454562416794142" build="ALL" modified="2024-07-18T00:06:30.140Z" icon="0" href="Ex-Typed-Enums_MSHC">
+        <caption translate="true">类型化枚举</caption>
       </topicref>
       <topicref type="topic" id="454562470142573" build="ALL" modified="2024-06-13T10:46:31.303Z" icon="0" href="Ex-USING_MSHC">
         <caption translate="true">USING  示例</caption>
@@ -7199,8 +7199,8 @@
     <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
       <caption translate="true">匿名方法</caption>
     </topicref>
-    <topicref type="topic" id="426887977972070" build="ALL" modified="2023-12-19T13:54:40.651Z" icon="0" href="Ex-Anonymous-Types">
-      <caption translate="true">Anonymous Types</caption>
+    <topicref type="topic" id="426887977972070" build="ALL" modified="2024-07-18T00:04:00.779Z" icon="0" href="Ex-Anonymous-Types">
+      <caption translate="true">匿名类型</caption>
     </topicref>
     <topicref type="topic" id="424267695938100" build="ALL" modified="2024-06-02T22:06:38.738Z" icon="0" href="Ex-ASYNC">
       <caption translate="true">ASYNC 示例</caption>
@@ -7226,8 +7226,8 @@
     <topicref type="topic" id="424249105268691" build="ALL" modified="2024-06-03T20:43:03.372Z" icon="0" href="Ex-GENERICs">
       <caption translate="true">泛型类示例</caption>
     </topicref>
-    <topicref type="topic" id="429079409602691" build="ALL" modified="2023-12-19T13:55:24.857Z" icon="0" href="Ex-Lamda-Expressions">
-      <caption translate="true">Lamda Expressions</caption>
+    <topicref type="topic" id="429079409602691" build="ALL" modified="2024-07-17T23:41:34.470Z" icon="0" href="Ex-Lamda-Expressions">
+      <caption translate="true">Lamda 表达式</caption>
     </topicref>
     <topicref type="topic" id="424249979841329" build="ALL" modified="2024-06-03T20:53:40.436Z" icon="0" href="Ex-LINQ">
       <caption translate="true">LINQ 示例</caption>
@@ -7238,8 +7238,8 @@
     <topicref type="topic" id="424266614671750" build="ALL" modified="2024-06-03T21:04:19.572Z" icon="0" href="Ex-SWITCH">
       <caption translate="true">SWITCH 示例</caption>
     </topicref>
-    <topicref type="topic" id="429077405209086" build="ALL" modified="2023-12-19T13:55:39.717Z" icon="0" href="Ex-Typed-Enums">
-      <caption translate="true">Typed Enums</caption>
+    <topicref type="topic" id="429077405209086" build="ALL" modified="2024-07-17T23:39:00.928Z" icon="0" href="Ex-Typed-Enums">
+      <caption translate="true">类型化枚举</caption>
     </topicref>
     <topicref type="topic" id="424267820342591" build="ALL" modified="2024-06-03T21:09:05.293Z" icon="0" href="Ex-USING">
       <caption translate="true">USING 示例</caption>

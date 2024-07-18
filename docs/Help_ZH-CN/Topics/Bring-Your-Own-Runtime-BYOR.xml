@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:42:44.746+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T19:49:44.360+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>自备运行时 (BYOR))</title>
   <body>
     <header>
@@ -14,19 +14,20 @@
       </thead>
     </table></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">VO and Vulcan support is available in this build of XSharp through what we call the Bring Your Own Runtime principle.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you own a license of Vulcan, you can copy the DLLs that you find in the &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 folder to a folder that is inside your solution.</para>
-    <para styleclass="Normal">Then add references to the DLLs that you need in your project.</para>
-    <para styleclass="Heading3">DLLs you <text style="color:#ff0000;">MUST</text> add if you compile for the VO/Vulcan dialect with the Vulcan runtime:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">通过我们称之为 “自带运行时”（Bring Your Own Runtime），在XSharp的这一版本中提供了对VO和Vulcan的支持。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">如果你拥有 Vulcan 的许可证，你可以将 &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 文件夹中的 DLL 复制到你的解决方案中的文件夹。</para>
+    <para styleclass="Body Text">然后在项目中添加所需的 DLL 引用。</para>
+    <para styleclass="Heading3">如果使用 Vulcan 运行时编译 VO/Vulcan 方言，<text style="color:#ff0000;">必须</text>添加的动态链接库：</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanRT.DLL</li>
       <li styleclass="Normal">VulcanRTFuncs.DLL</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">These 2 files are NEVER added to your Vulcan projects, Vulcan adds a reference to these DLLs automatically. XSharp does not do that, so you should add them yourself. </para>
-    <para styleclass="Heading3">DLLs that you <text style="color:#ff0000;">MAY</text> want to add, depending on what you are using in your application:</para>
+    <para styleclass="Normal">这两个文件绝对不会添加到你的 Vulcan 项目中，Vulcan 会自动添加对这些 DLL 的引用。XSharp 不会这样做，所以你应该自己添加它们。</para>
+    <para styleclass="Heading3">您<text style="color:#ff0000;">可能</text>需要添加的动态链接库，这取决于您在应用程序中使用什么：</para>
     <para styleclass="Normal"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanVOSystemClasses.dll </li>
@@ -38,7 +39,7 @@
       <li styleclass="Normal">VulcanVOWin32APILibrary.dll </li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">DLLs that you normally do <text style="color:#ff0000;">NOT</text> add to your project (these are handled automatically by the Vulcan Runtime)</para>
+    <para styleclass="Heading3">您通常<text style="color:#ff0000;">不会</text>添加到项目中的 DLL（Vulcan Runtime 会自动处理这些 DLL）。</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">VulcanRDD.DLL</li>
       <li styleclass="Normal">VulcanMacroCompiler.DLL</li>

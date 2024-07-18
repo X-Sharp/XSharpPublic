@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-19T13:55:38.819+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Typed Enums</title>
+<topic template="Default" modified="2024-07-17T23:53:41.782+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>类型化枚举</title>
   <keywords>
     <keyword>ENUM</keyword>
     <keyword>Typed Enums</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Typed Enums</para>
+      <para styleclass="Heading1">类型化枚举</para>
     </header>
-    <para styleclass="Normal">Enums may now be typed in X#. The type indicates the base class for the ENUM. By specifying a AS clause you can determine the size in bytes that the ENUM uses.</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="margin-left:13px;">枚举现在可以在 X# 中类型化。类型表示 ENUM 的基类。通过使用 AS 子句，可以确定 ENUM 使用的字节大小。</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENUM</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> BYTE</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">MEMBER</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> One</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">MEMBER</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Two</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENUM</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160;</text></para>
   </body>
 </topic>

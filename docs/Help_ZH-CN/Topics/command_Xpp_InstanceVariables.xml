@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:52:40.351+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T20:24:01.073+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Fields</title>
   <keywords>
     <keyword>ASSIGNMENT</keyword>
@@ -9,35 +9,35 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Fields (Xbase++ class syntax)</para>
+      <para styleclass="Heading1">Fields (Xbase++ class 语法)</para>
     </header>
     <para styleclass="Heading1"><snippet src="__XppOnly" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare fields/ instance variables with optional initial values</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明带有可选初始值的字段/实例变量</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal"><tab />[Visibility :]</para>
     <para styleclass="Body Text"><tab />[CLASS|STATIC] VAR &lt;idVar,...&gt; [IS &lt;Name&gt;] [IN &lt;SuperClass&gt;] &#160;[AS &lt;idType&gt;]</para>
     <para styleclass="Normal"><tab />[SHARED]</para>
     <para styleclass="Normal"><tab />[READONLY]</para>
     <para styleclass="Normal"><tab /><text styleclass="Body Text">[ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] </text><br/><tab />[NOSAVE]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">Visibility<tab />This sets the visibility for the variables on the line following the statement. This can <text styleclass="Body Text">be HIDDEN ,PROTECTED, EXPORTED or INTERNAL. The default visibility is HIDDEN.</text></para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">Visibility<tab />设置语句后一行变量的可见性。可以是<text styleclass="Body Text"> HIDDEN ,PROTECTED, EXPORTED or INTERNAL. 默认可见性为 HIDDEN.</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List">CLASS | STATIC<tab />Declares that this is a class level field.</para>
+    <para styleclass="List">CLASS | STATIC<tab />声明这是一个类级别的字段。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the field to declare.</para>
+    <para styleclass="List">&lt;idVar&gt;<tab />要声明的字段的有效标识符名称。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IS .. IN ..<tab />This clause is not supported in X#</para>
+    <para styleclass="List">IS .. IN ..<tab />X# 中不支持该子句</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
-    <para styleclass="List">SHARED<tab />This clause is not supported in X#</para>
+    <para styleclass="List">SHARED<tab />X# 中不支持该子句</para>
     <para styleclass="List"></para>
-    <para styleclass="List">READONLY<tab />Declares this field as Readonly. It must be initialized in the (class) constructor</para>
+    <para styleclass="List">READONLY<tab />将该字段声明为只读。它必须在（类）构造函数中初始化</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ASSIGNMENT ..<tab />This clause is not supported in X#</para>
+    <para styleclass="List">ASSIGNMENT ..<tab />X# 中不支持该子句</para>
     <para styleclass="List"></para>
-    <para styleclass="List">NOSAVE<tab />This sets the [NonSerializable] attribute on the field.</para>
-    <para styleclass="Heading1">Note</para>
-    <para styleclass="List">Xbase++ has a complicated set of rules on how to control read/write access to fields. In .Net we simply use the Visibility .</para>
+    <para styleclass="List">NOSAVE<tab />这将为字段设置 [NonSerializable] 属性。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="List">Xbase++ 有一套复杂的规则来控制字段的读/写访问。在 .Net 中，我们只需使用.NET 的可见性（Visibility）。</para>
   </body>
 </topic>

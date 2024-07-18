@@ -1,22 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Example 2: The VOPAD Example</title>
+<topic template="Default" modified="2024-07-18T22:10:58.616+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>示例 2: VOPAD 示例</title>
   <body>
     <header>
-      <para styleclass="Heading1">Example 2: The VOPAD Example</para>
+      <para styleclass="Heading1">示例 2: VOPAD 示例</para>
     </header>
-    <para styleclass="Body Text">This example converts the VOPAD AEF file from the C:\cavo28SP3\Samples\Controls\Richedit folder.</para>
-    <para styleclass="Body Text">After converting it with the same options as the 1st example we will have a folder structure like </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">本例将转换 C:\cavo28SP3\Samples\Controls\Richedit 文件夹中的 VOPAD AEF 文件。</para>
+    <para styleclass="Body Text">使用与第一个示例相同的选项进行转换后，我们的文件夹结构将如下所示 </para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\VoPad<br/>C:\XporterOutput\Examples\VoPad\VoPad</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">文件</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">包含</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -24,7 +25,7 @@
           <para styleclass="Body Text">VoPad.sln</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">VS Solution file</para>
+          <para styleclass="Body Text">VS 解决方案文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -32,19 +33,19 @@
           <para styleclass="Body Text">VoPad.viproj</para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">XIDE project file</para>
+          <para styleclass="Body Text">XIDE 项目文件</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">The project folder contains the files</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">项目文件夹包含以下文件</text></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="28" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">File</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">文件</text></para>
         </td>
         <td>
-          <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Contains</text></para>
+          <para styleclass="" style="text-align:center; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">包含</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -52,7 +53,7 @@
           <para styleclass="Body Text">!Readme!.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -60,7 +61,7 @@
           <para styleclass="Body Text">image.IMAGE.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Image resource for VS</para>
+          <para styleclass="Body Text">VS 的图像资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -68,7 +69,7 @@
           <para styleclass="Body Text">image.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -76,7 +77,7 @@
           <para styleclass="Body Text">image.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Image resource for XIDE</para>
+          <para styleclass="Body Text">用于 XIDE 的图像资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -84,7 +85,7 @@
           <para styleclass="Body Text">Manifest.CREATEPROCESS_MANIFEST_RESOURCE_ID.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Manifest resource for VS</para>
+          <para styleclass="Body Text">用于 VS 的 Manifest 资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -92,7 +93,7 @@
           <para styleclass="Body Text">Manifest.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -100,7 +101,7 @@
           <para styleclass="Body Text">Manifest.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Manifest resource for XIDE</para>
+          <para styleclass="Body Text">XIDE Mainfest 资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -108,7 +109,7 @@
           <para styleclass="Body Text">PadHelp About.HelpAbout.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Help about resource for VS</para>
+          <para styleclass="Body Text">关于 VS 资源的帮助</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -116,7 +117,7 @@
           <para styleclass="Body Text">PadHelp About.HELPABOUT.xsfrm</para>
         </td>
         <td>
-          <para styleclass="Body Text">Help about form Binary for VS</para>
+          <para styleclass="Body Text">关于 VS 二进制表单的帮助</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -124,7 +125,7 @@
           <para styleclass="Body Text">PadHelp About.POWVOBMP.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Splash resource for VS</para>
+          <para styleclass="Body Text">用于 VS 的 Splash资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -132,7 +133,7 @@
           <para styleclass="Body Text">PadHelp About.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -140,7 +141,7 @@
           <para styleclass="Body Text">PadHelp About.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Help resources for XIDE</para>
+          <para styleclass="Body Text">XIDE 的帮助资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -148,7 +149,7 @@
           <para styleclass="Body Text">PadMenus.StandardPadMenu.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Menu resource for VS</para>
+          <para styleclass="Body Text">用于 VS 的菜单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -156,7 +157,7 @@
           <para styleclass="Body Text">PadMenus.StandardPadMenu.xsmnu</para>
         </td>
         <td>
-          <para styleclass="Body Text">Menu binary for VS</para>
+          <para styleclass="Body Text">用于 VS 的二进制菜单</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -164,7 +165,7 @@
           <para styleclass="Body Text">PadMenus.StandardPadMenu_Accelerator.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Accelerator resource for VS</para>
+          <para styleclass="Body Text">用于 VS 的加速器资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -172,7 +173,7 @@
           <para styleclass="Body Text">PadMenus.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -180,7 +181,7 @@
           <para styleclass="Body Text">PadMenus.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Resources for XIDE</para>
+          <para styleclass="Body Text">用于 XIDE 的资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -188,7 +189,7 @@
           <para styleclass="Body Text">PadShell.IDI_VOPADICON.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">App Icon resource for VS</para>
+          <para styleclass="Body Text">用于 VS 的应用程序图标资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -196,7 +197,7 @@
           <para styleclass="Body Text">PadShell.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -204,7 +205,7 @@
           <para styleclass="Body Text">PadShell.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">App Icon resource for XIDE</para>
+          <para styleclass="Body Text">用于 XIDE 的应用程序图标资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -212,7 +213,7 @@
           <para styleclass="Body Text">PadStart.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -220,7 +221,7 @@
           <para styleclass="Body Text">PadWin.oMarginDialog.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Form resource for VS</para>
+          <para styleclass="Body Text">用于 VS 的表单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -228,7 +229,7 @@
           <para styleclass="Body Text">PadWin.oMarginDialog.xsfrm</para>
         </td>
         <td>
-          <para styleclass="Body Text">Form binary for VS</para>
+          <para styleclass="Body Text">用于 VS 的表单二进制文件</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -236,7 +237,7 @@
           <para styleclass="Body Text">PadWin.prg</para>
         </td>
         <td>
-          <para styleclass="Body Text">Module source code</para>
+          <para styleclass="Body Text">模块源代码</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -244,7 +245,7 @@
           <para styleclass="Body Text">PadWin.rc</para>
         </td>
         <td>
-          <para styleclass="Body Text">Form resource for XIDE</para>
+          <para styleclass="Body Text">XIDE 的表单资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -252,7 +253,7 @@
           <para styleclass="Body Text">Vopad.viapp</para>
         </td>
         <td>
-          <para styleclass="Body Text">XIDE Application</para>
+          <para styleclass="Body Text">XIDE 应用程序</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -260,11 +261,11 @@
           <para styleclass="Body Text">Vopad.xsproj</para>
         </td>
         <td>
-          <para styleclass="Body Text">VS Project</para>
+          <para styleclass="Body Text">VS 项目</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Body Text">Open the project in VS and compile. You will see the following errors / warnings</para>
+    <para styleclass="Body Text">在 VS 中打开项目并编译。您将看到以下错误/警告</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadWin.prg(473,1): warning XS1030: #warning: &apos;The following method did not include a CLASS declaration&apos;</text></para>
     <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadWin.prg(480,1): warning XS1030: #warning: &apos;The following method did not include a CLASS declaration&apos;</text></para>
@@ -274,39 +275,40 @@
     <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadHelp About.prg(91,8): error XS0119: &apos;TextControl.Font(params __Usual[])&apos; is a method, which is not valid in the given context</text></para>
     <para styleclass="Normal"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">PadWin.prg(166,19): error XS1061: &apos;RichEdit&apos; does not contain a definition for &apos;RTFChangeFont&apos; and no extension method &apos;RTFChangeFont&apos; accepting a first argument of type &apos;RichEdit&apos; could be found (are you missing a using directive or an assembly reference?)</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">Let&apos;s examine this by double clickig on the errors / warnings:</para>
-    <para styleclass="Body Text">First the warnings. These are generated by a #warning preprocessor statement inserted by XPorter because it found problems in your code:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">There was an ACCESS FilterIndex CLASS SaveAsDialog in the source. This adds an access to a class in the GUI Classes. This is not allowed in .Net. <br/>The XPorter has created a special subclass of SaveAsDialog to hold this extra property.<br/>Fortunately this ACCESS is no longer needed because it has been added to the GUI Classes already.<br/>So we can completely de<tab />lete that code.</li>
-      <li styleclass="Body Text">There was a method RTFChangeFont CLASS RichEdit. The same problem as the SaveAsDialog:FilterIndex. In this case the method is necessary. It has been moved to a subclass of RichEdit already. However since the original code still points to the RichEdit class there could be a runtime problem because this method is not part of the richedit class.<br/>There are 2 possible solutions here:</li>
+    <para styleclass="Body Text">让我们双击错误/警告来检查一下：</para>
+    <para styleclass="Body Text">首先是警告。这些是 XPorter 发现代码中存在问题而插入的 #warning 预处理器语句生成的：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">源代码中有一个 ACCESS FilterIndex CLASS SaveAsDialog。这增加了对 GUI 类中一个类的访问。这在 .Net 中是不允许的。<br/>XPorter 创建了一个特殊的 SaveAsDialog 子类来保存这个额外的属性。<br/>幸运的是，这个 ACCESS 已经不再需要了，因为它已经被添加到图形用户界面类中。<br/>因此我们可以完全删除这段代码。</li>
+      <li styleclass="Body Text">有一个 RTFChangeFont CLASS RichEdit 方法。与 SaveAsDialog:FilterIndex 的问题相同。在这种情况下，该方法是必要的。该方法已被移至 RichEdit 的子类中。不过，由于原始代码仍指向 RichEdit 类，因此可能会出现运行时问题，因为该方法不是 richedit 类的一部分。<br/>这里有两种可能的解决方案：</li>
     </list>
-    <list id="4" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <list id="4" level="1" type="ol" listtype="decimal" formatstring="&#37;&#49;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
-        <li styleclass="Body Text">Change the method to an extension method</li>
-        <li styleclass="Body Text">Change the code that uses the RichEdit class to use the changed class</li>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <list id="1" level="1" type="ol" listtype="decimal" formatstring="&#37;&#49;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
+        <li styleclass="Body Text">将方法更改为扩展方法</li>
+        <li styleclass="Body Text">更改使用 RichEdit 类的代码，以使用更改后的类</li>
       </list>
     </list>
-    <para styleclass="Body Text" style="margin-left:13px;">Option 1 is the best here since we are not using any private or protected properties of the RichEdit class here. To achieve that change the code from </para>
+    <para styleclass="Body Text" style="margin-left:13px;">方案 1 是最好的选择，因为我们没有使用 RichEdit 类的任何私有或受保护属性。为此，请将代码从 </para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> RichEdit_external_class </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INHERIT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> RichEdit</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> RTFChangeFont() </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;etc</text></para>
     <para styleclass="Body Text">to</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STATIC</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> RichEditExtensions </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STATIC</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> RTFChangeFont( </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SELF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oEdit </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> RichEdit) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oFontDlg </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> StandardFontDialog</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;oFontDlg := StandardFontDialog{oEdit:Owner}</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;oFontDlg:FontColor := oEdit:TextColor</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;oFontDlg:Font &#160; &#160; &#160;:= oEdit:ControlFont</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;oFontDlg:Show()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;oEdit:TextColor := oFontDlg:FontColor</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;oEdit:ControlFont &#160; &#160; &#160;:= oFontDlg:Font</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text></para>
-    <para styleclass="Heading3">Note</para>
-    <para styleclass="Normal"><text style="font-style:italic;">The </text><text style="font-weight:bold; font-style:italic;">Extension Method</text><text style="font-style:italic;"> works great to enhance existing classes, but has one disadvantage: The Vulcan Runtime will not pick up these extension methods for late bound code.That is not a problem in this example but may be a problem elsewhere.</text></para>
+    <para styleclass="Heading3">备注</para>
+    <para styleclass="Normal">扩展方法可以很好地增强现有类，但有一个缺点： 在本例中这不是问题，但在其他地方可能会成为问题。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">Now we have added an extension method that can be used like a normal method.<br/>This change also solves the error in PadWin.prg </para>
-    <para styleclass="Body Text">Then look at the other problems: they all have to do with a Font property in the TextControl class. Unfortunately the VO class libraries have both a Font() method and a Font() Access/Assign for the TextControl class. Having a method and a property with the same name is not allowed in .Net.</para>
-    <para styleclass="Body Text">When the VO Gui classes were ported to Vulcan the decision has been made to rename the Font property to Controlfont. So we need to make that change. Simply double click on the errors and change </para>
+    <para styleclass="Normal">现在我们添加了一个扩展方法，它可以像普通方法一样使用。</para>
+    <para styleclass="Normal">这一改动也解决了 PadWin.prg 中的错误。</para>
+    <para styleclass="Normal">再看看其他问题：它们都与 TextControl 类中的字体属性有关。不幸的是，VO 类库为 TextControl 类提供了一个 Font() 方法和一个 Font() Access/Assign。.Net不允许使用同名的方法和属性。</para>
+    <para styleclass="Normal">在将 VO Gui 类移植到 Vulcan 时，我们决定将 Font 属性重命名为 Controlfont。因此，我们需要进行更改。只需双击错误并更改 </para>
     <para styleclass="Code Example"><tab />:Font </para>
     <para styleclass="Body Text">to<text styleclass="Code Example">&#32;</text></para>
     <para styleclass="Code Example"><tab />:ControlFont </para>
-    <para styleclass="Body Text">(4 times)</para>
-    <para styleclass="Body Text">After that the code should compile and run. Clicking the Font button on the toolbar should show the font dialog (from the RTFChangeFont extension method)</para>
-    <para styleclass="Body Text">Some of the changes that were made to the code (omitting the ones that were also in example 1):</para>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Manifest.prg is empty but included because it had a dependent resource.</li>
+    <para styleclass="Body Text">（4次）</para>
+    <para styleclass="Body Text">之后，代码将编译并运行。点击工具栏上的字体按钮将显示字体对话框（来自 RTFChangeFont 扩展方法）。</para>
+    <para styleclass="Body Text">对代码所做的一些修改（省略了示例 1 中的修改）：</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Manifest.prg 为空，但已包含，因为它有一个依赖资源。</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">You will find the &quot;code before&quot; and &quot;code after&quot; in the XSharp Examples folder</text></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">您可以在 XSharp 示例文件夹中找到 “Code before ”和 “Code after”。</text></para>
   </body>
 </topic>

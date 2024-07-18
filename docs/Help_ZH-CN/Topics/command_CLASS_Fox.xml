@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T20:05:30.110+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T20:14:36.645+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLASS 语句(FoxPro 方言))</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
@@ -54,7 +54,7 @@
     <para styleclass="List"></para>
     <para styleclass="List">OLEPUBLIC<tab />该子句在 X# 中被解析，但被忽略。</para>
     <para styleclass="List"></para>
-    <para styleclass="Heading1">ClassMembers</para>
+    <para styleclass="Heading1">类成员</para>
     <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Fox_Properties" styleclass="Normal">属性和字段</link></para>
     <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Fox_Implements" styleclass="Normal">IMPLEMENTS 子句</link></para>
     <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Fox_AddObject" styleclass="Normal">ADD OBJECT 子句</link></para>

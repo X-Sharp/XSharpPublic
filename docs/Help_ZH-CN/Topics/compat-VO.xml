@@ -1,42 +1,42 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T19:36:01.356+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Differences with VO</title>
   <body>
     <header>
-      <para styleclass="Heading1">Differences with VO</para>
+      <para styleclass="Heading1">与 VO 的不同</para>
     </header>
-    <para styleclass="Heading3">Compiler</para>
+    <para styleclass="Heading3">编译器</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Operation</para>
+          <para styleclass="Normal">操作</para>
         </td>
         <td>
-          <para styleclass="Normal">Difference</para>
+          <para styleclass="Normal">不同</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Adding methods to existing classes</para>
+          <para styleclass="Normal">为现有类添加方法</para>
         </td>
         <td>
-          <para styleclass="Normal">In X# (actually in .Net) you cannot add methods to classes in other assemblies. As work around you can:</para>
+          <para styleclass="Normal">在 X#（实际上在 .Net）中，您不能为其他程序集中的类添加方法。作为变通方法，您可以</para>
           <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Normal">write an extension method</li>
-            <li styleclass="Normal">create a subclass</li>
+            <li styleclass="Normal">编写扩展方法</li>
+            <li styleclass="Normal">创建子类</li>
           </list>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading3">Runtime functions</para>
+    <para styleclass="Heading3">运行时函数</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Function</para>
+          <para styleclass="Normal">函数</para>
         </td>
         <td>
-          <para styleclass="Normal">Difference</para>
+          <para styleclass="Normal">不同</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

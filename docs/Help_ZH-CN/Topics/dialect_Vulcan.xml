@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:28:11.237+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T20:01:16.028+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Vulcan</title>
   <keywords>
     <keyword>&apos;@&apos;</keyword>
@@ -21,40 +21,40 @@
     <para styleclass="Normal">编译器和运行时在编译“Vulcan”方言时具有以下“特殊”行为。</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Does NOT allows 4 letter abbreviations of keywords</li>
+      <li styleclass="Normal">不允许使用 4 个字母的关键字缩写</li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Does NOT support Memory variables</li>
+      <li styleclass="Normal">不支持内存变量</li>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Does NOT allow &amp;&amp; as same line comment characters (&amp;&amp; means .AND. in Vulcan)</li>
+      <li styleclass="Normal">不允许将 &amp;&amp; 作为同行注释字符（&amp;&amp; 在 Vulcan 中表示 .AND.）</li>
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Single quotes are used for Character literals</li>
+      <li styleclass="Normal">单引号用于字符字面量</li>
     </list>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
+      <li styleclass="Normal">支持使用“@”来获取变量的地址。如果使用编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link>，这也可以用于 REF 变量。</li>
     </list>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">NULL_STRING is compiled into either &quot;&quot; or NULL depending on the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></li>
+      <li styleclass="Normal">NULL_STRING 会被编译成“”或 NULL，具体取决于编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></li>
     </list>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The preprocessor adds a define __VULCAN__ with a value of TRUE</li>
+      <li styleclass="Normal">预处理器添加了一个值为 TRUE 的定义 __VULCAN__</li>
     </list>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Adds the VOSTRUCT and UNION entity types</li>
+      <li styleclass="Normal">添加 VOSTRUCT 和 UNION 实体类型</li>
     </list>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Uses the _WINBOOL type for logical values inside VOSTRUCT and UNION entities</li>
+      <li styleclass="Normal">将 _WINBOOL 类型用于 VOSTRUCT 和 UNION 实体内的逻辑值</li>
     </list>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The indexer on PSZ types start with element 0</li>
+      <li styleclass="Body Text">PSZ 类型的索引器从元素 0 开始</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading2">运行时(Runtime)</para>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">When running in Ansi more (SetAnsi(TRUE), which is the default) then the DBF header for DBFNTX gets the Ansi bit set</li>
-      <li styleclass="Normal">The NoMethod() method gets an extra 1st parameter that contains the name of the method that was called.</li>
+      <li styleclass="Normal">当以 Ansi More（SetAnsi(TRUE)，即默认值）运行时，DBFNTX 的 DBF 头会设置 Ansi 位</li>
+      <li styleclass="Normal">NoMethod() 方法会得到一个额外的第 1 个参数，其中包含被调用方法的名称。</li>
     </list>
   </body>
 </topic>

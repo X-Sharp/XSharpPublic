@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:49:09.571+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>METHOD Declarations</title>
+<topic template="Default" modified="2024-07-18T20:28:35.341+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>METHOD 声明</title>
   <keywords>
     <keyword>ACCESS</keyword>
     <keyword>ACCESS METHOD</keyword>
@@ -12,12 +12,12 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Method declarations (Xbase++ dialect)</para>
+      <para styleclass="Heading1">Method 声明 (Xbase++ 方言)</para>
     </header>
     <para styleclass="Heading1"><snippet src="__XppOnly" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare and implement methods for a class, both for instances and the class itself</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明和实现类的方法，包括类实例和类本身的方法</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">Method forward declaration</text></para>
     <para styleclass="Body Text"><tab />[Modifiers] METHOD &lt;MethodName,...&gt; [IS &lt;MethodName&gt;] [IN &lt;SuperClass&gt;] </para>
     <para styleclass="Body Text"></para>
@@ -28,31 +28,31 @@
     <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">Method inline declaration</text></para>
     <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT|IN &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[=&gt; &lt;expression&gt;] </text><br/><tab /><text styleclass="Normal" style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify info about the method. (DEFERRED , FINAL , INTRODUCE , OVERRIDE , CLASS , SYNC, NEW, STATIC, ASYNC, UNSAFE, EXTERN).</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">Modifiers<tab />可选的修饰符列表，用于指定方法的相关信息。(deferred , final , introduce , override , class , sync, new, static, async, unsafe, extern）。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;MethodName,...&gt; <tab />is a comma separated list with the names of the instance methods being declared. The name for a method follows the same convention as function and variable names. It must begin with a underscore or a letter and must contain alpha numeric characters. </para>
+    <para styleclass="List">&lt;MethodName,...&gt; <tab />是一个用逗号分隔的列表，其中包含所声明的实例方法的名称。方法名称与函数和变量名称的约定相同。它必须以下划线或字母开头，并且必须包含字母数字字符。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IS &lt;MethodName&gt;<tab />The IS methodname clause is not supported by X#</para>
+    <para styleclass="List">IS &lt;MethodName&gt;<tab />X# 不支持 IS methodname 子句</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IN &lt;SuperClass&gt;<tab />The IN Superclass clause is not supported (and not needed) by X#</para>
+    <para styleclass="List">IN &lt;SuperClass&gt;<tab />X# 不支持（也不需要）IN Superclass 子句</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><snippet src="__IncludeAttributes" inline="false"/></para>
-    <para styleclass="List">CLASS<tab />Optional modifier that specify that the declaration is for a class level method or class level property</para>
+    <para styleclass="List">CLASS<tab />可选修饰符，用于指定声明为类方法或类属性</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ACCESS ASSIGN<tab />Declares a Get/Set method for a property. You can to use one or both of these keywords.</para>
+    <para styleclass="List">ACCESS ASSIGN<tab />声明一个属性的 Get/Set 方法。您可以使用其中一个或两个关键字。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;VarName&gt;<tab />The Get/Set method may have a different name than the property that they implement.</para>
+    <para styleclass="List">&lt;VarName&gt;<tab />Get/Set 方法的名称可能与其实现的属性不同。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
-    <para styleclass="List">INLINE<tab />Specifies that the whole method is included between the CLASS .. ENDCLASS keywords (other methods are so called forward declarations)</para>
+    <para styleclass="List">INLINE<tab />指定整个方法包含在 CLASS ... ENDCLASS 关键字之间（其他方法称为前向声明）</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeEndMethod" inline="false"/></para>
-    <para styleclass="Heading1">Note</para>
-    <para styleclass="Body Text">The visibility of a method is determined by the visibility attribute set with one of the statements EXPORTED:, PROTECTED:, HIDDEN: or INTERNAL:</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Body Text">方法的可见性由用 EXPORTED:、PROTECTED:、HIDDEN: 或 INTERNAL 语句之一设置的可见性属性决定：</para>
     <para styleclass="Normal"></para>
     <para styleclass="List"><snippet src="__IncludeXPPMethodNames" inline="false"/></para>
   </body>

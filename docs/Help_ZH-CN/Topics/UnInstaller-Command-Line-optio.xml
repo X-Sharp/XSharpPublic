@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>UnInstaller Command Line options</title>
+<topic template="Default" modified="2024-07-15T05:08:44.732+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>卸载命令行选项</title>
   <keywords>
     <keyword>/log</keyword>
     <keyword>/norestart</keyword>
@@ -11,17 +11,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">UnInstaller Command Line options</para>
+      <para styleclass="Heading1">卸载命令行选项</para>
     </header>
-    <para styleclass="Normal">The Uninstaller (which can be found in the &lt;Installdir&gt;\Uninst folder) has the following command line options:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">卸载程序（可在 &lt;Installdir&gt;\Uninst 文件夹中找到）有以下命令行选项：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:33%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">选项</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -29,8 +30,8 @@
           <para styleclass="Body Text">/silent, /verysilent</para>
         </td>
         <td>
-          <para styleclass="Body Text">When specified, the uninstaller will not ask the user for startup confirmation or display a message stating that uninstall is complete. Shared files that are no longer in use are deleted automatically without prompting. Any critical error messages will still be shown on the screen. When &apos;/verysilent is specified, the uninstallation progress window is not displayed.</para>
-          <para styleclass="Body Text">If a restart is necessary and the &apos;/norestart command isn&apos;t used (see below) and &apos;/verysilent is specified, the uninstaller will reboot without asking.</para>
+          <para styleclass="Body Text">指定后，卸载程序不会要求用户进行启动确认，也不会显示卸载完成的消息。不再使用的共享文件将自动删除，无需提示。屏幕上仍会显示任何重要的错误信息。指定&quot;/verysilent &quot;时，将不显示卸载进度窗口。</para>
+          <para styleclass="Body Text">如果需要重新启动，但未使用&quot;/norestart &quot;命令（见下文），且指定了&quot;/verysilent&quot;，卸载程序将不经询问重新启动。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -38,7 +39,7 @@
           <para styleclass="Body Text">/suppressmsgboxes</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs the uninstaller to suppress message boxes. Only has an effect when combined with &apos;/silent and &apos;/verysilent. </para>
+          <para styleclass="Body Text">指示卸载程序抑制消息框。只有与&quot;/silent &quot;和&quot;/verysilent &quot;结合使用时才有效。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -46,8 +47,9 @@
           <para styleclass="Body Text">/log</para>
         </td>
         <td>
-          <para styleclass="Body Text">Causes Uninstall to create a log file in the user&apos;s TEMP directory detailing file uninstallation and actions taken during the uninstallation process. This can be a helpful debugging aid.<br/>The log file is created with a unique name based on the current date. (It will not overwrite or append to existing files.)</para>
-          <para styleclass="Body Text">The information contained in the log file is technical in nature and therefore not intended to be understandable by end users. Nor is it designed to be machine-parsable; the format of the file is subject to change without notice.</para>
+          <para styleclass="Body Text">使卸载程序在用户的 TEMP 目录中创建一个日志文件，详细记录文件卸载和卸载过程中的操作。这对调试很有帮助。</para>
+          <para styleclass="Body Text">创建的日志文件具有基于当前日期的唯一名称。(它不会覆盖或附加到现有文件）。</para>
+          <para styleclass="Body Text">日志文件中包含的信息属于技术性质，因此最终用户无法理解。该文件的格式如有更改，恕不另行通知。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -55,7 +57,7 @@
           <para styleclass="Body Text">/log=&quot;filename&quot;</para>
         </td>
         <td>
-          <para styleclass="Body Text">Same as /log, except it allows you to specify a fixed path/filename to use for the log file. If a file with the specified name already exists it will be overwritten. If the file cannot be created, Uninstall will abort with an error message.</para>
+          <para styleclass="Body Text">与 /log 相同，但它允许你为日志文件指定一个固定的路径/文件名。如果指定名称的文件已经存在，它将被覆盖。如果无法创建文件，卸载程序将终止并显示错误信息。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -63,7 +65,7 @@
           <para styleclass="Body Text">/norestart</para>
         </td>
         <td>
-          <para styleclass="Body Text">Instructs the uninstaller not to reboot even if it&apos;s necessary.</para>
+          <para styleclass="Body Text">指示卸载程序即使有必要也不要重启。</para>
         </td>
       </tr>
     </table></para>

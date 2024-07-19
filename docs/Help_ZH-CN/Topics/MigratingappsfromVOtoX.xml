@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T08:08:44.681+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T19:43:35.060+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>将应用程序从 VO 迁移到 X#</title>
   <body>
     <header>
       <para styleclass="Heading1">将应用程序从 VO 迁移到 X#</para>
     </header>
-    <para styleclass="Body Text">In this topic we will discuss how to migrate applications from VO to X# with the aid of the VO XPorter tool from X#.</para>
-    <para styleclass="Body Text">When you want to do this we strongly recommend you to start small. We will therefore start with a few VO example programs and describe the steps to take and the changes that need to be made after the conversion.</para>
-    <para styleclass="Heading2">The examples </para>
-    <para styleclass="Normal">The examples on the following pages show you a step by step introduction to migrating your apps.</para>
-    <para styleclass="Normal">For each example there will be an example supplied with the installer of X#. The examples come with a &quot;before&quot; and &quot;after&quot; folder.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">在本专题中，我们将讨论如何借助 X# 的 VO XPorter 工具将应用程序从 VO 移植到 X#。</para>
+    <para styleclass="Body Text">我们强烈建议您从小处着手。因此，我们将从几个 VO 示例程序入手，介绍转换的步骤和转换后需要进行的更改。</para>
+    <para styleclass="Heading2">示例 </para>
+    <para styleclass="Normal">下面的示例将逐步向您介绍如何迁移应用程序。</para>
+    <para styleclass="Normal">每个示例都有一个随 X# 安装程序提供的示例。示例中包含一个 “before”和 “after”文件夹。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

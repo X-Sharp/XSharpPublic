@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T00:30:43.150+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9101</title>
   <body>
     <header>
       <para styleclass="Heading1">XS9101</para>
     </header>
-    <para styleclass="Normal">Try statement found without CATCH clause and without FINALLY clause. The compiler will generate a default CATCH clause that catches and ignores all exceptions.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">发现 Try 语句没有 CATCH 子句和 FINALLY 子句。编译器会生成一个默认的 CATCH 子句，捕获并忽略所有异常。</para>
   </body>
 </topic>

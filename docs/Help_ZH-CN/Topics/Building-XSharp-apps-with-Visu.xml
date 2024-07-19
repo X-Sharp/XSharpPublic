@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Building XSharp apps with Visual Studio and/or MsBuild</title>
+<topic template="Default" modified="2024-07-15T06:01:12.037+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>使用 Visual Studio 和/或 MsBuild 生成 XSharp 应用程序</title>
   <keywords>
     <keyword>.g.prg</keyword>
     <keyword>.rc</keyword>
@@ -28,36 +28,42 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Building XSharp apps with Visual Studio and/or MsBuild</para>
+      <para styleclass="Heading1">使用 Visual Studio 和/或 MsBuild 生成 XSharp 应用程序</para>
     </header>
-    <para styleclass="Normal">When you build an application with MsBuild and/or Visual Studio you work with at least 2 types of files:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The solution file (with the .sln extention)</li>
-      <li styleclass="Normal">One or more project files. XSharp projects have the .xsproj extension. CSharp projects have the .csproj extension, Visual Basic projects the .vbproj extension.</li>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">使用 MsBuild 和/或 Visual Studio 生成应用程序时，至少要使用两种类型的文件：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">解决方案文件（扩展名为 .sln）</li>
+      <li styleclass="Normal">一个或多个项目文件。XSharp 项目的扩展名为 .xsproj。CSharp 项目的扩展名为 .csproj，Visual Basic 项目的扩展名为 .vbproj。</li>
     </list>
-    <para styleclass="Heading2">The solution file (.sln)</para>
-    <para styleclass="Normal">The solution file is a text file with a list of project files and other information. Each project entry looks like this:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">解决方案文件 (.sln)</para>
+    <para styleclass="Normal">解决方案文件是一个包含项目文件列表和其他信息的文本文件。每个项目如下所示</para>
     <para styleclass="Code Example">Project(&quot;&lt;language guid&gt;&quot;) = &quot;&lt;ProjectName&gt;&quot;, &quot;&lt;Path and filename of the project file&gt;&quot;, &quot;&lt;project guid&gt;&quot;<br/>EndProject</para>
-    <para styleclass="Body Text">The &lt;language guid&gt; is always &quot;{AA6C8D78-22FF-423A-9C7C-5F2393824E04}&quot; for X# projects. This tells Visual Studio which project system to use to open the project file.</para>
-    <para styleclass="Body Text">The &lt;project guid&gt; is a generated and should match the project GUID that is defined inside the .xsproj file. These guids are also used in other sections of the .sln file.</para>
-    <para styleclass="Body Text"><br/>Other language guids that you may see are {FAE04EC0-301F-11D3-BF4B-00C04F79EFBC} and {9A19103F-16F7-4668-BE54-9A1E7A4F7556} for C# and {2150E333-8FDC-42A3-9474-1A3956D46DE8} for subfolders in your solution. There are many more guids of course.</para>
+    <para styleclass="Body Text">对于 X# 项目，&lt;language guid&gt; 始终为&quot;{AA6C8D78-22FF-423A-9C7C-5F2393824E04}&quot;。这将告诉 Visual Studio 使用哪个项目系统打开项目文件。</para>
+    <para styleclass="Body Text">&lt;project guid&gt; 是生成的，应与 .xsproj 文件中定义的项目 GUID 相匹配。这些 guid 也用于 .sln 文件的其他部分。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal">Solution files also contain sections that describe the various configurations that are available for the solution (such as &quot;Debug&quot; and &quot;Release&quot;) and a section that maps solution configurations to project configurations and sometimes also a section that indicates how the source code control bindings for each of the projects are.</para>
+    <para styleclass="Body Text">您可能会看到的其他语言 guid ，包括用于 C# 的 {FAE04EC0-301F-11D3-BF4B-00C04F79EFBC} 和 {9A19103F-16F7-4668-BE54-9A1E7A4F7556} 以及用于解决方案中子文件夹的 {2150E333-8FDC-42A3-9474-1A3956D46DE8}。当然，还有更多 guid。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">解决方案文件还包含描述解决方案可用的各种配置（如 &quot;调试 &quot;和 &quot;发布&quot;）的部分，以及将解决方案配置映射到项目配置的部分，有时还包含说明每个项目的源代码控制绑定方式的部分。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">对于 X# 应用程序的实际生成过程，我们可以暂时忽略解决方案文件。解决方案文件与语言无关。生成是根据项目文件中的信息完成的。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2">XSharp 项目文件 (.xsproj)</para>
+    <para styleclass="Normal">项目文件包含使用 MsBuild 构建 X# 项目所需的所有说明。该文件是一个文本文件，以 MsBuild 能理解的特定格式包含 XML 内容。</para>
+    <para styleclass="Normal">该文件包含 Visual Studio 项目属性对话框中的所有设置，以及项目中的项目（prg 文件、resx 文件、rc 文件等）列表。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For the actual build process of your X# apps we can ignore the solution file for now. Solution files are &quot;language agnostic&quot;. The building is done based on information in the project file. </para>
-    <para styleclass="Heading2">The XSharp project file (.xsproj)</para>
-    <para styleclass="Normal">The project file contains all the instructions that are needed to build a X# project with MsBuild. The file is a Text file and contains XML contents in a specific format that MsBuild understands. <br/>The file contains all the settings that you can set from the project properties dialogs in Visual Studio and also a list of the items (prg files, resx files, rc files etc) in the project. </para>
+    <para styleclass="Normal">该文件使用了一些常用信息，这些信息安装在 XSharp 安装文件夹内的 MsBuild 子文件夹中，与您使用的 Visual Studio 版本相一致。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The file uses some common information that is installed in a MsBuild subfolder inside the XSharp installation folder that belongs to the Visual Studio version that you are using. <br/></para>
-    <para styleclass="Normal">The most important pieces in the file are for now:</para>
+    <para styleclass="Normal">目前，该文件中最重要的部分是</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Item</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">项目</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -65,57 +71,60 @@
           <para styleclass="Normal">&lt;Import Project=&quot;$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props&quot; /&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">This imports default settings for XSharp from the XSharp folder inside the current MsBuild folder. This file contains several default values for XSharp and also imports default values from a common file delivered by Microsoft (Microsoft.Common.props)</para>
+          <para styleclass="Normal">这将从当前 MsBuild 文件夹中的 XSharp 文件夹导入 XSharp 的默认设置。该文件包含多个 XSharp 的默认值，同时还从微软提供的通用文件（Microsoft.Common.props）中导入默认值。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Several &lt;PropertyGroup&gt; sections.</para>
+          <para styleclass="Normal">若干 &lt;PropertyGroup&gt; 部分</para>
         </td>
         <td>
-          <para styleclass="Normal">These sections contain values for the several options that you can find on the Project Properties dialog in Visual Studio. Some values are for all configurations, some values are configuration specific.<br/>These settings will be transformed to command line options for the X# compiler.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;Reference&gt; items</para>
-        </td>
-        <td>
-          <para styleclass="Normal">The &lt;Reference&gt; items describe so called Assembly references that your project has. Usually you will find something like &lt;Reference Include=&quot;System&quot; /&gt; in there. Reference Items may also contain more information such as a version number etc. These references will be converted to<text styleclass="Code with box">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference" styleclass="Body Text">-reference</link><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference"> </link>command line options for the compiler </para>
+          <para styleclass="Normal">这些部分包含 Visual Studio 中 &quot;项目属性 &quot;对话框中几个选项的值。有些值适用于所有配置，有些值则针对特定配置。</para>
+          <para styleclass="Normal">这些设置将转换为 X# 编译器的命令行选项。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;ProjectReference&gt; items</para>
+          <para styleclass="Normal">一个或多个包含 &lt;Reference&gt; 项目的 &lt;ItemGroup&gt; 部分</para>
         </td>
         <td>
-          <para styleclass="Normal">The &lt;ProjectReference&gt; items describe so called Project References to other projects inside the same solution. MsBuild will determine the build order inside the solution based on the various project references and will try to build the referenced projects first before the projects referencing them. MSBuild will include a reference to the file produced by the project reference when building the command line for the compiler.</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sectins with &lt;COMReference&gt; items</para>
-        </td>
-        <td>
-          <para styleclass="Normal">The &lt;COMReference&gt; items describe references to COM components. This may be automation servers (such as Word or Excel for example) or ActiveX components (like the Shell Explorer that we use in the <link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">email example</link>). Automation Servers will have a single COMReference with a &lt;wrappertool&gt; child node of type &quot;tlbImp&quot;. ActiveX controls will have 2 COMReferences. One with the wrappertool set to &quot;tlbimp&quot; and another with the wrappertool set to &quot;aximp&quot;. See the section below on how this is processed by MSBuild.</para>
+          <para styleclass="Normal">&lt;Reference&gt; 项描述了项目中所谓的程序集引用。通常，你会在其中找到类似 &lt;Reference Include=&quot;System&quot; /&gt; 这样的内容。引用项还可能包含更多信息，如版本号等。这些引用将被转换为编译器的 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference" styleclass="Body Text">-reference</link> 命令行选项 </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;Compile&gt; items</para>
+          <para styleclass="Normal">包含 &lt;ProjectReference&gt; 项目的一个或多个 &lt;ItemGroup&gt; 部分</para>
         </td>
         <td>
-          <para styleclass="Normal">The &lt;Compile&gt; items describe the source code items for the X# compiler. The template for the Console application has 2 of these items:<br/>&lt;Compile Include=&quot;Properties\AssemblyInfo.prg&quot; /&gt;<br/>&lt;Compile Include=&quot;Program.prg&quot; /&gt;</para>
-          <para styleclass="Normal">The &lt;Compile&gt; items may have an optional &lt;SubType&gt;child node with the value &quot;Code&quot;, &quot;Form&quot; or &quot;UserControl&quot;. This subtype is ignored by the build process but used by Visual Studio to determine the icon that is shown before the item in the tree and to determine which editor to open when the item is double clicked. &quot;Code&quot; opens the source code editor by default. The other 2 types open the Windows Forms editor.</para>
-          <para styleclass="Normal"></para>
+          <para styleclass="Normal">&lt;ProjectReference&gt; 项目描述了同一解决方案中其他项目的所谓项目引用。MsBuild 将根据各种项目引用来确定解决方案内部的构建顺序，并尝试先构建被引用的项目，然后再构建引用它们的项目。在为编译器构建命令行时，MSBuild 将包含对项目引用生成的文件的引用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">One or more &lt;ItemGroup&gt; sections with &lt;VOBinary&gt;, &lt;NativeResource&gt;,&lt;EmbeddedResource&gt; and other types of items</para>
+          <para styleclass="Normal">一个或多个带有 &lt;COMReference&gt; 项目的 &lt;ItemGroup&gt; 部分</para>
         </td>
         <td>
-          <para styleclass="Normal">&lt;NativeResource&gt; items are handled specially by the X# build process. These are combined together in an unmanaged resource. See below<br/>&lt;EmbeddedResource&gt; files are managed resources. These are handled by MSBuild. How this works is one of the things that is described in a file that is included below</para>
+          <para styleclass="Normal">&lt;COMReference&gt; 项描述了对 COM 组件的引用。这可能是自动化服务器（如 Word 或 Excel）或 ActiveX 组件（如<link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">email example</link>中使用的 Shell Explorer）。自动化服务器将有一个 COMReference，其&lt;wrappertool&gt;子节点的类型为 &quot;tlbImp&quot;。ActiveX 控件将有 2 个 COMReferences。一个将包装工具设置为 &quot;tlbimp&quot;，另一个将包装工具设置为 &quot;aximp&quot;。请参阅下面有关 MSBuild 如何处理的部分。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">一个或多个带有 &lt;Compile&gt; 项目的 &lt;ItemGroup&gt; 部分</para>
+        </td>
+        <td>
+          <para styleclass="Normal">&lt;Compile&gt; 项描述 X# 编译器的源代码项。控制台应用程序的模板中有 2 个此类项目：</para>
+          <para styleclass="Normal">&lt;Compile Include=&quot;Properties\AssemblyInfo.prg&quot; /&gt; &lt;Compile Include=&quot;Program.prg&quot; /&gt; &lt;Compile Include=&quot;Program.prg&quot; /&gt;</para>
+          <para styleclass="Normal">&lt;Compile Include=&quot;Program.prg&quot; /&gt;</para>
+          <para styleclass="Normal">&lt;Compile&gt; 项可以有一个可选的 &lt;SubType&gt; 子节点，其值为 &quot;Code&quot;（代码）、&quot;Form&quot;（表单）或 &quot;UserControl&quot;（用户控件）。该子类型会被编译过程忽略，但 Visual Studio 会使用它来确定在树中项目前显示的图标，并确定双击该项目时要打开哪个编辑器。&quot;代码 &quot;默认打开源代码编辑器。其他两种类型则打开 Windows 窗体编辑器。</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">包含 &lt;VOBinary&gt;、&lt;NativeResource&gt;、&lt;EmbeddedResource&gt; 和其他类型项目的一个或多个 &lt;ItemGroup&gt; 部分</para>
+        </td>
+        <td>
+          <para styleclass="Normal">&lt;NativeResource&gt; 项由 X# 构建流程特别处理。这些项目被合并到一个非托管资源中。参见下文</para>
+          <para styleclass="Normal">&lt;EmbeddedResource&gt; 文件是受管资源。它们由 MSBuild 处理。下面附带的一个文件对其工作原理进行了描述</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -123,94 +132,113 @@
           <para styleclass="Normal">&lt;Import Project=&quot;$(MSBuildExtensionsPath)\XSharp\XSharp.targets&quot; /&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">This file tells MSBuild how to handle the &lt;Compile&gt; and &lt;NativeResource&gt; items in the project file and also (indirectly) imports a file Microsoft.Common.targets that tells MSBuild how to handle XAML files and how to compile &lt;EmbeddedResources&gt;.</para>
+          <para styleclass="Normal">该文件告诉 MSBuild 如何处理项目文件中的 &lt;Compile&gt; 和 &lt;NativeResource&gt; 项，还（间接）导入了 Microsoft.Common.targets 文件，该文件告诉 MSBuild 如何处理 XAML 文件以及如何编译 &lt;EmbeddedResources&gt; 。</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading2">How does MSBuild locate referenced assemblies</text></para>
-    <para styleclass="Normal">When locating the referenced assemblies needed for compiling your project it looks at the following:</para>
-    <list id="4" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Consolas; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">When the reference node has a &quot;hintpath&quot; then it tries to locate the file through this path. That could look like <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&lt;HintPath&gt;..\\SDK_Defines.dll&lt;/HintPath&gt;</text></li>
-      <li styleclass="Normal">When the reference node is a &quot;normal&quot; .Net framework assembly, it looks at the folder on your file system that matches the framework version. For example when the framework version of your project is 4.6 (there will be a node <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&lt;TargetFrameworkVersion&gt;v4.6&lt;/TargetFrameworkVersion&gt; </text><text styleclass="Body Text">then it will look for System.DLL in the folder c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6</text></li>
-      <li styleclass="Normal"><text styleclass="Body Text">When the reference node is not a standard .Net framework assembly and the 3rd party vendor has registered a folder in a specific location then MsBuild will use that location. X# registers a folder in the </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text styleclass="Body Text">location. File registered in a location like this are also shown in the &quot;Add References&quot; dialogs in Visual Studio.</text></li>
-      <li styleclass="Normal">Finally (during building) MSBuild will look in the Global Assembly Cache (GAC).</li>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">MSBuild 如何定位引用的程序集</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在查找编译项目所需的引用程序集时，它会查看以下内容：</para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">当引用节点有 &quot;hintpath &quot;时，它会尝试通过该路径来定位文件。例如 &lt;HintPath&gt;...\\SDK_Defines.dll&lt;/HintPath&gt; 。</li>
+      <li styleclass="Normal">当引用节点是一个 &quot;正常的&quot;.Net 框架程序集时，它会查看文件系统中与框架版本相匹配的文件夹。例如，当项目的框架版本为 4.6 时（会有一个节点 &lt;TargetFrameworkVersion&gt;v4.6&lt;/TargetFrameworkVersion&gt; ），它将在 c:\Program Files (x86)/Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6 文件夹中查找 System.DLL。</li>
+      <li styleclass="Normal">如果引用节点不是标准的 .Net 框架程序集，并且第三方供应商已在特定位置注册了文件夹，那么 MsBuild 将使用该位置。X# 在 HKLM\Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\XSharp 位置注册了一个文件夹。在这样的位置注册的文件也会显示在 Visual Studio 的 &quot;添加引用 &quot;对话框中。</li>
+      <li styleclass="Normal">最后（在构建过程中），MSBuild 将在全局程序集缓存（GAC）中查找。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Please note that there is a difference between Compiling and Running. During the compilation the files in the reference folders have preference over files in the GAC. When running the app the GAC is used and/or the local folder or path. Files in the reference folders are NEVER used at runtime. This would also not be possible since these files have no executable code in them.</para>
-    <para styleclass="Normal">The idea behind this division is that you can have a newer Framework version &#160;installed (for example 4.8) then you would like to compile against (for example 4.6). The reference assembly in the 4.6 folder only contains the subset of the api that was available for .Net Framework 4.6. So you will not be able to (accidentally) use methods or types that were added after framework 4.6, even though these methods and/or types are installed in the GAC.</para>
+    <para styleclass="Normal">请注意，编译(Compiling)和运行(Running)是有区别的。编译时，reference 文件夹中的文件优先于 GAC 中的文件。运行应用程序时，将使用 GAC 和/或本地文件夹或路径。运行时绝对不会使用 reference 文件夹中的文件。这也是不可能的，因为这些文件中没有可执行代码。</para>
+    <para styleclass="Normal">这种划分的理念是，你可以安装一个较新的框架版本（例如 4.8），然后再根据该版本（例如 4.6）进行编译。4.6 文件夹中的 reference 程序集只包含 .Net Framework 4.6 可用的 api 子集。因此，您将无法（意外）使用框架 4.6 之后添加的方法或类型，即使这些方法和/或类型已安装在 GAC 中。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading2">How does MSBuild locate project references</text></para>
-    <para styleclass="Normal">When MSBuild delects a project reference then it tries to build that project first. When the project is successfully compiled then the output assembly from that project is included as &quot;normal&quot; reference to the X# compiler.</para>
-    <para styleclass="Heading2">How are COM references handled</para>
-    <para styleclass="Normal">COM references require special processing. MSBuild uses 2 command line tools to extract the type libraries from these COM references and produces .Net assemblies (so called Interop assemblies) that describe the COM references. There are 2 tools involved:</para>
-    <para styleclass="Normal">tlbimp.exe for automation servers</para>
-    <para styleclass="Normal">aximp.exe for ActiveX controls</para>
-    <para styleclass="Normal">In our <link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">email example</link> we are using the Shell.Explorer Active X. These 2 tools produce the files Interop.SHDocVw.dll &#160;and AxInterop.SHDocVw.dll . The AxInterop file describes the Windows Forms control and the Interop file the automation interface. In our<link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-Ole-Automation"> Excel example</link> we are referencing a &quot;precompiled&quot; assembly for Office and therefore we are not generating a new interop assembly but we are linking to a so called &quot;Primary Interop Assembly (PIA)&quot;, with the name Microsoft.Office.Interop.Excel.dll .<br/>If you include a COM component but you are not actually creating the COM objects but only consuming them then you can also set the &quot;EmbedInteropTypes&quot; option to true. When you do that then the X# compiler will copy the relevant information from the interop assembly and include that exe or dll, so you do not have to distribute the interop.dll with your application. In the Excel example that will not work because we are creating an excel application. The compiler will complain then &quot;<text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">error XS1752: Interop type &apos;Microsoft.Office.Interop.Excel.ApplicationClass&apos; cannot be embedded. Use the applicable interface instead.</text>&quot;</para>
-    <para styleclass="Normal">The resulting interop assemblies are produced before the compiler is called and are passed to the compiler as &quot;normal&quot; assembly references.</para>
-    <para styleclass="Heading2">How does MSBuild call the Native Resource compiler</para>
-    <para styleclass="Normal">When your application contains Native resources then we must compile these native resources before the X# compiler can be used, since the result of the resource compilation must be included in the final exe/dll file. Of course MSBuild does not &quot;know&quot; about X#, so we have to tell it what to do. The instructions for this are stored in the XSharp.Targets file.</para>
-    <para styleclass="Normal">This file contains the following instructions:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading2">MSBuild 如何定位项目引用</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">当 MSBuild 选中一个项目引用时，它会首先尝试编译该项目。当项目成功编译后，该项目输出的程序集将作为 &quot;正常 &quot;引用包含到 X# 编译器中。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">如何处理 COM 引用</para>
+    <para styleclass="Normal">COM 引用需要特殊处理。MSBuild 使用两个命令行工具从这些 COM 引用中提取类型库，并生成描述 COM 引用的 .Net 程序集（即所谓的 Interop 程序集）。涉及 2 个工具：</para>
+    <para styleclass="Normal">用于自动化服务器的 tlbimp.exe</para>
+    <para styleclass="Normal">用于 ActiveX 控件的 aximp.exe</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在我们的<link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-The-Email-Client-Exa">email example</link>中，我们使用的是 Shell.Explorer Active X。这两个工具会生成 Interop.SHDocVw.dll 和 AxInterop.SHDocVw.dll 文件。AxInterop 文件描述的是 Windows 窗体控件，Interop 文件描述的是自动化界面。在 <link displaytype="text" defaultstyle="true" type="topiclink" href="Example-4-Ole-Automation">Excel example</link>&#32;中，我们引用的是 Office 的 &quot;预编译 &quot;程序集，因此我们并没有生成一个新的互操作程序集，而是链接到一个所谓的 &quot;主要互操作程序集 (PIA)&quot;，其名称为 Microsoft.Office.Interop.Excel.dll 。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果您包含一个 COM 组件，但实际上并不创建 COM 对象，而只是消费 COM 对象，那么您也可以将 &quot;EmbedInteropTypes&quot;（嵌入互操作类型）选项设置为 true。这样，X# 编译器就会从互操作程序集中复制相关信息，并包含该 exe 或 dll，因此您无需在应用程序中发布 interop.dll。在 Excel 示例中，这样做是行不通的，因为我们创建的是 excel 应用程序。编译器会报错 &quot;<text style="font-style:italic;">错误 XS1752：无法嵌入 Interop 类型 &apos;Microsoft.Office.Interop.Excel.ApplicationClass&apos;。请使用适用的接口</text>&quot;。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">由此产生的互操作程序集会在编译器调用之前生成，并作为 &quot;普通 &quot;程序集引用传递给编译器。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">MSBuild 如何调用本地资源编译器</para>
+    <para styleclass="Normal">当您的应用程序包含本地资源时，我们必须在使用 X# 编译器之前编译这些本地资源，因为资源编译的结果必须包含在最终的 exe/dll 文件中。当然，MSBuild 并不 &quot;了解 &quot;X#，因此我们必须告诉它该怎么做。相关指令存储在 XSharp.Targets 文件中。</para>
+    <para styleclass="Normal">该文件包含以下指令：</para>
     <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;NativeResourceCompiler&quot; AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot; /&gt;<br/>&lt;NativeResourceCompiler&gt; .... &lt;/NativeResourceCompiler&gt;</para>
-    <para styleclass="Normal">The first entry tells the compiler that there is a special DLL in the XSharp folder with the name XSharp.Build.dll. This DLL contains a type NativeResourceCompile, which is a subtype of Microsoft.Build.Utilities.ToolTask.<br/>The second entry tells MSBuild how to pass information to this task to build the native resources.<br/>This includes a list of all items from the project file with the itemtype &lt;NativeResource&gt;. <br/>The task will then try to find the native resource compiler. To do that it looks in the registry in the following key:</para>
-    <para styleclass="Normal">- When running in 64 bit mode: &quot;HKEY_LOCAL_MACHINE\Software\WOW6432Node\XSharpBV\XSharp&quot;</para>
-    <para styleclass="Normal">- When running in 32 bit mode: &quot;HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp&quot;</para>
-    <para styleclass="Normal">Inside this key it looks for the (string) value <text style="font-weight:bold;">XSharpPath</text> which is set by the installer at compile time.</para>
-    <para styleclass="Normal">When it can&apos;t find that path it defaults to &quot;C:\Program Files (x86)\XSharp&quot;</para>
-    <para styleclass="Normal">The task will then look for the <text style="font-weight:bold;">rc.exe </text>program in the Bin subfolder below that folder.</para>
-    <para styleclass="Normal">When the tool is found then this task checks for the date/time stamps of the various .rc files and compares these with the date/time stamp of the output file (NativeResources.res ) in the &quot;intermediate&quot; folder. If the output file is older or does not exist then a command line for rc.exe is constructed and the compiler is called. </para>
-    <para styleclass="Normal">For this call we create a unique temporary rsp file in your temp folder. We are also saving the last version of this file in the file &#160;&quot;LastXSharpNativeResourceResponseFile.Rsp&quot;.</para>
-    <para styleclass="Normal">If you want to see which information was passed to the native resource compiler you can look for this file in your temp folder.</para>
-    <para styleclass="Normal">The resulting NativeResources.res will be passed to the X# compiler later to be included in the exe/dll. For this we use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/win32res</link> command line option of xsc.exe.</para>
-    <para styleclass="Heading2">How are managed resources compiled</para>
-    <para styleclass="Normal">The compilation process for managed resources is mostly managed by MSBuild itself. It already knows how to handle these.<br/>We do declare a task </para>
-    <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;CreateXSharpManifestResourceName&quot; AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot;/&gt;<br/>&lt;CreateXSharpManifestResourceName&gt; ... &lt;/CreateXSharpManifestResourceName&gt;</para>
-    <para styleclass="Normal">This task is also located in the same XSharp.Build.DLL and is used to help MSBuild to detect the right namespace for the generated resources. </para>
-    <para styleclass="Normal">The result of the managed resource compilation is that .resx files are compiled to one or more .resources file. These .resources files are then later passed to the compiler with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resources</link> command line option of xsc.exe.</para>
-    <para styleclass="Heading2">Processing of XAML files</para>
-    <para styleclass="Normal">If you are creating a project that contains WPF windows or controls then an extra step is needed to produce the exe/dll. </para>
-    <para styleclass="Normal">In this step MSBuild produces so called <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">.baml </text><text styleclass="Body Text">files and calls a code generator to generate source code for each XAML file. </text></para>
-    <para styleclass="Normal"><text styleclass="Body Text">For the WPF template 2 source files are produced:</text></para>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Body Text">WPFWindow1.g.prg</text></li>
-      <li styleclass="Normal"><text styleclass="Body Text">App.g.prg</text></li>
-    </list>
-    <para styleclass="Normal"><text styleclass="Body Text">These source files are automatically added to the command line for the X# compiler.</text></para>
-    <para styleclass="Normal"><text styleclass="Body Text">These source files contain a class declaration with a InitializeComponent() method that sets up the controls in your window. If you have named your controls then for each control with a name there will also be a field in the class and the generated Connect() method will set these fields to the control generated by the framework when the form is loaded.</text></para>
-    <para styleclass="Normal"><text styleclass="Body Text">App.g.prg also contains a class and a function Start() that is responsible for starting up your application.</text></para>
+    <para styleclass="Normal">第一个条目告诉编译器在 XSharp 文件夹中有一个特殊的 DLL，名为 XSharp.Build.dll。该 DLL 包含一个 NativeResourceCompile 类型，它是 Microsoft.Build.Utilities.ToolTask 的子类型。</para>
+    <para styleclass="Normal">第二个条目告诉 MSBuild 如何将信息传递给该任务以编译本地资源。</para>
+    <para styleclass="Normal">这包括项目文件中所有 item 类型为 &lt;NativeResource&gt; 的项目列表。</para>
+    <para styleclass="Normal">然后，该任务将尝试查找本地资源编译器。为此，它会在注册表中查找以下键值：</para>
+    <para styleclass="Normal">- 在 64 位模式下运行时 &quot;HKEY_LOCAL_MACHINE\Software\WOW6432Node\XSharpBV\XSharp</para>
+    <para styleclass="Normal">- 在 32 位模式下运行时 &quot;HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp</para>
+    <para styleclass="Normal">在该键中，它会查找安装程序在编译时设置的 XSharpPath（字符串）值。</para>
+    <para styleclass="Normal">如果找不到该路径，它就会默认为 &quot;C:\Program Files (x86)\XSharp&quot; 。</para>
+    <para styleclass="Normal">然后，该任务将在该文件夹下的 Bin 子文件夹中查找 rc.exe 程序。</para>
+    <para styleclass="Normal">找到工具后，该任务会检查各种 .rc 文件的日期/时间戳，并将其与 &quot;intermediate &quot;文件夹中输出文件（NativeResources.res）的日期/时间戳进行比较。如果输出文件的日期较早或不存在，则会创建 rc.exe 的命令行并调用编译器。</para>
+    <para styleclass="Normal">为此，我们会在临时文件夹中创建一个唯一的临时 rsp 文件。我们还会在文件 &quot;LastXSharpNativeResourceResponseFile.Rsp &quot;中保存该文件的最后版本。</para>
+    <para styleclass="Normal">如果想查看传递给本地资源编译器的信息，可以在临时文件夹中查找该文件。</para>
+    <para styleclass="Normal">生成的 NativeResources.res 将随后传递给 X# 编译器，并包含在 exe/dll 中。为此，我们使用 xsc.exe 的 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res">/win32res</link> 命令行选项。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold;">Note</text><text styleclass="Body Text">: This source code is generated by a tool that we have registered in </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">c:\Windows\Microsoft.NET\Framework\v4.0.30319\Config\machine.config .</text></para>
+    <para styleclass="Heading2">托管资源是如何汇编的</para>
+    <para styleclass="Normal">托管资源的编译过程主要由 MSBuild 本身管理。它已经知道如何处理这些资源。</para>
+    <para styleclass="Normal">我们确实声明了一个任务 </para>
+    <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;CreateXSharpManifestResourceName&quot; AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot;/&gt;<br/>&lt;CreateXSharpManifestResourceName&gt; ... &lt;/CreateXSharpManifestResourceName&gt;</para>
+    <para styleclass="Normal">该任务同样位于 XSharp.Build.DLL 中，用于帮助 MSBuild 为生成的资源检测正确的命名空间。</para>
+    <para styleclass="Normal">托管资源编译的结果是，.resx 文件被编译成一个或多个 .resources 文件。这些 .resources 文件随后会通过 xsc.exe 的 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">/resources</link> 命令行选项传递给编译器。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">处理 XAML 文件</para>
+    <para styleclass="Normal">如果创建的项目包含 WPF 窗口或控件，则需要额外的步骤来生成 exe/dll。</para>
+    <para styleclass="Normal">在这一步中，MSBuild 会生成所谓的 .baml 文件，并调用代码生成器为每个 XAML 文件生成源代码。</para>
+    <para styleclass="Normal">对于 WPF 模板，将生成 2 个源文件：</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">WPFWindow1.g.prg</li>
+      <li styleclass="Normal">App.g.prg</li>
+    </list>
+    <para styleclass="Normal">这些源文件会自动添加到 X# 编译器的命令行中。</para>
+    <para styleclass="Normal">这些源文件包含一个带有 InitializeComponent() 方法的类声明，用于设置窗口中的控件。如果您已为控件命名，那么每个控件的名称都会在类中包含一个字段，生成的 Connect() 方法会在加载表单时将这些字段设置为框架生成的控件。</para>
+    <para styleclass="Normal">App.g.prg 还包含一个负责启动应用程序的类和函数 Start()。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-weight:bold;">注意：</text>此源代码由我们在 c:\Windows\Microsoft.NET\Framework\v4.0.30319\Config\machine.config 中注册的工具生成。</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160;&lt;system.codedom&gt;</text></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;&lt;compilers&gt;</text></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;&lt;compiler language=&quot;XSharp&quot; extension=&quot;.prg&quot; type=&quot;XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version=2.1.0.0, Culture=neutral, </text></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL&quot; /&gt;</text></para>
     <para styleclass="Normal"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;&lt;/compilers&gt;</text></para>
-    <para styleclass="Normal"><text styleclass="Body Text">The XSharpCodeDomProvider.dll &#160;assembly is registered in the GAC and it contains a XSharpCodeGenerator type that is responsible for the code generation. </text></para>
-    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold;">Note</text><text styleclass="Body Text">: this tool uses the keyword case setting that was specified in your Visual Studio options for the X# text editor.</text></para>
-    <para styleclass="Heading2">How does MSBuild call the X# compiler</para>
-    <para styleclass="Normal">When MSBuild has successfully handled all external references and has created the &quot;code behind&quot; for XAML files compiled the native and managed resources then it calls the X# compiler. <br/>Similar to how the native resource compiler is called the XSharp.Targets file also has instructions on how to call the compiler:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Body Text">XSharpCodeDomProvider.dll 程序集已在 GAC 中注册，其中包含一个负责代码生成的 XSharpCodeGenerator 类型。</text></para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold;">注意：</text><text styleclass="Body Text">该工具使用在 Visual Studio 选项中为 X# 文本编辑器指定的关键字大小写设置。</text></para>
+    <para styleclass="Heading2">MSBuild 如何调用 X# 编译器</para>
+    <para styleclass="Normal">当 MSBuild 成功处理了所有外部引用并创建了 XAML 文件的 &quot;后面的代码&quot;，编译了本地和托管资源后，它就会调用 X# 编译器。</para>
+    <para styleclass="Normal">与本地资源编译器的调用方式类似，XSharp.Targets 文件也包含如何调用编译器的说明：</para>
     <para styleclass="Code Example">&lt;UsingTask TaskName=&quot;XSharp.Build.Xsc&quot; &#160;AssemblyFile=&quot;$(MSBuildThisFileDirectory)XSharp.Build.dll&quot;/&gt;<br/>&lt;Xsc&gt; ..... &lt;/Xsc&gt;</para>
-    <para styleclass="Normal">Again this describes a class in the XSharp.Build.DLL and the &lt;Xsc&gt; entry describes the properties of this type that need to be set.</para>
-    <para styleclass="Normal">The Xsc task looks for the xsc.exe just like how the native resource compiler does this:</para>
-    <para styleclass="Normal">- It looks for the installation location in the registry</para>
-    <para styleclass="Normal">- It defaults to the &#160;&quot;C:\Program Files (x86)\XSharp&quot; folder</para>
-    <para styleclass="Normal">There is one difference:</para>
-    <para styleclass="Normal">- It also looks for an environment variable &quot;XSHARPDEV&quot;. When this environment variable exists it assumes that this is an alternate location where it can find the xsc.exe. We are using this internally so we can compiler with a newer version of the compiler than the one that is installed inside C:\Program Files (x86)\XSharp. You may use if you want to work with more than one version of the compiler on your machine.</para>
+    <para styleclass="Normal">这同样描述了 XSharp.Build.DLL 中的一个类，&lt;Xsc&gt; 条目描述了需要设置的该类属性。</para>
+    <para styleclass="Normal">Xsc 任务会查找 xsc.exe，就像本地资源编译器一样：</para>
+    <para styleclass="Normal">- 它会在注册表中查找安装位置</para>
+    <para styleclass="Normal">- 默认为 &quot;C:\Program Files (x86)\XSharp &quot;文件夹</para>
+    <para styleclass="Normal">有一点不同：</para>
+    <para styleclass="Normal">- 它还会查找环境变量 &quot;XSHARPDEV&quot;。当这个环境变量存在时，它会假定这是一个可以找到 xsc.exe 的备用位置。我们在内部使用它，这样就可以使用比安装在 C:\Program Files (x86)\XSharp 中的版本更新的编译器进行编译。如果你想在你的机器上使用多个版本的编译器，你可以使用它。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When we can find the xsc.exe compiler then we construct the command line to the compiler. We are creating a unique temporaty RSP file in the temp folder, just like we do for the native resource compiler. We are also saving the last version of this file to the &#160;&quot;LastXSharpResponseFile.Rsp&quot; file in that folder.</para>
-    <para styleclass="Normal">If you have enabled the &quot;Shared&quot; compiler on the Build page in your project properties (this defaults to true) then we add the command line option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-shared">/shared</link>. This will tell xsc.exe to run XSCompiler.exe and pass the command line to that tool. XSCompiler.exe will continue to run in memory even after the compilation is finished and will cache type information from referenced assemblies. As a result a second compilation of the same project will usually be much faster, since all the relevant type information is already cached. Of course the compiler is smart enough to detect when a referenced DLL was changed (the reference could be generated from a referenced project) and will then reload the type information from that reference. Normally you will only see one copy of XSCompiler.exe running memory. You may see multiple copies of xsc.exe running in memory when MSBuild detects that 2 projects in the same solution are &quot;independent&quot; and can be compiled simultaneously.</para>
-    <para styleclass="Normal">The only situation where you might see 2 copies of XSCompiler.exe running in memory is when projects are compiled with difference settings for case sensitivity (the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">/cs</link> command line option). One of the 2 copies will then have a case sensitive type cache and the other a case insensitive type cache.</para>
-    <para styleclass="Heading2">Debugging MSBuild</para>
-    <para styleclass="Normal">If you want to see what MSBuild imports when compiling your xsproj file you can call MSBuild with a special commandline option. To do so open a visual studio developer command prompt and type the following:</para>
+    <para styleclass="Normal">找到 xsc.exe 编译器后，我们就可以为编译器创建命令行。我们将在临时文件夹中创建一个唯一的临时 RSP 文件，就像本地资源编译器一样。我们还会将该文件的最后一个版本保存到该文件夹中的 &quot;LastXSharpResponseFile.Rsp &quot;文件中。</para>
+    <para styleclass="Normal">如果已在项目属性的 &quot;生成(Build)&quot;页面上启用了 &quot;Shared &quot;编译器（默认为 true），那么我们可以添加命令行选项 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-shared">/shared</link>。这将告诉 xsc.exe 运行 XSCompiler.exe，并将命令行传递给该工具。即使在编译完成后，XSCompiler.exe 仍会继续在内存中运行，并缓存引用程序集的类型信息。因此，同一项目的第二次编译通常会更快，因为所有相关的类型信息都已缓存。当然，编译器有足够的智能来检测引用的 DLL 是否发生了更改（该引用可能由引用的项目生成），然后重新加载该引用的类型信息。通常情况下，你只会看到一个 XSCompiler.exe 副本在内存中运行。当 MSBuild 检测到同一解决方案中的两个项目是 &quot;独立 &quot;的，可以同时编译时，您可能会看到多个 xsc.exe 副本在内存中运行。</para>
+    <para styleclass="Normal">只有在编译项目时使用不同的大小写敏感度设置（ <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">/cs</link> 命令行选项），才会在内存中运行两个 XSCompiler.exe 副本。这时，两个副本中的一个会有大小写敏感类型缓存，另一个则有大小写不敏感类型缓存。</para>
+    <para styleclass="Heading2">调试 MSBuild</para>
+    <para styleclass="Normal">如果想查看 MSBuild 在编译 xsproj 文件时导入了哪些内容，可以使用一个特殊的命令行选项来调用 MSBuild。为此，请打开 visual studio developer 命令提示符并键入以下内容：</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">msbuild -preprocess &lt;yourproject.xsproj&gt; &gt; preprocessed.proj</text></para>
-    <para styleclass="Normal">The resulting preprocess.proj file will be an XML file that contains all imported instructions. You can open this inside Visual Studio. You may want to Format the document to make it a bit more readable.</para>
-    <para styleclass="Normal">You should see that all &quot;&lt;Import project&quot; nodes are now converted to comments and the contents of these imported files is inserted into the preprocessed output. </para>
-    <para styleclass="Normal">Some imports had a condition that was not met and these are just in the file as comments.</para>
-    <para styleclass="Normal">The generated file is HUGE (the WPF template produces a file of over 8700 lines and some of these lines are thousands of characters wide. Almost all of the first 8600 lines of this preprocessed file are all imported.</para>
-    <para styleclass="Normal">Somewhere in this file you will see that MSBuild.</para>
-    <para styleclass="Normal">Please note that you are NOT able to build the output file. It just serves to see what MSBuild imports to create your project.</para>
+    <para styleclass="Normal">生成的 preprocess.proj 文件将是一个 XML 文件，其中包含所有导入的指令。您可以在 Visual Studio 中打开该文件。您可能需要格式化该文件，使其更具可读性。</para>
+    <para styleclass="Normal">你应该看到，所有&quot;&lt;Import project&gt;&quot;节点现在都已转换为注释，这些导入文件的内容已插入预处理输出中。</para>
+    <para styleclass="Normal">有些导入文件的条件未得到满足，这些内容将作为注释出现在文件中。</para>
+    <para styleclass="Normal">生成的文件非常庞大（WPF 模板生成的文件超过 8700 行，其中一些行长达数千字符。这个预处理文件的前 8600 行几乎都是导入的。</para>
+    <para styleclass="Normal">在该文件的某处，您会看到 MSBuild.Net 文件。</para>
+    <para styleclass="Normal">请注意，您<text style="font-weight:bold;">无法</text>构建输出文件。它只是用来查看 MSBuild 在创建项目时导入了哪些内容。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you want to see how msbuild resolves the various references you should call msbuild from the command line and add the command line option to show detailed info. The /target:rebuild on the next line makes sure that everything is rebuilt. If you are compiling a project with native resources, managed resources or xaml files you should also see the logging of the tools that process this.</para>
+    <para styleclass="Normal">如果你想查看 msbuild 如何解析各种引用，应该从命令行调用 msbuild，并添加命令行选项以显示详细信息。下一行的 /target:rebuild 将确保所有内容都被重建。如果编译的项目包含本地资源、托管资源或 xaml 文件，则还应查看处理这些资源的工具的日志。</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">msbuild -verbosity:detailed &lt;yourproject.xsproj&gt; /target:rebuild &gt;buildlog.txt</text></para>
     <para styleclass="Normal"></para>
   </body>

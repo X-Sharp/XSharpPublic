@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T02:57:16.941+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9064</title>
   <keywords>
     <keyword>XS9064</keyword>
@@ -9,9 +9,10 @@
     <header>
       <para styleclass="Heading1">Warning XS9064</para>
     </header>
-    <para styleclass="Normal">Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This warning occurs when you are assigning a value directly to a foreach loop variable</para>
+    <para styleclass="Normal">不能赋值给 &apos;{0}&apos;，因为它是一个 &apos;{1}&apos;。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">当您直接向 foreach 循环变量赋值时，会出现此警告</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

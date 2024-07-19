@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T02:55:13.154+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9062</title>
   <keywords>
     <keyword>XS9062</keyword>
@@ -9,11 +9,12 @@
     <header>
       <para styleclass="Heading1">Error XS9062</para>
     </header>
-    <para styleclass="Normal">The {0} name &apos;{1}&apos; conflicts with the compiler generated globals name &apos;{2}&apos;. You should either rename the type or the output assembly.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This error may occur when you have a class or other type that has the same name as the assembly that it is located in.</para>
-    <para styleclass="Normal">The compiler will generate a special class for global members, such as defines, globals, functions and procedures.</para>
-    <para styleclass="Normal">The name of that class is derived from the assembly name and has a name conflict with the class that you have declared yourself.</para>
-    <para styleclass="Normal">You need to either rename the class or the output assembly</para>
+    <para styleclass="Normal">{0} 名称 &apos;{1}&apos; 与编译器生成的全局名称 &apos;{2}&apos; 相冲突。应重新命名类型或输出程序集。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果类或其他类型的名称与其所在的程序集名称相同，则可能出现此错误。</para>
+    <para styleclass="Normal">编译器会为 defines、globals、函数和过程等全局成员生成一个特殊类。</para>
+    <para styleclass="Normal">该类的名称源于程序集名称，与你自己声明的类有名称冲突。</para>
+    <para styleclass="Normal">您需要重新命名该类或输出程序集</para>
   </body>
 </topic>

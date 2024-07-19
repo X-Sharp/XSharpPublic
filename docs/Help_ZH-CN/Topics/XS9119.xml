@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Warning XS9119</title>
-<keywords>
-<keyword>XS9119</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Warning XS9119</para>
-  </header>
-  <para styleclass="Normal">Property parameters should be specified between Square Brackets (&apos;[ <parameters> ]&apos;).</para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-15T04:00:35.337+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Warning XS9119</title>
+  <keywords>
+    <keyword>XS9119</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9119</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">属性参数应在方括号（&apos;[ ]&apos;）之间指定。</para>
+  </body>
 </topic>

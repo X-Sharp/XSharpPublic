@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T14:01:53.809+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0108</title>
   <keywords>
     <keyword>XS0108</keyword>
@@ -9,9 +9,10 @@
     <header>
       <para styleclass="Heading1">Warning XS0108</para>
     </header>
-    <para styleclass="Body Text">&apos;member1&apos; hides inherited member &apos;member2&apos;. Use the new keyword if hiding was intended.</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">please check the compiler option /VO3 Virtual Instance Methods or add the keyword virtual to your methods.</para>
-    <para styleclass="Body Text">Bby default METHODs and PROPERTIEs in .Net are not VIRTUAL, meaning that you cannot override a method of a base class by redefining it in a child class, like we do in VO, this instead creates a completely new method, from the CLR&apos;s point of view. In order to allow a (base) method to be overwritten , you must explicitly mark it with the VIRTUAL keyword. Or, you van simply enable the “All instance methods virtual” project option, which tells the compiler to make all methods VIRTUAL by default, for compatibility with VO. Both ways should get rid of the warning.</para>
+    <para styleclass="Body Text">&apos;member1&apos; 会隐藏继承成员 &apos;member2&apos;。如果要隐藏，请使用新关键字。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">请检查编译器选项 /VO3 虚拟实例方法或在方法中添加关键字 virtual。</para>
+    <para styleclass="Body Text">默认情况下，.Net 中的方法（METHOD）和属性（PROPERTIE）都不是虚的，这意味着您不能像在 VO 中那样，通过在子类中重新定义来覆盖基类的方法，从 CLR 的角度来看，这反而会创建一个全新的方法。为了允许（基类）方法被覆盖，必须明确地用 VIRTUAL 关键字标记它。或者，你也可以启用 “所有实例方法都是虚的” 项目选项，该选项会告诉编译器默认情况下所有方法都是虚的，以便与 VO 兼容。这两种方法都可以消除警告。</para>
   </body>
 </topic>

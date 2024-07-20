@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T13:58:31.441+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0112</title>
   <keywords>
     <keyword>XS0112</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">Error XS0112</para>
     </header>
-    <para styleclass="Normal">A static member &apos;{0}&apos; cannot be marked as override, virtual, or abstract</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">静态成员 &apos;{0}&apos; 不能标记为 override、virtual 或 abstract</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

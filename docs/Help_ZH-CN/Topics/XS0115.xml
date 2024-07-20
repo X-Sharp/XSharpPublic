@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T14:05:21.869+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0115</title>
   <keywords>
     <keyword>XS0115</keyword>
@@ -9,18 +9,17 @@
     <header>
       <para styleclass="Heading1">Error XS0115</para>
     </header>
-    <para styleclass="Normal">&apos;function&apos; : no suitable method found to override</para>
+    <para styleclass="Normal">&apos;function&apos; : 未找到合适的重写方法</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A method was marked as an override, but the compiler found no method to override. For more information, see override, and Knowing When to Use Override and New Keywords.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">方法标记为 override，但编译器未找到重写方法。 有关详细信息，请参阅 override 和了解何时使用 Override 和 New 关键字。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0115. You can resolve XS0115 in one of two ways:</para>
+    <para styleclass="Normal">下面的示例生成 CS0115。 可通过以下列两种方法之一解决 CS0115 错误：</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Remove the <text styleclass="Code Example">override</text> keyword from the method in <text styleclass="Code Example">MyClass2</text>.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Use <text styleclass="Code Example">MyClass1</text> as a base class for <text styleclass="Code Example">MyClass2</text>.</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">从 MyClass2 中的方法删除 override 关键字</li>
+      <li styleclass="Normal" style="margin-left:13px;">将 MyClass1 用作 MyClass2 的基类</li>
     </list>
-    <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">// XS0115.prg &#160;<br/></para>
     <para styleclass="Normal"></para>

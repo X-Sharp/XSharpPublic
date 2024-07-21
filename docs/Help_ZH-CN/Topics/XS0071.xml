@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T13:34:51.569+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0071</title>
   <keywords>
     <keyword>XS0071</keyword>
@@ -9,12 +9,13 @@
     <header>
       <para styleclass="Heading1">Error XS0071</para>
     </header>
-    <para styleclass="Normal">An explicit interface implementation of an event must use event accessor syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When explicitly implementing an event that was declared in an interface, you must use manually provide the add and remove event accessors that are typically provided by the compiler. The accessor code can connect the interface event to another event in your class (shown later in this topic), or to its own delegate type. For more information, see How to: Implement Interface Events.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">事件的显式接口实现必须使用事件访问器语法</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0071.</para>
+    <para styleclass="Normal">显式实现在接口中声明的事件时，必须手动提供通常由编译器提供的 add 和 remove 事件访问器。 访问器代码可将接口事件连接到类中的另一事件（稍后在本主题中介绍），或连接到其自身的委托类型。 有关详细信息，请参阅如何实现接口事件。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下面的示例生成 XS0071.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">// XS0071.prg &#160;<br/><br/>} &#160;</para>

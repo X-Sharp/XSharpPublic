@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T13:39:25.636+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0078</title>
   <keywords>
     <keyword>XS0078</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">Warning XS0078</para>
     </header>
-    <para styleclass="Normal">The &apos;l&apos; suffix is easily confused with the digit &apos;1&apos; -- use &apos;L&apos; for clarity</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">后缀 “l ”容易与数字 “1 ”混淆--使用 “L ”更清晰</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

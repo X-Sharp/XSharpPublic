@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>XS8022</title>
-<keywords>
-<keyword>XS8022</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Error XS8022</para>
-  </header>
-  <para styleclass="Normal">Feature &apos;{0}&apos; is not available in X# 1.  </para>
-  <para styleclass="Normal"></para>
-</body>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-20T17:11:24.081+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS8022</title>
+  <keywords>
+    <keyword>XS8022</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS8022</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">功能 &apos;{0}&apos; 在 X# 1 中不可用</para>
+    <para styleclass="Normal"></para>
+  </body>
 </topic>

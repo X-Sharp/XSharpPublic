@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T20:01:16.028+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T12:53:13.735+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Vulcan</title>
   <keywords>
     <keyword>&apos;@&apos;</keyword>
@@ -18,7 +18,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">这种方言具有“<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">所有非 Core 方言</link>”的特征。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">编译器和运行时在编译“Vulcan”方言时具有以下“特殊”行为。</para>
+    <para styleclass="Normal">编译器和运行时在编译 “Vulcan” 方言时具有以下“特殊”行为。</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">不允许使用 4 个字母的关键字缩写</li>
@@ -27,7 +27,7 @@
       <li styleclass="Normal">不支持内存变量</li>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">不允许将 &amp;&amp; 作为同行注释字符（&amp;&amp; 在 Vulcan 中表示 .AND.）</li>
+      <li styleclass="Normal">不允许将 &amp;&amp; 作为同行注释字符(&amp;&amp; 在 Vulcan 中表示 .AND.)</li>
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">单引号用于字符字面量</li>

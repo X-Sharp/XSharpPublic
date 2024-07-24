@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Popup" modified="2024-05-26T11:34:07.889+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Popup" modified="2024-07-24T12:18:08.425+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeStrongTyping</title>
   <body>
     <para styleclass="Heading1">强类型方法</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">除了 &lt;%APP%&gt; 的无类型方法实现外，现在还支持方法参数和返回值的<text style="font-weight:bold;">强类型</text>，这为您提供了一种可以获得高度稳定代码的机制。提供的类型信息使编译器能够执行必要的类型检查，从而保证更高的代码质量稳定性。</para>
+    <para styleclass="Normal">除了 &lt;%APP%&gt; 的非类型化方法实现外，现在还支持方法参数和返回值的<text style="font-weight:bold;">强类型</text>，这为您提供了一种可以获得高度稳定代码的机制。提供的类型信息使编译器能够执行必要的类型检查，从而保证更高的代码质量稳定性。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">使用强类型方法的另一个好处是性能。强类型方法的实现假定当程序员使用强类型消息时，编译器可以有效地为相应的方法调用执行<text style="font-weight:bold;">早期绑定(early binding)</text>。由于这种实现，强类型方法的调用比相应的无类型方法调用稍快。然而，这些优势是以失去无类型方法所提供的灵活性为代价的。</para>
+    <para styleclass="Normal">使用强类型方法的另一个好处是性能。强类型方法的实现假定当程序员使用强类型消息时，编译器可以有效地为相应的方法调用执行<text style="font-weight:bold;">早期绑定(early binding)</text>。由于这种实现，强类型方法的调用比相应的非类型化方法调用稍快。然而，这些优势是以失去非类型方法所提供的灵活性为代价的。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">因此，重要的是要记住，在继承链中交替使用特定方法的强类型和无类型版本既不允许也不可能。</para>
+    <para styleclass="Normal">因此，重要的是要记住，在继承链中交替使用特定方法的强类型和非类型版本既不允许也不可能。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">&lt;%APP%&gt; 允许对 METHODs、ACCESSes 和 ASSIGNs 进行强类型化。程序员通过以下两个步骤完成 &lt;%APP%&gt; 中强类型方法的指定：</para>
     <para styleclass="Normal"></para>

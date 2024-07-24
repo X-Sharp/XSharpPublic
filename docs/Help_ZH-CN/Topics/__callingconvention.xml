@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-26T17:07:49.464+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T11:17:25.146+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__callingconvention</title>
   <body>
     <header>
@@ -16,7 +16,7 @@
         <li styleclass="List" style="text-indent:192px; margin-left:0px;"><tab />THISCALL</li>
       </list>
     </list>
-    <para styleclass="List"><tab />大多数 <link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-conventions">调用约定</link> 仅用于向后兼容。 <br/>但是，存在两个例外情况：<br/>1. CLIPPER 声明方法具有无类型参数。通常只有没有声明参数的方法才需要这样做。否则，编译器在检测到无类型参数时将假定使用 CLIPPER 调用约定。 <br/>2. 外部 DLL 的方法和函数可以使用 STRICT、PASCAL、 CALLBACK 调用约定。</para>
+    <para styleclass="List"><tab />大多数 <link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-conventions">调用约定</link> 仅用于向后兼容。 <br/>但是，存在两个例外情况：<br/>1. CLIPPER 声明方法具有未类型化参数。通常只有没有声明参数的方法才需要这样做。否则，编译器在检测到未类型化参数时将假定使用 CLIPPER 调用约定。 <br/>2. 外部 DLL 的方法和函数可以使用 STRICT、PASCAL、 CALLBACK 调用约定。</para>
     <para styleclass="List"></para>
   </body>
 </topic>

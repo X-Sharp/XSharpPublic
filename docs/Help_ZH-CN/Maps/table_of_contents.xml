@@ -228,20 +228,20 @@
         <topicref type="topic" id="424000368292699" build="ALL" modified="2024-06-03T01:05:07.552Z" icon="0" href="new-feat-Expression-IS-Type">
           <caption translate="true">表达式 IS Type</caption>
         </topicref>
-        <topicref type="topic" id="426888066632269" build="ALL" modified="2024-06-03T01:05:28.645Z" icon="0" href="new-feat-Initializers">
-          <caption translate="true">初始化</caption>
+        <topicref type="topic" id="426888066632269" build="ALL" modified="2024-07-24T13:30:21.080Z" icon="0" href="new-feat-Initializers">
+          <caption translate="true">初始值设定项</caption>
         </topicref>
         <topicref type="topic" id="426356253849712" build="ALL" modified="2024-06-03T01:10:44.457Z" icon="0" href="new-feat-Interpolated-Strings">
           <caption translate="true">插值字符串</caption>
         </topicref>
-        <topicref type="topic" id="424000721218508" build="ALL" modified="2024-06-03T14:08:57.510Z" icon="0" href="new-feat-LINQ">
-          <caption translate="true">LINQ Query 表达式</caption>
+        <topicref type="topic" id="424000721218508" build="ALL" modified="2024-07-24T13:34:06.703Z" icon="0" href="new-feat-LINQ">
+          <caption translate="true">LINQ查询表达式</caption>
         </topicref>
         <topicref type="topic" id="424477017488013" build="ALL" modified="2019-01-24T16:51:42.583Z" icon="0" href="new-feat-NOP">
           <caption translate="true">NOP</caption>
         </topicref>
-        <topicref type="topic" id="426887424244545" build="ALL" modified="2024-06-03T14:10:20.255Z" icon="0" href="new-feat-Object-Initializers">
-          <caption translate="true">对象初始化</caption>
+        <topicref type="topic" id="426887424244545" build="ALL" modified="2024-07-24T13:36:49.038Z" icon="0" href="new-feat-Object-Initializers">
+          <caption translate="true">对象初始值设定项</caption>
         </topicref>
         <topicref type="topic" id="424000091554061" modified="2019-01-27T16:09:19.314Z" icon="0" href="new-feat-PROCEDURE-inside-CLASS">
           <caption translate="true">PROCEDURE inside CLASS</caption>
@@ -1041,7 +1041,7 @@
             <caption translate="true">SET EPOCH 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966835316603" build="ALL" modified="2024-06-27T19:48:19.360Z" icon="0" href="cmd_cat_entdecl">
+        <topicref type="topic" id="436966835316603" build="ALL" modified="2024-07-24T11:55:21.543Z" icon="0" href="cmd_cat_entdecl">
           <caption translate="true">实体声明</caption>
           <topicref type="topic" id="384613959523963" build="ALL" modified="2024-06-27T19:53:17.289Z" icon="0" href="command__DLL">
             <caption translate="true">_DLL 语句</caption>

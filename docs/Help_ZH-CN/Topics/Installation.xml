@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-02T19:44:54.241+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:09:37.084+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>安装</title>
   <keywords>
     <keyword>component</keyword>
@@ -45,8 +45,8 @@
           <para styleclass="Normal">Main</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">可在 Visual Studio 内部的 &quot;添加引用 &quot;对话框中选择的运行时程序集。</para>
-          <para styleclass="Normal">请注意，这是 Redist 文件夹中文件夹的子集。在部署应用程序时，请使用 Redist 文件夹中的文件。在未来版本中，该文件夹可能包含所谓的参考程序集（只有元数据而无代码的程序集）。</para>
+          <para styleclass="Normal">可在 Visual Studio 内部的&quot;添加引用&quot;对话框中选择的运行时程序集。</para>
+          <para styleclass="Normal">请注意，这是 Redist 文件夹中文件夹的子集。在部署应用程序时，请使用 Redist 文件夹中的文件。在未来版本中，该文件夹可能包含所谓的参考程序集(只有元数据而无代码的程序集)。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -237,7 +237,7 @@
           <para styleclass="Normal">main\ngen</para>
         </td>
         <td style="width:666px;">
-          <para styleclass="Normal">选择 &quot;通过生成本地图像优化性能 &quot;选项时，X# 编译器文件将被预编译</para>
+          <para styleclass="Normal">选择 &quot;通过生成本地图像优化性能&quot; 选项时，X# 编译器文件将被预编译</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

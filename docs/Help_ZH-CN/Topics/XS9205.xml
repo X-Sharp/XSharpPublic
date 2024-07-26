@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-15T04:08:35.726+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:31.725+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Warning XS9205</title>
   <keywords>
     <keyword>XS9205</keyword>
@@ -10,6 +10,6 @@
       <para styleclass="Heading1">Warning XS9205</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">XPP：不支持实例变量的 ASSIGNMENT 子句（暂不支持），且忽略该子句。</para>
+    <para styleclass="Normal">XPP：不支持实例变量的 ASSIGNMENT 子句(暂不支持)，且忽略该子句。</para>
   </body>
 </topic>

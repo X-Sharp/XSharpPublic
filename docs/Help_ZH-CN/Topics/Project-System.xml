@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T23:09:44.436+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:00:25.085+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>项目系统</title>
   <keywords>
     <keyword>.xsproj</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">项目系统</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">X# Visual Studio 项目系统允许你使用 Visual Studio 创建 X# 项目。它支持一种特殊的 X# 项目文件格式(.xsproj 文件)，还能识别各种特定的 X# 文件类型，如 PRG 文件和几种用于 VO 兼容表单、服务器、菜单和 FieldSpec 定义的 &quot;二进制 &quot;文件。</para>
+    <para styleclass="Normal">X# Visual Studio 项目系统允许你使用 Visual Studio 创建 X# 项目。它支持一种特殊的 X# 项目文件格式(.xsproj 文件)，还能识别各种特定的 X# 文件类型，如 PRG 文件和几种用于 VO 兼容表单、服务器、菜单和 FieldSpec 定义的 &quot;二进制&quot; 文件。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">该项目系统的一部分是 MsBuild 支持，它使用 .xsproj 文件，并根据 .xsproj 文件中的属性和值为 X# 编译器创建命令行。</para>
     <para styleclass="Normal">以下各章将简要讨论解决方案和项目，并介绍 Visual Studio 内 X# 的各种项目属性页面。</para>

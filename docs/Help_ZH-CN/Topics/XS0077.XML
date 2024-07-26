@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-20T13:38:50.553+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.982+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0077</title>
   <keywords>
     <keyword>XS0077</keyword>
@@ -10,6 +10,6 @@
       <para styleclass="Heading1">Error XS0077</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">as 运算符必须与引用类型或可以为 null 的类型一起使用（&apos;{0}&apos; &#160;是不可以为 null 值的类型）。</para>
+    <para styleclass="Normal">as 运算符必须与引用类型或可以为 null 的类型一起使用(&apos;{0}&apos;  是不可以为 null 值的类型)。</para>
   </body>
 </topic>

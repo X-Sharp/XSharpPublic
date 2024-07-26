@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-02T06:30:59.875+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:05:59.975+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>按字母顺序排列的 X# 编译器选项</title>
   <keywords>
     <keyword>Compiler Options</keyword>
@@ -75,7 +75,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-_analyzer">-analyzer</link></para>
         </td>
         <td>
-          <para styleclass="Normal">运行该程序集的分析器（简写：/a</para>
+          <para styleclass="Normal">运行该程序集的分析器(简写：/a)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -91,7 +91,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ast">-ast</link></para>
         </td>
         <td>
-          <para styleclass="Normal">转存每个源文件的抽象语法树（扩展名为.ast）</para>
+          <para styleclass="Normal">转存每个源文件的抽象语法树(扩展名为.ast)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -123,7 +123,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checksumalgorithm">-checksumalgorithm</link></para>
         </td>
         <td>
-          <para styleclass="Normal">指定计算 PDB 中存储的源文件校验和的算法。支持的值有 SHA1（默认）或 SHA256</para>
+          <para styleclass="Normal">指定计算 PDB 中存储的源文件校验和的算法。支持的值有 SHA1(默认)或 SHA256</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -243,7 +243,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">-fovf</link></para>
         </td>
         <td>
-          <para styleclass="Normal">指定在浮点运算无效时引发异常（与 -ovf 重复）。</para>
+          <para styleclass="Normal">指定在浮点运算无效时引发异常(与 -ovf 重复)。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -475,7 +475,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">-ovf</link></para>
         </td>
         <td>
-          <para styleclass="Normal">指定溢出时产生异常（与 -fovf 重复）</para>
+          <para styleclass="Normal">指定溢出时产生异常(与 -fovf 重复)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -491,7 +491,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parallel">-parallel</link></para>
         </td>
         <td>
-          <para styleclass="Normal">指定是否使用并发构建 (+)。</para>
+          <para styleclass="Normal">指定是否使用并发生成 (+)。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -659,7 +659,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Opt-usenativeversion">-usenativeversion</link></para>
         </td>
         <td>
-          <para styleclass="Normal">优先选择本地资源（如果有），而不是托管程序集属性生成的资源</para>
+          <para styleclass="Normal">优先选择本地资源(如果有)，而不是托管程序集属性生成的资源</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

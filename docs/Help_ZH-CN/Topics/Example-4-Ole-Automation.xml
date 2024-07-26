@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T21:17:16.041+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:32:25.639+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>示例 4: Ole 自动化 - Excel</title>
   <body>
     <header>
@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">在第 4 个示例中，我们将不使用 Visual Objects 中的标准示例，而是在 Visual Objects 中创建一个新的示例应用程序，用于远程控制 Excel 并将数据写入 Excel 表。</para>
-    <para styleclass="Body Text">我在 Comp.Lang.Clipper.Visual-Objects 新闻组中找到了下面的示例（我为这个示例稍作了修改）。</para>
+    <para styleclass="Body Text">我在 Comp.Lang.Clipper.Visual-Objects 新闻组中找到了下面的示例(我为这个示例稍作了修改)。</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">在 Visual Objects 中创建一个新的终端应用程序，然后将下面的代码复制并粘贴到应用程序中。</li>
       <li styleclass="Body Text">打开应用程序属性，添加 Ole 库。</li>
@@ -31,7 +31,9 @@
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">现在用 X# 编译应用程序。您将收到以下错误：</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="ExcelOle.png" scale="-99.90%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">让我们来看看这些错误：</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">列表中的最后一个错误表明 Start 方法不正确。这是因为在 .Net 中，Start 函数必须是一个 VOID 函数或一个返回 INT 的函数。本例中没有声明返回类型，因此 X# 认为您要创建一个返回 USUAL 的函数。将 start 函数的原型改为</li>
@@ -45,7 +47,9 @@
       <li styleclass="Body Text">在 “添加引用 ”对话框中，选择 COM 标签页</li>
       <li styleclass="Body Text">找到 “Microsoft Excel nn.m 对象库”。在我的机器上是 Excel 16.0。</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="ExcelAddRef.png" scale="-99.90%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text styleclass="Image Caption" style="font-style:normal;">点击 Ok.</text></li>
       <li styleclass="Body Text"><text styleclass="Image Caption" style="font-style:normal;">这将在您的引用列表中添加一个名为 “Microsoft.Office.Interop.Excel ”的条目。这是一个生成的类型库，包含 Excel 中所有类型的类定义。</text></li>

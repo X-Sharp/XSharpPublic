@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-20T13:26:36.747+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:30.485+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>示例 1: VO Explorer 示例</title>
   <body>
     <header>
@@ -31,7 +31,7 @@
           <para styleclass="Body Text">RemoveClassClause</para>
         </td>
         <td>
-          <para styleclass="Body Text"> 删除方法和 accesses/assigns 赋值的 “Class 子句”。这将在 CLASS ... END CLASS 块中对所有方法进行分组，然后就不再需要方法级的 CLASS 子句了</para>
+          <para styleclass="Body Text">删除方法和 accesses/assigns 赋值的 “Class 子句”。这将在 CLASS ... END CLASS 块中对所有方法进行分组，然后就不再需要方法级的 CLASS 子句了</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -40,7 +40,7 @@
         </td>
         <td>
           <para styleclass="Body Text">Init 和 Axit 是 VO 中的保留方法名。在 DotNet 中，这些名称经常被类使用。Vulcan 和 X# 引入了新的关键字 CONSTRUCTOR 和 DESTRUCTOR。该选项会自动重命名 Init 和 Axit 方法。示例</para>
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Init(oOwner) &#160;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyClass </text></para>
+          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Init(oOwner)  </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> MyClass </text></para>
           <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">会转换为</text></para>
           <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">CONSTRUCTOR</text><text style="font-weight:normal; font-style:normal; color:#000000;">(oOwner)</text></para>
         </td>
@@ -66,7 +66,7 @@
           <para styleclass="Body Text">AllClassesArePartial</para>
         </td>
         <td>
-          <para styleclass="Body Text">分部类是 Vulcan 和 X# 中的一种机制，它允许你将一个类分割到多个源文件中。如果你的类变得很大，或者你想将生成的代码与手写的代码分开（就像 Visual Studio 中的 Windows 窗体编辑器所做的那样），这可能会很方便。你可以选择让所有 Xporter 类都是分部的。我们禁用了这一功能，因为使用时会对性能造成（少量）影响。尤其是当你将类中的 Accesses 和 Assigns 分割到不同的文件中时。</para>
+          <para styleclass="Body Text">分部类是 Vulcan 和 X# 中的一种机制，它允许你将一个类分割到多个源文件中。如果你的类变得很大，或者你想将生成的代码与手写的代码分开(就像 Visual Studio 中的 Windows 窗体编辑器所做的那样)，这可能会很方便。你可以选择让所有 Xporter 类都是分部的。我们禁用了这一功能，因为使用时会对性能造成(少量)影响。尤其是当你将类中的 Accesses 和 Assigns 分割到不同的文件中时。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -74,7 +74,7 @@
           <para styleclass="Body Text">AddMissingConstructors</para>
         </td>
         <td>
-          <para styleclass="Body Text">VO 允许您声明一个没有 Init 方法/构造函数的类。.Net中也允许这样做，但编译器会认为你的类有一个不带参数的构造函数。该选项将自动生成缺失的构造函数。请注意，如果启用了 /vo16 兼容选项，即使代码中没有指定构造函数，X# 编译器也支持生成缺失的构造函数。因此，这个 Xporter 选项已不再需要，并已被弃用。</para>
+          <para styleclass="Body Text">VO 允许您声明一个没有 Init 方法/构造函数的类。.Net中也允许这样做，但编译器会认为你的类有一个不带参数的构造函数。该选项将自动生成缺失的构造函数。请注意，如果启用了 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo16">/vo16</link> 兼容选项，即使代码中没有指定构造函数，X# 编译器也支持生成缺失的构造函数。因此，<text style="font-weight:bold; color:#ff0000;">这个 Xporter 选项已不再需要并被弃用</text>。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -98,7 +98,7 @@
           <para styleclass="Body Text">AdjustCallbackFunctions</para>
         </td>
         <td>
-          <para styleclass="Body Text">一些（高级）VO 代码包含回调函数，其中一个函数的地址会传递给另一个函数并被调用。Windows API 经常使用回调函数，例如用于枚举窗口或打印机。这种机制在 .Net 中不起作用。该选项将更改您的代码，并帮助您获得可行的解决方案。</para>
+          <para styleclass="Body Text">一些(高级)VO 代码包含回调函数，其中一个函数的地址会传递给另一个函数并被调用。Windows API 经常使用回调函数，例如用于枚举窗口或打印机。这种机制在 .Net 中不起作用。该选项将更改您的代码，并帮助您获得可行的解决方案。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -114,7 +114,7 @@
           <para styleclass="Body Text">Sort Entities by name</para>
         </td>
         <td>
-          <para styleclass="Body Text">这将根据名称对所有实体排序，方法将在 CLASS... ENDCLASS 中排序，函数也不例外。</para>
+          <para styleclass="Body Text">这将根据名称对所有实体排序，函数和方法将在 CLASS... ENDCLASS 中排序。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -122,7 +122,7 @@
           <para styleclass="Body Text">Use XSharp Runtime</para>
         </td>
         <td>
-          <para styleclass="Body Text">选择此项（默认值）时，您的应用程序将根据 X# 运行时进行编译。否则，我们将使用 Vulcan 运行时（我们的产品中不包含该运行时）</para>
+          <para styleclass="Body Text">选择此项(默认值)时，您的应用程序将根据 X# 运行时进行编译。否则，我们将使用 Vulcan 运行时(我们的产品中不包含该运行时)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -163,10 +163,11 @@
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer<br/>C:\XporterOutput\Examples\Explorer\Explorer</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer\Explorer\Resources</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\Explorer\Explorer\Properties</para>
-    <para styleclass="Body Text">第一个文件夹是所谓的 “解决方案 ”文件夹</para>
+    <para styleclass="Body Text">第一个文件夹是所谓的 “解决方案” 文件夹</para>
     <para styleclass="Body Text">子文件夹包含项目及其文件。</para>
-    <para styleclass="Body Text">如果您选择了多个 AEF 文件，那么每个 AEF 文件在 “解决方案 ”文件夹下都有自己的子文件夹。</para>
+    <para styleclass="Body Text">如果您选择了多个 AEF 文件，那么每个 AEF 文件在 “解决方案” 文件夹下都有自己的子文件夹。</para>
     <para styleclass="Body Text">解决方案文件夹包含文件：</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
@@ -194,7 +195,7 @@
       </tr>
     </table></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Project 文件夹包含以下文件</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">Project 文件夹包含以下文件：</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="24" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
@@ -391,50 +392,54 @@
     </table></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">为了编译和生成项目，我们在 Visual Studio 中打开文件 Explorer.SLN。在 Visual Studio 中，它看起来像</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="explorer-error.png" scale="100.00%" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">几个模块前面的箭头表示这些模块中有子项目。这些子项目包含表单、菜单和图标资源。</para>
     <para styleclass="Body Text">现在，让我们尝试在 Visual Studio 中生成解决方案。(菜单选项 “生成-生成解决方案&quot;）</para>
     <para styleclass="Body Text">这将编译应用程序，并在 c:\XporterOutput\Explorer\Debug 文件夹中生成一个可调试版本。你会看到该文件夹包含一个 EXE、PDB（调试符号）和 VO 运行时库的副本：<br/>Explorer.exe<br/>Explorer.pdb<br/>SDK_Defines.dll<br/>VOGUIClasses.dll<br/>VORDDClasses.dll<br/>VOSystemClasses.dll<br/>VOWin32APILibrary.dll</para>
     <para styleclass="Body Text">XSharp.VO.dll</para>
     <para styleclass="Body Text">XSharp.RT.dll</para>
     <para styleclass="Body Text">XSharp.Core.dll</para>
-    <para styleclass="Body Text">现在可以尝试运行应用程序了。这可以运行，但一旦我们选择 “文件/打开 ”菜单选项，就会出现运行时错误。调整大小后，屏幕看起来类似下面这样</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">现在可以尝试运行应用程序了。这可以运行，但一旦我们选择 “文件/打开” 菜单选项，就会出现运行时错误。调整大小后，屏幕看起来类似下面这样：</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="explorer-solutionexplorer.png" scale="-99.90%" figurelistinclude="0"></image><br/></para>
     <para styleclass="Body Text">错误信息很清楚：应用程序使用了 splitwindow 控件，而这需要 splitwindow 支持 DLL。</para>
     <para styleclass="Body Text">该 DLL 位于 VO 安装的 Redist 文件夹中。只需将 VO Redist 文件夹中的 “Cato3spl.dll ”文件和 MSVCRT.DLL 复制到输出文件夹，然后再试一次。</para>
-    <para styleclass="Body Text">您也可以将 DLL 添加到项目中（添加现有项目，并指向 Redist 文件夹中的 DLL）。这将把它们复制到项目文件夹中。然后将这 2 个 DLL 的构建操作设置为 “无”，并将 “复制到输出目录 ”属性设置为 “保留最新内容”。现在，当您生成应用程序时，DLL 将被复制到正确的文件夹中。</para>
+    <para styleclass="Body Text">您也可以将 DLL 添加到项目中（添加现有项目，并指向 Redist 文件夹中的 DLL）。这将把它们复制到项目文件夹中。然后将这 2 个 DLL 的生成操作设置为 “无”，并将 “复制到输出目录 ”属性设置为 “保留最新内容”。现在，当您生成应用程序时，DLL 将被复制到正确的文件夹中。</para>
     <para styleclass="Body Text">之后，代码将像在 VO 中一样运行，无需更改代码！</para>
     <para styleclass="Body Text">让我们仔细看看 xPorter 都做了些什么：</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">VO 中的每个模块都已成为 X# 项目中的 PRG 文件</li>
     </list>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">源代码已按类分组，并置于 CLASS ... END CLASS 结构中</li>
     </list>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Init 方法已更名为 CONSTRUCTOR</li>
       <li styleclass="Body Text">编译器宏（如“%CavoSamplesRootDir%\Explorer\”）已被字面值取代： “C:\cavo28SP3\Samples\Explorer\”</li>
     </list>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">资源已成为定义它们的源文件的 “子文件”。</li>
       <li styleclass="Body Text">资源的位置也已更改 %CavoSamplesRootDir%\Explorer\TWO.ICO 已更改为 ICONTWO Icon C:\cavo28SP3\Samples\Explorer\TWO.ICO。 <br/>RESOURCE 关键字也已删除。</li>
       <li styleclass="Body Text">表单和菜单的二进制文件尚未包含在此版本的 XPorter（Beta 11）中。这种情况将会改变。</li>
     </list>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">启动文件的变化最大。在 VO 中，有一个方法 App:Start()。但 App 类并没有在此应用程序中定义，而是 GUI 类的一部分。应用程序中也没有 Start 函数。VO 将调用 GUI 类中的 Start 函数，并将应用程序中的 App:Start() 方法与 GUI 类中 App 类的其余部分合并。<br/>这在 .Net 中是不允许的。类不能分布在一个以上的程序集（.Net 对库、EXE 或 DLL 的称呼）中。</li>
       <li styleclass="Body Text">因此，XPorter 创建了一个新类 (xApp)，并将 Start 方法移到了这个 Xapp 类中。它还添加了一个 Start() 函数，用于实例化 App 类并调用 XApp 中的 Start 方法。在下面的示例中，您还可以看到添加了一个 TRY ... CATCH ... END TRY 结构，它可以捕获其他地方捕获不到的错误，并在 ErrorBox 对象中显示错误信息。这就是之前由于 CATO3SPL.DLL 丢失而显示的错误框。</li>
       <li styleclass="Body Text">最后，“开始 ”函数被标记为一个属性（方括号中的单词）。在本例中，属性为 [STAThread]，这意味着主函数（以及整个应用程序）需要以单线程模式运行。如果您的应用程序使用 OCX/ActiveX 控件等外部代码，这一点非常重要。</li>
     </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#45;" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="-" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></li>
     </list>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Body Text"> &#160;如果您仔细查看 Visual Studio 中的解决方案资源管理器，并点击树中的引用节点，就会发现示例中引用了 Vulcan 运行时和 VO 类库，以及 XPorter 附带的 SDK 定义库。</text></li>
+    <list id="6" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">  如果您仔细查看 Visual Studio 中的解决方案资源管理器，并点击树中的引用节点，就会发现示例中引用了 Vulcan 运行时和 VO 类库，以及 XPorter 附带的 SDK 定义库。</text></li>
     </list>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">如果打开项目属性，你会在常规页面上看到所选的方言是 “Visual Object”，在方言页面上设置了大多数 VO 选项，在生成页面上，平台目标是 x86（因为图形用户界面类设计为在 x86 模式下运行），并且抑制了一些警告。这些警告包括：</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
@@ -493,7 +498,9 @@
         </td>
       </tr>
     </table></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">在本例中，编译器只生成了 618 警告，因为 CustomerExplorer:Close() 方法调用了 CollectForced。注释掉这一行后，您就可以删除应用程序中所有 “抑制 ”的警告，这样编译时就不会出现任何警告了。</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text style="font-weight:bold;">您可以在 XSharp 示例文件夹中找到 “Code before ”和 “Code after”。</text></para>
   </body>
 </topic>

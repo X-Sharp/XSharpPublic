@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-06T12:49:43.472+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T03:06:40.771+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>VFPXporter</title>
   <keywords>
     <keyword>export</keyword>
@@ -68,9 +68,9 @@
       <li styleclass="Body Text">打开(Open)：打开包含生成文件的文件夹。</li>
     </list>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">生成的文件夹应包含多个文件夹（如果已勾选设置，则每个库一个文件夹，一个用于检测到的 FreeTables，一个用于 XSharp 工具，...）。</para>
+    <para styleclass="Body Text">生成的文件夹应包含多个文件夹(如果已勾选设置，则每个库一个文件夹，一个用于检测到的 FreeTables，一个用于 XSharp 工具，...)。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">您将找到一个与导出项目同名的文件，扩展名为 .SLN。这是 MS Visual Studio 解决方案文件，将组合所有导出的顶级项目（项目、库等）。</para>
+    <para styleclass="Body Text">您将找到一个与导出项目同名的文件，扩展名为 .SLN。这是 MS Visual Studio 解决方案文件，将组合所有导出的顶级项目(项目、库等)。</para>
     <para styleclass="Body Text">这是您应首先打开的文件。</para>
     <para styleclass="Heading2">VFPXPorter 工作原理</para>
     <para styleclass="Body Text">VFPXPorter 将读取您的项目及其元素。它会识别它们的类型并生成一些 X# 代码。</para>
@@ -82,7 +82,7 @@
     <para styleclass="Heading3">常见问题</para>
     <para styleclass="Body Text">在将您的 VFP 图形用户界面代码转换为 X# 和 WinForms 时，我们会遇到一些常见问题，请参见以下列表。</para>
     <para styleclass="Heading3">事件和方法命名</para>
-    <para styleclass="Body Text">将应用程序从 VFP 转换到 X# 和 WinForms 时，您必须牢记这两个 “世界 ”对您的窗体使用不同的视角。<br/></para>
+    <para styleclass="Body Text">将应用程序从 VFP 转换到 X# 和 WinForms 时，您必须牢记这两个 “世界” 对您的窗体使用不同的视角。<br/></para>
     <para styleclass="Body Text">在 VFP 中，<text style="font-weight:bold;">事件</text>被路由到<text style="font-weight:bold;">控件</text>。</para>
     <para styleclass="Body Text">因此，我们可以认为，例如，窗体上的每个按钮都有自己的类，该类继承自基类 CommandButton，并且是该特定类的实例： 因此，您可以重写该级别的事件和方法，这样就可以对发生的事情进行大量控制。</para>
     <para styleclass="Body Text">在 WinForms 中，<text style="font-weight:bold;">事件</text>会传递给控件的所有者： <text style="font-weight:bold;">表单</text></para>
@@ -111,7 +111,7 @@
     <para styleclass="Body Text">BUT.... 如果您在 PRG 文件中使用名为 RGB() 的函数返回 System.Drawing.Color 颜色，那么它将成为您导出解决方案的一部分，并取代 XSharp Runtime 定义，这样就可以解决这个问题了！</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">无参数的方法调用</para>
-    <para styleclass="Body Text">在 X# 中，“属性”包含一个用等号设置/获取的 “值”，而 “方法 ”包含调用时执行的代码。</para>
+    <para styleclass="Body Text">在 X# 中，“属性” 包含一个用等号设置/获取的 “值”，而 “方法” 包含调用时执行的代码。</para>
     <para styleclass="Body Text">这在 VFP 中是允许的，但在 X# 中您必须纠正这一点</para>
     <para styleclass="Code Example"> &#160; &#160;this.Refresh</para>
     <para styleclass="Body Text">应更正为：</para>
@@ -132,11 +132,11 @@
     <para styleclass="Body Text">在父对象中，您有时可能会在 VFP 代码中直接调用事件处理程序。</para>
     <para styleclass="Body Text">这可能会有问题，例如直接调用按钮的 Click 事件就会失败。</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">This.Parent.cmd_prec.Click</text></para>
-    <para styleclass="Body Text">导出时，“This ”将转为父对象 ThisObject。</para>
+    <para styleclass="Body Text">导出时，“This” 将转为父对象 ThisObject。</para>
     <para styleclass="Heading3"><text style="font-style:italic;">数组访问</text></para>
     <para styleclass="Body Text">在 X# 中，使用括号 [] 访问数组元素。</para>
     <para styleclass="Body Text">在 VFP 中，您可以使用括号 () 。</para>
-    <para styleclass="Body Text">但在访问.Net 类型数组时，这可能会造成问题。</para>
+    <para styleclass="Body Text">但在访问 .Net 类型数组时，这可能会造成问题。</para>
     <para styleclass="Body Text">因此，为了简化 VFP 应用程序的移植，在 XSharp.VFP.UI 控制层中，一些数组访问被转为方法调用，从而简化了使用 VFP 语法访问 .NET 控件的过程。</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">x = __screen.FormCount</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">__screen.Forms(x-1).Release() </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// 在这里，表单数组将被表单方法调用所取代。</text></para>
     <para styleclass="Heading3"><text style="font-style:italic;">访问当前工作区/Cursor中的字段</text></para>

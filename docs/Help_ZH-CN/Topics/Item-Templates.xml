@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-09T22:36:10.953+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T03:01:14.002+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>项目项模板</title>
   <keywords>
     <keyword>item templates</keyword>
@@ -165,7 +165,7 @@
           <para styleclass="Normal">AppConfigInternal</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">A hidden app.config</para>
+          <para styleclass="Normal">隐藏的 app.config</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
@@ -178,7 +178,7 @@
           <para styleclass="Normal">AppManifestInternal</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">A hidden app.manifest</para>
+          <para styleclass="Normal">隐藏的 app.manifest</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
@@ -191,7 +191,7 @@
           <para styleclass="Normal">AssemblyInfoInternal</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">A hidden assemblyinfo prg</para>
+          <para styleclass="Normal">隐藏的 assemblyinfo prg</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
@@ -204,7 +204,7 @@
           <para styleclass="Normal">Managed Resource Internal</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">A hidden resource file</para>
+          <para styleclass="Normal">隐藏的 resource file</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
@@ -217,7 +217,7 @@
           <para styleclass="Normal">Settings Internal</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">A hidden settings file</para>
+          <para styleclass="Normal">隐藏的 settings file</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">2.0</para>
@@ -322,7 +322,7 @@
           <para styleclass="Normal">VODBServer</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">An empty DBServer</para>
+          <para styleclass="Normal">空 DBServer</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
@@ -335,7 +335,7 @@
           <para styleclass="Normal">VOFieldSpec</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">An empty FieldSpec container file</para>
+          <para styleclass="Normal">空 FieldSpec container file</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
@@ -348,7 +348,7 @@
           <para styleclass="Normal">VOMenu</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">An empty VO Menu</para>
+          <para styleclass="Normal">空 VO Menu</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">n/a</para>
@@ -361,7 +361,7 @@
           <para styleclass="Normal">VOWindow</para>
         </td>
         <td style="width:523px;">
-          <para styleclass="Normal">An empty VO Window</para>
+          <para styleclass="Normal">空 VO Window</para>
         </td>
         <td style="width:199px;">
           <para styleclass="Normal">n/a</para>

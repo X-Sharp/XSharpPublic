@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T20:02:41.170+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:57:55.206+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>属性和字段</title>
   <body>
     <header>
@@ -28,6 +28,6 @@
     <para styleclass="List">Expression<tab />分配给字段/属性的初始值</para>
     <para styleclass="Heading1">备注</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">属性的实现方式取决于 /fox1 编译器开关的值。启用该开关后，所有属性都将从自定义对象中声明的属性集合中读取/写入。未启用该开关时，&quot;普通 &quot;自动属性将通过该类中的支持字段声明。</para>
+    <para styleclass="Body Text">属性的实现方式取决于 /fox1 编译器开关的值。启用该开关后，所有属性都将从自定义对象中声明的属性集合中读取/写入。未启用该开关时，&quot;普通&quot; 自动属性将通过该类中的支持字段声明。</para>
   </body>
 </topic>

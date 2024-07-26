@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T20:14:36.645+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:57:28.809+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLASS 语句(FoxPro 方言))</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
@@ -47,7 +47,7 @@
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
-    <para styleclass="List">AS &lt;<text styleclass="Italic">idParentClass</text>&gt;<tab />现有类（称为超类）的名称，新类从该类继承方法和实例变量。</para>
+    <para styleclass="List">AS &lt;<text styleclass="Italic">idParentClass</text>&gt;<tab />现有类(称为超类)的名称，新类从该类继承方法和实例变量。</para>
     <para styleclass="List"><tab />在使用 /fox1+ 编译时，AS &lt;idParent&gt; 子句是必须的，而在使用 /fox1- 编译时则是可选的。</para>
     <para styleclass="List"><tab />使用 /fox1+ 编译时，编译器会假定父类是自定义类或从自定义类派生的类。<br/></para>
     <para styleclass="List">OF &lt;<text styleclass="Italic">classLib</text>&gt;<tab />该子句在 X# 中被解析，但被忽略。</para>

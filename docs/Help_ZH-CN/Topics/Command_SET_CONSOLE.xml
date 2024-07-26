@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T23:41:57.330+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:48:52.691+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET CONSOLE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET CONSOLE ON | off | &lt;lToggle&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">&lt;lToggle&gt;<tab />逻辑表达式，必须放在括号内。可以为.T.（真）指定 ON 选项，或为.F.（假）指定 OFF 选项，而不是逻辑表达式。指定 .T. 或 ON 时（默认值），所有输出都会显示在屏幕上。如果设置为 OFF，则屏幕上使用 ? 或 ?等命令的输出将被抑制。</para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />逻辑表达式，必须放在括号内。可以为 .T. 指定 ON 选项，或为 .F. 指定 OFF 选项，而不是逻辑表达式。指定 .T. 或 ON 时(默认值)，所有输出都会显示在屏幕上。如果设置为 OFF，则屏幕上使用 ? 或 ?等命令的输出将被抑制。</para>
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">SET CONSOLE 命令用于停用或激活屏幕上的字符输出。这包括像 ? 这样的命令以及像 QOut() 或 QQOut() 这样的函数，它们总是从当前光标位置开始输出。</para>
     <para styleclass="Normal"></para>

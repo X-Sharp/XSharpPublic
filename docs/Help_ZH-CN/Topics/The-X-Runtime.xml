@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T08:29:51.434+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:37:35.612+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 运行时(Runtime)</title>
   <body>
     <header>
@@ -17,15 +17,15 @@
       <li styleclass="Normal">语言和运行时应尽可能与 VO 兼容。我们知道 Vulcan 开发团队决定不支持 VO 的某些功能，但我们决定在技术上尽可能做到兼容。</li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">我们希望我们的运行时是完全 Unicode 和 AnyCPU 的。它应该可以在任何平台上运行，也可以在 x86 和 x64 模式下运行。 这带来了一些挑战，因为 VO 是 Ansi（而不是 Unicode），也是 X86。在 VO 中，您可以将一个 LONG 改为一个 PTR。这在 X64 模式下是行不通的，因为 LONG 是 32 位，而 PTR 是 64 位。</li>
-      <li styleclass="Normal">我们希望代码在 &quot;安全 &quot;模式下编译。在非严格需要的情况下，不要使用不安全的代码。这里最大的问题/挑战是 PTR 类型。有了 PTR，即使你不 &quot;拥有 &quot;内存，你也可以直接访问内存和读/写内存。然而，同样的 PTR 类型也被用作 &quot;唯一标识符&quot;，例如在低级文件 i/o 和图形用户界面类中的窗口和控制句柄。这些 PTR 值从不用于读/写内存，而是类似于对象引用。我们决定使用 .Net IntPtr 类型来处理这类句柄。当然，编译器可以在 PTR 和 IntPtr 之间进行透明转换。</li>
+      <li styleclass="Normal">我们希望我们的运行时是完全 Unicode 和 AnyCPU 的。它应该可以在任何平台上运行，也可以在 x86 和 x64 模式下运行。 这带来了一些挑战，因为 VO 是 Ansi(而不是 Unicode)，也是 X86。在 VO 中，您可以将一个 LONG 改为一个 PTR。这在 X64 模式下是行不通的，因为 LONG 是 32 位，而 PTR 是 64 位。</li>
+      <li styleclass="Normal">我们希望代码在 &quot;安全&quot; 模式下编译。在非严格需要的情况下，不要使用不安全的代码。这里最大的问题/挑战是 PTR 类型。有了 PTR，即使你不 &quot;拥有&quot; 内存，你也可以直接访问内存和读/写内存。然而，同样的 PTR 类型也被用作 &quot;唯一标识符&quot;，例如在低级文件 i/o 和图形用户界面类中的窗口和控制句柄。这些 PTR 值从不用于读/写内存，而是类似于对象引用。我们决定使用 .Net IntPtr 类型来处理这类句柄。当然，编译器可以在 PTR 和 IntPtr 之间进行透明转换。</li>
       <li styleclass="Normal">我们希望证明 X# 语言是一流的 .Net 开发语言。这就是我们决定用 X# 编写 X# 运行时的原因。通过这样做，我们还创建了一个大型代码库来测试编译器。因此，这是一个双赢的局面。</li>
-      <li styleclass="Normal">我们希望运行时是线程安全的。每个线程都有自己的 &quot;全局 &quot;状态和开放工作区列表。当一个新线程启动时，它将继承主线程的状态，但不会继承主线程的工作区。</li>
+      <li styleclass="Normal">我们希望运行时是线程安全的。每个线程都有自己的 &quot;全局&quot; 状态和开放工作区列表。当一个新线程启动时，它将继承主线程的状态，但不会继承主线程的工作区。</li>
       <li styleclass="Normal">目前，X# Runtime 是根据 .Net Framework 4.6 编译的。</li>
     </list>
     <para styleclass="Heading2">X# 运行时中的程序集</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果您想知道某个函数或类型是在哪个 Assembly 中定义的，那么您的 &quot;好朋友 &quot;就是文档。我们使用一个工具来生成文档，因此文档总是正确的。</para>
+    <para styleclass="Normal">如果您想知道某个函数或类型是在哪个程序集中定义的，那么您的 &quot;好朋友&quot; 就是文档。我们使用一个工具从程序集来生成文档，因此文档总是正确的。</para>
     <para styleclass="Normal"><br/>某些子系统在 XSharp.Core DLL 和 XSharp.VO.DLL 中也有函数。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
@@ -146,7 +146,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler">XSharp.Macrocompiler.DLL</link></para>
         </td>
         <td style="width:595px;">
-          <para styleclass="Normal">该 DLL 是 X# 的 &quot;快速 &quot;宏编译器。</para>
+          <para styleclass="Normal">该 DLL 是 X# 的 &quot;快速&quot; 宏编译器。</para>
         </td>
         <td style="width:170px;">
           <para styleclass="Normal">X# Core</para>
@@ -160,7 +160,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler_Full_DLL">XSharp.MacroCompiler.Full.DLL</link></para>
         </td>
         <td style="width:595px;">
-          <para styleclass="Normal">该 DLL 是 X# 的 &quot;完整 &quot;宏编译器。</para>
+          <para styleclass="Normal">该 DLL 是 X# 的 &quot;完整&quot; 宏编译器。</para>
         </td>
         <td style="width:170px;">
           <para styleclass="Normal">X# Core</para>

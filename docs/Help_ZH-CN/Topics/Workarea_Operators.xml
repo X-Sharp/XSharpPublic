@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T10:18:35.578+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:56:05.448+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Workarea</title>
   <keywords>
     <keyword>_FIELD</keyword>
@@ -42,7 +42,7 @@
           <para styleclass="Body Text">&quot;Customer&quot; &#160;workarea 中的 &quot;LastName&quot; 字段</para>
           <para styleclass="Body Text">当前 workarea 中的 &quot;FirstName&quot; 字段</para>
           <para styleclass="Body Text">当前 workarea 中的 &quot;Salary&quot; 字段</para>
-          <para styleclass="Body Text">动态内存变量 &quot;Name&quot;（公共或私有）</para>
+          <para styleclass="Body Text">动态内存变量 &quot;Name&quot;(公共或私有)</para>
           <para styleclass="Body Text"> workarea &#160;1 中的 &quot;City&quot; 字段</para>
           <para styleclass="Body Text">允许的单字母别名为 A 到 J。<br/><br/>注意： FIELD 和 _FIELD 是同义词。<br/>直接跟在 -&gt; 运算符后面的关键字被视为标识符而不是关键字。</para>
         </td>

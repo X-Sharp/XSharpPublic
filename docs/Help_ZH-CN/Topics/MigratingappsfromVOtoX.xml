@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T19:43:35.060+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:17:14.243+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>将应用程序从 VO 迁移到 X#</title>
   <body>
     <header>
@@ -11,7 +11,7 @@
     <para styleclass="Body Text">我们强烈建议您从小处着手。因此，我们将从几个 VO 示例程序入手，介绍转换的步骤和转换后需要进行的更改。</para>
     <para styleclass="Heading2">示例 </para>
     <para styleclass="Normal">下面的示例将逐步向您介绍如何迁移应用程序。</para>
-    <para styleclass="Normal">每个示例都有一个随 X# 安装程序提供的示例。示例中包含一个 “before”和 “after”文件夹。</para>
+    <para styleclass="Normal">每个示例都有一个随 X# 安装程序提供的示例。示例中包含一个 “before” 和 “after” 文件夹。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

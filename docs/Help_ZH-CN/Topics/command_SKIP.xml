@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:45:08.902+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:47:36.722+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SKIP 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Normal">SKIP 在功能上等同于 DBSkip()。 指定别名就像在别名表达式中使用 DBSkip()（例如，&lt;xcAlias&gt;-&gt;DBSkip(&lt;nRecords&gt;)）。 </para>
+    <para styleclass="Normal">SKIP 在功能上等同于 DBSkip()。 指定别名就像在别名表达式中使用 DBSkip()(例如，&lt;xcAlias&gt;-&gt;DBSkip(&lt;nRecords&gt;))。 </para>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Normal">本例使用了带有不同参数的 SKIP，并显示了结果：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE customer NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SKIP</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;2</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SKIP </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">10</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;12</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">SKIP </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">-5</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">?</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECNO</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><tab /><tab /><tab /><text style="font-weight:bold; font-style:normal; color:#ff00ff;">// Result: &#160;7</text></para>

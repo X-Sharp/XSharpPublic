@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T21:55:38.527+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:31:08.347+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>示例 3: Pizza 示例</title>
   <body>
     <header>
@@ -9,9 +9,11 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">我们的第三个迁移示例是披萨示例。您可以在 VO 安装中的 Samples\Controls\Buttons 文件夹中找到它。</para>
     <para styleclass="Body Text">我选择了相同的输出文件夹（C:\XporterOutput\Examples\），XPorter 将在 Examples 文件夹中用 AEF 和 Pizza 解决方案的内容创建一个 Pizza 子文件夹。</para>
-    <para styleclass="Body Text">没有必要再次列出文件。你就明白了。</para>
+    <para styleclass="Body Text">没有必要再次列出文件。</para>
     <para styleclass="Body Text">在 visual Studio 中打开 Pizza.sln 并编译后，你会发现以下问题：</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="pizza.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">问题是：</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">原始 VO 程序的输出名称为 “PIZZA.EXE”。</li>
@@ -42,6 +44,7 @@
       <li styleclass="Body Text">重新编译，程序即可编译完成。</li>
       <li styleclass="Body Text">当我们运行该程序时，会发现它的运行与预期一致：</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="Pizza1.png" scale="-99.90%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text style="font-weight:bold;">您可以在 XSharp 示例文件夹中找到 “Code before ”和 “Code after”。</text></para>

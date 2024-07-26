@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T19:38:18.717+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:23:31.298+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>关键字</title>
   <keywords>
     <keyword>Entities</keyword>
@@ -6197,6 +6197,6 @@
     </table></para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text">1<tab />这些类型名称只有在方言不是 Core、VO 或 Vulcan 时才能用作标识符。</para>
-    <para styleclass="Body Text">2<tab />This keyword is actually defined by a preprocessor command</para>
+    <para styleclass="Body Text">2<tab />该关键字实际上是由预处理器命令定义的</para>
   </body>
 </topic>

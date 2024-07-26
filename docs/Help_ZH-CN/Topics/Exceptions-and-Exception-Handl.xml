@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T10:55:02.699+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T09:39:42.505+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>异常和异常处理</title>
   <body>
     <header>
@@ -15,7 +15,7 @@
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> TestCatch </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160;TestThrow()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CATCH</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ex </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CustomException</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160;System.Console.WriteLine(ex.ToString())</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TRY</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text></para>
     <para styleclass="Body Text">如果抛出异常的语句不在 try 代码块中，或者包围它的 try 代码块中没有匹配的 catch 代码块，运行时就会检查调用方法中的 try 语句和 catch 代码块。运行时会继续在调用栈中查找兼容的 catch 块。找到并执行捕获块后，控制权将传递给该捕获块后的下一条语句。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">一个 try 语句可以包含多个 catch 块。第一个能处理异常的 catch 语句会被执行；后面的任何 catch 语句，即使是兼容的，也会被忽略。因此，catch 块的排序应从最特殊（或最派生）到最不特殊。</para>
+    <para styleclass="Body Text">一个 try 语句可以包含多个 catch 块。第一个能处理异常的 catch 语句会被执行；后面的任何 catch 语句，即使是兼容的，也会被忽略。因此，catch 块的排序应从最特殊(或派生层次最深)到最不特殊。</para>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

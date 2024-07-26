@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T20:24:01.073+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:59:19.689+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Fields</title>
   <keywords>
     <keyword>ASSIGNMENT</keyword>
@@ -32,7 +32,7 @@
     <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List">SHARED<tab />X# 中不支持该子句</para>
     <para styleclass="List"></para>
-    <para styleclass="List">READONLY<tab />将该字段声明为只读。它必须在（类）构造函数中初始化</para>
+    <para styleclass="List">READONLY<tab />将该字段声明为只读。它必须在(类)构造函数中初始化</para>
     <para styleclass="List"></para>
     <para styleclass="List">ASSIGNMENT ..<tab />X# 中不支持该子句</para>
     <para styleclass="List"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T19:43:19.026+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.460+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-preferreduilang</title>
   <keywords>
     <keyword>-preferreduilang</keyword>
@@ -12,10 +12,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">通过使用 -preferreduilang 编译器选项，可以指定 X# 编译器显示错误信息等输出时使用的语言。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-preferreduilang: language &#160;</para>
+    <para styleclass="Code with box">-preferreduilang: language  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">language</text><tab />用于编译器输出的语言名称。</para>
+    <para styleclass="List"><text styleclass="Code Example">language</text><tab/>用于编译器输出的语言名称。</para>
     <para styleclass="Heading2">备注</para>
-    <para styleclass="Normal">preferreduilang 编译器选项会被识别，但会被忽略。X# 编译器只适用于英语语言（目前？）</para>
+    <para styleclass="Normal">preferreduilang 编译器选项会被识别，但会被忽略。X# 编译器只适用于英语语言(目前？)</para>
   </body>
 </topic>

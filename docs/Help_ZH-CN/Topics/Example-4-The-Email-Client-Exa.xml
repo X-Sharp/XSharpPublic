@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T21:50:08.638+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:33:22.215+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>示例 5: OCX - 电子邮件客户端示例 </title>
   <body>
     <header>
@@ -16,7 +16,9 @@
       <li styleclass="Body Text">在 Visual Studio 中编译并运行。</li>
       <li styleclass="Body Text">我们将收到两条信息：</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="Email1.png" scale="-99.90%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">第一条信息显示了本例中最大的问题。第二条信息是 Xporter 插入的，用来警告我们原始代码向 VO Gui 类中的一个类添加了一个方法。</para>
     <para styleclass="Body Text">让我们快速解决这些问题，以便编译应用程序。稍后我们将添加 OCX：</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -60,6 +62,7 @@
     </list>
     <para styleclass="Body Text">第一种解决方案是目前最容易理解的，但我们必须创建一个全新的窗口，还必须更改调用代码。</para>
     <para styleclass="Body Text">您可以根据自己的应用程序做出选择。</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">在本例中，我们将选择第二种方法。</para>
     <para styleclass="Heading2">创建一个 Windows 窗体窗口来显示电子邮件</para>
     <para styleclass="Body Text">在此方法中，我们使用 Windows.Forms.Form 窗口作为 ActiveX 控件的 “主机”。</para>

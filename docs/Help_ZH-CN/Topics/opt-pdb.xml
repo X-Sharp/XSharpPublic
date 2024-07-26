@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T19:21:24.915+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.417+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-pdb</title>
   <keywords>
     <keyword>-pdb</keyword>
@@ -12,11 +12,11 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译器选项 -pdb 指定调试符号文件的名称和位置。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-pdb:filename &#160;</para>
+    <para styleclass="Code with box">-pdb:filename  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />调试符号文件的名称和位置。</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/>调试符号文件的名称和位置。</para>
     <para styleclass="Heading2">备注</para>
-    <para styleclass="Normal">指定 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-debug</link> 时，编译器将在编译器创建输出文件（.exe 或 .dll）的同一目录下创建 .pdb 文件，文件名与输出文件名相同。</para>
+    <para styleclass="Normal">指定 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-debug</link> 时，编译器将在编译器创建输出文件(.exe 或 .dll)的同一目录下创建 .pdb 文件，文件名与输出文件名相同。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-通过 -pdb 选项，可以为 .pdb 文件指定一个非默认的文件名和位置。</para>
     <para styleclass="Normal"></para>
@@ -24,7 +24,7 @@
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译 t.prg 并创建名为 tt.pdb 的 .pdb 文件：</para>
-    <para styleclass="Code with box">xsc -debug -pdb:tt t.prg &#160;</para>
+    <para styleclass="Code with box">xsc -debug -pdb:tt t.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

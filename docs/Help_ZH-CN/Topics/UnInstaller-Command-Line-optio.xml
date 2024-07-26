@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-15T05:08:44.732+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:31.788+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>卸载命令行选项</title>
   <keywords>
     <keyword>/log</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">卸载命令行选项</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">卸载程序（可在 &lt;Installdir&gt;\Uninst 文件夹中找到）有以下命令行选项：</para>
+    <para styleclass="Normal">卸载程序(可在 &lt;Installdir&gt;\Uninst 文件夹中找到)有以下命令行选项：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
@@ -31,7 +31,7 @@
         </td>
         <td>
           <para styleclass="Body Text">指定后，卸载程序不会要求用户进行启动确认，也不会显示卸载完成的消息。不再使用的共享文件将自动删除，无需提示。屏幕上仍会显示任何重要的错误信息。指定&quot;/verysilent &quot;时，将不显示卸载进度窗口。</para>
-          <para styleclass="Body Text">如果需要重新启动，但未使用&quot;/norestart &quot;命令（见下文），且指定了&quot;/verysilent&quot;，卸载程序将不经询问重新启动。</para>
+          <para styleclass="Body Text">如果需要重新启动，但未使用&quot;/norestart &quot;命令(见下文)，且指定了&quot;/verysilent&quot;，卸载程序将不经询问重新启动。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -48,7 +48,7 @@
         </td>
         <td>
           <para styleclass="Body Text">使卸载程序在用户的 TEMP 目录中创建一个日志文件，详细记录文件卸载和卸载过程中的操作。这对调试很有帮助。</para>
-          <para styleclass="Body Text">创建的日志文件具有基于当前日期的唯一名称。(它不会覆盖或附加到现有文件）。</para>
+          <para styleclass="Body Text">创建的日志文件具有基于当前日期的唯一名称。(它不会覆盖或附加到现有文件)。</para>
           <para styleclass="Body Text">日志文件中包含的信息属于技术性质，因此最终用户无法理解。该文件的格式如有更改，恕不另行通知。</para>
         </td>
       </tr>

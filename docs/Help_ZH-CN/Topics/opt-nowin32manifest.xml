@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:38:48.855+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.347+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-nowin32manifest</title>
   <keywords>
     <keyword>-nowin32manifest</keyword>
@@ -12,9 +12,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">使用 -nowin32manifest 选项指示编译器不要在可执行文件中嵌入任何应用程序清单。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-nowin32manifest &#160;</para>
+    <para styleclass="Code with box">-nowin32manifest  </para>
     <para styleclass="Heading2">备注</para>
-    <para styleclass="Normal">使用此选项时，除非在 Win32 资源文件中或在以后的构建步骤中提供应用程序清单，否则应用程序将在 Windows Vista 上被虚拟化。</para>
+    <para styleclass="Normal">使用此选项时，除非在 Win32 资源文件中或在以后的生成步骤中提供应用程序清单，否则应用程序将在 Windows Vista 上被虚拟化。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">查看属性页</link></para>
     <para styleclass="Normal" style="margin-left:13px;"></para>

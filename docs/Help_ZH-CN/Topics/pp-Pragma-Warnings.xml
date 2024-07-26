@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T12:00:31.073+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:58:19.047+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#pragma warning(s)</title>
   <keywords>
     <keyword>#pragma warning</keyword>
@@ -14,7 +14,7 @@
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">#pragma warning 指令允许您抑制一段代码的某些编译器警告。</para>
-    <para styleclass="Normal">我们同时支持 C# 样式的实用程序警告命令（完全支持）和 Vulcan 风格的实用程序（部分支持）。</para>
+    <para styleclass="Normal">我们同时支持 C# 样式的实用程序警告命令(完全支持)和 Vulcan 风格的实用程序(部分支持)。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">#pragma warnings( <text style="font-style:italic;">number</text>, <text style="font-style:italic;">state</text> )<br/>#pragma warnings ( <text style="font-style:italic;">pop </text>)<br/>#pragma warning <text style="font-style:italic;">state2</text> [&lt;<text style="font-style:italic;">errornumbers</text>&gt;]</para>
     <para styleclass="Heading3">备注</para>

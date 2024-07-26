@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:56:55.247+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:56:56.111+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLASS 语句(所有方言))</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
@@ -46,7 +46,7 @@
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
-    <para styleclass="List">INHERIT &lt;idClass&gt;<tab />现有类(称为超类)的名称，新类从该类继承方法和实例变量（HIDDEN 例外）。</para>
+    <para styleclass="List">INHERIT &lt;idClass&gt;<tab />现有类(称为超类)的名称，新类从该类继承方法和实例变量(HIDDEN 例外)。</para>
     <para styleclass="List"></para>
     <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">该类实现的接口名称</text></para>
     <para styleclass="List"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T20:31:25.130+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:00:30.147+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD 实现</title>
   <keywords>
     <keyword>ACCESS</keyword>
@@ -30,7 +30,7 @@
     <para styleclass="List"></para>
     <para styleclass="List">ClassName<tab />类方法所在类的名称。当 PRG 文件中只声明了一个类时，类名是可选的。否则 &lt;ClassName&gt;: 必须填写。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idMethod&gt;<tab />方法的有效标识符名称。 方法名称在类中必须是唯一的，但可以与应用程序中的其他实体（包括访问和赋值方法）共享相同的名称。</para>
+    <para styleclass="List">&lt;idMethod&gt;<tab />方法的有效标识符名称。 方法名称在类中必须是唯一的，但可以与应用程序中的其他实体(包括访问和赋值方法)共享相同的名称。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>

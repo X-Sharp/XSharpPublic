@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:39:38.909+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:45:38.768+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>.EditorConfig 文件</title>
   <keywords>
     <keyword>.editorconfig</keyword>
@@ -38,37 +38,37 @@
       <li styleclass="Body Text">indent_style (制表符或空格)</li>
       <li styleclass="Body Text">indent_size (数字)</li>
       <li styleclass="Body Text">tab_width (数字)</li>
-      <li styleclass="Body Text">end_of_line (cr, lf or crlf)</li>
-      <li styleclass="Body Text">charset (latin1, utf-8, utf-8-bom, utf-16be or utf-16le)</li>
-      <li styleclass="Body Text">trim_trailing_whitespace (true or false)</li>
-      <li styleclass="Body Text">insert_final_newline (true or false)</li>
+      <li styleclass="Body Text">end_of_line (cr, lf 或 crlf)</li>
+      <li styleclass="Body Text">charset (latin1, utf-8, utf-8-bom, utf-16be 或 utf-16le)</li>
+      <li styleclass="Body Text">trim_trailing_whitespace (true 或 false)</li>
+      <li styleclass="Body Text">insert_final_newline (true 或 false)</li>
     </list>
     <para styleclass="Normal" style="line-height:1.00; tabstops:720px left,1440px left,2160px left,2880px left,3600px left ;"></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">此外，我们还添加了一些 X# 专用选项</para>
     <para styleclass="Body Text"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">keyword_case (upper, lower, title or none)</li>
-      <li styleclass="Body Text">udc_case (true or false)</li>
-      <li styleclass="Body Text">identifier_case (true or false)</li>
+      <li styleclass="Body Text">keyw或d_case (upper, lower, title 或 none)</li>
+      <li styleclass="Body Text">udc_case (true 或 false)</li>
+      <li styleclass="Body Text">identifier_case (true 或 false)</li>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">indent_namespace (true or false)</li>
+      <li styleclass="Body Text">indent_namespace (true 或 false)</li>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">indent_type_members (true or false)</li>
-      <li styleclass="Body Text">indent_type_fields (true or false)</li>
+      <li styleclass="Body Text">indent_type_members (true 或 false)</li>
+      <li styleclass="Body Text">indent_type_fields (true 或 false)</li>
     </list>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">indent_entity_content (true or false)</li>
-      <li styleclass="Body Text">indent_block_content (true or false)</li>
-      <li styleclass="Body Text">indent_case_label (true or false)</li>
-      <li styleclass="Body Text">indent_case_content (true or false)</li>
-      <li styleclass="Body Text">indent_continued_lines (true or false)</li>
-      <li styleclass="Body Text">indent_preprocessor (true or false)</li>
+      <li styleclass="Body Text">indent_entity_content (true 或 false)</li>
+      <li styleclass="Body Text">indent_block_content (true 或 false)</li>
+      <li styleclass="Body Text">indent_case_label (true 或 false)</li>
+      <li styleclass="Body Text">indent_case_content (true 或 false)</li>
+      <li styleclass="Body Text">indent_continued_lines (true 或 false)</li>
+      <li styleclass="Body Text">indent_preprocess或 (true 或 false)</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">.editorconfig 中的设置将取代 X# 编辑器在 &quot;工具/选项 &quot;中的设置。</para>
+    <para styleclass="Body Text">.editorconfig 中的设置将取代 X# 编辑器在 &quot;工具/选项&quot; 中的设置。</para>
   </body>
 </topic>

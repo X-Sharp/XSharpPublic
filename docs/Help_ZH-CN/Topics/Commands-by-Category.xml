@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:47:01.405+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:33:14.807+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>命令和语句</title>
   <body>
     <header>
@@ -18,7 +18,7 @@
     <para styleclass="Normal">几乎所有方言都有语句，只有少数例外。</para>
     <para styleclass="Normal">可用的命令在很大程度上取决于方言。例如，在 Core 方言中根本没有可用的命令。大多数命令都有可选参数，并依赖于 X# 运行时类型，如 USUAL。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">本参考既列出了编译器 “内置 ”的命令，也列出了在 STD.UDC 中定义为默认 “用户自定义命令 ”的命令。</para>
+    <para styleclass="Normal">本参考既列出了编译器 “内置 ”的命令，也列出了在 STD.UDC 中定义为默认 “用户自定义命令” 的命令。</para>
     <para styleclass="Normal">某些命令以星号标记为 “弃用”。这些命令在 %APP% 的未来版本中可能不可用。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="4">

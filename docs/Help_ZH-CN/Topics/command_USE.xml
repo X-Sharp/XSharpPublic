@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:45:52.256+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:51:24.144+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -42,7 +42,7 @@
     <para styleclass="List"></para>
     <para styleclass="List">READONLY<tab />尝试以只读属性打开 &lt;xcDataFile&gt;，禁止更新工作区。 如果未指定，&lt;xcDataFile&gt; 将以读写方式打开，允许更新。 如果使用指定的属性无法访问 &lt;xcDataFile&gt;，则会出现运行时错误。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">EXCLUSIVE<tab />试图打开 &lt;xcDataFile&gt; 供独占（非共享）使用。 在关闭数据库文件之前，所有其他进程都被拒绝访问。</para>
+    <para styleclass="List">EXCLUSIVE<tab />试图打开 &lt;xcDataFile&gt; 供独占(非共享)使用。 在关闭数据库文件之前，所有其他进程都被拒绝访问。</para>
     <para styleclass="List"></para>
     <para styleclass="List">SHARED<tab />尝试打开 &lt;xcDataFile&gt; 以供共享使用。</para>
     <para styleclass="List"></para>
@@ -54,12 +54,12 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />在无参数情况下指定的 USE 会关闭当前工作区中打开的数据库文件。</para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Normal">USE 命令尝试以指定模式打开 &lt;xcDataFile&gt;（及其关联的 .DBF 文件（如果有））。 如果文件成功打开，操作将继续以相同模式打开任何指定的索引文件 - 工作区中已打开的任何文件将被关闭。 列表中第一个索引文件的第一顺序成为控制顺序。</para>
+    <para styleclass="Normal">USE 命令尝试以指定模式打开 &lt;xcDataFile&gt;(及其关联的 .DBF 文件(如果有))。 如果文件成功打开，操作将继续以相同模式打开任何指定的索引文件 - 工作区中已打开的任何文件将被关闭。 列表中第一个索引文件的第一顺序成为控制顺序。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果由于其他进程独占使用数据库文件等原因而拒绝访问，NetErr() 将被设置为 TRUE，但不会引发运行时错误。 因此，建议将打开索引文件作为一项单独操作（使用 SET INDEX 或 DBSetIndex()）。 否则，当 USE 命令尝试打开列表中的第一个索引文件时，就会出现运行时错误，因为数据库文件尚未打开。</para>
-    <para styleclass="Normal">首次打开数据库文件时，记录指针位于文件中的第一条逻辑记录上（如果没有控制顺序，则位于第一条记录上）。</para>
+    <para styleclass="Normal">如果由于其他进程独占使用数据库文件等原因而拒绝访问，NetErr() 将被设置为 TRUE，但不会引发运行时错误。 因此，建议将打开索引文件作为一项单独操作(使用 SET INDEX 或 DBSetIndex())。 否则，当 USE 命令尝试打开列表中的第一个索引文件时，就会出现运行时错误，因为数据库文件尚未打开。</para>
+    <para styleclass="Normal">首次打开数据库文件时，记录指针位于文件中的第一条逻辑记录上(如果没有控制顺序，则位于第一条记录上)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果数据库文件是在共享模式下打开的，其他进程可以并发访问该文件，而数据完整性的责任则由应用程序承担。 文件和记录锁定（使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XSharpRef.chm">RLock()</link> 或 DBRLock()）是禁止其他进程访问特定文件或记录的基本方法。</para>
+    <para styleclass="Normal">如果数据库文件是在共享模式下打开的，其他进程可以并发访问该文件，而数据完整性的责任则由应用程序承担。 文件和记录锁定(使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XSharpRef.chm">RLock()</link> 或 DBRLock())是禁止其他进程访问特定文件或记录的基本方法。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">有关如何关闭所有类型文件的信息，请参阅 CLOSE 命令。</para>
     <para styleclass="Normal"></para>

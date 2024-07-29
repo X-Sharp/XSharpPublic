@@ -519,7 +519,7 @@
          [AS <nCodePage>]                                               ;
                                                                         ;
       => DbAppFox(                                                      ;
-                     <(file)>, iif( <.type.>,#<type>,"DBF"),<fldlist>,  ;
+                     <(file)>, iif( <.type.>,#<type>,"DBF"),            ;
                      iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),       ;
                      <{lfor}>, <{lwhile}>, <nNext>,                     ;
                      <rec>, <.rest.> ,                                  ;

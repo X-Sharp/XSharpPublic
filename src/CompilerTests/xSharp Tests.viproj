@@ -131414,7 +131414,7 @@ ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 [C913 - More VFP UDC tests Native Resources]
 [C913 - More VFP UDC tests License files]
 [C913 - More VFP UDC tests General Options]
-Switches=
+Switches=/nowarn:9098,9025
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -131435,7 +131435,7 @@ VO14=0
 VO16=0
 VO17=0
 FOX1=1
-FOX2=1
+FOX2=0
 XPP1=0
 LateBound=0
 Unsafe=0

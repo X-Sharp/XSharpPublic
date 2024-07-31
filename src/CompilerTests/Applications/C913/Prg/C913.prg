@@ -2,8 +2,85 @@
 FUNCTION Start() AS VOID
 	TestAppendFrom()
 	TestScatterGather()
+	TestCopyStructure()
+
+// https://github.com/X-Sharp/XSharpPublic/issues/1533
+PROCEDURE TestCopyStructure()
+	LOCAL cDbf,cDest AS STRING
+	LOCAL source AS DWORD
+	cDbf := "test"
+	cDest := "dest"
+	FErase(cDbf + ".cdx")
+	FErase(cDest + ".cdx")
+	
+//	RddSetDefault("DBFCDX")
+	
+	? DbCreate(cDbf,{{"FLD1","C",30,0},{"FLD2","N",10,0},{"MEMO","M",10,0}})
+	? DbUseArea(TRUE,,cDbf,"source")
+	source := DbSelect()
+	DbSelect(source)
+	? DbCreateIndex(cDbf,"FLD1")
+	DbAppend(); FieldPut(1,"FLD1");FieldPut(2,2);FieldPut(3,"MEMO")
+	
+
+	COPY STRUCTURE TO (cDest)
+	
+	? DbUseArea(TRUE,,cDest,"dest")
+	DbAppend(); FieldPut(1,"1");FieldPut(2,2);FieldPut(3,"3")
+	
+	xAssert(AllTrim(FieldGet(1)) == "1")
+	xAssert(FieldGet(2) == 2)
+	xAssert(AllTrim(FieldGet(3)) == "3")
+
+	xAssert(FieldName(1) == "FLD1")
+	xAssert(FieldName(2) == "FLD2")
+	xAssert(FieldName(3) == "MEMO")
+	xAssert(.not. @@File(cDest + ".cdx"))
+	
+
+	DbCloseArea()
 
 
+	DbSelect(source)
+	FErase(cDest + ".cdx")
+
+	COPY STRUCTURE TO (cDest) WITH CDX
+
+	? DbUseArea(TRUE,,cDest)
+	xAssert(FieldName(1) == "FLD1")
+	xAssert(FieldName(2) == "FLD2")
+	xAssert(FieldName(3) == "MEMO")
+	xAssert(@@File(cDest + ".cdx"))
+	
+	DbCloseArea()
+
+
+	DbSelect(source)
+	FErase(cDest + ".cdx")
+
+	#warning include COPY STRUCTURE FIELDS tests when github.com/X-Sharp/XSharpPublic/issues/1533 is fixed
+/*	COPY STRUCTURE TO (cDest) FIELDS FLD1,FLD2,MEMO
+
+	? DbUseArea(TRUE,,cDest)
+	xAssert(FieldName(1) == "FLD1")
+	xAssert(FieldName(2) == "FLD2")
+	xAssert(FieldName(3) == "MEMO")*/
+	
+	DbCloseArea()
+
+
+	DbCloseAll()
+
+/*	COPY STRUCTURE FIELDS FLD TO "test2" 
+	COPY STRUCTURE FIELDS FLD TO "test2" WITH CDX
+	COPY STRUCTURE FIELDS FLD,FLD2 TO "test2" 
+	COPY STRUCTURE FIELDS FLD,FLD2 TO "test2" WITH CDX
+	COPY STRUCTURE TO "test2" FIELDS FLD 
+	COPY STRUCTURE TO "test2" FIELDS FLD , FLD2
+	COPY STRUCTURE TO "test2" FIELDS FLD , FLD2 , FLD3	*/
+
+
+// https://github.com/X-Sharp/XSharpPublic/issues/1529
 PROCEDURE TestAppendFrom()
 	LOCAL cSource, cDest AS STRING
 	cSource := "source"
@@ -35,6 +112,8 @@ PROCEDURE TestAppendFrom()
 
 	DbCloseArea()
 
+
+// https://github.com/X-Sharp/XSharpPublic/issues/1534
 PROCEDURE TestScatterGather()
 
 	LOCAL cDbf AS STRING
@@ -47,7 +126,7 @@ PROCEDURE TestScatterGather()
 
 	SCATTER MEMVAR MEMO
 	? m.FLD1
-	? testmemo
+	? m.testmemo
 	xAssert(AllTrim(m.FLD1) == "Abc")
 	xAssert(m.FLD2 == 123)
 	xAssert(AllTrim(m.testmemo) == "MEMO CONTENTS")
@@ -80,7 +159,8 @@ PROCEDURE TestScatterGather()
 	xAssert(FieldGet(2) == 555)
 	xAssert(AllTrim(FieldGet(3)) == "modified!")
 	
-	
+
+	LOCAL obj
 	SCATTER NAME obj MEMO
 	? obj:testmemo
 	? obj:FLD1
@@ -103,6 +183,8 @@ PROCEDURE TestScatterGather()
 	LOCAL b
 	SCATTER TO b
 	xAssert(ALen(b) == 2)
+	
+	DbCloseArea()
 
 
 PROC xAssert(l AS LOGIC)

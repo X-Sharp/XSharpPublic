@@ -180,9 +180,40 @@ PROCEDURE TestScatterGather()
 	xAssert(AllTrim(FieldGet(3)) == "zzzzzzz")
 
 
-	LOCAL b
-	SCATTER TO b
-	xAssert(ALen(b) == 2)
+	LOCAL a2
+	SCATTER TO a2
+	xAssert(ALen(a2) == 2)
+
+	LOCAL a3
+	SCATTER TO a3 FIELDS LIKE TESTMEMO MEMO
+	xAssert(ALen(a3) == 1)
+	xAssert(a3[1] == "zzzzzzz")
+	
+// https://github.com/X-Sharp/XSharpPublic/issues/1536
+	LOCAL a4
+	SCATTER TO a4 BLANK MEMO
+	xAssert(a4[1] == "")
+	xAssert(a4[2] == 0)
+	xAssert(a4[3] == "")
+
+	LOCAL a5
+	SCATTER TO a5 FIELDS LIKE FLD* MEMO
+	xAssert(ALen(a5) == 2)
+	xAssert(AllTrim(a5[1]) == "obj")
+	
+	LOCAL a6
+	SCATTER TO a6 FIELDS LIKE F* MEMO BLANK
+	xAssert(ALen(a6) == 2)
+	xAssert(a6[1] == "")
+	xAssert(a6[2] == 0)
+	
+	LOCAL a7
+	SCATTER TO a7 FIELDS LIKE F* BLANK
+	xAssert(ALen(a7) == 2)
+
+	#warning include SCATTER TO <a> FIELDS LIKE <flist> BLANK test when github.com/X-Sharp/XSharpPublic/issues/1536 is fixed
+/*	xAssert(a7[1] == "")
+	xAssert(a7[2] == 0)*/
 	
 	DbCloseArea()
 

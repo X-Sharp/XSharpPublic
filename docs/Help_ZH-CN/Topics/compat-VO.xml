@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T19:36:01.356+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:50:56.424+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Differences with VO</title>
   <body>
     <header>
@@ -21,7 +21,7 @@
           <para styleclass="Normal">为现有类添加方法</para>
         </td>
         <td>
-          <para styleclass="Normal">在 X#（实际上在 .Net）中，您不能为其他程序集中的类添加方法。作为变通方法，您可以</para>
+          <para styleclass="Normal">在 X#(实际上在 .Net)中，您不能为其他程序集中的类添加方法。作为变通方法，您可以</para>
           <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Normal">编写扩展方法</li>
             <li styleclass="Normal">创建子类</li>

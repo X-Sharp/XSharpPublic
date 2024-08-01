@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T02:11:12.118+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:54:13.139+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>编译器宏</title>
   <keywords>
     <keyword>__ARRAYBASE__</keyword>
@@ -120,7 +120,7 @@
           <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal"> &quot;2 &quot;或 &quot;4&quot;，取决于版本。(仅为了与 Vulcan 兼容，x# 没有执行 /clr 编译器选项）。参见下面的备注。</para>
+          <para styleclass="Normal"> &quot;2 &quot;或 &quot;4&quot;，取决于版本。(仅为了与 Vulcan 兼容，x# 没有执行 /clr 编译器选项)。参见下面的备注。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -274,7 +274,7 @@
           <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">当前函数/方法名称（不含类前缀）和原始情况下的名称</para>
+          <para styleclass="Normal">当前函数/方法名称(不含类前缀)和原始情况下的名称</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -362,7 +362,7 @@
           <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Systemdir（在开发者机器上）</para>
+          <para styleclass="Normal">Systemdir(在开发者机器上)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -461,7 +461,7 @@
           <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Windows 目录（在开发者机器上）</para>
+          <para styleclass="Normal">Windows 目录(在开发者机器上)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -472,7 +472,7 @@
           <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Windows 驱动器（在开发者机器上）</para>
+          <para styleclass="Normal">Windows 驱动器(在开发者机器上)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

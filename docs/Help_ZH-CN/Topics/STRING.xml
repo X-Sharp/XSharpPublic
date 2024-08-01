@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T20:22:25.673+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:28:59.512+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>STRING</title>
   <keywords>
     <keyword>STRING</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">STRING</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">STRING 是一个用于表示文本的 Unicode 字符的顺序集合。一个 String 对象是一组表示字符串的 System.Char 对象的顺序集合。String 对象的值是顺序集合的内容，该值是不可变的（即只读）。有关字符串不可变性的更多信息，请参阅本主题后面的不可变性和 StringBuilder 类部分。String对象在内存中的最大大小为2 GB，或约10亿个字符。</para>
+    <para styleclass="Normal">STRING 是一个用于表示文本的 Unicode 字符的顺序集合。一个 String 对象是一组表示字符串的 System.Char 对象的顺序集合。String 对象的值是顺序集合的内容，该值是不可变的(即只读)。有关字符串不可变性的更多信息，请参阅本主题后面的不可变性和 StringBuilder 类部分。String对象在内存中的最大大小为 2 GB，或约 10 亿个字符。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">请注意，您不能像在 Visual Objects 中那样将字符串转换为PSZ。PSZ类型由每个字符8位组成，而STRING类型每个字符有16位。</para>
     <para styleclass="Normal"></para>

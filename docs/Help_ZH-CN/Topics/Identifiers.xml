@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-11T16:14:43.326+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:33:51.944+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>标识符</title>
   <body>
     <header>
       <para styleclass="Heading1">标识符</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">X# 中的标识符出现在语言的许多地方。它们由一个字符和一个或多个字符、数字或位数组成。标识符的 lexer 定义如下。正如你所看到的，我们也允许使用 “特殊字符 ”和 “unicode 字符”，但一般不建议使用。</para>
+    <para styleclass="Normal">X# 中的标识符出现在语言的许多地方。它们由一个字符和一个或多个字符、数字或位数组成。标识符的 lexer 定义如下。正如你所看到的，我们也允许使用 “特殊字符” 和 “unicode 字符”，但一般不建议使用。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Vulcan 和 X# 中引入的新关键字（见<link displaytype="text" defaultstyle="true" type="topiclink" href="Keywords">关键字列表</link>）也可用作标识符。</para>
+    <para styleclass="Normal">Vulcan 和 X# 中引入的新关键字(见<link displaytype="text" defaultstyle="true" type="topiclink" href="Keywords">关键字列表)</link>也可用作标识符。</para>
     <para styleclass="Normal">当必须使用与关键字具有相同值的标识符时，可以在标识符前加上双 @@ 符号，如下例所示。</para>
     <para styleclass="Normal">不建议这样做。但如果外部 DLL 中的代码的属性或方法名称与 X# 中的关键字相同，这种情况也有可能发生。在这种情况下，使用 @@ 前缀也是可行的。</para>
     <para styleclass="Normal"></para>

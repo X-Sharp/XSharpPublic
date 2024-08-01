@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T19:09:39.400+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.381+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-out</title>
   <keywords>
     <keyword>-out</keyword>
@@ -12,9 +12,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-out选项指定输出文件的名称。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-out:filename &#160;</para>
+    <para styleclass="Code with box">-out:filename  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />编译器创建的输出文件名称。</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/>编译器创建的输出文件名称。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">在命令行中，可以为编译指定多个输出文件。编译器希望在 -out 选项后找到一个或多个源代码文件。然后，所有源代码文件将被编译到该 -out 选项指定的输出文件中。</para>
     <para styleclass="Normal"></para>
@@ -22,14 +22,14 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">如果不指定输出文件的名称：</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">.exe 的名称取自包含 Main 方法的源代码文件。</li>
       <li styleclass="Normal" style="margin-left:13px;">.dll 或 .netmodule 的名称取自第一个源代码文件。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">用于编译一个输出文件的源代码文件不能用于编译另一个输出文件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">在命令行编译中生成多个输出文件时，请注意只有一个输出文件可以是程序集，并且只有指定的第一个输出文件（隐式或显式地使用 -out）可以是程序集。</para>
+    <para styleclass="Normal">在命令行编译中生成多个输出文件时，请注意只有一个输出文件可以是程序集，并且只有指定的第一个输出文件(隐式或显式地使用 -out)可以是程序集。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译过程中产生的任何模块都会成为与编译过程中产生的任何程序集相关联的文件。使用 ildasm.exe 查看程序集清单，即可看到相关文件。</para>
     <para styleclass="Normal"></para>
@@ -37,18 +37,18 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Application property page.</li>
       <li styleclass="Normal" style="margin-left:13px;">编辑 “Application name”属性</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">查看属性页</link></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">输出文件名（OutputFileName）是一个只读属性，由项目类型（exe、库等）和程序集名称共同决定。要设置输出文件名，必须修改其中一个或两个属性。</para>
+    <para styleclass="Normal">输出文件名(OutputFileName)是一个只读属性，由项目类型(exe、库等)和程序集名称共同决定。要设置输出文件名，必须修改其中一个或两个属性。</para>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译 t.prg 并创建输出文件 t.exe，同时编译 t2.prg，并创建模块输出文件 mymodule.netmodule：</para>
-    <para styleclass="Code with box">xsc t.prg -out:mymodule.netmodule -target:module t2.prg &#160;</para>
+    <para styleclass="Code with box">xsc t.prg -out:mymodule.netmodule -target:module t2.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

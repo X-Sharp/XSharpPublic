@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T18:22:41.425+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:21:45.062+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>调用约定</title>
   <body>
     <header>
@@ -46,7 +46,7 @@
           <para styleclass="Body Text">THISCALL</para>
         </td>
         <td style="width:1070px;">
-          <para styleclass="Body Text">这是 PASCAL 调用约定的一个特殊变体，“this ”指针不推入堆栈，而是通过寄存器（通常是 ECX 寄存器）传递。在寄存器中传递 “this ”会更快，特别是当寄存器未被用于其他用途时，因此重复调用同一对象时不必推送 “this ”指针。在 C/C++ 中，这被称为 __thisccall</para>
+          <para styleclass="Body Text">这是 PASCAL 调用约定的一个特殊变体，“this ”指针不推入堆栈，而是通过寄存器(通常是 ECX 寄存器)传递。在寄存器中传递 “this ”会更快，特别是当寄存器未被用于其他用途时，因此重复调用同一对象时不必推送 “this ”指针。在 C/C++ 中，这被称为 __thisccall</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -63,8 +63,8 @@
           <para styleclass="Body Text">CLIPPER</para>
         </td>
         <td style="width:1070px;">
-          <para styleclass="Body Text">这是 Xbase 世界中的一种特殊调用约定，在 Xbase 世界中，函数的参数（从技术上讲）都是可选的，而且可以传递比声明参数更多的值。最初，在 Xbase 语言中，调用代码会将值推入堆栈，同时也会传递参数数，这样被调用的函数就 “知道 ”传递了多少个参数。</para>
-          <para styleclass="Body Text">在.Net 中，没有真正的等价物。为了模拟 CLIPPER 调用约定，我们生成了一个特殊的 PARAMS 参数，其中包含一个 USUAL 值数组。PARAMS 类型的参数必须是参数列表中的最后一个（或唯一一个）参数。Roslyn 编译器（我们在 x# 中使用的编译器）会自动将传递给使用 clipper 调用约定的函数/方法的所有值封装在一个数组中。</para>
+          <para styleclass="Body Text">这是 Xbase 世界中的一种特殊调用约定，在 Xbase 世界中，函数的参数(从技术上讲)都是可选的，而且可以传递比声明参数更多的值。最初，在 Xbase 语言中，调用代码会将值推入堆栈，同时也会传递参数数，这样被调用的函数就 “知道 ”传递了多少个参数。</para>
+          <para styleclass="Body Text">在.Net 中，没有真正的等价物。为了模拟 CLIPPER 调用约定，我们生成了一个特殊的 PARAMS 参数，其中包含一个 USUAL 值数组。PARAMS 类型的参数必须是参数列表中的最后一个(或唯一一个)参数。Roslyn 编译器(我们在 x# 中使用的编译器)会自动将传递给使用 clipper 调用约定的函数/方法的所有值封装在一个数组中。</para>
           <para styleclass="Body Text">当然，当您这样声明一个函数</para>
           <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Foo(a,b,c)</text></para>
           <para styleclass="Body Text">然后，你希望在代码中使用 3 个名为 “a”、“b ”和 “c ”的局部变量。</para>
@@ -81,14 +81,14 @@
       </tr>
     </table></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">对于 “正常的 ”托管代码，你实际上只需要处理两种调用约定：</para>
+    <para styleclass="Body Text">对于 “正常的” 托管代码，你实际上只需要处理两种调用约定：</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">对于未类型方法，编译器使用 CLIPPER 调用约定</li>
       <li styleclass="Body Text">对于类型化方法，编译器在 STRICT 和 PASCAL 之间没有区别。它们都产生相同的代码</li>
     </list>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">只有在调用其他 DLL 中的非托管代码时，才需要使用其他调用约定。你必须 “知道 ”DLL 使用的是什么。一个问题是，C/C++ 代码中的调用约定往往隐藏在编译器宏中。</para>
+    <para styleclass="Body Text">只有在调用其他 DLL 中的非托管代码时，才需要使用其他调用约定。你必须 “知道” DLL 使用的是什么。一个问题是，C/C++ 代码中的调用约定往往隐藏在编译器宏中。</para>
     <para styleclass="Body Text">根据经验，C/C++ 代码应使用 STRICT，Windows api 函数应使用 PASCAL。</para>
-    <para styleclass="Body Text">如果不起作用（例如，.Net 运行时抱怨堆栈问题），则应改用其他调用约定。</para>
+    <para styleclass="Body Text">如果不起作用(例如，.Net 运行时抱怨堆栈问题)，则应改用其他调用约定。</para>
   </body>
 </topic>

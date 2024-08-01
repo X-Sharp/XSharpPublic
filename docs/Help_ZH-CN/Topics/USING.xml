@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-11T18:03:50.611+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:35:50.014+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USING</title>
   <keywords>
     <keyword>#USING</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="List">typeName<tab />指定类型的名称，其静态成员和嵌套类型可以在不指定类型的情况下被引用。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Body Text">NET 中的所有类型都有由命名空间名称和类型名称组成的全称。例如，“System.Windows.Forms.MessageBox ”指的是 “System.Windows.Forms ”命名空间中名为 “MessageBox”(在本例中是一个类)的类型。</para>
+    <para styleclass="Body Text">NET 中的所有类型都有由命名空间名称和类型名称组成的全称。例如，“System.Windows.Forms.MessageBox” 指的是 “System.Windows.Forms” 命名空间中名为 “MessageBox”(在本例中是一个类)的类型。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">在 .NET 中使用命名空间有助于防止类库之间的命名冲突。但是，键入完全限定的名称可能会很麻烦。using 语句指示编译器将指定的命名空间视为当前命名空间的一部分，以便进行类型解析。这样就可以在源代码中指定部分类型名称，而不是完全限定的名称。当然，无论是否存在任何 using 语句，您都可以使用完全限定的名称。</para>
     <para styleclass="Body Text"></para>

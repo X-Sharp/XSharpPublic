@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T17:39:18.062+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:40:32.631+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Peek definition(快速预览)</title>
   <keywords>
     <keyword>Peek definition</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">这时会弹出一个窗口，显示字符串类的定义。你可以在弹出窗口中滚动，甚至可以从被窥视的代码中窥视其他类型的定义。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">选择弹出窗口右上方带有 &quot;x &quot;的小方框，关闭偷看的定义窗口。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">选择弹出窗口右上方带有 &quot;x&quot; 的小方框，关闭偷看的定义窗口。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Peek definition.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>

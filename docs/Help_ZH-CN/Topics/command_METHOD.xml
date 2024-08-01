@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:55:47.365+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:56:03.521+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD 语句</title>
   <keywords>
     <keyword>Classes<keyword>declaring() Methods</keyword></keyword>
@@ -29,7 +29,7 @@
     <para styleclass="Normal"><tab />[END METHOD]</para>
     <para styleclass="Heading1">参数</para>
     <para styleclass="Normal"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
-    <para styleclass="List">&lt;idMethod&gt;<tab />方法的有效标识符名称。 方法名称在类中必须是唯一的，但可以与应用程序中的其他实体（包括访问和赋值方法）共享相同的名称。</para>
+    <para styleclass="List">&lt;idMethod&gt;<tab />方法的有效标识符名称。 方法名称在类中必须是唯一的，但可以与应用程序中的其他实体(包括访问和赋值方法)共享相同的名称。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeMethodParameters" inline="false"/></para>
     <para styleclass="Heading1"><snippet src="__IncludeBody" inline="false"/></para>
@@ -80,7 +80,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">调用约定：方法使用 CLIPPER 调用约定，除非它们是强类型的。 更多信息，请参阅本指南中的 FUNCTION 语句。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SELF 和 SUPER：SELF 是一个特殊变量，其中包含一个对象的引用，该对象是消息的接收者（每次使用发送操作符调用方法或访问实例变量时，都会向对象发送一条消息）。 每当向对象发送一条消息时，都会在调用相应方法前将对象的引用放入 SELF 中。 在类的方法中，必须使用 SELF 和消息发送操作符 (:) 才能向当前对象发送消息。 使用 SELF: 访问实例变量是可选的；有关何时需要使用 SELF: 的详细信息，请参阅本指南中的 ACCESS 和 ASSIGN 条目(始终允许使用)。</text></para>
+    <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SELF 和 SUPER：SELF 是一个特殊变量，其中包含一个对象的引用，该对象是消息的接收者(每次使用发送操作符调用方法或访问实例变量时，都会向对象发送一条消息)。 每当向对象发送一条消息时，都会在调用相应方法前将对象的引用放入 SELF 中。 在类的方法中，必须使用 SELF 和消息发送操作符 (:) 才能向当前对象发送消息。 使用 SELF: 访问实例变量是可选的；有关何时需要使用 SELF: 的详细信息，请参阅本指南中的 ACCESS 和 ASSIGN 条目(始终允许使用)。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">SUPER 是另一个特殊变量，它包含一个指向方法查找对象最近祖先的类的引用。 它将信息沿着继承树向上传递到相应的超类，只有在当前对象的类继承自另一个类时才有意义。 您可以使用 SUPER 和消息发送操作符 (:) 直接引用超类中定义的方法。 如果在子类中重新定义了一个方法（通过创建与超类中的方法同名的方法），SUPER 是使用超类版本覆盖重新定义的方法的唯一方法。</para>
     <para styleclass="Normal">SUPER: 在定义子类时非常有用，它可以添加一些独特的行为，但仍然继承了超类的标准行为。 例如</para>

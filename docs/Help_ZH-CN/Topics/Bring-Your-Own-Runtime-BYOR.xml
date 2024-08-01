@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T19:49:44.360+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:05:09.165+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>自备运行时 (BYOR))</title>
   <body>
     <header>
@@ -15,7 +15,7 @@
     </table></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">通过我们称之为 “自带运行时”（Bring Your Own Runtime），在XSharp的这一版本中提供了对VO和Vulcan的支持。</para>
+    <para styleclass="Body Text">通过我们称之为 “自带运行时”(Bring Your Own Runtime)，在 XSharp 的这一版本中提供了对 VO 和 Vulcan 的支持。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">如果你拥有 Vulcan 的许可证，你可以将 &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 文件夹中的 DLL 复制到你的解决方案中的文件夹。</para>
     <para styleclass="Body Text">然后在项目中添加所需的 DLL 引用。</para>

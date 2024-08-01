@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-15T05:02:13.838+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:31.770+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>安装程序命令行选项</title>
   <keywords>
     <keyword>/closeapplications</keyword>
@@ -83,8 +83,8 @@
           <para styleclass="Body Text">/silent, /verysilent</para>
         </td>
         <td>
-          <para styleclass="Body Text">指示安装程序保持静默或彻底静默。当设置为静默安装时，不显示向导和背景窗口，但会显示安装进度窗口。当设置为彻底静默时，则不显示安装进度窗口。其他一切正常，例如安装过程中的错误信息会显示，启动提示也会显示（如果您没有使用 DisableStartupPrompt 或上文解释的&quot;/SP-&quot;命令行选项禁用的话）。</para>
-          <para styleclass="Body Text">如果需要重启，但未使用&quot;/norestart &quot;命令（见下文），且安装程序处于静默状态，则会显示 &quot;现在重启？&quot;消息框。如果彻底静默安装，则无需询问即可重启。</para>
+          <para styleclass="Body Text">指示安装程序保持静默或彻底静默。当设置为静默安装时，不显示向导和背景窗口，但会显示安装进度窗口。当设置为彻底静默时，则不显示安装进度窗口。其他一切正常，例如安装过程中的错误信息会显示，启动提示也会显示(如果您没有使用 DisableStartupPrompt 或上文解释的&quot;/SP-&quot;命令行选项禁用的话)。</para>
+          <para styleclass="Body Text">如果需要重启，但未使用&quot;/norestart &quot;命令(见下文)，且安装程序处于静默状态，则会显示 &quot;现在重启？&quot;消息框。如果彻底静默安装，则无需询问即可重启。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -94,23 +94,23 @@
         <td>
           <para styleclass="Body Text">指示设置抑制消息框。只有与&quot;/silent&quot;或&quot;/verysilent&quot;结合使用时才有效。</para>
           <para styleclass="Body Text">在有选择的情况下，默认响应为：</para>
-          <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Body Text">YES &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; 在 “Keep newer file?”(保留较新的文件)</li>
-            <li styleclass="Body Text">NO &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; 在 “&apos;File exists, confirm overwrite”(文件已存在，确认覆盖)</li>
-            <li styleclass="Body Text">Abort &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;在 Abort/Retry</li>
-            <li styleclass="Body Text">Cancel &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;在 Retry/Cancel</li>
-            <li styleclass="Body Text">YES(=continue) &#160; 在“DiskSpaceWarning/DirExists/DirDoesntExist/NoUninstallWarning/ExitSetupMessage/ConfirmUninstall”(磁盘空间警告/目录存在/目录不存在/未卸载警告/退出设置消息/确认卸载)</li>
-            <li styleclass="Body Text">YES(=restart) &#160; &#160; 在&quot;FinishedRestartMessage/UninstalledAndNeedsRestart&quot;(完成重启/已卸载并需要重启)</li>
+          <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <li styleclass="Body Text">YES                   在 “Keep newer file?”(保留较新的文件)</li>
+            <li styleclass="Body Text">NO                     在 “&apos;File exists, confirm overwrite”(文件已存在，确认覆盖)</li>
+            <li styleclass="Body Text">Abort                  在 Abort/Retry</li>
+            <li styleclass="Body Text">Cancel                在 Retry/Cancel</li>
+            <li styleclass="Body Text">YES(=continue)   在“DiskSpaceWarning/DirExists/DirDoesntExist/NoUninstallWarning/ExitSetupMessage/ConfirmUninstall”(磁盘空间警告/目录存在/目录不存在/未卸载警告/退出设置消息/确认卸载)</li>
+            <li styleclass="Body Text">YES(=restart)     在&quot;FinishedRestartMessage/UninstalledAndNeedsRestart&quot;(完成重启/已卸载并需要重启)</li>
             <li styleclass="Body Text">在 PrivilegesRequiredOverridesAllowed=dialog 情况下的建议选择。</li>
           </list>
           <para styleclass="Body Text"></para>
           <para styleclass="Body Text">5 种消息框不可抑制：</para>
-          <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <list id="1" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+          <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+            <list id="1" level="1" type="ul" listtype="bullet" formatstring="o" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:'Courier New'; font-size:11pt; color:#000000;">
               <li styleclass="Body Text">About Setup 消息框 </li>
               <li styleclass="Body Text">Exit Setup? 消息框 </li>
               <li styleclass="Body Text">当设置要求插入新磁盘但未找到磁盘时，会显示 FileNotInDir2 消息框。</li>
-              <li styleclass="Body Text">安装（或卸载）前显示的任何（错误）消息框都可以读取命令行参数。</li>
+              <li styleclass="Body Text">安装(或卸载)前显示的任何(错误)消息框都可以读取命令行参数。</li>
               <li styleclass="Body Text">通过 [Code] 支持函数 TaskDialogMsgBox 和 MsgBox 显示的任何任务对话框或消息框。</li>
             </list>
           </list>
@@ -145,7 +145,7 @@
           <para styleclass="Body Text">/restartexitcode=exit code</para>
         </td>
         <td>
-          <para styleclass="Body Text">指定自定义退出代码，当安装成功后需要重启系统时，Setup 将返回该代码（默认情况下返回 0）。通常与 /norestart 一起使用。</para>
+          <para styleclass="Body Text">指定自定义退出代码，当安装成功后需要重启系统时，Setup 将返回该代码(默认情况下返回 0)。通常与 /norestart 一起使用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -255,7 +255,7 @@
         <td>
           <para styleclass="Body Text">覆盖默认组件设置。使用此命令行参数可使设置程序自动选择自定义类型。如果没有定义自定义类型，该参数将被忽略。</para>
           <para styleclass="Body Text">只有指定的组件会被选中，其他组件将被取消选中。</para>
-          <para styleclass="Body Text">如果组件名称前缀为 &quot;*&quot;字符，则所有子组件也将被选中（包含 dontinheritcheck 标记的组件除外）。如果组件名称前缀为&quot;！&quot;字符，则该组件将被取消选择。</para>
+          <para styleclass="Body Text">如果组件名称前缀为 &quot;*&quot;字符，则所有子组件也将被选中(包含 dontinheritcheck 标记的组件除外)。如果组件名称前缀为&quot;！&quot;字符，则该组件将被取消选择。</para>
           <para styleclass="Body Text">该参数不会改变包含固定标记的组件的状态。</para>
           <para styleclass="Body Text">示例：取消选择所有组件，然后选择 &quot;help &quot;和 &quot;plugins &quot;组件：</para>
           <para styleclass="Body Text">/components=&quot;help,plugins&quot; </para>
@@ -299,7 +299,7 @@
                 <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">main\gac</text></para>
               </td>
               <td>
-                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">在 GAC 中注册运行时 DLL（推荐！）。</text></para>
+                <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; font-style:italic;">在 GAC 中注册运行时 DLL(推荐！)。</text></para>
               </td>
             </tr>
             <tr style="vertical-align:top">

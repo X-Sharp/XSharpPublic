@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T22:53:29.834+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:51:52.687+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 运行时的子系统</title>
   <body>
     <header>
@@ -25,7 +25,7 @@
           <para styleclass="Normal">这些函数是在 XSharp.Core 中实现的。</para>
           <para styleclass="Normal">与 VO 相比，XSharp.Core 的实现有一个重要区别。</para>
           <para styleclass="Normal">在 VO 中，从 FCreate() 和 FOpen() 等函数返回的文件句柄是操作系统文件句柄。这意味着你也可以直接将它们传递给 Win32 API 函数。在 X# 运行时中，这已不再可能。</para>
-          <para styleclass="Normal">我们使用 .Net FileStream 对象进行文件 IO。返回的文件处理程序（IntPtr 类型）是我们存储这些文件 IO 对象的表中的唯一密钥。密钥由随机数生成。您不能也不应该依赖这些键的值。</para>
+          <para styleclass="Normal">我们使用 .Net FileStream 对象进行文件 IO。返回的文件处理程序(IntPtr 类型)是我们存储这些文件 IO 对象的表中的唯一密钥。密钥由随机数生成。您不能也不应该依赖这些键的值。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

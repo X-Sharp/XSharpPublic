@@ -1,25 +1,25 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:45:40.946+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:07:22.737+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>已知问题</title>
   <body>
     <header>
       <para styleclass="Heading1">已知问题</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">以下是 X# 当前版本尚未支持或已知问题的完整（简短）列表。</para>
+    <para styleclass="Normal">以下是 X# 当前版本尚未支持或已知问题的完整(简短)列表。</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">有些解析器错误需要改进，编译器错误可能时不时会让人摸不着头脑。</li>
     </list>
     <para styleclass="List1"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">有时你可能会看到 &quot;找不到包含文件 &quot;的错误，而文件确实存在。这似乎是用于保存包含文件的编码的副作用。</li>
+      <li styleclass="List1">有时你可能会看到 &quot;找不到包含文件&quot;的错误，而文件确实存在。这似乎是用于保存包含文件的编码的副作用。</li>
     </list>
-    <para styleclass="List1"><tab />如果将文件保存为 UTF8 格式（Visual Studio 中的 &quot;文件高级保存选项&quot;），这个问题几乎总会消失。</para>
+    <para styleclass="List1"><tab />如果将文件保存为 UTF8 格式(Visual Studio 中的 &quot;文件高级保存选项&quot;)，这个问题几乎总会消失。</para>
     <para styleclass="Heading2">Visual Studio</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">调试器的新功能，例如全局和 RDD 工作区窗口。</li>
+      <li styleclass="List1">调试器的新功能，例如全局(Globals)和 RDD 工作区窗口。</li>
     </list>
     <para styleclass="Heading2">RDD 系统</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">

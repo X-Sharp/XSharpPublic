@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T22:15:55.500+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.028+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-appconfig</title>
   <keywords>
     <keyword>-appconfig</keyword>
@@ -10,11 +10,11 @@
       <para styleclass="Heading1">-appconfig</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">通过 -appconfig 编译器选项，X# 应用程序可以在程序集绑定时向公共语言运行时（CLR）指定程序集应用程序配置 (app.config) 文件的位置。</para>
+    <para styleclass="Normal">通过 -appconfig 编译器选项，X# 应用程序可以在程序集绑定时向公共语言运行时(CLR)指定程序集应用程序配置 (app.config) 文件的位置。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-appconfig:file &#160;</para>
+    <para styleclass="Code with box">-appconfig:file  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">file</text><tab /><text styleclass="Normal">必需。包含程序集绑定设置的应用程序配置文件。</text></para>
+    <para styleclass="List"><text styleclass="Code Example">file</text><tab/><text styleclass="Normal">必需。包含程序集绑定设置的应用程序配置文件。</text></para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">-appconfig 的一个用途是在高级场景中，程序集必须同时引用特定引用程序集的 .NET Framework 版本和 .NET Framework for Silverlight 版本。例如，使用 Windows Presentation Foundation (WPF) 编写的 XAML 设计器可能需要同时引用用于设计器用户界面的 WPF Desktop 和 Silverlight 中包含的 WPF 子集。同一个设计器程序集必须访问这两个程序集。默认情况下，单独引用会导致编译器出错，因为程序集绑定将这两个程序集视为等价。</para>
     <para styleclass="Normal"></para>
@@ -22,15 +22,15 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">&lt;supportPortability PKT=&quot;7cec85d7bea7798e&quot; enable=&quot;false&quot;/&gt;</para>
     <para styleclass="Normal">编译器会将文件的位置传递给 CLR 的汇编绑定逻辑。</para>
-    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Normal"> </para>
     <para styleclass="Normal">注意 </para>
-    <para styleclass="Normal">如果使用 Microsoft Build Engine (MSBuild) 构建应用程序，可以通过在 .xsproj 文件中添加属性标记来设置 -appconfig 编译器选项。要使用项目中已设置的 app.config 文件，请在 .xsproj 文件中添加属性标记 &lt;UseAppConfigForCompiler&gt; 并将其值设为 true。要指定不同的 app.config 文件，请添加属性标记 &lt;AppConfigForCompiler&gt; 并将其值设置为文件的位置。</para>
+    <para styleclass="Normal">如果使用 Microsoft Build Engine (MSBuild) 生成应用程序，可以通过在 .xsproj 文件中添加属性标记来设置 -appconfig 编译器选项。要使用项目中已设置的 app.config 文件，请在 .xsproj 文件中添加属性标记 &lt;UseAppConfigForCompiler&gt; 并将其值设为 true。要指定不同的 app.config 文件，请添加属性标记 &lt;AppConfigForCompiler&gt; 并将其值设置为文件的位置。</para>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">下面的示例显示了一个 app.config 文件，该文件可使应用程序同时引用 .NET Framework 实现和 .NET Framework for Silverlight 实现中的任何 .NET Framework 程序集。编译器选项 -appconfig 指定了该 app.config 文件的位置。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">&lt;configuration&gt; &#160;<br/> &#160; &#160; &#160;&lt;runtime&gt;<br/> &#160; &#160; &#160; &#160;&lt;assemblyBinding&gt; <br/> &#160; &#160; &#160; &#160; &#160; &#160;&lt;supportPortability PKT=&quot;7cec85d7bea7798e&quot; enable=&quot;false&quot;/&gt; &#160;<br/> &#160; &#160; &#160; &#160; &#160; &#160;&lt;supportPortability PKT=&quot;31bf3856ad364e35&quot; enable=&quot;false&quot;/&gt; &#160;<br/> &#160; &#160; &#160;&lt;/assemblyBinding&gt; &#160;<br/> &#160; &#160; &#160;&lt;/runtime&gt; &#160;<br/>&lt;/configuration&gt;<text styleclass="Normal"> &#160;</text></para>
+    <para styleclass="Code with box">&lt;configuration&gt;  <br/>      &lt;runtime&gt;<br/>        &lt;assemblyBinding&gt; <br/>            &lt;supportPortability PKT=&quot;7cec85d7bea7798e&quot; enable=&quot;false&quot;/&gt;  <br/>            &lt;supportPortability PKT=&quot;31bf3856ad364e35&quot; enable=&quot;false&quot;/&gt;  <br/>      &lt;/assemblyBinding&gt;  <br/>      &lt;/runtime&gt;  <br/>&lt;/configuration&gt;<text styleclass="Normal">  </text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

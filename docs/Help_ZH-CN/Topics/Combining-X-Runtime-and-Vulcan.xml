@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T19:27:17.372+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:55:05.226+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>结合 X# 运行时和 Vulcan 运行时</title>
   <body>
     <header>
       <para styleclass="Heading1">结合 X# 运行时和 Vulcan 运行时</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">从技术上讲，您可以在应用程序中同时包含 X# 和 Vulcan 运行库。如果这样做，编译器会认为你想使用 X# 实现 XBase 类型（如 USUAL 和 DATE）。如果编译器找不到 XSharp.Core 和 XSharp.VO 程序集，那么它会认为你想将这些类型映射到 Vulcan 运行时类型。</para>
-    <para styleclass="Normal">因此，你可以混合使用。不过，如果你想调用 Vulcan 运行时 DLL 中的代码，你可能必须使用完全合格的类名或类型名。</para>
+    <para styleclass="Normal">从技术上讲，您可以在应用程序中同时包含 X# 和 Vulcan 运行库。如果这样做，编译器会认为你想使用 X# 实现 XBase 类型(如 USUAL 和 DATE)。如果编译器找不到 XSharp.Core 和 XSharp.VO 程序集，那么它会认为你想将这些类型映射到 Vulcan 运行时类型。</para>
+    <para styleclass="Normal">因此，你可以混合使用。不过，如果你想调用 Vulcan 运行时 DLL 中的代码，你可能必须使用全限定类名或类型名。</para>
     <para styleclass="Normal">请记住：X# 类型和 Vulcan 类型之间没有自动转换。</para>
     <para styleclass="Normal">如果你想将 X# 变量转换为 Vulcan 变量，你可能必须先将其转换为中间类型。</para>
     <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T19:22:07.890+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:58:19.899+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# 脚本</title>
   <keywords>
     <keyword>#LOAD</keyword>
@@ -60,7 +60,7 @@
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <list id="3" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">单个文件（单个脚本可加载多个数据源） </li>
+        <li styleclass="Normal">单个文件(单个脚本可加载多个数据源)</li>
         <li styleclass="Normal">无需完整的集成开发环境或 SDK </li>
         <li styleclass="Normal">无需集成开发环境的动态编译 </li>
         <li styleclass="Normal">复杂结构、类的定义</li>
@@ -78,7 +78,7 @@
       <list id="4" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">无 START 函数 </li>
         <li styleclass="Normal">全局语句、表达式 </li>
-        <li styleclass="Normal">与宏编译器类似（但并不相同！）。 </li>
+        <li styleclass="Normal">与宏编译器类似(但并不相同！)。 </li>
         <li styleclass="Normal">主机对象维持状态</li>
       </list>
     </list>
@@ -95,7 +95,7 @@
       <list id="5" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">加载组件 </li>
         <li styleclass="Normal">无法隐式访问主机程序集 </li>
-        <li styleclass="Normal">无隔离（例如单独的 AppDomain）</li>
+        <li styleclass="Normal">无隔离(例如单独的 AppDomain)</li>
       </list>
     </list>
     <para styleclass="Heading2">X-Sharp 解释器 (xsi.exe)</para>
@@ -175,7 +175,7 @@
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">不能直接检查</li>
       <list id="9" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal">“SELF “和 ”SUPER &quot;无法访问</li>
+        <li styleclass="Normal">“SELF“ 和 ”SUPER&quot; 无法访问</li>
       </list>
     </list>
     <para styleclass="Heading2">脚本内部结构：全局对象</para>
@@ -205,7 +205,7 @@
       </list>
     </list>
     <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">声明类型？(类型、结构、枚举） </li>
+      <li styleclass="Normal">声明类型？(类型、结构、枚举)</li>
       <list id="11" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">它们会成为 submission 类的嵌套类型 </li>
         <li styleclass="Normal">不能有扩展方法！</li>
@@ -231,7 +231,7 @@
       <li styleclass="Normal">运行脚本</li>
       <list id="12" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">XSharpScript.RunAsync(&quot;? &apos;HELLO&apos;&quot;) </li>
-        <li styleclass="Normal">如果源代码有错误，会抛出 CompilationErrorException（编译错误异常）。</li>
+        <li styleclass="Normal">如果源代码有错误，会抛出 CompilationErrorException(编译错误异常)。</li>
       </list>
     </list>
     <para styleclass="Heading2">问题：如何向脚本传递参数？</para>
@@ -268,7 +268,7 @@
       <li styleclass="Normal" style="margin-left:13px;">脚本无法直接访问所有应用程序类型 </li>
       <li styleclass="Normal" style="margin-left:13px;">不是安全措施！ </li>
       <list id="14" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="Normal" style="margin-left:13px;">脚本在同一 AppDomain（动态程序集）中运行</li>
+        <li styleclass="Normal" style="margin-left:13px;">脚本在同一 &#160;AppDomain(动态程序集)中运行</li>
       </list>
     </list>
     <para styleclass="Heading2">Script API: 使用通用组件</para>
@@ -389,7 +389,7 @@
       <li styleclass="Normal">可使用当前程序集中声明的实体 </li>
       <list id="22" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal">Functions &amp; procedures </li>
-        <li styleclass="Normal">类型（类、结构等） </li>
+        <li styleclass="Normal">类型(类、结构等)</li>
         <li styleclass="Normal">命名空间</li>
       </list>
     </list>

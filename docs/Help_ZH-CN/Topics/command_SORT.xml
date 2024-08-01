@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:45:16.549+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:48:18.802+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SORT 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />如果 &lt;xcTargetFile&gt; 不存在，将创建该文件。 如果存在，该命令将尝试以独占模式打开文件，如果成功，文件将被覆盖，不会发出警告或出错。 如果由于其他进程正在使用该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。 </para>
     <para styleclass="List"></para>
-    <para styleclass="List">ON &lt;idFieldList&gt;<tab />以逗号分隔的字段名列表形式指定的排序键。 可以选择在每个字段名后添加 /A（按字典顺序排序）、/C（忽略大写字母）或 /D（按降序排序）。 默认设置为 /A。</para>
+    <para styleclass="List">ON &lt;idFieldList&gt;<tab />以逗号分隔的字段名列表形式指定的排序键。 可以选择在每个字段名后添加 /A(按字典顺序排序)、/C(忽略大写字母)或 /D(按降序排序)。 默认设置为 /A。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T17:12:04.364+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:31:03.978+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>文本编辑器选项</title>
   <keywords>
     <keyword>EditorSettings.json</keyword>
@@ -37,9 +37,9 @@
     <para styleclass="Body Text"><text styleclass="Image Caption">在 X# 上过滤的工具选项</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">文本编辑器（Text Editor）类别（在第一张图片上也能看到）包含 Visual Studio 或安装在 Visual Studio 内的扩展（例如我们的 Visual Studio X# 扩展）所支持的所有语言的设置。</para>
+    <para styleclass="Body Text">文本编辑器(Text Editor)类别(在第一张图片上也能看到)包含 Visual Studio 或安装在 Visual Studio 内的扩展(例如我们的 Visual Studio X# 扩展)所支持的所有语言的设置。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">调试类别下还有一个条目，用于调试器内 X# 表达式求值器使用的设置。</para>
+    <para styleclass="Body Text">调试类别下还有一个条目，用于调试器内 X# 表达式计算器使用的设置。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">最后一个类别包含 VO 兼容表单编辑器和其他一些 X# 特定编辑器的一些设置。</para>
   </body>

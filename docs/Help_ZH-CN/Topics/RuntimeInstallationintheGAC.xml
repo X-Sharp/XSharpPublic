@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T11:39:36.049+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:47:18.216+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Runtime Installation in the GAC</title>
   <keywords>
     <keyword>GAC</keyword>
@@ -33,15 +33,15 @@
       <li styleclass="Normal">VOWin32APILibrary.dll</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">有些组件是在运行时动态加载的，不必作为引用添加到应用程序中：</para>
+    <para styleclass="Normal">有些组件是在<text style="font-weight:bold;">运行时动态加载</text>的，不必作为引用添加到应用程序中：</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">XSharp.RDD.DLL</li>
-      <li styleclass="Normal">XSharp.Macrocompiler.DLL</li>
+      <li styleclass="Normal"><text style="font-weight:bold;">XSharp.RDD.DLL</text></li>
+      <li styleclass="Normal"><text style="font-weight:bold;">XSharp.Macrocompiler.DLL</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">X# 运行时会尝试在 GAC 和安装应用程序的目录中查找这些程序集。</para>
-    <para styleclass="Normal">如果不将运行时安装到 GAC，则必须确保应用程序文件夹中包含这两个 DLL。否则，当需要使用这两个 DLL 时，就会出现运行时错误。</para>
+    <para styleclass="Normal"><text style="font-weight:bold;">如果不将运行时安装到 GAC，则必须确保应用程序文件夹中包含这两个</text> DLL。否则，当需要使用这两个 DLL 时，就会出现运行时错误。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

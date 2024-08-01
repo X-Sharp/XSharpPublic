@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T19:32:17.856+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.442+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-platform</title>
   <keywords>
     <keyword>-platform</keyword>
@@ -10,17 +10,17 @@
       <para styleclass="Heading1">-platform</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">指定哪个版本的公共语言运行时（CLR）可以运行程序集。</para>
+    <para styleclass="Normal">指定哪个版本的公共语言运行时(CLR)可以运行程序集。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-platform:string &#160;</para>
+    <para styleclass="Code with box">-platform:string  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">string</text><tab />anycpu（默认）、anycpu32bitpreferred、ARM、x64、x86 或 Itanium。</para>
+    <para styleclass="List"><text styleclass="Code Example">string</text><tab/>anycpu(默认)、anycpu32bitpreferred、ARM、x64、x86 或 Itanium。</para>
     <para styleclass="Heading2">Remarks</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">anycpu（默认）编译程序集，以便在任何平台上运行。只要有可能，您的应用程序就会以 64 位进程运行，如果只有 32 位模式可用，就会退回到该模式。</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">anycpu(默认)编译程序集，以便在任何平台上运行。只要有可能，您的应用程序就会以 64 位进程运行，如果只有 32 位模式可用，就会退回到该模式。</li>
       <li styleclass="Normal" style="margin-left:13px;">anycpu32bitpreferred 编译程序集，以便在任何平台上运行。在同时支持 64 位和 32 位应用程序的系统上，您的应用程序将以 32 位模式运行。只有针对 .NET Framework 4.5 的项目才能指定该选项。</li>
     </list>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">ARM 编译您的程序集，使其能在装有Advanced RISC Machine (ARM) 处理器的计算机上运行。</li>
       <li styleclass="Normal" style="margin-left:13px;">x64 编译程序集，以便在支持 AMD64 或 EM64T 指令集的计算机上通过 64 位公共语言运行时运行。</li>
       <li styleclass="Normal" style="margin-left:13px;">x86 将汇编程序编译为 32 位 x86 兼容的公共语言运行时。</li>
@@ -29,18 +29,18 @@
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">在 64 位 Windows 操作系统上：</para>
     <para styleclass="Normal"></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">使用 -platform:x86 编译的程序集在 WOW64 下运行的 32 位 CLR 上执行。</li>
       <li styleclass="Normal" style="margin-left:13px;">使用 -platform:anycpu 编译的 DLL 与加载该 DLL 的进程在相同的 CLR 上执行。</li>
       <li styleclass="Normal" style="margin-left:13px;">使用 The -platform:anycpu 编译的可执行文件在 64 位 CLR 上执行。</li>
       <li styleclass="Normal" style="margin-left:13px;">使用 -platform:anycpu32bitpreferred 编译的可执行文件在 32 位 CLR 上执行。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">anycpu32bitpreferred 设置仅对可执行文件（.EXE）有效，并且需要 .NET Framework 4.5。</para>
+    <para styleclass="Normal">anycpu32bitpreferred 设置仅对可执行文件(.EXE)有效，并且需要 .NET Framework 4.5。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="3" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Application 选项卡</li>
       <li styleclass="Normal" style="margin-left:13px;">修改 Platform target 属性，对于以 .NET Framework 4.5 为目标的项目，选择或清除 Prefer 32-bit 复选框。</li>
@@ -49,7 +49,7 @@
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">下面的示例展示了如何使用 -platform 选项指定应用程序应由 64 位 CLR 在 64 位 Windows 操作系统上运行。</para>
-    <para styleclass="Code with box">xsc -platform:anycpu filename.prg &#160;</para>
+    <para styleclass="Code with box">xsc -platform:anycpu filename.prg  </para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

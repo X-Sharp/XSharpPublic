@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-18T22:10:58.616+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-25T20:30:02.966+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>示例 2: VOPAD 示例</title>
   <body>
     <header>
@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">本例将转换 C:\cavo28SP3\Samples\Controls\Richedit 文件夹中的 VOPAD AEF 文件。</para>
-    <para styleclass="Body Text">使用与第一个示例相同的选项进行转换后，我们的文件夹结构将如下所示 </para>
+    <para styleclass="Body Text">使用与第一个示例相同的选项进行转换后，我们的文件夹结构将如下所示：</para>
     <para styleclass="Body Text">C:\XporterOutput\Examples\VoPad<br/>C:\XporterOutput\Examples\VoPad\VoPad</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="3" colcount="2">
@@ -38,7 +38,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">项目文件夹包含以下文件</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; color:#000000;">项目文件夹包含以下文件：</text></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="28" colcount="2">
       <tr style="vertical-align:top">
         <td>
@@ -296,6 +296,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">现在我们添加了一个扩展方法，它可以像普通方法一样使用。</para>
     <para styleclass="Normal">这一改动也解决了 PadWin.prg 中的错误。</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal">再看看其他问题：它们都与 TextControl 类中的字体属性有关。不幸的是，VO 类库为 TextControl 类提供了一个 Font() 方法和一个 Font() Access/Assign。.Net不允许使用同名的方法和属性。</para>
     <para styleclass="Normal">在将 VO Gui 类移植到 Vulcan 时，我们决定将 Font 属性重命名为 Controlfont。因此，我们需要进行更改。只需双击错误并更改 </para>
     <para styleclass="Code Example"><tab />:Font </para>
@@ -308,7 +309,6 @@
       <li styleclass="Body Text">Manifest.prg 为空，但已包含，因为它有一个依赖资源。</li>
     </list>
     <para styleclass="Body Text"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Body Text"><text style="font-weight:bold;">您可以在 XSharp 示例文件夹中找到 “Code before ”和 “Code after”。</text></para>
   </body>
 </topic>

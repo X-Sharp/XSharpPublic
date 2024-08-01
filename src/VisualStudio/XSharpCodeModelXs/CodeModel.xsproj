@@ -22,7 +22,8 @@
     <DelaySign>false</DelaySign>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <EnforceSelf>True</EnforceSelf>
+    <EnforceSelf>False</EnforceSelf>
+    <Allowdot>True</Allowdot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -202,4 +203,4 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  </Project>
+</Project>

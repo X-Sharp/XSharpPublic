@@ -100,7 +100,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (first.Kind == SymbolKind.Namespace)
                 {
-                    return true;
+                    warning = false;
+                    return false;
                 }
             }
             if (second.Kind == SymbolKind.NamedType)

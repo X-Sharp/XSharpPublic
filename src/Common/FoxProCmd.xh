@@ -328,6 +328,9 @@
 // STRUCTURE and EXTENDED keyword can be optional, so it can be anywhere in the command. Same for TO <(file)>
 // The normal Copy and COPY STRUCTURE commands are declared later and will take precedence when the keywords are omitted
 
+#command COPY <*clauses*> FIELDS <*moreclauses*> => ;
+         COPY <clauses> __DBFIELDS__ <moreclauses>
+
 #command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]   ;
     => DbCopyXStructFox( <(file)>)
 
@@ -336,14 +339,16 @@
     => DbCopyXStructFox( <(file)>) ; DbAdd(<(dbname)>, <(longtablename)>)
 
 
-#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+#command COPY [STRUCTURE] [TO <(file)>]  ;
+    [__FOXLIST__ <fldlist>]              ;
     [WITH <cdx:CDX, PRODUCTION>] ;
-    => DbCopyStructFox( <(file)>, <fields> , <.cdx.>)
+    => DbCopyStructFox( <(file)>, <!fldlist!> , <.cdx.>)
 
-#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+#command COPY [STRUCTURE] [TO <(file)>]  ;
+    [__FOXLIST__ <fldlist>]              ;
     [WITH <cdx:CDX, PRODUCTION>] ;
     DATABASE <dbname> [NAME <longtablename>] ;
-    => DbCopyStructFox( <(file)>, <fields>, <.cdx.> ); DbAdd(<(dbname)>, <(longtablename)>)
+    => DbCopyStructFox( <(file)>, <!fldlist!>, <.cdx.> ); DbAdd(<(dbname)>, <(longtablename)>)
 
 
 #command SORT  TO <(file)> ON <fields,...>    ;
@@ -356,7 +361,7 @@
          [<rest:REST>]                        ;
          [<noopt: NOOPTIMIZE>]                ;
          [__FOXLIST__ <fldlist>]              ;
-  		   [__FOXWILD__ <fldwild> ]             ;
+  		 [__FOXWILD__ <fldwild> ]             ;
          [ALL]                                ;
                                               ;
       => DbSortFox(                           ;

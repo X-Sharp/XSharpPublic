@@ -159,11 +159,13 @@ namespace XSharp.MacroCompiler
                         case XSharpSpecialNames.XSharpDataFunctionsClass:
                         case XSharpSpecialNames.XSharpVFPFunctionsClass:
                         case XSharpSpecialNames.XSharpXPPFunctionsClass:
+                        case XSharpSpecialNames.XSharpHarbourFunctionsClass:
+
                             // functions in specific runtime files override generic files
                             return ovRes.Symbol;
                         case XSharpSpecialNames.XSharpRTFunctionsClass:
                             if (func2 == XSharpSpecialNames.XSharpCoreFunctionsClass)
-                                // functions in specific runtime files override generic files
+                            // functions in specific runtime files override generic files
                                 return ovRes.Symbol;
                             break;
                     }
@@ -173,6 +175,7 @@ namespace XSharp.MacroCompiler
                         case XSharpSpecialNames.XSharpDataFunctionsClass:
                         case XSharpSpecialNames.XSharpVFPFunctionsClass:
                         case XSharpSpecialNames.XSharpXPPFunctionsClass:
+                        case XSharpSpecialNames.XSharpHarbourFunctionsClass:
                             // functions in specific runtime files override generic files
                             return ovRes.Equivalent.Symbol;
                         case XSharpSpecialNames.XSharpRTFunctionsClass:

@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
+private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
         {
             TypeSymbol parameterType = parameter.Type;
             var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
@@ -188,13 +188,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             Compilation.Options.HasOption(CompilerOption.MemVars, node) &&
                             bc.Method.NeedAccessToLocals(out var writeAccess))
                         {
-                            var localsymbols = new List<LocalSymbol>();
+                            var localsymbols = new List<Symbol>();
                             var binder = this;
                             while (binder != null)
                             {
                                 localsymbols.AddRange(binder.Locals);
-                                if (binder is InMethodBinder)
+                                if (binder is InMethodBinder imb)
+                                {
+                                    var ms = imb.ContainingMemberOrLambda as MethodSymbol;
+                                    localsymbols.AddRange(ms.Parameters);
                                     break;
+                                }
                                 binder = binder.Next;
                             }
                             var root = node.SyntaxTree.GetRoot() as CompilationUnitSyntax;

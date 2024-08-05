@@ -1,22 +1,21 @@
-﻿GLOBAL ggg := 123
-
-FUNCTION Start( ) AS VOID
-PUBLIC ppp
-ppp := 123.456
-	? ppp
-
-// Method is overloaded, Cannot determine the right overload to call.
-//     ? Str(ggg)
-//     ? Str(ppp)
-//     ? Str(123)
-//  	? &("Str(ggg)")
-//  	? &("Str(ppp)")
-//  	? &("Str(123)")
-
-// System.Security.VerificationException
-// Operation could destabilize the runtime.
-	? &("Str(123,7,2)")
-	? &("Str(ggg,7,2)")
-    ? &("Str(ppp,7,2)")
+﻿FUNCTION Start( ) AS VOID
+    try
+        LOCAL coll as Collection
+        coll = CREATEOBJECT("Collection")
+        ? coll.Count
+        coll.Add(1,"aaa")
+        coll.Add(2,"bbb")
+        coll.Add(3,"aAa")
+        coll.Add(4,"bBb")
+        ? coll.KeySort
+        ? coll.Count
+        coll.KeySort = 4
+        FOR each var item in coll
+            ?  item, coll.GetKey(item)
+        next
+    catch e as exception
+        ? e:ToString()
+    end try
     wait
-RETURN
+    RETURN
+

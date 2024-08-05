@@ -585,6 +585,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             FChSize( SELF:_hFile, BUFF_SIZE )
             SELF:_fileSize := BUFF_SIZE
             SELF:Flush()
+            SELF:_PageList:Clear()
             RETURN TRUE
 
     END CLASS

@@ -2643,7 +2643,7 @@
   </data>
   <!-- End of unused strings-->
   <!-- FoxPro runtime-->
-  <data name="INVALID_DATE" xml:space="preserve">
+  <data name="VFP_INVALID_DATE" xml:space="preserve">
     <value>*Datum ungültig*</value>
   </data>
   <!-- End of FoxPro runtime-->

@@ -72,31 +72,31 @@
            __FOXFIELDS__ LIKE <include>    EXCEPT <exclude>
 
 // scatter to array
-#command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<blank: BLANK>] TO <arrayName> ;
-          => <arrayName> := __ScatterArray( <arrayName>, iif( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> )
+#command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<memo: MEMO>] [<blank: BLANK>] TO <arrayName> ;
+         => <arrayName> := __ScatterArray( <arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.>, <.memo.> )
 
 // Note that the objectName parameter is passed as a string because objectName may not have been created yet (when it is a MEMVAR).
 // For SCATTER NAME to work with LOCALS and the ADDITIVE clause we have marked __ScatterObject with the
 // attribute that it needs access to locals
 
-#command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<blank: BLANK>] NAME <objectName> [<add: ADDITIVE>];
-          => <objectName> := __ScatterObject( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> , <"objectName">,  <.add.>)
+#command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<memo: MEMO>] [<blank: BLANK>] NAME <objectName> [<add: ADDITIVE>];
+         => <objectName> := __ScatterObject( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> , <"objectName">,  <.add.>, <.memo.>)
 
 
 // SCATTER MemVar must be last. DO NOT USE TO MEMBER !
-#command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<blank: BLANK>] MEMVAR ;
-          =>  __ScatterMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> )
+#command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<memo: MEMO>] [<blank: BLANK>] MEMVAR ;
+         =>  __ScatterMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.>, <.memo.>)
 
 
-#command GATHER FROM <arrayName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
-          => __GatherArray(<arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
+#command GATHER FROM <arrayName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<memo: MEMO>] ;
+          => __GatherArray(<arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.memo.> )
 
-#command GATHER NAME <objectName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
-          => __GatherObject(<objectName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
+#command GATHER NAME <objectName> [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  [<memo: MEMO>];
+          => __GatherObject(<objectName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.memo.> )
 
 //GATHER MemVar must be last, otherwise the compiler thinks that MEMVAR is the name of an array
-#command GATHER MEMVAR [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  ;
-          => __GatherMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
+#command GATHER MEMVAR [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ]  [<memo: MEMO>];
+          => __GatherMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.memo.> )
 
 
 // Variations of the database commands for the FoxPro Dialect
@@ -328,6 +328,9 @@
 // STRUCTURE and EXTENDED keyword can be optional, so it can be anywhere in the command. Same for TO <(file)>
 // The normal Copy and COPY STRUCTURE commands are declared later and will take precedence when the keywords are omitted
 
+#command COPY <*clauses*> FIELDS <*moreclauses*> => ;
+         COPY <clauses> __DBFIELDS__ <moreclauses>
+
 #command COPY [STRUCTURE] [EXTENDED] [TO <(file)>]   ;
     => DbCopyXStructFox( <(file)>)
 
@@ -336,14 +339,16 @@
     => DbCopyXStructFox( <(file)>) ; DbAdd(<(dbname)>, <(longtablename)>)
 
 
-#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+#command COPY [STRUCTURE] [TO <(file)>]  ;
+    [__FOXLIST__ <fldlist>]              ;
     [WITH <cdx:CDX, PRODUCTION>] ;
-    => DbCopyStructFox( <(file)>, <fields> , <.cdx.>)
+    => DbCopyStructFox( <(file)>, <!fldlist!> , <.cdx.>)
 
-#command COPY [STRUCTURE] [TO <(file)>] [__DBFIELDLIST__ <fields>]  ;
+#command COPY [STRUCTURE] [TO <(file)>]  ;
+    [__FOXLIST__ <fldlist>]              ;
     [WITH <cdx:CDX, PRODUCTION>] ;
     DATABASE <dbname> [NAME <longtablename>] ;
-    => DbCopyStructFox( <(file)>, <fields>, <.cdx.> ); DbAdd(<(dbname)>, <(longtablename)>)
+    => DbCopyStructFox( <(file)>, <!fldlist!>, <.cdx.> ); DbAdd(<(dbname)>, <(longtablename)>)
 
 
 #command SORT  TO <(file)> ON <fields,...>    ;
@@ -356,7 +361,7 @@
          [<rest:REST>]                        ;
          [<noopt: NOOPTIMIZE>]                ;
          [__FOXLIST__ <fldlist>]              ;
-  		   [__FOXWILD__ <fldwild> ]             ;
+  		 [__FOXWILD__ <fldwild> ]             ;
          [ALL]                                ;
                                               ;
       => DbSortFox(                           ;
@@ -519,7 +524,7 @@
          [AS <nCodePage>]                                               ;
                                                                         ;
       => DbAppFox(                                                      ;
-                     <(file)>, iif( <.type.>,#<type>,"DBF"),<fldlist>,  ;
+                     <(file)>, IIF( <.type.>,#<type>,"DBF"),            ;
                      iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),       ;
                      <{lfor}>, <{lwhile}>, <nNext>,                     ;
                      <rec>, <.rest.> ,                                  ;

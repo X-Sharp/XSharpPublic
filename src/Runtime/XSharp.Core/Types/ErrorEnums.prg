@@ -73,9 +73,9 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_SEND_MISSINGARG  := 57
         MEMBER EG_SEND_TOOMANYARGS := 58
         MEMBER EG_EXCEPTION		   := 59
-
+        MEMBER EG_NOACCESS         := 60
         // Last Member
-        MEMBER EG_MAX          := 59
+        MEMBER EG_MAX          := 60
 
     END ENUM
     /// <summary>Error code Enum that matches the XSharp Error Severity codesFDesc</summary>
@@ -337,6 +337,8 @@ DEFINE EG_SEND_TOOMANYARGS	:= Gencode.EG_SEND_TOOMANYARGS
 DEFINE EG_EXCEPTION			:= Gencode.EG_EXCEPTION
 /// <exclude />
 DEFINE EG_DB                 := Gencode.EG_DB
+/// <exclude />
+DEFINE EG_NOACCESS			:= Gencode.EG_NOACCESS
 /// <exclude />
 
 DEFINE EG_MAX            := Gencode.EG_MAX

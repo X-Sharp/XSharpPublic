@@ -1606,6 +1606,97 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbCloseArea()
 		RETURN
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD TestNtxZap() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/958
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFNTX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","C",10,0}})
+
+			DbUseArea(TRUE,, cDbf)
+			DbCreateIndex( cDbf,"FLD" )
+			DbAppend()
+			FieldPut(1,"TEST1")
+			DbAppend()
+			FieldPut(1,"TEST2")
+			DbAppend()
+			FieldPut(1,"TEST3")
+			
+			DbZap()
+			
+			DbAppend()
+			FieldPut(1,"asdasdsadasdas")
+			DbAppend()
+			FieldPut(1,"dsa")
+			DbAppend()
+			FieldPut(1,"23423423423")
+			DbAppend()
+			FieldPut(1,"a")
+			DbAppend()
+			FieldPut(1,"aeqweqweqweqweqwewqqew")
+			
+			DbZap()
+			
+			DbAppend()
+			FieldPut(1,"TEST4")
+			DbAppend()
+			FieldPut(1,"TEST5")
+			DbAppend()
+			FieldPut(1,"TEST6")
+			DbCommit()
+			
+			
+			DbGoTop()
+
+			Assert.Equal(3, RecCount())
+
+			LOCAL cOutput := "" AS STRING
+			DbGoTop()
+			DO WHILE !Eof()
+				cOutput += AllTrim(FieldGet(1)) + "|"
+				DbSkip()
+			ENDDO
+			Assert.Equal("TEST4|TEST5|TEST6|", cOutput)
+			DbCloseArea()
+			
+		RETURN
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD NtxSetOrderZero() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/958
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFNTX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","C",10,0}}, { "bbb" , "ccc" , "aaa" })
+			DbCreateIndex( cDbf,"FLD" )
+			
+			Assert.True(DbSetOrder(1))
+			DbGoTop()
+			Assert.Equal("aaa", AllTrim(FieldGet(1)))
+			DbGoBottom()
+			Assert.Equal("ccc", AllTrim(FieldGet(1)))
+			
+			Assert.True(DbSetOrder(0))
+			DbGoTop()
+			Assert.Equal("bbb", AllTrim(FieldGet(1)))
+			DbGoBottom()
+			Assert.Equal("aaa", AllTrim(FieldGet(1)))
+
+			Assert.True(DbSetOrder(1))
+			DbGoTop()
+			Assert.Equal("aaa", AllTrim(FieldGet(1)))
+			DbGoBottom()
+			Assert.Equal("ccc", AllTrim(FieldGet(1)))
+			
+			DbCloseArea()
+			
+		RETURN
+
 
     END CLASS
 END NAMESPACE

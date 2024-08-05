@@ -254,12 +254,31 @@ internal static class OOPHelpers
                 return 2
             elseif type2:IsAssignableFrom(type1)
                 return 1
+            else
+                var asm1 := type1:Assembly
+                var asm2 := type2:Assembly
+                return ResolveByAssembly(asm1, asm2)
             endif
         endif
 
 
         return 0
-  /// <summary>
+    static method ResolveByAssembly(asm1 as Assembly, asm2 as Assembly) as long
+        var name1 := asm1:GetName():Name:ToLower()
+        var name2 := asm2:GetName():Name:ToLower()
+        var ourassemblies := List<String>{}{"xsharp.core", "xsharp.rt", "xsharp.vo", "xsharp.vfp", "xsharp.xpp", "xsharp.harbour"}
+        var idx1 := ourassemblies:IndexOf(name1)
+        var idx2 := ourassemblies:IndexOf(name2)
+        if idx1 >= 0 .and. idx2 >= 0
+            if idx1 > idx2
+                return 1
+            elseif idx2 > idx1
+                return 2
+            endif
+        endif
+        return 0
+
+    /// <summary>
     /// Convert a null value to the correct value for the type
     /// </summary>
     static method ConvertFromNull(type as System.Type) as usual

@@ -51,7 +51,7 @@ begin namespace XSharp.VFP
 
         method AddObject(cName as string , oObject as object) as logic
             self:NoIvarPut(cName, oObject)
-            self:_Controls:AddObject(oObject, cName)
+            self:_Controls:Add(oObject, cName)
             return true
 
 

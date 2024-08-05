@@ -2792,6 +2792,41 @@
   <data name="VFP_INDEX_EXPRESSION_ZEROLENGTH" xml:space="preserve">
     <value>Index expression '{0}' results in a string with length 0 - cannot use AllTrim(), LTrim(), RTrim() and similar functions resulting to variable string length</value>
   </data>
+  <data name="VFP_COLLECTION_INVALIDKEYSORT" xml:space="preserve">
+    <value>Invalid value for KeySort property</value>
+  </data>
+  <data name="VFP_COLLECTION_INVALID_BEFORE_AFTER" xml:space="preserve">
+    <value>When you pass a before or after parameter you can only pass one argument and it has to be numeric</value>
+  </data>
+  <data name="VFP_COLLECTION_MISSING_KEY" xml:space="preserve">
+    <value>Collection is indexed on key, key parameter should be passed</value>
+  </data>
+  <data name="VFP_COLLECTION_DUPLICATE_KEY" xml:space="preserve">
+    <value>Collection already contains an item with the key '{0}'</value>
+  </data>
+  <data name="VFP_COLLECTION_NO_KEY_ALLOWED" xml:space="preserve">
+    <value>Collection is not indexed on key, key parameter should NOT be passed</value>
+  </data>
+  <data name="VFP_COLLECTION_INCORRECT_INDEX" xml:space="preserve">
+    <value>Index must be between 1 and the number of items in the collection</value>
+  </data>
+  <data name="VFP_COLLECTION_MEMBER_NOT_FOUND" xml:space="preserve">
+    <value>{0} {1} does not match an existing member of the collection.</value>
+  </data>
+  <data name="VFP_COLLECTION_NOT_INDEXED_BY_KEY" xml:space="preserve">
+    <value>Collection is not indexed on key</value>
+  </data>
+  <data name="VFP_COLLECTION_INCORRECT_KEYTYPE" xml:space="preserve">
+    <value>Index parameter must be numeric or string</value>
+  </data>
+  <data name="VFP_COLLECTION_INCORRECT_KEYSORT" xml:space="preserve">
+    <value>Keysort on {0} is not supported for collections ordered by {1}</value>
+  </data>
+
+
+
+
+
 
 
 

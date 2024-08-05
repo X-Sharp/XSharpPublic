@@ -22,11 +22,11 @@ USING XSharp.RDD.Support
 /// <seealso cref="DbcField" />
 FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.VFP_INVALID_DB_OBJECT, cType))
     ENDIF
     IF ! Dbc.IsValidPropertyName(cProperty)
 
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), __VfpStr(VFPErrors.INVALID_DB_PROPERTY_NAME, cProperty))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), __VfpStr(VFPErrors.VFP_INVALID_DB_PROPERTY_NAME, cProperty))
     ENDIF
     VAR oDb := Dbc.GetCurrent()
     IF oDb == NULL_OBJECT
@@ -45,10 +45,10 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 /// <seealso cref="DbcField" />
 FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL) AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.VFP_INVALID_DB_OBJECT, cType))
     ENDIF
     IF ! Dbc.IsValidPropertyName(cProperty)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty),  __VfpStr(VFPErrors.INVALID_DB_PROPERTY_NAME, cProperty))
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty),  __VfpStr(VFPErrors.VFP_INVALID_DB_PROPERTY_NAME, cProperty))
     ENDIF
     VAR oDb := Dbc.GetCurrent()
     IF oDb == NULL_OBJECT
@@ -128,7 +128,7 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
     LOCAL lAll as LOGIC
     if ALen(aFieldList) > 0
         IF !String.IsNullOrEmpty(cIncludedFields) .or. !String.IsNullOrEmpty(cExcludedFields)
-            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.INVALID_FIELD_SPEC))
+            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.VFP_INVALID_FIELD_SPEC))
         ENDIF
     ENDIF
     lAll := ALen(aFieldList) == 0 .and. String.IsNullOrEmpty(cIncludedFields)
@@ -163,7 +163,7 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
         FOREACH cName AS STRING in aFieldList
             var cField := cName:ToUpper()
             IF allfields:IndexOf(cField) == -1
-                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", __VfpStr(VFPErrors.INVALID_FIELDNAME, cField))
+                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", __VfpStr(VFPErrors.VFP_INVALID_FIELDNAME, cField))
             ENDIF
             selected:Add(cField)
         NEXT
@@ -233,7 +233,7 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
         OTHERWISE
             // Other Formats
             // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5
-            Throw NotSupportedException{__VfpStr(VFPErrors.INVALID_FORMAT, "output", cOutPutType)}
+            Throw NotSupportedException{__VfpStr(VFPErrors.VFP_INVALID_FORMAT, "output", cOutPutType)}
         END SWITCH
     FINALLY
         RuntimeState.DelimRDD   := cDelim
@@ -351,7 +351,7 @@ INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
 
 FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     IF ! IsArray(aValues)
-        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
+        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
     ENDIF
     VAR aFields := __BuildFieldList(aFieldList, FALSE)
     LOCAL oForCondition   := NULL   AS ICodeblock
@@ -366,11 +366,11 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
         ENDIF
         FOREACH var u in (ARRAY) aValues
             IF !IsArray(u)
-                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues)), 1, {aValues})
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_MULTI_DIM_EXPECTED,nameof(aValues)), 1, {aValues})
             ENDIF
             local aElement := u as ARRAY
             IF aElement:Length < aFields:Count
-                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.SUBARRAY_TOO_SMALL ) , 1, {u})
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_SUBARRAY_TOO_SMALL ) , 1, {u})
             ENDIF
             DbAppend()
             // Todo Evaluate FOR clause
@@ -416,7 +416,7 @@ FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition,
         OTHERWISE
             // Other Formats
             // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5, XL8
-            Throw NotSupportedException{__VfpStr(VFPErrors.INVALID_FORMAT, "input", cInPutType)}
+            Throw NotSupportedException{__VfpStr(VFPErrors.VFP_INVALID_FORMAT, "input", cInPutType)}
         END SWITCH
     FINALLY
         RuntimeState.DelimRDD   := cDelim

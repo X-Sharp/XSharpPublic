@@ -133,7 +133,7 @@ BEGIN NAMESPACE XSharp.RDD
                 memoBlock := (BYTE[])oValue
             ELSE
                 memoBlock := BYTE[]{str:Length}
-                SELF:Encoding:GetBytes( str, 0, str:Length, memoBlock, 0 )
+                _oRdd:_GetBytes(str, memoBlock, 0, str:Length)
             ENDIF
             // Now, calculate where we will write the Datas
             LOCAL blockNbr AS INT64

@@ -58,6 +58,7 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL isOk AS LOGIC
         var aFieldCopy := SELF:_Fields // Save the fields, because the parent Create() will remove the flags
         isOk := SUPER:Create(openInfo)
+        SELF:_OemConvert := FALSE
         IF isOk
             SELF:_Fields := aFieldCopy
             SELF:_SetFoxHeader()

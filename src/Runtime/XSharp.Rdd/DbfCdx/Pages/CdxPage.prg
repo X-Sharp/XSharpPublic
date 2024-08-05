@@ -33,13 +33,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	/// The CdxPageBase class.
 	/// </summary>
 	INTERNAL ABSTRACT CLASS CdxPage
-	    PROTECTED _bag      AS CdxOrderBag
+        PROTECTED _bag      AS CdxOrderBag
         PROTECTED _tag      AS CdxTag
         PROTECTED _nPage    AS Int32
 		PROTECTED _buffer   AS BYTE[]
 		PROTECTED _hot      AS LOGIC        // Hot ?  => Page has changed ?
         PROTECTED _dumped   AS LOGIC
         INTERNAL PROPERTY Generation AS DWORD AUTO := 0
+        INTERNAL PROPERTY RDD as DBFCDX GET _bag:_oRdd
         INTERNAL VIRTUAL PROPERTY PageType AS CdxPageType GET CdxPageType.Undefined SET
 
 
@@ -236,7 +237,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 			[INLINE];
 			INTERNAL METHOD _GetString( nOffSet AS INT, count AS INT) AS STRING
-				LOCAL str := _bag:Encoding:GetString( _buffer,nOffSet, count ) AS STRING
+				LOCAL str := SELF:RDD:_GetString( _buffer,nOffSet, count ) AS STRING
 				IF str == NULL
 					str := String.Empty
                 ELSEIF str:EndsWith(e"\0")
@@ -245,7 +246,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 				RETURN str
 
 			[INLINE];
-            INTERNAL METHOD _GetBytes( nOffSet AS INT, count AS INT) AS BYTE[]
+            INTERNAL METHOD _CopyBytes( nOffSet AS INT, count AS INT) AS BYTE[]
                 LOCAL result AS BYTE[]
                 result := BYTE[]{count}
 			    System.Array.Copy(_buffer, nOffSet, result, 0, count)
@@ -253,10 +254,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
 			[INLINE];
-			INTERNAL  METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
+			INTERNAL  METHOD _GetBytes(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0
 				MemSet( _buffer, nOffSet, nSize , 0)
-				_bag:Encoding:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), _buffer, nOffSet)
+				SELF:RDD:_GetBytes( sValue, _buffer, nOffSet, Math.Min(nSize,sValue:Length))
 				_hot := TRUE
             #endregion
 

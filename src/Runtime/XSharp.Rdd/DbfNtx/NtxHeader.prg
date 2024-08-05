@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -18,15 +18,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 	/// </summary>
 	INTERNAL SEALED CLASS NtxHeader
 		// Fixed Buffer of 1024 bytes
-		// https://www.clicketyclick.dk/databases/xbase/format/ntx.html#NTX_STRUCT  
-		// Read/Write to/from the Stream with the Buffer 
+		// https://www.clicketyclick.dk/databases/xbase/format/ntx.html#NTX_STRUCT
+		// Read/Write to/from the Stream with the Buffer
 		// and access individual values using the other fields
 		PRIVATE _oStream AS FileStream
 		PRIVATE Buffer   AS BYTE[]
 		// Hot ?  => Header has changed ?
 		INTERNAL isHot	AS LOGIC
         PRIVATE _Order as NtxOrder
-        PRIVATE PROPERTY Encoding as System.Text.Encoding GET _Order:Encoding
+        PROPERTY RDD AS DBFNTX Get _Order:RDD
 		
 		INTERNAL METHOD Read() AS LOGIC
 			RETURN _oStream:SafeSetPos( 0) .AND. _oStream:SafeRead(SELF:Buffer)
@@ -44,26 +44,29 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			
 			
 			
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-		PRIVATE METHOD _GetString(nOffSet AS INT, nSize AS INT) AS STRING
-			LOCAL tmp := BYTE[]{nSize} AS BYTE[]
-			Array.Copy( Buffer, nOffSet, tmp, 0, nSize )
-			LOCAL count := Array.FindIndex<BYTE>( tmp, 0, { sz => sz == 0 } ) AS INT
+ 		PRIVATE METHOD _GetString(nOffSet AS INT, nSize AS INT) AS STRING
+			LOCAL count := Array.FindIndex<BYTE>( Buffer, nOffSet, nSize, { sz => sz == 0 } ) AS INT
 			IF count == -1
-				count := nSize
+                count := nSize
+            ELSE
+                count := count - nOffSet
 			ENDIF
-			LOCAL str := SELF:Encoding:GetString( tmp,0, count ) AS STRING
-			IF  str == NULL 
+			LOCAL str := SELF:RDD:_GetString( Buffer,nOffSet, count ) AS STRING
+			IF  str == NULL
 				str := String.Empty
 			ENDIF
 			str := str:Trim()
 			RETURN str
-				
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-		PRIVATE METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
+
+ 		PRIVATE METHOD _GetBytes(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 			// Be sure to fill the Buffer with 0
-			Array.Clear( Buffer, nOffSet, nSize )
-			SELF:Encoding:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), Buffer, nOffSet)
+            var nLen := sValue:Length
+            if nLen > nSize
+                nLen := nSize
+            elseif nLen < nSize
+                Array.Clear( Buffer, nOffSet+nLen, nSize-nLen)
+            endif
+			SELF:RDD:_GetBytes( sValue, Buffer, nOffSet, nLen)
 			isHot := TRUE
 				
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
@@ -123,7 +126,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			
 		INTERNAL PROPERTY KeyExpression	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
-		    SET SELF:_SetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE), isHot := TRUE
+		    SET SELF:_GetBytes(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE), isHot := TRUE
 			
 		INTERNAL PROPERTY Unique	AS LOGIC  ;
 		    GET SELF:_GetWord( NTXOFFSET_UNIQUE) != 0 ;
@@ -135,11 +138,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 			
 		INTERNAL PROPERTY ForExpression	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
-		    SET SELF:_SetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE), isHot := TRUE
+		    SET SELF:_GetBytes(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE), isHot := TRUE
 			
 		INTERNAL PROPERTY OrdName	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE );
-		    SET SELF:_SetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, Upper(VALUE)), isHot := TRUE
+		    SET SELF:_GetBytes(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, Upper(VALUE)), isHot := TRUE
 			
 		PRIVATE CONST NTXOFFSET_SIG			    := 0   AS WORD
 		PRIVATE CONST NTXOFFSET_INDEXING_VER    := 2   AS WORD

@@ -234,7 +234,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN isOk
 
             INTERNAL METHOD FindOrder(info AS DbOrderInfo, order OUT NtxOrder) AS LOGIC
-                LOCAL num AS LONG
                 //
                 order := NULL
                 IF info == null .or. info:IsEmpty

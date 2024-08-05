@@ -10,6 +10,16 @@ USING System.Collections.Generic
 USING System.Text
 
 INTERNAL STATIC CLASS RddExtensions
+
+    STATIC METHOD SupportsAnsi(SELF dialect as XSharpDialect) AS LOGIC
+        SWITCH dialect
+        CASE XSharpDialect.VO
+        CASE XSharpDialect.Vulcan
+        CASE XSharpDialect.Core
+            RETURN TRUE
+        END SWITCH
+        RETURN FALSE
+
     STATIC METHOD _dbfError(self area as Workarea, ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, lThrow := TRUE AS LOGIC) AS VOID
         area:_dbfError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR, lThrow)
 

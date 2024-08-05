@@ -105,21 +105,22 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         PROTECTED METHOD _GetString(buffer AS BYTE[]) AS STRING
-            // The default implementation returns the part of the buffer as a string
+            // Let the DBF layer handle the encoding
             local result as string
-            // when the table is Not Ansi and the runtimestate is Ansi then VO
-            // encodes the string in the DBF as OEM characters
-            // It uses the current Windows Codepage and not the Codepage of the table
-
-            if SELF:RDD is DBF var oDbf .and. ! oDbf:Header:IsAnsi .and. RuntimeState.Ansi
-                 var tmp := Byte[]{SELF:Length}
-                 Array.Copy(buffer, SELF:Offset, tmp, 0, SELF:Length)
-                 Ansi2OemA(tmp)
-                 result := RuntimeState.DosEncoding:GetString(tmp, 0, SELF:Length)
-            else
-                 result := RuntimeState.WinEncoding:GetString(buffer, SELF:Offset, SELF:Length)
+            if SELF:RDD is DBF
+                result := SELF:RDD:_GetString(buffer, SELF:Offset, SELF:Length)
+            ELSE
+                result := RuntimeState.WinEncoding:GetString(buffer, SELF:Offset, SELF:Length)
             endif
-            return result
+	    RETURN result
+
+        PROTECTED METHOD _PutString(buffer AS BYTE[], strValue as STRING) AS VOID
+            // Let the DBF layer handle the encoding
+            if SELF:RDD is DBF
+                SELF:RDD:_GetBytes(strValue, buffer, SELF:Offset, SELF:Length)
+            ELSE
+                RuntimeState.WinEncoding:GetBytes(strValue, 0, SELF:Length, buffer, SELF:Offset)
+            endif
 
         /// <summary>Get the value from the buffer</summary>
        /// <param name="buffer">Record buffer for the current record</param>
@@ -249,18 +250,6 @@ BEGIN NAMESPACE XSharp.RDD
             oResult :=  T{}
             RETURN FALSE
 
-        PROTECTED METHOD _PutString(buffer AS BYTE[], strValue AS STRING) AS VOID
-            // when the table is Not Ansi and the runtimestate is Ansi then VO
-            // converts the string to OEM before writing it to the buffer
-            // It uses the current Windows Codepage and not the Codepage of the table
-            if SELF:RDD is DBF var oDbf .and. ! oDbf:Header:IsAnsi .and. RuntimeState.Ansi
-                var tmp := Byte[]{SELF:Length}
-                RuntimeState.DosEncoding:GetBytes(strValue, 0, SELF:Length, tmp, 0)
-                Oem2AnsiA(tmp)
-                Array.Copy(tmp, 0, buffer, SELF:Offset, SELF:Length)
-            ELSE
-                RuntimeState.WinEncoding:GetBytes(strValue, 0, SELF:Length, buffer, SELF:Offset)
-            endif
 
     END CLASS
 

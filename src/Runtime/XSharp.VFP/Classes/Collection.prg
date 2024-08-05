@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.VFP
         PRIVATE aItems AS List<OBJECT>
         PRIVATE aDict  AS SortedList<STRING, OBJECT>
         PRIVATE initialized := FALSE AS LOGIC
-		
+
 		// 1 => Indexed collection
 		// 2 => Keyed collection
         PROPERTY KeySort AS LONG AUTO   := 1
@@ -30,6 +30,10 @@ BEGIN NAMESPACE XSharp.VFP
             aItems      := List<OBJECT>{}
             RETURN
 
+        [Obsolete("Use Add() instead")] ;
+        METHOD AddObject(oValue AS OBJECT, cKey := "" AS STRING, oBefore := NIL AS USUAL, oAfter:= NIL AS USUAL) AS LOGIC
+            RETURN SELF:Add(oValue, cKey, oBefore, oAfter)
+
         METHOD Add(oValue AS OBJECT, cKey := "" AS STRING, oBefore := NIL AS USUAL, oAfter:= NIL AS USUAL) AS LOGIC
             LOCAL nPos      AS LONG
             IF !initialized
@@ -40,16 +44,16 @@ BEGIN NAMESPACE XSharp.VFP
                     aDict:Add(cKey, oValue)
                 ELSE
                     DO CASE
-                    CASE ISNIL(oBefore) .AND. IsNil(oAfter)
+                    CASE IsNil(oBefore) .AND. IsNil(oAfter)
                         aItems:Add(oValue)
-                    CASE ISNUMERIC(oBefore) .AND. IsNil(oAfter)
+                    CASE IsNumeric(oBefore) .AND. IsNil(oAfter)
                         nPos := (LONG) oBefore
                         IF nPos <= aItems:Count
                             aItems:Insert(nPos-1, oValue)
                         ELSE
                             aItems:Add(oValue)
                         ENDIF
-                    CASE ISNIL(oBefore) .AND. IsNumeric(oAfter)
+                    CASE IsNil(oBefore) .AND. IsNumeric(oAfter)
                         nPos := (LONG) oAfter
                         IF nPos < aItems:Count
                             aItems:Insert(nPos+1, oValue)
@@ -58,7 +62,7 @@ BEGIN NAMESPACE XSharp.VFP
                         ENDIF
                     OTHERWISE
                          THROW Exception{"When you pass a before or after parameter you can only pass one argument and it has to be numeric"}
-                    END CASE                	
+                    END CASE
                 ENDIF
             ELSE
                 IF aDict != NULL_OBJECT
@@ -78,16 +82,16 @@ BEGIN NAMESPACE XSharp.VFP
                         THROW Exception{"Collection is not indexed on key, key parameter should NOT be passed"}
                     ELSE
                         DO CASE
-                        CASE ISNIL(oBefore) .AND. IsNil(oAfter)
+                        CASE IsNil(oBefore) .AND. IsNil(oAfter)
                             aItems:Add(oValue)
-                        CASE ISNUMERIC(oBefore) .AND. IsNil(oAfter)
+                        CASE IsNumeric(oBefore) .AND. IsNil(oAfter)
                             nPos := (LONG) oBefore
                             IF nPos <= aItems:Count
                                 aItems:Insert(nPos-1, oValue)
                             ELSE
                                 aItems:Add(oValue)
                             ENDIF
-                        CASE ISNIL(oBefore) .AND. IsNumeric(oAfter)
+                        CASE IsNil(oBefore) .AND. IsNumeric(oAfter)
                             nPos := (LONG) oAfter
                             IF nPos < aItems:Count
                                 aItems:Insert(nPos+1, oValue)
@@ -102,12 +106,12 @@ BEGIN NAMESPACE XSharp.VFP
             ENDIF
     		RETURN TRUE
     	END METHOD
-    
-    PROPERTY COUNT AS LONG 
-		GET 
+
+    PROPERTY Count AS LONG
+		GET
 			IF SELF:KeySort == 1
 				RETURN aItems:Count
-			ELSE 
+			ELSE
 				RETURN aDict:Count
 			ENDIF
 		END GET
@@ -116,14 +120,14 @@ BEGIN NAMESPACE XSharp.VFP
     METHOD Item(oKey AS USUAL) AS OBJECT
         LOCAL nPos AS LONG
         LOCAL cKey AS STRING
-        IF ISNUMERIC(oKey)
+        IF IsNumeric(oKey)
             nPos := (LONG) oKey
             IF nPos > 0 .AND. nPos <= aItems:Count
                 RETURN aItems[nPos-1]
             ELSE
                 THROW Exception{"Index must be between 1 and the number of items in the collection"}
             ENDIF
-        ELSEIF ISSTRING(oKey)
+        ELSEIF IsString(oKey)
             IF aDict != NULL
                 cKey := (STRING) oKey
                 IF aDict:ContainsKey(cKey)
@@ -139,9 +143,9 @@ BEGIN NAMESPACE XSharp.VFP
         ENDIF
 
     PUBLIC METHOD IEnumerable.GetEnumerator() AS IEnumerator
-        VAR SORT := (CollectionSort) SELF:KeySort
+        VAR Sort := (CollectionSort) SELF:KeySort
         IF aDict != NULL
-            SWITCH SORT
+            SWITCH Sort
             CASE CollectionSort.IndexAscending
             CASE CollectionSort.IndexDescending
                 THROW Exception{"Keysort on Index is not supported for collections ordered by Key"}
@@ -155,7 +159,7 @@ BEGIN NAMESPACE XSharp.VFP
                 RETURN CollectionEnumerator{aTemp:GetEnumerator()}
             END SWITCH
         ELSE
-            SWITCH SORT
+            SWITCH Sort
             CASE CollectionSort.IndexAscending
                 RETURN aItems:GetEnumerator()
             CASE CollectionSort.IndexDescending
@@ -220,11 +224,11 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN oCompare:Compare(x,y) * -1
     END CLASS
 
-ENUM CollectionSort
-    MEMBER IndexAscending := 0
-    MEMBER IndexDescending := 1
-    MEMBER KeyAscending := 2
-    MEMBER KeyDescending := 3
+    ENUM CollectionSort
+        MEMBER IndexAscending := 0
+        MEMBER IndexDescending := 1
+        MEMBER KeyAscending := 2
+        MEMBER KeyDescending := 3
     END ENUM
 
 

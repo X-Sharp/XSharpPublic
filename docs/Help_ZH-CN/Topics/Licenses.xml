@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T07:48:44.064+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:46:32.340+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>许可证</title>
   <body>
     <header>
@@ -9,16 +9,16 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">XSharp 是一款免费软件。当然，这并不意味着你可以为所欲为。我们制定了一些规则来决定你能用我们的软件做什么，不能做什么，因此我们的软件是根据许可证发布的。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">在一个理想的世界里，我们会以非常开放的许可协议（如 Apache 许可）发布所有源代码和二进制文件，就像发布 Roslyn 代码一样。</para>
-    <para styleclass="Body Text"><br/>但现实情况是，有些人希望获取我们的源代码和二进制文件，然后以自己的名义发布，只做极少的修改。</para>
+    <para styleclass="Body Text">在一个理想的世界里，我们会以非常开放的许可协议(如 Apache 许可)发布所有源代码和二进制文件，就像发布 Roslyn 代码一样。</para>
+    <para styleclass="Body Text"><br/>但现实情况是，有些人希望获取我们的源代码和二进制文件，然后只做极少的修改就以自己的名义发布。</para>
     <para styleclass="Body Text"><br/>为了防止这种情况发生，我们不得不对您如何使用我们的产品设置一些限制。</para>
-    <para styleclass="Body Text"><br/>对于任何使用 XSharp 为最终用户开发应用程序的 &quot;普通 &quot;开发人员来说，这应该不会有什么问题。</para>
+    <para styleclass="Body Text"><br/>对于任何使用 XSharp 为最终用户开发应用程序的 &quot;普通&quot; 开发人员来说，这应该不会有什么问题。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">简化的限制意味着可以在XSharp中使用：</para>
+    <para styleclass="Body Text">简化的限制意味着可以在 XSharp 中使用：</para>
     <para styleclass="Body Text"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">您只能重新发布文档中列出的 &quot;运行时 &quot;组件。您不能再分发我们的编译器。但在需要时，您可以要求客户从本网站下载我们的编译器。</li>
-      <li styleclass="Body Text">您（如果您是 FOX 订户）可以访问编译器源代码，并可以更改和重建编译器，供公司内部使用。但您不得向您的客户发布或再分发（更改后的）编译器。</li>
+      <li styleclass="Body Text">您只能重新发布文档中列出的 &quot;运行时&quot; 组件。您不能再分发我们的编译器。但在需要时，您可以要求客户从本网站下载我们的编译器。</li>
+      <li styleclass="Body Text">您(如果您是 FOX 订户)可以访问编译器源代码，并可以更改和重建编译器，供公司内部使用。但您不得向您的客户发布或再分发(更改后的)编译器。</li>
     </list>
     <para styleclass="Body Text"><br/>我们相信，您会发现我们的许可协议既公平又易于操作。</para>
     <para styleclass="Body Text"><br/>如果您对许可证有任何疑问，请通过 <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:info@xsharp.eu">info@xsharp.eu</link> 联系我们。</para>

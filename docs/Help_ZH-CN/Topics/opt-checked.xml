@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.281+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-checked</title>
   <keywords>
     <keyword>-checked</keyword>
@@ -10,30 +10,26 @@
     <header>
       <para styleclass="Heading1">-checked</para>
     </header>
-    <para styleclass="Normal">The -checked option specifies whether an integer arithmetic statement that results in a value that is outside the range of the data type, and that is not in the scope of a checked or unchecked keyword, causes a run-time exception.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-checked[+ | -] <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">An integer arithmetic statement that is in the scope of a checked or unchecked keyword is not subject to the effect of The -checked option.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If an integer arithmetic statement that is not in the scope of a checked or unchecked keyword results in a value outside the range of the data type, and -checked+ (/checked) is used in the compilation, that statement causes an exception at run time. If -checked- is used in the compilation, that statement does not cause an exception at run time.</para>
+    <para styleclass="Normal">如果整数运算语句产生的值超出了数据类型的范围，且不在已检查或未检查关键字的范围内，则-checked 选项指定该语句是否会导致运行时异常。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-checked[+ | -] <text styleclass="Normal"> </text></para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">处于 checked 或 unchecked 关键字范围内的整数运算语句不受 -checked 选项的影响。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The default value for this option is -checked-. One scenario for using -checked- is in building large applications. Sometimes automated tools are used to build such applications, and such a tool might automatically set -checked to +. You can override the tool&apos;s global default by specifying -checked-.</para>
+    <para styleclass="Normal">如果整数运算语句不在 checked 或 unchecked 关键字的范围内，其结果值超出了数据类型的范围，并且在编译时使用了 -checked+ (/checked)，则该语句在运行时会导致异常。如果在编译时使用了 -checked-，则该语句在运行时不会导致异常。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The VO Compatibility compiler options<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf"> -ovf</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">-fovf</link> both set this option</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal">该选项的默认值是 -checked-。使用 -checked- 的一种情况是生成大型应用程序。您可以通过指定 -checked- 来覆盖工具的全局默认值。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Add the option in the &quot;User-Defined Command Line options&quot; property</li>
-    </list>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">VO Compatibility 编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">-ovf</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">-fovf</link> 都设置了该选项</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following command compiles <text styleclass="Code Example">t2.prg</text>. The use of <text styleclass="Code Example">-checked</text> in the command specifies that any integer arithmetic statement in the file that is not in the scope of a checked or unchecked keyword, and that results in a value that is outside the range of the data type, causes an exception at run time.</para>
+    <para styleclass="Normal"><snippet src="__buildExtra" inline="false"/></para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下面的命令用于编译 t2.prg。在命令中使用 -checked 后，如果文件中的任何整数运算语句不在关键字 checked 或 unchecked 的范围内，并且产生的值超出了数据类型的范围，则会在运行时产生异常。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc t2.prg -checked &#160;</para>
+    <para styleclass="Code with box">xsc t2.prg -checked  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Compiler Macros</title>
+<topic template="Default" modified="2024-07-26T11:54:13.139+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>编译器宏</title>
   <keywords>
     <keyword>__ARRAYBASE__</keyword>
     <keyword>__CLR2__</keyword>
@@ -62,19 +62,21 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Compiler Macros</para>
+      <para styleclass="Heading1">编译器宏</para>
     </header>
-    <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下定义可在代码中使用，编译器会用字面量值替换这些定义：</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="41" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Name</para>
+          <para styleclass="Normal" style="text-align:center;">名称</para>
         </td>
         <td>
-          <para styleclass="Normal">Type</para>
+          <para styleclass="Normal" style="text-align:center;">类型</para>
         </td>
         <td>
-          <para styleclass="Normal">Value</para>
+          <para styleclass="Normal" style="text-align:center;">值</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -85,7 +87,7 @@
           <para styleclass="Normal">Integer</para>
         </td>
         <td>
-          <para styleclass="Normal">0 or 1 depending on the /az compiler option</para>
+          <para styleclass="Normal">0 或 1，取决于 /az 编译器选项</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -93,10 +95,10 @@
           <para styleclass="Normal">__CLR2__</para>
         </td>
         <td style="width:20%;">
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR2__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
+          <para styleclass="Normal">__CLR2__ &#160;(只是为了与 Vulcan 兼容，x# 没有实现 /clr 编译器选项)。参见下面的备注。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -104,10 +106,10 @@
           <para styleclass="Normal">__CLR4__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">__CLR4__ (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
+          <para styleclass="Normal">__CLR4__ &#160;(只是为了与 Vulcan 兼容，x# 没有实现 /clr 编译器选项)。参见下面的备注。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -115,10 +117,10 @@
           <para styleclass="Normal">__CLRVERSION__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal"> &quot;2&quot; or &quot;4&quot;depending on the version. (only for compatibility with Vulcan, x# does not implement the /clr compiler option). See comment below.</para>
+          <para styleclass="Normal"> &quot;2 &quot;或 &quot;4&quot;，取决于版本。(仅为了与 Vulcan 兼容，x# 没有执行 /clr 编译器选项)。参见下面的备注。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -126,10 +128,10 @@
           <para styleclass="Normal">__DATE__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Current date in YYYYMMDD format</para>
+          <para styleclass="Normal">当前日期，以 YYYYMMDD 格式表示</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -137,10 +139,10 @@
           <para styleclass="Normal">__DATETIME__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Current date/time in format from regional settings</para>
+          <para styleclass="Normal">当前日期/时间的格式由地区设置决定</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -151,7 +153,7 @@
           <para styleclass="Normal">String</para>
         </td>
         <td>
-          <para styleclass="Normal">Name of the current dialect</para>
+          <para styleclass="Normal">当前方言的名称</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -162,7 +164,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Defined with TRUE when Core dialect is selected</para>
+          <para styleclass="Normal">选择 Core 方言时定义为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -173,7 +175,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Defined with TRUE when FoxPro dialect is selected</para>
+          <para styleclass="Normal">选择 FoxPro 方言时定义为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -184,7 +186,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Defined with TRUE when Harbour dialect is selected</para>
+          <para styleclass="Normal">选择 Harbour 方言时定义为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -195,7 +197,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Defined with TRUE when VO dialect is selected</para>
+          <para styleclass="Normal">选择 VO 方言时定义为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -206,7 +208,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Defined with TRUE when Vulcan dialect is selected</para>
+          <para styleclass="Normal">选择 Vulcan 方言时定义为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -217,7 +219,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Defined with TRUE when Xbase++ dialect is selected</para>
+          <para styleclass="Normal">选择 Xbase++ 方言时定义为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -225,10 +227,10 @@
           <para styleclass="Normal">__DEBUG__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logical Literal</para>
+          <para styleclass="Normal">Logical 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when compiling in debug mode. Undefined in Release mode</para>
+          <para styleclass="Normal">在调试模式下编译时为 TRUE。在发布模式下未定义</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -236,10 +238,10 @@
           <para styleclass="Normal">__ENTITY__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Name of current entity</para>
+          <para styleclass="Normal">当前实体名称</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -247,10 +249,10 @@
           <para styleclass="Normal">__FILE__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Current source file name</para>
+          <para styleclass="Normal">当前源文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -261,7 +263,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the FoxPro compatibility compiler options <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></para>
+          <para styleclass="Normal">FoxPro 兼容编译器选项 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link> 的当前值</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -269,10 +271,10 @@
           <para styleclass="Normal">__FUNCTION__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Current function/method name without class prefix and in original case</para>
+          <para styleclass="Normal">当前函数/方法名称(不含类前缀)和原始情况下的名称</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -280,10 +282,10 @@
           <para styleclass="Normal">__FUNCTIONS__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Returns the name of the current Functions class</para>
+          <para styleclass="Normal">返回当前函数类的名称</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -291,10 +293,10 @@
           <para styleclass="Normal">__HARBOUR__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logic literal</para>
+          <para styleclass="Normal">Logic 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the Harbour dialect is selected. Otherwise not defined.</para>
+          <para styleclass="Normal">当选择 Harbour 方言时为 TRUE。否则未定义。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -302,10 +304,10 @@
           <para styleclass="Normal">__LINE__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Current source line number</para>
+          <para styleclass="Normal">当前源码行号</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -316,7 +318,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> compiler option is used</para>
+          <para styleclass="Normal">使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> 编译器选项时为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -324,10 +326,10 @@
           <para styleclass="Normal">__MODULE__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Current source file name</para>
+          <para styleclass="Normal">当前源文件名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -335,10 +337,10 @@
           <para styleclass="Normal">__SIG__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Signature of current entity</para>
+          <para styleclass="Normal">当前实体的签名</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -346,10 +348,10 @@
           <para styleclass="Normal">__SRCLOC__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Filename and line number in the source</para>
+          <para styleclass="Normal">源代码中的文件名和行号</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -357,10 +359,10 @@
           <para styleclass="Normal">__SYSDIR__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Systemdir (on developers machine!)</para>
+          <para styleclass="Normal">Systemdir(在开发者机器上)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -368,10 +370,10 @@
           <para styleclass="Normal">__TIME__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Compile time in HH:mm:ss format</para>
+          <para styleclass="Normal">以 HH:mm:ss 格式表示的编译时间</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -379,10 +381,10 @@
           <para styleclass="Normal">__UNDECLARED__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logical Literal</para>
+          <para styleclass="Normal">Logical 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link> compiler option is used</para>
+          <para styleclass="Normal">使用<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link> 编译器选项时为 TRUE </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -390,10 +392,10 @@
           <para styleclass="Normal">__UNSAFE__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logical Literal</para>
+          <para styleclass="Normal">Logical 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link> compiler option is used</para>
+          <para styleclass="Normal">使用 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link> 编译器选项时为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -401,10 +403,10 @@
           <para styleclass="Normal">__UTCTIME__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">UTC Compile time in HH:mm:ss format</para>
+          <para styleclass="Normal">UTC 编译时间，格式为 HH:mm:ss</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -412,10 +414,10 @@
           <para styleclass="Normal">__VERSION__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Version of the compiler</para>
+          <para styleclass="Normal">编译器版本</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -423,10 +425,10 @@
           <para styleclass="Normal">__VO__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logic literal</para>
+          <para styleclass="Normal">Logic 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the VO dialect is selected. Otherwise not defined.</para>
+          <para styleclass="Normal">当选择 VO 方言时为 TRUE。否则未定义。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -437,7 +439,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the matching VO compatibility compiler option, <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1">/vo1</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link> ... <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">/vo17</link></para>
+          <para styleclass="Normal">与 VO 兼容的编译器选项的当前值, <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1">/vo1</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link> ... <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">/vo17</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -445,10 +447,10 @@
           <para styleclass="Normal">__VULCAN__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logic literal</para>
+          <para styleclass="Normal">Logic 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the Vulcan dialect is selected. Otherwise not defined.</para>
+          <para styleclass="Normal">当选择 Vulcan 方言时为 TRUE。否则未定义。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -456,10 +458,10 @@
           <para styleclass="Normal">__WINDIR__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Windows dir (on developers machine!)</para>
+          <para styleclass="Normal">Windows 目录(在开发者机器上)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -467,10 +469,10 @@
           <para styleclass="Normal">__WINDRIVE__</para>
         </td>
         <td>
-          <para styleclass="Normal">String Literal</para>
+          <para styleclass="Normal">String 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Windows drive (on developers machine!)</para>
+          <para styleclass="Normal">Windows 驱动器(在开发者机器上)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -478,10 +480,10 @@
           <para styleclass="Normal">__XPP__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logic literal</para>
+          <para styleclass="Normal">Logic 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when the Xbase++ dialect is selected. Otherwise not defined.</para>
+          <para styleclass="Normal">当选择 Xbase++ 方言时为 TRUE。否则未定义。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -492,7 +494,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-xpp1">/xpp1</link> compiler option. Only defined in the Xbase++ dialect.</para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-xpp1">/xpp1</link> 编译器选项的当前值。仅在 Xbase++ 方言中定义。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -500,10 +502,10 @@
           <para styleclass="Normal">__XSHARP__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logical Literal</para>
+          <para styleclass="Normal">Logical 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">Always TRUE</para>
+          <para styleclass="Normal">永远为 TRUE</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -511,15 +513,15 @@
           <para styleclass="Normal">__XSHARP_RT__</para>
         </td>
         <td>
-          <para styleclass="Normal">Logical Literal</para>
+          <para styleclass="Normal">Logical 字面量</para>
         </td>
         <td>
-          <para styleclass="Normal">TRUE when compiling against the X# runtime. Not defined otherwise.</para>
+          <para styleclass="Normal">根据 X# 运行时编译时为 TRUE。否则不定义。</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading3">Note</para>
-    <para styleclass="Normal">The CLR2 and CLR4 version is determined by the X# compiler by looking at the version of either system.dll or mscorlib.dll</para>
+    <para styleclass="Heading3">备注</para>
+    <para styleclass="Normal">X# 编译器通过查看 system.dll 或 mscorlib.dll 的版本来确定 CLR2 和 CLR4 的版本。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

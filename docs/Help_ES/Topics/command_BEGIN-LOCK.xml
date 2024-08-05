@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN LOCK</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN LOCK</keyword>
+    <keyword>END</keyword>
+    <keyword>END LOCK</keyword>
+    <keyword>LOCK</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN LOCK</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">The BEGIN LOCK and END LOCK keywords mark a block of statements as a critical section.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code Example">BEGIN LOCK <text style="font-style:italic;">object</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END LOCK</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="List"><text style="font-style:italic;">object</text>&#32;<tab />An expression that evaluates to an object reference that is used as a locking object. </para>
+    <para styleclass="List"><text style="font-style:italic;">statements</text>&#32;<tab />One or more statements or expressions that are guarded by a mutual exclusion lock on the object specified in object. </para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> insures that multiple threads cannot execute the statements within the block at the same time. If one thread is executing code within the block, any other thread that attempts to enter the block will be suspended until the thread that is executing leaves the block.</para>
+    <para styleclass="Body Text">The object used as the locking object must be a reference type, it cannot be a value type and the expression cannot evaluate to NULL or a runtime error will occur.</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> uses Monitor.Enter() and Monitor.Exit() to acquire and release a lock on the specified object. The following example:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCK</text><text style="font-weight:normal; font-style:normal; color:#000000;"> lockObj</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;In guarded block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCK</text></para>
+    <para styleclass="Body Text">is equivalent to:</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.Enter( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;In guarded block&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FINALLY</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">System.Threading.Monitor.</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">Exit</text><text style="font-weight:normal; font-style:normal; color:#000000;">( lockObj )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRY</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Using <text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> is recommended over using the Monitor class directly because the code is more concise and insures that the monitor object is released even if an exception occurs within the guarded block.</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN LOCK ... END LOCK</text> provides functionality similar to the Windows API functions EnterCriticalSection() and LeaveCriticalSection(). However, instead of using an object created by InitializeCriticalSection(), any instance of a reference type may be used for the locking object.</para>
+    <para styleclass="Body Text">Please see the documentation for the System.Threading.Monitor class for more information.</para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

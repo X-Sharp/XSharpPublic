@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS0504</title>
+  <keywords>
+    <keyword>XS0504</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0504</para>
+    </header>
+    <para styleclass="Normal">The constant &apos;variable&apos; cannot be marked static</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If a variable is const, it is also static. If you want a const and static variable, just declare that variable as const; if all you want is a static variable, just mark it static.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0504:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0504.prg  <br/> </para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

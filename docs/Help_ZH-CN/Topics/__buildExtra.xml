@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-24T11:12:36.476+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__buildExtra</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__buildExtra</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build(生成) 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="x.x-first.x-last" style="font-family:Arial; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#1f2328; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">在 Extra Commandline Options control(额外命令行选项) 中增加选项</text></li>
+    </list>
+  </body>
+</topic>

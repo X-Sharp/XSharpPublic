@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-16T08:58:46.349+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>DIR Command</title>
+<topic template="Default" modified="2024-07-26T11:38:46.454+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DIR 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>DIR command</keyword>
@@ -10,7 +10,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">DIR Command</para>
+      <para styleclass="Heading1">DIR 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
@@ -18,7 +18,7 @@
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">DIR [&lt;xcFileSpec&gt;]</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">&lt;xcFileSpec&gt;<tab />目录搜索的文件描述。 除文件名外，该规范还可包括可选的驱动器、目录和扩展名。 文件名和扩展名可包括标准通配符（* 和 ?） &#160;如果不指定驱动器和目录，该函数将尊重 SetDefault()。</para>
+    <para styleclass="List">&lt;xcFileSpec&gt;<tab />目录搜索的文件描述。 除文件名外，该规范还可包括可选的驱动器、目录和扩展名。 文件名和扩展名可包括标准通配符(* 和 ?) &#160;如果不指定驱动器和目录，该函数将尊重 SetDefault()。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />如果省略参数，默认文件扩展名为 *.DBF。</para>
     <para styleclass="List"></para>

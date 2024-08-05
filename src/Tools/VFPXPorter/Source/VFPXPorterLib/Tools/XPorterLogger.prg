@@ -18,28 +18,33 @@ BEGIN NAMESPACE VFPXPorterLib
 /// </summary>
 STATIC CLASS XPorterLogger
 
-	STATIC CONSTRUCTOR()
-		XPorterLogger.SetLoggerToFile( NULL )
-		RETURN
+    STATIC CONSTRUCTOR()
+        XPorterLogger.SetLoggerToFile( NULL )
+        RETURN
 
-	STATIC PRIVATE logger AS ILogger
+    STATIC PRIVATE logger AS ILogger
 
-	PUBLIC STATIC PROPERTY Instance AS ILogger
-		GET
-			IF XPorterLogger.logger == NULL
-				XPorterLogger.SetLoggerToFile( NULL )
-			ENDIF
-			RETURN XPorterLogger.logger
-		END GET
-	END PROPERTY
+    PUBLIC STATIC PROPERTY Instance AS ILogger
+        GET
+            IF XPorterLogger.logger == NULL
+                XPorterLogger.SetLoggerToFile( NULL )
+            ENDIF
+            RETURN XPorterLogger.logger
+        END GET
+    END PROPERTY
 
-	STATIC METHOD SetLoggerToFile( fileLog AS STRING ) AS VOID
-		VAR log := LoggerConfiguration{}
-		IF String.IsNullOrEmpty( fileLog )
-			XPorterLogger.logger := log:WriteTo:BufferedLog():CreateLogger()
-		ELSE
-			XPorterLogger.logger := log:WriteTo:File( fileLog ):CreateLogger()
-		ENDIF
+    STATIC METHOD SetLoggerToFile( fileLog AS STRING ) AS VOID
+        VAR log := LoggerConfiguration{}
+        IF String.IsNullOrEmpty( fileLog )
+            XPorterLogger.logger := log:WriteTo:BufferedLog():CreateLogger()
+        ELSE
+            XPorterLogger.logger := log:WriteTo:File( fileLog ):CreateLogger()
+        ENDIF
+
+    STATIC METHOD CloseLogger( ) AS VOID
+        IF XPorterLogger.logger IS IDisposable VAR theLogger
+            theLogger:Dispose()
+        ENDIF
 
 END CLASS
 END NAMESPACE // VFPXPorterLib.Tools

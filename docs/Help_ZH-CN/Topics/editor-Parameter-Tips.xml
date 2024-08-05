@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T17:33:19.163+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:37:20.050+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Parameter Tips(参数提示)</title>
   <keywords>
     <keyword>Parameter Tips</keyword>
@@ -9,10 +9,11 @@
     <header>
       <para styleclass="Heading1">Parameter Tips(参数提示)</para>
     </header>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal">Parameter Info(参数信息)可提供方法、属性通用类型参数所需的参数数量、名称和类型信息。</para>
     <para styleclass="Normal">粗体参数表示键入函数时所需的下一个参数。对于重载函数，可以使用向上和向下箭头键查看重载函数的其他参数信息。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">用 XML 文档注释注释函数和参数时，注释将显示为参数信息。有关详细信息，请参阅提供 XML 代码注释。</para>
-    <para styleclass="Normal">您可以通过选择 &quot;编辑&quot;（Edit）&gt;&quot;智能提示&quot;（IntelliSense）&gt;&quot;参数信息&quot;（Parameter Info）、按 Ctrl+Shift+Space 或选择编辑器工具栏上的 &quot;参数信息 &quot;按钮手动调用参数信息。</para>
+    <para styleclass="Normal">您可以通过选择 &quot;编辑&quot;(Edit)&gt;&quot;智能感知&quot;(IntelliSense)&gt;&quot;参数信息&quot;(Parameter Info)、按 Ctrl+Shift+Space 或选择编辑器工具栏上的 &quot;参数信息&quot; 按钮手动调用参数信息。</para>
   </body>
 </topic>

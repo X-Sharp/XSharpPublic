@@ -1,30 +1,34 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-02-23T09:51:46.071+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.283+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-modernsyntax</title>
+  <keywords>
+    <keyword>-modernsyntax</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">-modernsyntax</para>
     </header>
-    <para styleclass="Normal">The -modernsyntax compiler option disables some legacy language features</para>
-    <para styleclass="Normal">These features are</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">&amp;&amp; for single line comments</li>
+    <para styleclass="Normal">-modernsyntax(现代语法)编译器选项禁用了某些传统语言功能</para>
+    <para styleclass="Normal">这些功能包括</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">&amp;&amp; 适用于单行注释</li>
     </list>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Today() </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">&amp;&amp; Show today&apos;s date</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">* for whole line comments</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">* 适用于整行注释</li>
     </list>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">* The next line calls DoSomething()</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? DoSomething()</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Bracketed strings </li>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">括号内的字符串 </li>
     </list>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? [&quot;&apos;&apos;&quot;] </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// use brackets to include quotes in a literal string</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Parenthesized expression lists</li>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? [&quot;&apos;&apos;&quot;] </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// 使用括号在字面字符串中加入引号</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">带括号的表达式列表</li>
     </list>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">var</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> x := </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">IIF</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">(Dow() == 1, (Open(), DoSomeWork(), Close()), 42) </text></para>
-    <para styleclass="Body Text">These were used by some users to include more than one expression / function call on locations where a single expression was expected, such as inside an IIF() expression. If -modernsyntax is not enabled then the compiler will generate a local function with (in this example) 3 expression statements and insert a call to the local function in the IIF() expression.</para>
+    <para styleclass="Body Text">一些用户使用这些语法在本应使用单一表达式的位置(如 IIF() 表达式内部)包含多个表达式/函数调用。如果未启用 -modernsyntax，编译器将生成一个包含(本例中)3 个表达式语句的局部函数，并在 IIF() 表达式中插入对局部函数的调用。</para>
   </body>
 </topic>

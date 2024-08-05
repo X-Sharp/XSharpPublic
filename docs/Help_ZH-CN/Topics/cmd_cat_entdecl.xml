@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Entity Declaration</title>
+<topic template="Default" modified="2024-07-24T11:55:29.999+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>实体声明</title>
   <keywords>
     <keyword>Commands<keyword>Entity Declaration</keyword></keyword>
     <keyword>Entity Declaration Commands</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Entity Declaration</para>
+      <para styleclass="Heading1">实体声明</para>
     </header>
     <para styleclass="link"></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command__DLL">_DLL</link></para>

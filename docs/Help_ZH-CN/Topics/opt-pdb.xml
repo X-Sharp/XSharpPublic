@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.417+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-pdb</title>
   <keywords>
     <keyword>-pdb</keyword>
@@ -9,23 +9,22 @@
     <header>
       <para styleclass="Heading1">-pdb</para>
     </header>
-    <para styleclass="Normal">The -pdb compiler option specifies the name and location of the debug symbols file.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-pdb:filename &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The name and location of the debug symbols file.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">When you specify <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-debug</link> , the compiler will create a .pdb file in the same directory where the compiler will create the output file (.exe or .dll) with a file name that is the same as the name of the output file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-pdb allows you to specify a non-default file name and location for the .pdb file.</para>
+    <para styleclass="Normal">编译器选项 -pdb 指定调试符号文件的名称和位置。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-pdb:filename  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/>调试符号文件的名称和位置。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">指定 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug">-debug</link> 时，编译器将在编译器创建输出文件(.exe 或 .dll)的同一目录下创建 .pdb 文件，文件名与输出文件名相同。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option cannot be set in the Visual Studio development environment, nor can it be changed programmatically.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">-通过 -pdb 选项，可以为 .pdb 文件指定一个非默认的文件名和位置。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compile <text styleclass="Code Example">t.prg</text> and create a .pdb file called tt.pdb:</para>
+    <para styleclass="Normal">该编译器选项不能在 Visual Studio 开发环境中设置，也不能通过编程更改。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -debug -pdb:tt t.prg &#160;</para>
+    <para styleclass="Normal">编译 t.prg 并创建名为 tt.pdb 的 .pdb 文件：</para>
+    <para styleclass="Code with box">xsc -debug -pdb:tt t.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

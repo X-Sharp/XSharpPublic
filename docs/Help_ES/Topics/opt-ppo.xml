@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-ppo</title>
+  <keywords>
+    <keyword>-ppo</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-ppo</para>
+    </header>
+    <para styleclass="Normal">The -ppo option directs the compiler to write the output of the preprocessor to a file.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-ppo [+ | -] &#160;</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -ppo, directs the compiler to write the output of the preprocessor to a file. <br/>When ppo is not enabled then the compiler will delete any existing ppo files that match input file names </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">Each source file will be written to a file with the same base name and an extension of .ppo, in the same directory as the source file. If a .ppo file already exists, it will be overwritten without warning.</para>
+    <para styleclass="Heading2">Tip: </para>
+    <para styleclass="Normal">.ppo files can be viewed within Visual Studio. After enabling The -ppo option and rebuilding the project, select any node in the project in Solution Explorer, click the Show All Files button in the Solution Explorer toolbar, then double click the desired .ppo file node.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To view a .prg and .ppo file side-by-side to compare them, right click the document tab in either the .prg or .ppo file and click New Vertical Tab Group.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Open the project&apos;s Properties page (see How to: Set Build Properties). </li>
+      <li styleclass="Normal">Click the Build tab. </li>
+      <li styleclass="Normal">In the Preprocessor section, modify the &quot;Generate preprocessor output&quot;property. </li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

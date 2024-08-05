@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.645+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo14</title>
   <keywords>
     <keyword>-vo14</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo14:<tab />Use Float Literals </para>
+      <para styleclass="Heading1">-vo14:<tab/>使用浮点字面量 </para>
     </header>
-    <para styleclass="Normal">The -vo14 option enables VO compatible handling of floating point literal numbers</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">通过 -vo14 选项，可以处理与 VO 兼容的浮点字面量</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo14[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">When this option is enabled, floating point literal numbers are treated by the compiler as FLOAT values, for compatibility with existing Visual Objects code. This option is enabled by default in transported projects.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab/>指定 + 或 -vo14，可让编译器将浮点字面数字(例如：123.456)视为 FLOAT 数据类型，而不是默认的 REAL8 (System.Double)。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">启用该选项后，编译器会将浮点字面量视为 FLOAT 值，以便与现有的 Visual Objects 代码兼容。该选项在运输项目中默认启用。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For new code, it is strongly recommended not to enable this compiler option, as it generates less efficient code. For example, for the following code:</para>
+    <para styleclass="Normal">对于新代码，强烈建议不要启用此编译器选项，因为它生成的代码效率较低。例如，以下代码</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> r := 3.0 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">REAL8</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">r := r * 4.5 + r + 5.5</text></para>
+    <para styleclass="Normal">如果启用了 -vo14，编译器会将 &quot;1.0&quot;、&quot;1.5 &quot;和 &quot;2.5 &quot;值视为 FLOAT 类型的数字，从而导致整个计算以 FLOAT 值为基础，最后将结果转换为 REAL8，然后存储到局部变量中。FLOAT 是运行时定义的一种特殊数据类型，比直接映射到(数学)处理器注册表的 REAL8(System.Decimal)数据类型慢得多。禁用 -vo14 选项会使上述代码的执行速度快一大截。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> r := 3.0 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">REAL8</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">r := r * 4.5 + r + 5.5</text></para>
+    <para styleclass="Normal">请注意，通过使用后缀 &quot;d &quot;或 &quot;s&quot;(如 123.456d 和 123.456s)，REAL8 或 REAL4 数据类型将在字面数字上执行，无论启用或禁用 -vo14 选项。有关更多信息，请参阅 &quot;字面量&quot;。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">if -vo14 is enabled, the compiler treats the &quot;1.0&quot;, &quot;1.5&quot; and &quot;2.5&quot; values as numbers of type FLOAT, causing the whole calculation to be made on FLOAT values and the result is at the end converted to REAL8, before it is finally stored to the local variable. FLOAT is a special data type defined in the runtime and is significantly slower than the REAL8 (System.Decimal) data type, which maps directly to a (mathematic) processor registry. Disabling -vo14 option, would cause the above code to execute faster by a large factor.</para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that by using the &quot;d&quot; or &quot;s&quot; suffix, as in 123.456d and 123.456s, the REAL8 or REAL4 data type is being enforced on a literal number, no matter if -vo14 is enabled or disabled. See Literals for more information.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
     <para styleclass="Normal"></para>
   </body>

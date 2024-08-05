@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T13:02:50.884+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9032</title>
   <keywords>
     <keyword>XS9032</keyword>
@@ -9,11 +9,12 @@
     <header>
       <para styleclass="Heading1">Warning XS9032</para>
     </header>
-    <para styleclass="Normal">This entity type cannot return a value. Return value ignored.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">VO unfortunately permits to return a value from an assign. Since this is not permitted in .NET, the X# compiler will return an error of</para>
-    <para styleclass="Body Text">Warning XS9032 This entity type cannot return a value. Return value ignored.</para>
-    <para styleclass="Body Text">The following code, perfectly valid in VO, will throw this warning in X#:</para>
+    <para styleclass="Body Text">该实体类型不能返回值。返回值被忽略。</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">遗憾的是，VO 允许从赋值中返回值。由于 .NET 不允许这样做，X# 编译器将返回以下错误</para>
+    <para styleclass="Body Text">警告 XS9032 该实体类型不能返回值。返回值被忽略。</para>
+    <para styleclass="Body Text">以下代码在 VO 中完全有效，但在 X# 中却会抛出此警告：</para>
     <para styleclass="Code Example">class MyClass<br/> &#160;protect _cMyVar as string<br/>&#32;</para>
     <para styleclass="Code Example">access MyVar</para>
     <para styleclass="Code Example"><tab />return _cMyVar</para>
@@ -33,7 +34,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Code Example">class MyClass<br/> &#160;protect _cMyVar as string</para>
     <para styleclass="Code Example"><br/>access MyVar<text style="font-weight:bold;"> as string</text></para>
-    <para styleclass="Code Example"><tab />return _cMyVar&#32;<br/>assign MyVar( cMyVar <text style="font-weight:bold;">as string</text> )<br/> &#160;_cMyVar := cMyVar<br/> &#160;return </para>
+    <para styleclass="Code Example"><tab />return _cMyVar <br/>assign MyVar( cMyVar <text style="font-weight:bold;">as string</text> )<br/> &#160;_cMyVar := cMyVar<br/> &#160;return </para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example">end class</para>
     <para styleclass="Code Example"></para>

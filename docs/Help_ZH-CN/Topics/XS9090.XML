@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Error XS9090</title>
-<keywords>
-<keyword>XS9090</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Error XS9090</para>
-  </header>
-  <para styleclass="Normal">The _DLL syntax for Methods, Accesses and Assigns is not supported and not needed in .Net. You should add a reference to the assembly.</para>
-  <para styleclass="Normal"></para>
-</body>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-13T03:53:21.089+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Error XS9090</title>
+  <keywords>
+    <keyword>XS9090</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9090</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在 .Net 中不支持也不需要 Method、Access 和 Assign 的 _DLL 语法。您应添加对程序集的引用。</para>
+  </body>
 </topic>

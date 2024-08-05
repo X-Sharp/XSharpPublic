@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.247+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-link</title>
   <keywords>
     <keyword>-link</keyword>
@@ -9,42 +9,41 @@
     <header>
       <para styleclass="Heading1">-link</para>
     </header>
-    <para styleclass="Normal">Causes the compiler to make COM type information in the specified assemblies available to the project that you are currently compiling.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-link:fileList &#160;<br/>-/ -or- &#160;<br/>-l:fileList &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">fileList</text><tab />Required. Comma-delimited list of assembly file names. If the file name contains a space, enclose the name in quotation marks.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The <text styleclass="Code Example">-link</text> option enables you to deploy an application that has embedded type information. The application can then use types in a runtime assembly that implement the embedded type information without requiring a reference to the runtime assembly. If various versions of the runtime assembly are published, the application that contains the embedded type information can work with the various versions without having to be recompiled. For an example, see Walkthrough: Embedding Types from Managed Assemblies.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using The -link option is especially useful when you are working with COM interop. You can embed COM types so that your application no longer requires a primary interop assembly (PIA) on the target computer. The <text styleclass="Code Example">-link</text> option instructs the compiler to embed the COM type information from the referenced interop assembly into the resulting compiled code. The COM type is identified by the CLSID (GUID) value. As a result, your application can run on a target computer that has installed the same COM types with the same CLSID values. Applications that automate Microsoft Office are a good example. Because applications like Office usually keep the same CLSID value across different versions, your application can use the referenced COM types as long as .NET Framework 4 or later is installed on the target computer and your application uses methods, properties, or events that are included in the referenced COM types.</para>
+    <para styleclass="Normal">使编译器将指定程序集中的 COM 类型信息提供给当前正在编译的项目。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-link:fileList  <br/>-/ -or-  <br/>-l:fileList  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">fileList</text><tab/>必须填写。以逗号分隔的程序集文件名列表。如果文件名包含空格，请用引号括起来。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">使用 -link 选项，可以部署具有嵌入式类型信息的应用程序。这样，应用程序就可以使用运行时程序集中实现嵌入式类型信息的类型，而无需引用运行时程序集。如果发布了运行时程序集的不同版本，包含嵌入式类型信息的应用程序就可以使用不同的版本，而无需重新编译。有关示例，请参阅演练： 从托管程序集嵌入类型。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The <text styleclass="Code Example">-link</text> option embeds only interfaces, structures, and delegates. Embedding COM classes is not supported.</para>
-    <para styleclass="Heading2">Note </para>
-    <para styleclass="Normal">When you create an instance of an embedded COM type in your code, you must create the instance by using the appropriate interface. Attempting to create an instance of an embedded COM type by using the CoClass causes an error.</para>
+    <para styleclass="Normal">使用 -link 选项在处理 COM 互操作时特别有用。您可以嵌入 COM 类型，这样您的应用程序就不再需要目标计算机上的主互操作程序集 (PIA)。-link 选项指示编译器将引用的互操作程序集中的 COM 类型信息嵌入到编译后的代码中。COM 类型由 CLSID(GUID)值标识。因此，如果目标计算机上安装了具有相同 CLSID 值的 COM 类型，您的应用程序就可以在目标计算机上运行。自动化 Microsoft Office 的应用程序就是一个很好的例子。由于 Office 等应用程序通常在不同版本中保持相同的 CLSID 值，因此只要目标计算机上安装了 .NET Framework 4 或更高版本，且应用程序使用了引用 COM 类型中包含的方法、属性或事件，您的应用程序就可以使用引用的 COM 类型。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To set the <text styleclass="Code Example">-link</text> option in Visual Studio, add an assembly reference and set the Embed Interop Types property to true. The default for the Embed Interop Types property is false.</para>
+    <para styleclass="Normal">-link 选项只嵌入接口、结构和委托。不支持嵌入 COM 类。</para>
+    <para styleclass="Heading2">注意</para>
+    <para styleclass="Normal">在代码中创建嵌入式 COM 类型的实例时，必须使用相应的接口来创建实例。尝试使用 CoClass 创建嵌入式 COM 类型的实例会导致错误。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you link to a COM assembly (Assembly A) which itself references another COM assembly (Assembly B), you also have to link to Assembly B if either of the following is true:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">A type from Assembly A inherits from a type or implements an interface from Assembly B.</li>
-      <li styleclass="Normal" style="margin-left:13px;">A field, property, event, or method that has a return type or parameter type from Assembly B is invoked.</li>
+    <para styleclass="Normal">要在 Visual Studio 中设置 -link 选项，请添加一个程序集引用，并将 Embed Interop Types 属性设置为 true。Embed Interop Types 属性的默认值是 false。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果链接到一个 COM 程序集(程序集 A)，而该程序集本身又引用了另一个 COM 程序集(程序集 B)，那么在以下任一情况下，也必须链接到程序集 B：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">程序集 A 的一个类型继承自程序集 B 的一个类型或实现了程序集 B 的一个接口。</li>
+      <li styleclass="Normal" style="margin-left:13px;">调用具有来自程序集 B 的返回类型或参数类型的字段、属性、事件或方法。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">Like The -reference compiler option, the<text styleclass="Code Example"> -link</text> compiler option uses the xsc.rsp response file, which references frequently used .NET Framework assemblies. Use The -noconfig compiler option if you do not want the compiler to use the xsc.rsp file.</para>
+    <para styleclass="Normal">与 -reference 编译器选项一样，-link 编译器选项使用 xsc.rsp 响应文件，该文件引用了常用的 .NET Framework 程序集。如果不想让编译器使用 xsc.rsp 文件，请使用 -noconfig 编译器选项。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The short form of <text styleclass="Code Example">-link</text> is <text styleclass="Code Example">-l.</text></para>
-    <para styleclass="Heading2">Generics and Embedded Types</para>
-    <para styleclass="Normal">The following sections describe the limitations on using generic types in applications that embed interop types.</para>
-    <para styleclass="Heading3">Generic Interfaces</para>
-    <para styleclass="Normal">Generic interfaces that are embedded from an interop assembly cannot be used. </para>
-    <para styleclass="Heading3">Types That Have Generic Parameters</para>
-    <para styleclass="Normal">Types that have a generic parameter whose type is embedded from an interop assembly cannot be used if that type is from an external assembly. This restriction does not apply to interfaces. For example, consider the Range interface that is defined in the Microsoft.Office.Interop.Excel assembly. If a library embeds interop types from the Microsoft.Office.Interop.Excel assembly and exposes a method that returns a generic type that has a parameter whose type is the Range interface, that method must return a generic interface, as shown in the following code example.</para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">The following code compiles source file <text styleclass="Code Example">OfficeApp.prg</text> and reference assemblies from <text styleclass="Code Example">COMData1.dll</text> and <text styleclass="Code Example">COMData2.dll</text> to produce <text styleclass="Code Example">OfficeApp.exe</text>.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -link:COMData1.dll,COMData2.dll -out:OfficeApp.exe OfficeApp.prg &#160;</para>
+    <para styleclass="Normal">-link 的简写形式是 -l。</para>
+    <para styleclass="Heading2">泛型和嵌入式类型(Generics and Embedded Types)</para>
+    <para styleclass="Normal">以下各节将介绍在嵌入互操作类型的应用程序中使用泛型的限制。</para>
+    <para styleclass="Heading3">通用接口(Generic Interfaces)</para>
+    <para styleclass="Normal">不能使用从互操作程序集嵌入的通用接口。</para>
+    <para styleclass="Heading3">具有通用参数的类型(Types That Have Generic Parameters)</para>
+    <para styleclass="Normal">如果类型来自外部程序集，则不能使用具有从互操作程序集嵌入类型的泛型参数的类型。这一限制不适用于接口。例如，Microsoft.Office.Interop.Excel 程序集中定义了 Range 接口。如果一个库嵌入了 Microsoft.Office.Interop.Excel 程序集中的互操作类型，并公开了一个返回泛型类型的方法，该方法的参数类型为 Range 接口，则该方法必须返回一个泛型接口，如下代码示例所示。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">以下代码编译源文件 OfficeApp.prg 以及 COMData1.dll 和 COMData2.dll 中的引用程序集，生成 OfficeApp.exe。</para>
+    <para styleclass="Code with box">xsc -link:COMData1.dll,COMData2.dll -out:OfficeApp.exe OfficeApp.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

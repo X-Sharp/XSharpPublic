@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:28.852+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>@</title>
   <keywords>
     <keyword>@ compiler option</keyword>
@@ -9,34 +9,35 @@
     <header>
       <para styleclass="Heading1">@</para>
     </header>
-    <para styleclass="Normal">The @ option lets you specify a file that contains compiler options and source code files to compile.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">@response_file &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">response_file</text><tab />A file that lists compiler options or source code files to compile.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The compiler options and source code files will be processed by the compiler just as if they had been specified on the command line.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To specify more than one response file in a compilation, specify multiple response file options. For example:</para>
+    <para styleclass="Normal">@ 选项允许你指定一个包含编译器选项和要编译的源代码文件的文件。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">@response_file  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">response_file</text><tab/>列出要编译的编译器选项或源代码文件的文件。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">编译器将处理编译器选项和源代码文件，就像在命令行中指定它们一样。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">@file1.rsp @file2.rsp &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">In a response file, multiple compiler options and source code files can appear on one line. A single compiler option specification must appear on one line (cannot span multiple lines). Response files can have comments that begin with the # symbol.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Specifying compiler options from within a response file is just like issuing those commands on the command line. See Building from the Command Line for more information.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The compiler processes the command options as they are encountered. Therefore, command line arguments can override previously listed options in response files. Conversely, options in a response file will override options listed previously on the command line or in other response files.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">X# provides the xsc.rsp file, which is located in the same directory as the xsc.exe file. See -noconfig for more information on xsc.rsp.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option cannot be set in the Visual Studio development environment, nor can it be changed programmatically.</para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following are a few lines from a sample response file:</para>
+    <para styleclass="Normal">要在编译中指定多个响应文件，可指定多个响应文件选项。例如</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"># build the first output file &#160;<br/>-target:exe -out:MyExe.exe source1.prg source2.prg &#160;</para>
+    <para styleclass="Code with box">@file1.rsp @file2.rsp  </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在一个响应文件中，可以在一行中出现多个编译器选项和源代码文件。单个编译器选项说明必须出现在一行中(不能跨多行)。响应文件可以有以 # 符号开头的注释。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">在响应文件中指定编译器选项就像在命令行中发出这些命令一样。更多信息，请参阅 &quot;使用 xsc.exe 进行命令行生成&quot;。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器会在遇到命令选项时对其进行处理。因此，命令行参数可以覆盖响应文件中先前列出的选项。反之，响应文件中的选项将覆盖之前在命令行或其他响应文件中列出的选项。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 提供的 xsc.rsp 文件与 xsc.exe 文件位于同一目录。有关 xsc.rsp 的更多信息，请参见 -noconfig。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该编译器选项不能在 Visual Studio 开发环境中设置，也不能通过编程更改。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下面是示例响应文件中的几行：</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"># build the first output file  <br/>-target:exe -out:MyExe.exe source1.prg source2.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

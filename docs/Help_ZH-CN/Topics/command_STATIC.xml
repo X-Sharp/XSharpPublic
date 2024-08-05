@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>STATIC Statement</title>
+<topic template="Default" modified="2024-06-30T00:49:25.581+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>STATIC 语句</title>
   <keywords>
     <keyword>Arrays<keyword>declaring</keyword></keyword>
     <keyword>Compiledeclaration</keyword>
@@ -13,19 +13,19 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">STATIC Statement</para>
+      <para styleclass="Heading1">STATIC 语句</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Body Text">Declare and initialize static variables and arrays.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Body Text">声明并初始化静态变量和数组。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">STATIC [LOCAL] &lt;idVar&gt; [:= &lt;uValue&gt;] [, ...] [AS | IS &lt;idType&gt;] [, ...]<br/>STATIC [LOCAL] DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...]<br/>STATIC [LOCAL] &lt;ArraySpec&gt; [, ...] [AS ARRAY] [, ...]</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The STATIC statement is shown using several syntax diagrams for convenience only. &#160;You can declare variables, dynamic arrays, and dimensioned arrays using a single STATIC statement if each definition is separated by a comma.</para>
+    <para styleclass="Body Text"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">注：为方便起见，STATIC 语句使用了多个语法。 如果每个定义之间用逗号隔开，则可以使用一条 STATIC 语句声明变量、动态数组和维数组。</text></para>
     <para styleclass="Body Text"></para>
     <para styleclass="List"><snippet src="__localSpec" inline="false"/></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Body Text">The STATIC keyword serves as a lifetime modifier for variables declared with the LOCAL statement, preventing them from being released from memory when the creating entity returns to its calling routine. &#160;It is listed here as a separate entry because, the LOCAL keyword being optional, STATIC can stand alone in a routine as a variable declaration statement. &#160;Refer to the LOCAL statement for a description and notes concerning static variable declarations.</para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Body Text">STATIC 关键字是用 LOCAL 语句声明的变量的生命周期修改器，防止创建实体返回调用例程时从内存中释放变量。 这里将其单独列出，是因为 LOCAL 关键字是可选的，STATIC 可以作为变量声明语句独立存在于例程中。 有关静态变量声明的说明和注意事项，请参阅 LOCAL 语句。</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL" style="text-decoration:underline;">LOCAL</link></para>
     <para styleclass="Normal"></para>
   </body>

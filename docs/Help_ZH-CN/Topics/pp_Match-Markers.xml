@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Match Markers</title>
+<topic template="Default" modified="2024-07-26T12:00:04.933+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>模式匹配</title>
   <keywords>
     <keyword>&lt;#idMarker&gt;</keyword>
     <keyword>&lt;%idMarker%&gt;</keyword>
@@ -13,36 +13,36 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Match Markers</para>
+      <para styleclass="Heading1">模式匹配</para>
     </header>
-    <para styleclass="Heading2">Match Pattern</para>
-    <para styleclass="Normal">The &lt;matchPattern&gt; portion of a translation directive is the pattern the input text must match. &#160;A match pattern is made from one or more of the following components, which the preprocessor tries to match against input text in a specific way:</para>
+    <para styleclass="Heading2">模式匹配</para>
+    <para styleclass="Normal">翻译指令的 &lt;matchPattern&gt; 部分是输入文本必须匹配的模式。 匹配模式由以下一个或多个部分组成，预处理器会尝试以特定方式将其与输入文本进行匹配：</para>
     <para styleclass="Normal"></para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Literal values are actual characters that appear in the match pattern. &#160;These characters must appear in the input text, exactly as specified to activate the translation directive.</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">字面值是匹配模式中出现的实际字符。 这些字符必须准确无误地出现在输入文本中，才能激活翻译指令。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Words are keywords and valid identifiers that are compared according to the dBASE convention (case-insensitive, first four letters mandatory, etc.). &#160;The match pattern must start with a Word.</li>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">单词是关键字和有效标识符，根据 dBASE 惯例(不区分大小写、前四个字母必须为必填项等)进行比较。 匹配模式必须以 Word 开头。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">#xcommand and #xtranslate can recognize keywords of more than four significant letters.</li>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">#xcommand 和 #xtranslate 可以识别超过四个有效字母的关键字。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Match markers are label and optional symbols delimited by angle brackets (&lt;&gt;) that provide a substitute (idMarker) to be used in the &lt;resultPattern&gt; and identify the clause for which it is a substitute. &#160;Marker names are identifiers and must, therefore, follow the xBase identifier naming conventions. &#160;In short, the name must start with an alphabetic or underscore character, which may be followed by alphanumeric or underscore characters.</li>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">匹配标记是用角括号(&lt;&gt;)分隔的标签和可选符号，它提供了在 &lt;resultPattern&gt; 中使用的替代值(idMarker)，并标识了其替代的子句。 标记名是标识符，因此必须遵循 xBase 标识符命名规则。 简而言之，名称必须以字母或下划线字符开头，后面可以是字母数字或下划线字符。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This table describes all match marker forms:</para>
+    <para styleclass="Normal">本表介绍了所有模式匹配形式：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Match Marker </text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">模式匹配</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">名称</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -50,7 +50,7 @@
           <para styleclass="Normal">&lt;idMarker&gt; </para>
         </td>
         <td>
-          <para styleclass="Normal">Regular match marker</para>
+          <para styleclass="Normal">正则匹配标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -58,7 +58,7 @@
           <para styleclass="Normal">&lt;idMarker,...&gt; </para>
         </td>
         <td>
-          <para styleclass="Normal">List match marker</para>
+          <para styleclass="Normal">列表匹配标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -66,7 +66,7 @@
           <para styleclass="Normal">&lt;idMarker:word list&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Restricted match marker</para>
+          <para styleclass="Normal">受限匹配标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -74,7 +74,7 @@
           <para styleclass="Normal"> &lt;*idMarker*&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Wild match marker</para>
+          <para styleclass="Normal">通配符匹配标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -82,7 +82,7 @@
           <para styleclass="Normal">&lt;(idMarker)&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Extended Expression match marker</para>
+          <para styleclass="Normal">扩展表达式匹配标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -90,7 +90,7 @@
           <para styleclass="Normal">&lt;#idMarker&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Single match marker. </para>
+          <para styleclass="Normal">单个匹配标记 </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -98,41 +98,49 @@
           <para styleclass="Normal">&lt;%idMarker%&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Wildcard match marker</para>
+          <para styleclass="Normal">通配符匹配标记</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Regular match marker</text>: Matches the next legal expression in the input text. &#160;The regular match marker, a simple label, is the most general and, therefore, the most likely match marker to use for a command argument. &#160;Because of its generality, it is used with the regular result marker, all of the stringify result markers, and the blockify result marker.</li>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">正则匹配标记：</text>匹配输入文本中的下一个合法表达式。正则匹配标记是最通用的标记之一，因此在命令参数中最常使用。由于其通用性，它通常与正则结果标记、所有字符串化结果标记和块化结果标记一起使用。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">List match marker</text>: Matches a comma-separated list of legal expressions. &#160;If no input text matches the match marker, the specified marker name contains nothing. &#160;You must take care in making list specifications because extra commas will cause unpredictable and unexpected results.<br/><br/>The list match marker defines command clauses that have lists as arguments. &#160;Typically these are FIELDS clauses or expression lists used by database commands. &#160;When there is a match for a list match marker, the list is usually written to the result text using either the normal or smart stringify result marker. &#160;Often, lists are written as literal arrays by enclosing the result marker in curly ({ }) braces.</li>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">列表匹配标记：</text>匹配逗号分隔的合法表达式列表。如果没有输入文本与匹配标记匹配，则指定的标记名称为空。在制作列表规范时必须小心，因为额外的逗号会导致不可预测和意外的结果。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Restricted match marker</text>: Matches input text to one of the words in a comma-separated list. &#160;If the input text does not match at least one of the words, the match fails and the marker name contains nothing.<br/><br/>A restricted match marker is generally used with the logify result marker to write a logical value into the result text. &#160;If there is a match for the restricted match marker, the corresponding logify result marker writes true (.T.) to the result text; otherwise, it writes false (.F.). &#160;This is particularly useful when defining optional clauses that consist of a command keyword with no accompanying argument. &#160;Std.ch implements the REST clause of database commands using this form.</li>
+    <para styleclass="Normal"> &#160; &#160;列表匹配标记定义具有列表作为参数的命令子句。通常这些是字段子句或数据库命令使用的表达式列表。当列表匹配标记匹配时，列表通常会使用普通或智能字符串化结果标记 写入结果文本。通常，列表会被写入为字面数组，通过将结果标记括在大括号（{}）中。.</para>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">受限匹配标记：</text>将输入文本与逗号分隔的单词列表中的一个进行匹配。如果输入文本至少与其中一个单词不匹配，则匹配失败，标记名称为空。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Wild match marker</text>: Matches any input text from the current position to the end of a statement. &#160;Wild match markers generally match input that may not be a legal expression, such as <br/>#command NOTE &lt;*x*&gt; in Clippers Std.ch, gather the input text to the end of thestatement, and write it to the result text using one of the stringify result markers.</li>
+    <para styleclass="Normal"> &#160; &#160;受限匹配标记通常与logify结果标记一起使用，将逻辑值写入结果文本。如果受限匹配标记有匹配项，相应的logify结果标记将向结果文本写入true (.T.)；否则，写入false (.F.)。这在定义由命令关键字组成且没有附带参数的可选子句时特别有用。Std.ch 使用这种形式实现数据库命令的REST子句。</para>
+    <para styleclass="Normal"></para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">通配符匹配标记：</text>匹配从当前位置到语句结尾的任何输入文本。通配符匹配标记通常匹配可能不是合法表达式的输入，例如在 Clippers Std.ch 中的 #command NOTE &lt;*x*&gt;，将输入文本收集到语句的末尾，并使用其中一个字符串化结果标记将其写入结果文本。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Single match marker. </text>Matches all consecutive tokens until a whitespace token.</li>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">单个匹配标记：</text>匹配所有连续的标记，直到遇到一个空白标记。</li>
     </list>
     <para styleclass="Normal">&#32;</para>
-    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Wildcard match marker</text>: Matches a list of tokens that are an Id, Comma, ? or *. This can be used in commands such as SAVE ALL LIKE a*,b*</li>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">通配符匹配标记：</text>匹配一个由 Id、逗号、? 或 * 组成的标记列表。这可以在诸如 SAVE ALL LIKE a*，b* 的命令中使用。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Extended expression match marker</text>: Matches a regular orextended expression, including a file name or path specification. It is used with the smart stringify result marker to ensure that extended expressions will not get stringified, while normal, unquoted string file specifications will.</li>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">扩展表达式匹配标记：</text>匹配常规或扩展表达式，包括文件名或路径规范。它与智能字符串化结果标记一起使用，以确保扩展表达式不会被字符串化，而普通的未引用的字符串文件规范会被字符串化。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Optional match clauses </text>are portions of the match pattern enclosed in square brackets ([ ]). &#160;They specify a portion of the match pattern that may be absent from the input text. &#160;An optional clause may contain any of the components allowed within a &lt;matchPattern&gt;, including other optional clauses. <br/><br/>Optional match clauses may appear anywhere and in any order in the match pattern and still match input text. &#160;Each match clause may appear only once in the input text. &#160;There are two types of optional match clauses: one is a keyword followed by match marker, and the other is a keyword by itself. &#160;These two types of optional match clauses can match all of the traditional command clauses typical ofthe xBase command set.<br/><br/>Optional match clauses are defined with a regular or list match marker to match input text if the clause consists of an argument or a keyword followed by an argument (see the INDEX clause of the USE command in Std.ch). &#160;If the optional match clause consists of a keyword by itself, it is matched with a restricted match marker (see the EXCLUSIVE or SHARED clause of the USE command in Std.ch).<br/><br/>In any match pattern, you may not specify adjacent optional match clauses consisting solely of match markers, without generating a compiler error. &#160;You may repeat an optional clause any number of times in the input text, as long as it is not adjacent to any other optional clause. &#160;To write a repeated match clause to the result text, use repeating result clauses in the &lt;resultPattern&gt; definition.</li>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">可选匹配子句</text>是匹配模式中用方括号（[ ]）括起来的部分。它们指定匹配模式中可能缺失的部分。可选子句可以包含在&lt;matchPattern&gt;中允许的任何组件，包括其他可选子句。<br/><br/>可选匹配子句可以出现在匹配模式中的任何位置和任何顺序，并仍然匹配输入文本。每个匹配子句在输入文本中只能出现一次。可选匹配子句有两种类型：一种是关键字后跟匹配标记，另一种是单独的关键字。这两种类型的可选匹配子句可以匹配典型的xBase命令集中的所有传统命令子句。</li>
     </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> &#160; 可选匹配子句使用正则或列表匹配标记进行定义，以便匹配输入文本，如果子句由参数或关键字后跟参数组成(请参阅Std.ch中USE命令的INDEX子句)。如果可选匹配子句仅由关键字本身组成，则使用受限制的匹配标记进行匹配(请参阅Std.ch中USE命令的EXCLUSIVE或SHARED子句)。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> &#160; &#160;在任何匹配模式中，您不能指定仅由匹配标记组成的相邻可选匹配子句，否则会生成编译器错误。您可以在输入文本中重复任意次数的可选子句，只要它不与其他可选子句相邻。要将重复的匹配子句写入结果文本，请在&lt;resultPattern&gt;定义中使用重复的结果子句。</para>
   </body>
 </topic>

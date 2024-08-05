@@ -38,6 +38,18 @@ RecentReference = GAC:XSharp.VFP,v4,2.6.0.0
 RecentReference = GAC:XSharp.VO,v4,2.6.0.0
 RecentReference = GAC:XSharp.XPP,v4,2.6.0.0
 RecentReference = GAC:XSharp.Harbour,v4,2.6.0.0
+RecentReference = Browse:E:\XSharp\Dev\Artifacts\Debug\XSharp.Core.dll
+RecentReference = Browse:E:\XSharp\Dev\Artifacts\Debug\XSharp.RT.dll
+RecentReference = Browse:E:\XSharp\Dev\Artifacts\Debug\XSharp.XPP.dll
+RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll
+RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll
+RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll
+RecentReference = GAC:System.Windows.Forms,v4,4.0.0.0
+RecentReference = GAC:System.Drawing,v4,4.0.0.0
+RecentReference = GAC:XSharp.Core,v4,
+RecentReference = GAC:XSharp.RT,v4,
+RecentReference = GAC:XSharp.VO,v4,
+RecentReference = Browse:E:\XSharp\DevRt\Artifacts\Debug\XSharp.VFP.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,723E53EA-0D2C-4FC9-B86E-F050D29A49D2
@@ -106966,7 +106978,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C816 - Various issues with the @ operator #2
 
-ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R816 - Function Overloads *************
 Application = R816 - Function Overloads
 IDEVersion = 1.06
@@ -119359,7 +119371,7 @@ IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
-Target = 0
+Target = 2
 Platform = x86
 Language = XSharp
 Runtime = CLR4
@@ -119404,7 +119416,7 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 [Tester Native Resources]
 [Tester License files]
 [Tester General Options]
-Switches=
+Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -127210,7 +127222,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = FoxPro
 Folder = %ProjectPath%\Applications\R915\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
@@ -127254,7 +127266,7 @@ ReferenceBrowse = %ProjectPath%\Runtime\XSharp.VFP.dll,1,1
 [R915 - Macro in UDC General Options]
 Switches=
 ZeroArrays=0
-CaseSensitive=1
+CaseSensitive=0
 ImplicitNamespace=0
 VO1=0
 VO2=0
@@ -129017,8 +129029,8 @@ CopyToBin = 0
 [C902 - Macro compiler problem passing more than 2 arguments by reference References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C902 - Macro compiler problem passing more than 2 arguments by reference Resources]
 [C902 - Macro compiler problem passing more than 2 arguments by reference Native Resources]
 [C902 - Macro compiler problem passing more than 2 arguments by reference License files]
@@ -129136,8 +129148,8 @@ CopyToBin = 0
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) Resources]
 [C902b - Macro compiler problem passing more than 2 arguments by reference (test b) Native Resources]
@@ -129376,9 +129388,9 @@ CopyToBin = 0
 [C904 - Problems with memvar pragma option References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.XPP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.XPP,1,0,2.6.0.0
 [C904 - Problems with memvar pragma option Resources]
 [C904 - Problems with memvar pragma option Native Resources]
 [C904 - Problems with memvar pragma option License files]
@@ -129496,9 +129508,9 @@ CopyToBin = 0
 [C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc Resources]
 [C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc Native Resources]
 [C905 - Problem using symbol literals #NULL_STRING, #NULL_DATE etc License files]
@@ -129616,9 +129628,9 @@ CopyToBin = 0
 [R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.XPP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.XPP,1,0,2.6.0.0
 [R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16 Resources]
 [R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16 Native Resources]
 [R888b - Problem with ClassName() and IsDerivedFrom() with /xpp1 and /vo16 License files]
@@ -129736,9 +129748,9 @@ CopyToBin = 0
 [R905b - Late Bound access to hidden members (with /xpp1+) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.XPP,1,0,2.6.0.0
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
 [R905b - Late Bound access to hidden members (with /xpp1+) Resources]
 [R905b - Late Bound access to hidden members (with /xpp1+) Native Resources]
 [R905b - Late Bound access to hidden members (with /xpp1+) License files]
@@ -130090,9 +130102,9 @@ CopyToBin = 0
 [C908 - Internal Compiler Error with duplicate declaring of fields/memvars References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C908 - Internal Compiler Error with duplicate declaring of fields/memvars Resources]
 [C908 - Internal Compiler Error with duplicate declaring of fields/memvars Native Resources]
 [C908 - Internal Compiler Error with duplicate declaring of fields/memvars License files]
@@ -130210,9 +130222,9 @@ CopyToBin = 0
 [C909 - VFP: Bogus warning when calling a function with /fox2+ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C909 - VFP: Bogus warning when calling a function with /fox2+ Resources]
 [C909 - VFP: Bogus warning when calling a function with /fox2+ Native Resources]
 [C909 - VFP: Bogus warning when calling a function with /fox2+ License files]
@@ -130330,9 +130342,9 @@ CopyToBin = 0
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.Harbour,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker Resources]
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker Native Resources]
 [C910 - Compiler problem reading clipper/harbour .prg file with end of file marker License files]
@@ -130405,6 +130417,721 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C910 - Compiler problem reading clipper/harbour .prg file with end of file marker
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C911 - /enforceself compiler option is being ignored *************
+Application = C911 - /enforceself compiler option is being ignored
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C911\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C911
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 72C50C55-CF93-4E45-B91B-C42E21033B44
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C911 - /enforceself compiler option is being ignored FileGroups]
+[C911 - /enforceself compiler option is being ignored Files]
+File = %AppPath%\Prg\C911.prg
+FileGUID = D60F10B5-FC0B-4A69-BBFA-B24568A9D692
+FileType = Code
+CopyToBin = 0
+[C911 - /enforceself compiler option is being ignored References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[C911 - /enforceself compiler option is being ignored Resources]
+[C911 - /enforceself compiler option is being ignored Native Resources]
+[C911 - /enforceself compiler option is being ignored License files]
+[C911 - /enforceself compiler option is being ignored General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[C911 - /enforceself compiler option is being ignored Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C911 - /enforceself compiler option is being ignored
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R921 - Whitespace and Extended Expressions *************
+Application = R921 - Whitespace and Extended Expressions
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\R921\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R921
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 59436CCC-7BA8-496D-B69D-C618D018B3FE
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R921 - Whitespace and Extended Expressions FileGroups]
+[R921 - Whitespace and Extended Expressions Files]
+File = %AppPath%\Prg\R921.prg
+FileGUID = FFF04E3E-426E-4D4F-A3E3-5DCED7F371B3
+FileType = Code
+CopyToBin = 0
+[R921 - Whitespace and Extended Expressions References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+[R921 - Whitespace and Extended Expressions Resources]
+[R921 - Whitespace and Extended Expressions Native Resources]
+[R921 - Whitespace and Extended Expressions License files]
+[R921 - Whitespace and Extended Expressions General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[R921 - Whitespace and Extended Expressions Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R921 - Whitespace and Extended Expressions
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R922- EnForceSelf should not interfere with DialogResult.OK *************
+Application = R922- EnForceSelf should not interfere with DialogResult.OK
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R922\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R922
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 00BB5797-A40A-46DF-B92C-C12EAFBC9AB1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R922- EnForceSelf should not interfere with DialogResult.OK FileGroups]
+[R922- EnForceSelf should not interfere with DialogResult.OK Files]
+File = %AppPath%\Prg\R922.prg
+FileGUID = C101C109-5BBA-413D-84E3-6B0D02DB91B4
+FileType = Code
+CopyToBin = 0
+[R922- EnForceSelf should not interfere with DialogResult.OK References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.RT.dll,1,1
+[R922- EnForceSelf should not interfere with DialogResult.OK Resources]
+[R922- EnForceSelf should not interfere with DialogResult.OK Native Resources]
+[R922- EnForceSelf should not interfere with DialogResult.OK License files]
+[R922- EnForceSelf should not interfere with DialogResult.OK General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=1
+VO1=0
+VO2=1
+VO3=1
+VO4=1
+VO5=1
+VO6=1
+VO7=1
+VO8=1
+VO9=0
+VO10=1
+VO11=1
+VO12=1
+VO13=1
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=1
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[R922- EnForceSelf should not interfere with DialogResult.OK Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R922- EnForceSelf should not interfere with DialogResult.OK
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R920 - Multi Line strings VFP dialect *************
+Application = R920 - Multi Line strings VFP dialect
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\R920\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R920
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = C5E6F2C1-7FB8-4DBD-BC34-01B3D7607EAD
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R920 - Multi Line strings VFP dialect FileGroups]
+[R920 - Multi Line strings VFP dialect Files]
+File = %AppPath%\Prg\R920.prg
+FileGUID = F067F26F-3C13-418B-BD0C-06D7280AB81B
+FileType = Code
+CopyToBin = 0
+[R920 - Multi Line strings VFP dialect References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.VFP.dll,1,1
+[R920 - Multi Line strings VFP dialect Resources]
+[R920 - Multi Line strings VFP dialect Native Resources]
+[R920 - Multi Line strings VFP dialect License files]
+[R920 - Multi Line strings VFP dialect General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[R920 - Multi Line strings VFP dialect Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R920 - Multi Line strings VFP dialect
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R923 - Clipper Call Array By Ref *************
+Application = R923 - Clipper Call Array By Ref
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = XBasePP
+Folder = %ProjectPath%\Applications\R923\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R923
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = F5BDCBD0-D4DC-418F-92C5-F461F4A362A0
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R923 - Clipper Call Array By Ref FileGroups]
+[R923 - Clipper Call Array By Ref Files]
+File = %AppPath%\Prg\R923.prg
+FileGUID = 5B6FF8D8-B702-4977-8EDC-D8968EA496BD
+FileType = Code
+CopyToBin = 0
+[R923 - Clipper Call Array By Ref References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\Dev\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
+[R923 - Clipper Call Array By Ref Resources]
+[R923 - Clipper Call Array By Ref Native Resources]
+[R923 - Clipper Call Array By Ref License files]
+[R923 - Clipper Call Array By Ref General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=1
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=1
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[R923 - Clipper Call Array By Ref Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R923 - Clipper Call Array By Ref
+
+ApplicationGroup = 1BBEE766-1BC4-4BAE-9C98-BAEB270E8A0F
+; ************** APPLICATION R924 - XBase++ field and property with same name *************
+Application = R924 - XBase++ field and property with same name
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = XBasePP
+Folder = %ProjectPath%\Applications\R924\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R924
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = E5F35E05-7C5C-41F9-8C41-A50084E746A6
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R924 - XBase++ field and property with same name FileGroups]
+[R924 - XBase++ field and property with same name Files]
+File = %AppPath%\Prg\R924.prg
+FileGUID = BAAAFFAD-07C1-4184-8BB0-E2BFFFED34FC
+FileType = Code
+CopyToBin = 0
+[R924 - XBase++ field and property with same name References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = E:\XSharp\DevRt\Artifacts\Debug\XSharp.XPP.dll,1,1
+[R924 - XBase++ field and property with same name Resources]
+[R924 - XBase++ field and property with same name Native Resources]
+[R924 - XBase++ field and property with same name License files]
+[R924 - XBase++ field and property with same name General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=1
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ModernSyntax=0
+NamedArgs=0
+InitLocals=0
+AllowOldStyleAssignments=0
+ResponseOnly=0
+[R924 - XBase++ field and property with same name Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R924 - XBase++ field and property with same name
 [EndApplications]
 
 [Configurations]

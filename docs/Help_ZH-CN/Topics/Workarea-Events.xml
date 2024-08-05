@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T22:40:26.807+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:50:06.343+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Workarea 事件</title>
   <body>
     <header>
@@ -22,8 +22,8 @@
       <li styleclass="Normal">不要在事件处理程序中操作任何工作区，以避免递归。</li>
       <li styleclass="Normal">尽快取消注册事件处理程序。</li>
       <li styleclass="Normal">如果您使用对象进行事件处理，您就有责任管理该对象的生命周期。请务必在对象超出范围之前取消注册。</li>
-      <li styleclass="Normal">在某些情况下（对多个工作区进行操作，如 DbCommitAll() 和 DbUnLockAll()），事件处理程序并不总能收到发送者参数。请做好准备！</li>
-      <li styleclass="Normal">事件是从 CoreDb 层发送的。因此，如果 RDD 中的一个方法调用了该 RDD 中的另一个方法（例如，创建订单后，CreateOrder() 可能会调用 GoTop()），那么您将看不到第二个事件，只能看到与从 CoreDb() 层调用的方法相关的事件，因此在本例中与创建订单相关的事件。</li>
+      <li styleclass="Normal">在某些情况下(对多个工作区进行操作，如 DbCommitAll() 和 DbUnLockAll())，事件处理程序并不总能收到发送者参数。请做好准备！</li>
+      <li styleclass="Normal">事件是从 CoreDb 层发送的。因此，如果 RDD 中的一个方法调用了该 RDD 中的另一个方法（例如，创建 order 后，CreateOrder() 可能会调用 GoTop()），那么您将看不到第二个事件，只能看到与从 CoreDb() 层调用的方法相关的事件，因此在本例中与创建 order 相关的事件。</li>
     </list>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Body Text"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-04T11:18:25.010+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-08T09:36:39.147+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -14,6 +14,17 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue.</para>
+    <para styleclass="Heading1">Changes in 2.x</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading3">New features</para>
+    <para styleclass="Heading2">Runtime</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading3">New features</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading3">New features</para>
     <para styleclass="Heading1">Changes in 2.20.0.3</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>

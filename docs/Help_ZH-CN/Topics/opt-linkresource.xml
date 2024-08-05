@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.263+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-linkresource</title>
   <keywords>
     <keyword>-linkresource</keyword>
@@ -9,46 +9,38 @@
     <header>
       <para styleclass="Heading1">-linkresource</para>
     </header>
-    <para styleclass="Normal">Creates a link to a .NET Framework resource in the output file. The resource file is not added to the output file. This differs from The -resource option which does embed a resource file in the output file.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-linkresource:filename[,identifier[,accessibility-modifier]] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">filename<tab />The .NET Framework resource file to which you want to link from the assembly.</para>
-    <para styleclass="List">identifier (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</para>
-    <para styleclass="List">accessibility-modifier </para>
-    <para styleclass="List">(optional)<tab />The accessibility of the resource: public or private. The default is public.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">By default, linked resources are public in the assembly when they are created with the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other modifier other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-linkresource requires one of The -target options other than -target:module.</para>
+    <para styleclass="Normal">在输出文件中创建指向 .NET Framework 资源的链接。资源文件不会添加到输出文件中。这与 -resource 选项不同，后者会在输出文件中嵌入资源文件。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-linkresource:filename[,identifier[,accessibility-modifier]]  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">filename<tab/>要从程序集链接到的 .NET Framework 资源文件。</para>
+    <para styleclass="List">identifier (optional)<tab/>资源的逻辑名称；用于加载资源的名称。默认为文件名。</para>
+    <para styleclass="List">accessibility-modifier <tab/>(可选)<tab/>资源的可访问性：公共或私有。默认为公共。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">默认情况下，使用 X# 编译器创建的链接资源在程序集中是公共资源。要将资源设为私有，请指定 private 作为可访问性修饰符。除 public 或 private 外，不允许使用其他修饰符。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If <text styleclass="Code Example">filename</text> is a .NET Framework resource file created, for example, by Resgen.exe or in the development environment, it can be accessed with members in the System.Resources namespace. For more information, see System.Resources.ResourceManager. For all other resources, use the <text styleclass="Code Example">GetManifestResource</text>* methods in the Assembly class to access the resource at run time.</para>
+    <para styleclass="Normal">除了 -target:module 之外，-linkresource 还需要一个 -target 选项。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The file specified in <text styleclass="Code Example">filename</text> can be any format. For example, you may want to make a native DLL part of the assembly, so that it can be installed into the global assembly cache and accessed from managed code in the assembly. The second of the following examples shows how to do this. You can do the same thing in the Assembly Linker. The third of the following examples shows how to do this. For more information, see Al.exe (Assembly Linker) and Working with Assemblies and the Global Assembly Cache</para>
+    <para styleclass="Normal">如果 filename 是由 Resgen.exe 或在开发环境中创建的 .NET Framework 资源文件，则可以使用 System.Resources 名称空间中的成员访问该文件。更多信息，请参阅 System.Resources.ResourceManager。对于所有其他资源，请使用程序集类中的 GetManifestResource* 方法在运行时访问资源。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">文件名中指定的文件可以是任何格式。例如，您可能希望将本地 DLL 作为程序集的一部分，以便将其安装到全局程序集缓存中，并从程序集中的托管代码中进行访问。下面第二个示例展示了如何做到这一点。你也可以在程序集链接器中做同样的事情。下面的第三个示例演示了如何做到这一点。更多信息，请参阅 Al.exe(程序集链接器)和使用程序集和全局程序集缓存。</para>
     <para styleclass="Normal">.</para>
-    <para styleclass="Normal">-linkres is the short form of -linkresource.</para>
+    <para styleclass="Normal">-linkres 是 -linkresource 的简称。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">该编译器选项在 Visual Studio 中不可用，也不能通过编程更改。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and link to resource file <text styleclass="Code Example">rf.resource</text>:</para>
+    <para styleclass="Normal">编译 in.prg，并链接到资源文件 rf.resource：</para>
+    <para styleclass="Code with box">xsc -linkresource:rf.resource in.prg  </para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">将 A.prg 编译成 DLL，链接到本地 DLL N.dll，并将输出结果放入全局程序集缓存 (GAC)。在本例中，A.dll 和 N.dll 都将位于 GAC 中。</para>
+    <para styleclass="Code with box">xsc -linkresource:N.dll -t:library A.prg <br/>gacutil -i A.dll  </para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -linkresource:rf.resource in.prg &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compile <text styleclass="Code Example">A.prg</text> into a DLL, link to a native DLL N.dll, and put the output in the Global Assembly Cache (GAC). In this example, both A.dll and N.dll will reside in the GAC.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -linkresource:N.dll -t:library A.prg <br/>gacutil -i A.dll &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This example does the same thing as the previous one, but by using Assembly Linker options.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -t:module A.prg &#160;<br/>al -out:A.dll A.netmodule -link:N.dll &#160; <br/>gacutil -i A.dll &#160;</para>
+    <para styleclass="Normal">此示例与上一示例的操作相同，但使用了汇编链接器选项。</para>
+    <para styleclass="Code with box">xsc -t:module A.prg  <br/>al -out:A.dll A.netmodule -link:N.dll   <br/>gacutil -i A.dll  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

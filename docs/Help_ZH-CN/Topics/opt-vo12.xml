@@ -1,36 +1,38 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.611+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo12</title>
   <keywords>
     <keyword>-vo12</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo12<tab />Clipper Compatible integer divisions </para>
+      <para styleclass="Heading1">-vo12<tab/>Clipper 兼容的整数除法 </para>
     </header>
-    <para styleclass="Normal">The -vo12 option enables Clipper compatible integer divisions.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-vo12[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -vo12, directs the compiler to emit code that performs Clipper-compatible integer divisions. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">When The -vo12 option is enabled and both operands of The - (division) operator are integral values, both operands are converted to USUAL, and the return type is USUAL. The return value contained in the USUAL is:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">INT64 (UsualType() == 22), if one or both operands are greater than Int32.MaxValue and the remainder of the division is zero </li>
-      <li styleclass="Body Text">INT (UsualType() == 1), if one or both operands are INT or a smaller integral type and the remainder of the division is zero </li>
-      <li styleclass="Body Text">FLOAT (UsualType() == 3), if one or both operands are INT or a smaller integral type and the remainder of the division is not zero </li>
+    <para styleclass="Normal">使用 -vo12 选项可以进行与 Clipper 兼容的整数除法。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-vo12[+|-]</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab/>指定 + 或 -vo12，可指示编译器生成执行与 Clipper 兼容的整数除法的代码。 </para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">启用 -vo12 选项且 (除法)运算符的两个操作数均为整数时，两个操作数均转换为 USUAL，返回类型为 USUAL。USUAL 中包含的返回值是</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">INT64(UsualType() == 22)，如果一个或两个操作数都大于 Int32.MaxValue，且除法的余数为零 </li>
+      <li styleclass="Body Text">INT(UsualType() == 1)，如果一个或两个操作数都是 INT 或更小的整数类型，且除法的余数为零 </li>
+      <li styleclass="Body Text">FLOAT(UsualType() == 3)，如果一个或两个操作数都是 INT 或较小的整数类型，且除法的余数不为零 </li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The -vo12 option is enabled in projects created by the Transporter if the Compiler-&gt;Clipper Compatiblity-&gt;Integer Divisions option was enabled for the project in Visual Objects.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">如果在 Visual Objects 中为项目启用了 Compiler-&gt;Clipper Compatiblity-&gt;Integer Divisions 选项，则传输器创建的项目中将启用 -vo12 选项。</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
   </body>
 </topic>

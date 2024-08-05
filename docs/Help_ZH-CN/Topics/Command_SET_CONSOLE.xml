@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET CONSOLE Command</title>
+<topic template="Default" modified="2024-07-26T11:48:52.691+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET CONSOLE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET CONSOLE Command</keyword>
@@ -9,26 +9,26 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET CONSOLE Command</para>
+      <para styleclass="Heading1">SET CONSOLE 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Turn the screen display on/of</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">打开/关闭屏幕显示</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET CONSOLE ON | off | &lt;lToggle&gt;</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;lToggle&gt;<tab />A logical expression which must appear in parentheses. Instead of the logical expression, the option ON can be specified for the value .T. (true) or OFF for the value .F. (false). When .T. or ON is specified (the default value), all output is displayed on the screen. If the setting is set to OFF, output on the screen using commands like ? or ?? is suppressed. </para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">The command SET CONSOLE deactivates or activates output of characters on the screen. This includes commands like ? and functions like QOut() or QQOut(), which always begin output at the current cursor position. </para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;lToggle&gt;<tab />逻辑表达式，必须放在括号内。可以为 .T. 指定 ON 选项，或为 .F. 指定 OFF 选项，而不是逻辑表达式。指定 .T. 或 ON 时(默认值)，所有输出都会显示在屏幕上。如果设置为 OFF，则屏幕上使用 ? 或 ?等命令的输出将被抑制。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">SET CONSOLE 命令用于停用或激活屏幕上的字符输出。这包括像 ? 这样的命令以及像 QOut() 或 QQOut() 这样的函数，它们总是从当前光标位置开始输出。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When SET CONSOLE is set to ON, output is displayed on the screen. There can also be parallel output to a file (command SET ALTERNATE). </para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">当 SET CONSOLE 设置为 ON 时，输出将显示在屏幕上。也可以并行输出到文件（命令 SET ALTERNATE）。</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="__ConsoleExample" inline="false"/></para>
     <para styleclass="Normal">&#32;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetConsole.htm" domain="XSharpRef.chm" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SetConsole()</link><text styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_ALTERNATE" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SET ALTERNATE</link></para>
   </body>
 </topic>

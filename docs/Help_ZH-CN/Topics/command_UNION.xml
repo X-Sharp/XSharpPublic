@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T19:59:24.833+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>UNION Statement</title>
+<topic template="Default" modified="2024-07-26T11:03:53.500+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UNION 语句</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Compiledeclaration</keyword>
@@ -14,7 +14,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">UNION Statement</para>
+      <para styleclass="Heading1">UNION 语句</para>
     </header>
     <para styleclass="Heading1"><snippet src="__VoVulcanOnly" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
@@ -62,9 +62,9 @@
     <para styleclass="List"></para>
     <para styleclass="List">IS &lt;idType&gt;<tab />指定一个 union 数据类型，在该 union 数据类型中，保存 union 数据所需的内存是在堆栈中分配的(也就是说，&lt;idUnion&gt; 是唯一允许使用 IS 关键字的 &lt;idType&gt; 类型)。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ALIGN 1|2|4|8<tab />指定结构体的内存对齐方式。默认值为 4，这意味着所有成员都以 DWORD 边界对齐，因为这在 32 位平台上性能最佳，也是大多数 C/C++ 编译器的默认对齐方式。如果需要与定义了不同对齐方式（C/C++ 头文件中的 #pragma 包）的 C/C++ 结构相匹配，可能需要更改对齐方式。</para>
+    <para styleclass="List">ALIGN 1|2|4|8<tab />指定结构体的内存对齐方式。默认值为 4，这意味着所有成员都以 DWORD 边界对齐，因为这在 32 位平台上性能最佳，也是大多数 C/C++ 编译器的默认对齐方式。如果需要与定义了不同对齐方式(C/C++ 头文件中的 #pragma 包)的 C/C++ 结构相匹配，可能需要更改对齐方式。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />注意：C/C++ 编译器的默认对齐方式也是 4，除非结构包含双倍（&lt;%APP%&gt; 中的 REAL8）。在这种情况下，C/C++ 编译器会使用 8 的对齐方式。&lt;%APP%&gt; 不会自动选择 8 的对齐方式，因此在这种情况下，必须在结构体中添加 ALIGN 8。</para>
+    <para styleclass="List"><tab />注意：C/C++ 编译器的默认对齐方式也是 4，除非结构包含双倍(&lt;%APP%&gt; 中的 REAL8)。在这种情况下，C/C++ 编译器会使用 8 的对齐方式。&lt;%APP%&gt; 不会自动选择 8 的对齐方式，因此在这种情况下，必须在结构体中添加 ALIGN 8。</para>
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">UNION 与 STRUCTURE 类似，但所有成员都从偏移量 0 (0) 开始。 换句话说，给一个 union 成员赋值会影响其他所有 union 成员。 由于 union 的大小等于最大成员的大小，因此改变一个成员将改变所有其他成员，因为它们占用相同的内存。</para>
     <para styleclass="Normal"></para>

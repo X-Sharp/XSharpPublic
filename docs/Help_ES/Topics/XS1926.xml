@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1926</title>
+  <keywords>
+    <keyword>XS1926</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1926</para>
+    </header>
+    <para styleclass="Normal">Error reading Win32 manifest file &apos;filename&apos; -- &apos;error&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This error is generated when the following conditions are true:</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest">/win32manifest</link> option is specified either on the command line or by right-clicking the Project icon in Solution Explorer, pointing to Add, clicking New Item, and then clicking Application Manifest File.</li>
+      <li styleclass="Normal" style="margin-left:13px;">The file is either corrupted or missing.</li>
+    </list>
+    <para styleclass="Heading3">To correct this error</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:'Segoe UI'; font-size:8pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Remove the option.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Replace, repair, or regenerate the file.</li>
+    </list>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">The following example generates XS1926 when it is compiled with a corrupted for missing win32 manifest file:<br/><br/><br/>// XS1926.prg  <br/>// Compile with: /win32manifest: ../../app.manifest  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

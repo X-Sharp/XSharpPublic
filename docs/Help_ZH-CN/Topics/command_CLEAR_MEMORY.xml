@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>CLEAR MEMORY Command</title>
+<topic template="Default" modified="2024-06-28T00:44:59.856+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLEAR MEMORY 命令</title>
   <keywords>
     <keyword>CLEAR MEMORY command</keyword>
     <keyword>Clearing memory</keyword>
@@ -12,16 +12,16 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">CLEAR MEMORY Command</para>
+      <para styleclass="Heading1">CLEAR MEMORY 命令</para>
     </header>
     <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Delete both public and private memory variables from the memory variable table.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">从内存变量表中删除公用和私有内存变量。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">CLEAR MEMORY</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">It operates in contrast to RELEASE ALL which does not actually delete public and private memory variables, but assigns NIL to those whose scope is the current procedure. &#160;CLEAR MEMORY is the only way to delete all public memory variables from current memory. &#160;Declared variables and constants, however, are unaffected by CLEAR MEMORY.</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">它的作用与 RELEASE ALL 相反，后者实际上并不删除公共和私有内存变量，而是将 NIL 赋值给那些作用域为当前存储过程的变量。 清除内存(CLEAR MEMORY)是删除当前内存中所有公共内存变量的唯一方法。 而声明的变量和常量则不受 CLEAR MEMORY 影响。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_MemClear.htm" domain="XSharpRef.chm">MemClear()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T23:01:39.707+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:59:43.072+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>在 Visual Studio 中使用 X#</title>
   <body>
     <header>
@@ -28,7 +28,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text style="font-weight:normal;">已知问题：</text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:normal;">有些 intellisense 特性尚不支持。</text></li>
+      <li styleclass="Normal"><text style="font-weight:normal;">有些智能感知特性尚不支持。</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">尚未提供 VO 二进制编辑器</text></li>
       <li styleclass="Normal"><text style="font-weight:normal;">尚未支持 .Net Core、.Net Standard、可移植类库和共享项目</text></li>
     </list>

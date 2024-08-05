@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-13T02:52:33.657+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9061</title>
   <keywords>
     <keyword>XS9061</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS9061</para>
     </header>
-    <para styleclass="Normal">The &quot;PTR(..) operation&quot; is not allowed for method or function calls. If the method or function returns a pointer then consider using the (&lt;Type&gt; PTR) syntax instead.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">方法或函数调用不允许使用 &quot;PTR(...) 操作&quot;。如果方法或函数返回一个指针，请考虑使用 (&lt;Type&gt; PTR) 语法。</para>
   </body>
 </topic>

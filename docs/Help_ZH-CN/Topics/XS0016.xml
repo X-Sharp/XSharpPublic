@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.445+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0016</title>
   <keywords>
     <keyword>XS0016</keyword>
@@ -9,8 +9,9 @@
     <header>
       <para styleclass="Heading1">Error XS0016</para>
     </header>
-    <para styleclass="Normal">Could not write to output file &apos;file&apos; — &apos;reason&apos;</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The compiler could not write to an output file. Check the path to the file to make sure it exists. If a previously built file is already at the location, make sure it is writeable, and that no process currently has a lock on the file. For example,make sure your executable is not running when you attempt to build.</para>
+    <para styleclass="Normal">未能写入输出文件 &apos;file&apos;—&apos;reason&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器未能写入输出文件。 检查文件路径，确保存在该路径。 如果该位置已存在一个以前生成的文件，请确保该文件可写入，并且当前没有进程将该文件锁定。 例如，确保在尝试生成时可执行文件未在运行。</para>
   </body>
 </topic>

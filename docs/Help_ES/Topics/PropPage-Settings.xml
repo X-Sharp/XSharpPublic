@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Settings</title>
+  <keywords>
+    <keyword>app.config</keyword>
+    <keyword>Custom Tool</keyword>
+    <keyword>Settings</keyword>
+    <keyword>settings editor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Settings</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Application settings enable you to store application information dynamically. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesSettings.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"><br/><text styleclass="Image Caption" style="font-style:normal;">Settings allow you to store information on the client computer that should not be included in the application code (for example a connection string), user preferences, and other information you need at run time.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Each application setting must have a unique name. The name can be any combination of letters, numbers, or an underscore that does not start with a number, and it cannot have spaces. The name is changed through the Name property.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Application settings can be stored as any data type that is serialized to XML or has a TypeConverter that implements ToString/FromString. The most common types are String, Integer, and Boolean, but you can also store values as Color, Object, or as a connection string.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Application settings also hold a value. The value is set with the Value property and must match the data type of the setting.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">In addition, application settings can be bound to a property of a form or control at design time.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">There are two types of application settings, based on scope:</text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Application-scoped settings can be used for information such as a URL for a web service or a database connection string. These values are associated with the application. Therefore, users cannot change them at run time.</text></li>
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">User-scoped settings can be used for information such as persisting the last position of a form or a font preference. Users can change these values at run time.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can change the type of a setting by using the Scope property.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">The project system stores application settings in two XML files:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">an app.config file, which is created at design time when you create the first application setting</text></li>
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">a user.config file, which is created at run time when the user who runs the application changes the value of any user setting.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">Notice that changes in user settings are not written to disk unless the application specifically calls a method to do this.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The Settings Property page allows you to open up a settings editor for project settings. The definition for these settings will be stored in the Properties folder of your project. </para>
+    <para styleclass="Normal">The values of these settings will be stored in a app.config file in the root folder of your project.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Just like in the resource editor you can also choose the visibility of the generated code (the IDE generates a file called Settings.Designer.prg). This also changes the &quot;Custom Tool&quot; property of the Settings file.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">When you compile your project then MsBuild will generate a copy of app.config and will rename it to &lt;yourapp&gt;.exe.config in the output folder of your project.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-14T20:52:49.225+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>_DLL Statement</title>
+<topic template="Default" modified="2024-07-26T10:52:50.520+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>_DLL 语句</title>
   <keywords>
     <keyword>_DLL statement</keyword>
     <keyword>Compile-time declaration</keyword>
@@ -13,7 +13,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">_DLL Statement</para>
+      <para styleclass="Heading1">_DLL 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Body Text">向编译器声明 DLL 中定义的实体。</para>
@@ -25,11 +25,11 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__callingconvention" inline="false"/></para>
-    <para styleclass="List">&lt;idDLL&gt;<tab />包含实体定义的 DLL 文件名，不含扩展名或路径名（即基本文件名）。 假定扩展名为 .DLL（由 Windows 决定的某些例外情况可能有 .EXE 扩展名），用于在运行时搜索文件的规则将在下文的 &quot;描述&quot;部分解释。</para>
+    <para styleclass="List">&lt;idDLL&gt;<tab />包含实体定义的 DLL 文件名，不含扩展名或路径名(即基本文件名)。 假定扩展名为 .DLL(由 Windows 决定的某些例外情况可能有 .EXE 扩展名)，用于在运行时搜索文件的规则将在下文的 &quot;描述&quot;部分解释。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><text styleclass="Body Text">Charset</text><tab /><text styleclass="Body Text">可选择指定字符串参数具有哪些字符集</text></para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Body Text">_DLL 声明了一个实体，该实体由应用程序使用，但定义在 DLL 中。 该语句不仅告诉编译器 DLL 实体的位置和名称（或编号），而且还告诉编译器它的调用约定（即它需要哪些参数以及返回值的类型）。 使用 _DLL 语句声明实体时，它还向编译器表明，该实体在声明之后没有其他源代码。</para>
+    <para styleclass="Body Text">_DLL 声明了一个实体，该实体由应用程序使用，但定义在 DLL 中。 该语句不仅告诉编译器 DLL 实体的位置和名称(或编号)，而且还告诉编译器它的调用约定(即它需要哪些参数以及返回值的类型)。 使用 _DLL 语句声明实体时，它还向编译器表明，该实体在声明之后没有其他源代码。</para>
     <para styleclass="Body Text">一旦声明，就可以在应用程序中以标准方式调用该实体。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">警告： &#160;_DLL 语句中包含的实体名称区分大小写。这与 X# 编译器直接矛盾，后者不区分大小写，但与 Windows 调用协议一致。因此，如果开启了大小写敏感功能或打开了大写锁定，则必须格外小心。</para>

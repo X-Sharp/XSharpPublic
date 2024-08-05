@@ -808,6 +808,7 @@
       <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
       <file-mod href="X-Examples.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
       <file-mod href="X-Examples_MSHC.xml" build="HXS"/>
+      <file-mod href="__buildExtra.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

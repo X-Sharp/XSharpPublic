@@ -1,75 +1,72 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.774+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo8</title>
   <keywords>
     <keyword>-vo8</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo8<tab /><tab />Compatible preprocessor </para>
+      <para styleclass="Heading1">-vo8<tab/><tab/>兼容预处理器 </para>
     </header>
-    <para styleclass="Normal">The -vo8 option enables Visual-Objects compatible preprocessor behavior.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-vo8选项可启用与Visual-Objects兼容的预处理器行为。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo8[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -vo8, changes certain aspects of the preprocessor to behave like Visual Objects. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">Unlike Visual Objects, X# uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The -vo8 option controls the following behaviors:</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab/>指定 + 或 -vo8，可以改变预处理器的某些方面，使其行为类似于 Visual Objects。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">与 Visual Objects 不同，X# 使用基于文件的预处理器，它具有 C、C++ 和 Clipper 等语言中传统预处理器的特征。-vo8 选项控制以下行为：</para>
     <para styleclass="Normal"></para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading3" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
-      <li styleclass="Heading3"><text style="font-weight:bold;">Case Sensitivity</text></li>
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading3" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
+      <li styleclass="Heading3"><text style="font-weight:bold;">大小写敏感</text></li>
     </list>
-    <para styleclass="Normal">In a traditional preprocessor, #define foo 1 and #define FOO 2 declare two separate preprocessor symbols, because preprocessor symbols are case-sensitive.</para>
+    <para styleclass="Normal">在传统的预处理器中，#define foo 1 和 #define FOO 2 分别声明两个独立的预处理器符号，因为预处理器符号是区分大小写的。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">However, in Visual Objects, DEFINE foo := 1 and DEFINE FOO := 2 declare the same entity (and would cause a compiler error because of the duplicate entity declaration).</para>
+    <para styleclass="Normal">然而，在 Visual Objects 中，DEFINE foo := 1 和 DEFINE FOO := 2 声明的是同一个实体(由于实体声明重复，编译器会出错)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In X#, by default, that is when -vo8 is disabled (not used or specified with &quot;-vo8-&quot;), preprocessor symbols are always case sensitive. When -vo8 is enabled, then the case sensitivity of symbols is decided by the state of the -cs option:</para>
-    <para styleclass="Normal">- when -cs is enabled, which makes the compiler treat all identifiers and type names as case-sensitive, then also preprocessor symbols are still case-sensitive</para>
-    <para styleclass="Normal">- when -cs is disabled, then preprocessor symbols are case-insensitive and behave in the same way as in VO</para>
+    <para styleclass="Normal">在 X# 中，默认情况下，即禁用 -vo8(未使用或指定&quot;-vo8-&quot;)时，预处理器符号始终区分大小写。启用 -vo8 时，符号的大小写敏感性由 -cs 选项的状态决定：</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">启用 -cs 时，编译器将所有标识符和类型名都视为区分大小写，那么预处理器符号也仍然区分大小写</li>
+      <li styleclass="Normal">当禁用 -cs 时，预处理器符号不区分大小写，行为方式与 VO 中相同。</li>
+    </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">So, when -vo8 is enabled and -cs is disabled, #define foo 1 and #define FOO 2 declare the same preprocessor symbol (and would cause a compiler warning because of the redefinition).</para>
+    <para styleclass="Normal">因此，当启用 -vo8 而禁用 -cs 时，#define foo 1 和 #define FOO 2 声明了相同的预处理器符号(并且会因为重新定义而导致编译器警告)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following code is valid in Visual Objects:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">以下代码在 Visual Objects 中有效：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo := &quot;bar&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Foo </text><text style="font-weight:bold; font-style:italic; color:#339966;">// &quot;bar&quot;</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">but the following code would raise an unknown variable error on ? Foo because the X# preprocessor is case-sensitive by default:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">但以下代码会在 ? Foo 会引发未知变量错误，因为 X# 预处理器默认情况下是区分大小写的：</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo &quot;bar&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? Foo</text></para>
+    <para styleclass="Normal">使用 -vo8(而不是 -cs)选项可以编译上述示例。除了使用 -vo8，还可以修改代码，使要替换文本的大小写与 #define 中使用的大小写一致。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using The -vo8 (but not the -cs) option will allow the above example to compile. An alternative to using -vo8 is to modify the code so that the case of the text you want to replace matches the case used in #define.</para>
-    <para styleclass="Normal"></para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
+    <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:12pt; color:#00a8d2;">
       <li styleclass="Normal"><text styleclass="Heading3">#ifdef</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In a traditional preprocessor, code within a #ifdef ... #endif (or #else) block is compiled if the symbol after #ifdef is defined. It does not matter what the symbol resolves to, if it resolves to anything at all.</para>
+    <para styleclass="Normal">在传统的预处理器中，#ifdef ... #endif(或 #else)代码块中的代码如果在 #ifdef 之后定义了符号，就会被编译。#endif(或 #else)代码块中的代码会在 #ifdef 后面的符号被定义的情况下被编译。至于符号的解析结果是什么(如果有的话)，并不重要。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In Visual Objects, code within a #ifdef ... #endif (or #else) block is compiled only if the symbol after #ifdef is defined, and it resolves to an expression which resolves to a logical TRUE value. In the example below, The code will print &quot;in #else&quot;:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo := FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ifdef</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #ifdef</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">else</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #else&quot; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// &lt;- this code is compiled in Visual Objects</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">whereas the equivalent code in X# would print &quot;in #ifdef&quot;:</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo := FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ifdef</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #ifdef // &lt;- this code is compiled in Vulcan.NET</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">else</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #else&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text></para>
+    <para styleclass="Normal">在 Visual Objects 中，代码在 #ifdef ... #endif(或 #else)代码块中的代码只有在 #ifdef 后面的符号已定义，且解析为逻辑 TRUE 值的表达式时才会被编译。在下面的示例中，代码将打印 &quot;in #else&quot;：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo := FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ifdef</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #ifdef</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">else</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #else&quot; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// &lt;- 此代码在 Visual Objects 中编译</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text></para>
+    <para styleclass="Normal">而 X# 中的相应代码会打印 &quot;in #ifdef&quot;：</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo := FALSE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">#ifdef</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #ifdef // &lt;- </text><text style="font-weight:bold; font-style:italic; color:#339966;">此代码在</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.NET</text><text style="font-weight:bold; font-style:italic; color:#339966;"> 中编译</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">else</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;in #else&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When -vo8 is used, the X# preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the X# preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with -vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. </para>
-    <para styleclass="Normal">Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">使用 -vo8 时，X# 预处理器会检查预处理器符号的值，以确定该符号是否解析为逻辑 TRUE 或 FALSE 值。 但是，X# 预处理器不会评估预处理器表达式，而 Visual Objects 则会。即使启用了 -vo8，预处理器符号也必须解析为包含 TRUE 或 FALSE(不区分大小写)或数值的单一表达式。</para>
+    <para styleclass="Normal">数值 0 解析为 FALSE，所有非零数值解析为 TRUE。解析为表达式的预处理器符号不进行评估，实际上解析为 FALSE。</para>
     <para styleclass="Normal"></para>
-    <list id="5" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; color:#339966;">// For the purposes of #ifdef...</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// these resolve to FALSE:</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo FALSE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo 0</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// these resolve to TRUE:</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo True</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo -567</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// these are not processed and effectively resolve to FALSE</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// and therefore are incompatible with Visual Objects:</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo TRUE .AND. TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo TRUE .OR. TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo 1 * 2</text></para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; color:#339966;">// 对于 #ifdef...</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 解析为 FALSE：</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo FALSE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo 0</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 解析为 TRUE:</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo True</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo 1</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo -567</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 不会被处理，并有效地解析为 FALSE</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 因此与 Visual Objects 不兼容：</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo TRUE .AND. TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo TRUE .OR. TRUE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">define</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo 1 * 2</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"> Tip: </para>
-    <para styleclass="Normal">The -ppo option is useful for debugging the output generated by the preprocessor. </para>
+    <para styleclass="Normal">提示 </para>
+    <para styleclass="Normal">在调试预处理器生成的输出时，-ppo 选项非常有用。</para>
     <para styleclass="Heading3"></para>
     <para styleclass="Normal"></para>
   </body>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.384+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-resource</title>
   <keywords>
     <keyword>-resource</keyword>
@@ -9,42 +9,41 @@
     <header>
       <para styleclass="Heading1">-resource</para>
     </header>
-    <para styleclass="Normal">Embeds the specified resource into the output file.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-resource:filename[,identifier[,accessibility-modifier]] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />The .NET Framework resource file that you want to embed in the output file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">identifier</text> (optional)<tab />The logical name for the resource; the name that is used to load the resource. The default is the name of the file name.</para>
+    <para styleclass="Normal">将指定资源嵌入输出文件。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-resource:filename[,identifier[,accessibility-modifier]]  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/><tab/>要嵌入输出文件的 .NET Framework 资源文件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (optional)<tab />The accessibility of the resource: public or private. The default is public.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">Use -linkresource to link a resource to an assembly and not add the resource file to the output file.</para>
+    <para styleclass="List"><text styleclass="Code Example">identifier</text> (可选)<tab/><tab/>资源的逻辑名称；用于加载资源的名称。默认为文件名。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">By default, resources are public in the assembly when they are created by using the X# compiler. To make the resources private, specify <text styleclass="Code Example">private</text> as the accessibility modifier. No other accessibility other than <text styleclass="Code Example">public</text> or <text styleclass="Code Example">private</text> is allowed.</para>
+    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (可选)<tab/>资源的可访问性：public 或 private。默认为 public。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">使用 -linkresource 可将资源链接到程序集，而不会将资源文件添加到输出文件中。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If <text styleclass="Code Example">filename</text> is a .NET Framework resource file created, for example, by Resgen.exe or in the development environment, it can be accessed with members in the System.Resources namespace. For more information, see System.Resources.ResourceManager. For all other resources, use the <text styleclass="Code Example">GetManifestResource</text>* methods in the Assembly class to access the resource at run time.</para>
+    <para styleclass="Normal">默认情况下，使用 X# 编译器创建的资源在程序集中是公共资源。要将资源设为私有，请指定 private 作为可访问性修饰符。除 public 或 private 外，不允许其他可访问性。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-res is the short form of -resource.</para>
+    <para styleclass="Normal">如果 filename 是由 Resgen.exe 或在开发环境中创建的 .NET Framework 资源文件，则可以使用 System.Resources 命名空间中的成员访问该文件。更多信息，请参阅 System.Resources.ResourceManager。对于所有其他资源，请使用程序集类中的 GetManifestResource* 方法在运行时访问资源。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The order of the resources in the output file is determined from the order specified on the command line.</para>
+    <para styleclass="Normal">-res 是 -resource 的简写。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal">输出文件中资源的顺序由命令行指定的顺序决定。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Add a resource file to your project.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Select the file that you want to embed in Solution Explorer.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Select Build Action for the file in the Properties window.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Set Build Action to Embedded Resource.</li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">在项目中添加资源文件</li>
+      <li styleclass="Normal" style="margin-left:13px;">在解决方案资源管理器中选择要嵌入的文件。</li>
+      <li styleclass="Normal" style="margin-left:13px;">在 &quot;属性 &quot;窗口中为文件选择 &quot;Build Action(生成动作)&quot;</li>
+      <li styleclass="Normal" style="margin-left:13px;">将 &quot;生成操作 &quot;设置为 &quot;Embedded Resource(嵌入式资源)&quot;</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For information about how to set this compiler option programmatically, see BuildAction.</para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal">有关如何以编程方式设置该编译器选项的信息，请参阅 BuildAction。</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compile<text styleclass="Code Example"> in.prg</text> and attach resource file <text styleclass="Code Example">rf.resource</text>:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -resource:rf.resource in.prg &#160;</para>
+    <para styleclass="Normal">编译 in.prg，并附加资源文件 rf.resource：</para>
+    <para styleclass="Code with box">xsc -resource:rf.resource in.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

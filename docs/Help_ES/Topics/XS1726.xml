@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1726</title>
+  <keywords>
+    <keyword>XS1726</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1726</para>
+    </header>
+    <para styleclass="Normal">Friend assembly reference &apos;reference&apos; is invalid. Strong-name signed assemblies must specify a public key in their InternalsVisibleTo declarations.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">A strong name signed assembly can only grant friend assembly access, made with the InternalsVisibleToAttribute, to other strongly signed assemblies.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To resolve XS1726, either sign (give a strong name to) the assembly to which you want to grant friend access, or don&apos;t grant friend access.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">For more information, see Friend Assemblies.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1726.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">  </para>
+    <para styleclass="Code with box">// Save this code as XS1726.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

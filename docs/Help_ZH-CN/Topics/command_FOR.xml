@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-10-22T13:01:42.777-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>FOR Statement</title>
+<topic template="Default" modified="2024-07-26T11:44:39.223+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FOR 语句</title>
   <keywords>
     <keyword>Branching</keyword>
     <keyword>Conditional execution</keyword>
@@ -14,45 +14,42 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">FOR Statement</para>
+      <para styleclass="Heading1">FOR 语句</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Execute a block of statements a specified number of times.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">执行指定次数的语句块。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">FOR [&lt;idCounter&gt; := &lt;nStart&gt; | VAR &lt;idCounter&gt; := &lt;nStart&gt; | LOCAL &lt;idCounter&gt; := &lt;nStart&gt; AS &lt;idType&gt; ] [TO | UPTO | DOWNTO] &lt;nEnd&gt; [STEP &lt;nDelta&gt;]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [EXIT]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [LOOP]<br/>NEXT</para>
-    <para styleclass="Heading2">Note</para>
-    <para styleclass="Normal">In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;idCounter&gt;<tab />The name of the loop control or counter variable. &#160;IF a LOCAL or VAR clause is included then the local is created for the duration of the loop. With the VAR clause the datatype is inferred from the usage. </para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">在 FoxPro 和 Xbase++ 方言中，ENDFOR 可替代 NEXT</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;idCounter&gt;<tab />循环控制变量或计数变量的名称。 如果包含 LOCAL 或 VAR 子句，则在循环期间创建局部变量。使用 VAR 子句时，数据类型将根据使用情况推断。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
-    <para styleclass="List">&lt;nStart&gt;<tab />The initial value assigned to &lt;idCounter&gt;. &#160;If the loop is counting up, &lt;nStart&gt; must be less than &lt;nEnd&gt;. &#160;If the loop is counting down, &lt;nStart&gt; must be greater than &lt;nEnd&gt;.</para>
+    <para styleclass="List">&lt;nStart&gt;<tab />分配给 &lt;idCounter&gt; 的初始值。 如果循环是向上计数，&lt;nStart&gt; 必须小于 &lt;nEnd&gt;。 如果循环是向下计数，&lt;nStart&gt; 必须大于 &lt;nEnd&gt;。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The TO clause can be used for counting up or down, depending on whether the STEP clause gives a positive or negative value for &lt;nDelta&gt;. &#160;Note, however, that your code will be more efficient if you avoid the TO clause and specify UPTO or DOWNTO instead.</para>
+    <para styleclass="List">TO &lt;nEnd&gt;<tab />&lt;idCounter&gt; 的最终值。 TO 子句可用于向上或向下计数，这取决于 STEP 子句给出的 &lt;nDelta&gt; 值是正值还是负值。 但请注意，如果避免使用 TO 子句，而是指定 UPTO 或 DOWNTO，代码效率会更高。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">UPTO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The UPTO clause is used for counting up.</para>
+    <para styleclass="List">UPTO &lt;nEnd&gt;<tab />&lt;idCounter&gt; 的最终值。 UPTO 子句用于向上计数。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">DOWNTO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The DOWNTO clause is used for counting down.</para>
+    <para styleclass="List">DOWNTO &lt;nEnd&gt;<tab />&lt;idCounter&gt; 的最终值。 DOWNTO 子句用于倒计时。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">STEP &lt;nDelta&gt;<tab />The amount &lt;idCounter&gt; is changed for each iteration of the loop. &#160;If used with the TO clause, &lt;nDelta&gt; can be either positive or negative. &#160;With UPTO and DOWNTO, &lt;nDelta&gt; should be positive. &#160;If the STEP clause is not specified, &lt;idCounter&gt; is incremented (or decremented in the case of DOWNTO) by one for each iteration of the loop.</para>
+    <para styleclass="List">STEP &lt;nDelta&gt;<tab />循环的每次迭代都会改变 &lt;idCounter&gt; 的值。 如果与 TO 子句一起使用，&lt;nDelta&gt; 可以是正值或负值。 使用 UPTO 和 DOWNTO 时，&lt;nDelta&gt; 应为正值。 如果未指定 STEP 子句，则循环每迭代一次，&lt;idCounter&gt; 就递增一次(如果是 DOWNTO，则递减一次)。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">The control structure loops from the initial value of &lt;<text styleclass="Italic">idCounter</text>&gt; to the boundary specified by &lt;<text styleclass="Italic">nEnd</text>&gt;, moving through the range of values of the control variable for an increment specified by &lt;<text styleclass="Italic">nDelta</text>&gt;. &#160;All expressions in the FOR statement are reevaluated for each iteration of the loop. &#160;The &lt;<text styleclass="Italic">nStart</text>&gt; and &lt;<text styleclass="Italic">nEnd</text>&gt; values, therefore, can be changed as the control structure operates.</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">控制结构从 &lt;idCounter&gt; 的初始值循环到 &lt;nEnd&gt; 指定的边界，在控制变量的取值范围内移动，增量由 &lt;nDelta&gt; 指定。 循环的每次迭代都要重新评估 FOR 语句中的所有表达式。 因此，&lt;nStart&gt; 和 &lt;nEnd&gt; 值可以随着控制结构的运行而改变。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A FOR loop operates until &lt;<text styleclass="Italic">idCounter</text>&gt; is greater than or less than &lt;<text styleclass="Italic">nEnd</text>&gt; (depending on whether you are counting up or down) or an EXIT statement is encountered. &#160;Control then branches to the statement following the corresponding NEXT statement. &#160;If a LOOP statement is encountered, control branches back to the current FOR statement.</para>
-    <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+    <para styleclass="Normal">FOR 循环一直运行到 &lt;idCounter&gt; 大于或小于 &lt;nEnd&gt;(取决于是向上计数还是向下计数)或遇到 EXIT 语句为止。 然后，控制将分支到相应 NEXT 语句后面的语句。 如果遇到 LOOP 语句，控制会分支回当前的 FOR 语句。</para>
+    <para styleclass="Normal">控制结构可以嵌套到任意深度。 唯一的要求是每个控制结构都要正确嵌套。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Tip: &#160;</text>Although FOR loops are useful for traversing arrays (as demonstrated in the examples below), your code will be more efficient if there is a corresponding array function designed to do what you want.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example traverses an array in ascending order:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">提示 &#160;虽然 FOR 循环对遍历数组很有用(如下例所示)，但如果有一个相应的数组函数来实现你想要的功能，你的代码会更有效率。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">此示例以升序遍历数组：</para>
     <para styleclass="Code Example">nLenArray := ALen(aArray)<br/>FOR i := 1 UPTO nLenArray<br/><tab />&lt;Statements&gt;...<br/>NEXT</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">To traverse an array in descending order:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">按降序遍历数组：</para>
     <para styleclass="Code Example">nLenArray := ALen(aArray)<br/>FOR i := nLenArray DOWNTO 1<br/><tab />&lt;Statements&gt;...<br/>NEXT</para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_AEval.htm" domain="XSharpRef.chm">AEval()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXIT">EXIT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOOP">LOOP</link></para>
     <para styleclass="Normal"></para>
   </body>

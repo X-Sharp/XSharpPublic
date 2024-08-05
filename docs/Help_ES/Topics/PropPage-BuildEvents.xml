@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Build Events</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Build Events</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">On the Build Events property page you can specify command lines that need to be run before or after the build process.</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">You can use this for example to run a tool that generates source code or to copy the output DLLs to another folder.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="ProjectPropertiesBuildEvent.png" scale="100.00%" styleclass="Image Caption"></image></para>
+  </body>
+</topic>

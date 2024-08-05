@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Warning XS9122</title>
-<keywords>
-<keyword>XS9122</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Warning XS9122</para>
-  </header>
-  <para styleclass="Normal">File Wide Memory Variable found with the same name '{0}'. You must use the MEMVAR or M prefix to access that variable.</para>
-  <para styleclass="Normal"></para>
-</body>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-15T04:03:13.397+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Warning XS9122</title>
+  <keywords>
+    <keyword>XS9122</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9122</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">发现同名为 ‘{0}’ 的文件全局内存变量。必须使用 MEMVAR 或 M 前缀才能访问该变量。</para>
+  </body>
 </topic>

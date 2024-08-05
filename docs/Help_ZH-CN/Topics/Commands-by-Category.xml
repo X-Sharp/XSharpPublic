@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-11T16:11:43.075+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:33:14.807+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>命令和语句</title>
   <body>
     <header>
@@ -18,7 +18,7 @@
     <para styleclass="Normal">几乎所有方言都有语句，只有少数例外。</para>
     <para styleclass="Normal">可用的命令在很大程度上取决于方言。例如，在 Core 方言中根本没有可用的命令。大多数命令都有可选参数，并依赖于 X# 运行时类型，如 USUAL。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">本参考既列出了编译器 “内置 ”的命令，也列出了在 STD.UDC 中定义为默认 “用户自定义命令 ”的命令。</para>
+    <para styleclass="Normal">本参考既列出了编译器 “内置 ”的命令，也列出了在 STD.UDC 中定义为默认 “用户自定义命令” 的命令。</para>
     <para styleclass="Normal">某些命令以星号标记为 “弃用”。这些命令在 %APP% 的未来版本中可能不可用。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="4">
@@ -168,7 +168,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_comment" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">注释</link></para>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_concur" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">并发控制</link></para>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_Database" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">数据库</link></para>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_date" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">数据</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_date" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">日期</link></para>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_entdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">实体声明</link></para>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_set" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">环境</link></para>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_file" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">文件</link></para>

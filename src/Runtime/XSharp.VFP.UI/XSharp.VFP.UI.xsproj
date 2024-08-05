@@ -131,6 +131,9 @@
     <Compile Include="CommandGroup.prg">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.prg">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Spinner.prg" />
     <Compile Include="VFPDoForm.prg" />
     <Compile Include="VFPDummy.prg" />
@@ -165,6 +168,7 @@
     <Compile Include="OptionButton.prg" />
     <Compile Include="TextBox.prg" />
     <Compile Include="Timer.prg" />
+    <Compile Include="VFPTools.prg" />
     <Compile Include="_OtherClasses.prg" />
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +204,7 @@
     <None Include="Generated\VFPControl.xh" />
     <None Include="Generated\VFPObject.xh" />
     <None Include="Headers\VFPObject.xh" />
+    <None Include="Properties\XSharp.bmp" />
     <None Include="XSharp\VFPProperties.xh" />
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +228,13 @@
       <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomTool>ResXFileCodeGenerator</CustomTool>
+    </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

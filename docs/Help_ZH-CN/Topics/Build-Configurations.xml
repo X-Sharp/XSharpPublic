@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-06T16:00:22.260+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:11:15.523+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>生成配置</title>
   <body>
     <header>
       <para styleclass="Heading1">生成配置</para>
     </header>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">如果需要用不同的设置来生成项目，就需要生成配置。例如，&quot;调试 &quot;和 &quot;发布 &quot;都是配置，在生成时会相应地使用不同的编译器选项。一个配置处于活动状态，并在 Visual Studio IDE 顶部的命令栏中显示。</para>
+    <para styleclass="Body Text">如果需要用不同的设置来生成项目，就需要生成配置。例如，&quot;调试&quot; 和 &quot;发布&quot; 都是配置，在生成时会相应地使用不同的编译器选项。一个配置处于活动状态，并在 Visual Studio IDE 顶部的命令栏中显示。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="VsBuildToolbar.png" scale="71.07%" width="881" height="86" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">配置和平台控制着生成输出文件的存储位置。通常情况下，当 Visual Studio 生成项目时，输出文件会放在以活动配置命名的项目子文件夹中(例如，bin/Debug)，但你可以更改。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">您可以在解决方案和项目级别创建自己的生成配置。解决方案配置决定了在该配置处于活动状态时，构建中包含哪些项目。只有在活动的解决方案配置中指定的项目才会被生成。如果在配置管理器中选择了多个目标平台，则会生成适用于该平台的所有项目。项目配置决定了生成项目时使用的生成设置和编译器选项。</para>
+    <para styleclass="Body Text">您可以在解决方案和项目级别创建自己的生成配置。解决方案配置决定了在该配置处于活动状态时，生成中包含哪些项目。只有在活动的解决方案配置中指定的项目才会被生成。如果在配置管理器中选择了多个目标平台，则会生成适用于该平台的所有项目。项目配置决定了生成项目时使用的生成设置和编译器选项。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">要创建、选择、修改或删除配置，可以使用配置管理器。要打开配置管理器，请在菜单栏上选择 &quot;生成&quot;&gt;&quot;配置管理器&quot;，或在搜索框中键入 &quot;配置&quot;。您也可以使用 &quot;标准 &quot;工具栏上的 &quot;解决方案配置 &quot;列表来选择配置或打开 &quot;配置管理器&quot;。</para>
+    <para styleclass="Body Text">要创建、选择、修改或删除配置，可以使用配置管理器。要打开配置管理器，请在菜单栏上选择 &quot;生成&quot;&gt;&quot;配置管理器&quot;，或在搜索框中键入 &quot;配置&quot;。您也可以使用 &quot;标准&quot; 工具栏上的 &quot;解决方案配置&quot; 列表来选择配置或打开 &quot;配置管理器&quot;。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><image src="ConfigurationManager.png" scale="66.62%" width="734" height="491" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">默认情况下，使用 Visual Studio 模板创建的项目中包含调试和发布配置。调试配置支持应用程序的调试，而发布配置则生成可部署的应用程序版本。有关详细信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-set-debug-and-release-configurations?view=vs-2019">在 Visual Studio 中设置调试和发布配置</link> 。您还可以创建自定义解决方案配置和项目配置。有关更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/how-to-create-and-edit-configurations?view=vs-2019">创建和编辑配置</link>。</para>
     <para styleclass="Heading2">解决方案配置</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">解决方案配置指定如何构建和部署解决方案中的项目。要修改解决方案配置或定义新配置，请在 &quot;配置管理器 &quot;的 &quot;活动解决方案配置 &quot;下选择 &quot;编 辑 &quot;或 &quot;新建&quot;。</para>
+    <para styleclass="Normal">解决方案配置指定如何生成和部署解决方案中的项目。要修改解决方案配置或定义新配置，请在 &quot;配置管理器&quot; 的 &quot;活动解决方案配置&quot; 下选择 &quot;编 辑&quot; 或 &quot;新建&quot;。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">解决方案配置中项目上下文框中的每个条目都代表解决方案中的一个项目。对于活动解决方案配置和活动解决方案平台的每种组合，您都可以设置每个项目的使用方式。(有关解决方案平台的更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/understanding-build-platforms?view=vs-2019">将项目配置为面向平台</link>）。</para>
+    <para styleclass="Normal">解决方案配置中项目上下文框中的每个条目都代表解决方案中的一个项目。对于活动解决方案配置和活动解决方案平台的每种组合，您都可以设置每个项目的使用方式。(有关解决方案平台的更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/visualstudio/ide/understanding-build-platforms?view=vs-2019">将项目配置为面向平台</link>)。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">定义新解决方案配置并选择 &quot;创建新的项目配置 &quot;复选框时，Visual Studio 会自动将新配置分配给所有项目。同样，当您定义新的解决方案平台并选择 &quot;创建新项目平台 &quot;复选框时，Visual Studio 会自动将新平台分配给所有项目。此外，如果您添加了一个以新平台为目标的项目，Visual Studio 会将该平台添加到解决方案平台列表中，并将其分配给所有项目。您仍然可以修改每个项目的设置。</para>
+    <para styleclass="Normal">定义新解决方案配置并选择 &quot;创建新的项目配置&quot; 复选框时，Visual Studio 会自动将新配置分配给所有项目。同样，当您定义新的解决方案平台并选择 &quot;创建新项目平台&quot; 复选框时，Visual Studio 会自动将新平台分配给所有项目。此外，如果您添加了一个以新平台为目标的项目，Visual Studio 会将该平台添加到解决方案平台列表中，并将其分配给所有项目。您仍然可以修改每个项目的设置。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">活动解决方案配置还为集成开发环境提供了上下文。例如，如果您正在处理一个项目，而配置指定该项目将为移动设备构建，那么工具箱中将仅显示可在移动设备项目中使用的项目。</para>
+    <para styleclass="Normal">活动解决方案配置还为集成开发环境提供了上下文。例如，如果您正在处理一个项目，而配置指定该项目将为移动设备生成，那么工具箱中将仅显示可在移动设备项目中使用的项目。</para>
     <para styleclass="Heading2">项目配置</para>
-    <para styleclass="Normal">项目的目标配置和平台共同用于指定构建设置和编译器选项。一个项目可以针对不同的配置和平台组合使用不同的设置。要修改项目的属性，请在 &quot;解决方案资源管理器 &quot;中打开项目的快捷菜单，然后选择 &quot;属性&quot;。在项目设计器的 &quot;Build &quot;(生成)选项卡顶部，选择一个活动配置来编辑其构建设置。</para>
+    <para styleclass="Normal">项目的目标配置和平台共同用于指定生成设置和编译器选项。一个项目可以针对不同的配置和平台组合使用不同的设置。要修改项目的属性，请在 &quot;解决方案资源管理器&quot; 中打开项目的快捷菜单，然后选择 &quot;属性&quot;。在项目设计器的 &quot;Build &quot;(生成)选项卡顶部，选择一个活动配置来编辑其生成设置。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">有关哪些项目属性与配置相关，哪些项目属性与配置无关的更多信息，请参见项目属性对话框。</para>
   </body>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>TEXT Command</title>
+<topic template="Default" modified="2024-06-29T23:49:39.846+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Files<keyword>closing</keyword></keyword>
@@ -10,21 +10,19 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">TEXT Command</para>
+      <para styleclass="Heading1">TEXT 命令</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Declare a block of text that can be assigned to a variable or send to an output device.</para>
-    <para styleclass="Normal">There are several different variations of the TEXT Statement:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(Core)">Core TEXT Command</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(Non-Core)">Non-Code TEXT Command</link></li>
-      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(FoxPro)">FoxPro TEXT Command</link></li>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">声明可分配给变量或发送到输出设备的文本块。</para>
+    <para styleclass="Normal">TEXT 语句有几种不同的变体：</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(Core)">Core TEXT 命令</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(Non-Core)">Non-Code TEXT 命令</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(FoxPro)">FoxPro TEXT 命令</link></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The different variations of the TEXT commands are implemented as User Defined commands in XSharpDefs.xh or one of the other header files.</para>
-    <para styleclass="Normal">All of these commands map to the preprocessor directives <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext</link> where the actual work is done.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">TEXT 命令的不同变体在 XSharpDefs.xh 或其他头文件中作为用户自定义命令实现。</para>
+    <para styleclass="Normal">所有这些命令都会映射到预处理器指令 <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext</link>，而实际工作就是在预处理器指令 #text 和 #endtext 中完成的。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

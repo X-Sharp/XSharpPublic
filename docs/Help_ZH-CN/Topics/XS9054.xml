@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T13:29:30.715+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9054</title>
   <keywords>
     <keyword>XS9054</keyword>
@@ -9,6 +9,8 @@
     <header>
       <para styleclass="Heading1">Warning XS9054</para>
     </header>
-    <para styleclass="Normal">Possible conflict between assignment to local variable {0} and named argument syntax. <br/>The compiler will assume the named argument syntax. Surround the expression with parentheses to resolve the problem.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">赋值给局部变量 {0} 与命名参数语法之间可能存在冲突。</para>
+    <para styleclass="Normal">编译器将假定使用命名参数语法。用括号包围表达式即可解决问题。</para>
   </body>
 </topic>

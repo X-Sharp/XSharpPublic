@@ -1,38 +1,40 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.735+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo6</title>
   <keywords>
     <keyword>-vo6</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo6<tab /><tab />Implicit pointer conversions </para>
+      <para styleclass="Heading1">-vo6<tab/><tab/>隐式指针转换 </para>
     </header>
-    <para styleclass="Normal">The -vo6 option directs the compiler to resolve typed function pointers to PTR.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-vo6 选项指示编译器将类型化函数指针解析为 PTR。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo6[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -vo6, directs the compiler to resolve pointers that would resolve to typed function pointers in Visual Objects to PTR. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">X# does not supported typed function pointers. Existing Visual Objects code that declares typed function pointers will not compile in X#, unless the type is changed to PTR or IntPtr.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab/>指定 + 或 -vo6，可指示编译器将 Visual Objects 中键入函数指针的指针解析为 PTR。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">X# 不支持类型化函数指针。除非将类型更改为 PTR 或 IntPtr，否则声明了类型化函数指针的现有 Visual Objects 代码将无法在 X# 中编译。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If this option is enabled and a pointer type cannot be resolved, the compiler will attempt to locate a function with the same name as the pointer type (without &quot;PTR&quot;). If found, the compiler will resolve the type to PTR. This allows existing Visual Objects code to be compiled without modification, at least as far as the variable declaration is concerned.</para>
+    <para styleclass="Normal">如果启用了该选项，但无法解析指针类型，编译器将尝试查找与指针类型(不含 &quot;PTR&quot;)同名的函数。如果找到，编译器将把该类型解析为 PTR。这样，现有的 Visual Objects 代码无需修改即可编译，至少在变量声明方面是这样。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The pointer type may be used as an argument to CCallNative(), PCallNative() or CallManaged(), depending on the type of function the pointer points to.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">根据指针指向的函数类型，指针类型可用作 CCallNative()、PCallNative() 或 CallManaged() 的参数。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo6 is used.</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text><br/></para>
-    <para styleclass="Body Text"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">Using </text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:bold; color:#000000;">/vo6</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;"> has the same effect as if the </text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:bold; color:#000000;">GLOBAL</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;"> declaration were rewritten as:</text></para>
-    <para styleclass="Code with box"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text></para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">以下代码在 Visual Objects 中有效，但在 X# 中无法编译，除非使用 -vo6。</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text><br/></para>
+    <para styleclass="Body Text"><text styleclass="" style="font-family:'Times New Roman'; font-size:12pt; color:#000000;">使用 /vo6 的效果与改写 GLOBAL 声明的效果相同：</text></para>
+    <para styleclass="Code with box"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Using -vo6 has the same effect as if the GLOBAL declaration were rewritten as:</para>

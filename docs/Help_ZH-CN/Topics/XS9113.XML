@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" modified="2023-05-29T10:18:24.632+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T03:50:02.772+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Error XS9113</title>
   <keywords>
     <keyword>STACKALLOC</keyword>
@@ -10,7 +10,7 @@
     <header>
       <para styleclass="Heading1">Error XS9113</para>
     </header>
-    <para styleclass="Normal">The STACKALLOC keyword needs to be followed by a literal array or an array creation expression.</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">STACKALLOC 关键字后面必须跟一个字面数组或数组创建表达式。</para>
   </body>
 </topic>

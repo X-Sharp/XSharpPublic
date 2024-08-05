@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T20:12:23.233+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:25:19.474+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DYNAMIC</title>
   <keywords>
     <keyword>DYNAMIC</keyword>
@@ -10,7 +10,7 @@
       <para styleclass="Heading1">DYNAMIC</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">DYNAMIC 类型允许其出现的操作绕过编译时类型检查，而是在运行时解析这些操作。DYNAMIC 类型简化了对 COM API（如 Office Automation API）、动态 API（如 IronPython 库）和 HTML 文档对象模型（DOM）的访问。</para>
+    <para styleclass="Normal">DYNAMIC 类型允许其出现的操作绕过编译时类型检查，而是在运行时解析这些操作。DYNAMIC 类型简化了对 COM API(如 Office Automation API)、动态 API(如 IronPython 库)和 HTML 文档对象模型（DOM）的访问。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">DYNAMIC 类型在大多数情况下的行为类似于对象类型。但是，包含 DYNAMIC 类型表达式的操作不会被编译器解析或类型检查。编译器会打包有关操作的信息，稍后在运行时使用该信息来评估操作。在此过程中，DYNAMIC 类型的变量被编译为对象类型的变量。因此，DYNAMIC 类型仅在编译时存在，而不在运行时存在。</para>
     <para styleclass="Normal"></para>

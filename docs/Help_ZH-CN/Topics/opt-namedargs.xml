@@ -1,21 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.303+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-namedargs</title>
+  <keywords>
+    <keyword>-namedargs</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">-namedargs</para>
     </header>
-    <para styleclass="Body Text">Specifies whether to allow named arguments in the parser or not.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-namedargs [+ | -] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -namedargs, directs the compiler to allow namedarguments. Specifying - directs the compiler to NOT use named arguments</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">指定是否允许在解析器中使用命名参数。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-namedargs [+ | -]  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab/>指定 + 或 -namedargs 可指示编译器允许使用命名参数。指定 - 则指示编译器不使用命名参数</para>
     <para styleclass="List"></para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Body Text">The default = + for the Core dialect and - for all other dialects. So -namedargs- only is useful in combination with the Core dialect.</para>
-    <para styleclass="Body Text">Note If you enable this option then quite often existing code such as the code below will produce compiler errors&gt;<br/>That is why we have disabled named arguments for most dialects.</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> a </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ARRAY</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">-/ When named arguments are enabled then the compiler will complain that there is no parameter named &quot;a&quot; for the Empty function</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> !Empty( a := SomeFunctionThatReturnsAnArray()) &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:italic; color:#339966;">-/ do something</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
-    <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Body Text">默认 = + 用于 Core 方言，- 用于所有其他方言。因此，-namedargs- 只能与 Core 方言结合使用。(这里的描述似乎与属性页中的描述不同......)</para>
+    <para styleclass="Body Text">注意 如果启用了该选项，那么像下面代码这样的现有代码往往会产生编译器错误&gt;。</para>
+    <para styleclass="Body Text">因此，我们禁用了大多数方言的命名参数。</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> a </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ARRAY</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">-/ 启用命名参数后，编译器会抱怨 Empty 函数没有名为 &quot;a &quot;的参数</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> !Empty( a := SomeFunctionThatReturnsAnArray())   </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:italic; color:#339966;">-/ do something</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+    <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></para>
   </body>
 </topic>

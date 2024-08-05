@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.842+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-win32res</title>
   <keywords>
     <keyword>-win32res</keyword>
@@ -9,25 +9,25 @@
     <header>
       <para styleclass="Heading1">-win32res</para>
     </header>
-    <para styleclass="Normal">The -win32res option inserts a Win32 resource in the output file.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-win32res:filename &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">filename<tab />The resource file that you want to add to your output file.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">A Win32 resource file can be created with the Resource Compiler. The Resource Compiler is invoked when include native resources (.RC files) in your X# Visual studio solution</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A Win32 resource can contain version or bitmap (icon) information that would help identify your application in the File Explorer. If you do not specify -win32res, the compiler will generate version information based on the assembly version. You can also include Menu and Dialog definitions in a RC file.</para>
+    <para styleclass="Normal">-win32res选项会在输出文件中插入一个Win32资源。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-win32res:filename  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">filename<tab/>要添加到输出文件中的资源文件。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">可以使用资源编译器创建 Win32 资源文件。在 X# Visual studio 解决方案中包含本地资源(.RC 文件)时，会调用资源编译器。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">See <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">-linkresource</link> (to reference) or <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">-resource</link> (to attach) a .NET Framework resource file.</para>
+    <para styleclass="Normal">Win32 资源可包含版本或位图(图标)信息，有助于在文件资源管理器中识别应用程序。如果不指定 -win32res，编译器将根据程序集版本生成版本信息。您还可以在 RC 文件中包含菜单和对话框定义。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <para styleclass="Normal">You cannot set this compiler option inside Visual Studio. If your application has native resource files, then the build system will automatically convert this to a nativeresources.res file and include this file with The -win32res command line option in your assembly.</para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">Compile <text styleclass="Code Example">in.prg</text> and attach a Win32 resource file <text styleclass="Code Example">rf.res</text> to produce <text styleclass="Code Example">in.exe</text>:</para>
+    <para styleclass="Normal">请参阅  <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-linkresource">-linkresource</link>(引用)或 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-resource">resource</link> (附加) .NET Framework 资源文件。</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc -win32res:rf.res in.prg &#160;</para>
+    <para styleclass="Normal">您无法在 Visual Studio 中设置该编译器选项。如果您的应用程序有本地资源文件，那么编译系统会自动将其转换为 nativeresources.res 文件，并将该文件与 -win32res 命令行选项一起包含在程序集中。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">编译 in.prg，并附加 Win32 资源文件 rf.res，生成 in.exe：</para>
+    <para styleclass="Code with box">xsc -win32res:rf.res in.prg  </para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

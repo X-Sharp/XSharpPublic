@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.358+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-optimize</title>
   <keywords>
     <keyword>-optimize</keyword>
@@ -9,33 +9,33 @@
     <header>
       <para styleclass="Heading1">-optimize</para>
     </header>
-    <para styleclass="Normal">The -optimize option enables or disables optimizations performed by the compiler to make your output file smaller, faster, and more efficient.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-optimize[+ | -] &#160;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-optimize 选项可启用或禁用编译器的优化功能，使输出文件更小、更快、更高效。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-optimize[+ | -]  </para>
     <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">-optimize also tells the common language runtime to optimize code at runtime.</para>
+    <para styleclass="Normal">-optimize  还可以让公共语言运行时在运行时优化代码。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">By default, optimizations are disabled. Specify -optimize+ to enable optimizations.</para>
+    <para styleclass="Normal">默认情况下，优化是禁用的。指定 -optimize+ 可启用优化。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When building a module to be used by an assembly, use the same -optimize settings as those of the assembly.</para>
+    <para styleclass="Normal">在生成一个程序集使用的模块时，使用与程序集相同的 -optimize 设置。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-o is the short form of -optimize.</para>
+    <para styleclass="Normal">-o 是 -optimize 的简写。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">It is possible to combine The -optimize and -debug options.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal">可以结合使用 -optimize 和 -debug 选项。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the &quot;Optimize&quot; property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">编辑 &quot;Optimize(优化)&quot; 属性</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Compile <text styleclass="Code Example">t2.prg</text> and enable compiler optimizations:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box">xsc t2.prg -optimize &#160;</para>
+    <para styleclass="Normal">编译 t2.prg 并启用编译器优化：</para>
+    <para styleclass="Code with box">xsc t2.prg -optimize  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

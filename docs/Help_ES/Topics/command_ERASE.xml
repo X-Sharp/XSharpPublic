@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ERASE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Deleting<keyword>files</keyword></keyword>
+    <keyword>ERASE command</keyword>
+    <keyword>Files<keyword>deleting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Normal"></para>
+      <para styleclass="Heading1">ERASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Remove a file from disk.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">ERASE | DELETE FILE &lt;xcSourceFile&gt;</para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">ERASE is the same as DELETE FILE. &#160;See DELETE FILE for a complete explanation of this command.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibCore" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE">DELETE FILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FErase.htm" domain="XSharpRef.chm">FErase()</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

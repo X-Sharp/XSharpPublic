@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:44:54.790+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Inactive conditional regions</title>
+  <keywords>
+    <keyword>Inactive conditional regions</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Inactive conditional regions</para>
+    </header>
+    <para styleclass="Normal">If you use conditional compilation with #ifdef .. #endif regions then the inactive regions will be visible with different color in the editor:</para>
+    <para styleclass="Normal">Below is a piece of code from the CDX RDD. The CHECKVERSIONS define is not defined, so there is an inactive region in the editor, which is shown in light gray.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="InactiveRegion.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

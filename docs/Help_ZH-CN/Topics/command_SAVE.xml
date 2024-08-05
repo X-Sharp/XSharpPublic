@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SAVE Command</title>
+<topic template="Default" modified="2024-06-29T00:39:28.813+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SAVE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Copying<keyword>memory variables</keyword></keyword>
@@ -13,37 +13,33 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SAVE Command</para>
+      <para styleclass="Heading1">SAVE 命令</para>
     </header>
     <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Copy public and private memory variables visible within the current routine to a disk file.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将当前例程中可见的公共和私有内存变量复制到磁盘文件中。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SAVE TO &lt;xcTargetFile&gt; [ALL [LIKE | EXCEPT &lt;Skeleton&gt;]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;xcTargetFile&gt;<tab />The name of the file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is .MEM.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xcTargetFile&gt;<tab />文件名，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 默认扩展名为 .MEM。</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. </para>
+    <para styleclass="List"><tab />如果 &lt;xcTargetFile&gt; 不存在，将创建该文件。 如果存在，该命令将尝试以独占模式打开文件，如果成功，文件将被覆盖，不会发出警告或出错。 如果由于其他进程正在使用该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">ALL<tab />Saves all private and public variables.</para>
+    <para styleclass="List">ALL<tab />保存所有私有变量和公有变量。</para>
     <para styleclass="List"></para>
     <para styleclass="List">LIKE | EXCEPT &lt;Skeleton&gt;</para>
-    <para styleclass="List"><tab />Specifies a set of visible public and private variables to save (LIKE) or exclude (EXCEPT). &#160;&lt;Skeleton&gt; can include literal characters as well as the standard wildcard characters, * and ?. &#160;If no variables match the &lt;Skeleton&gt;, nothing happens.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">The scope of the variable is not saved but is instead established when the variable is restored. &#160;Arrays and declared variables cannot be saved or restored.</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example saves all visible private and public variables to TEMP.MEM:</para>
+    <para styleclass="List"><tab />指定要保存(LIKE)或排除(EXCEPT)的一组可见公有变量和私有变量。 &lt;Skeleton&gt; 可以包含字面字符以及标准通配符 * 和 ? &#160;如果没有变量与 &lt;Skeleton&gt; 匹配，则什么也不会发生。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">变量的作用域不会被保存，而是在恢复变量时建立。 数组和已声明的变量不能保存或恢复。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例将所有可见的私有变量和公有变量保存到 TEMP.MEM：</para>
     <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cOne := &quot;1&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SAVE ALL TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> temp</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This example saves all visible private and public variables with names beginning with c to MYVARS.MEM:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本例将所有名称以 c 开头的可见私有变量和公有变量保存到 MYVARS.MEM：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">SAVE ALL LIKE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> c* </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myvars</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This example saves all visible private and public variables with names that do not begin with c to MYVARS2.MEM:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">本例将所有名称不以 c 开头的可见私有变量和公有变量保存到 MYVARS2.MEM：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">SAVE ALL EXCEPT </text><text style="font-weight:normal; font-style:normal; color:#000000;">c* </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> myvars2</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RESTORE">RESTORE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

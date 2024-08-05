@@ -1,99 +1,90 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Command-line Building With xsc.exe</title>
+<topic template="Default" modified="2024-07-26T12:01:03.298+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>使用 xsc.exe 进行命令行构建</title>
   <keywords>
     <keyword>compiler options</keyword>
     <keyword>options</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Command-line Building With xsc.exe</para>
+      <para styleclass="Heading1">使用 xsc.exe 进行命令行生成</para>
     </header>
-    <para styleclass="Normal">You can invoke the X# compiler by typing the name of its executable file (xsc.exe) at a command prompt.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you use a standard Command Prompt window, you must adjust your path before you can invoke xsc.exe from any subdirectory on your computer. </para>
+    <para styleclass="Normal">在命令提示符下输入可执行文件 (xsc.exe) 的名称，即可调用 X# 编译器。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">You can also use MSBuild to build X# programs programmatically. For more information, see the MSBuild documentation on MSDN.</para>
+    <para styleclass="Normal">如果使用标准命令提示符窗口，则必须先调整路径，才能从计算机上的任何子目录调用 xsc.exe。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The xsc.exe executable file usually is located in the {Program Files}\XSharp\Bin folder under the Windows directory. </para>
+    <para styleclass="Normal">您还可以使用 MSBuild 以编程方式生成 X# 程序。有关详细信息，请参阅 MSDN 上的 MSBuild 文档。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When you build programs with the Visual Studio IDE then Visual Studio will locate the X# compiler automatically for you and the build output from the compiler will be shown in the Output Windows of Visual Studio.</para>
-    <para styleclass="Normal">You can set the verbosity level of the compiler output from the Tools/Options, Projects and Solutions, Build and Run page.</para>
-    <para styleclass="Heading2">Rules for Command-Line Syntax for the X# Compiler</para>
+    <para styleclass="Normal">xsc.exe 可执行文件通常位于 Windows 目录下的 {Program Files}\XSharp\Bin 文件夹中。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The X# compiler uses the following rules when it interprets arguments given on the operating system command line:</para>
+    <para styleclass="Normal">当你使用 Visual Studio IDE 生成程序时，Visual Studio 会自动为你找到 X# 编译器，编译器的生成输出会显示在 Visual Studio 的输出窗口中。</para>
+    <para styleclass="Normal">您可以在 &quot;工具/选项&quot;、&quot;项目和解决方案&quot;、&quot;生成和运行 &quot;页面设置编译器输出的冗长程度。</para>
+    <para styleclass="Heading2">X# 编译器命令行语法规则</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Arguments are delimited by white space, which is either a space or a tab.</li>
-      <li styleclass="Normal">The caret character (^) is not recognized as an escape character or delimiter. The character is handled by the command-line parser in the operating system before it is passed to the argv array in the program.</li>
-      <li styleclass="Normal">A string enclosed in double quotation marks (&quot;string&quot;) is interpreted as a single argument, regardless of white space that is contained within. A quoted string can be embedded in an argument.</li>
-      <li styleclass="Normal">A double quotation mark preceded by a backslash (\&quot;) is interpreted as a literal double quotation mark character (&quot;).</li>
-      <li styleclass="Normal">Backslashes are interpreted literally, unless they immediately precede a double quotation mark.</li>
-      <li styleclass="Normal">If an even number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is interpreted as a string delimiter.</li>
-      <li styleclass="Normal">If an odd number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is &quot;escaped&quot; by the remaining backslash. This causes a literal double quotation mark (&quot;) to be added in compiler options array.</li>
-      <li styleclass="Normal">Commandline options can start with a hyphen (-) or a slash (/). On Non windows platforms the hyphen should be used because the slash may be seen as a path delimiter character</li>
-      <li styleclass="Normal">If you do not use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> compiler option then references to the assemblies listed in xsc.exe will be automatically included.</li>
+    <para styleclass="Normal">X# 编译器在解释操作系统命令行参数时使用以下规则：</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">参数以空格(空格或制表符)分隔。</li>
+      <li styleclass="Normal">粗体字符 (^) 不被识别为转义字符或分隔符。在将该字符传递给程序中的 argv 数组之前，操作系统中的命令行解析器会对其进行处理。</li>
+      <li styleclass="Normal">用双引号(&quot;string&quot;)括起来的字符串被解释为一个参数，而不管其中是否包含空白。带引号的字符串可以嵌入参数中。</li>
+      <li styleclass="Normal">双引号前的反斜杠 (\&quot;) 被解释为字面意义上的双引号字符 (&quot;)。</li>
+      <li styleclass="Normal">反斜线按字面解释，除非紧接在双引号之前。</li>
+      <li styleclass="Normal">如果双引号后面是偶数个反斜线，那么编译器选项数组中将为每一对反斜线添加一个反斜线，双引号将被解释为字符串分隔符。</li>
+      <li styleclass="Normal">如果双引号后面的反斜线个数为奇数，那么编译器选项数组中的每一对反斜线就会增加一个反斜线，双引号会被剩余的反斜线 &quot;转义&quot;。这将导致在编译器选项数组中添加一个字面双引号（&quot;）。</li>
+      <li styleclass="Normal">命令行选项可以连字符 (-) 或斜线 (/) 开头。在非 Windows 平台上，应使用连字符，因为斜线可能被视为路径分隔符</li>
+      <li styleclass="Normal">如果不使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> 编译器选项，xsc.exe 中列出的程序集引用将自动包含在内。</li>
     </list>
-    <para styleclass="Heading2">Sample commands for the X# Compiler</para>
+    <para styleclass="Heading2">X# 编译器的示例命令</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc file.prg</text></para>
-          <para styleclass="Normal"></para>
         </td>
         <td>
-          <para styleclass="Normal">Compile File.prg and produce File.exe</para>
+          <para styleclass="Normal">编译 File.prg 并生成 File.exe</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -target:library file.prg</text></para>
-          <para styleclass="Normal"></para>
         </td>
         <td>
-          <para styleclass="Normal">Compile File.prg and produce File.dll</para>
+          <para styleclass="Normal">编译 File.prg 并生成 File.dll</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -out:Program.exe file.prg</text></para>
-          <para styleclass="Normal"></para>
         </td>
         <td>
-          <para styleclass="Normal">Compile File.prg and produce Program.exe</para>
+          <para styleclass="Normal">编译 File.prg 并生成 Program.exe</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc -define:DEBUG -optimize -out:File.exe *.prg</text></para>
-          <para styleclass="Normal"></para>
         </td>
         <td>
-          <para styleclass="Normal">Compiles all the X# files in the current directory, with optimizations on and defines the DEBUG symbol. The output is File2.exe</para>
-          <para styleclass="Normal"></para>
+          <para styleclass="Normal">编译当前目录下的所有 X# 文件，优化并定义 DEBUG 符号。输出结果为 File2.exe</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc /target:library /out:File2.dll /warn:0 /nologo /debug *.prg</text></para>
-          <para styleclass="Normal"></para>
         </td>
         <td>
-          <para styleclass="Normal">Compiles all the X# files in the current directory producing a debug version of File2.dll. No logo and no warnings are displayed</para>
-          <para styleclass="Normal"></para>
+          <para styleclass="Normal">编译当前目录下的所有 X# 文件，生成 File2.dll 的调试版本。不显示徽标和警告</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"><text styleclass="T_Code" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">xsc /target:library /out:MyBase.rdd *.prg</text></para>
-          <para styleclass="Normal"></para>
         </td>
         <td>
-          <para styleclass="Normal">Compiles all the X# files in the current directory to MyBase.rdd &#160;(a DLL):</para>
-          <para styleclass="Normal"></para>
-          <para styleclass="Normal"></para>
+          <para styleclass="Normal">将当前目录下的所有 X# 文件编译为 MyBase.rdd（一个 DLL）：</para>
         </td>
       </tr>
     </table></para>

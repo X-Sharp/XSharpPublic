@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-09T13:07:35.848+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9036</title>
   <keywords>
     <keyword>XS9036</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS9036</para>
     </header>
-    <para styleclass="Normal">The &apos;{0} pseudo function requires one generic type argument to describe its return type.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&apos;{0}&apos; 伪函数需要一个泛型类型参数来描述其返回类型。</para>
   </body>
 </topic>

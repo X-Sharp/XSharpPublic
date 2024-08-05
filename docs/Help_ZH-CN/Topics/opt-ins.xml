@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.178+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ins</title>
   <keywords>
     <keyword>-ins</keyword>
@@ -9,25 +9,26 @@
     <header>
       <para styleclass="Heading1">-ins</para>
     </header>
-    <para styleclass="Normal">The -ins option specifies whether the compiler should automatically include namespaces from assemblies compiled in VO/Vulcan dialect &#160;marked with the ImplicitNameSpaceAttribute.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-ins[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">Class Libraries can be compiled with a special attribute:</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">-ins选项指定编译器是否应自动包含以VO/Vulcan方言编译的程序集中的名称空间，这些名称空间带有ImplicitNameSpaceAttribute(隐含名称空间属性)。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-ins[+|-]</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab/>指定 + 或 -ins，可指示编译器自动包含标有 VulcanImplicitNameSpaceAttribute 的程序集的命名空间。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">类库可通过特殊属性进行编译：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">[assembly: VulcanImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This attribute tells the compiler that classes that are placed inside that namespace should be automatically included when searching for classes, as if there was a #using SomeNameSpace statement in the source code.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">该属性告诉编译器，在搜索类时，位于该命名空间内的类应自动包含在内，就像在源代码中使用 #using SomeNameSpace 语句一样。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Namespaces section, modify the Enable Implicit Lookup of Namespaces property. </li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">在 Namespaces 部分，编辑 Enable Implicit Lookup of Namespaces(启用隐式命名空间查询) 属性</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></li>
     </list>
     <para styleclass="Heading2"></para>
   </body>

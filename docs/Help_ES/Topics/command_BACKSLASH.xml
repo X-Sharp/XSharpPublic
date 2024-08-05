@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>\|\\ Statement</title>
+  <keywords>
+    <keyword>\|\\ statement</keyword>
+    <keyword>Displaying<keyword>output</keyword></keyword>
+    <keyword>Statements</keyword>
+    <keyword>Terminal window</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">\|\\ Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Prints or displays lines of text</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">\ <tab/>TextLine<br/>\\ <tab/>TextLine</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">\ TextLine<tab/>When you use \, the text line is preceded by a carriage return and a line feed.</para>
+    <para styleclass="List">\\ TextLine<tab/>When you use \\, the text line is not preceded by a carriage return and a line feed.<br/>Any spaces preceding \ and \\ are not included in the output line, but spaces following \ and \\ are included. <br/>You can embed an expression in the text line. If the expression is enclosed in the text merge delimiters (&lt;&lt; &gt;&gt; by default) and SET TEXTMERGE is ON, the expression is evaluated and its value is output as text. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Body Text">The \ and \\ commands facilitate text merge in X#. <br/>Text merge makes it possible for you to output text to a file to create form letters or programs.</para>
+    <para styleclass="Body Text">Use \ and \\ to output a text line to the current text-merge output file and the screen. <br/>SET TEXTMERGE is used to specify the text merge output file. If text merge is not directed to a file, the text line is output only to the main Visual FoxPro window or the active user-defined output window. SET TEXTMERGE NOSHOW suppresses output to the main Visual FoxPro window or the active user-defined window.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">This example displays a record from a database file using ? and ?? statements with PadR() to assure column alignment:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLOSE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DATABASES</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">OPEN DATABASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> (C:\Test\Data\testdata&apos;)</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Customer // Open customer table</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;"> TEXTMERGE </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ON</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; color:#000000;"> TEXTMERGE </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> letter.txt</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\&lt;&lt;CDOW(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><text style="font-weight:normal; font-style:normal; color:#000000;">( ))&gt;&gt;, &lt;&lt;CMONTH(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><text style="font-weight:normal; font-style:normal; color:#000000;">( ))&gt;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\\ &lt;&lt;DAY(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><text style="font-weight:normal; font-style:normal; color:#000000;">( ))&gt;&gt;, &lt;&lt;YEAR(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><text style="font-weight:normal; font-style:normal; color:#000000;">( ))&gt;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\Dear &lt;&lt;contact&gt;&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\Additional text</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\Thank you,</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">\XYZ Corporation</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLOSE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ALL</text><br/></para>
+    <para styleclass="Normal"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_TEXTMERGE" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">SET TEXTMERGE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+  <title>XS1640</title>
+  <keywords>
+    <keyword>XS1640</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS1640</para>
+    </header>
+    <para styleclass="Normal">foreach statement cannot operate on variables of type &apos;type&apos; because it implements multiple instantiations of &apos;interface&apos;, try casting to a specific interface instantiation</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The type inherits from two or more instances of IEnumerator&lt;T&gt;, which means there is not a unique enumeration of the type that foreach could use. Specify the type of IEnumerator&lt;T&gt; or use another looping construct.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS1640:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS1640.prg  <br/></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

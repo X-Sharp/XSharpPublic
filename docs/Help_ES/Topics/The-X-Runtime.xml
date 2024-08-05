@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>The X# Runtime</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">The X# Runtime</para>
+    </header>
+    <para styleclass="Heading2"><text style="font-weight:bold;">In X# version 2 - Bandol we have introduced the X# runtime.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">In this chapter we would like to give you an overview of the design decisions that we made, what the runtime looks like, where you can find which types and functions etc.</para>
+    <para styleclass="Normal">We will also list here the features that are not supported yet.</para>
+    <para styleclass="Heading2">Introduction</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When we designed the X# compile and X# Runtime we had a few focus points in mind:</para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">We want our runtime to be fully Unicode and AnyCPU. It should run on any platform and also both in x86 and x64 mode. &#160;That has caused some challenges because VO is Ansi (and not Unicode) and also X86. In VO you can cast a LONG to a PTR. That will not work in X64 mode because a LONG is 32 bits and a PTR 64 bits</li>
+      <li styleclass="Normal">We want the code to compile in &quot;Safe&quot; mode. No unsafe code when not strictly needed. The biggest problem / challenge here is the PTR type. With a PTR you can access memory directly and read/write from memory, even if you don&apos;t &quot;own&quot; that memory. However the same PTR type is also used as &quot;unique identifier&quot; for example in the low level file i/o and in the GUI classes for Window and Control handles. These PTR values are never used to read/write memory but are like object references. We have decided to use the .Net IntPtr type for this kind of handles. Of course the compiler can transparently convert between PTR and IntPtr.</li>
+      <li styleclass="Normal">We want to prove that the X# language is a first class .Net development language. That is why we decided to write the X# runtime in X#. By doing that we also create a large codebase to test the compiler. So that is a win - win situation.</li>
+      <li styleclass="Normal">We want the runtime to be thread safe. Each thread has its own &quot;global&quot; state and its own list of open workareas. When a new thread is started it will inherit the state of the main thread but will not inherit the workareas from the main thread</li>
+      <li styleclass="Normal">At this moment the X# Runtime is compiled against .Net Framework 4.6.</li>
+    </list>
+    <para styleclass="Heading2">Assemblies in the X# Runtime</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you want to know in which Assembly a function or type is defined then your &quot;best friend&quot; is the documentation. We are using a tool to generate the documentation, so this is always correct. <br/>Some subsystems have functions XSharp.Core DLL and in XSharp.VO.DLL as well.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Component</text></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Dialect used</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Framework Version</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Core">XSharp.Core.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This is the base DLL of the X# Runtime.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Data">XSharp.Data.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL contains support code for .Net SQL based data access and for SQL based cursors </para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT">XSharp.RT.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL is required for all dialects apart from Core</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# non - core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT_Debugger_DLL">XSharp.RT.Debugger.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL contains the functions and windows for the Runtime Debugger</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the VO and Vulcan &#160;dialects.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# VO and X# Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_XPP">XSharp.XPP.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the Xbase++ dialect.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# XPP</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP">XSharp.VFP.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL adds features to the runtime that are needed for the FoxPro dialect.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# FoxPro</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler">XSharp.Macrocompiler.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL is the X# &quot;fast&quot; macro compiler.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler_Full_DLL">XSharp.MacroCompiler.Full.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL is the X# &quot;full&quot; macro compiler.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">This DLL contains the various RDDs implemented for X#.</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# Core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:25%;">
+          <para styleclass="Normal">VO SDK Class libs:<br/>VOConsoleClasses.dll</para>
+          <para styleclass="Normal">VOGUIClasses.dll</para>
+          <para styleclass="Normal">VOInternetClasses.dll</para>
+          <para styleclass="Normal">VORDDClasses.dll</para>
+          <para styleclass="Normal">VOReportClasses.dll</para>
+          <para styleclass="Normal">VOSQLClasses.dll</para>
+          <para styleclass="Normal">VOSystemClasses.dll</para>
+          <para styleclass="Normal">VOWin32APILibrary.dll</para>
+        </td>
+        <td style="width:251px;">
+          <para styleclass="Normal">These DLLs represent the class libraries from Visual Objects</para>
+        </td>
+        <td style="width:133px;">
+          <para styleclass="Normal">X# VO and X# Vulcan</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">Missing or incomplete Features </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="3" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Expected when</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Some runtime functions are not supported yet:<br/>Crypt functions (Crypt(), CryptA())<br/>Encoding functions (B64Enc.., UUEnc.., GetChunkBase64 etc)<br/></para>
+        </td>
+        <td>
+          <para styleclass="Normal">These functions will most likely be added in one of the next betas. For now they will throw a notimplementedexception when you use them</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

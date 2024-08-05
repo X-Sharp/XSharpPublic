@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:44:50.292+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Goto definition</title>
+  <keywords>
+    <keyword>Goto definition</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Goto definition</para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">The Visual Studio editor makes it easy to inspect the definition of a type, method, etc. One way is to navigate to the file that contains the definition, for example by choosing Go to Definition or pressing F12 anywhere the symbol is referenced. </text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">To do this, right-click on any occurrence of string and choose Peek Definition from the content menu. Or, press Alt+F12.</text></para>
+    <para styleclass="Normal"><image src="Goto definition.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>
+  </body>
+</topic>

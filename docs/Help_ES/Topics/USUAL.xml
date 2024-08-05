@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>USUAL</title>
+  <keywords>
+    <keyword>USUAL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">USUAL</para>
+    </header>
+    <para styleclass="Normal">The USUAL type is datatype that can contain any data type. It consists internally of a type flag and a value. This type can store any value.</para>
+    <para styleclass="Normal">The compiler treats this type in a special way. The compiler will not warn you when you assign a value of type USUAL to another type, but will automatically generate the necessary conversion operation/ </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">USUAL is provided primarily for compatibility with untyped code. It is not recommended for use in new code because the compiler cannot perform any type checking on expressions where one or more operands are USUAL. Any data type errors will only be discovered at runtime.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Locals, parameters and fields declared as USUAL also incur considerably more runtime overhead than strongly typed variables.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The literal value NIL may be assigned into any storage location typed as USUAL. The value NIL indicates the absence of any other data type or value, and is conceptually equivalent to storing NULL into a reference type. NIL is the default value for a local USUAL variable that has not been initialized.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When the left operand of the &apos;:&apos; operator is a USUAL, the compiler will generate a late bound call to the method, field or property specified as the right operand. This call may fail if the value contained in the USUAL at runtime does not have such a member, the member type is incorrect or inaccessible, or if the name evaluates to a method and the number of parameters or their types is incorrect. The /lb compiler option must be enabled in order to use a USUAL as the left operand of the &apos;:&apos; operator, otherwise a compile-time error will be raised.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Numeric operations and USUAL variables of mixed types.</para>
+    <para styleclass="Normal">When you combine 2 USUAL variables in a numeric operation then the type of the result is derived from the types of operands.<br/>The leading principle has been that we try not to loose decimals.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The generic rule is:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">When the Left Hand Side is fractional then the result is also fractional of the type of the LHS</li>
+      <li styleclass="Normal">When the LHS is NOT fractional and the Right Hand Side (RHS) is fractional then the result is the type of the RHS</li>
+      <li styleclass="Normal">When both sides are integral then the result has the type of the largest of the two.</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="7">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal" style="tabstops:96px right ;"><text style="font-weight:bold;">LHS</text><tab /></para>
+        </td>
+        <td style="width:5%;">
+          <para styleclass="Normal" style="tabstops:96px right ;"><text style="font-weight:bold;">\ RHS</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">LONG</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">INT64</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">CURRENCY</text></para>
+        </td>
+        <td style="width:15%;">
+          <para styleclass="Normal"><text style="font-weight:bold;">DECIMAL</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">LONG</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">LONG</para>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">INT64</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">INT64</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FLOAT</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">CURRENCY</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">CURRENCY</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">DECIMAL</text></para>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">DECIMAL</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Implementation</para>
+    <para styleclass="Normal">The USUAL type is implemented in the structure &#160;XSharp.__Usual</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

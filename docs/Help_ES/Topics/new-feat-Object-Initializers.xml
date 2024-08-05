@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Object Initializers</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Object Initializers</para>
+    </header>
+    <para styleclass="Normal">Object Initializers allow you to instantiate an object and assign values to its properties in one line of code.<br/>The example below uses object initializers to set the FirstName and LastName property of the Person object</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="new-feat-Initializers" inline="false"/></para>
+  </body>
+</topic>

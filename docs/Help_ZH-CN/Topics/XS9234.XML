@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
-<title>Error XS9234</title>
-<keywords>
-<keyword>XS9234</keyword>
-</keywords>
-<body>
-  <header>
-    <para styleclass="Heading1">Error XS9234</para>
-  </header>
-  <para styleclass="Normal">FoxPro DIMENSION statement or LOCAL ARRAY statement supports 1 or 2 dimensions, not more.</para>
-  <para styleclass="Normal"></para>
-</body>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-15T04:16:48.856+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Error XS9234</title>
+  <keywords>
+    <keyword>XS9234</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS9234</para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">FoxPro DIMENSION 语句或 LOCAL ARRAY 语句最多支持二维数组。</para>
+  </body>
 </topic>

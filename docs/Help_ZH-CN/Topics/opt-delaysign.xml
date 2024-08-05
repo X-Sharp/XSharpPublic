@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.097+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-delaysign</title>
   <keywords>
     <keyword>-delaysign</keyword>
@@ -9,26 +9,29 @@
     <header>
       <para styleclass="Heading1">-delaysign</para>
     </header>
-    <para styleclass="Normal">This compiler option causes the compiler to reserve space in the output file so that a digital signature can be added later.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-delaysign[ + | - ] &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab />Use -delaysign- if you want a fully signed assembly. Use -delaysign+ if you only want to place the public key in the assembly. The default is -delaysign-.</para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">The -delaysign option has no effect unless used with -keyfile or -keycontainer.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When you request a fully signed assembly, the compiler hashes the file that contains the manifest (assembly metadata) and signs that hash with the private key. The resulting digital signature is stored in the file that contains the manifest. When an assembly is delay signed, the compiler does not compute and store the signature, but reserves space in the file so the signature can be added later.</para>
+    <para styleclass="Normal">该编译器选项可使编译器在输出文件中预留空间，以便稍后添加数字签名。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-delaysign[ + | - ]  </para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | -</text><tab/>如果需要完全签名的程序集，请使用 -delaysign-。如果只想将公钥放入程序集，请使用 -delaysign+。默认值为 -delaysign-。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">-delaysign选项只有在与-keyfile或-keycontainer一起使用时才有效。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For example, using -delaysign+ allows a tester to put the assembly in the global cache. After testing, you can fully sign the assembly by placing the private key in the assembly using the Assembly Linker utility.</para>
+    <para styleclass="Normal">当请求完全签名的程序集时，编译器会对包含清单(程序集元数据)的文件进行哈希处理，并使用私钥对该哈希进行签名。生成的数字签名存储在包含清单的文件中。当程序集延迟签名时，编译器不会计算和存储签名，而是在文件中保留空间，以便稍后添加签名。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the Delay sign only property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <para styleclass="Normal">例如，使用-delaysign+允许测试人员将程序集放入全局缓存。测试完成后，您可以通过使用程序集链接器实用程序将私钥放入程序集中来完全签名程序集。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">有关更多信息，请参阅创建和使用强名称程序集以及延迟签名程序集。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot; 页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">(在 Build 选项卡中)修改 Delay sign only(仅延迟标志)属性。</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal">For information on how to set this compiler option programmatically, see DelaySign.</para>
+    <para styleclass="Normal">有关如何以编程方式设置该编译器选项的信息，请参阅 DelaySign。</para>
   </body>
 </topic>

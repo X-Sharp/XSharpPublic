@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-29T10:17:59.575+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T03:53:40.269+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9117</title>
   <keywords>
     <keyword>NIL</keyword>
@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">Warning XS9117</para>
     </header>
-    <para styleclass="Body Text">A conversion from NIL to &apos;{0}&apos; is not supported and may have unwanted results.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">不支持从 NIL 到 &apos;{0}&apos; 的转换，可能会产生不必要的结果。</para>
   </body>
 </topic>

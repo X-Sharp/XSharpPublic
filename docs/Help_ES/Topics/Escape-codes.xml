@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Escape codes</title>
+  <keywords>
+    <keyword>\&apos;</keyword>
+    <keyword>\&quot;</keyword>
+    <keyword>\\</keyword>
+    <keyword>\0</keyword>
+    <keyword>\a</keyword>
+    <keyword>\b</keyword>
+    <keyword>\f</keyword>
+    <keyword>\n</keyword>
+    <keyword>\r</keyword>
+    <keyword>\t</keyword>
+    <keyword>\u</keyword>
+    <keyword>\v</keyword>
+    <keyword>\x</keyword>
+    <keyword>Escape codes</keyword>
+    <keyword>Literals</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Escape codes</para>
+    </header>
+    <para styleclass="Normal">The &lt;char&gt; literals in the table that are marked with an asterisk (*) may contain a special escape code</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="15" colcount="2" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Character </text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Character that does NOT start with a backslash</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Normal character</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\\</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Backslash</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\&quot;</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Double quote</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\&apos; </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Single quote</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\0</para>
+        </td>
+        <td>
+          <para styleclass="Normal">0 character</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\a</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Alert</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\b</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Backspace</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\f </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Form feed</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\n</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Line feed</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\r </para>
+        </td>
+        <td>
+          <para styleclass="Normal">New Line</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\t </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Tab</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\v </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Vertical tab</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\x HEXDIGIT(1-4) </para>
+        </td>
+        <td>
+          <para styleclass="Normal">Hex number of character. 1-4 hex digits</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">\u HEXGDIGIT (4 or 8)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Unicode number of character. 4 or 8 hex digits</para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

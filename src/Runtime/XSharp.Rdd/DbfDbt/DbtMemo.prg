@@ -92,7 +92,7 @@ BEGIN NAMESPACE XSharp.RDD
                         _oStream:SafeRead(memoBlock, SELF:BlockSize, OUT sizeRead)
                         IF ( sizeRead > 0 )
                             // Search for one field terminator (1Ah)
-                            endPos := Array.FindIndex<BYTE>( memoBlock, { x => x == 0x1A } )
+                            endPos := System.Array.IndexOf<BYTE>( memoBlock, 0x1A, 0, memoBlock:Length)
                             IF ( endPos == - 1 )
                                 blockLen += sizeRead
                             ELSE

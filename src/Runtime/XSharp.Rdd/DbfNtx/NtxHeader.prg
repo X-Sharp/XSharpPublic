@@ -27,25 +27,23 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		INTERNAL isHot	AS LOGIC
         PRIVATE _Order as NtxOrder
         PROPERTY RDD AS DBFNTX Get _Order:RDD
-		
+
 		INTERNAL METHOD Read() AS LOGIC
 			RETURN _oStream:SafeSetPos( 0) .AND. _oStream:SafeRead(SELF:Buffer)
-            
+
 		INTERNAL METHOD Write() AS LOGIC
 			RETURN _oStream:SafeSetPos( 0) .AND. _oStream:SafeWrite(SELF:Buffer)
-			
+
 		INTERNAL CONSTRUCTOR( oOrder AS NtxOrder, stream AS FileStream )
 			SELF:_oStream := stream
             SELF:_Order := oOrder
 			Buffer := BYTE[]{NTXHEADER_SIZE}
 			isHot  := FALSE
-			
+
 			RETURN
-			
-			
-			
+
  		PRIVATE METHOD _GetString(nOffSet AS INT, nSize AS INT) AS STRING
-			LOCAL count := Array.FindIndex<BYTE>( Buffer, nOffSet, nSize, { sz => sz == 0 } ) AS INT
+			LOCAL count := System.Array.IndexOf<BYTE>( Buffer, 0, nOffSet, nSize) AS INT
 			IF count == -1
                 count := nSize
             ELSE
@@ -68,21 +66,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             endif
 			SELF:RDD:_GetBytes( sValue, Buffer, nOffSet, nLen)
 			isHot := TRUE
-				
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
 		PRIVATE METHOD _GetWord(nOffSet AS INT) AS WORD
 			RETURN BitConverter.ToUInt16(Buffer, nOffSet)
-				
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
 		PRIVATE METHOD _SetWord(nOffSet AS INT, wValue AS WORD) AS VOID
 			Array.Copy(BitConverter.GetBytes(wValue),0, Buffer, nOffSet, SIZEOF(WORD))
 			isHot := TRUE
-				
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
 		PRIVATE METHOD _GetLong(nOffSet AS INT) AS LONG
             RETURN BitConverter.ToInt32(Buffer, nOffSet)
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
 		PRIVATE METHOD _SetLong(nOffSet AS INT, nValue AS LONG) AS VOID
             Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffSet, sizeof(LONG))
             isHot := TRUE
@@ -90,44 +88,44 @@ BEGIN NAMESPACE XSharp.RDD.NTX
  		INTERNAL PROPERTY Signature  AS NtxHeaderFlags	;
 		    GET (NtxHeaderFlags) SELF:_GetWord(NTXOFFSET_SIG) ;
 		    SET SELF:_SetWord(NTXOFFSET_SIG, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY IndexingVersion		AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_INDEXING_VER);
 		    SET SELF:_SetWord(NTXOFFSET_INDEXING_VER, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY FirstPageOffset		AS LONG			;
 		    GET SELF:_GetLong(NTXOFFSET_FPAGE_OFFSET);
 		    SET SELF:_SetLong(NTXOFFSET_FPAGE_OFFSET, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY NextUnusedPageOffset		AS LONG			;
 		    GET SELF:_GetLong(NTXOFFSET_NUPAGE_OFFSET)	;
 		    SET SELF:_SetLong(NTXOFFSET_NUPAGE_OFFSET, VALUE), isHot := TRUE
-			
+
 		// keysize + 2 longs. ie.e Left pointer + record no.
 		INTERNAL PROPERTY EntrySize		AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_ENTRYSIZE);
 		    SET SELF:_SetWord(NTXOFFSET_ENTRYSIZE, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY KeySize		AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_KEYSIZE);
 		    SET SELF:_SetWord(NTXOFFSET_KEYSIZE, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY KeyDecimals	AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_KEYDECIMALS);
 		    SET SELF:_SetWord(NTXOFFSET_KEYDECIMALS, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY MaxItem	AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_MAXITEM);
 		    SET SELF:_SetWord(NTXOFFSET_MAXITEM, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY HalfPage	AS WORD			;
 		    GET SELF:_GetWord(NTXOFFSET_HALFPAGE);
 		    SET SELF:_SetWord(NTXOFFSET_HALFPAGE, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY KeyExpression	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
 		    SET SELF:_GetBytes(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY Unique	AS LOGIC  ;
 		    GET SELF:_GetWord( NTXOFFSET_UNIQUE) != 0 ;
 		    SET SELF:_SetWord( NTXOFFSET_UNIQUE , IIF(VALUE,1,0)), isHot := TRUE
@@ -135,15 +133,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		INTERNAL PROPERTY Descending	AS LOGIC  ;
 		    GET SELF:_GetWord( NTXOFFSET_DESCENDING) != 0 ;
 		    SET SELF:_SetWord( NTXOFFSET_DESCENDING, IIF(VALUE,1,0)), isHot := TRUE
-			
+
 		INTERNAL PROPERTY ForExpression	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
 		    SET SELF:_GetBytes(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE), isHot := TRUE
-			
+
 		INTERNAL PROPERTY OrdName	 AS STRING ;
 		    GET SELF:_GetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE );
 		    SET SELF:_GetBytes(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, Upper(VALUE)), isHot := TRUE
-			
+
 		PRIVATE CONST NTXOFFSET_SIG			    := 0   AS WORD
 		PRIVATE CONST NTXOFFSET_INDEXING_VER    := 2   AS WORD
 		PRIVATE CONST NTXOFFSET_FPAGE_OFFSET    := 4   AS WORD
@@ -160,7 +158,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE CONST NTXOFFSET_FOREXPRESSION   := 282 AS WORD
 		PRIVATE CONST NTXOFFSET_ORDNAME         := 538 AS WORD
 		PRIVATE CONST NTXHEADER_SIZE            := 1024 AS WORD
-        
+
 	INTERNAL METHOD Dump(cText AS STRING) AS STRING
             VAR sb := System.Text.StringBuilder{}
             sb:AppendLine( String.Format("NTX Header {0}", cText))
@@ -173,9 +171,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             sb:AppendLine( "----------------------------------------------")
             RETURN sb:ToString()
 
-		
+
     END CLASS
-    [Flags];        
+    [Flags];
     INTERNAL ENUM NtxHeaderFlags AS WORD
         MEMBER Default      := 0x0006
         MEMBER Conditional  := 0x0001

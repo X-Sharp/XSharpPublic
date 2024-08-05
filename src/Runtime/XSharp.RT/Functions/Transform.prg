@@ -303,7 +303,7 @@ INTERNAL STATIC CLASS TransformHelpers
             ENDIF
 
             IF cPic == ""
-                nTemp := Array.IndexOf(aTemp,Upper(cTempValue) )+1
+                nTemp := System.Array.IndexOf(aTemp,Upper(cTempValue) )+1
                 IF nTemp > 0
                     lRet := .T.
                 ENDIF
@@ -318,7 +318,7 @@ INTERNAL STATIC CLASS TransformHelpers
                         ENDIF
                         IF Instr(cPic:Substring(n-1,1),"YL")
                             cChar := cValue:Substring(nValIdx-1,1)
-                            nTemp := Array.IndexOf(aTemp, Upper(cChar) )+1
+                            nTemp := System.Array.IndexOf(aTemp, Upper(cChar) )+1
                             IF nTemp > 0
                                 lRet := .T.
                             ENDIF
@@ -327,7 +327,7 @@ INTERNAL STATIC CLASS TransformHelpers
                     NEXT
                 ELSE
                     cChar := cValue:Substring(0,1)
-                    nTemp := Array.IndexOf( aTemp, Upper(cChar) )+1
+                    nTemp := System.Array.IndexOf( aTemp, Upper(cChar) )+1
                     IF nTemp > 0
                         lRet := .T.
                     ENDIF

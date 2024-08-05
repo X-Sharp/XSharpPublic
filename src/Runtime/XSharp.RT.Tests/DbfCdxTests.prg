@@ -5992,6 +5992,66 @@ RETURN
 
 			DbCloseArea()
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD TestCdxZap() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/958
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","C",10,0}})
+
+			DbUseArea(TRUE,, cDbf)
+			DbCreateIndex( cDbf,"FLD" )
+			DbAppend()
+			FieldPut(1,"asddadas")
+			DbAppend()
+			FieldPut(1,"qweqwewqeqwe")
+			DbAppend()
+			FieldPut(1,"a")
+			DbAppend()
+			FieldPut(1,"213223213231")
+			DbAppend()
+			FieldPut(1,"v")
+			
+			DbCloseArea()
+				
+			DbUseArea(TRUE,, cDbf)
+			DbSetIndex( cDbf,"LANDLORD" )
+			
+			DbZap()
+			
+			DbAppend()
+			FieldPut(1,"a")
+			DbAppend()
+			FieldPut(1,"b")
+			DbAppend()
+			FieldPut(1,"c")
+			DbAppend()
+			FieldPut(1,"d")
+			DbCommit()
+			
+			DbCloseArea()
+				
+			DbUseArea(TRUE,, cDbf)
+			DbSetIndex( cDbf,"LANDLORD" )
+			
+			DbGoTop()
+
+			Assert.Equal(4, RecCount())
+
+			LOCAL cOutput := "" AS STRING
+			DbGoTop()
+			DO WHILE !Eof()
+				cOutput += AllTrim(FieldGet(1))
+				DbSkip()
+			ENDDO
+			Assert.Equal("abcd", cOutput)
+			DbCloseArea()
+			
+		RETURN
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

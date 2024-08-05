@@ -103,6 +103,7 @@ namespace XSharp.MacroCompiler
         internal const string XSharpVFPFunctionsClass = "XSharp.VFP.Functions";
         internal const string XSharpXPPFunctionsClass = "XSharp.XPP.Functions";
         internal const string XSharpDataFunctionsClass = "XSharp.Data.Functions";
+        internal const string XSharpHarbourFunctionsClass = "XSharp.Harbour.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
     }

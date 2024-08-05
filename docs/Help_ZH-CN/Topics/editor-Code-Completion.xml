@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-08T17:36:06.211+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:39:30.541+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Code Completion(代码补全)</title>
   <keywords>
     <keyword>Code Completion</keyword>
@@ -10,10 +10,10 @@
       <para styleclass="Heading1">Code Completion(代码补全)</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">智能提示（IntelliSense）是编码时的宝贵资源。它可以向你显示一个类型的可用成员信息，或一个方法的不同重载的参数详情。在输入足够多的字符以消除歧义后，您还可以使用 IntelliSense 来补全单词。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">智能感知(IntelliSense)是编码时的宝贵资源。它可以向你显示一个类型的可用成员信息，或一个方法的不同重载的参数详情。在输入足够多的字符以消除歧义后，您还可以使用 智能感知来补全单词。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">在键入代码时，你会看到 IntelliSense 向你显示有关查询符号的快速信息。</text></para>
-    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">要使用 IntelliSense 的单词补全功能插入单词查询的其余部分，请按 Tab 键。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">在键入代码时，你会看到智能感知向你显示有关查询符号的快速信息。</text></para>
+    <para styleclass="Normal"><text styleclass="Image Caption" style="font-style:normal;">要使用智能感知的单词补全功能插入单词查询的其余部分，请按 Tab 键。</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Code completion.png" scale="100.00%" styleclass="Image Caption" style="font-style:normal;" figurelistinclude="0"></image></para>

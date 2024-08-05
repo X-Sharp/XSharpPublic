@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T20:13:14.113+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:25:49.218+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>INT</title>
   <keywords>
     <keyword>INT</keyword>
@@ -12,7 +12,7 @@
       <para styleclass="Heading1">INT / LONG / LONGINT</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">INT 或 LONG 关键字表示一个整数类型，它存储带符号的 32 位值，取值范围从负 2,147,483,648（由 Int32.MinValue 常量表示）到正 2,147,483,647（由 Int32.MaxValue 常量表示）。.NET Framework 还包括一个无符号的 32 位整数值类型，UInt32 或 DWORD，表示取值范围从 0 到 4,294,967。</para>
+    <para styleclass="Normal">INT 或 LONG 关键字表示一个整数类型，它存储带符号的 32 位值，取值范围从负 2,147,483,648(由 Int32.MinValue 常量表示)到正 2,147,483,647(由 Int32.MaxValue 常量表示)。.NET Framework 还包括一个无符号的 32 位整数值类型，UInt32 或 DWORD，表示取值范围从 0 到 4,294,967。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

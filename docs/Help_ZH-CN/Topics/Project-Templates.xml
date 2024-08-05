@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-09T22:25:24.456+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:58:19.116+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>项目模板</title>
   <keywords>
     <keyword>ClassLibrary</keyword>
@@ -111,7 +111,7 @@
           <para styleclass="Normal">VO ClassLibrary</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the VO Dialect</para>
+          <para styleclass="Normal">使用 VO 方言创建 X# 类库(.dll)的项目</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -120,7 +120,7 @@
           <para styleclass="Normal">Visual Objects</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, X# Core, VO and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, X# Core, VO 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -131,7 +131,7 @@
           <para styleclass="Normal">Vulcan ClassLibrary</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Vulcan Dialect</para>
+          <para styleclass="Normal">使用 Vulcan 方言创建 X# 类库(.dll)的项目</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -140,7 +140,7 @@
           <para styleclass="Normal">Vulcan</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, X# Core, Vulcan and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, X# Core, Vulcan 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -151,7 +151,7 @@
           <para styleclass="Normal">XPP ClassLibrary</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Xbase++ Dialect</para>
+          <para styleclass="Normal">使用 Xbase++ 方言创建 X# 类库(.dll)的项目</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -160,7 +160,7 @@
           <para styleclass="Normal">Xbase++</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, X# Core, XPP and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, X# Core, XPP 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -171,7 +171,7 @@
           <para styleclass="Normal">Console Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# command-line application in the core dialect.</para>
+          <para styleclass="Normal">使用 Core 方言创建 X# 命令行应用的项目模板</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -180,7 +180,7 @@
           <para styleclass="Normal">Core</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -211,7 +211,7 @@
           <para styleclass="Normal">VO Console Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# command-line application in the VO Dialect.</para>
+          <para styleclass="Normal">使用 VO 方言创建 X# 命令行应用的项目模板。</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -220,7 +220,7 @@
           <para styleclass="Normal">Visual Objects</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, VO, and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, VO, 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -231,7 +231,7 @@
           <para styleclass="Normal">Vulcan Console Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# command-line application in the Vulcan dialect with Vulcan Runtime Assemblies (BYOR = Bring Your Own Runtime).</para>
+          <para styleclass="Normal">使用 Vulcan 方言和 Vulcan 运行库程序集(BYOR)创建 X# 命令行应用的项目模板。</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -240,7 +240,7 @@
           <para styleclass="Normal">Vulcan</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, Vulcan, and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, Vulcan, 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -251,7 +251,7 @@
           <para styleclass="Normal">XPP Console Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a X# class library (.dll) for the Xbase++ Dialect</para>
+          <para styleclass="Normal">使用 Xbase++ 方言创建 X# 命令行应用的项目模板。</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -260,7 +260,7 @@
           <para styleclass="Normal">Xbase++</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, XPP, and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System, XPP, 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -311,7 +311,7 @@
           <para styleclass="Normal">VO MDI Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a VO MDI application in the VO Dialect.</para>
+          <para styleclass="Normal">使用 VO 方言创建 VO MDI 应用程序的项目模板</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">4.6</para>
@@ -320,7 +320,7 @@
           <para styleclass="Normal">Visual Objects</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System 和 frameworks &gt; 3.5 的一些扩展</para>
           <para styleclass="Normal"></para>
         </td>
       </tr>
@@ -332,7 +332,7 @@
           <para styleclass="Normal">VO SDI Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a VO SDI application in the VO Dialect.</para>
+          <para styleclass="Normal">使用 VO 方言创建 VO SDI 应用程序的项目模板</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">4.6</para>
@@ -341,7 +341,7 @@
           <para styleclass="Normal">Visual Objects</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System and some extensions for frameworks &gt; 3.5</para>
+          <para styleclass="Normal">System 和 frameworks &gt; 3.5 的一些扩展</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -352,7 +352,7 @@
           <para styleclass="Normal">Vulcan Console Application</para>
         </td>
         <td style="width:323px;">
-          <para styleclass="Normal">A project for creating a Vulcan command-line application.</para>
+          <para styleclass="Normal">创建 Vulcan 命令行应用的项目模板</para>
         </td>
         <td style="width:96px;">
           <para styleclass="Normal">2.0</para>
@@ -361,7 +361,7 @@
           <para styleclass="Normal">Vulcan</para>
         </td>
         <td style="width:328px;">
-          <para styleclass="Normal">System, and some extensions for frameworks &gt; 3.5<br/>VulcanRT and VulcanRTFuncs</para>
+          <para styleclass="Normal">System, 和 frameworks &gt; 3.5 的一些扩展<br/>VulcanRT 和 VulcanRTFuncs</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

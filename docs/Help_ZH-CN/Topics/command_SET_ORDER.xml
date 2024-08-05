@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-28T00:26:42.484+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:40:28.158+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET ORDER 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -25,7 +25,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />注意：该命令的语法不同于其他 Xbase 方言，在其他方言中，TAG 关键字是可选的。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IN &lt;xcIndexFile&gt;<tab />索引文件的名称，包括可选的驱动器和目录（不应指定扩展名）。 当不同索引文件中有两个或多个同名 order 时，使用该参数可消除歧义。</para>
+    <para styleclass="List">IN &lt;xcIndexFile&gt;<tab />索引文件的名称，包括可选的驱动器和目录(不应指定扩展名)。 当不同索引文件中有两个或多个同名 order 时，使用该参数可消除歧义。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />如果当前进程未在当前工作区打开 &lt;xcIndexFile&gt;，则会出现运行时错误。</para>
     <para styleclass="List"></para>

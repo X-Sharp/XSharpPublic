@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T19:59:44.491+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.478+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-reference</title>
   <keywords>
     <keyword>-reference</keyword>
@@ -12,10 +12,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">使用 -reference 选项，编译器会将指定文件中的公共类型信息导入当前项目，从而使您可以引用指定程序集中的元数据。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-reference:[alias=]filename &#160;<br/>-reference:filename &#160;</para>
+    <para styleclass="Code with box">-reference:[alias=]filename  <br/>-reference:filename  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab />包含程序集清单的文件名。若要导入多个文件，请为每个文件包含一个单独的 -reference 选项。</para>
-    <para styleclass="List"><text styleclass="Code Example">alias</text><tab />一个有效的 X# 标识符，代表一个根命名空间，该命名空间将包含程序集中的所有命名空间。</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/>包含程序集清单的文件名。若要导入多个文件，请为每个文件包含一个单独的 -reference 选项。</para>
+    <para styleclass="List"><text styleclass="Code Example">alias</text><tab/>一个有效的 X# 标识符，代表一个根命名空间，该命名空间将包含程序集中的所有命名空间。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">要从多个文件导入，请为每个文件添加一个 -reference 选项。</para>
     <para styleclass="Normal"></para>
@@ -25,16 +25,16 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">使用 -addmodule 可从不包含程序集清单的输出文件中导入元数据。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果你引用了一个程序集（程序集 A），而该程序集又引用了另一个程序集（程序集 B），那么在下列情况下，你需要引用程序集 B：</para>
+    <para styleclass="Normal">如果你引用了一个程序集(程序集 A)，而该程序集又引用了另一个程序集(程序集 B)，那么在下列情况下，你需要引用程序集 B：</para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">您从程序集 A 使用的类型继承自程序集 B 的类型或实现了程序集 B 的接口。</li>
       <li styleclass="Normal" style="margin-left:13px;">您调用的字段、属性、事件或方法具有来自程序集 B 的返回类型或参数类型。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <para styleclass="Normal">使用 -lib 可指定一个或多个程序集引用所在的目录。-lib 主题还讨论了编译器搜索程序集的目录。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">为了让编译器识别程序集（而非模块）中的类型，需要强制编译器解析该类型，这可以通过定义该类型的实例来实现。编译器还有其他方法来解析程序集中的类型名：例如，如果从程序集中的类型继承，编译器就能识别该类型名。</para>
+    <para styleclass="Normal">为了让编译器识别程序集(而非模块)中的类型，需要强制编译器解析该类型，这可以通过定义该类型的实例来实现。编译器还有其他方法来解析程序集中的类型名：例如，如果从程序集中的类型继承，编译器就能识别该类型名。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">有时需要在一个程序集中引用同一组件的两个不同版本。为此，在每个文件的 -reference 开关中使用别名子选项来区分两个文件。该别名将用作组件名称的限定符，并解析为其中一个文件中的组件。</para>
     <para styleclass="Normal"></para>
@@ -51,13 +51,13 @@
     <para styleclass="Normal">-reference:GridV1=grid.dll 和 -reference:GridV2=grid20.dll</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">这将设置外部别名 &quot;GridV1 &quot;和 &quot;GridV2&quot;，并通过外部语句在程序中使用：</para>
-    <para styleclass="Code with box">extern alias GridV1; &#160;<br/>extern alias GridV2; &#160;<br/>-/ Using statements go here. &#160;</para>
+    <para styleclass="Code with box">extern alias GridV1;  <br/>extern alias GridV2;  <br/>-/ Using statements go here.  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">完成上述操作后，就可以像下面这样，在 grid.dll 中引用 grid 控件，方法是在控件名称前加上 GridV1：</para>
-    <para styleclass="Code with box">GridV1::Grid &#160;</para>
+    <para styleclass="Code with box">GridV1::Grid  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">此外，在引用 grid20.dll 中的 grid 控件时，可以在控件名称前加上 GridV2 这样的前缀：</para>
-    <para styleclass="Code with box">GridV2::Grid &#160; </para>
+    <para styleclass="Code with box">GridV2::Grid   </para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

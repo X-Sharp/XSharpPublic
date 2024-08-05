@@ -254,12 +254,31 @@ internal static class OOPHelpers
                 return 2
             elseif type2:IsAssignableFrom(type1)
                 return 1
+            else
+                var asm1 := type1:Assembly
+                var asm2 := type2:Assembly
+                return ResolveByAssembly(asm1, asm2)
             endif
         endif
 
 
         return 0
-  /// <summary>
+    static method ResolveByAssembly(asm1 as Assembly, asm2 as Assembly) as long
+        var name1 := asm1:GetName():Name:ToLower()
+        var name2 := asm2:GetName():Name:ToLower()
+        var ourassemblies := List<String>{}{"xsharp.core", "xsharp.rt", "xsharp.vo", "xsharp.vfp", "xsharp.xpp", "xsharp.harbour"}
+        var idx1 := ourassemblies:IndexOf(name1)
+        var idx2 := ourassemblies:IndexOf(name2)
+        if idx1 >= 0 .and. idx2 >= 0
+            if idx1 > idx2
+                return 1
+            elseif idx2 > idx1
+                return 2
+            endif
+        endif
+        return 0
+
+    /// <summary>
     /// Convert a null value to the correct value for the type
     /// </summary>
     static method ConvertFromNull(type as System.Type) as usual
@@ -840,10 +859,12 @@ internal static class OOPHelpers
             oObject := oWrapped:Object
             t       := oWrapped:Type
         endif
+        var found := false
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, true, lSelf)
             if propInfo != null_object .and. propInfo:CanRead
                 var visible := lSelf .or. propInfo:GetMethod:IsPublic
+                found := true
                 if (! visible .and. propInfo:GetMethod:IsAssembly)
                     visible := IsInternalVisible(propInfo)
                 endif
@@ -884,10 +905,16 @@ internal static class OOPHelpers
         if SendHelper(oObject, "NoIVarGet", <usual>{cIVar}, out var oResult,false)
             return oResult
         end if
-        var oError := Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar} )
-        oError:Description := oError:Message+" '"+cIVar+"'"
-        throw oError
-
+        if found
+            // the error should indicate that the property was found but it is not visible in this code
+            var oError :=  Error.VOError( EG_NOACCESS, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, lSelf})
+            oError:Description := "Access to variable '"+cIVar+"' not allowed in this context"
+            throw oError
+        else
+            var oError := Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar} )
+            oError:Description := oError:Message+" '"+cIVar+"'"
+            throw oError
+        endif
         // This property is set in the constructor of Dynamic Classes
         // To allow the codeblock for the INIT method to access hidden/private fields
     internal static property EmulateSelf as logic auto
@@ -909,9 +936,11 @@ internal static class OOPHelpers
         endif
         lSelf := lSelf .or. EmulateSelf
         try
+            var found := false
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
             if propInfo != null_object .and. propInfo:CanWrite
                 var visible := lSelf .or. propInfo:SetMethod:IsPublic
+                found := true
                 if (! visible .and. propInfo:SetMethod:IsAssembly)
                     visible := IsInternalVisible(propInfo)
                 endif
@@ -923,6 +952,7 @@ internal static class OOPHelpers
             endif
             var fldInfo := OOPHelpers.FindField(t, cIVar, false, lSelf)
             if fldInfo != null_object
+                found := true
                 oValue := OOPHelpers.ValueConvert(oValue, fldInfo:FieldType)
                 fldInfo:SetValue(oObject, oValue)
                 return
@@ -931,9 +961,16 @@ internal static class OOPHelpers
             if SendHelper(oObject, "NoIVarPut", <usual>{cIVar, oValue})
                 return
             end if
-            var oError :=  Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, oValue, lSelf})
-            oError:Description := oError:Message+" '"+cIVar+"'"
-            throw oError
+            if found
+                // the error should indicate that the property was found but it is not visible in this code
+                var oError :=  Error.VOError( EG_NOACCESS, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, oValue, lSelf})
+                oError:Description := "Access to variable '"+cIVar+"' not allowed in this context"
+                throw oError
+            else
+                var oError :=  Error.VOError( EG_NOVARMETHOD, iif( lSelf, __function__, __function__ ), nameof(cIVar), 2, <object>{oObject, cIVar, oValue, lSelf})
+                oError:Description := oError:Message+" '"+cIVar+"'"
+                throw oError
+            endif
         catch e as TargetInvocationException
             if e:InnerException is WrappedException
                 throw e:InnerException
@@ -1307,17 +1344,21 @@ internal static class OOPHelpers
         var level := 2
         var mi := st:GetFrame(level):GetMethod()
         var type := mi:DeclaringType
+        local lastFrame := null as StackFrame
         if type != null // For dynamic methods the type can be NULL
             // when nested call from the runtime walk the stack
             do while aXsAssemblies:Contains(type:Assembly)
                 level += 1
                 var frame := st:GetFrame(level)
                 if (frame != null)
-                    mi := frame:GetMethod()
+                    lastFrame := frame
                 else
                     exit
                 endif
             enddo
+            if lastFrame != null
+                mi := lastFrame:GetMethod()
+            endif
         endif
         return mi
 
@@ -1551,8 +1592,9 @@ function IVarGet(oObject as object,symInstanceVar as string) as usual
     local uResult as usual
     try
         uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, lSelf)
-    catch  as Exception when !lSelf
-        // retry for hidden properties/fields ?
+    catch as Exception when !lSelf
+        // retry so we can access hidden properties/fields
+        // from within methods of the same type
         var mi := OOPHelpers.GetCallingMethod()
         if mi:DeclaringType == oObject:GetType()
             uResult := OOPHelpers.IVarGet(oObject, symInstanceVar, true)

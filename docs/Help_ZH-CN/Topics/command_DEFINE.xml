@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T20:08:50.418+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.028+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DEFINE 语句</title>
   <keywords>
     <keyword>Compile-time declaration</keyword>
@@ -23,9 +23,9 @@
     <para styleclass="Heading1">参数</para>
     <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idConstant&gt;<tab />常量的有效标识符名称。 常量是一个实体，因此与其他实体共享相同的名称空间。 这就意味着，常量和全局变量不能同名。</para>
+    <para styleclass="List">&lt;idConstant&gt;<tab/>常量的有效标识符名称。 常量是一个实体，因此与其他实体共享相同的名称空间。 这就意味着，常量和全局变量不能同名。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;uValue&gt;<tab />分配给 &lt;idConstant&gt; 的常量值。 该值可以是下面列出的数据类型之一的字面量表示，也可以是只涉及运算符、字面量表示和其他 DEFINE 常量的简单表达式；但不允许使用更复杂的表达式(包括类实例)。</para>
+    <para styleclass="List">&lt;uValue&gt;<tab/>分配给 &lt;idConstant&gt; 的常量值。 该值可以是下面列出的数据类型之一的字面量表示，也可以是只涉及运算符、字面量表示和其他 DEFINE 常量的简单表达式；但不允许使用更复杂的表达式(包括类实例)。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List"></para>
@@ -33,14 +33,14 @@
     <para styleclass="Normal">一旦使用 DEFINE 语句声明并初始化了常量名称和值，就不能更改 &lt;idConstant&gt; 的值，否则会导致编译器出错。 只要在应用程序中遇到 &lt;idConstant&gt; 标识符名称，就会使用常量值 &lt;uValue&gt;。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">您可以通过声明一个同名变量(使用 LOCAL、MEMVAR 或 FIELD)来隐藏例程中的常量名称。 变量名的搜索顺序如下：</para>
-    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">1.</text><tab /><text styleclass="Normal">LOCALs、local parameters、MEMVARs 和 FIELDs</text></para>
-    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">2.</text><tab /><text styleclass="Normal">SELF instance variables (即在类方法中不使用 &lt;idObject&gt;: 前缀)</text></para>
-    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">3.</text><tab /><text styleclass="Normal">GLOBALs 和 DEFINEs</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">1.</text><tab/><text styleclass="Normal">LOCALs、local parameters、MEMVARs 和 FIELDs</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">2.</text><tab/><text styleclass="Normal">SELF instance variables (即在类方法中不使用 &lt;idObject&gt;: 前缀)</text></para>
+    <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">3.</text><tab/><text styleclass="Normal">GLOBALs 和 DEFINEs</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">提示：您可以根据 DEFINE 常量的值执行有条件构建。 有关更多信息和示例，请参阅本章中的 #ifdef 和 #ifndef 语句。</para>
+    <para styleclass="Normal">提示：您可以根据 DEFINE 常量的值执行有条件生成。 有关更多信息和示例，请参阅本章中的 #ifdef 和 #ifndef 语句。</para>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Normal">以下示例将应用程序名称分配给常量 cAppName。 该值将在程序运行开始和结束时显示：</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cAppName := &quot;Accounts Payable&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;Start of &quot;, cAppName, &quot; application.&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;End of &quot;, cAppName, &quot; application.&quot;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cAppName := &quot;Accounts Payable&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">   ? &quot;Start of &quot;, cAppName, &quot; application.&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">   ...</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">   ? &quot;End of &quot;, cAppName, &quot; application.&quot;</text></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFDEF">#ifdef</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFNDEF">#ifndef</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>
     <para styleclass="Normal"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T20:40:42.158+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.550+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-stddefs</title>
   <keywords>
     <keyword>-stddefs</keyword>
@@ -10,11 +10,11 @@
       <para styleclass="Heading1">-stddefs</para>
     </header>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">覆盖标准定义文件的名称（默认 = XSharpDefs.xh）</para>
+    <para styleclass="Body Text">覆盖标准定义文件的名称(默认 = XSharpDefs.xh)</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-stddefs:filepath</para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List" style="text-indent:-100px; margin-left:100px;"><text styleclass="Code with box">filepath</text><tab />要代替 XSharpDefs.Xh 使用的头文件的名称和路径。如果没有包含路径，编译器将使用命令行中指定的包含路径(Includepath) (<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">-i</link>)</para>
+    <para styleclass="List" style="text-indent:-100px; margin-left:100px;"><text styleclass="Code with box">filepath</text><tab/>要代替 XSharpDefs.Xh 使用的头文件的名称和路径。如果没有包含路径，编译器将使用命令行中指定的包含路径(Includepath) (<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i">-i</link>)</para>
     <para styleclass="List" style="text-indent:-100px; margin-left:100px;"></para>
     <para styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></para>
   </body>

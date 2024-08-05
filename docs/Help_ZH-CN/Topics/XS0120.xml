@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T14:13:44.375+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0120</title>
   <keywords>
     <keyword>XS0120</keyword>
@@ -9,23 +9,19 @@
     <header>
       <para styleclass="Heading1">Error XS0120</para>
     </header>
-    <para styleclass="Normal">An object reference is required for the nonstatic field, method, or property &apos;member&apos;</para>
+    <para styleclass="Normal">非静态的字段、方法或属性 &apos;member&apos; 要求对象引用</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">In order to use a non-static field, method, or property, you must first create an object instance. For more information about static methods, see Static Classes and Static Class Members. For more information about creating instances of classes, see Instance Constructors.</para>
+    <para styleclass="Normal">必须先创建对象实例，才能使用非静态的字段、方法或属性。 有关静态方法的详细信息，请参阅静态类和静态类成员。 有关创建类的实例的详细信息，请参阅实例构造函数。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following sample generates XS0120:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下面的示例生成 XS0120:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">// XS0120_1.prg &#160;<br/></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">XS0120 will also be generated if there is a call to a non-static method from a static method, as follows:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果从静态方法调用非静态方法，也会生成 XS0120，如下所示：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">// XS0120_2.prg &#160;<br/>// XS0120 expected &#160;<br/></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Similarly, a static method cannot call an instance method unless you explicitly give it an instance of the class, as follows:</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">同样，静态方法也不能调用实例方法，除非你明确地给它一个类的实例，如下所示：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">// XS0120_3.prg &#160;<br/></para>
   </body>

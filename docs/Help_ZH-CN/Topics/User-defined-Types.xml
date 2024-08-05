@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-10T20:39:33.591+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:31:25.952+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>自定义类型</title>
   <keywords>
     <keyword>CLASS</keyword>
@@ -18,7 +18,7 @@
       <para styleclass="Heading1">自定义类型</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">X# 语言允许你定义自己的类型（事实上，XBase 专用类型都是这样定义的）。</para>
+    <para styleclass="Normal">X# 语言允许你定义自己的类型(事实上，XBase 专用类型都是这样定义的)。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">该语言的以下关键字定义了用户定义的类型。</para>
     <para styleclass="Normal"></para>

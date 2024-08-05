@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-03T01:04:53.716+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:24:46.187+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>EVENT(Add 和 Remove)))</title>
   <keywords>
     <keyword>ADD</keyword>
@@ -12,7 +12,7 @@
       <para styleclass="Heading1">EVENT(Add 和 Remove)))</para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">XSharp 现在支持扩展的 &quot;EVENT &quot;语法。既支持单行语法，也支持多行语法：</para>
+    <para styleclass="Normal">XSharp 现在支持扩展的 &quot;EVENT&quot; 语法。既支持单行语法，也支持多行语法：</para>
     <para styleclass="Heading2">旧语法</para>
     <para styleclass="Code Example">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160;// 旧语法</para>
     <para styleclass="Heading2">带有明确表达式的单行语法</para>

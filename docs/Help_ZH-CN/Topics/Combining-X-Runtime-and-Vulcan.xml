@@ -1,21 +1,22 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T22:54:27.188+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T01:55:05.226+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>结合 X# 运行时和 Vulcan 运行时</title>
   <body>
     <header>
       <para styleclass="Heading1">结合 X# 运行时和 Vulcan 运行时</para>
     </header>
-    <para styleclass="Normal">Technically it is possible to include both the X# and the Vulcan runtime libraries in your application. When you do so then the compiler will assume that you want to use the X# implementations for the XBase types such as USUAL and DATE. If the compiler does not find the XSharp.Core and XSharp.VO assemblies then it will assume you want to map these types to the Vulcan runtime types.</para>
-    <para styleclass="Normal">So you can mix things. However if you want to call code in the Vulcan runtime DLLs you may have to use the fully qualified classnames or typenames.</para>
-    <para styleclass="Normal">And remember: there is no automatic translation between the X# types and Vulcan types. </para>
-    <para styleclass="Normal">If you want to convert an X# variable to a Vulcan variable you may have to cast it to an intermediate type &#160;first.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Call Vulcans implementation of Left()</para>
+    <para styleclass="Normal">从技术上讲，您可以在应用程序中同时包含 X# 和 Vulcan 运行库。如果这样做，编译器会认为你想使用 X# 实现 XBase 类型(如 USUAL 和 DATE)。如果编译器找不到 XSharp.Core 和 XSharp.VO 程序集，那么它会认为你想将这些类型映射到 Vulcan 运行时类型。</para>
+    <para styleclass="Normal">因此，你可以混合使用。不过，如果你想调用 Vulcan 运行时 DLL 中的代码，你可能必须使用全限定类名或类型名。</para>
+    <para styleclass="Normal">请记住：X# 类型和 Vulcan 类型之间没有自动转换。</para>
+    <para styleclass="Normal">如果你想将 X# 变量转换为 Vulcan 变量，你可能必须先将其转换为中间类型。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">调用 Vulcan 的 Left() 实现</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cValue := VulcanRTFuncs.Functions.Left(&quot;abcdefg&quot;,2)</text></para>
-    <para styleclass="Normal">If you want to convert an X# usual to a Vulcan usual, cast to OBJECT</para>
+    <para styleclass="Normal">如果您想将 X# &#160;usual 值转换为 Vulcan usual 值，请将其转换为 OBJECT</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__Usual</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xUsual := 10</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vUsual := (OBJECT) xUsual</text></para>
-    <para styleclass="Normal">For dates you can do something similar. In that case you should cast the X# date to a DateTime.</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DATE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// will call the X# implementation of ToDay()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vDate := (System.DateTime) xDate</text></para>
+    <para styleclass="Normal">对于日期，你也可以做类似的事情。在这种情况下，您应该将 X# &#160;Date 转换为 DateTime。</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DATE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 将调用 ToDay() 的 X# 实现</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vDate := (System.DateTime) xDate</text></para>
   </body>
 </topic>

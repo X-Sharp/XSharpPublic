@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T18:29:27.850+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T12:07:29.211+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-keyfile</title>
   <keywords>
     <keyword>-keyfile</keyword>
@@ -12,9 +12,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">指定包含加密密钥的文件名。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-keyfile:file <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-keyfile:file <text styleclass="Normal"> </text></para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">file</text><tab />包含强名称密钥的文件名。</para>
+    <para styleclass="List"><text styleclass="Code Example">file</text><tab/>包含强名称密钥的文件名。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">使用该选项时，编译器会将指定文件中的公钥插入程序集清单，然后用私钥签署最终程序集。要生成密钥文件，请在命令行键入 sn -k file。</para>
     <para styleclass="Normal"></para>
@@ -22,7 +22,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">你也可以使用 -keycontainer 将加密信息传递给编译器。如果需要部分签名的程序集，请使用 -delaysign。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果在同一编译中同时指定了 -keyfile 和 -keycontainer（通过命令行选项或自定义属性），编译器将首先尝试密钥容器。如果成功，程序集将根据密钥容器中的信息签名。如果编译器找不到密钥容器，它将尝试使用 -keyfile 指定的文件。如果成功，程序集将使用密钥文件中的信息签名，密钥信息将被安装到密钥容器中（类似于 sn -i），这样在下一次编译时，密钥容器将是有效的。</para>
+    <para styleclass="Normal">如果在同一编译中同时指定了 -keyfile 和 -keycontainer(通过命令行选项或自定义属性)，编译器将首先尝试密钥容器。如果成功，程序集将根据密钥容器中的信息签名。如果编译器找不到密钥容器，它将尝试使用 -keyfile 指定的文件。如果成功，程序集将使用密钥文件中的信息签名，密钥信息将被安装到密钥容器中(类似于 sn -i)，这样在下一次编译时，密钥容器将是有效的。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">请注意，密钥文件可能只包含公钥。</para>
     <para styleclass="Normal"></para>
@@ -30,7 +30,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Build 属性页</li>
       <li styleclass="Normal" style="margin-left:13px;">修改 &quot;Code Signing KeyFile(代码签名密钥文件) &quot;属性。</li>

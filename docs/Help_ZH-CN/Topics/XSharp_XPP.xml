@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-18T19:37:52.328+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XSharp.XPP</title>
   <keywords>
     <keyword>XSharp.XPP</keyword>
@@ -9,16 +9,17 @@
     <header>
       <para styleclass="Heading1">XSharp.XPP</para>
     </header>
-    <para styleclass="Normal">This DLL adds some specific types and functions that are unique to the Xbase++ dialect and also many of the Xbase++ defines.</para>
-    <para styleclass="Normal">Functions such as</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">该 DLL 添加了 Xbase++ 方言特有的一些特定类型和函数，以及许多 Xbase++ 定义。</para>
+    <para styleclass="Normal">这些函数包括：</para>
     <para styleclass="Normal">ClassCreate</para>
     <para styleclass="Normal">ClassDestroy()</para>
     <para styleclass="Normal">ClassObject()</para>
     <para styleclass="Normal">XMLDocOpenFile()</para>
     <para styleclass="Normal">XMLDocSetAction()</para>
-    <para styleclass="Normal">etc.</para>
+    <para styleclass="Normal">等</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Also some Xbase++ specific types such as </para>
+    <para styleclass="Normal">还有一些 Xbase++ 特有的类型，如：</para>
     <para styleclass="Normal">Abstract</para>
     <para styleclass="Normal">ClassObject</para>
   </body>

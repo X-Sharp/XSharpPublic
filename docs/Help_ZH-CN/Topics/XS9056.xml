@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-09T13:31:22.963+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9056</title>
   <keywords>
     <keyword>XS9056</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS9056</para>
     </header>
-    <para styleclass="Normal">You cannot assign an untyped codeblock to a delegate of type {0}. Use the Lambda Expression syntax (=&gt;) in stead.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">您不能为类型为 &#160;{0} &#160;的委托指定未类型化的 codeblock。请使用 Lambda 表达式语法 (=&gt;)。</para>
   </body>
 </topic>

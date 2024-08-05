@@ -56,7 +56,7 @@ Function SetFoxCollation(cCollation as STRING) AS STRING
     ELSE
         local oError as Error
         oError := Error.ArgumentError(__FUNCTION__, nameof(cCollation), 1, {cCollation})
-        oError:Description := __VfpStr(VFPErrors.COLLATION_NOT_FOUND, cCollation)
+        oError:Description := __VfpStr(VFPErrors.VFP_COLLATION_NOT_FOUND, cCollation)
         oError:Throw()
     ENDIF
     RETURN cOld

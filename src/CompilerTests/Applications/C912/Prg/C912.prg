@@ -35,14 +35,14 @@ CLASS NewTest
 		gTest1 := "class modified"
 		? gTest1
 		xAssert(gTest1 == "class modified")
-		
+
 		dTest1 := "class modified"
 		? dTest1
 		xAssert(dTest1 == "class modified")
-		
+
 //		dTest2 := "should report compiler error since it's a define" // error in VO, no error in X#
 	RETURN NIL
-		
+
 
 	ACCESS gTest2()
 		? gTest2
@@ -51,9 +51,9 @@ CLASS NewTest
 		? dTest2 // error in X#
 		xAssert(dTest2 == "define")
 
-		gTest2 := "global modified" // error in X#
+		//gTest2 := "global modified" // error in X#
 		? gTest2
-		xAssert(gTest2 == "global modified")
+		//xAssert(gTest2 == "global modified")
 	RETURN "access"
 
 	ASSIGN dTest2(u)
@@ -63,10 +63,10 @@ CLASS NewTest
 		? dTest2 // error in X#
 		xAssert(dTest2 == "define")
 
-		gTest2 := "global modified again" // error in X#
+		//gTest2 := "global modified again" // error in X#
 		? gTest2
-		xAssert(gTest2 == "global modified again")
-		
+		//xAssert(gTest2 == "global modified again")
+
 //		dTest2 := "should report compiler error since it's a define" // error in VO, no error in X#
 END CLASS
 

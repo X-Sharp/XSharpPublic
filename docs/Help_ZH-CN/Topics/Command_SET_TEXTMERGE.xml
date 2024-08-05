@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T23:47:41.116+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:49:04.172+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET TEXTMERGE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -21,7 +21,7 @@
     <para styleclass="Heading1">参数</para>
     <para styleclass="List">ON <tab />指定由文本合并分隔符包围的任何字段、变量、数组元素、函数或表达式在放在 \ 或 \\ 之后，或 TEXT 和 ENDTEXT 之间时，都要进行评估和输出。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">OFF<tab />(默认）指定将任何字段、变量、数组元素、函数或表达式连同它们周围的文本合并分隔符一起按字面意思输出。</para>
+    <para styleclass="List">OFF<tab />(默认)指定将任何字段、变量、数组元素、函数或表达式连同它们周围的文本合并分隔符一起按字面意思输出。</para>
     <para styleclass="List"></para>
     <para styleclass="List">TO [ FileName] <tab />指定 \ 、\\ 和 TEXT ... ENDTEXT 的输出除了直接输出到 Visual FoxPro 主窗口外，还直接输出到文本文件。您也可以通过包含 FileName 将输出指向文本文件。如果不存在同名文件，则会创建一个新文件。如果同名文件已经存在，且 SET SAFETY 设置为 ON，则可以选择覆盖现有文件。</para>
     <para styleclass="List"><tab />文本文件作为低级文件打开，其文件句柄存储在 _TEXT 系统变量中。关闭文件时，只需发出 SET TEXTMERGE TO，无需其他参数。如果 _TEXT 中先前存储了另一个文件的文件句柄，则该文件将被关闭。</para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T13:56:31.932+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0110</title>
   <keywords>
     <keyword>XS0110</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1">Error XS0110</para>
     </header>
-    <para styleclass="Normal">The evaluation of the constant value for &apos;{0}&apos; involves a circular definition</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"> &apos;{0}&apos; 的常量值计算涉及循环定义</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

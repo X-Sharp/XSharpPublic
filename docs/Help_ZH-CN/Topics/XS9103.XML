@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-01T10:32:43.190+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-15T00:31:48.482+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Error XS9103</title>
   <keywords>
     <keyword>Unexpected token</keyword>
@@ -10,7 +10,7 @@
     <header>
       <para styleclass="Heading1">Error XS9103</para>
     </header>
-    <para styleclass="Normal">Unexpected token &apos;{0}&apos;, expected &apos;{1}&apos;.</para>
+    <para styleclass="Normal">意外标记 &apos;{0}&apos;，预期为 &apos;{1}&apos;。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

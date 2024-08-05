@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-07-04T20:31:17.092+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.384+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-resource</title>
   <keywords>
     <keyword>-resource</keyword>
@@ -12,13 +12,13 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">将指定资源嵌入输出文件。</para>
     <para styleclass="Heading2">语法</para>
-    <para styleclass="Code with box">-resource:filename[,identifier[,accessibility-modifier]] &#160;</para>
+    <para styleclass="Code with box">-resource:filename[,identifier[,accessibility-modifier]]  </para>
     <para styleclass="Heading2">参数</para>
-    <para styleclass="List"><text styleclass="Code Example">filename</text><tab /><tab />要嵌入输出文件的 .NET Framework 资源文件。</para>
+    <para styleclass="List"><text styleclass="Code Example">filename</text><tab/><tab/>要嵌入输出文件的 .NET Framework 资源文件。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">identifier</text> (可选)<tab /><tab />资源的逻辑名称；用于加载资源的名称。默认为文件名。</para>
+    <para styleclass="List"><text styleclass="Code Example">identifier</text> (可选)<tab/><tab/>资源的逻辑名称；用于加载资源的名称。默认为文件名。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (可选)<tab />资源的可访问性：public 或 private。默认为 public。</para>
+    <para styleclass="List"><text styleclass="Code Example">accessibility-modifier</text> (可选)<tab/>资源的可访问性：public 或 private。默认为 public。</para>
     <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">使用 -linkresource 可将资源链接到程序集，而不会将资源文件添加到输出文件中。</para>
     <para styleclass="Normal"></para>
@@ -32,18 +32,18 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="0" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">在项目中添加资源文件</li>
       <li styleclass="Normal" style="margin-left:13px;">在解决方案资源管理器中选择要嵌入的文件。</li>
-      <li styleclass="Normal" style="margin-left:13px;">在 &quot;属性 &quot;窗口中为文件选择 &quot;Build Action(构建动作)&quot;</li>
-      <li styleclass="Normal" style="margin-left:13px;">将 &quot;构建操作 &quot;设置为 &quot;Embedded Resource(嵌入式资源)&quot;</li>
+      <li styleclass="Normal" style="margin-left:13px;">在 &quot;属性 &quot;窗口中为文件选择 &quot;Build Action(生成动作)&quot;</li>
+      <li styleclass="Normal" style="margin-left:13px;">将 &quot;生成操作 &quot;设置为 &quot;Embedded Resource(嵌入式资源)&quot;</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">有关如何以编程方式设置该编译器选项的信息，请参阅 BuildAction。</para>
     <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">编译 in.prg，并附加资源文件 rf.resource：</para>
-    <para styleclass="Code with box">xsc -resource:rf.resource in.prg &#160;</para>
+    <para styleclass="Code with box">xsc -resource:rf.resource in.prg  </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

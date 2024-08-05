@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:54:40.495+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:54:35.920+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>ASSIGN 语句</title>
   <keywords>
     <keyword>ASSIGN statement</keyword>
@@ -36,7 +36,7 @@
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List">END ASSIGN<tab />可选的结束语，表示 ASSIGN 实体的结束。</para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Normal">ASSIGN 声明了一个特殊的方法，称为赋值方法，每次为命名的实例变量赋值时都会自动执行（例如，&lt;idVar&gt; := &lt;uValue&gt;）。 赋值操作符右侧的值作为参数传递给 ASSIGN 方法。</para>
+    <para styleclass="Normal">ASSIGN 声明了一个特殊的方法，称为赋值方法，每次为命名的实例变量赋值时都会自动执行(例如，&lt;idVar&gt; := &lt;uValue&gt;)。 赋值操作符右侧的值作为参数传递给 ASSIGN 方法。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">在 CLASS 声明中可以定义四种类型的实例变量。 除了 EXPORT 之外，所有这些都被称为非导出(non-exported)实例变量，因为它们不能直接从外部(即类之外)访问。</para>
     <para styleclass="Normal"></para>
@@ -56,7 +56,7 @@
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><tab /><text styleclass="Normal">HIDDEN</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">INSTANCE 变量是专门为 ASSIGN 和 ACCESS 方法而设计的，这也是其后期绑定的主要原因。 通过定义与 INSTANCE 变量同名的赋值方法，你可以有效地覆盖变量，使所有赋值引用（包括外部和内部引用）都调用 ASSIGN 方法。 例外情况是，在 ASSIGN(或 ACCESS)方法中，同名的实例变量会引用该变量--否则，你将一事无成。</para>
+    <para styleclass="Normal">INSTANCE 变量是专门为 ASSIGN 和 ACCESS 方法而设计的，这也是其后期绑定的主要原因。 通过定义与 INSTANCE 变量同名的赋值方法，你可以有效地覆盖变量，使所有赋值引用(包括外部和内部引用)都调用 ASSIGN 方法。 例外情况是，在 ASSIGN(或 ACCESS)方法中，同名的实例变量会引用该变量--否则，你将一事无成。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">您还可以将 PROTECT 和 HIDDEN 变量与 assign 方法结合使用。 通过定义与 PROTECT 或 HIDDEN 变量同名的 ASSIGN 方法，你可以使用与类内部相同的语法在外部对变量进行赋值。 然而，由于提前绑定的原因，内部引用总是直接引用变量。</para>
     <para styleclass="Normal"></para>

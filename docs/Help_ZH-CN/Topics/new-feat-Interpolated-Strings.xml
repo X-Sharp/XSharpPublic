@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-03T14:08:25.669+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:32:48.947+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>插值字符串</title>
   <keywords>
     <keyword>ei&quot;...&quot;</keyword>
@@ -29,7 +29,7 @@
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">SELF:</li>
       <li styleclass="Normal">局部变量、成员变量和带 SELF: 前缀或不带 SELF: 前缀的属性</li>
-      <li styleclass="Normal">其他表达式目前必须使用 C# 语法，使用点（.）运算符作为发送运算符。</li>
+      <li styleclass="Normal">其他表达式目前必须使用 C# 语法，使用点(<text style="font-weight:bold;">.</text>)运算符作为发送运算符。</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">字符串内的表达式元素可以使用格式化符号，就像 String.Format() 符号一样。例如</para>

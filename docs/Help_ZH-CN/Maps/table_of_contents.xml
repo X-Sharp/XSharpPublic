@@ -228,20 +228,20 @@
         <topicref type="topic" id="424000368292699" build="ALL" modified="2024-06-03T01:05:07.552Z" icon="0" href="new-feat-Expression-IS-Type">
           <caption translate="true">表达式 IS Type</caption>
         </topicref>
-        <topicref type="topic" id="426888066632269" build="ALL" modified="2024-06-03T01:05:28.645Z" icon="0" href="new-feat-Initializers">
-          <caption translate="true">初始化</caption>
+        <topicref type="topic" id="426888066632269" build="ALL" modified="2024-07-24T13:30:21.080Z" icon="0" href="new-feat-Initializers">
+          <caption translate="true">初始值设定项</caption>
         </topicref>
         <topicref type="topic" id="426356253849712" build="ALL" modified="2024-06-03T01:10:44.457Z" icon="0" href="new-feat-Interpolated-Strings">
           <caption translate="true">插值字符串</caption>
         </topicref>
-        <topicref type="topic" id="424000721218508" build="ALL" modified="2024-06-03T14:08:57.510Z" icon="0" href="new-feat-LINQ">
-          <caption translate="true">LINQ Query 表达式</caption>
+        <topicref type="topic" id="424000721218508" build="ALL" modified="2024-07-24T13:34:06.703Z" icon="0" href="new-feat-LINQ">
+          <caption translate="true">LINQ查询表达式</caption>
         </topicref>
         <topicref type="topic" id="424477017488013" build="ALL" modified="2019-01-24T16:51:42.583Z" icon="0" href="new-feat-NOP">
           <caption translate="true">NOP</caption>
         </topicref>
-        <topicref type="topic" id="426887424244545" build="ALL" modified="2024-06-03T14:10:20.255Z" icon="0" href="new-feat-Object-Initializers">
-          <caption translate="true">对象初始化</caption>
+        <topicref type="topic" id="426887424244545" build="ALL" modified="2024-07-24T13:36:49.038Z" icon="0" href="new-feat-Object-Initializers">
+          <caption translate="true">对象初始值设定项</caption>
         </topicref>
         <topicref type="topic" id="424000091554061" modified="2019-01-27T16:09:19.314Z" icon="0" href="new-feat-PROCEDURE-inside-CLASS">
           <caption translate="true">PROCEDURE inside CLASS</caption>
@@ -283,20 +283,20 @@
     </topicref>
     <topicref type="topic" id="428984094992566" build="ALL" modified="2024-06-04T08:08:25.825Z" icon="0" href="MigratingappsfromVOtoX">
       <caption translate="true">将应用程序从 VO 迁移到 X#</caption>
-      <topicref type="topic" id="428986318132862" build="ALL" modified="2017-06-22T14:10:39.314Z" icon="0" href="Example-1-The-VO-Explorer-Examp">
-        <caption translate="true">Example 1: The VO Explorer Example</caption>
+      <topicref type="topic" id="428986318132862" build="ALL" modified="2024-07-18T19:39:55.588Z" icon="0" href="Example-1-The-VO-Explorer-Examp">
+        <caption translate="true">示例 1: VO Explorer 示例</caption>
       </topicref>
-      <topicref type="topic" id="428986216317597" build="ALL" modified="2017-06-22T14:10:46.039Z" icon="0" href="Example-2-The-VOPAD-Example">
-        <caption translate="true">Example 2: The VOPAD Example</caption>
+      <topicref type="topic" id="428986216317597" build="ALL" modified="2024-07-18T19:40:22.078Z" icon="0" href="Example-2-The-VOPAD-Example">
+        <caption translate="true">示例 2: VOPAD 示例</caption>
       </topicref>
-      <topicref type="topic" id="428984468885707" build="ALL" modified="2017-06-12T13:01:28.742Z" icon="0" href="Example-3-The-Pizza-Example">
-        <caption translate="true">Example 3: The Pizza Example</caption>
+      <topicref type="topic" id="428984468885707" build="ALL" modified="2024-07-18T19:40:45.395Z" icon="0" href="Example-3-The-Pizza-Example">
+        <caption translate="true">示例 3: Pizza 示例</caption>
       </topicref>
-      <topicref type="topic" id="429063907598028" build="ALL" modified="2017-06-20T09:37:57.133Z" icon="0" href="Example-4-Ole-Automation">
-        <caption translate="true">Example 4: Ole Automation - Excel</caption>
+      <topicref type="topic" id="429063907598028" build="ALL" modified="2024-07-18T19:41:06.900Z" icon="0" href="Example-4-Ole-Automation">
+        <caption translate="true">示例 4: Ole 自动化 - Excel</caption>
       </topicref>
-      <topicref type="topic" id="42897067116215" build="ALL" modified="2017-06-20T09:23:11.986Z" icon="0" href="Example-4-The-Email-Client-Exa">
-        <caption translate="true">Example 5: OCX - The Email Client Example </caption>
+      <topicref type="topic" id="42897067116215" build="ALL" modified="2024-07-18T19:41:40.340Z" icon="0" href="Example-4-The-Email-Client-Exa">
+        <caption translate="true">示例 5: OCX - 电子邮件客户端示例 </caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="432585631903751" build="ALL" modified="2024-06-04T08:11:26.637Z" icon="0" href="The-X-Runtime">
@@ -1041,7 +1041,7 @@
             <caption translate="true">SET EPOCH 命令</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966835316603" build="ALL" modified="2024-06-27T19:48:19.360Z" icon="0" href="cmd_cat_entdecl">
+        <topicref type="topic" id="436966835316603" build="ALL" modified="2024-07-24T11:55:21.543Z" icon="0" href="cmd_cat_entdecl">
           <caption translate="true">实体声明</caption>
           <topicref type="topic" id="384613959523963" build="ALL" modified="2024-06-27T19:53:17.289Z" icon="0" href="command__DLL">
             <caption translate="true">_DLL 语句</caption>
@@ -1108,11 +1108,11 @@
             <topicref type="topic" id="437477277472577" build="ALL" modified="2019-10-11T17:21:17.108Z" icon="0" href="command_Xpp_InstanceVariables">
               <caption translate="true">Fields</caption>
             </topicref>
-            <topicref type="topic" id="43749586475796" build="ALL" modified="2019-10-11T17:22:34.036Z" icon="0" href="command_Xpp_Classmembers">
-              <caption translate="true">METHOD Declarations</caption>
+            <topicref type="topic" id="43749586475796" build="ALL" modified="2024-07-18T20:24:19.661Z" icon="0" href="command_Xpp_Classmembers">
+              <caption translate="true">METHOD 声明</caption>
             </topicref>
-            <topicref type="topic" id="437497035229946" build="ALL" modified="2019-10-11T17:22:28.158Z" icon="0" href="command_XPP_Methods">
-              <caption translate="true">METHOD Implementation</caption>
+            <topicref type="topic" id="437497035229946" build="ALL" modified="2024-07-18T20:24:31.216Z" icon="0" href="command_XPP_Methods">
+              <caption translate="true">METHOD 实现</caption>
             </topicref>
           </topicref>
           <topicref type="topic" id="384613569689846" build="ALL" modified="2024-06-27T20:08:48.539Z" icon="0" href="command_DEFINE">
@@ -7106,34 +7106,34 @@
         <caption translate="true">XS9999</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="439096075522238" build="ALL" modified="2020-03-19T09:57:38.224Z" icon="0" href="X-Tips-and-Tricks">
-      <caption translate="true">X# Tips and Tricks</caption>
-      <topicref type="topic" id="438956553692236" build="ALL" modified="2020-03-05T13:05:01.795Z" icon="0" href="Installer-Command-Line-options">
-        <caption translate="true">Installer Command Line options</caption>
+    <topicref type="topic" id="439096075522238" build="ALL" modified="2024-07-15T04:19:02.248Z" icon="0" href="X-Tips-and-Tricks">
+      <caption translate="true">X# 提示和技巧</caption>
+      <topicref type="topic" id="438956553692236" build="ALL" modified="2024-07-15T04:19:36.179Z" icon="0" href="Installer-Command-Line-options">
+        <caption translate="true">安装程序命令行选项</caption>
       </topicref>
-      <topicref type="topic" id="438957336026538" build="ALL" modified="2020-03-05T14:08:23.582Z" icon="0" href="UnInstaller-Command-Line-optio">
-        <caption translate="true">UnInstaller Command Line options</caption>
+      <topicref type="topic" id="438957336026538" build="ALL" modified="2024-07-15T05:05:21.966Z" icon="0" href="UnInstaller-Command-Line-optio">
+        <caption translate="true">卸载命令行选项</caption>
       </topicref>
-      <topicref type="topic" id="438952407173799" build="ALL" modified="2020-03-05T09:34:53.261Z" icon="0" href="Building-XSharp-apps-with-Visu">
-        <caption translate="true">Building XSharp apps with Visual Studio and/or MsBuild</caption>
+      <topicref type="topic" id="438952407173799" build="ALL" modified="2024-07-15T05:09:24.581Z" icon="0" href="Building-XSharp-apps-with-Visu">
+        <caption translate="true">使用 Visual Studio 和/或 MsBuild 生成 XSharp 应用程序</caption>
       </topicref>
-      <topicref type="topic" id="439096275223255" build="ALL" modified="2020-03-19T15:55:33.644Z" icon="0" href="Catching-errors-at-startup">
-        <caption translate="true">Catching runtime errors at startup</caption>
+      <topicref type="topic" id="439096275223255" build="ALL" modified="2024-07-15T06:23:52.758Z" icon="0" href="Catching-errors-at-startup">
+        <caption translate="true">在启动时捕获运行时错误</caption>
       </topicref>
-      <topicref type="topic" id="439096286575960" build="ALL" modified="2020-03-19T10:37:55.570Z" icon="0" href="Compiler-magic-in-the-startup-code">
-        <caption translate="true">Compiler magic in the startup code</caption>
+      <topicref type="topic" id="439096286575960" build="ALL" modified="2024-07-15T06:35:07.277Z" icon="0" href="Compiler-magic-in-the-startup-code">
+        <caption translate="true">启动代码中的编译器魔法</caption>
       </topicref>
-      <topicref type="topic" id="439095395813978" build="ALL" modified="2020-03-19T11:22:30.633Z" icon="0" href="Special-classes-generated-by-t">
-        <caption translate="true">Special classes and code generated by the compiler</caption>
+      <topicref type="topic" id="439095395813978" build="ALL" modified="2024-07-15T06:40:42.494Z" icon="0" href="Special-classes-generated-by-t">
+        <caption translate="true">编译器生成的特殊类和代码</caption>
       </topicref>
     </topicref>
-    <topicref type="topic" id="454563858889433" build="HXS" modified="2024-06-13T10:35:34.728Z" icon="0" href="X-Examples_MSHC">
-      <caption translate="true">X# Examples</caption>
+    <topicref type="topic" id="454563858889433" build="HXS" modified="2024-07-15T06:59:49.465Z" icon="0" href="X-Examples_MSHC">
+      <caption translate="true">X# 示例</caption>
       <topicref type="topic" id="454564356459839" build="ALL" modified="2024-06-13T10:45:09.255Z" icon="0" href="Ex-Anonymous-Methods_MSHC">
         <caption translate="true">匿名方法</caption>
       </topicref>
-      <topicref type="topic" id="454563260221924" build="ALL" modified="2024-06-13T10:37:05.598Z" icon="0" href="Ex-Anonymous-Types_MSHC">
-        <caption translate="true">Anonymous Types </caption>
+      <topicref type="topic" id="454563260221924" build="ALL" modified="2024-07-18T00:05:17.201Z" icon="0" href="Ex-Anonymous-Types_MSHC">
+        <caption translate="true">匿名类型</caption>
       </topicref>
       <topicref type="topic" id="454562527741333" build="ALL" modified="2024-06-13T10:45:23.645Z" icon="0" href="Ex-ASYNC_MSHC">
         <caption translate="true">ASYNC  示例</caption>
@@ -7171,8 +7171,8 @@
       <topicref type="topic" id="454563687020242" build="ALL" modified="2024-06-13T10:46:28.737Z" icon="0" href="Ex-SWITCH_MSHC">
         <caption translate="true">SWITCH  示例</caption>
       </topicref>
-      <topicref type="topic" id="454562416794142" build="ALL" modified="2024-06-13T10:39:36.429Z" icon="0" href="Ex-Typed-Enums_MSHC">
-        <caption translate="true">Typed Enums</caption>
+      <topicref type="topic" id="454562416794142" build="ALL" modified="2024-07-18T00:06:30.140Z" icon="0" href="Ex-Typed-Enums_MSHC">
+        <caption translate="true">类型化枚举</caption>
       </topicref>
       <topicref type="topic" id="454562470142573" build="ALL" modified="2024-06-13T10:46:31.303Z" icon="0" href="Ex-USING_MSHC">
         <caption translate="true">USING  示例</caption>
@@ -7187,8 +7187,8 @@
         <caption translate="true">YIELD  示例</caption>
       </topicref>
     </topicref>
-    <topicref type="weblink" id="449724048793663" build="HTML" modified="2023-02-15T14:00:53.339Z" icon="1" href="https://www.xsharp.eu/runtimehelp/html/R_Project_XSharpRef.htm" target="_blank">
-      <caption translate="true">X# Runtime and VO SDK Reference</caption>
+    <topicref type="weblink" id="449724048793663" build="HTML" modified="2024-07-15T07:00:42.140Z" icon="1" href="https://www.xsharp.eu/runtimehelp/html/R_Project_XSharpRef.htm" target="_blank">
+      <caption translate="true">X# 运行时和 VO SDK 参考</caption>
     </topicref>
   </topicref>
   <navref href="XSharpRef.chm::\XSharpRef.hhc" build="CHM,EBOOK,HTML,PDF,PRINT" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
@@ -7199,8 +7199,8 @@
     <topicref type="topic" id="42424518616889" build="ALL" modified="2024-06-02T21:41:02.911Z" icon="0" href="Ex-Anonymous-Methods">
       <caption translate="true">匿名方法</caption>
     </topicref>
-    <topicref type="topic" id="426887977972070" build="ALL" modified="2023-12-19T13:54:40.651Z" icon="0" href="Ex-Anonymous-Types">
-      <caption translate="true">Anonymous Types</caption>
+    <topicref type="topic" id="426887977972070" build="ALL" modified="2024-07-18T00:04:00.779Z" icon="0" href="Ex-Anonymous-Types">
+      <caption translate="true">匿名类型</caption>
     </topicref>
     <topicref type="topic" id="424267695938100" build="ALL" modified="2024-06-02T22:06:38.738Z" icon="0" href="Ex-ASYNC">
       <caption translate="true">ASYNC 示例</caption>
@@ -7226,8 +7226,8 @@
     <topicref type="topic" id="424249105268691" build="ALL" modified="2024-06-03T20:43:03.372Z" icon="0" href="Ex-GENERICs">
       <caption translate="true">泛型类示例</caption>
     </topicref>
-    <topicref type="topic" id="429079409602691" build="ALL" modified="2023-12-19T13:55:24.857Z" icon="0" href="Ex-Lamda-Expressions">
-      <caption translate="true">Lamda Expressions</caption>
+    <topicref type="topic" id="429079409602691" build="ALL" modified="2024-07-17T23:41:34.470Z" icon="0" href="Ex-Lamda-Expressions">
+      <caption translate="true">Lamda 表达式</caption>
     </topicref>
     <topicref type="topic" id="424249979841329" build="ALL" modified="2024-06-03T20:53:40.436Z" icon="0" href="Ex-LINQ">
       <caption translate="true">LINQ 示例</caption>
@@ -7238,8 +7238,8 @@
     <topicref type="topic" id="424266614671750" build="ALL" modified="2024-06-03T21:04:19.572Z" icon="0" href="Ex-SWITCH">
       <caption translate="true">SWITCH 示例</caption>
     </topicref>
-    <topicref type="topic" id="429077405209086" build="ALL" modified="2023-12-19T13:55:39.717Z" icon="0" href="Ex-Typed-Enums">
-      <caption translate="true">Typed Enums</caption>
+    <topicref type="topic" id="429077405209086" build="ALL" modified="2024-07-17T23:39:00.928Z" icon="0" href="Ex-Typed-Enums">
+      <caption translate="true">类型化枚举</caption>
     </topicref>
     <topicref type="topic" id="424267820342591" build="ALL" modified="2024-06-03T21:09:05.293Z" icon="0" href="Ex-USING">
       <caption translate="true">USING 示例</caption>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-05-30T22:02:08.508+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T12:42:32.730+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>方言</title>
   <body>
     <header>
@@ -357,7 +357,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text> 类型，包括 Float 字面量和 &#160;<text style="font-weight:bold;">/vo14</text> 编译器选项</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">FLOAT</text> 类型，包括 Float 字面量和 &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14" style="font-weight:bold;">/vo14</link> 编译器选项</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">-</para>
@@ -449,7 +449,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:40%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() 表达式和 <text style="font-weight:bold;">/vo10</text> 编译器选项</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">IIF</text>() 表达式和<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10" style="font-weight:bold;"> /vo10</link> 编译器选项</para>
         </td>
         <td style="width:71px;">
           <para styleclass="Normal">Yes<text style="font-size:7pt; font-weight:bold; vertical-align:super;"> 7</text></para>
@@ -1057,7 +1057,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">缺少定义的类型会被翻译为 USUAL。使用新的 /vo15 编译器选项，您可以告诉编译器不允许缺少类型定义。</li>
+      <li styleclass="Normal">缺少定义的类型会被翻译为 USUAL。使用新的 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">/vo15</link> 编译器选项，您可以告诉编译器不允许缺少类型定义。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
@@ -1078,7 +1078,7 @@
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">在 VO/Vulcan 方言中，无类型的字面量数组被转换为 VO 数组类型：</li>
+      <li styleclass="Normal">在 VO/Vulcan 方言中，非类型化字面量数组被转换为 VO 数组类型：</li>
     </list>
     <para styleclass="Normal" style="margin-left:39px;"><br/> {&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</para>
     <para styleclass="Normal" style="margin-left:39px;"><br/>类型字面量数组的前缀是 &lt;Type&gt;，如下所示：</para>
@@ -1086,7 +1086,7 @@
     <para styleclass="Normal" style="margin-left:39px;"><br/>这就变成了字面量字符串数组</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"> /vo2 编译器选项会将 NULL_STRING 编译为空字符串。否则编译为 NULL。</li>
+      <li styleclass="Normal">&#32;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link> 编译器选项会将 NULL_STRING 编译为空字符串。否则编译为 NULL。</li>
     </list>
     <para styleclass="Normal"></para>
     <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-12T16:58:14.956+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:39:47.325+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>COPY STRUCTURE EXTENDED 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />如果 &lt;xcTargetFile&gt; 不存在，将创建该文件。 如果存在，该命令将尝试以独占模式打开文件，如果成功，文件将被覆盖，不会发出警告或出错。 如果由于其他进程正在使用该文件等原因而拒绝访问，NetErr() 将被设置为 TRUE。 </para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Normal">COPY STRUCTURE EXTENDED（复制结构扩展）创建一个数据库文件，其内容是当前数据库文件的结构，每个字段的定义都有一条记录。 </para>
+    <para styleclass="Normal">COPY STRUCTURE EXTENDED(复制结构扩展)创建一个数据库文件，其内容是当前数据库文件的结构，每个字段的定义都有一条记录。 </para>
     <para styleclass="Normal">结构扩展数据库文件的结构如下：</para>
     <para styleclass="Normal"></para>
     <para styleclass="" style="text-align:left; text-indent:-204px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:252px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:144px left,222px left,252px left,282px left ;"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">字段名</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">类型</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">长度</text><tab /><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">小数</text><tab /></para>

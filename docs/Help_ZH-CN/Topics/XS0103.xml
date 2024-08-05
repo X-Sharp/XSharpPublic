@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-20T13:46:40.105+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0103</title>
   <keywords>
     <keyword>XS0103</keyword>
@@ -9,17 +9,16 @@
     <header>
       <para styleclass="Heading1">Error XS0103</para>
     </header>
-    <para styleclass="Normal">The name &apos;identifier&apos; does not exist in the current context</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">An attempt was made to use a name that does not exist in the class, namespace, or scope. Check the spelling of the name and check your using directives and assembly references to make sure that the name that you are trying to use is available.</para>
+    <para styleclass="Normal">当前上下文中不存在名称“identifier”</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This error frequently occurs if you declare a variable in a loop or a try or if block and then attempt to access it from an enclosing code block or a separate code block, as shown in the following example.</para>
+    <para styleclass="Normal">尝试了使用类、命名空间或范围中不存在的名称。 检查名称的拼写，并检查 using 指令和程序集引用，确保您尝试使用的名称可用。</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">如果在循环或者 try 或 if 块中声明一个变量，然后尝试从封闭代码块或独立代码块访问此变量，通常就会发生此错误，如下面的示例所示：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">// XS0103.prg</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example resolves the error.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">下面的示例解决了这一错误：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><br/> &#160;</para>
     <para styleclass="Normal"></para>

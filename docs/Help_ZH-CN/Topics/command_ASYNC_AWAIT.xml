@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-29T21:04:32.692+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:31.126+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>command_ASYNC .. AWAIT</title>
   <keywords>
     <keyword>ASYNC</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">AWAIT 用于表达式之前，表示操作可能需要一段时间来处理。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">编译器会（在幕后）构建一个复杂的机制，将方法的主体分割成 await 之前和 await 之后的部分。当表达式返回时，代码会跳转到需要继续的地方。因此，这属于 JUMP(跳转) 语句。</para>
+    <para styleclass="Normal">编译器会（在幕后）生成一个复杂的机制，将方法的主体分割成 await 之前和 await 之后的部分。当表达式返回时，代码会跳转到需要继续的地方。因此，这属于 JUMP(跳转) 语句。</para>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Normal"><snippet src="Ex-ASYNC" inline="false"/></para>
   </body>

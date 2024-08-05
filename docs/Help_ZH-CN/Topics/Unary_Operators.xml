@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-30T10:09:38.782+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T11:55:38.305+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>一元操作符</title>
   <keywords>
     <keyword>-</keyword>
@@ -59,7 +59,7 @@
           <para styleclass="Normal">++x</para>
         </td>
         <td>
-          <para styleclass="Body Text">前缀递增。用 x + 1 值（通常为整数 1）更新存储位置后，返回 x 的值。</para>
+          <para styleclass="Body Text">前缀递增。用 x + 1 值(通常为整数 1)更新存储位置后，返回 x 的值。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -70,7 +70,7 @@
           <para styleclass="Normal">--x</para>
         </td>
         <td>
-          <para styleclass="Body Text">前缀递减。用 x - 1 值（通常为整数 1）更新存储位置后，返回 x 的值。</para>
+          <para styleclass="Body Text">前缀递减。用 x - 1 值(通常为整数 1)更新存储位置后，返回 x 的值。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -92,7 +92,7 @@
           <para styleclass="Normal">x++</para>
         </td>
         <td>
-          <para styleclass="Body Text">后缀递增。返回 x 的值，然后用 x + 1 值更新存储位置（通常增加整数 1）。</para>
+          <para styleclass="Body Text">后缀递增。返回 x 的值，然后用 x + 1 值更新存储位置(通常增加整数 1)。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -103,7 +103,7 @@
           <para styleclass="Normal">x--</para>
         </td>
         <td>
-          <para styleclass="Body Text">后缀递减。返回 x 的值，然后用 x - 1 值更新存储位置（通常减去整数 1）。</para>
+          <para styleclass="Body Text">后缀递减。返回 x 的值，然后用 x - 1 值更新存储位置(通常减去整数 1)。</para>
         </td>
       </tr>
     </table></para>

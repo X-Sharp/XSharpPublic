@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-05T23:22:35.527+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T02:06:30.537+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>解决方案</title>
   <body>
     <header>
@@ -9,7 +9,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Visual Studio 将源代码组织在解决方案和一个或多个项目中。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">解决方案是一个或多个相关项目的容器，其中包括构建信息、Visual Studio 窗口设置以及与特定项目无关的任何其他文件。</para>
+    <para styleclass="Normal">解决方案是一个或多个相关项目的容器，其中包括生成信息、Visual Studio 窗口设置以及与特定项目无关的任何其他文件。</para>
     <para styleclass="Normal">一个解决方案由一个文本文件(扩展名为 .sln)来描述，它有自己独特的格式，不能手工编辑。</para>
     <para styleclass="Body Text">Visual Studio 使用两种文件类型(.sln 和 .suo)来存储解决方案的设置：</para>
     <para styleclass="Body Text"></para>
@@ -53,25 +53,25 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">在同一解决方案中，C# 和 X# 项目完全可以同时使用。</para>
     <para styleclass="Normal">你还可以在不同开发语言的项目之间设置依赖关系，而不会出现问题。</para>
-    <para styleclass="Normal">Visual Studio 会自动确定项目的构建顺序。</para>
+    <para styleclass="Normal">Visual Studio 会自动确定项目的生成顺序。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">如果需要，可以打开 &quot;解决方案属性 &quot;对话框(右键单击 &quot;解决方案资源管理器 &quot;中的 &quot;解决方案 &quot;节点并选择 &quot;属性&quot;)来控制顺序。</para>
-    <para styleclass="Normal">下图显示了 X# 运行时解决方案的 &quot;解决方案属性 &quot;对话框。</para>
+    <para styleclass="Normal">如果需要，可以打开 &quot;解决方案属性&quot; 对话框(右键单击 &quot;解决方案资源管理器 &quot;中的 &quot;解决方案 &quot;节点并选择 &quot;属性&quot;)来控制顺序。</para>
+    <para styleclass="Normal">下图显示了 X# 运行时解决方案的 &quot;解决方案属性&quot; 对话框。</para>
     <para styleclass="Normal">在此对话框中，您还可以设置在 Visual Studio 中开始调试时，哪个项目需要作为 &quot;启动项目&quot;。</para>
     <para styleclass="Normal">如您所见，您还可以同时启动多个项目。</para>
     <para styleclass="Normal">在 Visual Studio 中启动调试器时，&quot;操作&quot;(Action)组合可让您选择启动程序或开始调试程序。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="SolutionProperties.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Body Text">在 &quot;项目依赖项 &quot;(Project Dependencies)选项页面，您可以设置项目之间的依赖关系</para>
+    <para styleclass="Body Text">在 &quot;项目依赖项&quot;(Project Dependencies)选项页面，您可以设置项目之间的依赖关系</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="SolutionDependencies.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text">在该对话框中，你可以看到 2 个项目已经标记了复选框：这些项目已添加到 XSharp.VO 项目的引用列表中。</para>
-    <para styleclass="Body Text">其他项目的复选框为灰色，这意味着它们依赖于 XSharp.VO，因此不能让 XSharp.VO 依赖于它们（这将引入循环关系）。其他项目有白色复选框。如果你愿意，可以将这些项目添加到 XSharp.VO 的 &quot;依赖于：&quot;列表中，这意味着 Visual Studio 将始终在 XSharp.VO 被构建之前构建它们。</para>
+    <para styleclass="Body Text">其他项目的复选框为灰色，这意味着它们依赖于 XSharp.VO，因此不能让 XSharp.VO 依赖于它们(这将引入循环关系)。其他项目有白色复选框。如果你愿意，可以将这些项目添加到 XSharp.VO 的 &quot;依赖于：&quot; 列表中，这意味着 Visual Studio 将始终在 XSharp.VO 被生成之前生成它们。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">您还可以从该对话框打开 &quot;配置管理器&quot;（Configuration Manager），通过它可以维护各种配置（通常是调试和发布配置，但您也可以根据需要更改）和各种 &quot;平台&quot;。通常只有一个名为 &quot;AnyCpu &quot;的平台。但如果你的项目包含 C++ 代码，你也可能有一个 x86 和一个 x64 平台。该配置管理器也可在 Visual Studio &quot;生成&quot;（Build） 菜单中调用。</para>
+    <para styleclass="Body Text">您还可以从该对话框打开 &quot;配置管理器&quot;（Configuration Manager），通过它可以维护各种配置(通常是调试和发布配置，但您也可以根据需要更改)和各种 &quot;平台&quot;。通常只有一个名为 &quot;AnyCpu &quot;的平台。但如果你的项目包含 C++ 代码，你也可能有一个 x86 和一个 x64 平台。该配置管理器也可在 Visual Studio &quot;生成&quot;(Build) 菜单中调用。</para>
     <para styleclass="Body Text">有关生成配置的更多信息，请参阅下一章。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>

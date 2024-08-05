@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-27T19:45:24.640+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-26T10:48:40.303+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SUM 命令</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="Heading1">参数</para>
     <para styleclass="List">&lt;nValueList&gt;<tab />要对处理的每条记录求和的值列表。 请注意，&lt;nValueList&gt; 是必填项，而不是其他方言中的可选项。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;idVarList&gt;<tab />定义一个或多个变量的列表，用于分配求和的结果。 如果列表中的变量引用不明确（即在编译时未声明或未明确使用别名限定），则假定为 MEMVAR。 如果列表中的任何变量不可见或不存在，则使用 &lt;uValue&gt; 创建一个私有变量。</para>
+    <para styleclass="List">TO &lt;idVarList&gt;<tab />定义一个或多个变量的列表，用于分配求和的结果。 如果列表中的变量引用不明确(即在编译时未声明或未明确使用别名限定)，则假定为 MEMVAR。 如果列表中的任何变量不可见或不存在，则使用 &lt;uValue&gt; 创建一个私有变量。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

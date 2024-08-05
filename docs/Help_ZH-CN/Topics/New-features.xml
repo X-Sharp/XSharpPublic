@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-03T21:21:42.449+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-24T13:17:08.835+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>新的语言特性</title>
   <body>
     <header>
@@ -33,7 +33,7 @@
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">USING</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">STATIC</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> &lt;Name&gt;</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">使用 USING 的 STATIC 修饰符（注意不再需要 # 号）可以命名一个静态类。这样，您就可以将该类的方法作为函数使用。例如：</para>
+          <para styleclass="Body Text">使用 USING 的 STATIC 修饰符(注意不再需要 # 号)可以命名一个静态类。这样，您就可以将该类的方法作为函数使用。例如：</para>
           <para styleclass="Body Text">&#32;<br/><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> &#160; &#160; &#160; </text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">Using</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">Static</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> System.Console &#160;</text></para>
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> &#160; &#160; &#160; </text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">Function</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> Start </text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">As</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">&#32;</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">Void</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">&#32;</text></para>
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> &#160; &#160; &#160; &#160; &#160;WriteLine(</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#a31515;">&quot;X# is cool!&quot;</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">) </text></para>
@@ -63,7 +63,7 @@
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">End</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> [SWITCH]</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">与 DO CASE 命令相比，SWITCH 语句生成的跳转结构更有效。此外，表达式只被评估一次。</para>
+          <para styleclass="Body Text">与 DO CASE 命令相比，SWITCH 语句生成的跳转结构更有效。此外，表达式只被计算一次。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -87,7 +87,7 @@
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">x := </text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">Checked</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">(y)</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">无论整个项目的编译器设置如何，代码块内的语句都将进行检查转换。</para>
+          <para styleclass="Body Text">无论整个项目的编译器设置如何，代码块内的语句都将进行 checked 转换。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -101,7 +101,7 @@
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">x := </text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">UNCHECKED</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">(y)</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">无论整个项目的编译器设置如何，块内的语句都将进行未选中的转换。</para>
+          <para styleclass="Body Text">无论整个项目的编译器设置如何，块内的语句都将进行 unchecked 转换。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -141,7 +141,7 @@
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;">&lt;Expression&gt; </text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#0000ff;">IS</text><text styleclass="" style="font-family:NSimSun; font-size:9pt; color:#000000;"> &lt;Type&gt;</text></para>
         </td>
         <td style="vertical-align:top;">
-          <para styleclass="Body Text">允许检查类型的表达式。可以代替 IsInstanceOf()使用，而且效果更好</para>
+          <para styleclass="Body Text">允许检查类型的表达式。可以代替 IsInstanceOf() 使用，而且效果更好</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

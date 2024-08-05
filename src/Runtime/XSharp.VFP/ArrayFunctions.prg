@@ -28,7 +28,7 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
     CASE 0
             RETURN (DWORD) a:Count
     OTHERWISE
-        var cMessage := __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nArrayAttribute))
+        var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nArrayAttribute))
         THROW ArgumentOutOfRangeException { nameof(nArrayAttribute),nArrayAttribute, cMessage}
     END SWITCH
 
@@ -42,23 +42,23 @@ FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL
    IF ( nRowSubscript > 0 .AND. nRowSubscript <= ArrayName:Rows )
       RETURN nRowSubscript
    ENDIF
-   var cMessage := __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nRowSubscript))
+   var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nRowSubscript))
    THROW ArgumentOutOfRangeException { nameof(nRowSubscript),nRowSubscript, cMessage}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscript AS DWORD) AS USUAL
     IF ArrayName:MultiDimensional
         IF nRowSubscript == 0 .OR. nRowSubscript >  ArrayName:Rows
-           var cMessage := __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE,nameof(nRowSubscript))
+           var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE,nameof(nRowSubscript))
            THROW ArgumentOutOfRangeException { nameof(nRowSubscript), nRowSubscript, cMessage}
         ELSEIF nColumnSubscript == 0 .OR. nColumnSubscript > ArrayName:Columns
-           var cMessage := __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE,nameof(nColumnSubscript))
+           var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE,nameof(nColumnSubscript))
            THROW ArgumentOutOfRangeException { nameof(nColumnSubscript), nColumnSubscript, cMessage }
         ENDIF
         nRowSubscript --
         RETURN ( nRowSubscript * ArrayName:Columns ) + nColumnSubscript
     ENDIF
-    THROW ArgumentException { __VfpStr(VFPErrors.ONE_DIM_NO_COLUMNS)}
+    THROW ArgumentException { __VfpStr(VFPErrors.VFP_ONE_DIM_NO_COLUMNS)}
 
 /// <exclude/>
 FUNCTION __FoxADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 AS LONG) AS DWORD
@@ -92,10 +92,10 @@ FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) A
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asubscript/*" />
 FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript := 1 AS DWORD) AS DWORD
     IF nSubscript == 0 .OR. nSubscript > 2
-        var cMessage := __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nSubscript))
+        var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nSubscript))
         THROW ArgumentOutOfRangeException { nameof(nSubscript), nSubscript, cMessage }
     ELSEIF nElementNumber == 0 .OR. nElementNumber >  ArrayName:Count
-        var cMessage := __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber))
+        var cMessage := __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber))
         THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, cMessage }
     ENDIF
 
@@ -118,7 +118,7 @@ FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript
     ELSE
 
         IF nSubscript == 2
-            THROW ArgumentException { __VfpStr(VFPErrors.ONE_DIM_NO_COLUMNS)}
+            THROW ArgumentException { __VfpStr(VFPErrors.VFP_ONE_DIM_NO_COLUMNS)}
         ENDIF
 
         RETURN nElementNumber
@@ -129,25 +129,25 @@ FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript
 FUNCTION __FoxAIns(foxArray AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
     IF !foxArray:MultiDimensional
         IF nInsertType > 1
-            THROW ArgumentException { __VfpStr(VFPErrors.ONE_DIM_NO_COLUMNS)}
+            THROW ArgumentException { __VfpStr(VFPErrors.VFP_ONE_DIM_NO_COLUMNS)}
         ELSEIF nElementNumber == 0 .OR. nElementNumber > (DWORD) foxArray:Count
-            THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber)) }
+            THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber)) }
         ENDIF
 
         foxArray:Insert((LONG) nElementNumber)
     ELSE
         IF nInsertType > 2
-            THROW ArgumentOutOfRangeException { nameof(nInsertType), nInsertType, __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nInsertType)) }
+            THROW ArgumentOutOfRangeException { nameof(nInsertType), nInsertType, __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nInsertType)) }
         ENDIF
         IF nInsertType == 2
             IF nElementNumber == 0 .OR. nElementNumber > (DWORD) foxArray:Columns
-                THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber)) }
+                THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber)) }
             ENDIF
 
             foxArray:InsertColumn( (LONG) nElementNumber)
         ELSE
             IF nElementNumber == 0 .OR. nElementNumber > (DWORD) foxArray:Rows
-                THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, __VfpStr(VFPErrors.ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber))}
+                THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, __VfpStr(VFPErrors.VFP_ATTRIBUTE_OUT_OF_RANGE, nameof(nElementNumber))}
             ENDIF
 
             foxArray:InsertRow((LONG) nElementNumber)

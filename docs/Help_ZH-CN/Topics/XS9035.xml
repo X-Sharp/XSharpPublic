@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-07-09T13:04:56.394+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS9035</title>
   <keywords>
     <keyword>XS9035</keyword>
@@ -9,6 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS9035</para>
     </header>
-    <para styleclass="Normal">The first argument to {0} must be a &apos;{1}&apos;.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">{0} 的第一个参数必须是 &apos;{1}&apos; 。</para>
   </body>
 </topic>

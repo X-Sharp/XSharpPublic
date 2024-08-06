@@ -1,10 +1,27 @@
 <!--
 ***********************************************************************************************
 XSharp.Common.Targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the steps in the standard build process specific for C# .NET projects.
+For example, it contains the step that actually calls the C# compiler.  The remainder
+of the build process is defined in Microsoft.Common.targets, which is imported by
+this file.
+
+Copyright (c) XSharp B.V.  All Rights Reserved
+
+inspired by Microsoft.CSharp.targets
 ***********************************************************************************************
 -->
 <Project>
   <PropertyGroup>
+    <!-- 
+          Define properties for the MS targets files so it is easier to check if they exist 
+          because for some olders builds of VS they do not exist
+    -->
     <XsMsBeforeTargets>$(MSBuildToolsPath)\Microsoft.Managed.Before.targets</XsMsBeforeTargets>
     <XsMsAfterTargets>$(MSBuildToolsPath)\Microsoft.Managed.After.targets</XsMsAfterTargets>
   </PropertyGroup>
@@ -23,7 +40,9 @@ XSharp.Common.Targets
   </Choose>
 
   <Import Condition="exists('$(XsMsBeforeTargets)')" Project="$(XsMsBeforeTargets)" />
+
   <Import Project="$(XSharpTargetsPath)" />
+
   <Import Condition="exists('$(XsMsAfterTargets)')" Project="$(XsMsAfterTargets)" />
 
 </Project>

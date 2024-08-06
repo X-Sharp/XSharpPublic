@@ -1,7 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<!--
 ***********************************************************************************************
-XSharp.targets
+XSharp.CurrentVersion.targets
 
 WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
           created a backup copy.  Incorrect changes to this file will make it
@@ -12,10 +11,12 @@ For example, it contains the step that actually calls the C# compiler.  The rema
 of the build process is defined in Microsoft.Common.targets, which is imported by
 this file.
 
+inspired by Microsoft.CSharp.CurrentVersion.targets
+
 Copyright (c) XSharp B.V.  All Rights Reserved
 ***********************************************************************************************
 -->
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <Import Condition="'$(XSharpDefaultTargets)' == ''" Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
     <PropertyGroup>
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -31,6 +32,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <PropertyGroup>
     <!-- The next line takes care of automatically including all PRG files when building a SDK project -->
     <EnableDefaultCompileItems>$(UsingNETSdkDefaults)</EnableDefaultCompileItems>
+    
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <Language>XSharp</Language>
     <TargetRuntime>Managed</TargetRuntime>
@@ -41,22 +43,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <!-- The next line triggers the import of all kind of project capabilities from the Microsoft.Common.CurrentVersion.Targets -->
     <DefineCommonCapabilities Condition=" '$(DefineCommonCapabilities)' == '' ">true</DefineCommonCapabilities>
     <SynthesizeLinkMetadata Condition=" '$(SynthesizeLinkMetadata)' == '' and '$(HasSharedItems)' == 'true' ">true</SynthesizeLinkMetadata>
-    <!-- NoCompilerStandardLib maps to the compiler's /nostdlib option. By default we always
-           want that switch to be passed to the compiler so that either we or the user
-           provides the references
-           NoStdLib on the other hand indicates that the user doesn't want standard references
-           so only if NoStdLib isn't set to true, will we provide the standard references
-      -->
-    <NoCompilerStandardLib Condition=" '$(NoCompilerStandardLib)' == '' ">true</NoCompilerStandardLib>
-    <ErrorEndLocation Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(ErrorEndLocation)' == ''">true</ErrorEndLocation>
-    <!-- When building inside VS, by default use the same language for compiler messages as VS itself does. -->
-    <PreferredUILang Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(PreferredUILang)' == ''">$([System.Globalization.CultureInfo]::CurrentUICulture.Name)</PreferredUILang>
-    <!-- Add any "automatic" compiler references that need to be resolved when NoCompilerStandardLib is set
-         but the user hasn't told us to not include standard references -->
-
-    <!-- Make sure that we have full paths when compiling inside VS -->
-    <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
-
+    <AppDesignerFolder Condition="'$(AppDesignerFolder)' == ''">Properties</AppDesignerFolder>
   </PropertyGroup>
   <ItemGroup Condition=" '$(NoCompilerStandardLib)' == 'true' and '$(NoStdLib)' != 'true' ">
     <!-- Note that unlike VB, X# does not automatically locate System.dll as a "standard library"
@@ -69,7 +56,11 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <AvailableItemName Include="NativeResource" />
   </ItemGroup>
 
-  <!--
+    <ItemGroup Condition=" '$(DefineCommonCapabilities)' == 'true' ">
+      <ProjectCapability Include="ReferencesFolder;LanguageService" />
+    </ItemGroup>
+
+    <!--
     The CreateManifestResourceNames target create the manifest resource names from the .RESX
     files.
 
@@ -100,7 +91,6 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       Condition="'@(EmbeddedResource)' != '' "
       DependsOnTargets="$(CreateManifestResourceNamesDependsOn)"
   >
-
     <ItemGroup>
       <_Temporary Remove="@(_Temporary)" />
     </ItemGroup>
@@ -111,9 +101,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
           RootNamespace="$(RootNamespace)"
               UseDependentUponConvention="$(EmbeddedResourceUseDependentUponConvention)"
           Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and ('%(EmbeddedResource.WithCulture)' == 'false' or '%(EmbeddedResource.Type)' == 'Resx')">
-
       <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
-
     </CreateXSharpManifestResourceName>
 
     <!-- Create manifest names for all culture non-resx resources -->
@@ -123,9 +111,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
           PrependCultureAsDirectory="false"
               UseDependentUponConvention="$(EmbeddedResourceUseDependentUponConvention)"
           Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and '%(EmbeddedResource.WithCulture)' == 'true' and '%(EmbeddedResource.Type)' == 'Non-Resx'">
-
       <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
-
     </CreateXSharpManifestResourceName>
 
     <ItemGroup>
@@ -141,7 +127,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   </PropertyGroup>
 
   <Target Name="AfterResGen">
-
+    <!-- This X# specific target generates the file NativeResources.res from the .rc files -->
     <NativeResourceCompiler
        Sources="@(NativeResource)"
        IncludePaths="$(IncludePaths)"
@@ -167,6 +153,14 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <PropertyGroup Condition="'$(MSBuildAssemblyVersion)' == ''">
     <FrameworkPathOverride Condition="!Exists('$(FrameworkPathOverride)\mscorlib.dll')">$(MSBuildFrameworkToolsPath)</FrameworkPathOverride>
   </PropertyGroup>
+    <ItemGroup>
+        <DocFileItem Include="$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <DocFileItem Include="$(DocumentationFile)" Condition="'$(DocumentationFile)'!=''"/>
+    </ItemGroup>
+
 
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
@@ -351,6 +345,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <Import Project="$(XSharpDesignTimeTargetsPath)" Condition="'$(XSharpDesignTimeTargetsPath)' != '' and Exists('$(XSharpDesignTimeTargetsPath)')" />
 
     <Import Project="$(MSBuildToolsPath)\Microsoft.ServiceModel.targets" Condition="('$(TargetFrameworkVersion)' != 'v2.0' and '$(TargetFrameworkVersion)' != 'v3.0' and '$(TargetFrameworkVersion)' != 'v3.5') and Exists('$(MSBuildToolsPath)\Microsoft.ServiceModel.targets')"/>
+
     <Target Name="_SetTargetFrameworkMonikerAttribute" BeforeTargets="GenerateTargetFrameworkMonikerAttribute">
        <PropertyGroup>
        <TargetFrameworkMonikerAssemblyAttributeText Condition="'$(TargetFrameworkMoniker)' != '' and '$(TargetingClr2Framework)' != 'true'">

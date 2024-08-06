@@ -434,6 +434,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var s = GenerateEmptyStatement();
                     s = s.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DynamicVariablesNotAllowed));
+                    s.XNode = dimVar;
                     stmts.Add(s);
                     return stmts;
                 }

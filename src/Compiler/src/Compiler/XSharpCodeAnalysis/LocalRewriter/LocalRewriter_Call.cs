@@ -45,9 +45,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 out var localsymbols) )
             {
                 int count = 0;
-                foreach (var localsym in localsymbols)
+                foreach (var sym in localsymbols)
                 {
-                    if (localsym.Name.IndexOf("$") == -1)
+                    if (sym.Name.IndexOf("$") == -1)
                         count++;
                 }
                 if (count == 0 && isStatic)
@@ -88,12 +88,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     exprs.Add(mcall);
                 }
 
-                foreach (var localsym in localsymbols)
+                foreach (var symbol in localsymbols)
                 {
-                    var name = localsym.Name;
+                    var name = symbol.Name;
                     if (name.IndexOf("$") >= 0)
                         continue;
-                    var localvar = _factory.Local(localsym);
+                    BoundExpression? localvar = null;
+                    if (symbol is LocalSymbol ls)
+                    {
+                        localvar = _factory.Local(ls);
+                    }
+                    else if (symbol is ParameterSymbol ps)
+                    {
+                        localvar = _factory.Parameter(ps);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    var varType = localvar.Type;
                     var localname = _factory.Literal(name);
                     count++;
                     // __LocalPut("name", (USUAL) localvar)
@@ -107,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // LocalVar := (CorrectType) __LocalGet("name")
                     mcall = _factory.StaticCall(rtType, ReservedNames.LocalGet, localname);
                     mcall.WasCompilerGenerated = true;
-                    value = MakeConversionNode(mcall, localsym.Type, false);
+                    value = MakeConversionNode(mcall, localvar.Type!, false);
                     value.WasCompilerGenerated = true;
                     var ass = _factory.AssignmentExpression(localvar, value);
                     ass.WasCompilerGenerated = true;

@@ -9,6 +9,7 @@ using System;
 using System.Runtime.InteropServices;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Microsoft.VisualStudio.Shell;
+using System.Linq;
 
 namespace XSharp.Project
 {
@@ -42,7 +43,15 @@ namespace XSharp.Project
         protected override ProjectNode CreateProject()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            XSharpProjectNode project = new XSharpProjectNode(this.package);
+            XSharpProjectNode project;
+            if (BuildProject.Imports.Where(i => i.SdkResult != null).Any())
+            {
+                project = new XSharpSDKProjectNode(this.package);   
+            }
+            else
+            {
+                project = new XSharpProjectNode(this.package);
+            }
             IOleServiceProvider provider = null;
             var serviceProvider = this.package as IServiceProvider;
             // ProjectPackage already switches to UI thread inside GetService

@@ -1692,7 +1692,7 @@ OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
         SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
     ENDIF
     IF SELF:EoF
-        RETURN FALSE
+        RETURN TRUE
     ENDIF
     SELF:ForceRel()
 	IF SELF:_readRecord()

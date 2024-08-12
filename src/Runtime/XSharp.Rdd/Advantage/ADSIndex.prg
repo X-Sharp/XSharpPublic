@@ -250,13 +250,13 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                     newDesc := FALSE
                 endif
                 SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT VAR wDescending), EG_ARG)
-                local oldDesc := wDescending == ADS_TRUE as LOGIC
+                local oldDesc := wDescending == ACE.ADS_TRUE as LOGIC
                 info:Result := oldDesc
                 if hasNewDesc
                     if newDesc != oldDesc
                         // the parameter usReverseDirection indicates that the direction should be reversed.
                         // so this does NOT specify descending or ascending.
-                        SELF:_CheckError(ACE.AdsSetIndexDirection(hIndex, ADS_TRUE), EG_ARG)
+                        SELF:_CheckError(ACE.AdsSetIndexDirection(hIndex, ACE.ADS_TRUE), EG_ARG)
                     endif
                 endif
 

@@ -1117,7 +1117,7 @@ OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
                 SELF:_OemConvert := TRUE
             ELSE
                 SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
-                SELF:_OemConvert := TRUE
+                SELF:_OemConvert := FALSE
             ENDIF
             //
 		ELSE

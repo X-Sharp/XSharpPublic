@@ -103,8 +103,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:PageType   := CdxPageType.Leaf
             VAR oLeaf       := CdxLeafPage{SELF:_bag,SELF}
             oLeaf:InitBlank(SELF:_tag)
-            SELF:PageType  := CdxPageType.Leaf | CdxPageType.Root
-            SELF:Write()
+            oLeaf:PageType  := CdxPageType.Leaf | CdxPageType.Root
+            oLeaf:Write()
+            SELF:Bag:_PageList:Delete(oLeaf:PageNo)
+            SELF:Bag:_PageList:Add(oLeaf)
 
         #endregion
         #region Helper Methods to read/write numbers are strings out of the buffer

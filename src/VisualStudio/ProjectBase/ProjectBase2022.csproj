@@ -19,7 +19,7 @@
     <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1762;VSSDK006;NU1603</NoWarn>
+    <NoWarn>1762;VSSDK006;NU1603;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

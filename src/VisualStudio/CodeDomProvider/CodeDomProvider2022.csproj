@@ -12,7 +12,7 @@
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <VsixType>v3</VsixType>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CreateVsixContainer>True</CreateVsixContainer>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>

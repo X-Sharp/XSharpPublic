@@ -26,7 +26,7 @@
     <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1762;NU1603</NoWarn>
+    <NoWarn>1762;NU1903</NoWarn>
     <DeployExtension>True</DeployExtension>
     <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
@@ -37,7 +37,7 @@
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
+    <Compile Include="$(CommonDir)CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="$(CommonDir)Constants.cs">

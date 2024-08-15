@@ -3,20 +3,20 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using XSharp;
+
 namespace Microsoft.VisualStudio.Project
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Runtime.InteropServices;
-    using System.Text;
-    using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-    using Microsoft.VisualStudio.Shell.Interop;
-    using XSharp;
-
     public class XBuildMacroCollection : ICollection, IEnumerable<XBuildMacroCollection.MacroNameValuePair>
     {
         // =========================================================================================

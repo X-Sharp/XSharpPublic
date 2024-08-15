@@ -21,6 +21,8 @@ namespace Microsoft.VisualStudio.Project
         public const string ResolveProjectReferences = nameof(ResolveProjectReferences);
         public const string ResolveAssemblyReferences = nameof(ResolveAssemblyReferences);
         public const string ResolveComReferences = nameof(ResolveComReferences);
+        public const string GetSuggestedWorkloads = nameof(GetSuggestedWorkloads);
+        public const string GetTargetFrameworks = nameof(GetTargetFrameworks);
         public const string Build = nameof(Build);
         public const string Rebuild = nameof(Rebuild);
         public const string Clean = nameof(Clean);

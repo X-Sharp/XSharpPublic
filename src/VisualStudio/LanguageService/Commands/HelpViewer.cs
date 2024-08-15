@@ -193,6 +193,8 @@ namespace XSharp.LanguageService
             }
             var help = GeneralHelp;
             EnvDTE.DTE dte = (EnvDTE.DTE)Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
+            if (dte == null)
+                return;
             var locale = dte.LocaleID;
             var culture = System.Globalization.CultureInfo.GetCultureInfo(locale);
             if (culture.TwoLetterISOLanguageName == "zh")

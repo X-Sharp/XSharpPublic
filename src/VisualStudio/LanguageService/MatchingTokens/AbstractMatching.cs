@@ -88,7 +88,7 @@ namespace XSharp.LanguageService
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-        protected SnapshotSpan MakeSnapshotSpan(IToken token, ITextSnapshot snapshot)
+        static protected SnapshotSpan MakeSnapshotSpan(IToken token, ITextSnapshot snapshot)
         {
             return new SnapshotSpan(snapshot, token.StartIndex, token.StopIndex - token.StartIndex + 1);
         }
@@ -113,9 +113,9 @@ namespace XSharp.LanguageService
             }
             return false;
         }
-        protected bool matchesPosition(IToken token)
+        internal static protected bool matchesPosition(IToken token, SnapshotPoint? currentChar)
         {
-            return token.StartIndex <= _currentChar && token.StopIndex >= _currentChar;
+            return token.StartIndex <= currentChar && token.StopIndex >= currentChar;
         }
 
         public abstract IEnumerable<ITagSpan<TextMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans);

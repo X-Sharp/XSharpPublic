@@ -271,7 +271,11 @@ namespace XSharp.LanguageService
                 int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
             }
             GetIntellisenseSettings(true);
-            await Commenting.InitializeAsync();
+            await CommentCommand.InitializeAsync();
+            await GotoCommand.InitializeAsync();
+            await HelpCommand.InitializeAsync();
+            await SaveCommand.InitializeAsync();
+            await FormattingCommand.InitializeAsync();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             XSettings.LanguageService = this;
         }

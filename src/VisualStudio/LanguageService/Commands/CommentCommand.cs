@@ -4,12 +4,17 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Tagging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using XSharp.LanguageService.Commands;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService
 {
-    internal class Commenting
+    internal class CommentCommand : AbstractCommand
     {
         readonly static string[] CommentChars = new[] { "//", "&&", "*" };
 
@@ -20,21 +25,6 @@ namespace XSharp.LanguageService
             await VS.Commands.InterceptAsync(VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK, () => Execute(Uncomment));
         }
 
-        private static CommandProgression Execute(Action<DocumentView> action)
-        {
-            return ThreadHelper.JoinableTaskFactory.Run(async () =>
-            {
-                DocumentView doc = await VS.Documents.GetActiveDocumentViewAsync();
-
-                if (doc?.TextBuffer != null && doc.TextBuffer.ContentType.IsOfType(Constants.LanguageName))
-                {
-                    action(doc);
-                    return CommandProgression.Stop;
-                }
-
-                return CommandProgression.Continue;
-            });
-        }
         private static (int, int) swapNumbers(int start, int end)
         {
             if (start > end)
@@ -43,7 +33,7 @@ namespace XSharp.LanguageService
             }
             return (start, end);
         }
-
+ 
         private static void Comment(DocumentView doc)
         {
             // Todo: add check to see if we have a block marked on a single line

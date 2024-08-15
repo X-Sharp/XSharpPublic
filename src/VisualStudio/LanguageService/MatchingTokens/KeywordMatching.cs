@@ -59,10 +59,10 @@ namespace XSharp.LanguageService
             _prefix = "Keyword Matching: ";
         }
     
-        private IList<SnapshotSpan> GetSpansForBlock(XSourceBlock b)
+        static private IList<SnapshotSpan> GetSpansForBlock(XSourceBlock b, ITextBuffer buffer)
         {
             var spans = new List<SnapshotSpan>();
-            var snapshot = _buffer.CurrentSnapshot;
+            var snapshot = buffer.CurrentSnapshot;
             spans.Add(MakeSnapshotSpan(b.Token, snapshot));
             foreach (var child in b.Children)
             {
@@ -71,23 +71,23 @@ namespace XSharp.LanguageService
             return spans;
         }
 
-        IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks)
+        internal static IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks, SnapshotPoint? currentChar, ITextBuffer buffer)
         {
             foreach (var block in blocks)
             {
-                if (matchesPosition(block.Token))
+                if (matchesPosition(block.Token, currentChar))
                 {
-                    return GetSpansForBlock(block);
+                    return GetSpansForBlock(block, buffer);
                 }
-                if (matchesPosition(block.Last.Token))
+                if (matchesPosition(block.Last.Token, currentChar))
                 {
-                    return GetSpansForBlock(block);
+                    return GetSpansForBlock(block, buffer);
                 }
                 foreach (var child in block.Children)
                 {
-                    if (matchesPosition(child.Token))
+                    if (matchesPosition(child.Token, currentChar))
                     {
-                        return GetSpansForBlock(block);
+                        return GetSpansForBlock(block, buffer);
                     }
                 }
             }
@@ -102,7 +102,7 @@ namespace XSharp.LanguageService
             {
                 foreach (var token in entity.BlockTokens)
                 {
-                    if (matchesPosition(token))
+                    if (matchesPosition(token, _currentChar))
                     {
                         var spans = new List<SnapshotSpan>();
                         var snapshot = _buffer.CurrentSnapshot;
@@ -162,7 +162,7 @@ namespace XSharp.LanguageService
             {
                 // get all the blocks that surround the current position
                 var blocks = _document.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
-                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks);
+                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks, currentChar, _buffer);
                 if (foundSpans == null)
                 {
                     var ents = _document.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine); // && e.BlockTokens.Count > 1);

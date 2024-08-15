@@ -50,7 +50,7 @@ namespace XSharp.LanguageService
                         asm.FileName.IndexOf("/Microsoft", StringComparison.OrdinalIgnoreCase) >= 0 ||
                         asm.FileName.IndexOf("\\Microsoft", StringComparison.OrdinalIgnoreCase) >= 0;
         }
-        internal static void ShowHelp(ITextView TextView, uint nCmdID, object param)
+        internal static void ShowHelp(ITextView TextView, object param)
         {
             string sig = null;
             bool showTopic = false;

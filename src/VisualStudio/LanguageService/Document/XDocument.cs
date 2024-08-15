@@ -8,10 +8,13 @@ using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Controls;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
 namespace XSharp.LanguageService
@@ -193,6 +196,20 @@ namespace XSharp.LanguageService
                 }
             }
             return tokens;
+
+        }
+        internal XSourceEntity GetCurrentEntity(IWpfTextView textView)
+        {
+            var currentChar = textView.Caret.Position.BufferPosition;
+            int currentLine = currentChar.GetContainingLine().LineNumber;
+            // LastOrDefault because we want the innermost entity
+            // CLASS
+            // METHOD
+            // line        this line is both inside the class and the method. We want the method
+            // END METHOD
+            // END CLASS
+            var currentEntity = _entities.LastOrDefault(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine);
+            return currentEntity;
 
         }
         internal IList<IToken> GetTokens(string text)

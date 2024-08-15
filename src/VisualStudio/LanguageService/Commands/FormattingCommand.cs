@@ -11,17 +11,24 @@ namespace XSharp.LanguageService
         public static async Task InitializeAsync()
         {
             var cmd = new MyCommands();
-            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATDOCUMENT, () => Execute(FormatDocument, CommandProgression.Continue));
-            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATSELECTION, () => Execute(FormatSelection, CommandProgression.Continue));
+            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATDOCUMENT, () => Execute(FormatDocument));
+            await cmd.InterceptAsync(VSConstants.VSStd2KCmdID.FORMATSELECTION, () => Execute(FormatSelection));
         }
 
         private static void FormatDocument(DocumentView doc)
         {
-            ;// Implementation is still in FormattingCommandHandler        }
+            if (doc.TextView.Properties.TryGetProperty<XSharpFormattingCommandHandler>(typeof(XSharpFormattingCommandHandler), out var cmdHandler))
+            {
+                cmdHandler.FormatDocument();
+            }
+
         }
         private static void FormatSelection(DocumentView doc)
         {
-            ;// Implementation is still in FormattingCommandHandler
+            if (doc.TextView.Properties.TryGetProperty<XSharpFormattingCommandHandler>(typeof(XSharpFormattingCommandHandler), out var cmdHandler))
+            {
+                cmdHandler.FormatSelection();
+            }
         }
 
     }

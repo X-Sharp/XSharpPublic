@@ -93,7 +93,7 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-        IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities)
+        internal static IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities, SnapshotPoint? currentChar, ITextBuffer buffer)
         {
             // The blockTokens contains the start and end tokens for an entity
             // like CLASS .. END CLASS
@@ -102,10 +102,10 @@ namespace XSharp.LanguageService
             {
                 foreach (var token in entity.BlockTokens)
                 {
-                    if (matchesPosition(token, _currentChar))
+                    if (matchesPosition(token, currentChar))
                     {
                         var spans = new List<SnapshotSpan>();
-                        var snapshot = _buffer.CurrentSnapshot;
+                        var snapshot = buffer.CurrentSnapshot;
                         foreach (var t in entity.BlockTokens)
                         {
                             spans.Add(MakeSnapshotSpan(t, snapshot));
@@ -166,7 +166,7 @@ namespace XSharp.LanguageService
                 if (foundSpans == null)
                 {
                     var ents = _document.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine); // && e.BlockTokens.Count > 1);
-                    foundSpans = GetEntitySpans(ents);
+                    foundSpans = GetEntitySpans(ents,currentChar, _buffer);
                 }
                
                 if (foundSpans != null)

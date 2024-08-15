@@ -25,7 +25,6 @@ namespace XSharp.LanguageService
     {
         readonly ITextView _textView;
         readonly IOleCommandTarget m_nextCommandHandler;
-        readonly IBufferTagAggregatorFactoryService _aggregator;
         readonly ConcurrentDictionary<int, int> _linesToSync;
         readonly XFile _file;
         private readonly ITextBuffer _buffer;
@@ -37,11 +36,10 @@ namespace XSharp.LanguageService
         bool _suspendSync = false;
         int currentLine = -1;
         internal XSharpFormattingCommandHandler(IVsTextView textViewAdapter, ITextView textView,
-            IBufferTagAggregatorFactoryService aggregator)
+            IBufferTagAggregatorFactoryService _)
         {
             this._textView = textView;
             this._textView.Closed += OnClosed;
-            this._aggregator = aggregator;
             //add this to the filter chain
             _linesToSync = new ConcurrentDictionary<int, int>();
             //
@@ -110,6 +108,36 @@ namespace XSharp.LanguageService
 
         }
 
+        internal void FormatDocument()
+        {
+            try
+            {
+                _linesToSync.Clear();
+                _suspendSync = true;
+                FormatDocumentWorker();
+            }
+            finally
+            {
+                _linesToSync.Clear();
+                _suspendSync = false;
+            }
+        }
+
+        internal void FormatSelection()
+        {
+            try
+            {
+                _linesToSync.Clear();
+                _suspendSync = true;
+                FormatSelectionWorker();
+            }
+            finally
+            {
+                _linesToSync.Clear();
+                _suspendSync = false;
+            }
+        }
+
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -140,37 +168,6 @@ namespace XSharp.LanguageService
                     
                     switch (nCmdID)
                     {
-                        case (int)VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                            try
-                            {
-                                _linesToSync.Clear();
-                                _suspendSync = true;
-                                // todo: Use Command for formatting
-                                // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Formatting.cs
-
-                                FormatDocument();
-                            }
-                            finally
-                            {
-                                _linesToSync.Clear();
-                                _suspendSync = false;
-                            }
-                            break;
-
-                        case (int)VSConstants.VSStd2KCmdID.FORMATSELECTION:
-                            try
-                            {
-                                _suspendSync = true;
-                                // todo: Use Command for formatting
-                                // see https://github.com/madskristensen/PkgdefLanguage/blob/master/src/Commands/Formatting.cs
-                                FormatSelection();
-                            }
-                            finally
-                            {
-                                _suspendSync = false;
-                            }
-                            break;
-
                         case (int)VSConstants.VSStd2KCmdID.RETURN:
                             if (!completionActive)
                             {

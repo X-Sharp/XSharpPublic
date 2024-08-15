@@ -5,13 +5,9 @@
 //
 //------------------------------------------------------------------------------
 
-using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
-using XSharp.Parser;
-using XSharpModel;
-using static XSharp.Parser.VsParser;
 using XSharp.Settings;
 namespace XSharp.LanguageService
 {
@@ -33,7 +29,7 @@ namespace XSharp.LanguageService
             }
             return true;
         }
-        private void FormatLine()
+        internal void FormatLine()
         {
 
             SnapshotPoint caret = this._textView.Caret.Position.BufferPosition;
@@ -78,7 +74,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        private bool CanEdit
+        internal bool CanEdit
         {
             get
             {
@@ -101,7 +97,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Format document, evaluating line after line
         /// </summary>
-        private void FormatDocument()
+        private void FormatDocumentWorker()
         {
             if (!CanEdit)
                 return;
@@ -175,7 +171,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Format the current selection
         /// </summary>
-        private void FormatSelection()
+        internal void FormatSelectionWorker()
         {
             if (!CanEdit)
                 return;

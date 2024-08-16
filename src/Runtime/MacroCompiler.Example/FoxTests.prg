@@ -136,6 +136,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a .XOR. b }", Args(FALSE, FALSE), FALSE,typeof(LOGIC))
         TestMacro(mc, "Qout(.NULL.),.NULL."      ,Args(), DBNull.Value, typeof(DBNull))
+        TestMacro(mc, "Str(123,7,2)", Args(), " 123.00", typeof(string))
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN
 

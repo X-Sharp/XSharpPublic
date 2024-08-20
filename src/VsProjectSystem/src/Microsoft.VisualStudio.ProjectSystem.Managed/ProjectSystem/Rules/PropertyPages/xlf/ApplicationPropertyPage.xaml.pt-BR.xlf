@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="pt-BR" original="../ApplicationPropertyPage.xaml">
+    <body>
+      <trans-unit id="BoolProperty|AutoGenerateBindingRedirects|Description">
+        <source>Add binding redirects automatically to App.config.</source>
+        <target state="translated">Adicionar redirecionamentos de associação automaticamente a App.config.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|AutoGenerateBindingRedirects|DisplayName">
+        <source>Auto-generate binding redirects</source>
+        <target state="translated">Gerar automaticamente redirecionamentos de associação</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|UseWPF|Description">
+        <source>Enable WPF for this project.</source>
+        <target state="translated">Habilita o WPF para este projeto.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|UseWPF|DisplayName">
+        <source>Windows Presentation Foundation</source>
+        <target state="translated">Windows Presentation Foundation</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|UseWindowsForms|Description">
+        <source>Enable Windows Forms for this project.</source>
+        <target state="translated">Habilitar o Windows Forms para este projeto.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|UseWindowsForms|DisplayName">
+        <source>Windows Forms</source>
+        <target state="translated">Windows Forms</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|General|Description">
+        <source>General settings for the application.</source>
+        <target state="translated">Configurações gerais do aplicativo.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|General|DisplayName">
+        <source>General</source>
+        <target state="translated">Geral</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Resources|Description">
+        <source>Resource settings for the application.</source>
+        <target state="translated">Configurações de recurso do aplicativo.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Resources|DisplayName">
+        <source>Resources</source>
+        <target state="translated">Recursos</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|InterceptedTargetFramework|Description">
+        <source>Specifies the version of .NET that the application targets. This option can have different values depending on which versions of .NET are installed on your computer.</source>
+        <target state="translated">Especifica a versão do .NET à qual o aplicativo será direcionado. Essa opção pode ter valores diferentes dependendo de quais versões do .NET estão instaladas no computador.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|InterceptedTargetFramework|DisplayName">
+        <source>Target framework</source>
+        <target state="translated">Estrutura de destino</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|InterceptedTargetFramework|Metadata|SearchTerms">
+        <source>TFM</source>
+        <target state="translated">TFM</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|StartupObject|Description">
+        <source>Defines the entry point to be called when the application loads. Generally this is set either to the main form in your application or to the 'Main' procedure that should run when the application starts. Class libraries do not define an entry point.</source>
+        <target state="translated">Define o ponto de entrada a ser chamado quando o aplicativo é carregado. Geralmente, essa opção é definida como o formulário principal no aplicativo ou como o procedimento 'Main' que deve ser executado quando o aplicativo é iniciado. As bibliotecas de classe não definem um ponto de entrada.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|StartupObject|DisplayName">
+        <source>Startup object</source>
+        <target state="translated">Objeto de inicialização</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|SupportedOSPlatformVersion|Description">
+        <source>Specifies the minimum OS version that the project will run on. When unspecified, the target OS version value is implied. Using an earlier version here requires code to add guards around later version APIs.</source>
+        <target state="translated">Especifica a versão mínima do sistema operacional em que o projeto será executado. Quando não especificado, o valor da versão do sistema operacional de destino está implícito. Usar uma versão anterior aqui requer um código para adicionar proteções em torno de APIs de versões posteriores.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|SupportedOSPlatformVersion|DisplayName">
+        <source>Supported OS version</source>
+        <target state="translated">Versão suportada do SO</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|SupportedOSPlatformVersion|Metadata|SearchTerms">
+        <source>platform</source>
+        <target state="translated">plataforma</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|TargetPlatformIdentifier|Description">
+        <source>Specifies the operating system that this project will target.</source>
+        <target state="translated">Especifica o sistema operacional que este projeto terá como meta.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|TargetPlatformIdentifier|DisplayName">
+        <source>Target OS</source>
+        <target state="translated">SO de Destino</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|TargetPlatformIdentifier|Metadata|SearchTerms">
+        <source>platform</source>
+        <target state="translated">plataforma</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|TargetPlatformVersion|Description">
+        <source>Specifies the version of the operating system this project will target.</source>
+        <target state="translated">Especifica a versão do sistema operacional que este projeto terá como meta.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|TargetPlatformVersion|DisplayName">
+        <source>Target OS version</source>
+        <target state="translated">Versão do sistema operacional de destino</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|TargetPlatformVersion|Metadata|SearchTerms">
+        <source>platform</source>
+        <target state="translated">plataforma</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|OutputType|Description">
+        <source>Specifies the type of application to build.</source>
+        <target state="translated">Especifica o tipo de aplicativo a ser compilado.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|OutputType|DisplayName">
+        <source>Output type</source>
+        <target state="translated">Tipo de saída</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|ResourceSpecificationKind|Description">
+        <source>Specifies how application resources will be managed.</source>
+        <target state="translated">Especifica como os recursos do aplicativo serão gerenciados.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|ResourceSpecificationKind|DisplayName">
+        <source>Resources</source>
+        <target state="translated">Recursos</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|OutputType.Exe|DisplayName">
+        <source>Console Application</source>
+        <target state="translated">Aplicativo do Console</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|OutputType.Library|DisplayName">
+        <source>Class Library</source>
+        <target state="translated">Biblioteca de Classes</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|OutputType.WinExe|DisplayName">
+        <source>Windows Application</source>
+        <target state="translated">Aplicativo do Windows</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ResourceSpecificationKind.IconAndManifest|DisplayName">
+        <source>Icon and manifest</source>
+        <target state="translated">Ícone e manifesto</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|ResourceSpecificationKind.ResourceFile|DisplayName">
+        <source>Resource file</source>
+        <target state="translated">Arquivo de recurso</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Application|Description">
+        <source>Specifies the project's application settings and properties.</source>
+        <target state="translated">Especifica as configurações e as propriedades do aplicativo do projeto.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Application|DisplayName">
+        <source>Application</source>
+        <target state="translated">Aplicativo</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ApplicationIcon|Description">
+        <source>Sets the .ico file that you want to use as your program icon.</source>
+        <target state="translated">Define o arquivo .ico que você deseja usar como o ícone do programa.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ApplicationIcon|DisplayName">
+        <source>Icon</source>
+        <target state="translated">Ícone</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|AssemblyName|Description">
+        <source>Specifies the name of the output file that will hold the assembly manifest.</source>
+        <target state="translated">Especifica o nome do arquivo de saída que armazenará o manifesto do assembly.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|AssemblyName|DisplayName">
+        <source>Assembly name</source>
+        <target state="translated">Nome do assembly</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|InstallOtherFrameworks|DisplayName">
+        <source>Install other frameworks</source>
+        <target state="translated">Instalar outras estruturas</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RootNamespace|Description">
+        <source>Specifies the base namespace for files added to the project.</source>
+        <target state="translated">Especifica o namespace base dos arquivos adicionados ao projeto.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RootNamespace|DisplayName">
+        <source>Default namespace</source>
+        <target state="translated">Namespace padrão</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|TargetFrameworks|Description">
+        <source>Specifies the semicolon-delimited list of frameworks that this project will target.</source>
+        <target state="translated">Especifica a lista delimitada por ponto e vírgula de estruturas de destino deste projeto.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|TargetFrameworks|DisplayName">
+        <source>Target frameworks</source>
+        <target state="translated">Estruturas de destino</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|TargetFrameworks|Metadata|SearchTerms">
+        <source>TFM</source>
+        <target state="translated">TFM</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

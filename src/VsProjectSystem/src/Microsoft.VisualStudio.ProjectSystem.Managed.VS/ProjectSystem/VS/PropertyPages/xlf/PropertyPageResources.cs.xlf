@@ -1,0 +1,317 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="cs" original="../PropertyPageResources.resx">
+    <body>
+      <trans-unit id="AllFiles">
+        <source>All files</source>
+        <target state="translated">Všechny soubory</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ApplicationArgumentsWatermark">
+        <source>Arguments to be passed to the application</source>
+        <target state="translated">Argumenty předávané aplikaci</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="AuthenticationMode">
+        <source>Au_thentication mode:</source>
+        <target state="translated">Režim _ověřování:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DebugPropertyPageTitle">
+        <source>Debug</source>
+        <target state="translated">Ladit</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DuplicateKey">
+        <source>Duplicate Key</source>
+        <target state="translated">Duplicitní klíč</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnvVariableNameWatermark">
+        <source>Key</source>
+        <target state="translated">Klíč</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnvVariableValueWatermark">
+        <source>Value</source>
+        <target state="translated">Hodnota</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ExecutableFiles">
+        <source>Executable files</source>
+        <target state="translated">Spustitelné soubory</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ExecutablePathWatermark">
+        <source>Path to the executable to run</source>
+        <target state="translated">Cesta ke spouštěnému souboru</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FindBtn">
+        <source>_Find...</source>
+        <target state="translated">_Najít...</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_AddUsing">
+        <source>Using</source>
+        <target state="translated">Direktiva using</target>
+        <note>Refers to the implicit using "includes" that will be added</note>
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_AddUsingButton">
+        <source>Add Using</source>
+        <target state="translated">Přidat direktivu using</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_ListItemAlias">
+        <source>Alias</source>
+        <target state="translated">Alias</target>
+        <note>Refers to the implicit using "Alias" text when displayed as a list item</note>
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_ListItemDelete">
+        <source>Delete</source>
+        <target state="translated">Odstranit</target>
+        <note>The action of deleting an implicit using list item</note>
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_ListItemIncludes">
+        <source>Using Includes</source>
+        <target state="translated">Direktiva using zahrnuje</target>
+        <note>Refers to the implicit using "Includes" text when displayed as a list item</note>
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_ListItemIsStatic">
+        <source>Static</source>
+        <target state="translated">Statický</target>
+        <note>Refers to the implicit using "Static" value when displayed as a list item</note>
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_ListViewAccessibleName">
+        <source>Implicit global usings list</source>
+        <target state="translated">Seznam implicitních globálních direktiv using</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ImplicitUsingEditor_ShowImportedUsingsButton">
+        <source>Show imported usings</source>
+        <target state="translated">Zobrazit importované direktivy using</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="InvalidHostName">
+        <source>The host name is invalid.</source>
+        <target state="translated">Název hostitele není platný.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="JSWebView2DebuggingAdditionalText">
+        <source>(Requires the JavaScript Diagnostics component)</source>
+        <target state="translated">(Vyžaduje komponentu JavaScript Diagnostics.)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="LaunchUrlWatermark">
+        <source>Absolute or relative URL</source>
+        <target state="translated">Absolutní nebo relativní URL</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NameCannotBeEmpty">
+        <source>Name cannot be empty.</source>
+        <target state="translated">Název nemůže být prázdný.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NewProfileCaption">
+        <source>New profile</source>
+        <target state="translated">Nový profil</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NewProfileSeedName">
+        <source>newProfile</source>
+        <target state="translated">newProfile</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileKindExecutableName">
+        <source>Executable</source>
+        <target state="translated">Spustitelný soubor</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileKindIISExpressName">
+        <source>IIS Express</source>
+        <target state="translated">IIS Express</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileKindNoActionName">
+        <source>Start</source>
+        <target state="translated">Spustit</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileKindProjectName">
+        <source>Project</source>
+        <target state="translated">Projekt</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileNameInvalid">
+        <source>That profile name is invalid or there is an existing profile with the same name.</source>
+        <target state="translated">Název projektu není platný nebo existuje stávající profil se stejným názvem.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileNameRequired">
+        <source>You must specify a profile name.</source>
+        <target state="translated">Musíte zadat název profilu.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RemoteDebug">
+        <source>_Use remote machine:</source>
+        <target state="translated">Po_užít vzdálený počítač:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RemoteDebugMachineWatermark">
+        <source>Remote machine host name</source>
+        <target state="translated">Název hostitele vzdáleného počítače</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RemoteHostNameRequired">
+        <source>You must specify a remote machine's host name.</source>
+        <target state="translated">Musíte zadat název hostitele vzdáleného počítače.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ValueCannotBeEmpty">
+        <source>Value cannot be empty.</source>
+        <target state="translated">Hodnota nesmí být prázdná.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="WorkingDirectoryWatermark">
+        <source>Absolute path to working directory</source>
+        <target state="translated">Absolutní cesta k pracovnímu adresáři</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ErrorsMustBeCorrectedPriorToSaving">
+        <source>The errors on the page must be corrected prior to saving your changes.</source>
+        <target state="translated">Před uložením změn je potřeba opravit chyby na stránce.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="AddBtn">
+        <source>_Add</source>
+        <target state="translated">_Přidat</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ApplicationArguments">
+        <source>Application ar_guments:</source>
+        <target state="translated">A_rgumenty aplikace:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BrowseBtn">
+        <source>_Browse...</source>
+        <target state="translated">_Procházet...</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DeleteBtn">
+        <source>_Delete</source>
+        <target state="translated">_Odstranit</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnvironmentVariables">
+        <source>Environ_ment variables:</source>
+        <target state="translated">Pro_měnné prostředí:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Executable">
+        <source>_Executable:</source>
+        <target state="translated">Spustit_elný soubor:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Launch">
+        <source>_Launch:</source>
+        <target state="translated">_Spustit:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="LaunchURL">
+        <source>Launch browser:</source>
+        <target state="translated">Spustit prohlížeč:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NameHeader">
+        <source>Name</source>
+        <target state="translated">Název</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NewBtn">
+        <source>_New...</source>
+        <target state="translated">_Nový...</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Profile">
+        <source>_Profile:</source>
+        <target state="translated">_Profil:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="RemoveBtn">
+        <source>_Remove</source>
+        <target state="translated">Odeb_rat</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ValueHeader">
+        <source>Value</source>
+        <target state="translated">Hodnota</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="WorkingDirectory">
+        <source>_Working directory:</source>
+        <target state="translated">Pra_covní adresář:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="CancelBtn">
+        <source>Cancel</source>
+        <target state="translated">Zrušit</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OKBtn">
+        <source>OK</source>
+        <target state="translated">OK</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="ProfileName">
+        <source>Profile name:</source>
+        <target state="translated">Název profilu:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DeleteBtnHelpText">
+        <source>Delete the current profile and change to the next available profile</source>
+        <target state="translated">Odstraní aktuální profil a změní ho na následující dostupný profil.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="NewBtnHelpText">
+        <source>Open the new profile dialog</source>
+        <target state="translated">Otevře dialogové okno Nový profil.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="CancelBtnHelpText">
+        <source>Return to the debug property page with no changes</source>
+        <target state="translated">Vrátí se zpět na stránku vlastností ladění bez úprav.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OKBtnHelpText">
+        <source>Create the profile and return to the debug property page with the new profile selected</source>
+        <target state="translated">Vytvoří profil a vrátí se na stránku vlastností ladění s novým vybraným profilem.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="chkJSWebView2DebuggingText">
+        <source>Enable JavaScript debugger for Microsoft Edge (Chromium) based WebView2</source>
+        <target state="translated">Povolit javascriptový ladicí program pro ovládací prvek WebView2 založený na prohlížeči Microsoft Edge (Chromium)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="chkLaunchBrowserHelpText">
+        <source>Checking enables a textbox to specify an absolute or relative URl</source>
+        <target state="translated">Zaškrtnutí povolí do textového pole zadat absolutní nebo relativní identifikátor URl.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="chkNativeCodeDebuggingText">
+        <source>Enable nati_ve code debugging</source>
+        <target state="translated">Po_volit ladění nativního kódu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="chkRemoteDebugEnabledHelpText">
+        <source>Enable remote debugging</source>
+        <target state="translated">Povolit vzdálené ladění</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="chkSqlCodeDebuggingText">
+        <source>Enable _SQL Server debugging</source>
+        <target state="translated">Povolit ladění _SQL Serveru</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

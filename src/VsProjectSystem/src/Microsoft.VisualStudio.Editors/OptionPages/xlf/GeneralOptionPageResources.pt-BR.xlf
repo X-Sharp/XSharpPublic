@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="pt-BR" original="../GeneralOptionPageResources.resx">
+    <body>
+      <trans-unit id="General_FastUpToDateCheck">
+        <source>Don't call MSBuild if a project appears to be up to date.</source>
+        <target state="translated">Não chame o MSBuild se um projeto parecer estar atualizado.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_FastUpToDateCheck_LogLevel">
+        <source>Logging Level:</source>
+        <target state="translated">Nível de Log:</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_FastUpToDateCheck_LogLevel_Info">
+        <source>Info</source>
+        <target state="translated">Informações</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_FastUpToDateCheck_LogLevel_Minimal">
+        <source>Minimal</source>
+        <target state="translated">Mínimo</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_FastUpToDateCheck_LogLevel_None">
+        <source>None</source>
+        <target state="translated">Nenhum</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_FastUpToDateCheck_LogLevel_Verbose">
+        <source>Verbose</source>
+        <target state="translated">Detalhado</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_FastUpToDateCheck_Title">
+        <source>Up to Date Checks</source>
+        <target state="translated">Verificações atualizadas</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_MultiTargetingSettings_Title">
+        <source>Multi-Targeting Settings</source>
+        <target state="translated">Configurações de Segmentação Múltipla</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_NestingIgnoreSolutionAndProjectProfiles">
+        <source>Ignore solution and project settings</source>
+        <target state="translated">Ignorar configurações de projeto e solução</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_NestingSettings_Title">
+        <source>File Nesting Settings</source>
+        <target state="translated">Configurações de Aninhamento de Arquivo</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_PreferSingleTargetBuildsOnLaunch">
+        <source>Prefer single-target builds when starting a project.</source>
+        <target state="translated">Prefira compilações de destino único ao iniciar um projeto.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="General_PreferSingleTargetBuildsOnLaunchDescription">
+        <source>When starting a project that targets multiple .NET frameworks, the build time can be reduced by limiting the build to a single framework.</source>
+        <target state="translated">Ao iniciar um projeto direcionado a várias estruturas do .NET, o tempo de build pode ser reduzido limitando o build a uma única estrutura.</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

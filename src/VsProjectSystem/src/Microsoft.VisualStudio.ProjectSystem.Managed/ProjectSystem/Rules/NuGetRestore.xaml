@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Rule Name="NuGetRestore"
+      PageTemplate="generic"
+      xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Label="Configuration"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+  </Rule.DataSource>
+
+  <StringProperty Name="AssetTargetFallback"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="CentralPackageTransitivePinningEnabled"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="CentralPackageVersionOverrideEnabled"
+                  ReadOnly="True"
+                  Visible="False" />
+                  
+  <StringProperty Name="CentralPackageFloatingVersionsEnabled"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="CLRSupport"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="DotnetCliToolTargetFramework"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="EmitAssetsLogMessages"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="ManagePackageVersionsCentrally"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="MSBuildProjectDirectory"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="MSBuildProjectExtensionsPath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="MSBuildProjectFile"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="NoWarn"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="NuGetAudit"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="NuGetAuditLevel"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="NuGetAuditMode"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="NuGetLockFilePath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="ProjectAssetsFile"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="PackageId"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="PackageTargetFallback"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="PackageVersion"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreAdditionalProjectFallbackFolders"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreAdditionalProjectFallbackFoldersExcludes"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreAdditionalProjectSources"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreFallbackFolders"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreLockedMode"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestorePackagesPath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestorePackagesWithLockFile"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RestoreSources"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RuntimeIdentifier"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RuntimeIdentifierGraphPath"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="RuntimeIdentifiers"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="NuGetTargetMoniker"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="SdkAnalysisLevel"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="UsingMicrosoftNETSdk"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetFramework"
+                  ReadOnly="True"
+                  Visible="False" />
+
+
+  <StringProperty Name="TargetFrameworkIdentifier"
+                  ReadOnly="True"
+                  Visible="False" />
+
+
+  <StringProperty Name="TargetFrameworkMoniker"
+                  ReadOnly="True"
+                  Visible="False" />
+
+
+  <StringProperty Name="TargetFrameworkProfile"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetFrameworks"
+                  ReadOnly="True"
+                  Visible="False" />
+
+
+  <StringProperty Name="TargetFrameworkVersion"
+                  ReadOnly="True"
+                  Visible="False" />
+
+
+  <StringProperty Name="TargetPlatformMoniker"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetPlatformMinVersion"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetPlatformIdentifier"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="TargetPlatformVersion"
+                  ReadOnly="True"
+                  Visible="False" />                  
+
+  <StringProperty Name="TreatWarningsAsErrors"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="Version"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="VersionPrefix"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="VersionSuffix"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="WarningsAsErrors"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="WarningsNotAsErrors"
+                  ReadOnly="True"
+                  Visible="False" />
+
+  <StringProperty Name="WindowsTargetPlatformMinVersion"
+                  ReadOnly="True"
+                  Visible="False" />
+
+</Rule>

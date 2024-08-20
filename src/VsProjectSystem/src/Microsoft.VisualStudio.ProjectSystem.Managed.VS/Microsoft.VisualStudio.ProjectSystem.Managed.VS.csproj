@@ -1,0 +1,235 @@
+﻿<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\eng\imports\VisualStudio.props" />
+
+  <PropertyGroup>
+    <!--<CSCToolExe>e:\XSharp\DevPublic\src\VsProjectSystem\csc\csc.exe</CSCToolExe>-->
+    <!--<StrongNameKeyId>XSharp</StrongNameKeyId>-->
+    <RootNamespace>Microsoft.VisualStudio</RootNamespace>
+    <IsManagedProjectSystemProject>true</IsManagedProjectSystemProject>
+    <TargetFramework>net472</TargetFramework>
+
+    <!-- VSIX -->
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <CreateVsixContainer>false</CreateVsixContainer>
+    <UseCodebase>false</UseCodebase>
+
+    <!-- Nuget -->
+    <IsPackable>true</IsPackable>
+    <Description>XSharp VisualStudio ProjectSystem for SDK Projects.</Description>
+    <Summary>XSharp VisualStudio Managed Project System </Summary>
+    <PackageTags>XSharp Roslyn Managed Project System VisualStudio</PackageTags>
+    <NoWarn>$(NoWarn);NU5125</NoWarn>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Managed\Microsoft.VisualStudio.ProjectSystem.Managed.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.HotReload.Components" />
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Query" />
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.VS" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Microsoft.VisualStudio.ProjectSystem.Managed.VS.UnitTests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" Key="$(MoqPublicKey)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ProjectSystem\VS\LanguageServices\CSharp\CSharpCodeDomProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="ProjectSystem\VS\LanguageServices\VisualBasic\VisualBasicCodeDomProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="ProjectSystem\VS\PropertyPages\GetProfileNameDialog.xaml.cs">
+      <DependentUpon>GetProfileNameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ProjectSystem\VS\PropertyPages\PropertyPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ProjectSystem\VS\PropertyPages\PropertyPage.Designer.cs">
+      <DependentUpon>PropertyPage.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ProjectSystem\VS\PropertyPages\PropertyPageResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PropertyPageResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="VSResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VSResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="ProjectSystem\VS\PropertyPages\GetProfileNameDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ProjectSystem\VS\PropertyPages\Editors\PropertyEditorTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="**\*.xlf" />
+    <Compile Remove="XSharp\PropertyPages\**" />
+    <EmbeddedResource Remove="XSharp\PropertyPages\**" />
+    <Compile Remove="XSharp\ProjectType.cs" />
+    <Compile Remove="XSharp\ProjectTypeCapabilities.cs" />
+
+    <EmbeddedResource Update="ProjectSystem\VS\PropertyPages\PropertyPageResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PropertyPageResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="VSResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>VSResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+      <MergeWithCTO>true</MergeWithCTO>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <VSCTCompile Include="Menus.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
+    </VSCTCompile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WPF" />
+    <Folder Include="XSharp\Packaging\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\BuildAccelerationIncompatiblePackage.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\BuildAccelerationIncompatiblePackage.cs">
+      <DependentUpon>BuildAccelerationIncompatiblePackage.xaml</DependentUpon>
+    </Compile>
+
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\CopyToOutputDirectoryItem.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\CopyToOutputDirectoryItem.cs">
+      <DependentUpon>CopyToOutputDirectoryItem.xaml</DependentUpon>
+    </Compile>
+
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\CopyUpToDateMarker.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\CopyUpToDateMarker.cs">
+      <DependentUpon>CopyUpToDateMarker.xaml</DependentUpon>
+    </Compile>
+
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\ResolvedCompilationReference.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\ResolvedCompilationReference.cs">
+      <DependentUpon>ResolvedCompilationReference.xaml</DependentUpon>
+    </Compile>
+
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\UpToDateCheckBuilt.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\UpToDateCheckBuilt.cs">
+      <DependentUpon>UpToDateCheckBuilt.xaml</DependentUpon>
+    </Compile>
+
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\UpToDateCheckInput.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\UpToDateCheckInput.cs">
+      <DependentUpon>UpToDateCheckInput.xaml</DependentUpon>
+    </Compile>
+
+    <XamlPropertyRule Include="ProjectSystem\VS\Rules\UpToDateCheckOutput.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+      <XlfInput>false</XlfInput>
+      <DataAccess>None</DataAccess>
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <RuleInjection>None</RuleInjection>
+    </XamlPropertyRule>
+    <Compile Update="ProjectSystem\VS\Rules\UpToDateCheckOutput.cs">
+      <DependentUpon>UpToDateCheckOutput.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- XSharp Remove CSharp, FSharp and Visual Basic files -->
+  <!--<ItemGroup>
+    <Compile Remove="**\CSharp*.cs" />
+    <Compile Remove="**\FSharp*.cs" />
+    <Compile Remove="**\VisualBasic*.cs" />
+    <Compile Remove="Packaging\ProjectTypeCapabilities.cs" />
+    <Compile Remove="Packaging\ProjectTypeRegistration.cs" />
+    <Compile Remove="ProjectSystem\ProjectType.cs" />
+    <Compile Remove="ProjectSystem\VS\Input\Commands\Ordering\MoveDownCommand.cs" />
+    <Compile Remove="ProjectSystem\VS\Input\Commands\Ordering\MoveUpCommand.cs" />
+    <Compile Remove="ProjectSystem\VS\LanguageServices\Handlers\CommandLineNotificationHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Microsoft.VisualStudio.ProjectSystem.Managed.VS.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </None>
+  </ItemGroup>-->
+
+
+
+  <!-- This is required for SourceLink to find these .xaml files within the generated .g.cs files. -->
+  <!-- Note that the filepath for the file MUST be nested within itself in the destination, as the .g.cs files include the relative nested path. -->
+  <!-- See: https://github.com/dotnet/sourcelink/issues/492 -->
+  <Target Name="CopyDependentUponXamlFiles" BeforeTargets="CoreCompile">
+    <Copy SourceFiles="ProjectSystem\VS\PropertyPages\GetProfileNameDialog.xaml" DestinationFiles="$(IntermediateOutputPath)\ProjectSystem\VS\PropertyPages\ProjectSystem\VS\PropertyPages\GetProfileNameDialog.xaml" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

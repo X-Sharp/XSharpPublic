@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="ko" original="../VSPackage.resx">
+    <body>
+      <trans-unit id="28">
+        <source>X#</source>
+        <target state="new">X#</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="29">
+        <source>X# Project Files (*.xsproj);*.xsproj</source>
+        <target state="new">X# Project Files (*.xsproj);*.xsproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="3">
+        <source>Console App (.NET Core)</source>
+        <target state="translated">콘솔 앱(.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="4">
+        <source>A project for creating a command-line application that can run on .NET Core on Windows, Linux and MacOS.</source>
+        <target state="translated">Windows, Linux 및 MacOS의 .NET Core에서 실행할 수 있는 명령줄 애플리케이션을 만드는 프로젝트입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="5">
+        <source>Class Library (.NET Standard)</source>
+        <target state="translated">클래스 라이브러리(.NET Standard)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="6">
+        <source>A project for creating a class library that targets .NET Standard.</source>
+        <target state="translated">.NET Standard를 대상으로 하는 클래스 라이브러리를 만드는 프로젝트입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="9">
+        <source>Class Library (.NET Core)</source>
+        <target state="translated">클래스 라이브러리(.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="10">
+        <source>A project for creating a class library that targets .NET Core.</source>
+        <target state="translated">.NET Core를 대상으로 하는 클래스 라이브러리를 만드는 프로젝트입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="11">
+        <source>xUnit Test Project (.NET Core)</source>
+        <target state="translated">xUnit 테스트 프로젝트(.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="12">
+        <source>A project that contains xUnit.net tests that can run on .NET Core on Windows, Linux and MacOS.</source>
+        <target state="translated">Windows, Linux 및 MacOS의 .NET Core에서 실행할 수 있는 xUnit.net 테스트를 포함하는 프로젝트입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="13">
+        <source>NUnit Test Project (.NET Core)</source>
+        <target state="translated">NUnit 테스트 프로젝트(.NET Core)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="14">
+        <source>A project that contains NUnit tests that can run on .NET Core on Windows, Linux and MacOS.</source>
+        <target state="translated">Windows, Linux 및 MacOS의 .NET Core에서 실행할 수 있는 NUnit 테스트를 포함하는 프로젝트입니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="21">
+        <source>Visual Basic</source>
+        <target state="translated">Visual Basic</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="22">
+        <source>Visual Basic Project Files (*.vbproj);*.vbproj</source>
+        <target state="translated">Visual Basic 프로젝트 파일(*.vbproj);*.vbproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="23">
+        <source>F#</source>
+        <target state="translated">F#</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="24">
+        <source>F# Project Files (*.fsproj);*.fsproj</source>
+        <target state="translated">F# 프로젝트 파일(*.fsproj);*.fsproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="25">
+        <source>C#</source>
+        <target state="translated">C#</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="26">
+        <source>C# Project Files (*.csproj);*.csproj</source>
+        <target state="translated">C# 프로젝트 파일(*.csproj);*.csproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="27">
+        <source>.NET Core 2015 Project Files (*.xproj);*.xproj</source>
+        <target state="translated">.NET Core 2015 프로젝트 파일(*.xproj);*.xproj</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_Enabled_Title">
+        <source>Don't call MSBuild if a project appears to be up to date</source>
+        <target state="translated">프로젝트가 최신으로 표시되는 경우 MSBuild를 호출하지 않음</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Info">
+        <source>Info</source>
+        <target state="translated">정보</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Minimal">
+        <source>Minimal</source>
+        <target state="translated">최소</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_None">
+        <source>None</source>
+        <target state="translated">없음</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Title">
+        <source>Logging level</source>
+        <target state="translated">로깅 수준</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FastUpToDateCheck_LoggingLevel_Verbose">
+        <source>Verbose</source>
+        <target state="translated">자세한 정보 표시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FileNesting_IgnoreSolutionAndProjectSettings_Title">
+        <source>Ignore solution and project settings</source>
+        <target state="translated">솔루션 및 프로젝트 설정 무시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FileNesting_PreferSingleTargetBuilds_Description">
+        <source>When starting a project that targets multiple frameworks, build time can be reduced by building only a single one.</source>
+        <target state="translated">여러 프레임워크를 대상으로 하는 프로젝트를 시작할 때 빌드 시간은 단일 프레임워크만 빌드하여 줄일 수 있습니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Setting_FileNesting_PreferSingleTargetBuilds_Title">
+        <source>Prefer single-target builds when starting a project</source>
+        <target state="translated">프로젝트를 시작할 때 단일 대상 빌드 선호</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_FastUpToDateCheck">
+        <source>Up-to-date Checks</source>
+        <target state="translated">최신 검사</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_FileNestingSettings">
+        <source>File Nesting</source>
+        <target state="translated">파일 중첩</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_MultiTargetingSettings">
+        <source>Multi-targeting</source>
+        <target state="translated">다중 대상 지정</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Settings_Category_SdkStyleProjects">
+        <source>SDK-style Projects</source>
+        <target state="translated">SDK 스타일 프로젝트</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

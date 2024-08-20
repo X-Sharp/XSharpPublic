@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="pl" original="../ExecutableDebugPropertyPage.xaml">
+    <body>
+      <trans-unit id="BoolProperty|NativeDebugging|Description">
+        <source>Enable debugging for managed and native code together, also known as mixed-mode debugging.</source>
+        <target state="translated">Włącz wspólne debugowanie kodu zarządzanego i natywnego (debugowanie mieszane).</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|NativeDebugging|DisplayName">
+        <source>Enable native code debugging</source>
+        <target state="translated">Włącz debugowanie kodu natywnego</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|RemoteDebugEnabled|Description">
+        <source>Indicates that the debugger should attach to a process on a remote machine.</source>
+        <target state="translated">Wskazuje, że debuger powinien dołączyć do procesu na maszynie zdalnej.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|RemoteDebugEnabled|DisplayName">
+        <source>Use remote machine</source>
+        <target state="translated">Użyj maszyny zdalnej</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SqlDebugging|Description">
+        <source>Enable debugging of SQL scripts and stored procedures.</source>
+        <target state="translated">Włącz debugowanie skryptów SQL i procedur składowanych.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SqlDebugging|DisplayName">
+        <source>Enable SQL Server debugging</source>
+        <target state="translated">Włącz debugowanie programu SQL Server</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|WebView2Debugging|Description">
+        <source>Enable JavaScript debugger for Microsoft Edge (Chromium) based WebView2. Requires the JavaScript Diagnostics component.</source>
+        <target state="translated">Włącz debuger języka JavaScript dla narzędzia WebView2 opartego na przeglądarce Microsoft Edge (Chromium). Wymaga składnika Diagnostyka języka JavaScript.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|WebView2Debugging|DisplayName">
+        <source>Enable WebView2 debugging</source>
+        <target state="translated">Włącz debugowanie narzędzia WebView2</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|AuthenticationMode|Description">
+        <source>The authentication scheme to use when connecting to the remote machine.</source>
+        <target state="translated">Schemat uwierzytelniania, który ma być używany podczas nawiązywania połączenia z maszyną zdalną.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|AuthenticationMode|DisplayName">
+        <source>Authentication mode</source>
+        <target state="translated">Tryb uwierzytelniania</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|ExecutableDebugPropertyPage|Description">
+        <source>Properties associated with launching and debugging a specified executable file.</source>
+        <target state="translated">Właściwości skojarzone z uruchamianiem i debugowaniem określonego pliku wykonywalnego.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|ExecutableDebugPropertyPage|DisplayName">
+        <source>Executable</source>
+        <target state="translated">Plik wykonywalny</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArgumentsOverriddenWarning|Description">
+        <source>⚠️ WARNING! This project defines the StartArguments MSBuild property, which overrides any command line arguments specified here. If you wish to define arguments here, you must remove that property from your MSBuild project. Note that it may be defined in a .user file.</source>
+        <target state="translated">⚠️ OSTRZEŻENIE! Ten projekt definiuje właściwość StartArguments MSBuild, która zastępuje wszystkie argumenty wiersza polecenia określone w tym miejscu. Jeśli chcesz zdefiniować argumenty w tym miejscu, musisz usunąć tę właściwość z projektu MSBuild. Należy pamiętać, że może ona być zdefiniowana w pliku .user.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArgumentsOverriddenWarning|DisplayName">
+        <source>Ignored</source>
+        <target state="translated">Ignorowane</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArguments|Description">
+        <source>Command line arguments to pass to the executable. You may break arguments into multiple lines.</source>
+        <target state="translated">Argumenty wiersza polecenia do przekazania do pliku wykonywalnego. Argumenty można podzielić na wiele wierszy.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArguments|DisplayName">
+        <source>Command line arguments</source>
+        <target state="translated">Argumenty wiersza polecenia</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|EnvironmentVariables|Description">
+        <source>The environment variables to set prior to running the process.</source>
+        <target state="translated">Zmienne środowiskowe do ustawienia przed uruchomieniem procesu.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|EnvironmentVariables|DisplayName">
+        <source>Environment variables</source>
+        <target state="translated">Zmienne środowiskowe</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ExecutablePath|Description">
+        <source>Path to the executable to run.</source>
+        <target state="translated">Ścieżka pliku wykonywalnego do uruchomienia.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ExecutablePath|DisplayName">
+        <source>Executable</source>
+        <target state="translated">Plik wykonywalny</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RemoteDebugMachine|Description">
+        <source>The name and port number of the remote machine in 'name:port' format.</source>
+        <target state="translated">Nazwa i numer portu maszyny zdalnej w formacie „nazwa:port”.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RemoteDebugMachine|DisplayName">
+        <source>Remote machine name</source>
+        <target state="translated">Nazwa mazyny zdalnej</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WorkingDirectory|Description">
+        <source>Path to the working directory where the process will be started.</source>
+        <target state="translated">Ścieżka do katalogu roboczego, w którym zostanie uruchomiony proces.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WorkingDirectory|DisplayName">
+        <source>Working directory</source>
+        <target state="translated">Katalog roboczy</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

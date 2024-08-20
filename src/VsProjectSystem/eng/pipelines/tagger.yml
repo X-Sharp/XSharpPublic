@@ -1,0 +1,89 @@
+# Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.
+
+# Name: dotnet-project-system-tagger
+# URL: https://dev.azure.com/devdiv/DevDiv/_build?definitionId=17277
+
+# Creates a Git tag in our repo when a VS Insertion PR is merged.
+
+###################################################################################################################################################################
+# PIPELINE METADATA
+###################################################################################################################################################################
+
+# Disable CI builds for this pipeline.
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema/trigger?view=azure-pipelines#examples
+trigger: none
+
+# Disable PR builds for this pipeline.
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema/pr?view=azure-pipelines#examples
+pr: none
+
+resources:
+  # https://learn.microsoft.com/azure/devops/pipelines/repos/multi-repo-checkout?view=azure-devops#triggers
+  repositories:
+  - repository: VS
+    name: VS
+    type: git
+    trigger:
+      tags:
+        include:
+        - release/vs/*
+  - repository: DotnetProjectSystem # The name used to reference this repository in the checkout step
+    type: github
+    endpoint: "DotNet-Bot Github Connection"
+    name: dotnet/project-system
+
+pool:
+  # Agent Queue: https://devdiv.visualstudio.com/DevDiv/_settings/agentqueues?queueId=3123&view=jobs
+  name: VSEngSS-MicroBuild2022-1ES
+  # Demands Docs: https://docs.microsoft.com/azure/devops/pipelines/process/demands?view=azure-devops&tabs=yaml#manually-entered-demands
+  demands: Cmd
+
+variables:
+  # Opt out of automatically injecting Codesign Validation into the pipeline since this pipeline doesn't produce build artifacts.
+  # See: https://aka.ms/gdn-injection
+  runCodesignValidationInjection: false
+  Codeql.Enabled: false
+  skipComponentGovernanceDetection: true
+  
+###################################################################################################################################################################
+# STEPS
+###################################################################################################################################################################
+
+steps:
+- checkout: DotnetProjectSystem
+  persistCredentials: 'true'
+  path: 'project-system'
+  fetchDepth: 1000
+  displayName: Checkout dotnet/project-system
+# Create the VS folder and fetch the VS repo Git information into it, excluding the files themselves (only .git history is required).
+# Doing this manual process over the checkout: VS task saves around 3 minutes. See: https://stackoverflow.com/a/43136160/294804
+# The System.AccessToken is required for the clone to occur. See: https://stackoverflow.com/a/56734304/294804
+# The Git config change is for disabling a warning message because we are fetching a specific commit instead of a branch. See: https://stackoverflow.com/a/36794768/294804
+- powershell: |
+    git config --global advice.detachedHead false
+    $null = New-Item -Path '$(Pipeline.Workspace)' -Name VS -ItemType Directory
+    Set-Location '$(Pipeline.Workspace)/VS'
+    git init --bare
+    git remote add origin https://$(System.AccessToken)@dev.azure.com/devdiv/DevDiv/_git/VS
+    git fetch --depth 100 origin $(Build.SourceVersion)
+    $lastInsertionTitle = git log --pretty=%s --grep="Insert DotNet-Project-System" -1 FETCH_HEAD -- :/src/ConfigData/Packages/ProjectSystem/Managed.props :/src/ConfigData/Packages/Wizard/packages.props | Select-Object -First 1
+    if ($lastInsertionTitle)
+    {
+      $hasShortCommitId = $lastInsertionTitle -match 'DotNet-Project-System \([a-zA-Z0-9._-]+:\d+(\.\d+)*:(\w+)\)'
+      if ($hasShortCommitId)
+      {
+        $shortCommitId = $matches[2]
+        $tagName = '$(Build.SourceBranch)'.Substring('refs/tags/'.Length)
+        $releaseName = $tagName.Substring('release/vs/'.Length)
+        Write-Host "TagName: $tagName psCommit: $shortCommitId"
+        # Generated annotated tag in dotnet/project-system
+        Set-Location '$(Pipeline.Workspace)/project-system'
+        git config user.email "dn-bot@microsoft.com"
+        git config user.name "dotnet bot"
+        git tag -a $tagName $shortCommitId -m "Auto tag created by dotnet-bot for VS release $releaseName"
+        git push --tags
+        return
+      }
+    }
+    Write-Host "Unable to find last insertion."
+  displayName: Create tag

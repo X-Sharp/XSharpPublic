@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="cs" original="../ProjectDebugPropertyPage.xaml">
+    <body>
+      <trans-unit id="BoolProperty|HotReloadEnabled|Description">
+        <source>Apply code changes to the running application.</source>
+        <target state="translated">Použít změny kódu ve spuštěné aplikaci</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|HotReloadEnabled|DisplayName">
+        <source>Enable Hot Reload</source>
+        <target state="translated">Povolit Opětovné načítání za provozu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|NativeDebugging|Description">
+        <source>Enable debugging for managed and native code together, also known as mixed-mode debugging.</source>
+        <target state="translated">Povolí společné ladění spravovaného a nativního kódu, což se označuje také jako ladění v kombinovaném režimu.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|NativeDebugging|DisplayName">
+        <source>Enable native code debugging</source>
+        <target state="translated">Povolit ladění nativního kódu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|RemoteDebugEnabled|Description">
+        <source>Indicates that the debugger should attach to a process on a remote machine.</source>
+        <target state="translated">Určuje, že se ladicí program má připojit k procesu na vzdáleném počítači.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|RemoteDebugEnabled|DisplayName">
+        <source>Use remote machine</source>
+        <target state="translated">Použít vzdálený počítač</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SqlDebugging|Description">
+        <source>Enable debugging of SQL scripts and stored procedures.</source>
+        <target state="translated">Povolí ladění skriptů SQL a uložených procedur.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|SqlDebugging|DisplayName">
+        <source>Enable SQL Server debugging</source>
+        <target state="translated">Povolit ladění SQL Serveru</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|WebView2Debugging|Description">
+        <source>Enable JavaScript debugger for Microsoft Edge (Chromium) based WebView2. Requires the JavaScript Diagnostics component.</source>
+        <target state="translated">Povolit ladicí program JavaScriptu pro Microsoft Edge (Chromium) založený na webView2. Vyžaduje komponentu Diagnostika JavaScriptu.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|WebView2Debugging|DisplayName">
+        <source>Enable WebView2 debugging</source>
+        <target state="translated">Povolit ladění WebView2</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|AuthenticationMode|Description">
+        <source>The authentication scheme to use when connecting to the remote machine.</source>
+        <target state="translated">Schéma ověřování, které se má použít při připojování na vzdáleném počítači</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|AuthenticationMode|DisplayName">
+        <source>Authentication mode</source>
+        <target state="translated">Režim ověřování</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|ProjectDebugPropertyPage|Description">
+        <source>Properties associated with launching and debugging the project output.</source>
+        <target state="translated">Vlastnosti přidružené ke spouštění a ladění výstupu projektu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|ProjectDebugPropertyPage|DisplayName">
+        <source>Project</source>
+        <target state="translated">Projekt</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArgumentsOverriddenWarning|Description">
+        <source>⚠️ WARNING! This project defines the StartArguments MSBuild property, which overrides any command line arguments specified here. If you wish to define arguments here, you must remove that property from your MSBuild project. Note that it may be defined in a .user file.</source>
+        <target state="translated">⚠️ UPOZORNĚNÍ! Tento projekt definuje vlastnost MSBuild StartArguments, která přepíše všechny tady zadané argumenty příkazového řádku. Pokud zde chcete definovat argumenty, musíte tuto vlastnost odebrat z projektu MSBuild. Všimněte si, že může být definována v souboru .user.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArgumentsOverriddenWarning|DisplayName">
+        <source>Ignored</source>
+        <target state="translated">Ignorováno</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArguments|Description">
+        <source>Command line arguments to pass to the executable. You may break arguments into multiple lines.</source>
+        <target state="translated">Argumenty příkazového řádku, které se mají předat spustitelnému souboru. Argumenty můžete rozdělit na více řádků.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|CommandLineArguments|DisplayName">
+        <source>Command line arguments</source>
+        <target state="translated">Argumenty příkazového řádku</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|EnvironmentVariables|Description">
+        <source>The environment variables to set prior to running the process.</source>
+        <target state="translated">Proměnné prostředí, které se mají nastavit před spuštěním procesu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|EnvironmentVariables|DisplayName">
+        <source>Environment variables</source>
+        <target state="translated">Proměnné prostředí</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RemoteDebugMachine|Description">
+        <source>The name and port number of the remote machine in 'name:port' format.</source>
+        <target state="translated">Název a číslo portu vzdáleného počítače ve formátu název:port</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RemoteDebugMachine|DisplayName">
+        <source>Remote machine name</source>
+        <target state="translated">Název vzdáleného počítače</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WorkingDirectory|Description">
+        <source>Path to the working directory where the process will be started.</source>
+        <target state="translated">Cesta k pracovnímu adresáři, ve kterém se spustí proces</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|WorkingDirectory|DisplayName">
+        <source>Working directory</source>
+        <target state="translated">Pracovní adresář</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

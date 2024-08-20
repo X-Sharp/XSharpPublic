@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="tr" original="../PackagePropertyPage.xaml">
+    <body>
+      <trans-unit id="BoolProperty|GeneratePackageOnBuild|Description">
+        <source>Produce a package file during build operations.</source>
+        <target state="translated">Derleme işlemleri sırasında paket dosyası oluşturun.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|GeneratePackageOnBuild|DisplayName">
+        <source>Generate NuGet package on build</source>
+        <target state="translated">Derlemede NuGet paketi oluştur</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IncludeSymbols|Description">
+        <source>Create an additional symbol package when the project is packed.</source>
+        <target state="translated">Proje paketlendiğinde ek bir sembol paketi oluşturun.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|IncludeSymbols|DisplayName">
+        <source>Produce a symbol package</source>
+        <target state="translated">Bir sembol paketi oluştur</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PackAsTool|Description">
+        <source>Packs this project as a special package that contains a console application that may be installed via the "dotnet tool" command.</source>
+        <target state="translated">Bu projeyi "dotnet tool" komutu aracılığıyla yüklenebilecek bir konsol uygulaması içeren özel bir paket olarak paketler.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PackAsTool|DisplayName">
+        <source>Pack as a .NET tool</source>
+        <target state="translated">.NET aracı olarak paketle</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PackageRequireLicenseAcceptance|Description">
+        <source>Prompt the user to accept the license when installing this package.</source>
+        <target state="translated">Bu paketi yüklerken kullanıcının lisansı kabul etmesini isteyin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="BoolProperty|PackageRequireLicenseAcceptance|DisplayName">
+        <source>Require license acceptance</source>
+        <target state="translated">Lisansın kabul edilmesini gerektir</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|General|Description">
+        <source>General settings for the package.</source>
+        <target state="translated">Paketin genel ayarları.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|General|DisplayName">
+        <source>General</source>
+        <target state="translated">Genel</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|License|Description">
+        <source>Specifies the license for the package.</source>
+        <target state="translated">Paketin lisansını belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|License|DisplayName">
+        <source>License</source>
+        <target state="translated">Lisans</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Symbols|Description">
+        <source>Specifies how symbols are added to the package.</source>
+        <target state="translated">Sembollerin pakete nasıl eklendiğini belirler.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Category|Symbols|DisplayName">
+        <source>Symbols</source>
+        <target state="translated">Semboller</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="DynamicEnumProperty|NeutralLanguage|DisplayName">
+        <source>Assembly neutral language</source>
+        <target state="translated">Bütünleştirilmiş kod bağımsız dili</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|PackageLicenseKind|Description">
+        <source>Specify a license for the project's package.</source>
+        <target state="translated">Projenin paketi için bir lisans belirtin.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|PackageLicenseKind|DisplayName">
+        <source>Package License</source>
+        <target state="translated">Paket Lisansı</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|SymbolPackageFormat|Description">
+        <source>Specifies the format of the symbols package.</source>
+        <target state="translated">Sembol paketinin biçimini belirler.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumProperty|SymbolPackageFormat|DisplayName">
+        <source>Symbol package format</source>
+        <target state="translated">Sembol paketi biçimi</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|PackageLicenseKind.Expression|DisplayName">
+        <source>SPDX License Expression</source>
+        <target state="translated">SPDX Lisans İfadesi</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|PackageLicenseKind.File|DisplayName">
+        <source>Embedded File</source>
+        <target state="translated">Ekli Dosya</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|PackageLicenseKind.None|DisplayName">
+        <source>None</source>
+        <target state="translated">Hiçbiri</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|SymbolPackageFormat.snupkg|DisplayName">
+        <source>snupkg</source>
+        <target state="translated">snupkg</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="EnumValue|SymbolPackageFormat.symbols.nupkg|DisplayName">
+        <source>symbols.nupkg (legacy)</source>
+        <target state="translated">symbols.nupkg (eski)</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Package|Description">
+        <source>Properties related to producing NuGet packages.</source>
+        <target state="translated">NuGet paketleri oluşturma ile ilgili özellikler.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Rule|Package|DisplayName">
+        <source>Package</source>
+        <target state="translated">Paket</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|AssemblyVersion|DisplayName">
+        <source>Assembly version</source>
+        <target state="translated">Bütünleştirilmiş kod sürümü</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Authors|Description">
+        <source>A comma-separated list of packages authors, matching the profile names on nuget.org. These are displayed in the NuGet Gallery on nuget.org and are used to cross-reference packages by the same authors.</source>
+        <target state="translated">nuget.org'daki profil adlarıyla eşleşen paket yazarlarının virgülle ayrılmış listesi. Bunlar nuget.org'daki NuGet Galerisinde görüntülenir ve aynı yazarlar tarafından paketlere çapraz başvuru yapmak için kullanılır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Authors|DisplayName">
+        <source>Authors</source>
+        <target state="translated">Yazarlar</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Company|DisplayName">
+        <source>Company</source>
+        <target state="translated">Şirket</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Copyright|Description">
+        <source>Copyright details for the package.</source>
+        <target state="translated">Paket için telif hakkı ayrıntıları.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Copyright|DisplayName">
+        <source>Copyright</source>
+        <target state="translated">Telif Hakkı</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Description|Description">
+        <source>A description of the package for UI display.</source>
+        <target state="translated">Paketin kullanıcı arabiriminde görüntülenecek açıklaması.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Description|DisplayName">
+        <source>Description</source>
+        <target state="translated">Açıklama</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|FileVersion|DisplayName">
+        <source>File version</source>
+        <target state="translated">Dosya sürümü</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageIcon|Description">
+        <source>The icon image for the package. Image file size is limited to 1 MB. Supported file formats include JPEG and PNG. An image resolution of 128x128 is recommended.</source>
+        <target state="translated">Paketin simge görüntüsü. Görüntü dosyası boyutu 1 MB ile sınırlıdır. Desteklenen dosya biçimleri JPEG ve PNG'dir. 128x128 görüntü çözünürlüğü önerilir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageIcon|DisplayName">
+        <source>Icon</source>
+        <target state="translated">Simge</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageId|Description">
+        <source>The case-insensitive package identifier, which must be unique across nuget.org or whatever gallery the package resides in. IDs may not contain spaces or characters that are not valid for a URL, and generally follow .NET namespace rules.</source>
+        <target state="translated">nuget.org'da veya paketin bulunduğu galeride benzersiz olması gereken, büyük/küçük harfe duyarlı olmayan paket tanımlayıcısı. Kimlikler, boşluklar veya URL için geçerli olmayan karakterler içeremez ve genellikle .NET ad alanı kurallarını izler.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageId|DisplayName">
+        <source>Package ID</source>
+        <target state="translated">Paket Kimliği</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageLicenseExpression|Description">
+        <source>An SPDX license expression, often shown in UIs like nuget.org.</source>
+        <target state="translated">Genellikle nuget.org gibi kullanıcı arabirimlerinde gösterilen SPDX lisans ifadesi.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageLicenseExpression|DisplayName">
+        <source>License expression</source>
+        <target state="translated">Lisans ifadesi</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageLicenseFile|DisplayName">
+        <source>License file</source>
+        <target state="translated">Lisans dosyası</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageOutputPath|Description">
+        <source>Determines the output path in which the package will be dropped.</source>
+        <target state="translated">Paketin bırakılacağı çıkış yolunu belirtir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageOutputPath|DisplayName">
+        <source>Package Output Path</source>
+        <target state="translated">Paket Çıkış Yolu</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageProjectUrl|Description">
+        <source>A URL for the package's home page, often shown in UI displays as well as nuget.org.</source>
+        <target state="translated">Paketin ana sayfasının URL'si; genellikle kullanıcı arabirimi görüntülerinde ve nuget.org'da gösterilir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageProjectUrl|DisplayName">
+        <source>Project URL</source>
+        <target state="translated">Proje URL'si</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageReadmeFile|Description">
+        <source>The README document for the package. Must be a Markdown (.md) file.</source>
+        <target state="translated">Paket için BENİOKU belgesi. Bir Markdown (.md) dosyası olmalıdır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageReadmeFile|DisplayName">
+        <source>README</source>
+        <target state="translated">BENİOKU</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageReleaseNotes|Description">
+        <source>A description of the changes made in this release of the package, often used in UI like the Updates tab of the Visual Studio Package Manager in place of the package description.</source>
+        <target state="translated">Paketin bu sürümünde yapılan değişikliklere ilişkin bir açıklama; genellikle Visual Studio Paket Yöneticisi'nin Güncelleştirmeler sekmesi gibi kullanıcı arabirimi bölümlerinde paket açıklaması olarak kullanılır.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageReleaseNotes|DisplayName">
+        <source>Release notes</source>
+        <target state="translated">Sürüm notları</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageTags|Description">
+        <source>A semicolon-delimited list of tags and keywords that describe the package and aid discoverability of packages through search and filtering.</source>
+        <target state="translated">Paketi açıklamanın yanı sıra arama ve filtreleme aracılığıyla paketlerin bulunmasına yardımcı olan etiket ve anahtarların noktalı virgülle ayrılmış listesi.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|PackageTags|DisplayName">
+        <source>Tags</source>
+        <target state="translated">Etiketler</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Product|DisplayName">
+        <source>Product</source>
+        <target state="translated">Ürün</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ReadAboutSpdxExpressions|DisplayName">
+        <source>Read about SPDX license expressions</source>
+        <target state="translated">SPDX lisans ifadeleri hakkında bilgi edinin</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RepositoryType|Description">
+        <source>Specifies the type of the repository. Default is 'git'.</source>
+        <target state="translated">Deponun türünü belirtir. Varsayılan: 'git'.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RepositoryType|DisplayName">
+        <source>Repository type</source>
+        <target state="translated">Depo türü</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RepositoryUrl|Description">
+        <source>Specifies the URL for the repository where the source code for the package resides and/or from which it's being built. For linking to the project page, use the 'Project URL' field, instead.</source>
+        <target state="translated">Paketin kaynak kodunun bulunduğu ve/veya derlenmekte olduğu deponun URL'sini belirtir. Proje sayfasına bağlantı oluşturmak için bunun yerine 'Proje URL'si' alanını kullanın.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|RepositoryUrl|DisplayName">
+        <source>Repository URL</source>
+        <target state="translated">Depo URL'si</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Title|Description">
+        <source>A human-friendly title of the package, typically used in UI displays as on nuget.org and the Package Manager in Visual Studio.</source>
+        <target state="translated">Paketin, genellikle nuget.org üzerinde kullanıcı arabirimi ve Visual Studio’da Paket Yöneticisi olarak kullanılan, kolay anlaşılır başlığı.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Title|DisplayName">
+        <source>Title</source>
+        <target state="translated">Başlık</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ToolCommandName|Description">
+        <source>The command name via which the .NET tool will be invoked on the command line.</source>
+        <target state="translated">Komut satırında .NET aracını çağırmak için kullanılacak komut adı.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|ToolCommandName|DisplayName">
+        <source>.NET tool command name</source>
+        <target state="translated">.NET aracı komut adı</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Version|Description">
+        <source>The version of the package, following the major.minor.patch pattern. Version numbers may include a pre-release suffix.</source>
+        <target state="translated">Paketin birincil.ikincil.düzeltmeEki desenini izleyen sürümü. Sürüm numaraları, sürüm öncesi sonekini içerebilir.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="StringProperty|Version|DisplayName">
+        <source>Package Version</source>
+        <target state="translated">Paket Sürümü</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

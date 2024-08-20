@@ -207,8 +207,13 @@ namespace Microsoft.CodeAnalysis
         /// <param name="ignoreAccessibility">
         /// True if the SemanticModel should ignore accessibility rules when answering semantic questions.
         /// </param>
+#if XSHARPPRE
+        public SemanticModel GetSemanticModel(SyntaxTree syntaxTree, bool ignoreAccessibility = true)
+            => CommonGetSemanticModel(syntaxTree, ignoreAccessibility);
+#else
         public SemanticModel GetSemanticModel(SyntaxTree syntaxTree, bool ignoreAccessibility = false)
             => CommonGetSemanticModel(syntaxTree, ignoreAccessibility);
+#endif
 
         /// <summary>
         /// Gets a <see cref="SemanticModel"/> for the given <paramref name="syntaxTree"/>.

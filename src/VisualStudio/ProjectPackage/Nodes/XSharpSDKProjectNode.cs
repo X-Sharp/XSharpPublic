@@ -79,32 +79,19 @@ namespace XSharp.Project
         {
             var container = CreateDependenciesNode();
             var result = this.Build(MsBuildTarget.GetSuggestedWorkloads);
-            var project = result.ProjectInstance;
-            Logger.SingleLine();
-            Logger.Information("After "+ MsBuildTarget.GetSuggestedWorkloads);
-            Logger.SingleLine();
-            DumpProperties(project);
-            DumpItems(project);
             result = this.Build(MsBuildTarget.GetTargetFrameworks);
-            project = result.ProjectInstance;
-            Logger.SingleLine();
-            Logger.Information("After " + MsBuildTarget.GetTargetFrameworks);
-            Logger.SingleLine();
-            DumpProperties(project);
-            DumpItems(project);
-            result = this.Build(MsBuildTarget.ResolveAssemblyReferences);
-            Logger.SingleLine();
-            Logger.Information("After " + MsBuildTarget.ResolveAssemblyReferences);
-            Logger.SingleLine();
-            DumpProperties(project);
-            DumpItems(project);
-
-            project = result.ProjectInstance;
-            foreach (var fw in this.TargetFrameworks)
+            var project = result.ProjectInstance;
+            var innerprojects = project.Items.Where(x => x.ItemType == "_InnerBuildProjects");
+            var frameworks = project.Items.Where(x => x.ItemType == "_TargetFramework");
+            foreach (var fw in frameworks)
             {
-                var node = new XSharpFrameworkContainerNode(this, fw);
+                var node = new XSharpFrameworkContainerNode(this, fw.EvaluatedInclude);
                 container.AddChild(node);
             }
+            result = this.Build(MsBuildTarget.ResolveReferences);
+            project = result.ProjectInstance;
+            DumpProperties(project);
+            DumpItems(project);
             this.LoadFrameworkData(project);
             this.LoadPackageReferences();
         }
@@ -119,7 +106,7 @@ namespace XSharp.Project
         private void DumpItems(ProjectInstance project)
         {
             Logger.DoubleLine();
-            Logger.Information("# of Items: "+project.Items.Count.ToString());
+            Logger.Information("# of Items: " + project.Items.Count.ToString());
             foreach (var item in project.Items)
             {
                 Logger.Information("I:" + item.ItemType + " " + item.EvaluatedInclude);
@@ -131,8 +118,9 @@ namespace XSharp.Project
         }
         private void LoadFrameworkData(ProjectInstance project)
         {
-            DumpProperties(project);
-            DumpItems(project);
+            //DumpProperties(project);
+            //DumpItems(project);
+            /*
             foreach (var target in project.Targets)
             {
                 Logger.Information("T:" + target.Key+" " + target.Value.FullPath);
@@ -147,22 +135,7 @@ namespace XSharp.Project
                 Logger.Information("IM:" + p);
             }
 #endif
-        }
-
-        public IList<string> TargetFrameworks
-        {
-            get
-            {
-                var frameworks = this.GetProjectProperty("TargetFrameworks");
-                var result = frameworks.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                if (result.Length == 0)
-                {
-                    var framework = this.GetProjectProperty("TargetFramework");
-                    if (!string.IsNullOrEmpty(framework))
-                        result = new string[] { framework };
-                }
-                return result;
-            }
+            */
         }
     }
     

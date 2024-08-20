@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SizeOf Operator</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">SizeOf Operator</para>
+    </header>
+    <para styleclass="Body Text">he sizeof operator returns the number of bytes occupied by a variable of a given type. The argument to the sizeof operator must be the name of an <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/unmanaged-types">unmanaged type</link> or a type parameter that is <link displaytype="text" defaultstyle="true" type="weblink" href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters#unmanaged-constraint">constrained</link> to be an unmanaged type.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SizeOf( type )</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="14" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Expression</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">Constant value</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(sbyte)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">1</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(byte)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">1</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(short)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">2</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(word)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">2</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(int)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">4</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(dword)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">4</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(int64)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(uint64)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(char)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">2</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(real4)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">4</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(real8)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">8</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(decimal)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">16</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">sizeof(logic)</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">1</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">For some types the size depends on how the program is running, e.g. in 32 bits mode or 64 bits mode. In that case you may see an error message that the SizeOf operator requires the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link> compiler option.</para>
+    <para styleclass="Heading2">Note</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">_sizeof()</text> (with a leading underscore and parenthesis) is also supported for compatibility with Visual Objects and is synonymous with sizeof.</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+  </body>
+</topic>

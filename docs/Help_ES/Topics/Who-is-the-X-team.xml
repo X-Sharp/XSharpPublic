@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Who is who in the X# team</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Who is who in the X# team</para>
+    </header>
+    <para styleclass="Body Text">The founders of the X# project started the X# project in the summer of 2015.</para>
+    <para styleclass="Body Text">They have ample experience with the xBase language. They all worked on the Visual Objects and/or Vulcan.NET development teams, and some of them have created 3rd party additions to Visual Objects and/or Vulcan.NET or created tools for VO and Vulcan developers.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">They are in alphabetical order:</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Country</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Email</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Role in the X# development team</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Fabrice Foray</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">France</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">fabrice@xsharp.eu</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Visual Studio integration, examples, tutorials</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Nikos Kokkalis</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Greece</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">nikos@xsharp.eu</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">(Macro) Compiler </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Chris Pyrgas</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Greece</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">chris@xsharp.eu</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Support, tools, examples, tutorials, runtime</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Robert van der Hulst</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">The Netherlands</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">robert@xsharp.eu</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Management, Compiler, Runtime, Visual Studio integration, Documentation</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">If you are interested in participating in the development of X# please contact us and let us know what your area of expertise is. There are plenty of things to do !</para>
+  </body>
+</topic>

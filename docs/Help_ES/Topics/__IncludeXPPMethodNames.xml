@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeXPPMethodNames</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__IncludeXPPMethodNames</para>
+    </header>
+    <para styleclass="Heading1">Special method Names</para>
+    <para styleclass="Normal">In Xbase++ there are some reserved method names:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List">Init<tab />This is the name of the constructor</para>
+    <para styleclass="List">InitClass<tab />This is the name of the class constructor.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Body Text">The implementation of constructors in .Net is somewhat different from Xbase++. </para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Therefore the class constructor cannot have any parameters. </li>
+      <li styleclass="Body Text">The parameters of the Init() method become the constructor parameters.</li>
+    </list>
+  </body>
+</topic>

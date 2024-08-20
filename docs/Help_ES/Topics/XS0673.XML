@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>XS0673</title>
+<keywords>
+<keyword>XS0673</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS0673</para>
+  </header>
+  <para styleclass="Normal">System.Void cannot be used from X# -- use typeof(void) to get the void type object</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

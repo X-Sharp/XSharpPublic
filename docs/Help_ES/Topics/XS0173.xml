@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS0173</title>
+  <keywords>
+    <keyword>XS0173</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Error XS0173</para>
+    </header>
+    <para styleclass="Normal">Type of conditional expression cannot be determined because there is no implicit conversion between &apos;class1&apos; and &apos;class2&apos;</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Conversions between classes are useful when you want objects of different classes to work with the same code. However, two classes that work together cannot have mutual and redundant conversions, or no implicit conversions. The types of <text styleclass="Code Example">class1</text> and <text styleclass="Code Example">class2</text> are determined independently, and the more general type is selected as the type of the conditional expression. For more information about how types are determined, see Conditional operator cannot cast implicitly.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">To resolve XS0173, verify that there is one and only one implicit conversion between <text styleclass="Code Example">class1</text> and <text styleclass="Code Example">class2</text>, regardless of which direction the conversion is in and regardless of which class the conversion is in. For more information, see Implicit Numeric Conversions Table and Conversion Operators.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following sample generates XS0173:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">// XS0173.prg &#160;<br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

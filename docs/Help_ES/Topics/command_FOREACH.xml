@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-10-22T13:02:03.521-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FOREACH Statement</title>
+  <keywords>
+    <keyword>Branching</keyword>
+    <keyword>Conditional execution</keyword>
+    <keyword>EXIT statement</keyword>
+    <keyword>FOREACH statement</keyword>
+    <keyword>LOOP statement</keyword>
+    <keyword>NEXT statement</keyword>
+    <keyword>Program control</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">FOREACH Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Execute a block of statements for all elements in a collection</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">FOREACH &#160;[IMPLIED &lt;idElement&gt; | VAR &lt;idElement&gt; | &lt;idElement&gt; AS &lt;idType&gt;] IN &lt;container&gt;<br/> &#160; &lt;Statements&gt;...<br/> &#160; [EXIT]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [LOOP]<br/>NEXT</para>
+    <para styleclass="Heading2">Note</para>
+    <para styleclass="Normal">In the FoxPro dialect FOR EACH as 2 separate words is also allowed.</para>
+    <para styleclass="Normal">In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;idElement&gt;<tab />The name of the variable that will receive the values of the elements in &lt;container&gt; When the IMPLIED or VAR clause is used then the datatype of the variable is inferred from the container. When the AS &lt;idType&gt; clause is used then this will be the datatype of the variable</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">&lt;container&gt;<tab />A DotNet object that supports IEnumerable(), such as a XBase array, .Net array or a collection like List&lt;&gt;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">The FOREACH statement is a convenient way to enumerate variable in an array or collection.</para>
+    <para styleclass="Normal"><text styleclass="List">Preferrably the iteration variable should not be changed inside the loop. A compiler warning will be shown when you do this. </text></para>
+    <para styleclass="Normal"><text styleclass="List">It is also not recommended to change the container in the loop as this may often result in a runtime error.</text></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_AEval.htm" domain="XSharpRef.chm">AEval()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXIT">EXIT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOOP">LOOP</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XSharp.RT.Debugger.DLL</title>
+  <keywords>
+    <keyword>DbgShowGlobals</keyword>
+    <keyword>DbgShowMemvars</keyword>
+    <keyword>DbgShowSettings</keyword>
+    <keyword>DbgShowWorkareas</keyword>
+    <keyword>XSharp.RT.Debugger.DLL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">XSharp.RT.Debugger.DLL</para>
+    </header>
+    <para styleclass="Normal">This DLL adds the the runtime Debugger functions and windows:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Debugger_Functions_DbgShowGlobals.htm" domain="XSharpRef.chm">DbgShowGlobals</link>()</li>
+      <li styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Debugger_Functions_DbgShowWorkareas.htm" domain="XSharpRef.chm">DbgShowWorkareas</link>()</li>
+      <li styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Debugger_Functions_DbgShowMemVars.htm" domain="XSharpRef.chm">DbgShowMemvars</link>() &#160;</li>
+      <li styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Debugger_Functions_DbgShowSettings.htm" domain="XSharpRef.chm">DbgShowSettings</link>()</li>
+    </list>
+  </body>
+</topic>

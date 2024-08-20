@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET EXCLUSIVE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Concurrency control</keyword>
+    <keyword>Databases</keyword>
+    <keyword>Environment</keyword>
+    <keyword>Exclusive mode<keyword>setting</keyword></keyword>
+    <keyword>Files<keyword>opening</keyword></keyword>
+    <keyword>Modes<keyword>setting</keyword></keyword>
+    <keyword>Opening<keyword>files</keyword></keyword>
+    <keyword>SET EXCLUSIVE command</keyword>
+    <keyword>Shared mode<keyword>setting</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET EXCLUSIVE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Change the setting that determines whether to open database files in exclusive or shared mode.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET EXCLUSIVE ON | OFF | (&lt;lToggle&gt;)</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ON <tab />Limits accessibility of a table opened on a network to the user who opened it. The table isn&apos;t accessible to other users on the network. Unlike FLOCK( ), SET EXCLUSIVE ON also prevents all other users from having read-only access. A file can also be opened on a network for exclusive use by including the EXCLUSIVE clause with the USE command. It isn&apos;t necessary to perform record or file locking on a table opened for exclusive use.</para>
+    <para styleclass="List"><tab />Opening a table for exclusive use ensures that the file can&apos;t be changed by other users. For some commands, execution isn&apos;t possible until a table is opened for exclusive use. These commands are <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link>, and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP">ZAP</link>. </para>
+    <para styleclass="List">OFF<tab />Allows a table opened on a network to be shared and modified by any user on the network.</para>
+    <para styleclass="List">lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">SET EXCLUSIVE is functionally equivalent to SetExclusive(). &#160;</para>
+    <para styleclass="Normal">Changing the setting of SET EXCLUSIVE doesn&apos;t change the status of previously opened tables. For example, if a table is opened with SET EXCLUSIVE set to ON, and SET EXCLUSIVE is later changed to OFF, the table retains its exclusive-use status.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XSharpRef.chm">FLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_NetErr.htm" domain="XSharpRef.chm">NetErr()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XSharpRef.chm">RLock()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetExclusive.htm" domain="XSharpRef.chm">SetExclusive()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

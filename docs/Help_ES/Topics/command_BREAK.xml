@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BREAK statement</title>
+  <keywords>
+    <keyword>BREAK</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BREAK statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Body Text">The BREAK statement raises a runtime exception.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">BREAK [<text styleclass="Body Text" style="font-style:italic;">expression </text>] </para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><text styleclass="Body Text" style="font-style:italic;">expression </text><tab /><text styleclass="Body Text">An optional expression to throw. </text></para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Body Text">BREAK throws a runtime exception, causing execution to branch to the nearest RECOVER, CATCH or FINALLY block in a BEGIN SEQUENCE-RECOVER USING or TRY construct. If execution is not within a BEGIN SEQUENCE or TRY construct, the application will terminate.</para>
+    <para styleclass="Body Text">The specified expression will be evaluated and received by the nearest RECOVER USING statement, if any, as a value of type USUAL. If the nearest RECOVER statement does not have a USING clause, the result of expression is discarded.</para>
+    <para styleclass="Body Text">If expression is not specified, it defaults to NIL.</para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> e </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SEQUENCE</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; bar( 1 )</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RECOVER</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> e</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &quot;An exception has occurred, exception value is:&quot;, e</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SEQUENCE</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> bar( x )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Valtype(x) != </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">BREAK</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &quot;Argument not a string!&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160;...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
+  </body>
+</topic>

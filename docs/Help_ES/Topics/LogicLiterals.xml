@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Logic Literals</title>
+  <keywords>
+    <keyword>.F.</keyword>
+    <keyword>.N.</keyword>
+    <keyword>.T.</keyword>
+    <keyword>.Y.</keyword>
+    <keyword>FALSE</keyword>
+    <keyword>Literals</keyword>
+    <keyword>LOGIC</keyword>
+    <keyword>Logic Literals</keyword>
+    <keyword>TRUE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Logic Literals</para>
+    </header>
+    <para styleclass="Body Text">X# uses the following Logical literals. </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="3" colcount="2" style="width:auto;">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Value</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">TRUE or .T. or .Y.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical TRUE</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">FALSE or .F. or .N.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical FALSE</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

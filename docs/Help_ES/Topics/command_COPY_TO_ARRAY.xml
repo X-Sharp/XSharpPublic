@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY TO ARRAY Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY TO ARRAY command</keyword>
+    <keyword>Copying<keyword>records</keyword></keyword>
+    <keyword>Databases</keyword>
+    <keyword>Records</keyword>
+    <keyword>Records<keyword>copying</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY TO ARRAY Command (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Normal">Copies data from the currently selected table to an array.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">COPY TO ARRAY &lt;ArrayName&gt; &#160; <br/> &#160; [FIELDS FieldList | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<br/> &#160; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;] [NOOPTIMIZE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;<text styleclass="Normal">ArrayName</text>&gt;<tab />Specifies the name of the array that contains the data to be copied to the new records. New records are added to the table until all rows in the array are appended.<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />This clause is parsed but not yet supported.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_APPEND_FROM_ARRAY">APPEND FROM ARRAY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_GATHER">GATHER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SCATTER">SCATTER</link></para>
+  </body>
+</topic>

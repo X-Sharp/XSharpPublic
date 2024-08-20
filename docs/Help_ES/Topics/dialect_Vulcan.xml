@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Vulcan</title>
+  <keywords>
+    <keyword>&apos;@&apos;</keyword>
+    <keyword>__VULCAN__</keyword>
+    <keyword>_WINBOOL</keyword>
+    <keyword>PSZ</keyword>
+    <keyword>UNION</keyword>
+    <keyword>VOSTRUCT</keyword>
+    <keyword>Vulcan</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Vulcan</para>
+    </header>
+    <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;</para>
+    <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Vulcan&quot; dialect.</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Does NOT allows 4 letter abbreviations of keywords</li>
+    </list>
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Does NOT support Memory variables</li>
+    </list>
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Does NOT allow &amp;&amp; as same line comment characters (&amp;&amp; means .AND. in Vulcan)</li>
+    </list>
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Single quotes are used for Character literals</li>
+    </list>
+    <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
+    </list>
+    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">NULL_STRING is compiled into either &quot;&quot; or NULL depending on the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></li>
+    </list>
+    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The preprocessor adds a define __VULCAN__ with a value of TRUE</li>
+    </list>
+    <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Adds the VOSTRUCT and UNION entity types</li>
+    </list>
+    <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Uses the _WINBOOL type for logical values inside VOSTRUCT and UNION entities</li>
+    </list>
+    <list id="22" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The indexer on PSZ types start with element 0</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="23" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">When running in Ansi more (SetAnsi(TRUE), which is the default) then the DBF header for DBFNTX gets the Ansi bit set</li>
+      <li styleclass="Normal">The NoMethod() method gets an extra 1st parameter that contains the name of the method that was called.</li>
+    </list>
+  </body>
+</topic>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ACCESS CONSTRUCTOR</title>
+  <keywords>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>CONSTRUCTOR statement</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>Statements</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CONSTRUCTOR Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">CONSTRUCTOR</text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[=&gt; &lt;expression&gt;]</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[END CONSTRUCTOR]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpressionBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List">END <text styleclass="Normal">CONSTRUCTOR</text><tab />Optional end clause to indicate the end of the <text styleclass="Normal">CONSTRUCTOR</text> entity</para>
+    <para styleclass="Heading1"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

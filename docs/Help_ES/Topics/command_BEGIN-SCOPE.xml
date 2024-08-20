@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>BEGIN SCOPE</title>
+  <keywords>
+    <keyword>BEGIN</keyword>
+    <keyword>BEGIN SCOPE</keyword>
+    <keyword>END</keyword>
+    <keyword>END SCOPE</keyword>
+    <keyword>SCOPE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">BEGIN SCOPE</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Heading1"><text styleclass="Body Text">The </text><text styleclass="Body Text" style="font-weight:bold;">BEGIN SCOPE</text><text styleclass="Body Text"> and </text><text styleclass="Body Text" style="font-weight:bold;">END SCOPE</text><text styleclass="Body Text"> keyword pairs declare a scope of visibility and lifetime of LOCAL variables</text></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">BEGIN SCOPE<br/> &#160; statements<br/>END SCOPE</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,128px left,192px left,256px left,320px left,384px left,448px left,511px left,575px left ;"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-style:italic; color:#000000;">statements</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text><tab />Code including one or more LOCAL declarations. </para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">BEGIN SCOPE</text>...<text style="font-weight:bold;">END SCOPE</text> are used within a function/member body to define an area of restricted scope for LOCAL variables. Attempt to use a LOCAL variable that is declared with a BEGIN <text style="font-weight:bold;">SCOPE...END SCOPE</text> block outside the scope results in a compiler error.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Heading1">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Test() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SCOPE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> n </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">n++</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? n</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SCOPE</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// n does not exist here</text></para>
+  </body>
+</topic>

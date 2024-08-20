@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-ins</title>
+  <keywords>
+    <keyword>-ins</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-ins</para>
+    </header>
+    <para styleclass="Normal">The -ins option specifies whether the compiler should automatically include namespaces from assemblies compiled in VO/Vulcan dialect &#160;marked with the ImplicitNameSpaceAttribute.</para>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-ins[+|-]</para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List"><text styleclass="Code Example">+ | - </text><tab />Specifying +, or just -ins, directs the compiler to automatically include namespaces from assemblies marked with the VulcanImplicitNameSpaceAttribute. </para>
+    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Normal">Class Libraries can be compiled with a special attribute:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box">[assembly: VulcanImplicitNamespaceAttribute( &quot;SomeNameSpace )]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">This attribute tells the compiler that classes that are placed inside that namespace should be automatically included when searching for classes, as if there was a #using SomeNameSpace statement in the source code.</para>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">In the Namespaces section, modify the Enable Implicit Lookup of Namespaces property. </li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+    </list>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

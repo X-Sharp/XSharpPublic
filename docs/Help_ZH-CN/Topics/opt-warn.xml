@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T23:22:23.626+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-warn</title>
   <keywords>
     <keyword>-warn</keyword>
@@ -9,18 +9,19 @@
     <header>
       <para styleclass="Heading1">-warn</para>
     </header>
-    <para styleclass="Normal">The -warn option specifies the warning level for the compiler to display.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">-warn 选项指定编译器显示的警告级别。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-warn:option &#160;</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List"><text styleclass="Code Example">option</text><tab />The warning level you want displayed for the compilation: Lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List"><text styleclass="Code Example">option</text><tab />您希望在编译时显示的警告级别： 数字越小，只显示严重性越高的警告；数字越大，警告越多。有效值为 0-4：</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:285px;">
-          <para styleclass="Normal">Warning level</para>
+          <para styleclass="Normal" style="text-align:center;">警告级别</para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Meaning</para>
+          <para styleclass="Normal" style="text-align:center;">含义</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -28,7 +29,7 @@
           <para styleclass="Normal">0</para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Turns off emission of all warning messages.</para>
+          <para styleclass="Normal">关闭所有警告信息。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -36,7 +37,7 @@
           <para styleclass="Normal">1</para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Displays severe warning messages</para>
+          <para styleclass="Normal">显示严重警告信息</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -44,7 +45,7 @@
           <para styleclass="Normal">2</para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Displays level 1 warnings plus certain, less-severe warnings, such as warnings about hiding class members.</para>
+          <para styleclass="Normal">显示第 1 级警告和某些不太严重的警告，如关于隐藏类成员的警告。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -52,40 +53,38 @@
           <para styleclass="Normal">3</para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Displays level 2 warnings plus certain, less-severe warnings, such as warnings about expressions that always evaluate to <text styleclass="Code Example">true</text> or <text styleclass="Code Example">false</text>.</para>
+          <para styleclass="Normal">显示第 2 级警告以及某些不那么严重的警告，例如关于表达式总是求值为 true 或 false 的警告。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="width:285px;">
-          <para styleclass="Normal">4 (the default)</para>
+          <para styleclass="Normal">4 (默认)</para>
         </td>
         <td style="width:917px;">
-          <para styleclass="Normal">Displays all level 3 warnings plus informational warnings.</para>
+          <para styleclass="Normal">显示所有第 3 级警告和信息性警告。</para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Heading2">备注</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">To get information about an error or warning, you can look up the error code in the Help Index. For other ways to get information about an error or warning, see <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Errors">X# Compiler Errors</link>.</para>
+    <para styleclass="Normal">要获取有关错误或警告的信息，可以在帮助索引中查找错误代码。有关获取错误或警告信息的其他方法，请参阅 X# 编译器错误。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link> to treat all warnings as errors. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> to disable certain warnings.</para>
+    <para styleclass="Normal">使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link> 可将所有警告视为错误。使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> 可禁用某些警告。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">-w is the short form of -warn.</para>
+    <para styleclass="Normal">-w 是 -warn 的简写。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build property page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Modify the Warning Level property.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">Click here to see the property page</link></li>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Build 选项卡.</li>
+      <li styleclass="Normal" style="margin-left:13px;">编辑 Warning Level 属性</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Build">查看属性页</link></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For information on how to set this compiler option programmatically, see WarningLevel.</para>
-    <para styleclass="Heading2">Example</para>
-    <para styleclass="Normal">Compile<text styleclass="Code Example"> in.prg</text> and have the compiler only display level 1 warnings:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">有关如何以编程方式设置该编译器选项的信息，请参阅 WarningLevel。</para>
+    <para styleclass="Heading2">示例</para>
+    <para styleclass="Normal">编译 in.prg，让编译器只显示一级警告：</para>
     <para styleclass="Code with box">xsc -warn:1 in.prg &#160;</para>
     <para styleclass="Normal"></para>
   </body>

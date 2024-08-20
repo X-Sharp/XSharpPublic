@@ -1,25 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>TypeOf operator</title>
+<topic template="Default" modified="2024-06-30T10:37:03.546+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TypeOf 操作符</title>
   <body>
     <header>
-      <para styleclass="Heading1">TypeOf operator</para>
+      <para styleclass="Heading1">TypeOf 操作符</para>
     </header>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">In .Net, all types are inherited from the System.Type. </para>
+    <para styleclass="Body Text">在 .Net 中，所有类型都从 System.Type 继承。</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">TypeOf( type )</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text">The TypeOf operator gets the System.Type of a type. </para>
-    <para styleclass="Body Text">This code sample shows the use case of typeof operator using C#.</para>
-    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">TypeOf 运算符可获取类型的 System.Type 值。</para>
+    <para styleclass="Body Text">本代码示例展示了使用 C# 的 typeof 操作符的用例。</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">Console</text><text style="font-weight:normal; font-style:normal; color:#000000;">.WriteLine(typeof(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">String</text><text style="font-weight:normal; font-style:normal; color:#000000;">)) &#160; &#160;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">Console</text><text style="font-weight:normal; font-style:normal; color:#000000;">.WriteLine(typeof(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text style="font-weight:normal; font-style:normal; color:#000000;">))</text></para>
-    <para styleclass="Body Text">The following example demonstrates several ways to obtain a type</para>
-    <para styleclass="Heading1">Example</para>
+    <para styleclass="Body Text">下面的示例演示了几种获取类型的方法</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> t1 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Type</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> t2 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Type</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> t3 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Type</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> t4 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Type</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> s </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">s := &quot;Live long and prosper!&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">t1 := s:GetType()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">t2 := typeof(System.</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">String</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">t3 := typeof(</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><text style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">t4 := Type.GetType( &quot;System.String&quot; )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;Type objects are equal:&quot;, t1 == t2 .and. t1 == t3 .and. t1 == t4</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? t1:Name</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? t1:FullName</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? t1:AssemblyQualifiedName</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
-    <para styleclass="Heading2"><text style="font-weight:bold;">Note</text></para>
-    <para styleclass="Body Text"><text style="font-weight:bold;">_typeof()</text> (with a leading underscore and parenthesis) is also supported for compatibility with Visual Objects and is synonymous with sizeof.</para>
+    <para styleclass="Heading2"><text style="font-weight:bold;">备注</text></para>
+    <para styleclass="Body Text"><text style="font-weight:bold;">为了与 Visual Objects 兼容，还支持 _typeof()（带下划线和括号），它与 sizeof 同义。</text></para>
   </body>
 </topic>

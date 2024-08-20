@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-12-19T14:03:27.942+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Primary Expressions</title>
+<topic template="Default" modified="2024-06-30T01:38:08.115+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Primary 表达式</title>
   <keywords>
     <keyword>_AND</keyword>
     <keyword>_ARGLIST</keyword>
@@ -29,17 +29,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Primary Expressions</para>
+      <para styleclass="Heading1">Primary 表达式</para>
     </header>
-    <para styleclass="Body Text">Primary Expressions are the simplest building blocks in the expression rule in X#</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Primary 表达式是 X# 表达式规则中最简单的构件</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="31" colcount="2" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle; width:30%;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Primary Expression type</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Primary 表达式类型</text></para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">语法</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -60,7 +61,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">LiteralArray</para>
+          <para styleclass="Body Text">字面数组</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">{......}</para>
@@ -68,7 +69,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Anonymous Type</para>
+          <para styleclass="Body Text">匿名类型</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">CLASS { .... }</para>
@@ -92,7 +93,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Lamda-Expressions">Lambda Expression</link></para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Lamda-Expressions">Lambda 表达式</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">{ .. =&gt; }</para>
@@ -100,7 +101,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ">LINQ query</link></para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ">LINQ 查询</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">FROM .. SELECT ..</para>
@@ -108,18 +109,18 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">DelegateConstructor call</para>
+          <para styleclass="Body Text">委托构造函数调用</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype { expression, @Identifier() }</para>
+          <para styleclass="Body Text">datatype { 表达式, @标识符() }</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Constructor call with optional initializer</para>
+          <para styleclass="Body Text">带有可选初始化器的构造函数调用</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype { argumentlist? } &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="Initializers">initializer</link>? }</para>
+          <para styleclass="Body Text">datatype { 参数列表? } &#160;<link displaytype="text" defaultstyle="true" type="topiclink" href="Initializers">initializer</link>? }</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -127,7 +128,7 @@
           <para styleclass="Body Text">Checked </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">CHECKED ( expression )</para>
+          <para styleclass="Body Text">CHECKED ( 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -135,7 +136,7 @@
           <para styleclass="Body Text">Unchecked </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">UNCHECKED ( expression )</para>
+          <para styleclass="Body Text">UNCHECKED ( 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -143,7 +144,7 @@
           <para styleclass="Body Text">Typeof</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(_typeof | TYPEOF) ( expression )</para>
+          <para styleclass="Body Text">(_typeof | TYPEOF) ( 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -151,7 +152,7 @@
           <para styleclass="Body Text">Sizeof</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(_sizeof | SIZEOF) ( expression )</para>
+          <para styleclass="Body Text">(_sizeof | SIZEOF) ( 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -159,7 +160,7 @@
           <para styleclass="Body Text">Nameof</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">NAMEOF ( identifier )</para>
+          <para styleclass="Body Text">NAMEOF ( 标识符 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -167,7 +168,7 @@
           <para styleclass="Body Text">Default</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">DEFAULT ( expression )</para>
+          <para styleclass="Body Text">DEFAULT ( 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -175,23 +176,23 @@
           <para styleclass="Body Text">Name</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">identifier</para>
+          <para styleclass="Body Text">标识符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Conversion</para>
+          <para styleclass="Body Text">转换</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">nativetype</link> ( expression ): LONG(1+2)</para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">nativetype</link> ( 表达式 ): LONG(1+2)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">XBase Conversion</para>
+          <para styleclass="Body Text">XBase 转换</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Types">xbasetype</link> ( expression ): FLOAT(1+2)</para>
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Types">xbasetype</link> ( 表达式 ): FLOAT(1+2)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -199,7 +200,7 @@
           <para styleclass="Body Text">VOCast</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">datatype ( _CAST , exprsssion )</para>
+          <para styleclass="Body Text">datatype ( _CAST , 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -207,7 +208,7 @@
           <para styleclass="Body Text">VoCastPtr</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">PTR ( datatype , expression )</para>
+          <para styleclass="Body Text">PTR ( datatype , 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -220,10 +221,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">IIF expression</para>
+          <para styleclass="Body Text">IIF 表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(IIF|IF) ( expression , expression , expression )</para>
+          <para styleclass="Body Text">(IIF|IF) ( 表达式 , 表达式 , 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -231,52 +232,52 @@
           <para styleclass="Body Text">Bitwise </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(_AND, _OR, _XOR, _NOT) ( expressionlist )</para>
+          <para styleclass="Body Text">(_AND, _OR, _XOR, _NOT) ( 表达式列表 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">AliasedField</para>
+          <para styleclass="Body Text">别名字段</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">FIELD -&gt; identifier<br/>| identifier -&gt; identifier</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Aliased Expression</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">FIELD -&gt; expression<br/>| expression -&gt; expression</para>
+          <para styleclass="Body Text">FIELD -&gt; 标识符<br/>| 标识符 -&gt; 标识符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">MacroExpr</para>
+          <para styleclass="Body Text">别名表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">&amp; ( expression )</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">MacroVar</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Body Text">&amp; identifier</para>
+          <para styleclass="Body Text">FIELD -&gt; 表达式<br/>| 表达式 -&gt; 表达式</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Parenthesized </para>
+          <para styleclass="Body Text">宏表达式</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">( expression )</para>
+          <para styleclass="Body Text">&amp; ( 表达式 )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">ArgList</para>
+          <para styleclass="Body Text">宏变量</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">&amp; 标识符</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">有括号的</para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">( 表达式 )</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Body Text">参数列表</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">_ARGLIST</para>

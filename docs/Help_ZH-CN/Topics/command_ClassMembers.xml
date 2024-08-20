@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T09:34:59.550+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Other Classmembers</title>
+<topic template="Default" modified="2024-06-27T20:01:00.555+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>其他类成员</title>
   <body>
     <header>
-      <para styleclass="Heading1">ClassMembers (All dialects)</para>
+      <para styleclass="Heading1">其他类成员(所有方言)</para>
     </header>
     <para styleclass="Heading1">普通类成员(实例变量除外)</para>
     <para styleclass="Normal"></para>

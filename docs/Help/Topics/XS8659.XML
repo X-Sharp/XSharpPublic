@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>Error XS8659</title>
 <keywords>
 <keyword>XS8659</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">Error XS8659</para>
   </header>
-  <para styleclass="Normal">Auto-implemented property '{0}' cannot be marked 'readonly' because it has a 'set' accessor.</para>
+  <para styleclass="Normal">Auto-implemented property &apos;{0}&apos; cannot be marked &apos;readonly&apos; because it has a &apos;set&apos; accessor.</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

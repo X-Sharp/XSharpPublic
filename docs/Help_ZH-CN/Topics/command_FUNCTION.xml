@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-15T19:06:32.661+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>FUNCTION Statement</title>
+<topic template="Default" modified="2024-06-27T20:09:27.387+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FUNCTION 语句</title>
   <keywords>
     <keyword>Compiledeclaration</keyword>
     <keyword>Declaration statements</keyword>
@@ -14,7 +14,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">FUNCTION Statement</para>
+      <para styleclass="Heading1">FUNCTION 语句</para>
     </header>
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">向编译器声明一个函数名和一个可选的局部变量名列表。在 FoxPro DEFINE CLASS ... ENDDEFINE 中使用时，将声明一个方法。</para>

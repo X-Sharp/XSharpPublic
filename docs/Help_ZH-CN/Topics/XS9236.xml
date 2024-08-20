@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
 <title>Error XS9236</title>
 <keywords>
 <keyword>XS9236</keyword>
@@ -9,7 +9,7 @@
   <header>
     <para styleclass="Heading1">Error XS9236</para>
   </header>
-  <para styleclass="Normal">Cannot locate WITH block for member access expression without left hand side. Enable 'Late Binding' to allow resolving the WITH expression at runtime.</para>
+  <para styleclass="Normal">Cannot locate WITH block for member access expression without left hand side. Enable &apos;Late Binding&apos; to allow resolving the WITH expression at runtime.</para>
   <para styleclass="Normal"></para>
 </body>
 </topic>

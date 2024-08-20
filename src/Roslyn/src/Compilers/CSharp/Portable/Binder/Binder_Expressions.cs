@@ -1277,7 +1277,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindQualifiedName(QualifiedNameSyntax node, DiagnosticBag diagnostics)
         {
 #if XSHARP
-            var left = this.BindExpression(node.Left, diagnostics);
+            var bag = DiagnosticBag.GetInstance();
+            var left = this.BindExpression(node.Left, bag);
             if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) &&
                 left.Type?.IsVoStructOrUnion() != true)
             {
@@ -1286,7 +1287,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Then try pointerMemberAccess resolution...
                     TypeSymbol pointedAtType;
                     bool hasErrors;
-                    BindPointerIndirectionExpressionInternal(node, left, diagnostics, out pointedAtType, out hasErrors);
+                    BindPointerIndirectionExpressionInternal(node, left, bag, out pointedAtType, out hasErrors);
                     if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
                     {
                         left = new BoundPointerIndirectionOperator(node.Left, left, pointedAtType, hasErrors)
@@ -1297,8 +1298,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
-                    left = this.BindNamespaceOrType(node.Left, diagnostics);
+                    if (bag.HasAnyErrors())
+                        bag.Clear();
+                    left = this.BindNamespaceOrType(node.Left, bag);
                 }
+                diagnostics.AddRangeAndFree(bag);
+
             }
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #else

@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-10-22T13:08:46.829-07:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>WITH command</title>
+<topic template="Default" modified="2024-06-29T23:01:11.058+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>WITH 命令</title>
   <body>
     <header>
-      <para styleclass="Heading1">WITH command</para>
+      <para styleclass="Heading1">WITH 命令</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Specifies multiple properties for an object.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">为对象指定多个属性。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">WITH ObjectName<br/> &#160; [cStatements] or<br/><tab />[:Statements]<br/>END WITH</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ObjectName <tab />Specifies the name of the object. ObjectName can be the name of the object or a reference to the object.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ObjectName <tab />指定对象的名称。ObjectName 可以是对象的名称，也可以是对象的引用。</para>
   </body>
 </topic>

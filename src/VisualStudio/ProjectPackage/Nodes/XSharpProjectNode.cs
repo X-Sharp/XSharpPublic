@@ -978,6 +978,8 @@ namespace XSharp.Project
                 case XFileType.VOMenu:
                 case XFileType.VOOrder:
                 case XFileType.VOIndex:
+                case XFileType.VOSqlTable:
+                case XFileType.VOReport:
                     // dependent file
                     HierarchyNode newParent = parentNode.FindChild(parentFile + parentExtension);
                     if (newParent != null)

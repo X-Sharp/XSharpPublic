@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-06-14T20:38:10.253+08:00" lasteditedby="Design" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET CENTURY Command</title>
+<topic template="Default" modified="2024-06-27T20:12:22.719+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET CENTURY 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Dates</keyword>
@@ -13,7 +13,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET CENTURY Command</para>
+      <para styleclass="Heading1">SET CENTURY 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>

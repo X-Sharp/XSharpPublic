@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:46:44.743+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>CLASS Statement (Xbase++ dialect)</title>
+<topic template="Default" modified="2024-06-27T20:08:13.126+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLASS 语句(Xbase++ 方言))</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
     <keyword>CLASS</keyword>
@@ -35,7 +35,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">CLASS Statement (Xbase++ dialect)</para>
+      <para styleclass="Heading1">CLASS 语句(Xbase++ 方言)</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a class name to the compiler.</para>

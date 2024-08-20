@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T18:30:49.493+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-nostddefs</title>
   <keywords>
     <keyword>-nostddefs</keyword>
@@ -9,18 +9,20 @@
     <header>
       <para styleclass="Heading1">-nostddefs</para>
     </header>
-    <para styleclass="Normal">The -nostddefs option prevents the compiler from using the preprocessor directives in XSharpDefs.xh.</para>
-    <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-nostddefs[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -nostddefs, prevents the compiler from using the preprocessor directives in <text styleclass="Normal">XSharpDefs.xh</text>. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Build tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Preprocessor section, modify the &quot;Suppress standard header file&quot; property.</li>
+    <para styleclass="Normal">使用 -nostddefs 选项后，编译器将无法使用 XSharpDefs.xh 中的预处理器指令。</para>
+    <para styleclass="Heading2">语法</para>
+    <para styleclass="Code with box">-nostddefs[+|-]</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab />指定 + 或只指定 -nostddefs，将阻止编译器使用 XSharpDefs.xh 中的预处理器指令。</para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡</li>
+      <li styleclass="Normal" style="margin-left:13px;">在 Preprocessor 部分，编辑 &quot;Suppress standard header file(替代标准头文件)&quot; 属性</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
     </list>
   </body>

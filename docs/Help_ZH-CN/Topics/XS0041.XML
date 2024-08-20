@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:33:39.767+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0041</title>
   <keywords>
     <keyword>XS0041</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1">Error XS0041</para>
     </header>
-    <para styleclass="Normal">Unexpected error writing debug information -- &apos;{0}&apos;</para>
     <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">写入调试信息时出错 </text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">-- </text><text styleclass="Normal">&apos;{0}&apos;</text></para>
   </body>
 </topic>

@@ -8,7 +8,7 @@
           <export-task name="Publish as CHM" format="CHM">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\Artifacts\Doc\XSharp_ZH-CN.chm</task-config-value>
-              <task-config-value name="skin">XSharp.hmskin</task-config-value>
+              <task-config-value name="skin">..\help\XSharp.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
@@ -482,7 +482,7 @@
       <config-value name="googleanalytics">UA-68123763-1</config-value>
       <config-value name="outputfile">..\..\artifacts\Help\HTML\index.html</config-value>
       <config-value name="highlighthotspots">1</config-value>
-      <config-value name="skin">XSharp_WebHelp.hmskin</config-value>
+      <config-value name="skin">..\help\XSharp_WebHelp.hmskin</config-value>
       <config-value name="searcheditor">0</config-value>
       <config-value name="searchsimpletext1" translate="true"><![CDATA[<p class="navbar"><a href="<%HREF_CONTENT_PAGE%>">Contents</a>
 <IF_INDEX_PAGE> | <a href="<%HREF_INDEX_PAGE%>">Index</a></IF_INDEX_PAGE>
@@ -673,6 +673,11 @@
           <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
+      <config-group name="niuji">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
     </config-group>
     <config-group name="chm">
       <config-value name="defaultext">.html</config-value>
@@ -690,7 +695,7 @@
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
-      <config-value name="skin">XSharp.hmskin</config-value>
+      <config-value name="skin">..\help\XSharp.hmskin</config-value>
       <config-value name="outputfile">..\..\Artifacts\Doc\XSharp_ZH-CN.chm</config-value>
       <config-value name="deletetemp">1</config-value>
       <config-value name="usesecondarywindows">0</config-value>

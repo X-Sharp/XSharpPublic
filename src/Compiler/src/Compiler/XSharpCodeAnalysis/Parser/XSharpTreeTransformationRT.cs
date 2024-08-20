@@ -17,7 +17,6 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using System.Xml.Linq;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
@@ -1060,7 +1059,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected void AddLocalName(string name, XSharpParserRuleContext context)
         {
-            CheckForFileWideVar(name, context);
+            CheckForFileWideVar(name, context, true);
             var fieldInfo = findVar(name);
             if (fieldInfo == null || fieldInfo.IsFileWidePublic)
             {
@@ -1170,8 +1169,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var field in context._Fields)
                 {
                     var name = field.Id.GetText();
-                    var mv = new MemVarFieldInfo(name, alias, field, filewidepublic: true);
-                    _fileWideVars.Add(mv.Name, mv);
+                    if (CheckForFileWideVar(name, context, false))
+                    {
+                        var mv = new MemVarFieldInfo(name, alias, field, filewidepublic: true);
+                        _fileWideVars.Add(mv.Name, mv);
+                    }
                 }
             }
             else if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
@@ -1184,10 +1186,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Amp == null)
                         {
                             var name = CleanVarName(memvar.Id.GetText());
-                            var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
-                            mv.IsPublic = true;
-                            _fileWideVars.Add(mv.Name, mv);
-                            GlobalEntities.FileWidePublics.Add(mv);
+                            if (CheckForFileWideVar(name, context, false))
+                            {
+                                var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
+                                mv.IsPublic = true;
+                                _fileWideVars.Add(mv.Name, mv);
+                                GlobalEntities.FileWidePublics.Add(mv);
+                            }
                         }
                         // Code generation for initialization is done in CreateInitFunction()
                     }
@@ -1199,9 +1204,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._Vars)
                     {
                         var name = CleanVarName(memvar.Id.GetText());
-                        var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
-                        mv.IsPublic = false;
-                        _fileWideVars.Add(mv.Name, mv);
+                        if (CheckForFileWideVar(name, context, false))
+                        {
+                            var mv = new MemVarFieldInfo(name, "M", memvar, filewidepublic: true);
+                            mv.IsPublic = false;
+                            _fileWideVars.Add(mv.Name, mv);
+                        }
                     }
                 }
             }
@@ -1216,16 +1224,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        protected void CheckForFileWideVar(string name, XSharpParserRuleContext context)
+        protected bool CheckForFileWideVar(string name, XSharpParserRuleContext context, bool local)
         {
             if (_fileWideVars.Count > 0)
             {
                 var filewide = findFileWideMemVar(name);
                 if (filewide != null)
                 {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FileWideMemVarName, name));
+                    if (local)
+                        _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FileWideMemVarName, name));
+                    else
+                        _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FileWideMemVarDuplicate, name));
+                    return false;
                 }
             }
+            return true;
         }
         protected MemVarFieldInfo findFileWideMemVar(string name)
         {
@@ -3455,7 +3468,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (XP.ParameterContext par in parameters)
                     {
                         var name = par.Id.GetText();
-                        CheckForFileWideVar(name, par);
+                        CheckForFileWideVar(name, par, true);
                         CurrentMember.Data.AddField(name, XSharpSpecialNames.ClipperParamPrefix, par);
                     }
                 }

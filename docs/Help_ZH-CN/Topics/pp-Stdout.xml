@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-06-30T12:06:00.624+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#stdout</title>
   <body>
     <header>
       <para styleclass="Heading1">#stdout</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Send data to the output stream during compilation</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">在编译过程中向输出流发送数据</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code Example">#stdout &lt;message&gt;</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">The <text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">#stdout</text> directive sends output to the standard output during compilation followed by a CRLF.<br/>If this output will be shown or not in the IDE that you are using depends on the settings of this IDE. </para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1">Example </para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; color:#339966;">// example of #stdout </text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// The example demonstrates the use of #stdout </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ifndef</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DEBUG &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// output at compile time </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;#stdout Compiling a debug version of the program</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;Hello world&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">在编译过程中，#stdout 指令会将输出发送到标准输出端，后面跟一个 CRLF。</para>
+    <para styleclass="Normal">在您使用的集成开发环境中是否显示该输出取决于该集成开发环境的设置。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:italic; color:#339966;">// #stdout 示例</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 该示例演示了 #stdout 的使用方法 </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">ifndef</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DEBUG &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// 编译时输出 </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160;#stdout 编译调试程序版本</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">endif</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? &quot;Hello world&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"></para>
   </body>

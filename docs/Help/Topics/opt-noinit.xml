@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-06-29T19:12:29.262+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-02T08:07:05.629+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-noinit</title>
   <keywords>
     <keyword>$Exit</keyword>
@@ -30,5 +30,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The compiler option -noinit suppresses the generation of empty $Init1() and $Exit() functions. As a result there will be no hard link to external assemblies if you do not reference code from these assemblies. </para>
     <para styleclass="Normal">If you use these compiler option with an assembly that only contains DEFINES then the defines will be resolved at compile time and you will not need to include the assembly at runtime (unless these defines contain values that need to be resolved at runtime, such as symbols or date values).</para>
+    <para styleclass="Heading3"><snippet src="__buildExtra" inline="false"/></para>
   </body>
 </topic>

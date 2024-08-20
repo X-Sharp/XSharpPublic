@@ -1073,7 +1073,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(propertySyntax != null);
 #if XSHARP
             if ((RequiresReferenceToLocation(valueKind) || checkingReceiver) &&
-                propertySymbol.RefKind == RefKind.None && ! (propertySymbol is XsVariableSymbol))
+                propertySymbol.RefKind == RefKind.None && ! (propertySymbol is XsVariableSymbol) && false)
 #else
             if ((RequiresReferenceToLocation(valueKind) || checkingReceiver) &&
                 propertySymbol.RefKind == RefKind.None)

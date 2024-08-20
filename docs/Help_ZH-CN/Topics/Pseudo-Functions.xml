@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Pseudo Functions</title>
+<topic template="Default" modified="2024-06-30T02:19:32.147+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>伪函数</title>
   <keywords>
     <keyword>_ARGS</keyword>
     <keyword>_Chr</keyword>
@@ -20,17 +20,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Pseudo Functions</para>
+      <para styleclass="Heading1">伪函数</para>
     </header>
-    <para styleclass="Normal">The following pseudo functions are supported by the X# compiler</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">X# 编译器支持以下伪函数</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Function</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">函数</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">描述</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -38,7 +39,8 @@
           <para styleclass="Normal"><text style="font-weight:bold;">PCOUNT</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">This pseudo function is only available in methods or functions with a CLIPPER calling convention. <br/>It returns the number of argument passed to the function. The function does not expect and does not allow any arguments.<br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
+          <para styleclass="Body Text">此伪函数仅在使用 CLIPPER 调用约定的方法或函数中可用。</para>
+          <para styleclass="Body Text">它返回传递给函数的参数个数。该函数不期望也不允许有任何参数。<br/><text style="font-weight:bold; font-style:italic;">在 Core 方言中不可用。</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -46,7 +48,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">ARGCOUNT</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">This pseudo function returns the number of arguments defined for the current method or function.</para>
+          <para styleclass="Body Text">此伪函数返回为当前方法或函数定义的参数数量。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -54,7 +56,8 @@
           <para styleclass="Normal"><text style="font-weight:bold;">_GETMPARAM</text>() and <text style="font-weight:bold;">_GETFPARAM</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">These pseudo functions are only available in methods or functions with a CLIPPER calling convention. <br/>You can use them to retrieve a function parameter by position. You must pass a numeric expression to these functions. If you pass a number that is larger than the actual number of parameters at runtime then you will get an array access exception. <br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
+          <para styleclass="Body Text">这些伪函数仅在具有 CLIPPER 调用约定的方法或函数中可用。</para>
+          <para styleclass="Body Text">您可以使用它们按位置检索函数参数。您必须向这些函数传递一个数字表达式。如果在运行时传递的数字大于实际参数数，则会出现数组访问异常。 <br/><text style="font-weight:bold; font-style:italic;">在 Core 方言中不可用。</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -62,7 +65,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">String2Psz</text>() and <text style="font-weight:bold;">Cast2Psz</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">These pseudo functions are used to convert DotNet strings to unmanaged Ansi PSZ strings. Not only is a PSZ created, but the functions also change the code generation and set up code to clear the allocated PSZ variable on exit of the function in which they are created. <br/><text style="font-weight:bold; font-style:italic;">Not available in Core.</text></para>
+          <para styleclass="Body Text">这些伪函数用于将 DotNet 字符串转换为非托管的 Ansi PSZ 字符串。不仅创建了 PSZ，这些函数还改变了代码生成，并设置了代码，以便在创建这些函数的函数退出时清除分配的 PSZ 变量。<br/><text style="font-weight:bold; font-style:italic;">在 Core 方言中不可用。</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -70,7 +73,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">ALTD</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">This function will insert a call to System.Diagnostics.Debugger.Break inside a check to see if the debugger is attached (System.Diagnostics.Debugger.IsAttached)</para>
+          <para styleclass="Body Text">该函数将在检查调试器是否已连接（System.Diagnostics.Debugger.IsAttached）时插入对System.Diagnostics.Debugger.Break 的调用。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -78,7 +81,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">_GetInst</text>()</para>
         </td>
         <td>
-          <para styleclass="Body Text">This function will return the module handle for the current module. Behind the scenes this is translated to System.Runtime.InteropServices.Marshal.GetHINSTANCE(TypeOf(FunctionsClass):Module)</para>
+          <para styleclass="Body Text">该函数将返回当前模块的模块句柄。在幕后，它被转换为 System.Runtime.InteropServices.Marshal.GetHINSTANCE(TypeOf(FunctionsClass):Module)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -86,7 +89,9 @@
           <para styleclass="Normal"><text style="font-weight:bold;">PCALL()</text> and <text style="font-weight:bold;">CCALL()</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">The methods are used to call an API function for a strongly typed PTR.<br/>The function expects a first parameter of type PTR and the other parameters must match the parameters defined in the function to which the typed PTR points<br/>The compiler creates a delegate with the proper prototype and uses Marshal.GetDelegateForFunctionPointer() to call the function.</para>
+          <para styleclass="Body Text">这些方法用于调用强类型 PTR 的 API 函数。</para>
+          <para styleclass="Body Text">函数的第一个参数是 PTR 类型，其他参数必须与 PTR 类型所指向的函数中定义的参数相匹配。</para>
+          <para styleclass="Body Text">编译器会创建一个具有适当原型的委托，并使用 Marshal.GetDelegateForFunctionPointer() 调用函数。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -94,9 +99,9 @@
           <para styleclass="Normal"><text style="font-weight:bold;">PCallNative&lt;Type&gt;()</text> and <text style="font-weight:bold;">CCallNative&lt;Type&gt;()</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">The methods are used to call an API function for an untyped PTR</para>
-          <para styleclass="Body Text">The function expects a generic type parameter which indicates the return type and a first parameter of type PTR. Other parameters are allowed and must not point to managed memory.</para>
-          <para styleclass="Body Text">The compiler creates a delegate with the proper prototype and uses Marshal.GetDelegateForFunctionPointer() to call the function.</para>
+          <para styleclass="Body Text">这些方法用于调用无类型 PTR 的 API 函数。</para>
+          <para styleclass="Body Text">函数需要一个表示返回类型的通用类型参数和一个 PTR 类型的第一个参数。其他参数是允许的，但不得指向托管内存。</para>
+          <para styleclass="Body Text">编译器会创建一个具有适当原型的委托，并使用 Marshal.GetDelegateForFunctionPointer() 调用函数。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -104,7 +109,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">_ARGS()</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">This pseudo function returns is replaced by the compiler to a reference to the generated array of parameters for functions/methods with clipper calling convention</para>
+          <para styleclass="Body Text">编译器会将该伪函数返回值替换为对采用 CLIPPER 调用约定的函数/方法生成的参数数组的引用</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -112,7 +117,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">SLen()</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">This function is translated by the compiler to a call of the Length property of the string, with a built-in check for NULL.</para>
+          <para styleclass="Body Text">编译器将此函数转换为调用字符串的 Length 属性，并内置 NULL 检查。</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -120,7 +125,8 @@
           <para styleclass="Normal"><text style="font-weight:bold;">Chr(), _Chr()</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">When the numeric parameter of this function is a literal number between 0 and 127 then the compiler replaces the function call with a literal string with a character of that value. Larger values are not converted at compile time but at runtime because these numbers are codepage dependent.<br/>So an expression like <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&quot;Hello world&quot;+Chr(13)+Chr(10)</text>&#32;<br/>will be translated into a literal string containing &quot;Hello world&quot; followed by the <text style="font-weight:bold;">CRLF</text> characters (the compiler concatenates the strings at compile time).</para>
+          <para styleclass="Body Text">当该函数的数字参数是介于 0 和 127 之间的字面数字时，编译器会将函数调用替换为带有该值字符的字面字符串。较大的数值不会在编译时进行转换，而是在运行时进行转换，因为这些数字与代码页有关。</para>
+          <para styleclass="Body Text">因此，表达式如 <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&quot;Hello world&quot;+Chr(13)+Chr(10)</text>&#32;<br/>将被翻译成一个包含 &quot;Hello world &quot;的字面字符串，后面是 CRLF 字符（编译器会在编译时将字符串连接起来）。</para>
         </td>
       </tr>
     </table></para>

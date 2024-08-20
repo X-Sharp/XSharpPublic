@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>DELETE TAG Command</title>
+<topic template="Default" modified="2024-06-27T20:17:20.814+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELETE TAG 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>DELETE TAG command</keyword>
@@ -13,31 +13,31 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">DELETE TAG Command</para>
+      <para styleclass="Heading1">DELETE TAG 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Delete one or more orders from open index files.</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">从打开的索引文件中删除一个或多个 order。</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">DELETE TAG &lt;xcOrder&gt; [IN &lt;xcIndexFile&gt;] [, &lt;xcOrder&gt; [IN &lt;xcIndexFile&gt;]...]</para>
-    <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">&lt;xcOrder&gt;<tab />The name of the order to be removed. &#160;If &lt;xcOrder&gt; is a NULL_STRING or spaces, it is ignored. &#160;If &lt;xcOrder&gt; cannot be found, a runtime error is raised.</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;xcOrder&gt;<tab />要删除的 order 名称。 如果 &lt;xcOrder&gt; 是 NULL_STRING 或空格，将被忽略。 如果找不到 &lt;xcOrder&gt;，运行时将出错。</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IN &lt;xcIndexFile&gt;<tab />The name of an open index file, including an optional drive and directory (no extension should be specified). &#160;Use this argument to remove ambiguity when there are two or more orders with the same name in different index files.</para>
-    <para styleclass="List"><tab />If &lt;xcIndexFile&gt; is not open by the current process in the current work area, a runtime error is raised.</para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">DELETE TAG requires that the current database be open in exclusive mode. &#160;If this condition is not met when DELETE TAG is invoked, a runtime error is raised.</para>
+    <para styleclass="List">IN &lt;xcIndexFile&gt;<tab />打开的索引文件的名称，包括可选的驱动器和目录（不应指定扩展名）。 当不同索引文件中有两个或多个同名命令时，使用该参数可消除歧义。</para>
+    <para styleclass="List"><tab />如果当前进程未在当前工作区打开 &lt;xcIndexFile&gt;，则会出现运行时错误。</para>
+    <para styleclass="Heading1">描述</para>
+    <para styleclass="Normal">DELETE TAG 要求当前数据库以独占模式打开。 如果调用 DELETE TAG 时未满足此条件，则会出现运行时错误。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If you specify an index file name, DELETE TAG deletes the indicated order from that file. &#160;Otherwise, the command searches all index files open in the current work area and deletes the first occurrence of &lt;<text styleclass="Italic">xcOrder</text>&gt; that it finds.</para>
-    <para styleclass="Normal">If the controlling order is deleted, the database reverts to its natural order and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link> scoping.</para>
+    <para styleclass="Normal">如果指定了索引文件名，DELETE TAG 将删除该文件中的指定顺序。 否则，该命令将搜索当前工作区中打开的所有索引文件，并删除找到的第一个 &lt;xcOrder&gt; 。</para>
+    <para styleclass="Normal">如果控制 order 被删除，数据库将恢复自然顺序和 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XSharpRef.chm">DbSetFilter()</link> 作用域。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The RDD determines the order capacity of an index file, and DELETE TAG is supported only by RDDs with multiple-order capabilities. &#160;For single-order index files, you must delete the entire file. </para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">This example illustrates how to delete selected orders from an index file:</para>
+    <para styleclass="Normal">注意：RDD 决定了索引文件的顺序容量，只有具有多顺序功能的 RDD 才支持 DELETE TAG。 对于单序索引文件，必须删除整个文件。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Normal">本例说明如何从索引文件中删除选定的 order：</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer VIA &quot;DBFMDX&quot; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Customer-&gt;DBSetIndex(&quot;customer&quot;)</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// Delete the Cust01 and Cust02 orders from the </text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// Customer index file</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DELETE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TAG</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Cust01 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer, Cust02 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// or</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// Customer-&gt;DBDeleteOrder(&quot;Cust01&quot;, &quot;customer&quot;)</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// Customer-&gt;DBDeleteOrder(&quot;Cust02&quot;, &quot;customer&quot;)</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer VIA &quot;DBFMDX&quot; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEW</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Customer-&gt;DBSetIndex(&quot;customer&quot;)</text><br/><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 从当前索引文件中删除 Cust01 和 Cust02 </text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DELETE</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TAG</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Cust01 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer, Cust02 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">IN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> customer</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// 或</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// Customer-&gt;DBDeleteOrder(&quot;Cust01&quot;, &quot;customer&quot;)</text><br/><text style="font-weight:bold; font-style:italic; color:#339966;">// Customer-&gt;DBDeleteOrder(&quot;Cust02&quot;, &quot;customer&quot;)</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCreateIndex.htm" domain="XSharpRef.chm">DBCreateIndex()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCreateOrder.htm" domain="XSharpRef.chm">DbCreateOrder()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbDeleteOrder.htm" domain="XSharpRef.chm">DbDeleteOrder()</link>, <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

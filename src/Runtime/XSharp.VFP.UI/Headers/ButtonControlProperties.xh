@@ -14,7 +14,7 @@
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
 		[EditorBrowsable(EditorBrowsableState.Never)];
 		[Bindable(false)];
-		[Browsable(false)];
+		[Browsable(FALSE)];
 		PROPERTY BackStyle AS INT
 			GET
 				RETURN _backStyle
@@ -28,4 +28,19 @@
 					SELF:BackColor := System.Drawing.Color.Transparent
 				ENDIF
 			END SET
-		END PROPERTY
+			END PROPERTY
+
+
+
+	    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)];
+            [EditorBrowsable(EditorBrowsableState.Never)];
+		[Browsable(FALSE)];
+		NEW PROPERTY Image AS System.Drawing.Image
+            GET
+				RETURN SUPER:Image
+			END GET
+
+            SET
+                SUPER:Image := VALUE
+			END SET
+			END PROPERTY

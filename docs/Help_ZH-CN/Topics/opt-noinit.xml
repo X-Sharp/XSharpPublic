@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-06-29T19:12:29.262+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-01T19:55:44.825+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-noinit</title>
   <keywords>
     <keyword>$Exit</keyword>
@@ -15,20 +15,21 @@
     <header>
       <para styleclass="Heading1">-noinit</para>
     </header>
-    <para styleclass="Normal">Suppress generation of empty $Init1() and $Exit() functions</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">Background info</para>
-    <para styleclass="Normal">The X# compiler generates special functions in each assembly that are used to call INIT procedures and EXIT procedures.</para>
-    <para styleclass="Normal">There are 3 levels of INIT procedures. </para>
-    <para styleclass="Normal">For each of these 3 levels a special function is created: $Init1(), $Init2() and $Init3(). For EXIT procedures the compiler creates a function $Exit().</para>
-    <para styleclass="Normal">The functions $Init2() and $Init3() are only created when needed.</para>
-    <para styleclass="Normal">The functions $Init1() and $Exit() are always created.</para>
+    <para styleclass="Normal">禁止生成空的 $Init1() 和 $Exit() 函数</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When you compile an EXE with X# then the compiler generates code that calls the $Init1(), $Init2() and $Init3() functions in all referenced assemblies at startup and the $Exit() functions at shutdown.</para>
+    <para styleclass="Heading3">背景信息</para>
+    <para styleclass="Normal">X# 编译器会在每个程序集中生成用于调用 INIT 程序和 EXIT 程序的特殊函数。</para>
+    <para styleclass="Normal">INIT 程序有 3 个级别。</para>
+    <para styleclass="Normal">这 3 个级别中的每一级都会创建一个特殊函数：$Init1()、$Init2() 和 $Init3()。对于 EXIT 程序，编译器会创建一个函数 $Exit()。</para>
+    <para styleclass="Normal">函数 $Init2() 和 $Init3() 只在需要时才创建。</para>
+    <para styleclass="Normal">函数 $Init1() 和 $Exit() 始终会创建。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This mechanism also guarantees that classes in referenced assemblies are available at runtime, even when you have not explicitly referenced them in your code, so you can instantiate these classes with CreateInstance().</para>
+    <para styleclass="Normal">使用 X# 编译 EXE 时，编译器生成的代码会在启动时调用所有引用程序集中的 $Init1()、$Init2() 和 $Init3()函数，并在关闭时调用 $Exit() 函数。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The compiler option -noinit suppresses the generation of empty $Init1() and $Exit() functions. As a result there will be no hard link to external assemblies if you do not reference code from these assemblies. </para>
-    <para styleclass="Normal">If you use these compiler option with an assembly that only contains DEFINES then the defines will be resolved at compile time and you will not need to include the assembly at runtime (unless these defines contain values that need to be resolved at runtime, such as symbols or date values).</para>
+    <para styleclass="Normal">这种机制还能保证引用程序集中的类在运行时可用，即使你没有在代码中明确引用这些类，你也可以用 CreateInstance() 来实例化这些类。</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">编译器选项 -noinit 会抑制空 $Init1() 和 $Exit() 函数的生成。因此，如果不引用这些程序集的代码，就不会出现与外部程序集的硬链接。</para>
+    <para styleclass="Normal">如果在只包含定义的程序集中使用这些编译器选项，那么定义将在编译时解析，运行时无需包含程序集（除非这些定义包含需要在运行时解析的值，如符号或日期值）。</para>
   </body>
 </topic>

@@ -162,7 +162,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var name = CleanVarName(context.Id.GetText());
                 var alias = XSharpSpecialNames.MemVarPrefix;
-                CheckForFileWideVar(name, context);
+                CheckForFileWideVar(name, context, true);
                 var field = findVar(name);
                 if (field == null)
                 {

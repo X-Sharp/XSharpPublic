@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-06T19:33:09.012+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>XS0039</title>
   <keywords>
     <keyword>XS0039</keyword>
@@ -9,14 +9,14 @@
     <header>
       <para styleclass="Heading1">Error XS0039</para>
     </header>
-    <para styleclass="Normal">Cannot convert type &apos;type1&apos; to &apos;type2&apos; via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">A conversion with the as operator is allowed by inheritance, reference conversions, and boxing conversions. For more information, see Conversion Operators.</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">无法通过引用转换、装箱转换、取消装箱转换、包装转换或 </text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">null </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">类型转换将类型 &apos;</text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">type1&apos; </text><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">转换为 &apos;</text><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">type2&apos;</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#161616;">继承、引用转换和装箱转换允许使用 as 操作符进行转换。更多信息，请参阅转换操作符。</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The following example generates XS0039.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:&apos;Microsoft YaHei&apos;; font-size:11pt; color:#161616;">以下示例生成 </text><text styleclass="Normal"> XS0039.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>

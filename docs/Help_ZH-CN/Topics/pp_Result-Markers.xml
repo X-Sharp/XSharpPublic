@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Result Markers</title>
+<topic template="Default" modified="2024-06-30T13:04:26.998+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>结果标记</title>
   <keywords>
     <keyword>#&lt;idMarker&gt;</keyword>
     <keyword>&lt;!idmarker!&gt;</keyword>
@@ -12,29 +12,29 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Result Markers</para>
+      <para styleclass="Heading1">结果标记</para>
     </header>
-    <para styleclass="Heading2">Result Pattern</para>
-    <para styleclass="Normal">The &lt;resultPattern&gt; portion of a translation directive is the text the preprocessor will produce if a piece of input text matches the &lt;matchPattern&gt;. &#160;&lt;resultPattern&gt; is made from one or more of the following components:</para>
+    <para styleclass="Heading2">结果模式</para>
+    <para styleclass="Normal">翻译指令中的 &lt;resultPattern&gt; 部分是预处理器在输入文本匹配 &lt;matchPattern&gt; 时生成的文本。 &lt;resultPattern&gt; 由以下一个或多个组件组成：</para>
     <para styleclass="Normal"></para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Literal tokens </text>are actual characters that are written directly to the result text.<br/></li>
-      <li styleclass="Normal"><text style="font-weight:bold;">Words </text>are xBase &#160;keywords and identifiers that are written directly to the result text.</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">字面标记</text>是直接写入结果文本的实际字符。<br/></li>
+      <li styleclass="Normal"><text style="font-weight:bold;">单词</text>是 xBase 关键字和标识符，直接写入结果文本。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Result markers</text>: &#160;refer directly to a match marker name. &#160;Input text matched by the match marker is written to the result text via the result marker.</li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">结果标记：</text>直接引用匹配标记名称。通过结果标记将匹配标记匹配的输入文本写入结果文本。</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This table lists the Result marker forms:</para>
+    <para styleclass="Normal">以下表格列出了结果标记形式：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Result Marker</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">结果标记</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="font-weight:bold;"> Name</text></para>
+          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;"> 名称</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -42,7 +42,7 @@
           <para styleclass="Normal">&lt;idMarker&gt; </para>
         </td>
         <td>
-          <para styleclass="Normal">Regular result marker</para>
+          <para styleclass="Normal">常规结果标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -50,7 +50,7 @@
           <para styleclass="Normal"> #&lt;idMarker&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Dumb stringify result marker</para>
+          <para styleclass="Normal">Dumb stringify 结果标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -58,7 +58,7 @@
           <para styleclass="Normal"> &lt;&quot;idMarker&quot;&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Normal stringify result marker</para>
+          <para styleclass="Normal">普通字符串化结果标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -66,7 +66,7 @@
           <para styleclass="Normal">&lt;(idMarker)&gt; </para>
         </td>
         <td>
-          <para styleclass="Normal">Smart stringify result marker</para>
+          <para styleclass="Normal">智能字符串化结果标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -74,7 +74,7 @@
           <para styleclass="Normal"> &lt;{idMarker}&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Blockify result marker</para>
+          <para styleclass="Normal">块化结果标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -82,7 +82,7 @@
           <para styleclass="Normal">&lt;.idMarker.&gt; </para>
         </td>
         <td>
-          <para styleclass="Normal">Logify result marker</para>
+          <para styleclass="Normal">逻辑化结果标记</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -90,41 +90,41 @@
           <para styleclass="Normal">&lt;!idmarker!&gt;</para>
         </td>
         <td>
-          <para styleclass="Normal">Notempty result marker</para>
+          <para styleclass="Normal">非空结果标记</para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Regular result marker:</text> &#160;Writes the matched input text to the result text, or nothing if no input text is matched. &#160;Use this, the most general result marker, unless you have special requirements. &#160;You can use it with any of the match markers, but it almost always is used with the regular match marker.</li>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">常规结果标记：</text>将匹配的输入文本写入结果文本，如果没有匹配的输入文本，则不写入任何内容。除非有特殊要求，否则请使用这个最通用的结果标记。您可以将其与任何匹配标记一起使用，但它几乎总是与常规匹配标记一起使用。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Dumb stringify result marker</text>: &#160;Stringifies the matched input text and writes it to the result text. &#160;If no input text is matched, it writes a null string (&quot;&quot;). &#160;If the matched input text is a list matched by a list match marker, this result marker stringifies the entire list and writes it to the result text.<br/><br/>This result marker writes output to result text where a string is always required. &#160;This is generally the case for commands where a command or clause argument is specified as a literal value but the result text must always be written as a string even if the argument is not specified.</li>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Dumb stringify <text style="font-weight:bold;">结果标记：</text>将匹配的输入文本转换为字符串并写入结果文本。如果没有匹配的输入文本，则写入空字符串（&quot;&quot;）。如果匹配的输入文本是由列表匹配标记匹配的列表，则此结果标记将整个列表转换为字符串并写入结果文本。<br/><br/>这个结果标记将输出写入结果文本，其中始终需要一个字符串。这通常适用于命令，其中命令或子句参数被指定为文字值，但结果文本必须始终写入为字符串，即使参数未指定。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Normal stringify result marker</text>: &#160;Stringifies the matched input text and writes it to the result text. &#160;If no input text is matched, it writes nothing to the result text. &#160;If the matched input text is a list matched by a list match marker, this result marker stringifies each element in the list and writes it to the result text.<br/><br/>The normal stringify result marker is most often used with the blockify result marker to compile an expression while saving a text image of the expression (See the SET FILTER condition and the INDEX key expression in Std.ch).</li>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">普通字符串化结果标记</text>：将匹配的输入文本转换为字符串并写入结果文本。如果没有匹配的输入文本，则不向结果文本写入任何内容。如果匹配的输入文本是由列表匹配标记匹配的列表，则此结果标记将列表中的每个元素转换为字符串并写入结果文本。<br/><br/>普通字符串化结果标记通常与块化结果标记一起使用，用于编译表达式同时保存表达式的文本映像（请参阅 Std.ch 中的 SET FILTER 条件和 INDEX 键表达式）。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Smart stringify result marker</text>: &#160;Stringifies matched input text only if source text is enclosed in parentheses. &#160;If no input text matched, it writes nothing to the result text. &#160;If the matched input text is a list matched by a list match marker, this result marker stringifies each element in the list (using the same stringify rule) and writes it to the result text.<br/><br/>The smart stringify result marker is designed specifically to support extended expressions for commands other than SETs with &lt;xlToggle&gt; arguments. &#160;Extended expressions are command syntax elements that can be specified as literal text or as an expression if enclosed in parentheses. &#160;The &lt;xcDatabase&gt; argument of the USE command is a typical example. &#160;For instance, if the matched input for the &lt;xcDatabase&gt; argument is the word Customer, it is written to the result text as the string &quot;Customer,&quot; but the expression (cPath + cDatafile) would be written to the result text unchanged (i.e., without quotes).</li>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">智能字符串化结果标记</text>：仅在源文本被括号括起来时才将匹配的输入文本转换为字符串。如果没有匹配的输入文本，则不向结果文本写入任何内容。如果匹配的输入文本是由列表匹配标记匹配的列表，则此结果标记将列表中的每个元素（使用相同的字符串化规则）转换为字符串并写入结果文本。<br/><br/>智能字符串化结果标记专门设计用于支持除带有 &lt;xlToggle&gt; 参数的 SET 命令之外的其他命令的扩展表达式。扩展表达式是可以指定为文字文本或如果用括号括起来则作为表达式的命令语法元素。USE 命令的 &lt;xcDatabase&gt; 参数是一个典型示例。例如，如果 &lt;xcDatabase&gt; 参数的匹配输入是单词 Customer，则将其作为字符串 &quot;Customer&quot; 写入结果文本，但表达式 (cPath + cDatafile) 将不带引号地写入结果文本（即不带引号）。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Blockify result marker</text>: Writes matched input text as a code block without any arguments to the result text. &#160;For example, the input text x + 3 would be written to the result text as {|| x + 3}. &#160;If no input text is matched, it writes nothing to the result text. &#160;If the matched input text is a list matched by a list match marker, this result marker blockifies each element in the list.<br/><br/>The blockify result marker used with the regular and list match markers matches various kinds of expressions and writes them as code blocks to the result text. &#160;Remember that a code block is a piece of compiled code to execute sometime later. &#160;This is important when defining commands that evaluate expressions more than once per invocation. &#160;When defining a command, you can use code blocks to pass an expression to a function and procedure as data rather than as the result of an evaluation. &#160;This allows the target routine to evaluate the expression whenever necessary.<br/><br/>In Std.ch, the blockify result marker defines database commands where an expression is evaluated for each record. &#160;Commonly, these are field or expression lists, FOR and WHILE conditions, or key expressions for commands that perform actions based on key values.</li>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">块化结果标记：</text>将匹配的输入文本作为代码块（不带任何参数）写入结果文本。例如，输入文本 x + 3 将被写入结果文本为 {|| x + 3}。如果没有匹配的输入文本，则不向结果文本写入任何内容。如果匹配的输入文本是由列表匹配标记匹配的列表，则此结果标记将列表中的每个元素块化。<br/><br/>块化结果标记与常规和列表匹配标记一起匹配各种表达式，并将其作为代码块写入结果文本。请记住，代码块是一段编译后的代码，稍后执行。这在定义每次调用时评估多次表达式的命令时很重要。在定义命令时，您可以使用代码块将表达式作为数据传递给函数和过程，而不是作为评估结果。这允许目标例程在必要时评估表达式。<br/><br/>在 Std.ch 中，块化结果标记定义了对每条记录评估表达式的数据库命令。通常，这些是字段或表达式列表、FOR 和 WHILE 条件，或者基于关键值执行操作的命令的关键表达式。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Logify result marker</text>: Writes true (.T.) to the result text if any input text is matched; otherwise, it writes false (.F.) to the result text. &#160;This result marker does not write the input text itself to the result text.<br/><br/>The logify result marker is generally used with the restricted match marker to write true (.T.) to the result text if an optional clause is specified with no argument; otherwise, it writes false (.F.). &#160;In Std.ch, this formulation defines the EXCLUSIVE and SHARED clauses of the USE command.</li>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">逻辑化结果标记：</text>如果匹配任何输入文本，则向结果文本写入 true (.T.)；否则，向结果文本写入 false (.F.)。此结果标记不会将输入文本本身写入结果文本。<br/><br/>逻辑化结果标记通常与受限匹配标记一起使用，如果指定了不带参数的可选子句，则向结果文本写入 true (.T.)；否则，写入 false (.F.)。在 Std.ch 中，此公式定义了 USE 命令的 EXCLUSIVE 和 SHARED 子句。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Notempty result marker. </text>Writes the matched input text to the result text, or NIL if no input text is matched. &#160;This may be required instead of the regular result marker if you place the marker inside an IIF() expression.</li>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">非空结果标记：</text>将匹配的输入文本写入结果文本，如果没有匹配的输入文本，则写入 NIL。如果将标记放在 IIF() 表达式中，可能需要这个而不是常规结果标记。</li>
     </list>
     <para styleclass="Normal"></para>
-    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Repeating result clauses </text>are portions of the &lt;resultPattern&gt; enclosed by square brackets ([ ]). &#160;The text within a repeating clause is written to the result text as many times as it has input text for any or all result markers within the clause. &#160;If there is no matching input text, the repeating clause is not written to the result text. &#160;Repeating clauses, however, cannot be nested. &#160;If you need to nest repeating clauses, you probably need an additional <br/>#command rule for the current command.<br/><br/>Repeating clauses are the result pattern part of the #command facility that create optional clauses which have arguments. &#160;You can match input text with any match marker other than the restricted match marker and write to the result text with any of the corresponding result markers. &#160;Typical examples of this facility are the definitions for the STORE and REPLACE commands in Std.ch.</li>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text style="font-weight:bold;">重复结果子句</text>是由方括号 ([ ]) 括起来的 &lt;resultPattern&gt; 部分。重复子句中的文本将根据其在任何或所有结果标记中的输入文本的次数写入结果文本。如果没有匹配的输入文本，则不会将重复子句写入结果文本。但是，重复子句不能嵌套。如果需要嵌套重复子句，则可能需要为当前命令添加额外的 #command 规则。<br/><br/>重复子句是 #command 设施的结果模式部分，用于创建具有参数的可选子句。您可以使用除受限匹配标记之外的任何匹配标记与任何相应的结果标记写入结果文本。此设施的典型示例是 Std.ch 中 STORE 和 REPLACE 命令的定义。</li>
     </list>
   </body>
 </topic>

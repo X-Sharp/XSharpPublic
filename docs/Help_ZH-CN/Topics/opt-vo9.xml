@@ -1,37 +1,40 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Geert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2024-07-04T23:15:24.137+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-vo9</title>
   <keywords>
     <keyword>-vo9</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo9<tab /><tab />Handle problems with incorrect or missing return statements </para>
+      <para styleclass="Heading1">-vo9<tab /><tab />处理缺少或不正确的返回语句问题。您需要确保每个函数都有正确的返回语句，以便返回预期的结果。 </para>
     </header>
-    <para styleclass="Normal">The -vo9 option prevents the compiler from raising error XS0161 when a function or method does not have any RETURN statements. It also fixes problems with incorrect return values.</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">当函数或方法没有任何 RETURN 语句时，-vo9 选项可防止编译器引发错误 XS0161。它还能解决返回值不正确的问题。</para>
+    <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-vo9[+|-]</para>
-    <para styleclass="Heading2">Arguments</para>
-    <para styleclass="List">+ | - <tab />Specifying +, or just -vo9, allows functions and methods that do not have any RETURN statement to compile without raising an error. </para>
-    <para styleclass="Heading2">Remarks</para>
-    <para styleclass="Normal">Visual Objects allows functions and methods whose return type is not VOID to omit RETURN statements. The return value from any such functions or methods will always be the default value for the return type.</para>
+    <para styleclass="Heading2">参数</para>
+    <para styleclass="List">+ | - <tab />指定 + 或 -vo9，可以让没有任何 RETURN 语句的函数和方法在编译时不出错。 </para>
+    <para styleclass="Heading2">备注</para>
+    <para styleclass="Normal">Visual Objects 允许返回类型不是 VOID 的函数和方法省略 RETURN 语句。任何此类函数或方法的返回值将始终是返回类型的默认值。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">This is illegal in X#: all functions and methods must explicitly return a value unless the return type is VOID. However, this may prevent code that was originally written in Visual Objects from compiling in X#.</para>
+    <para styleclass="Normal">这在 X# 中是非法的：除非返回类型是 VOID，否则所有函数和方法都必须显式地返回一个值。不过，这可能会妨碍最初用 Visual Objects 编写的代码在 X# 中编译。</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">If -vo9 is enabled, any non-void functions or methods that do not have any RETURN statements will raise warning XS9025 instead of error XS0106. The warning may be disabled if desired, but it is strongly recommended that you fix the code in question. &#160;If the return value is never used, then type the function or method AS VOID. Otherwise, add a RETURN statement with an appropriate return value.</para>
-    <para styleclass="Normal">This compiler option also checks for methods/functions that have a return statement without value. In that case a warning XS9026 is shown.<br/>The final check this compiler option does it for methods that have a return value but are not expected to return anything. If that is found then a warning XS9032 is shown.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <para styleclass="Normal">如果启用 -vo9，任何没有任何 RETURN 语句的非虚函数或方法都将引发警告 XS9025，而不是错误 XS0106。如果需要，可以禁用该警告，但强烈建议修复相关代码。 如果从未使用返回值，则键入函数或方法 AS VOID。否则，添加一个带有适当返回值的 RETURN 语句。</para>
+    <para styleclass="Normal">该编译器选项也会检查有无返回值的返回语句的方法/函数。在这种情况下，将显示警告 XS9026。</para>
+    <para styleclass="Normal">该编译器选项的最后一项检查是有返回值但不返回任何内容的方法。如果发现这种情况，就会显示警告 XS9032。</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">Click here to see the property page</link></li>
+    <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Dialect 选项卡 </li>
+      <li styleclass="Normal" style="margin-left:13px;">更改值</li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Dialect">查看属性页</link></li>
     </list>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Heading2">示例</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y )</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">METHOD</text><text style="font-weight:normal; font-style:normal; color:#000000;"> x( y </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? y</text><text styleclass="" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; color:#000000;">&#32;</text></para>
-    <para styleclass="Normal">In the first example, the return type is not specified so it defaults to USUAL, and since there is no RETURN statement the function will always returns NIL (the default value for USUAL) in Visual Objects. In the second example, since there is no RETURN statement the method will always return zero (the default value for INT) in Visual Objects.</para>
+    <para styleclass="Normal">在第一个示例中，没有指定返回类型，因此默认为 USUAL，由于没有 RETURN 语句，函数在 Visual Objects 中将始终返回 NIL（USUAL 的默认值）。在第二个示例中，由于没有 RETURN 语句，该方法将始终在 Visual Objects 中返回 0（INT 的默认值）。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
   </body>

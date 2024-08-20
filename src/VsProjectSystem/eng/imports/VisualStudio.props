@@ -1,5 +1,6 @@
 <!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information. -->
 <Project>
+
   <Import Project="HostAgnostic.props"/>
 
   <ItemGroup>
@@ -40,7 +41,7 @@
     
     <!-- Roslyn -->
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" />
-
+    
     <!-- Explicitly referenced to prevent upstream packages from bringing in old PIAs -->
     <PackageReference Include="EnvDTE" Pack="false" ExcludeAssets="compile" PrivateAssets="all" />
   </ItemGroup>

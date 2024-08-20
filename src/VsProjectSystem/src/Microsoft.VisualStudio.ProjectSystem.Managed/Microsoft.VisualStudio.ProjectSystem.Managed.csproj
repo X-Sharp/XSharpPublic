@@ -688,15 +688,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="XSharp\ProjectSystem\KnownProjectImageMonikers.cs" />
-    <Compile Remove="XSharp\ProjectSystem\ProjectCapability.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="ProjectSystem\Rules\Items\Resource.FSharp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="XSharp\Images\XSharpProject.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

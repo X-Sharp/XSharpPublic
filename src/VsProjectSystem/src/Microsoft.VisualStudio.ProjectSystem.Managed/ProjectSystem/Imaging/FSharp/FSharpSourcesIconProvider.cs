@@ -7,7 +7,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.Imaging.FSharp
     [Export(typeof(IProjectTreePropertiesProvider))]
     [AppliesTo(ProjectCapability.FSharp)]
     [Order(Order.Default)]
-    internal class XSharpSourcesIconProvider : IProjectTreePropertiesProvider
+    internal class FSharpSourcesIconProvider : IProjectTreePropertiesProvider
     {
         private static readonly Dictionary<string, ProjectImageMoniker> s_fileExtensionImageMap = new(StringComparers.Paths)
         {

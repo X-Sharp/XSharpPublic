@@ -27,7 +27,7 @@ namespace Microsoft.VisualStudio.Packaging
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Here we initialize our internal IXPackageService implementations, both in global and project services scope.
+            // Here we initialize our internal IPackageService implementations, both in global and project services scope.
 
             // Get access to global MEF services.
             IComponentModel componentModel = await this.GetServiceAsync<SComponentModel, IComponentModel>();

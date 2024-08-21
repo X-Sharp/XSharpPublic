@@ -3,7 +3,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Packaging;
 using Microsoft.VisualStudio.ProjectSystem.VS;
-#if NOTDEFINED
+#if !XSHARP
 // Visual Basic
 [assembly: ProjectTypeRegistration(
     projectTypeGuid: ProjectType.VisualBasic,

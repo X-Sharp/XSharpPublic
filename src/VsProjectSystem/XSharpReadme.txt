@@ -39,6 +39,15 @@ We will make the following changes later:
   
 - We have seen that the CreatePkgDef compiler fails to run on an assembly when the publickey is not properly set 
   We will have to manually change the ppkgdef file that is created for the VS project system and adjust it to X#
+
+- The XSC task in the XSharpBuildTasks.DLL has been changed so it supports 2 additional properties:
+  - SkipCompilerExecution
+  - ProvideCommandLineArgs
+  When these are true then that task fills an output property with ITaskItems for each commandline parameter
+  This is then later processed to filter out the list of references which can be passed to the CodeModel.
+  Roslyn has code for this in the language service. We have created a special XSharpWorkspaceProjectContext object that 
+  is instantiated for each targetframework in the project.
+
   
 TODO:
 - Link the project system to our codemodel:

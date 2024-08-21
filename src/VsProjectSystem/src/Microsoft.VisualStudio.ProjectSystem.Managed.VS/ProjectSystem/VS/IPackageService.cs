@@ -12,7 +12,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS
     /// </remarks>
     [ProjectSystemContract(ProjectSystemContractScope.Global, ProjectSystemContractProvider.Private, Cardinality = ImportCardinality.ZeroOrMore)]
     [ProjectSystemContract(ProjectSystemContractScope.ProjectService, ProjectSystemContractProvider.Private, Cardinality = ImportCardinality.ZeroOrMore, ContractName = ExportContractNames.Scopes.ProjectService)]
-    internal interface IPackageService
+    internal interface IXPackageService
     {
         /// <summary>
         /// Called when the package is initializing.

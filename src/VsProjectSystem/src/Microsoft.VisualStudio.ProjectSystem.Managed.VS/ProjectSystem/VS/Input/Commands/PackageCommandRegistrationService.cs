@@ -9,8 +9,8 @@ namespace Microsoft.VisualStudio.ProjectSystem.VS.Input.Commands
     /// <summary>
     /// Registers VS menu commands provided by the managed language project system package in.
     /// </summary>
-    [Export(typeof(IPackageService))]
-    internal sealed class PackageCommandRegistrationService : IPackageService
+    [Export(typeof(IXPackageService))]
+    internal sealed class PackageCommandRegistrationService : IXPackageService
     {
         /// <summary>
         /// <see cref="MenuCommand"/> implementations may export themselves with this contract name

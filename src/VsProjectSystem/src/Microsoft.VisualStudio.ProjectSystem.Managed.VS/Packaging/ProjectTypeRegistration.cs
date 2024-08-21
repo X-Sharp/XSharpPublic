@@ -3,7 +3,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Packaging;
 using Microsoft.VisualStudio.ProjectSystem.VS;
-
+#if NOTDEFINED
 // Visual Basic
 [assembly: ProjectTypeRegistration(
     projectTypeGuid: ProjectType.VisualBasic,
@@ -57,7 +57,7 @@ using Microsoft.VisualStudio.ProjectSystem.VS;
     SupportsSolutionChangeWithoutReload = true)]
 [assembly: ProvideDiffSupportedContentType(".csproj", "")]   // Empty string because content type is not important, we just want to tell the diff that the file type is supported
 [assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", ".csproj")] // Use the XML editor
-
+#endif
 
 // X#
 [assembly: ProjectTypeRegistration(
@@ -66,7 +66,7 @@ using Microsoft.VisualStudio.ProjectSystem.VS;
     displayProjectFileExtensions: "#29",     // "X# Project Files (*.xsproj);*.xsproj"
     defaultProjectExtension: "xsproj",
     language: "XSharp",
-    resourcePackageGuid: ManagedProjectSystemPackage.PackageGuid,
+    resourcePackageGuid: XSharpManagedProjectSystemPackage.PackageGuid,
     Capabilities = ProjectTypeCapabilities.XSharp,
     DisableAsynchronousProjectTreeLoad = true,
     PossibleProjectExtensions = "xsproj",

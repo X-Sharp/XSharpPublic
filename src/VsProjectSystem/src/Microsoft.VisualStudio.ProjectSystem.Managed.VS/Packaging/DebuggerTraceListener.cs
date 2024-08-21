@@ -10,8 +10,8 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Packaging
 {
-    [Export(typeof(IPackageService))]
-    internal sealed class DebuggerTraceListener : TraceListener, IPackageService
+    [Export(typeof(IXPackageService))]
+    internal sealed class DebuggerTraceListener : TraceListener, IXPackageService
     {
         public Task InitializeAsync(IAsyncServiceProvider asyncServiceProvider)
         {

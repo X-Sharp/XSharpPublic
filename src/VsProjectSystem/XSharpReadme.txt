@@ -64,3 +64,4 @@ The following files are expected in that folder:
 
 
 
+See  https://github.com/madskristensen/FileIcons/ for proper syntax for icons and imagemanifest.

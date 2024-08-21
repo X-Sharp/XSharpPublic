@@ -741,6 +741,7 @@
     <Content Include="XSharp\Images\XSharpImages.imagemanifest">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
 

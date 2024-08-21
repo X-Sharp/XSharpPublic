@@ -211,7 +211,7 @@
     <GuidSymbol name="guidSolutionExplorerToolWindow" value="{3AE79031-E1BC-11D0-8F78-00A0C9110057}" />
     
     <!-- This is out managed package guid. -->
-    <GuidSymbol name="PackageGuidString" value="{860A27C0-B665-47F3-BC12-637E16A1050A}" />
+    <GuidSymbol name="PackageGuidString" value="{93bc6a0e-d5ad-455e-a9b9-01d09153707d}" />
 
     <GuidSymbol name="guidDebugTargetHandlerPackage" value="{6e87cfad-6c05-4adf-9cd7-3b7943875b7c}">
       <IDSymbol name="DebugTargetMenuControllerGroup" value="0x1000" />

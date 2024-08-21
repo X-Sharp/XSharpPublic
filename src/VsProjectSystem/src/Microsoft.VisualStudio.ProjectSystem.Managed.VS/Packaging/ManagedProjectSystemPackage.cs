@@ -20,14 +20,15 @@ namespace Microsoft.VisualStudio.Packaging
         termValues: new[] { "SolutionHasProjectCapability:.NET & CPS" }
         )]
     [ProvideMenuResource("Menus.ctmenu", 5)]
-    internal sealed class ManagedProjectSystemPackage : AsyncPackage
+    internal sealed class XSharpManagedProjectSystemPackage : AsyncPackage
     {
         public const string ActivationContextGuid = "E7DF1626-44DD-4E8C-A8A0-92EAB6DDC16E";
-        public const string PackageGuid = "860A27C0-B665-47F3-BC12-637E16A1050A";
+        //public const string PackageGuid = "860A27C0-B665-47F3-BC12-637E16A1050A";
+        public const string PackageGuid = "93bc6a0e-d5ad-455e-a9b9-01d09153707d";
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Here we initialize our internal IPackageService implementations, both in global and project services scope.
+            // Here we initialize our internal IXPackageService implementations, both in global and project services scope.
 
             // Get access to global MEF services.
             IComponentModel componentModel = await this.GetServiceAsync<SComponentModel, IComponentModel>();
@@ -36,10 +37,10 @@ namespace Microsoft.VisualStudio.Packaging
             IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
 
             // Find package services in global scope.
-            IEnumerable<IPackageService> globalPackageServices = componentModel.GetExtensions<IPackageService>();
+            IEnumerable<IXPackageService> globalPackageServices = componentModel.GetExtensions<IXPackageService>();
 
             // Find package services in project service scope.
-            IEnumerable<IPackageService> projectServicesPackageServices = projectServiceAccessor.GetProjectService().Services.ExportProvider.GetExportedValues<IPackageService>(ExportContractNames.Scopes.ProjectService);
+            IEnumerable<IXPackageService> projectServicesPackageServices = projectServiceAccessor.GetProjectService().Services.ExportProvider.GetExportedValues<IXPackageService>(ExportContractNames.Scopes.ProjectService);
 
             // We initialize these on the main thread.
             await JoinableTaskFactory.SwitchToMainThreadAsync();

@@ -27,6 +27,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ProjectSelectors.pkgdef" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="UnifiedSettings\ManagedProjectSystem.registration.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -46,10 +50,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ProjectSelectors.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="XSharpProjectSelectors.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

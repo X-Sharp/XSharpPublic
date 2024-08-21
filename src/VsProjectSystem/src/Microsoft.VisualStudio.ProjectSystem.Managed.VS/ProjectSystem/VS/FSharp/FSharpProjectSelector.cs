@@ -11,10 +11,10 @@ using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider
 
 namespace Microsoft.VisualStudio.ProjectSystem.VS.FSharp
 {
-    [Export(typeof(IPackageService))]
+    [Export(typeof(IXPackageService))]
     [Guid("E720DAD0-1854-47FC-93AF-E719B54B84E6")]
     [ProvideObject(typeof(FSharpProjectSelector), RegisterUsing = RegistrationMethod.Assembly)]
-    internal sealed class FSharpProjectSelector : IVsProjectSelector, IPackageService, IDisposable
+    internal sealed class FSharpProjectSelector : IVsProjectSelector, IXPackageService, IDisposable
     {
         private const string MSBuildXmlNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 

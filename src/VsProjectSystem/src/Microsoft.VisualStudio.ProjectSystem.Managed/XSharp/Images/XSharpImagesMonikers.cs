@@ -6,7 +6,7 @@
 using System;
 using Microsoft.VisualStudio.Imaging.Interop;
 
-namespace XSharp.VisualStudio.ProjectSystem
+namespace Microsoft.VisualStudio.ProjectSystem
 {
     public static class XSharpImagesMonikers
     {

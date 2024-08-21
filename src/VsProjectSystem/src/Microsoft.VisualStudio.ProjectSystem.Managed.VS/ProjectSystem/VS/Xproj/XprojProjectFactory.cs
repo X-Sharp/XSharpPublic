@@ -9,9 +9,9 @@ using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider
 
 namespace Microsoft.VisualStudio.ProjectSystem.VS.Xproj
 {
-    [Export(typeof(IPackageService))]
+    [Export(typeof(IXPackageService))]
     [Guid(ProjectType.LegacyXProj)]
-    internal sealed class XprojProjectFactory : FlavoredProjectFactoryBase, IVsProjectUpgradeViaFactory4, IPackageService, IDisposable
+    internal sealed class XprojProjectFactory : FlavoredProjectFactoryBase, IVsProjectUpgradeViaFactory4, IXPackageService, IDisposable
     {
         private readonly JoinableTaskContext _context;
         private IVsRegisterProjectTypes? _registerProjectTypes;

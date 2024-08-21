@@ -73,6 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{5204CAC5
 		SECURITY.md = SECURITY.md
 		spelling.dic = spelling.dic
 		version.json = version.json
+		XSharpReadme.txt = XSharpReadme.txt
 	EndProjectSection
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Microsoft.VisualStudio.Editors.UnitTests", "tests\Microsoft.VisualStudio.Editors.UnitTests\Microsoft.VisualStudio.Editors.UnitTests.vbproj", "{A0B3F2BD-C92A-4037-A9F0-4EC484267E75}"
